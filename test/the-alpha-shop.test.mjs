@@ -10,7 +10,7 @@
  */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync, readdirSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
 
@@ -250,4 +250,32 @@ test('Shopseite: jeder Text nennt „Qi Alpha®“ mit Zeichen (Christian 27.10.
   };
   module.forEach((m, i) => gehe(m, `modul${i}`));
   assert.deepEqual(funde, []);
+});
+
+// KEINE STEUERANGABE AUF DEN PRODUKTSEITEN (Christian 27.10.2026, Register
+// Z223/Z232-Z233: „das mit den Mehrwertsteuern wird nirgendwo angezeigt, das
+// zeigen wir erst im Checkout"; Grossjob 20261027-produktseiten-mwst-zeile-raus-z233 s03).
+// Gemessen nach der Eigenschaft ueber JEDE Route app/routes/products.* und
+// qi-master.css, ohne Kommentare (sie erzaehlen die Geschichte der entfernten
+// Zeile und werden nicht ausgeliefert). ROT VOR GRUEN: auf origin/main cb5afb77
+// rot (products.qi-alpha-b.jsx trug <p className="qm-steuerhinweis">).
+// Landingpages (/pages/*) sind nicht Teil dieses Auftrags.
+const ohneKommentare = (s) =>
+  s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`])\/\/[^\n]*/g, '$1');
+const STEUER = /qm-steuerhinweis|MwSt|Mehrwertsteuer|Umsatzsteuer/i;
+
+test('Produkt-Routen rendern keine Steuerangabe', () => {
+  const routen = readdirSync(join(WURZEL, 'app/routes')).filter((f) =>
+    /^products\..*\.jsx$/.test(f),
+  );
+  assert.ok(routen.length >= 5, `Produkt-Routen gefunden: ${routen.length}`);
+  const funde = routen.filter((f) => STEUER.test(ohneKommentare(lies(`app/routes/${f}`))));
+  assert.deepEqual(funde, []);
+});
+
+test('qi-master.css: keine Regel fuer den Steuerhinweis, keine inline-flex-Preiszeile', () => {
+  const css = ohneKommentare(lies('app/styles/qi-master.css'));
+  assert.ok(css.length > 1000, 'qi-master.css gelesen');
+  assert.doesNotMatch(css, /\.qm-steuerhinweis/);
+  assert.doesNotMatch(css, /\.qm-pdp \.Bestseller-Price > \.product-price/);
 });
