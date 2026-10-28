@@ -82,6 +82,20 @@
   }
 }
 
+/* Dasselbe für das Seitenband nach Longevity (dem einzigen Kapitel ohne
+   Karten): es rückt um Kapitel-Abstand, eigenen Abstand und Bandhöhe nach
+   oben und steht ganz im Bild, wenn die Zeilen weg sind. Band 2:1 am Handy,
+   3:1 ab 768 px (the-alpha-premium.css). */
+.tap-seite[data-the-alpha-premium='c'].tac-scroll .tap-kapitel + .tap-marke {
+  margin-top: calc(-1 * (var(--tap-takt) + var(--tap-s-8) + min(1152px, 100vw - 2 * var(--tap-s-3)) / 2));
+}
+
+@media (min-width: 768px) {
+  .tap-seite[data-the-alpha-premium='c'].tac-scroll .tap-kapitel + .tap-marke {
+    margin-top: calc(-1 * (var(--tap-takt) + var(--tap-s-8) + min(1152px, 100vw - 2 * var(--tap-s-3)) / 3));
+  }
+}
+
 /* Wörter und Absätze folgen dem Finger (Deckung je Scrollschritt aus dem
    Treiber); ohne Treiber bleibt der kurze Fade aus dem Gerüst. */
 .tap-seite[data-the-alpha-premium='c'].tac-scroll [data-tap-schritt]:not(.tap-bam) {
