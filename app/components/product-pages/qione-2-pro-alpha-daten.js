@@ -23,7 +23,7 @@ export const BAND = {
 export const PRODUKT = {
   // „QiOne 2 Pro“ mit kleinem hochgestelltem ® wie im Qi-Blanco-Logo. Das
   // Zeichen steht am geschützten Wort (QiOne®), wie im Shop-Titel
-  // „QiOne® 2 Pro“; MarkenName setzt es klein und hoch.
+  // „QiOne® 2 Pro“; MarkeR (reusables/MarkeR.jsx) setzt das ® klein und hoch.
   name: 'QiOne® 2 Pro',
   claim: 'Essential Wearable',
   // Kurzzeile: heutiger Satz der Seite (Shopify-Beschreibung, s02 B01 #8).

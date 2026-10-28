@@ -5,7 +5,8 @@ import {useAside} from '~/components/Aside';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
 import {betragText} from '~/lib/betrag-text';
-import {MarkenName} from '~/components/reusables/MarkenName';
+// ® klein hochgestellt wie auf /products/qi-alpha (EIN Maß im Haus, reusables/MarkeR.jsx)
+import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
 import {Preisanker} from '~/components/reusables/Preisanker';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
@@ -272,7 +273,7 @@ export function AlphaVorlage({
             {PRODUKT.overline ? <p className="av-overline">{PRODUKT.overline}</p> : null}
             {PRODUKT.modus ? <p className="av-modus">{PRODUKT.modus}</p> : null}
             <h1 id="av-name" className="tas-name">
-              <MarkenName text={PRODUKT.name} />
+              <MarkeR text={PRODUKT.name} />
             </h1>
             {PRODUKT.claim ? <p className="tas-claim">{PRODUKT.claim}</p> : null}
             {PRODUKT.kurzzeile ? <p className="tas-edition">{PRODUKT.kurzzeile}</p> : null}
@@ -280,7 +281,7 @@ export function AlphaVorlage({
               {PRODUKT.punkte.map((p) => (
                 <li key={p.text} className="tas-punkt">
                   <Zeichen art={p.zeichen} />
-                  <span>{p.text}</span>
+                  <span>{mitMarkeR(p.text)}</span>
                 </li>
               ))}
             </ul>
@@ -447,7 +448,7 @@ export function AlphaVorlage({
             {summe.posten.map((p) => (
               <div key={p.schluessel}>
                 <dt>
-                  <MarkenName text={p.name} />
+                  <MarkeR text={p.name} />
                 </dt>
                 <dd>{betragText(p.betrag, waehrung)}</dd>
               </div>
@@ -510,7 +511,7 @@ export function AlphaVorlage({
                   loading="lazy"
                 />
                 <figcaption data-av-box-haupt="">
-                  <MarkenName text={PRODUKT.name} />
+                  <MarkeR text={PRODUKT.name} />
                 </figcaption>
               </figure>
             ) : null}
@@ -531,7 +532,7 @@ export function AlphaVorlage({
             <ul className="av-box-liste" data-av-box-liste="">
               {boxTeile.map((t) => (
                 <li key={t}>
-                  <MarkenName text={t} />
+                  <MarkeR text={t} />
                 </li>
               ))}
             </ul>
@@ -604,7 +605,7 @@ function Slots({daten, slots}) {
               <li key={`${k.zahl}-${k.satz}`} className="av-kachel">
                 <span className="av-kachel-zahl">{k.zahl}</span>
                 <span className="av-kachel-satz">
-                  <MarkenName text={k.satz} />
+                  <MarkeR text={k.satz} />
                 </span>
               </li>
             ))}

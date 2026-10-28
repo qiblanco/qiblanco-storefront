@@ -25,27 +25,8 @@
   padding-bottom: 0;
 }
 
-/* KLEINES, HOCHGESTELLTES ® wie im Qi-Blanco-Logo (Elina EL-20261027-c05a2273:
-   „nicht in Schriftgröße des Namens“). Gesetzt von reusables/MarkenName.jsx.
-   Seit s05 hier statt in the-alpha-produkt.css: die Qi-Alpha-Seite bleibt
-   unberührt. */
-.av-seite .qb-reg {
-  font-size: 0.3em;
-  font-weight: 400;
-  line-height: 0;
-  vertical-align: 0;
-  position: relative;
-  top: -1.75em;
-  margin-left: 0.08em;
-  letter-spacing: 0;
-}
-.av-seite .tas-posten .qb-reg,
-.av-seite .av-box-liste .qb-reg,
-.av-seite figcaption .qb-reg,
-.av-seite .av-kachel-satz .qb-reg {
-  font-size: 0.6em;
-  top: -0.6em;
-}
+/* ® setzt reusables/MarkeR.jsx (Inline-Maß 0,45 em, wie /products/qi-alpha);
+   hier steht dafür bewusst keine eigene Regel. */
 
 /* Overline und Modus über dem Namen (Qi-Alpha-Folge), Gold-Tinte. */
 .av-overline,
