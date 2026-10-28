@@ -470,14 +470,14 @@ test('Naht: geraeteKlasse ist zeichengleich mit der Zählung in entry.server.jsx
 
 // ---------------------------------------------------------------------------
 // the-alpha-abc-e1: DREI ARME (s07 des The-Alpha-Grossjobs, Christian Z5 „A/B/C Test wie bei den Ads").
-// A /pages/The-Alpha, B /pages/The-Alpha-C, C /pages/The-Alpha-B; Eimer < 33 -> B, < 66 -> C, Rest A.
+// A /pages/Qi-Alpha, B /pages/Qi-Alpha-C, C /pages/Qi-Alpha-B; Eimer < 33 -> B, < 66 -> C, Rest A.
 
 // Live steht die Zeile RUHEND auf 0/0 (bis start-freigabe); die Aufteilung wird an der geplanten Zeile 33/33
 // geprüft, die ein eigener PR scharf schaltet. Alles andere (Pins, Kill, Kasse) gilt für beide.
 const GEPLANT = Object.freeze({[TA]: Object.freeze({...SEITEN_EXPERIMENTE[TA], anteil_prozent: 33, anteil_prozent_c: 33})});
 
 function armTA(b, extra = {}) {
-  const r = entscheideSeitenExperiment(req('/pages/The-Alpha', b), extra.env || {}, TA, extra.tabelle || GEPLANT);
+  const r = entscheideSeitenExperiment(req('/pages/Qi-Alpha', b), extra.env || {}, TA, extra.tabelle || GEPLANT);
   return r ? r.arm : 'a';
 }
 
@@ -488,17 +488,17 @@ test('the-alpha-abc-e1 RUHEND: live 0/0, kein Besucher wird umgelenkt, Pins b|c 
   assert.equal(t.aktiv, true);
   for (const b of POP) assert.equal(armTA(b, {tabelle: SEITEN_EXPERIMENTE}), 'a');
   const wer = POP[0];
-  assert.equal(entscheideSeitenExperiment(req('/pages/The-Alpha?shop_exp=b', wer), {}, TA).arm, 'b');
-  assert.equal(entscheideSeitenExperiment(req('/pages/The-Alpha?shop_exp=c', wer), {}, TA).arm, 'c');
-  assert.equal(entscheideSeitenExperiment(req('/pages/The-Alpha?shop_exp=a', wer), {}, TA), null);
+  assert.equal(entscheideSeitenExperiment(req('/pages/Qi-Alpha?shop_exp=b', wer), {}, TA).arm, 'b');
+  assert.equal(entscheideSeitenExperiment(req('/pages/Qi-Alpha?shop_exp=c', wer), {}, TA).arm, 'c');
+  assert.equal(entscheideSeitenExperiment(req('/pages/Qi-Alpha?shop_exp=a', wer), {}, TA), null);
 });
 
 test('the-alpha-abc-e1: Zeile mit drei Armen, eigene Marker t/u, Kill EXP_THE_ALPHA_MODE, Pin shop_exp', () => {
   const t = GEPLANT[TA];
   assert.equal(t.salz, TA);
-  assert.equal(t.pfad_a, '/pages/The-Alpha');
-  assert.equal(t.pfad_b, '/pages/The-Alpha-C');
-  assert.equal(t.pfad_c, '/pages/The-Alpha-B');
+  assert.equal(t.pfad_a, '/pages/Qi-Alpha');
+  assert.equal(t.pfad_b, '/pages/Qi-Alpha-C');
+  assert.equal(t.pfad_c, '/pages/Qi-Alpha-B');
   assert.equal(t.anteil_prozent, 33);
   assert.equal(t.anteil_prozent_c, 33);
   assert.equal(t.pin_param, 'shop_exp');
@@ -532,7 +532,7 @@ test('the-alpha-abc-e1: Arm folgt dem Eimer (0-32 B, 33-65 C, 66-99 A), stabil j
     const e = besucherEimer(b.ip, b.ua, TA);
     const soll = e < 33 ? 'b' : e < 66 ? 'c' : 'a';
     assert.equal(armTA(b), soll, `Eimer ${e}`);
-    const daten = entscheideSeitenExperiment(req('/pages/The-Alpha?_routes=routes%2Fpages.The-Alpha', b), {}, TA, GEPLANT);
+    const daten = entscheideSeitenExperiment(req('/pages/Qi-Alpha?_routes=routes%2Fpages.Qi-Alpha', b), {}, TA, GEPLANT);
     assert.equal(daten ? daten.arm : 'a', soll);
   }
 });
@@ -541,25 +541,25 @@ test('the-alpha-abc-e1: Ziele tragen Query byte-gleich plus Marker t (B) bzw. u 
   const b = POP.find((x) => armTA(x) === 'b');
   const c = POP.find((x) => armTA(x) === 'c');
   const q = '?fbclid=IwAR1%2Bx&utm_source=facebook&utm_medium=paid&utm_content=120250590409220704';
-  assert.equal(entscheideSeitenExperiment(req(`/pages/The-Alpha${q}`, b), {}, TA, GEPLANT).ziel, `/pages/The-Alpha-C${q}&lp_m=t`);
-  assert.equal(entscheideSeitenExperiment(req(`/pages/The-Alpha${q}`, c), {}, TA, GEPLANT).ziel, `/pages/The-Alpha-B${q}&lp_m=u`);
-  assert.equal(entscheideSeitenExperiment(req('/pages/The-Alpha', c), {}, TA, GEPLANT).ziel, '/pages/The-Alpha-B?lp_m=u');
+  assert.equal(entscheideSeitenExperiment(req(`/pages/Qi-Alpha${q}`, b), {}, TA, GEPLANT).ziel, `/pages/Qi-Alpha-C${q}&lp_m=t`);
+  assert.equal(entscheideSeitenExperiment(req(`/pages/Qi-Alpha${q}`, c), {}, TA, GEPLANT).ziel, `/pages/Qi-Alpha-B${q}&lp_m=u`);
+  assert.equal(entscheideSeitenExperiment(req('/pages/Qi-Alpha', c), {}, TA, GEPLANT).ziel, '/pages/Qi-Alpha-B?lp_m=u');
 });
 
 test('the-alpha-abc-e1: Pin a|b|c für Messwerkzeuge (auch eigener Verkehr und HeadlessChrome), Crawler sehen A trotz Pin', () => {
   const intern = {ip: '65.108.150.121', ua: 'x QiBlancoInternal'};
   const headless = {ip: '198.51.100.23', ua: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/129.0.0.0 Safari/537.36'};
   for (const wer of [intern, headless]) {
-    assert.equal(entscheideSeitenExperiment(req('/pages/The-Alpha?shop_exp=a', wer), {}, TA), null);
-    const pb = entscheideSeitenExperiment(req('/pages/The-Alpha?shop_exp=b', wer), {}, TA);
-    assert.deepEqual([pb.ziel, pb.arm, pb.eimer], ['/pages/The-Alpha-C?shop_exp=b&lp_m=t', 'b', -1]);
-    const pc = entscheideSeitenExperiment(req('/pages/The-Alpha?shop_exp=c', wer), {}, TA);
-    assert.deepEqual([pc.ziel, pc.arm, pc.eimer], ['/pages/The-Alpha-B?shop_exp=c&lp_m=u', 'c', -1]);
+    assert.equal(entscheideSeitenExperiment(req('/pages/Qi-Alpha?shop_exp=a', wer), {}, TA), null);
+    const pb = entscheideSeitenExperiment(req('/pages/Qi-Alpha?shop_exp=b', wer), {}, TA);
+    assert.deepEqual([pb.ziel, pb.arm, pb.eimer], ['/pages/Qi-Alpha-C?shop_exp=b&lp_m=t', 'b', -1]);
+    const pc = entscheideSeitenExperiment(req('/pages/Qi-Alpha?shop_exp=c', wer), {}, TA);
+    assert.deepEqual([pc.ziel, pc.arm, pc.eimer], ['/pages/Qi-Alpha-B?shop_exp=c&lp_m=u', 'c', -1]);
     // ohne Pin: eigener Verkehr und Bots sehen A
-    assert.equal(entscheideSeitenExperiment(req('/pages/The-Alpha', wer), {}, TA), null);
+    assert.equal(entscheideSeitenExperiment(req('/pages/Qi-Alpha', wer), {}, TA), null);
   }
   const googlebot = {ip: '66.249.66.1', ua: 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'};
-  assert.equal(entscheideSeitenExperiment(req('/pages/The-Alpha?shop_exp=c', googlebot), {}, TA), null);
+  assert.equal(entscheideSeitenExperiment(req('/pages/Qi-Alpha?shop_exp=c', googlebot), {}, TA), null);
 });
 
 test('Pin c wirkt nur in Zeilen mit drittem Arm: Zwei-Arm-Experimente bleiben bei Pin c auf ihrer Zuteilung', () => {
@@ -579,7 +579,7 @@ test('the-alpha-abc-e1: Rückkehr aus Kasse oder Warenkorb lenkt nie um; andere 
   const b = POP.find((x) => armTA(x) === 'b');
   const c = POP.find((x) => armTA(x) === 'c');
   const mitRef = (wer, ref) => {
-    const r = req('/pages/The-Alpha', wer);
+    const r = req('/pages/Qi-Alpha', wer);
     const h = new Headers(r.headers);
     h.set('referer', ref);
     return new Request(r.url, {headers: h});
@@ -612,12 +612,12 @@ test('the-alpha-abc-e1: Kill per Env off und Code-Schalter; ohne IP A; POST nie'
   const c = POP.find((x) => armTA(x) === 'c');
   assert.equal(armTA(b, {env: {EXP_THE_ALPHA_MODE: 'off'}}), 'a');
   assert.equal(armTA(c, {env: {EXP_THE_ALPHA_MODE: 'off'}}), 'a');
-  assert.equal(entscheideSeitenExperiment(req('/pages/The-Alpha?shop_exp=c', b), {EXP_THE_ALPHA_MODE: 'off'}, TA), null);
+  assert.equal(entscheideSeitenExperiment(req('/pages/Qi-Alpha?shop_exp=c', b), {EXP_THE_ALPHA_MODE: 'off'}, TA), null);
   assert.equal(armTA(c, {env: {EXP_THE_ALPHA_MODE: 'on'}}), 'c');
   const aus = {[TA]: {...GEPLANT[TA], aktiv: false}};
-  assert.equal(entscheideSeitenExperiment(req('/pages/The-Alpha', c), {}, TA, aus), null);
-  assert.equal(entscheideSeitenExperiment(req('/pages/The-Alpha', {ip: '', ua: IPHONE}), {}, TA, GEPLANT), null);
-  assert.equal(entscheideSeitenExperiment(req('/pages/The-Alpha', {...c, method: 'POST'}), {}, TA, GEPLANT), null);
+  assert.equal(entscheideSeitenExperiment(req('/pages/Qi-Alpha', c), {}, TA, aus), null);
+  assert.equal(entscheideSeitenExperiment(req('/pages/Qi-Alpha', {ip: '', ua: IPHONE}), {}, TA, GEPLANT), null);
+  assert.equal(entscheideSeitenExperiment(req('/pages/Qi-Alpha', {...c, method: 'POST'}), {}, TA, GEPLANT), null);
   // Kill der anderen Experimente lässt diesen laufen
   assert.equal(armTA(c, {env: {EXP_START_MODE: 'off', EXP_PB_MODE: 'off'}}), 'c');
 });
