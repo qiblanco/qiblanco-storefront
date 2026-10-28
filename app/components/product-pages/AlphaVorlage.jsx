@@ -291,6 +291,15 @@ export function AlphaVorlage({
                 </li>
               ))}
             </ul>
+            {/* Optional (QiOne® 2 Pro, s06): Textlink zum Vergleich weiter unten,
+                Kundenfrage Nr. 1. Ein Link, kein zweiter Knopf im Kopf. */}
+            {PRODUKT.vergleichLink?.href ? (
+              <p className="av-vergleich-link">
+                <a href={PRODUKT.vergleichLink.href} data-av-vergleich-link="">
+                  {mitMarkeR(PRODUKT.vergleichLink.text)}
+                </a>
+              </p>
+            ) : null}
             {variante?.price ? (
               <div className="av-preisanker" data-tas-preis="">
                 <Preisanker
@@ -360,6 +369,7 @@ export function AlphaVorlage({
               auszeichnung={KETTE.auszeichnung}
               titel={KETTE.titel}
             >
+              {KETTE.zeile ? <p className="av-anleitung">{mitMarkeR(KETTE.zeile)}</p> : null}
               <div className="tas-karten" role="radiogroup" aria-label={KETTE.auszeichnung}>
                 <Karte
                   an={!kette}
@@ -622,6 +632,8 @@ function Slots({daten, slots}) {
               <li key={`${k.zahl}-${k.satz}`} className="av-kachel">
                 {k.icon ? <FaktZeichen art={k.icon} /> : null}
                 <span className="av-kachel-zahl">{k.zahl}</span>
+                {/* Optional (s06): Titel zwischen Zahl und Satz (s03 kacheln). */}
+                {k.titel ? <span className="av-kachel-titel">{mitMarkeR(k.titel)}</span> : null}
                 <span className="av-kachel-satz">
                   <MarkeR text={k.satz} />
                 </span>
