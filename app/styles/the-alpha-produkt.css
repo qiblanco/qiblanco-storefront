@@ -419,8 +419,9 @@
 /* Handy und Tablet (Christian 28.10. Z21, Apple-Modus): Kopf mit Preis, dann
    die Galerie, dann die Schritte am Stück (Wunschnummer → Kette → Bezahlart).
    Wie bei Apple steht das Produktbild vor der ersten Auswahl und nie zwischen
-   zwei Schritten. Der Rasterabstand 32 trennt Kopf, Galerie und ersten
-   Schritt. Ab 1024 px steht die Auswahl wieder als Spalte neben der Bühne. */
+   zwei Schritten. Der Rasterabstand 32 trennt Kopf und Galerie; der erste
+   Schritt hält zur Galerie denselben Abstand wie die Schritte untereinander. Ab 1024 px steht die Auswahl wieder als Spalte
+   neben der Bühne. */
 .tas-auswahl {
   display: contents;
 }
@@ -431,10 +432,6 @@
 
 .tas-galerie {
   order: -1;
-}
-
-.tas-seite .tas-schritt--erster {
-  margin-top: 0;
 }
 
 .tas-schritt--erster .tas-karten {

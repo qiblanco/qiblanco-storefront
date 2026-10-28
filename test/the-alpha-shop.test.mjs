@@ -207,6 +207,8 @@ test('Erstes Fenster (Christian Z2, 27.10.; Z1/Z2 28.10.): Preis allein im Kopf,
   assert.match(css, /\.tas-produkt \{\s*order: -2;/);
   assert.match(css, /\.tas-galerie \{\s*order: -1;/);
   assert.doesNotMatch(css, /\.tas-schritt--erster \{\s*order: -1;/);
+  // der erste Schritt folgt am Handy auf die Galerie: Schrittabstand, nicht 0
+  assert.doesNotMatch(css.slice(0, css.indexOf('@media')), /\.tas-schritt--erster \{\s*margin-top: 0;/);
   // Desktop (ab 1024) bleibt wie Z16: Galerie links, Auswahl rechts
   const desk = css.slice(css.indexOf('@media (min-width: 1024px)'));
   assert.match(desk, /\.tas-galerie \{\s*order: 0;/);
