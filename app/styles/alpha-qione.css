@@ -134,3 +134,10 @@
 .avq-quellen a {
   color: inherit;
 }
+
+/* Bezahlart mit drei Karten (direkt, PayPal, Klarna): untereinander wie die
+   Ketten-Karten. Nebeneinander brach der Kartentitel in der schmalen
+   Auswahlspalte um (s06 i1, 1440 px). */
+.av-seite [data-konfigurator-schritt='bezahlart'] .tas-karten.av-karten--drei {
+  grid-template-columns: minmax(0, 1fr);
+}
