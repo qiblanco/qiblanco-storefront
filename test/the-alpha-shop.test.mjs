@@ -255,9 +255,9 @@ test('Shopseite: jeder Text nennt „Qi Alpha®“ mit Zeichen (Christian 27.10.
 // KEINE STEUERANGABE AUF DEN PRODUKTSEITEN (Christian 27.10.2026, Register
 // Z223/Z232-Z233: „das mit den Mehrwertsteuern wird nirgendwo angezeigt, das
 // zeigen wir erst im Checkout"; Grossjob 20261027-produktseiten-mwst-zeile-raus-z233 s03).
-// Gemessen nach der Eigenschaft ueber JEDE Route app/routes/products.* und
-// qi-master.css, ohne Kommentare (sie erzaehlen die Geschichte der entfernten
-// Zeile und werden nicht ausgeliefert). ROT VOR GRUEN: auf origin/main cb5afb77
+// Gemessen nach der Eigenschaft über JEDE Route app/routes/products.* und
+// qi-master.css, ohne Kommentare (sie erzählen die Geschichte der entfernten
+// Zeile und werden nicht ausgeliefert). ROT VOR GRÜN: auf origin/main cb5afb77
 // rot (products.qi-alpha-b.jsx trug <p className="qm-steuerhinweis">).
 // Landingpages (/pages/*) sind nicht Teil dieses Auftrags.
 const ohneKommentare = (s) =>
@@ -273,7 +273,7 @@ test('Produkt-Routen rendern keine Steuerangabe', () => {
   assert.deepEqual(funde, []);
 });
 
-test('qi-master.css: keine Regel fuer den Steuerhinweis, keine inline-flex-Preiszeile', () => {
+test('qi-master.css: keine Regel für den Steuerhinweis, keine inline-flex-Preiszeile', () => {
   const css = ohneKommentare(lies('app/styles/qi-master.css'));
   assert.ok(css.length > 1000, 'qi-master.css gelesen');
   assert.doesNotMatch(css, /\.qm-steuerhinweis/);
