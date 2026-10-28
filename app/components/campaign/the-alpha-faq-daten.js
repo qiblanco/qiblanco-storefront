@@ -45,36 +45,36 @@ function vergebenText(liste) {
   return `${n.slice(0, -1).join(', ')} und ${n[n.length - 1]}`;
 }
 
-export const THE_ALPHA_FAQ_TITEL = 'Deine Fragen zum Qi Alpha.';
+export const THE_ALPHA_FAQ_TITEL = 'Deine Fragen zum Qi Alpha®.';
 
 /** Christians Leitfrage, wörtlich (Z194/Z195). Eine Probe misst sie live. */
 export const THE_ALPHA_FAQ_LEITFRAGE =
-  'Was bekomme ich mit dem Qi Alpha, das kein anderes Qi-Blanco-Produkt kann?';
+  'Was bekomme ich mit dem Qi Alpha®, das kein anderes Qi-Blanco-Produkt kann?';
 
 export const THE_ALPHA_FAQ = [
   {
     id: 'mehr',
     frage: THE_ALPHA_FAQ_LEITFRAGE,
     antwort: [
-      `Du trägst die Kraft eines QiHome® Air am Körper. Der Qi Alpha schützt auf dem Niveau unseres Raumgeräts, nur eben dort, wo du gerade bist. Gegenüber dem QiOne® 2 Pro ist seine Stärke um den Faktor 100 erweitert.`,
-      `Diese Kraft kommt aus dem zweiteiligen Gitterchip™ der ultimativen Generation und aus „The One Eye“, einem hochreinen Naturdiamanten. Beides gibt es nur im Qi Alpha. Es gibt ${THE_ALPHA_SERIE} Stück. Deine Nummer wählst du selbst, solange sie frei ist.`,
+      `Du trägst die Kraft eines QiHome® Air am Körper. Der Qi Alpha® schützt auf dem Niveau unseres Raumgeräts, nur eben dort, wo du gerade bist. Gegenüber dem QiOne® 2 Pro ist seine Stärke um den Faktor 100 erweitert.`,
+      `Diese Kraft kommt aus dem zweiteiligen Gitterchip™ der ultimativen Generation und aus „The One Eye“, einem hochreinen Naturdiamanten. Beides gibt es nur im Qi Alpha®. Es gibt ${THE_ALPHA_SERIE} Stück. Deine Nummer wählst du selbst, solange sie frei ist.`,
     ],
   },
   {
     id: 'bereit',
-    frage: 'Bin ich bereit für den Qi Alpha?',
+    frage: 'Bin ich bereit für den Qi Alpha®?',
     antwort: [
-      'Ja, wenn du alles willst. Der Qi Alpha ist gemacht für Menschen, die das Maximum aus ihrem Leben holen, beruflich und privat. Für den Alltag ist der QiOne® 2 Pro mehr als ausreichend.',
+      'Ja, wenn du alles willst. Der Qi Alpha® ist gemacht für Menschen, die das Maximum aus ihrem Leben holen, beruflich und privat. Für den Alltag ist der QiOne® 2 Pro mehr als ausreichend.',
       'Der Vorverkauf startet am 01.11.2026. Am Sonntag, 8. November, um 12 Uhr halte ich ihn zum ersten Mal live für dich in die Kamera. Komm vorbei und stell mir deine Fragen!',
     ],
   },
   {
     id: 'unterschied',
-    frage: 'Was trägt der Qi Alpha, das mein QiOne® 2 Pro nicht hat?',
+    frage: 'Was trägt der Qi Alpha®, das mein QiOne® 2 Pro nicht hat?',
     antwort: [
-      'Im Auge des Qi Alpha sitzt „The One Eye“: ein hochreiner Naturdiamant in einer Iris mit 108 Strichen. Der Kern ist ein zweiteiliger Gitterchip™ aus unserer eigenen 750er Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen.',
+      'Im Auge des Qi Alpha® sitzt „The One Eye“: ein hochreiner Naturdiamant in einer Iris mit 108 Strichen. Der Kern ist ein zweiteiliger Gitterchip™ aus unserer eigenen 750er Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen.',
       (vergeben) =>
-        `Jeder Qi Alpha trägt seine eigene Nummer und wird von Spezialisten mit jahrzehntelanger Erfahrung Stück für Stück durch die Fertigung begleitet. Die finale Politur wird per Hand von Goldschmieden mit meisterhafter Genauigkeit durchgeführt. Bereits vergeben sind die Nummern ${vergeben}.`,
+        `Jeder Qi Alpha® trägt seine eigene Nummer und wird von Spezialisten mit jahrzehntelanger Erfahrung Stück für Stück durch die Fertigung begleitet. Die finale Politur wird per Hand von Goldschmieden mit meisterhafter Genauigkeit durchgeführt. Bereits vergeben sind die Nummern ${vergeben}.`,
     ],
   },
   {
@@ -87,17 +87,17 @@ export const THE_ALPHA_FAQ = [
   },
   {
     id: 'diamant',
-    frage: 'Warum sitzt ein Diamant im Auge des Qi Alpha?',
+    frage: 'Warum sitzt ein Diamant im Auge des Qi Alpha®?',
     antwort: [
       'Weil er dieselbe Sprache spricht wie deine Zellen: Licht. Deine Zellen leuchten, das hat der Biophysiker Fritz-Albert Popp über Jahrzehnte gemessen, und ein Diamant ordnet Licht.',
-      'Zusammen mit dem Gitterchip™ ordnet „The One Eye“ Licht und Wasser direkt an deinem Körper. Das gibt es nur im Qi Alpha.',
+      'Zusammen mit dem Gitterchip™ ordnet „The One Eye“ Licht und Wasser direkt an deinem Körper. Das gibt es nur im Qi Alpha®.',
     ],
   },
   {
     id: 'sechs-g',
-    frage: 'Bin ich mit dem Qi Alpha für 6G gerüstet?',
+    frage: 'Bin ich mit dem Qi Alpha® für 6G gerüstet?',
     antwort: [
-      'Ja. Durch das einmalige Duett des Gitterchips™ und „The One Eye“ ist der Qi Alpha auf jegliche erdenkbare Zukunft vorbereitet, egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet.',
+      'Ja. Durch das einmalige Duett des Gitterchips™ und „The One Eye“ ist der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet, egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet.',
       'Den Gitterchip™ des QiOne® 2 Pro hat Prof. Dr. Peter C. Dartsch unter der Strahlung eines sendenden Smartphones in zwei Zellstudien untersucht.',
     ],
   },
@@ -105,7 +105,7 @@ export const THE_ALPHA_FAQ = [
     id: 'sauna-wasser',
     frage: 'Darf er mit in die Sauna, ins Meer und unter die Dusche?',
     antwort: [
-      'Der Qi Alpha begleitet dich überallhin. Der Gitterchip™ ist unempfindlich gegen Wasser, Chlor und Salzwasser sowie gegen Schweiß und Hitze.',
+      'Der Qi Alpha® begleitet dich überallhin. Der Gitterchip™ ist unempfindlich gegen Wasser, Chlor und Salzwasser sowie gegen Schweiß und Hitze.',
       'Die Goldkette nehme ich selbst bei langen Stunden im Chlorwasser ab, wie jeden Goldschmuck.',
     ],
   },
@@ -113,7 +113,7 @@ export const THE_ALPHA_FAQ = [
     id: 'passt-nicht',
     frage: 'Was ist, wenn er nicht zu mir passt?',
     antwort: [
-      'Dann gibst du ihn zurück. Ab Erhalt hast du 20 Tage, um den Qi Alpha in Ruhe zu erleben. Passt er nicht zu dir, bekommst du den vollen Kaufpreis zurück.',
+      'Dann gibst du ihn zurück. Ab Erhalt hast du 20 Tage, um den Qi Alpha® in Ruhe zu erleben. Passt er nicht zu dir, bekommst du den vollen Kaufpreis zurück.',
       'Wir versenden ab Mitte Januar 2027 kostenlos und voll versichert, nach der finalen Politur von Hand.',
     ],
   },
@@ -135,5 +135,5 @@ export function theAlphaFaqAufgeloest(vergeben = THE_ALPHA_VERGEBEN) {
 /** Der nächste Schritt nach den Fragen (Z174): Anna im Chat. */
 export const THE_ALPHA_FAQ_ANNA = {
   titel: 'Noch eine Frage?',
-  text: 'Anna kennt den Qi Alpha in jedem Detail und antwortet dir sofort. Du findest sie unten rechts im Chat.',
+  text: 'Anna kennt den Qi Alpha® in jedem Detail und antwortet dir sofort. Du findest sie unten rechts im Chat.',
 };

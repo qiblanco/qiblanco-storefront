@@ -28,7 +28,7 @@ test('Fragen: acht Themen in Christians Folge, Leitfrage wörtlich zuerst', () =
   assert.deepEqual(ids, ['mehr', 'bereit', 'unterschied', 'gitterchip', 'diamant', 'sechs-g', 'sauna-wasser', 'passt-nicht']);
   assert.equal(
     faq.THE_ALPHA_FAQ[0].frage,
-    'Was bekomme ich mit dem Qi Alpha, das kein anderes Qi-Blanco-Produkt kann?',
+    'Was bekomme ich mit dem Qi Alpha®, das kein anderes Qi-Blanco-Produkt kann?',
   );
 });
 

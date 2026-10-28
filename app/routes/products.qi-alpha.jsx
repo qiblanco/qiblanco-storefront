@@ -124,7 +124,7 @@ export const meta = ({data}) => {
   // Liste bleibt die einzige Stelle.
   if (istVorschauNoindex(THE_ALPHA_PDP_PFAD)) {
     return [
-      {title: `${data?.product?.title ?? 'Qi Alpha'} | ${MARKE}`},
+      {title: `${data?.product?.title ?? 'Qi Alpha®'} | ${MARKE}`},
       // Statisch, nicht noindexMeta(): das Zufahrts-Gate (hb-deploy) liest
       // das Literal in meta() und erspart dann den Zufahrts-Beleg.
       {name: 'robots', content: 'noindex,nofollow'},
@@ -138,7 +138,7 @@ export const meta = ({data}) => {
     produkt: data?.product && {...data.product, handle: 'qi-alpha'},
     marktLand: data?.marktLand,
     pfad: THE_ALPHA_PDP_PFAD,
-    titel: `${data?.product?.title ?? 'Qi Alpha'} | ${MARKE}`,
+    titel: `${data?.product?.title ?? 'Qi Alpha®'} | ${MARKE}`,
     bildUrl:
       data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
       data?.product?.images?.nodes?.[0]?.url,
