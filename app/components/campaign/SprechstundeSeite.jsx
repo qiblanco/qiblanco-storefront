@@ -327,13 +327,17 @@ function TicketcodeFormular() {
   );
 }
 
-function Foto() {
+/* sizes: der Kopf der Landingpage zeigt das Bild mobil als 96-px-Portraet neben
+ * der Ueberschrift (sprechstunde.css .sp__kopf), die Fassung 'alt' volle Breite. */
+function Foto({
+  sizes = '(min-width: 900px) 360px, (min-width: 640px) 600px, 100vw',
+}) {
   return (
     <figure className="sp__foto">
       <img
         src={`${FOTO}&width=720`}
-        srcSet={`${FOTO}&width=480 480w, ${FOTO}&width=720 720w, ${FOTO}&width=1200 1200w`}
-        sizes="(min-width: 900px) 360px, (min-width: 640px) 600px, 100vw"
+        srcSet={`${FOTO}&width=240 240w, ${FOTO}&width=480 480w, ${FOTO}&width=720 720w, ${FOTO}&width=1200 1200w`}
+        sizes={sizes}
         width="1200"
         height="1535"
         alt="Christian Bernd Bauer, Gründer von Qi Blanco"
@@ -348,7 +352,7 @@ function Foto() {
 function Kopf({termine, preisText, zeit}) {
   const naechster = termine[0] ? terminText(termine[0], zeit.zone) : null;
   return (
-    <section className="sp__einstieg" data-section="sp-kopf">
+    <section className="sp__einstieg sp__kopf" data-section="sp-kopf">
       <div className="sp__inhalt sp__inhalt--breit sp__einstieg-raster">
         <div className="sp__einstieg-text">
           <h1>Sprechstunde mit Christian</h1>
@@ -371,7 +375,7 @@ function Kopf({termine, preisText, zeit}) {
             Termin wählen
           </a>
         </div>
-        <Foto />
+        <Foto sizes="(min-width: 900px) 360px, 96px" />
       </div>
     </section>
   );

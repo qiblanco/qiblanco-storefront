@@ -74,6 +74,7 @@
   --sp-breite: 1080px;
   --sp-tipp: 48px;
   --sp-foto: 360px;
+  --sp-portraet: 96px; /* Kopf mobil: Christian neben der Ueberschrift */
   --sp-bewegung: 160ms ease;
 }
 
@@ -220,6 +221,55 @@
   .sp figure.sp__foto img {
     aspect-ratio: 4 / 3;
     object-position: 50% 18%;
+  }
+}
+
+/* Kopf der Landingpage mobil (2026-10-28, Job 20261021-sprechstunde-mobil-
+   kopf-cta-im-ersten-bildschirm): Ueberschrift, Nutzensatz und „Termin wählen"
+   stehen nach dem Cookie-Entscheid im ersten Bildschirm (375x667 und 390x844).
+   Christian steht als Portraet neben der Ueberschrift statt als 270-px-Bild
+   darueber. Der Textblock gibt seine Kinder ans Raster ab (display: contents),
+   die DOM-Reihenfolge und damit der freigegebene Seitentext bleiben gleich.
+   Desktop (ab 900 px) unveraendert. */
+@media (max-width: 899px) {
+  .sp section.sp__kopf {
+    padding-top: var(--sp-s4);
+  }
+  .sp .sp__kopf .sp__einstieg-raster {
+    grid-template-columns: minmax(0, 1fr) var(--sp-portraet);
+    column-gap: var(--sp-s2);
+    row-gap: 0;
+    align-items: start;
+  }
+  .sp .sp__kopf .sp__einstieg-text {
+    display: contents;
+  }
+  .sp .sp__kopf .sp__einstieg-text > * {
+    grid-column: 1 / -1;
+  }
+  /* im Raster fallen Abstaende nicht zusammen: 16 + 8 = die 24 des Blocks */
+  .sp .sp__kopf p.sp__eckdaten {
+    margin-top: var(--sp-s1);
+  }
+  /* links wie im Block, die Chat-Blase rechts unten bleibt frei */
+  .sp .sp__kopf .sp__knopf {
+    justify-self: start;
+  }
+  .sp .sp__kopf .sp__einstieg-text > h1 {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+  }
+  .sp .sp__kopf figure.sp__foto {
+    grid-column: 2;
+    grid-row: 1;
+    width: var(--sp-portraet);
+    margin: 0 0 var(--sp-s2);
+  }
+  .sp .sp__kopf figure.sp__foto img {
+    aspect-ratio: 1 / 1;
+    object-position: 50% 12%;
+    box-shadow: var(--sp-shadow-sm);
   }
 }
 
