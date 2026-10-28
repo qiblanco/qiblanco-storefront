@@ -9,7 +9,7 @@
  *     wie consent_state/ua_class, und nur für a|b|c. Ohne Cookie: kein Attribut,
  *     die übrigen Herkunfts-Marker bleiben byte-gleich.
  *  2. Bezahlter Verkehr auf einer Qi-Alpha-Kaufseite (/products/the-alpha und
- *     die alten Adressen) geht auf /pages/The-Alpha statt auf LP A (QiOne).
+ *     die alten Adressen) geht auf /pages/Qi-Alpha statt auf LP A (QiOne).
  *     Live gemessen 2026-10-26 ~12:55Z: /products/the-alpha?fbclid=x&utm_medium=paid
  *     -> 302 /pages/schlaf-zellen-schutz. Andere Kaufseiten bleiben bei LP A,
  *     Google-Klicks auf /products/* bleiben auf der Produktseite.
@@ -79,13 +79,13 @@ test('Merge: ein späterer Arm überschreibt den früheren am Warenkorb (letzte 
   assert.equal(wert(attributes, '_the_alpha_variante'), 'c');
 });
 
-test('Ad-Weiche: bezahlter Klick auf eine Qi-Alpha-Kaufseite geht auf /pages/The-Alpha, Query byte-gleich', () => {
+test('Ad-Weiche: bezahlter Klick auf eine Qi-Alpha-Kaufseite geht auf /pages/Qi-Alpha, Query byte-gleich', () => {
   const q = '?fbclid=x&utm_medium=paid&utm_content=120250590409220704';
   for (const pfad of ['/products/the-alpha', '/products/The-Alpha', '/products/qi-master', '/products/qi-alpha', '/products/qi-master-wunschnummer']) {
     const e = entscheideAdWeiche(`https://qiblanco.com${pfad}${q}`);
-    assert.equal(e.ziel, `/pages/The-Alpha${q}&lp_m=w`, pfad);
+    assert.equal(e.ziel, `/pages/Qi-Alpha${q}&lp_m=w`, pfad);
   }
-  assert.equal(produktLpZiel('/products/the-alpha/'), '/pages/The-Alpha');
+  assert.equal(produktLpZiel('/products/the-alpha/'), '/pages/Qi-Alpha');
   assert.ok(THE_ALPHA_PRODUKT_PFADE.every((p) => p === p.toLowerCase()));
 });
 

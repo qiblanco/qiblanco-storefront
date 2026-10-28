@@ -250,7 +250,7 @@ export function mmZielPfad(aktuellerPfad, adId, searchParams, aktiv, zufall = Ma
 /**
  * QI-ALPHA: BEZAHLTER VERKEHR AUF DER KAUFSEITE GEHÖRT AUF DIE QI-ALPHA-LP
  * (Grossjob 20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-b-ki-c,
- * s07, Auftrag 5: Qi-Alpha-Anzeigen landen auf /pages/The-Alpha, dort teilt der
+ * s07, Auftrag 5: Qi-Alpha-Anzeigen landen auf /pages/Qi-Alpha (bis 27.10. /pages/The-Alpha), dort teilt der
  * A/B/C-Test the-alpha-abc-e1).
  *
  * GEMESSEN 2026-10-26 ~12:55Z, live: /products/the-alpha?fbclid=x&utm_medium=paid
@@ -270,7 +270,8 @@ export function mmZielPfad(aktuellerPfad, adId, searchParams, aktiv, zufall = Ma
  * Experiment, sondern das richtige Produkt. Kill: ad_weiche='aus' (ganze
  * Weiche) oder THE_ALPHA_PRODUKT_ZIEL_AN = false (PR); Rückweg hb-deploy revert.
  */
-export const THE_ALPHA_LP_PFAD = '/pages/The-Alpha';
+// Seit dem Umzug Qi Alpha (27.10.2026) direkt die neue Adresse statt der 301-Hülle.
+export const THE_ALPHA_LP_PFAD = '/pages/Qi-Alpha';
 export const THE_ALPHA_PRODUKT_ZIEL_AN = true;
 export const THE_ALPHA_PRODUKT_PFADE = Object.freeze([
   '/products/the-alpha',
