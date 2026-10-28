@@ -327,17 +327,13 @@ function TicketcodeFormular() {
   );
 }
 
-/* sizes: der Kopf der Landingpage zeigt das Bild mobil als 96-px-Portraet neben
- * der Ueberschrift (sprechstunde.css .sp__kopf), die Fassung 'alt' volle Breite. */
-function Foto({
-  sizes = '(min-width: 900px) 360px, (min-width: 640px) 600px, 100vw',
-}) {
+function Foto() {
   return (
     <figure className="sp__foto">
       <img
         src={`${FOTO}&width=720`}
-        srcSet={`${FOTO}&width=240 240w, ${FOTO}&width=480 480w, ${FOTO}&width=720 720w, ${FOTO}&width=1200 1200w`}
-        sizes={sizes}
+        srcSet={`${FOTO}&width=480 480w, ${FOTO}&width=720 720w, ${FOTO}&width=1200 1200w`}
+        sizes="(min-width: 900px) 360px, (min-width: 640px) 600px, 100vw"
         width="1200"
         height="1535"
         alt="Christian Bernd Bauer, Gründer von Qi Blanco"
@@ -375,7 +371,7 @@ function Kopf({termine, preisText, zeit}) {
             Termin wählen
           </a>
         </div>
-        <Foto sizes="(min-width: 900px) 360px, 96px" />
+        <Foto />
       </div>
     </section>
   );
