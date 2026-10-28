@@ -136,8 +136,8 @@ test('Produktkopf (s07-r2, Christian 27.10. Z237–Z252): genau Christians Zeile
   assert.deepEqual(
     daten.PRODUKT.punkte.map((p) => p.text),
     [
-      'Zweiteiliger Gitterchip®',
-      'Hochreiner Natur Diamant eingelassen in den Gitterchip®',
+      'Zweiteiliger Gitterchip™',
+      'Hochreiner Natur Diamant eingelassen in den Gitterchip™',
       'Kohärentes Licht vereinigt sich mit Kohärentem Wasser',
     ],
   );
