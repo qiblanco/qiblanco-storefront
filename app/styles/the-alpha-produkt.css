@@ -101,6 +101,30 @@
   padding-block: 0;
 }
 
+/* Gewährleistungszeile in der Kasse = Gewicht der Versandzeilen darüber
+   (Christian 2026-09-16: "Er ist nicht wichtiger als die anderen 4 Punkte.
+   Bitte identisch anpassen."). Ohne diese Zeilen erbt der Knopf per
+   `font: inherit` die Seitengröße (--tas-fs-3) und bringt aus der Block-
+   Bauform (eu-gewaehrleistung.css) 600 und Gold mit. Größe und Zeilenhöhe
+   wie .tas-versand, Gewicht und Farbe geerbt wie die <li> dort; der Hover
+   trägt die Klickbarkeit wie beim Listenpunkt. Nur hier, damit die übrigen
+   Kaufseiten mit .eu-gwl--pdp unberührt bleiben. */
+.tas-summe-kasse .eu-gwl--pdp {
+  font-size: var(--tas-fs-2);
+  line-height: 1.6;
+}
+
+.tas-summe-kasse .eu-gwl--pdp .eu-gwl__link {
+  font-weight: inherit;
+  color: inherit;
+}
+
+.tas-summe-kasse .eu-gwl--pdp .eu-gwl__link:hover,
+.tas-summe-kasse .eu-gwl--pdp .eu-gwl__link:focus-visible {
+  color: var(--color-accent-ink, var(--qb-akzent-tinte));
+  text-decoration: underline;
+}
+
 .tas-unsichtbar {
   position: absolute;
   width: 0;
