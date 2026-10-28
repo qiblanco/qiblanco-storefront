@@ -13,9 +13,12 @@
 import {THE_ALPHA_SERIE, THE_ALPHA_VERGEBEN} from './the-alpha-daten-serie-vergeben.js';
 import {KETTE_STAHL, KETTE_LAENGEN, RATEN} from './the-alpha-shop-daten.js';
 
-/** Nummer aus einem Variantentitel „Alpha 19/100“ bzw. „Alpha 105/111“. */
+/**
+ * Nummer aus einem Variantentitel „Alpha 19/100“, „Alpha 105/111“ bzw. seit
+ * 28.10.2026 „19/111“ (Christian 27.10.: Position „Qi Alpha® 19/111“).
+ */
 export function nummerAusTitel(titel) {
-  const m = /Alpha\s*(\d{1,3})\s*\//i.exec(String(titel || ''));
+  const m = /^\s*(?:Alpha\s*)?(\d{1,3})\s*\//i.exec(String(titel || ''));
   return m ? Number(m[1]) : null;
 }
 

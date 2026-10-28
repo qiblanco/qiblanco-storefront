@@ -202,3 +202,31 @@ test('Erstes Fenster (Christian Z2, 27.10.): Preisanker-Dreizeiler im Kopf, erst
   assert.match(css, /--tas-fs-5: 1\.75rem;/);
   assert.match(css, /--tas-fs-preis: 2rem;/);
 });
+
+test('Nummer aus dem Variantentitel: alt „Alpha 19/111“ und neu „19/111“ (Christian 27.10.: „Qi Alpha® 19/111“)', () => {
+  assert.equal(regeln.nummerAusTitel('Alpha 19/111'), 19);
+  assert.equal(regeln.nummerAusTitel('Alpha 105/100'), 105);
+  assert.equal(regeln.nummerAusTitel('19/111'), 19);
+  assert.equal(regeln.nummerAusTitel('110/111'), 110);
+  assert.equal(regeln.nummerAusTitel('Default Title'), null);
+  assert.equal(regeln.nummerAusTitel(''), null);
+});
+
+test('Kasse zeigt Qi Alpha®, Nummer, Kette: übergeben wird umgekehrt, Qi Alpha® zuletzt (Shopify dreht cartLinesAdd)', () => {
+  const shop = lies('app/components/campaign/TheAlphaShop.jsx');
+  const linien = /const linien = haupt\?\.id\s*\?\s*\[([\s\S]*?)\]\s*:\s*\[\];/.exec(shop);
+  assert.ok(linien, 'linien-Block nicht gefunden');
+  const block = linien[1];
+  assert.match(block, /addonLinien\(\{[\s\S]*?\}\)\.reverse\(\)/);
+  assert.ok(
+    block.indexOf('addonLinien(') < block.indexOf('merchandiseId: haupt.id'),
+    'Hauptzeile muss NACH den Add-ons übergeben werden',
+  );
+});
+
+test('Nummern-Schritt: nur das Gravurbild, kein zweites Bild „Made in Germany“ (Christian 27.10.)', () => {
+  assert.equal(daten.NUMMER.bildRueckseite, undefined);
+  const shop = lies('app/components/campaign/TheAlphaShop.jsx');
+  assert.doesNotMatch(shop, /bildRueckseite/);
+  assert.match(shop, /tas-bildpaar tas-bildpaar--einzeln/);
+});

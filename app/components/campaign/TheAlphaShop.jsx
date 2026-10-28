@@ -104,13 +104,16 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   const raten = ratenMoeglich({nummer: nummerEintrag?.n, kette});
   const vorbestellung = vorbestellungFürHandle(product.handle);
 
+  // Shopify legt die Zeilen eines cartLinesAdd umgekehrt in den Warenkorb
+  // (gemessen 28.10.2026). Übergeben wird Kette, Nummer, Qi Alpha®, damit
+  // Warenkorb und Kasse Qi Alpha®, Nummer, Kette zeigen (Christian 27.10. Z3).
   const linien = haupt?.id
     ? [
-        {merchandiseId: haupt.id, quantity: 1, selectedVariant: haupt},
         ...addonLinien({
           wunschnummer: nummerEintrag?.variante ?? null,
           kette: kette?.art === 'gold' ? kette.variante : null,
-        }),
+        }).reverse(),
+        {merchandiseId: haupt.id, quantity: 1, selectedVariant: haupt},
       ]
     : [];
 
@@ -286,7 +289,10 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                   onWaehle={(n) => wahlNummer(n)}
                 />
               ) : null}
-              <div className="tas-bildpaar">
+              {/* Ein Bild: die Gravur mit der gewählten Nummer. Das Bild
+                  „Made in Germany“ rechts daneben ist weg (Christian
+                  27.10.2026: „hier noch das rechte bild löschen“). */}
+              <div className="tas-bildpaar tas-bildpaar--einzeln">
                 <figure className="tas-gravur-bild">
                   <div className="tas-gravur-rahmen">
                     <div
@@ -313,22 +319,6 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                           {gravur}
                         </span>
                       </span>
-                    </div>
-                  </div>
-                </figure>
-                <figure className="tas-gravur-bild">
-                  <div className="tas-gravur-rahmen">
-                    <div
-                      className="tas-zoom"
-                      style={{'--tas-zoom-mitte': '58% 34%'}}
-                    >
-                      <img
-                        src={`${NUMMER.bildRueckseite.url}&width=900`}
-                        alt={NUMMER.bildRueckseite.alt}
-                        width="900"
-                        height="900"
-                        loading="lazy"
-                      />
                     </div>
                   </div>
                 </figure>

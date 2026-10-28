@@ -584,6 +584,12 @@
   margin-top: var(--tas-s-3);
 }
 
+/* Nummern-Schritt: nur noch die Gravur, über die volle Spalte wie die Karten
+ * darüber (Christian 27.10.2026: rechtes Bild „Made in Germany“ weg). */
+.tas-bildpaar--einzeln {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .tas-bildpaar img,
 .tas-gravur-rahmen,
 .tas-kette-lagen {
