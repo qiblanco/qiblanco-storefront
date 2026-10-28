@@ -133,22 +133,27 @@
 }
 
 /* KOHÄRENTES LICHT, eigener Abschnitt über der Galerie (Christian 28.10.2026
-   Z16): schwarze Fläche über die ganze Breite, darin dasselbe Raster wie
-   Galerie und Auswahl darunter. Handy: Text, dann die Rotation, mittig.
-   Ab 1024 px: Rotation links in der Galeriespalte, also genau so groß wie
-   das Galeriebild darunter, Text rechts in der Auswahlspalte. */
+   Z16): schwarze Karte im Seitenraster (ein Radius-Token wie Galerie und
+   Bilder), 32 unter dem Seitenkopf, damit das Hauslogo am Handy frei steht.
+   Handy: Text, dann die Rotation, mittig. Ab 1024 px dieselben Spalten wie
+   Galerie und Auswahl darunter (7fr | 5fr, Abstand 48): die Rotation füllt
+   die Galeriespalte, ist also genau so groß wie das Galeriebild, der Text
+   steht in der Auswahlspalte. */
 .tas-licht {
-  background: var(--tas-band);
-  color: var(--tas-weiss);
-  /* Die Mischung des Loops (unten) rechnet nur gegen diese Fläche. */
-  isolation: isolate;
-  overflow: hidden;
+  max-width: var(--tas-breite);
+  margin: var(--tas-s-4) auto 0;
+  padding-inline: var(--tas-s-2);
 }
 
 .tas-licht-raster {
-  max-width: var(--tas-breite);
-  margin: 0 auto;
-  padding: var(--tas-s-6) var(--tas-s-2) 0;
+  background: var(--tas-band);
+  color: var(--tas-weiss);
+  border-radius: var(--tas-radius);
+  /* Die Mischung des Loops (unten) rechnet nur gegen diese Fläche; was über
+     die Kante ragte, hätte keinen Grund mehr und stünde als Schwarz da. */
+  isolation: isolate;
+  overflow: hidden;
+  padding: var(--tas-s-6) var(--tas-s-3) 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   text-align: center;
@@ -167,7 +172,7 @@
      18,8 %, unten 19,4 %, an Lucas Film gemessen). Am Handy werden die
      Ränder so weit unter Untertitel und Flächenkante gezogen, dass über und
      unter dem Gerät derselbe Raum steht (40). */
-  --tas-loop: min(80vw, 320px);
+  --tas-loop: min(100%, 320px);
   --tas-loop-luft: 40px;
   width: var(--tas-loop);
   margin: calc(var(--tas-loop-luft) - 0.188 * var(--tas-loop)) auto
@@ -303,20 +308,29 @@
   border-top: 1px solid var(--tas-linie);
 }
 
-/* Der Text steht direkt im <li> (zweite Rasterspalte), nicht in einem
-   eigenen <span>: so ist die Punktzeile eine Liste und keine dritte linke
-   Kante im Kopf (Shop-Tor D4 K1). */
+/* Der Text steht direkt im <li>, nicht in einem eigenen <span>: so ist die
+   Punktzeile eine Liste und keine dritte linke Kante im Kopf (Shop-Tor D4
+   K1). Seit dem hochgestellten ® (Christian 28.10. Z1) ist die Zeile ein
+   Block und das Zeichen steht absolut links: in einem Raster würde das <sup>
+   eine eigene Zelle und rutschte unter den Text. Abstände wie zuvor (Spalte
+   32, Abstand 16 = Einzug 48), eine Zeile füllt genau 48. */
 .tas-punkt {
   text-wrap: balance;
-  display: grid;
-  grid-template-columns: var(--tas-s-4) 1fr;
-  align-items: center;
-  gap: var(--tas-s-2);
+  position: relative;
+  display: block;
   min-height: var(--tas-s-6);
-  padding-block: var(--tas-s-1);
+  padding-block: max(var(--tas-s-1), calc((var(--tas-s-6) - 1.3em) / 2));
+  padding-left: calc(var(--tas-s-4) + var(--tas-s-2));
   border-bottom: 1px solid var(--tas-linie);
   font-size: var(--tas-fs-3);
   line-height: 1.3;
+}
+
+.tas-punkt .tas-zeichen {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* Die Zeichen: Linien in Qi-Alpha-Rot, Bewegung langsam (4–6 s) und klein,
@@ -857,11 +871,12 @@
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     gap: var(--tas-s-6);
     align-items: center;
-    padding: var(--tas-s-8) var(--tas-s-2);
+    padding: 0;
     text-align: left;
   }
   .tas-licht-text {
     order: 0;
+    padding-right: var(--tas-s-6);
   }
   .tas-licht-buehne {
     --tas-loop: 100%;
