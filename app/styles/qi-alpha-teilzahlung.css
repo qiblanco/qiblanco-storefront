@@ -1,0 +1,289 @@
+/*
+ * FENSTER DER GETEILTEN ZAHLUNG am Qi Alpha (components/campaign/
+ * TeilzahlungFenster.jsx; Grossjob 20261027-qi-alpha-geteilte-zahlung-10000-
+ * raten-rest-sofort, s03). Geladen nur von routes/products.qi-alpha.jsx.
+ *
+ * TOKENS: dieselben Werte wie die Kaufseite (.tas-seite in
+ * the-alpha-produkt.css), hier auf der Ebene noch einmal gesetzt, weil das
+ * Fenster per Portal an <body> hängt und die Tokens der Seite dort nicht
+ * erbt. Keine neuen Werte: Schriftstufen 14 / 17 / 21 / 28 px, 8-px-Raster,
+ * ein Radius, neutrales Kontinuum. Gold nur auf dem Knopf (Hausknopf
+ * .btn--primary), der Ratenanteil im Balken trägt die Tinte.
+ *
+ * EBENE: Vorhang und Fenster tragen gemeinsam var(--z-dialog)
+ * (overlay-ordnung.css). Handy: Fenster als Blatt von unten, ab 750 px
+ * mittig.
+ */
+.qat-ebene {
+  --qat-fs-2: 0.875rem;
+  --qat-fs-3: 1.0625rem;
+  --qat-fs-4: 1.3125rem;
+  --qat-fs-5: 1.75rem;
+  --qat-s-1: 8px;
+  --qat-s-2: 16px;
+  --qat-s-3: 24px;
+  --qat-s-4: 32px;
+  --qat-s-6: 48px;
+  --qat-tinte: #1d1d1f;
+  --qat-grau: #6e6e73;
+  --qat-linie: #d2d2d7;
+  --qat-flaeche: #f5f5f7;
+  --qat-weiss: #ffffff;
+  --qat-radius: 18px;
+  --qat-dauer: 240ms;
+
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgb(29 29 31 / 0.48);
+  color: var(--qat-tinte);
+  font-size: var(--qat-fs-3);
+  line-height: 1.47;
+  animation: qat-vorhang var(--qat-dauer) ease-out;
+}
+
+.qat-fenster {
+  position: relative;
+  z-index: var(--z-dialog);
+  box-sizing: border-box;
+  width: 100%;
+  max-height: calc(100dvh - var(--qat-s-4));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--qat-s-4) var(--qat-s-3) var(--qat-s-3);
+  background: var(--qat-weiss);
+  border-radius: var(--qat-radius) var(--qat-radius) 0 0;
+  box-shadow: 0 var(--qat-s-1) var(--qat-s-6) rgb(29 29 31 / 0.16);
+  animation: qat-blatt var(--qat-dauer) ease-out;
+}
+
+.qat-zu {
+  position: absolute;
+  top: var(--qat-s-2);
+  right: var(--qat-s-2);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--qat-flaeche);
+  color: var(--qat-tinte);
+  cursor: pointer;
+  transition: background var(--qat-dauer);
+}
+
+.qat-zu:hover {
+  background: var(--qat-linie);
+}
+
+.qat-zu:focus-visible,
+.qat-knopf:focus-visible {
+  outline: 2px solid var(--qat-tinte);
+  outline-offset: 2px;
+}
+
+.qat-titel {
+  margin: 0;
+  padding-right: var(--qat-s-6);
+  font-size: var(--qat-fs-4) !important;
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+/* Aufteilung: Gesamt, Balken, die zwei Teile */
+.qat-aufteilung {
+  margin-top: var(--qat-s-3);
+  padding: var(--qat-s-3);
+  background: var(--qat-flaeche);
+  border-radius: var(--qat-radius);
+}
+
+.qat-gesamt {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--qat-s-2);
+  margin: 0;
+  font-size: var(--qat-fs-3);
+  font-weight: 600;
+}
+
+.qat-gesamt span:last-child {
+  font-size: var(--qat-fs-5);
+  white-space: nowrap;
+}
+
+.qat-balken {
+  display: flex;
+  gap: 2px;
+  height: var(--qat-s-1);
+  margin-top: var(--qat-s-2);
+  border-radius: var(--qat-s-1);
+  overflow: hidden;
+}
+
+.qat-balken-raten {
+  flex: 0 0 var(--qat-anteil);
+  background: var(--qat-tinte);
+}
+
+.qat-balken-sofort {
+  flex: 1 1 auto;
+  background: var(--qat-linie);
+}
+
+.qat-teile {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--qat-s-2);
+  margin: var(--qat-s-2) 0 0;
+}
+
+.qat-teil dt {
+  display: flex;
+  align-items: center;
+  gap: var(--qat-s-1);
+  font-size: var(--qat-fs-2);
+  color: var(--qat-grau);
+}
+
+.qat-teil dt::before {
+  content: '';
+  flex: 0 0 auto;
+  width: var(--qat-s-1);
+  height: var(--qat-s-1);
+  border-radius: 50%;
+  background: var(--qat-tinte);
+}
+
+.qat-teil--sofort dt::before {
+  background: var(--qat-linie);
+}
+
+.qat-teil dd {
+  margin: 0;
+  font-size: var(--qat-fs-4);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.qat-teil--sofort {
+  text-align: right;
+}
+
+.qat-teil--sofort dt {
+  justify-content: flex-end;
+}
+
+/* Die zwei Schritte */
+.qat-schritte {
+  display: grid;
+  gap: var(--qat-s-3);
+  margin: var(--qat-s-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.qat-schritt {
+  display: grid;
+  grid-template-columns: var(--qat-s-4) 1fr;
+  gap: var(--qat-s-2);
+  align-items: start;
+}
+
+.qat-nr {
+  display: grid;
+  place-items: center;
+  width: var(--qat-s-4);
+  height: var(--qat-s-4);
+  border: 1px solid var(--qat-tinte);
+  border-radius: 50%;
+  font-size: var(--qat-fs-2);
+  font-weight: 600;
+}
+
+.qat-marke {
+  margin: 0;
+  font-size: var(--qat-fs-2);
+  color: var(--qat-grau);
+}
+
+.qat-schritt-titel {
+  margin: 0;
+  font-size: var(--qat-fs-3) !important;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.qat-schritt-text {
+  margin: var(--qat-s-1) 0 0;
+  font-size: var(--qat-fs-2);
+  line-height: 1.5;
+}
+
+/* Versand und Rechnungen */
+.qat-zusagen {
+  display: grid;
+  gap: var(--qat-s-1);
+  margin: var(--qat-s-4) 0 0;
+  padding: var(--qat-s-2) 0 0;
+  list-style: none;
+  border-top: 1px solid var(--qat-linie);
+  font-size: var(--qat-fs-2);
+  line-height: 1.5;
+}
+
+.qat-knopf {
+  margin-top: var(--qat-s-3);
+  max-width: none !important;
+  text-decoration: none;
+}
+
+@keyframes qat-vorhang {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes qat-blatt {
+  from {
+    transform: translateY(var(--qat-s-4));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qat-ebene,
+  .qat-fenster {
+    animation: none;
+  }
+}
+
+@media (min-width: 750px) {
+  .qat-ebene {
+    align-items: center;
+    padding: var(--qat-s-4);
+  }
+
+  .qat-fenster {
+    max-width: 560px;
+    max-height: calc(100dvh - var(--qat-s-6));
+    padding: var(--qat-s-6);
+    border-radius: var(--qat-radius);
+  }
+
+  .qat-zu {
+    top: var(--qat-s-3);
+    right: var(--qat-s-3);
+  }
+
+  .qat-titel {
+    font-size: var(--qat-fs-5) !important;
+  }
+}

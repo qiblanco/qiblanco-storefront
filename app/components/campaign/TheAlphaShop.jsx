@@ -1,4 +1,5 @@
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {useSearchParams} from 'react-router';
 import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
@@ -11,13 +12,20 @@ import {bruttoAnzeige} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
 import {addonLinien, ADDON_WAEHRUNGEN, QM_ADDON} from '~/lib/qi-master-addons';
 import {vorbestellungFürHandle} from '~/lib/vorbestellung';
+import {
+  aufteilung,
+  konfigText,
+  ratenMarkt,
+  teil1Link,
+  vorgangsKennung,
+} from '~/lib/qi-alpha-teilzahlung';
+import {TeilzahlungFenster} from './TeilzahlungFenster';
 import {TheAlphaNummernwahl} from './TheAlphaNummernwahl';
 import {
   betragText,
   gravurText,
   kettenOptionen,
   nummernStand,
-  ratenMoeglich,
 } from './the-alpha-kauf-laden';
 import {
   BEZAHLUNG,
@@ -27,7 +35,7 @@ import {
   KOPF,
   NUMMER,
   PRODUKT,
-  RATEN,
+  TEILZAHLUNG_TEXT,
   ZUSAMMENFASSUNG,
 } from './the-alpha-shop-daten';
 import {THE_ALPHA_SERIE} from './the-alpha-daten-serie-vergeben';
@@ -51,6 +59,13 @@ import {THE_ALPHA_SERIE} from './the-alpha-daten-serie-vergeben';
  * an den Qi Alpha (bindeQiMasterAddons). Kein eigener Pixel-Code:
  * ViewContent über <Analytics.ProductView>, AddToCart als Cart-Event, die
  * Identitäts-Keys laufen über lib/checkout-tracking.js.
+ *
+ * RATENZAHLUNG (seit 28.10.2026, Grossjob 20261027-qi-alpha-geteilte-zahlung-
+ * 10000-raten-rest-sofort, s03): im Markt DE/AT zeigt die Bezahlart
+ * „Ratenzahlung“ die Aufteilung (10.000 € in Raten, Rest sofort) und öffnet
+ * das Fenster TeilzahlungFenster.jsx; dessen Knopf führt in den Schritt-1-
+ * Checkout. Regeln: lib/qi-alpha-teilzahlung.js. Der Ratencode 9.999 € ist
+ * hier weg.
  *
  * PREISE aus Shopify über dieselbe Anzeige wie jede Kaufseite (bruttoAnzeige,
  * Markt-Land): die Seite nennt, was die Kasse nimmt.
@@ -79,7 +94,12 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   const [nummer, setNummer] = useState(null);
   const [freiOffen, setFreiOffen] = useState(false);
   const [ketteTitel, setKetteTitel] = useState('stahl');
-  const [zahlart, setZahlart] = useState('direkt');
+  // ?bezahlart=ratenzahlung wählt die Ratenzahlung vor und öffnet das
+  // Fenster nach dem Laden (Link aus Chat, Mail oder Anzeige).
+  const [such] = useSearchParams();
+  const vorwahlRaten = such.get('bezahlart') === 'ratenzahlung';
+  const [zahlart, setZahlart] = useState(vorwahlRaten ? 'raten' : 'direkt');
+  const [fenster, setFenster] = useState(null);
   const [bild, setBild] = useState(KOPF.loop ? -1 : 0);
 
   const nummerEintrag = stand.nummern.find(
@@ -101,7 +121,29 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
     hauptPreis +
     (nummerEintrag ? nummerPreis : 0) +
     (kette?.art === 'gold' ? kettePreis(kette) : 0);
-  const raten = ratenMoeglich({nummer: nummerEintrag?.n, kette});
+  // GETEILTE ZAHLUNG (Grossjob 20261027-qi-alpha-geteilte-zahlung-10000-
+  // raten-rest-sofort, s03): nur im EUR-Markt DE/AT, Aufteilung aus derselben
+  // Summe wie die Zusammenfassung. Über 10.000 € zahlt der Kunde 10.000 € in
+  // Raten und den Rest sofort; bis 10.000 € gilt der normale Ratenweg.
+  const ratenAn = ratenMarkt({waehrung, land});
+  const art = ratenAn ? zahlart : 'direkt';
+  const teilung = aufteilung({summe, waehrung, land});
+  const geteilt = art === 'raten' && teilung;
+  const betrag = (wert) => betragText(wert, waehrung);
+  const oeffneFenster = () => {
+    if (!teilung || !haupt?.id) return;
+    setFenster({
+      vorgang: vorgangsKennung(),
+    });
+  };
+  const schliesseFenster = useCallback(() => setFenster(null), []);
+  useEffect(() => {
+    if (vorwahlRaten && teilung && haupt?.availableForSale) {
+      setFenster({vorgang: vorgangsKennung()});
+    }
+    // Nur beim ersten Laden: die Vorwahl öffnet einmal.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const vorbestellung = vorbestellungFürHandle(product.handle);
 
   // Shopify legt die Zeilen eines cartLinesAdd umgekehrt in den Warenkorb
@@ -377,51 +419,57 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
           >
             <h2 id="tas-zahl-titel" className="tas-schritt-titel">
               <span className="tas-auszeichnung">{BEZAHLUNG.titel}</span>{' '}
-              <span className="tas-titel-rest">{BEZAHLUNG.unter}</span>
+              <span className="tas-titel-rest">
+                {ratenAn ? BEZAHLUNG.unter : BEZAHLUNG.unterDirekt}
+              </span>
             </h2>
             <div
-              className="tas-karten tas-karten--zwei"
+              className={
+                ratenAn ? 'tas-karten tas-karten--zwei' : 'tas-karten'
+              }
               role="radiogroup"
               aria-labelledby="tas-zahl-titel"
             >
               <Karte
-                an={zahlart === 'direkt'}
+                an={art === 'direkt'}
                 onClick={() => setZahlart('direkt')}
                 titel={BEZAHLUNG.direkt.name}
                 text={BEZAHLUNG.direkt.text}
                 data={{'data-tas-zahlart': 'direkt'}}
               />
-              <Karte
-                an={zahlart === 'raten'}
-                onClick={() => setZahlart('raten')}
-                titel={BEZAHLUNG.raten.name}
-                text={RATEN.text}
-                data={{'data-tas-zahlart': 'raten'}}
-              />
+              {ratenAn ? (
+                <Karte
+                  an={art === 'raten'}
+                  onClick={() => {
+                    setZahlart('raten');
+                    oeffneFenster();
+                  }}
+                  titel={BEZAHLUNG.raten.name}
+                  text={teilung ? BEZAHLUNG.raten.text : BEZAHLUNG.raten.textGanz}
+                  data={{'data-tas-zahlart': 'raten'}}
+                />
+              ) : null}
             </div>
-            {zahlart === 'raten' ? (
+            {geteilt ? (
               <div
                 className="tas-hinweis"
-                data-tas-raten={raten ? 'offen' : 'extras'}
+                data-tas-raten="geteilt"
                 aria-live="polite"
               >
-                {raten ? (
-                  <p>{RATEN.code}</p>
-                ) : (
-                  <>
-                    <p>{RATEN.mitExtras}</p>
-                    <button
-                      type="button"
-                      className="tas-textknopf"
-                      onClick={() => {
-                        wahlNummer(null);
-                        setKetteTitel('stahl');
-                      }}
-                    >
-                      {RATEN.extrasAbwaehlen}
-                    </button>
-                  </>
-                )}
+                <p>
+                  {TEILZAHLUNG_TEXT.hinweis(
+                    betrag(teilung.sofort),
+                    betrag(teilung.raten),
+                  )}
+                </p>
+                <button
+                  type="button"
+                  className="tas-textknopf"
+                  onClick={oeffneFenster}
+                  data-tas-raten-ablauf=""
+                >
+                  {TEILZAHLUNG_TEXT.ablauf}
+                </button>
               </div>
             ) : null}
           </section>
@@ -472,11 +520,17 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               <dt>Summe</dt>
               <dd data-tas-summe="">{betragText(summe, waehrung)}</dd>
             </div>
-            {zahlart === 'raten' && raten ? (
-              <div>
-                <dt>Ratenpreis mit Code von Anna</dt>
-                <dd>{betragText(RATEN.ratenpreis, waehrung)}</dd>
-              </div>
+            {geteilt ? (
+              <>
+                <div className="tas-posten-teil" data-tas-teilung="sofort">
+                  <dt>{TEILZAHLUNG_TEXT.sofort}</dt>
+                  <dd data-tas-teilung-sofort="">{betrag(teilung.sofort)}</dd>
+                </div>
+                <div className="tas-posten-teil" data-tas-teilung="raten">
+                  <dt>{TEILZAHLUNG_TEXT.raten}</dt>
+                  <dd data-tas-teilung-raten="">{betrag(teilung.raten)}</dd>
+                </div>
+              </>
             ) : null}
           </dl>
         </div>
@@ -490,13 +544,27 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
             ))}
           </ul>
           <div className="tas-kaufknopf">
-            <AddToCartButton
-              disabled={!haupt?.availableForSale}
-              onClick={() => open('cart')}
-              lines={linien}
-            >
-              {haupt?.availableForSale ? ZUSAMMENFASSUNG.knopf : 'Ausverkauft'}
-            </AddToCartButton>
+            {geteilt && haupt?.availableForSale ? (
+              // Ratenzahlung über 10.000 €: nicht in den Warenkorb (die Kasse
+              // nähme den ganzen Betrag), sondern ins Fenster mit Schritt 1.
+              <button
+                type="button"
+                className="btn--primary"
+                data-qb-kaufknopf=""
+                data-tas-raten-weiter=""
+                onClick={oeffneFenster}
+              >
+                {TEILZAHLUNG_TEXT.weiter}
+              </button>
+            ) : (
+              <AddToCartButton
+                disabled={!haupt?.availableForSale}
+                onClick={() => open('cart')}
+                lines={linien}
+              >
+                {haupt?.availableForSale ? ZUSAMMENFASSUNG.knopf : 'Ausverkauft'}
+              </AddToCartButton>
+            )}
           </div>
           <EuGewaehrleistungsHinweis />
           <p className="tas-klein">{ZUSAMMENFASSUNG.frist}</p>
@@ -536,6 +604,22 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         </div>
       </section>
       {nachDerBox}
+
+      {fenster && teilung ? (
+        <TeilzahlungFenster
+          teilung={teilung}
+          betrag={betrag}
+          link={teil1Link({
+            vorgang: fenster.vorgang,
+            konfig: konfigText({
+              qiAlpha: haupt?.id,
+              nummer: nummerEintrag?.variante?.id ?? null,
+              kette: ketteGold ? kette.variante?.id : null,
+            }),
+          })}
+          onClose={schliesseFenster}
+        />
+      ) : null}
 
       <Analytics.ProductView
         data={{

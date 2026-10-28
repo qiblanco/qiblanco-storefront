@@ -76,11 +76,12 @@ test('Gravur und Box-Unterschrift: „69/111 - 1st. Edition“, ohne Wunsch „x
   assert.equal(regeln.gravurText(null), 'xx/111 - 1st. Edition');
 });
 
-test('Raten: nur ohne Wunschnummer und mit Stahlkette (Ratencode 9.999 € gilt nicht mit Extras)', () => {
-  assert.equal(regeln.ratenMoeglich({nummer: null, kette: {art: 'stahl'}}), true);
-  assert.equal(regeln.ratenMoeglich({nummer: 69, kette: {art: 'stahl'}}), false);
-  assert.equal(regeln.ratenMoeglich({nummer: null, kette: {art: 'gold'}}), false);
-  assert.equal(daten.RATEN.ratenpreis, 9999);
+test('Raten: der Ratencode 9.999 € ist weg, Ratenzahlung geht mit jeder Konfiguration', () => {
+  // Geteilte Zahlung (Grossjob 20261027-qi-alpha-geteilte-zahlung-10000-
+  // raten-rest-sofort, s03); die Regeln misst test/qi-alpha-teilzahlung.test.mjs.
+  assert.equal(regeln.ratenMoeglich, undefined);
+  assert.equal(daten.RATEN, undefined);
+  assert.equal(daten.BEZAHLUNG.raten.name, 'Ratenzahlung');
   assert.doesNotMatch(JSON.stringify(daten), /0 ?% (APR|Finanzierung|Zins)/i);
 });
 

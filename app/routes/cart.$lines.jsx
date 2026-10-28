@@ -9,6 +9,11 @@ import {istFremderRahmen} from '~/lib/einbettungs-weiche.server';
 import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
 import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
+import {
+  merkmaleAusQuery,
+  rabattcodesAusQuery,
+  TEILZAHLUNG,
+} from '~/lib/qi-alpha-teilzahlung';
 
 /**
  * Automatically creates a new cart based on the URL and redirects straight to checkout.
@@ -59,8 +64,31 @@ export async function loader({request, context, params}) {
 
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
-  const discount = searchParams.get('discount');
-  const discountArray = discount ? [discount] : [];
+  // Komma-Liste = mehrere Codes (Restzahlungs-Link der geteilten Zahlung:
+  // Anrechnungscode plus kombinierbarer Partnercode). Ein Code bleibt einer.
+  const discountArray = rabattcodesAusQuery(searchParams);
+  // GETEILTE ZAHLUNG AM QI ALPHA (Grossjob 20261027-qi-alpha-geteilte-
+  // zahlung-10000-raten-rest-sofort, s03): der Schritt-1-Link trägt die zwei
+  // Vertrags-Merkmale _qa_vorgang/_qa_konfig; der Wächter liest sie aus
+  // Bestellung 1. Nur diese zwei Schlüssel, nur in ihrer Form
+  // (lib/qi-alpha-teilzahlung.js). Der Partnercode kommt aus dem Warenkorb,
+  // den der Kunde schon hat; gelesen wird nur, wenn ein Merkmal da ist.
+  const mitTeilzahlung = Boolean(
+    searchParams.get(TEILZAHLUNG.merkmale.konfig) ||
+      searchParams.get(TEILZAHLUNG.merkmale.vorgang),
+  );
+  let sitzungsCodes = [];
+  if (mitTeilzahlung) {
+    try {
+      const bisher = await cart.get();
+      sitzungsCodes = (bisher?.discountCodes || []).map((d) => d?.code);
+    } catch {
+      // Fail-soft: ohne lesbaren Warenkorb geht partner=- an den Wächter.
+    }
+  }
+  const teilzahlungsMerkmale = mitTeilzahlung
+    ? merkmaleAusQuery(searchParams, {sitzungsCodes})
+    : [];
   const hasMarketingConsent = hasAttributionConsent(request, env);
   // Job 20260907-fbc-klick-id-... (s02): hier stand `hasMarketingConsent ? ... : []`
   // für die GESAMTE Attributsliste — ein Direkt-zur-Kasse-Link ohne Consent
@@ -70,6 +98,7 @@ export async function loader({request, context, params}) {
   const attributionAttributes = [
     ...getOriginCartAttributes(request),
     ...(hasMarketingConsent ? getAttributionCartAttributes(request) : []),
+    ...teilzahlungsMerkmale,
   ];
 
   // create a cart
