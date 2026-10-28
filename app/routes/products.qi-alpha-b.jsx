@@ -3,18 +3,24 @@ import {redirect, useLoaderData} from 'react-router';
 import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {QiOneBuyBox} from '~/components/product-pages/QiOneBuyBox';
-import QiMaster, {
-  QiMasterBenefitList,
-} from '~/components/product-pages/QiMaster';
+import {QiMasterBenefitList} from '~/components/product-pages/QiMaster';
+import QiAlphaShopB from '~/components/product-pages/QiAlphaShopB';
+import {
+  QA_AUFLAGE,
+  QA_NAME,
+  alpha,
+  alphaWortlaut,
+} from '~/components/campaign/QiAlphaLpB';
+import {THE_ALPHA_LIVE_ANMELDUNG_STIL} from '~/components/campaign/TheAlphaLiveAnmeldung';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import qiMasterStyles from '~/styles/qi-master.css?url';
 import wortlautStyles from '~/styles/qi-master-wortlaut.css?url';
 import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
+import qiAlphaBStyles from '~/styles/qi-alpha-b.css?url';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {istVorschauNoindex} from '~/lib/vorschau-noindex';
-import {QiMasterWortlaut} from '~/components/product-pages/QiMasterWortlaut';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
 import {QiMasterAddons} from '~/components/product-pages/QiMasterAddons';
@@ -39,6 +45,18 @@ import {
  * UMZUG QI ALPHA (Christian 27.10.2026, Z1: „Und den Link ändern wir auch
  * wieder von The Alpha in Qi Alpha“; Job 20261027-prio1-umzug-the-alpha-zu-
  * qi-alpha-links-name). Bis dahin stand diese Seite unter /products/the-alpha-b.
+ */
+/*
+ * B-INHALT (Christian 25.10.2026 Z3: „also die b variante ist besser als die A
+ * veraitne, d.h. a updaten auf b level, ich probier dann noch einiges aus";
+ * Grossjob 20261025-qi-alpha-produktseite-englisch-aufbauen-a-auf-b-niveau,
+ * s04-r1-r2). Der Umzug hatte hier die alte Kaufseite (QiMaster-Sektionen)
+ * stehen lassen, QiAlphaShopB hatte keine Route mehr. Seit s04-r1-r2 rendert
+ * diese Route unter der Kaufbox QiAlphaShopB, die Kaufbox trägt wieder die
+ * B-Zeilen (Name Qi Alpha®, „Erste Edition · 111 Stück", Christians Wortlaut
+ * aus alphaWortlaut()). Pfad, 301, noindex und Add-on-Handles bleiben, wie der
+ * Umzug sie gesetzt hat. Die Apple-Seite /products/qi-alpha ist A; beide
+ * Routen bleiben getrennt, damit Christian weiter vergleichen kann.
  */
 const THE_ALPHA_PDP_PFAD = '/products/qi-alpha-b';
 
@@ -121,6 +139,8 @@ export function links() {
     // sitzt auf dem Seiten-Wrapper .qm-pdp, nicht in der geteilten Buy-Box.
     {rel: 'stylesheet', href: kaufZuerstStyles},
     {rel: 'stylesheet', href: kaufleisteStyles},
+    {rel: 'stylesheet', href: qiAlphaBStyles},
+    {rel: 'stylesheet', href: THE_ALPHA_LIVE_ANMELDUNG_STIL},
   ];
 }
 
@@ -254,6 +274,10 @@ function loadDeferredData() {
   return {};
 }
 
+// Rollen der Wortlaut-Absätze ohne den entfallenen Terminsatz (Gestaltung
+// aus qi-master-wortlaut.css, wie auf A).
+const WORTLAUT_ROLLE = ['grund', 'herkunft', 'versand'];
+
 export default function Product() {
   /** @type {LoaderReturnData} */
   const {product, addons} = useLoaderData();
@@ -286,10 +310,14 @@ export default function Product() {
       })
     : [];
 
+  // Nur die Anzeige trägt den Namen mit ®; Kaufweg und Ereignisse laufen über
+  // dasselbe Produkt (id, Varianten) wie auf A.
+  const anzeige = {...product, title: QA_NAME};
+
   return (
-    <div className="qm-pdp" {...kaufZuerstAttribute()}>
+    <div className="qm-pdp qa-b" {...kaufZuerstAttribute()}>
       <QiOneBuyBox
-        product={product}
+        product={anzeige}
         /* SPRUNGZIEL DES PARALLAX-KNOPFES "Hole dir deinen QiMaster" weiter
            unten auf der Seite (product-pages/QiMaster.jsx, link={'#qm-buybox'}).
            BIS ZUM 2026-09-16 GAB ES DIESE ID IM GANZEN LADEN NICHT: der Knopf
@@ -329,6 +357,10 @@ export default function Product() {
            im selben Klick mit in den Warenkorb; die Warenkorb-Action bindet
            sie dort an den Qi Master (lib/qi-master-addons.server.js). */
         zusatzLinien={zusatzLinien}
+        /* B-Zeile über dem Preis: die Auflage, keine Bewertung und keine
+           Nutzerzahl (Christian 28.10.2026 Z1: „wir stellen das produkt erst
+           vor es kann nochk eien bewerugn geben"). */
+        socialProof={<p className="qa-auge qa-auge--kaufbox">Erste Edition · {QA_AUFLAGE}</p>}
         unterKaufknopf={
           <QiMasterAddons
             addons={addonsSichtbar}
@@ -346,8 +378,10 @@ export default function Product() {
                Sie fassen disjunkte Knoten an -- <img> gegen <li> --, können sich
                also nicht ueberschreiben. */
             dangerouslySetInnerHTML={{
-              __html: fremdHtmlMitKopfsymbolen(
-                fremdHtmlMitBildAuszeichnung(descriptionHtml),
+              __html: alpha(
+                fremdHtmlMitKopfsymbolen(
+                  fremdHtmlMitBildAuszeichnung(descriptionHtml),
+                ),
               ),
             }}
           />
@@ -358,18 +392,28 @@ export default function Product() {
            <p class="qm-steuerhinweis">inkl. 19 % MwSt.</p> (Christian
            2026-09-16); Element und CSS sind an der Quelle entfernt. */
         priceLabel={
-          <>
-            {/* Christians Fassung vom 22.09.2026 an der Stelle der
-                abgelösten Vorverkaufstreppe — aus der einen Quelle
-                app/data/qi-master-wortlaut.json. */}
-            <QiMasterWortlaut kompakt />
-          </>
+          /* Christians Fassung vom 22.09.2026 aus der einen Quelle
+             app/data/qi-master-wortlaut.json, in der B-Lesart (alphaWortlaut:
+             Name, 111 Stück, ohne den Terminsatz). */
+          <section
+            className="qm-wortlaut qm-wortlaut--kompakt"
+            aria-label="Preis, Auflage und Versand des Qi Alpha®"
+          >
+            {alphaWortlaut().map((text, i) => (
+              <p
+                className={`qm-wortlaut__absatz qm-wortlaut__absatz--${WORTLAUT_ROLLE[i] ?? 'grund'}`}
+                key={text.slice(0, 32)}
+              >
+                {text}
+              </p>
+            ))}
+          </section>
         }
         benefitList={
           <QiMasterBenefitList zusatzPunkt={<EuGewaehrleistungsListenpunkt />} />
         }
       />
-      <QiMaster />
+      <QiAlphaShopB />
     </div>
   );
 }

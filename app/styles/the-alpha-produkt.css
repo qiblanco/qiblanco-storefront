@@ -900,3 +900,47 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* Live mit Christian am 08.11. (s04-r1-r2 des Grossjobs 20261025-qi-alpha-
+   produktseite-englisch-aufbauen-a-auf-b-niveau): eine Fläche zwischen
+   Wissens-Strecke und Fragen, Titel in der Stufe des Fragen-Titels
+   (the-alpha-faq.css, 2,5 rem), die weiße Formularkarte mittig darauf
+   (the-alpha-live-anmeldung.css). Nur Tokens dieser Datei. */
+.tas-live {
+  margin-top: var(--tas-s-8);
+  padding: var(--tas-s-8) var(--tas-s-2);
+  background: var(--tas-flaeche);
+}
+
+.tas-live-innen {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.tas-seite .tas-live-titel {
+  font-size: var(--tas-fs-h2-handy);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.tas-seite .tas-live-wann {
+  margin-top: var(--tas-s-2);
+  font-weight: 600;
+}
+
+.tas-seite .tas-live-text {
+  margin-top: var(--tas-s-1);
+  color: var(--tas-grau);
+}
+
+.tas-live-karte {
+  margin: var(--tas-s-4) auto 0;
+}
+
+@media (min-width: 750px) {
+  .tas-seite .tas-live-titel {
+    font-size: var(--tas-fs-6);
+  }
+}

@@ -4,7 +4,6 @@ import {UpsellLineUp} from '../UpsellLineUp';
 import {ProductFAQ} from '../ProductFAQ';
 import {FAQ_QI_MASTER} from '~/data/product-faqs';
 import {StudienCards} from './StudienCards';
-import {QIMASTER_SYMBOL_PFADE} from '~/lib/qi-master-symbole.generated';
 import {
   QIMASTER_DIAMANTBILDER,
   QIMASTER_DIAMANTBILDER_TITEL,
@@ -47,10 +46,18 @@ import {
  *    NICHT woandershin gerettet — das entscheidet Christian, nicht der Bau.
  *    Gemessen: pruefungen/probe_gitterchip_block_gestrichen.py.
  *  - Ratenzahlungs-Bausteine (RatenzahlungHerobanner, „0 % Finanzierung",
- *    Klarna/PayPal-Raten): die Ratenangebote der Zahlungsdienste sind
- *    betragsgedeckelt (PayPal-Ratenzahlung bis 5.000 EUR); für 10.639 EUR
- *    ist die Zusage nicht belegt -> offene Flanke an Christian, nicht auf
- *    die Seite.
+ *    Klarna/PayPal-Raten). Gemessener Stand 29.10.2026: PayPal Ratenzahlung
+ *    und Klarna Finanzierung gehen bis 10.000 EUR (lib/qi-alpha-
+ *    teilzahlung.js, TEILZAHLUNG.betrag), der Qi Alpha kostet 10.639 EUR.
+ *    Die geteilte Zahlung (10.000 EUR in Raten, Rest sofort; Christian
+ *    27.10.2026, Grossjob 20261027-qi-alpha-geteilte-zahlung-10000-raten-
+ *    rest-sofort) gibt es nur im Konfigurator der Apple-Seite
+ *    /products/qi-alpha. Die Kaufbox dieser Bausteine (QiOneBuyBox, heute
+ *    /products/qi-alpha-b) führt in den normalen Warenkorb und kann sie
+ *    nicht. Deshalb steht hier KEINE Ratenzeile, auch nicht in
+ *    QiMasterBenefitList (s04-r1-r2 des Grossjobs 20261025-qi-alpha-
+ *    produktseite-englisch-aufbauen-a-auf-b-niveau; Christian 28.10.2026 Z3:
+ *    die Seite soll zeigen, „was wir anbieten können").
  *  - Sternzeile/„Über 14.000 Nutzer"/„Bestseller": Bestandszahlen des
  *    QiOne 2 Pro, die dieses Produkt nicht hat.
  *  - „8x stärker", „22,61 mm³", „100 % in Bayern gefertigt", „RJC-Gold":
@@ -329,35 +336,12 @@ export function QiMasterBenefitList({zusatzPunkt = null}) {
           <b>20 Tage volles Rückgaberecht</b> nach Erhalt der Ware
         </li>
         {zusatzPunkt}
-        {/* SECHSTE ZEILE, Christian am 2026-09-16 woertlich: „Und bei denen noch
-            eins einfuegen: 0% Finanzierung (in Fett) mit PayPal und Klarna
-            (Gimmick davor kreieren), als letzten Punkt."
-
-            SIE STEHT HINTER {zusatzPunkt} und damit hinter der Gewaehrleistung --
-            „als letzten Punkt" ist wortwoertlich zu nehmen, und die Gewaehrleistung
-            kommt über den Slot von aussen herein.
-
-            Fett ist NUR „0% Finanzierung", wie bei den fünf Zeilen darueber auch.
-            Schriftgroesse und Auszeichnung sind dieselben: genau das war Christians
-            urspruengliche Beanstandung an diesem Block, und sie gilt für die neue
-            Zeile genauso -- kein Element ist wichtiger als seine Nachbarn.
-
-            KEINE Konditionen, keine Laufzeit, keine Beispielrechnung. Das ist eine
-            Zeile, kein Finanzierungsrechner. Ob die Finanzierung im Einzelfall
-            gewaehrt wird, entscheidet das Institut und nicht wir (Christians eigene
-            Sprachregelung für AI Anna vom selben Tag) -- die Zeile behauptet
-            deshalb ein ANGEBOT, keine Zusage.
-
-            Das Symbol ist selbst gezeichnet wie die vier des Kopfblocks:
-            app/assets/qi-master-symbole/finanzierung-null.svg, Herkunft in
-            HERKUNFT.md daneben. Kartenrahmen mit drei gleich großen Feldern --
-            die Teilung, nicht das Geld. */}
-        <li>
-          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path fill="currentColor" d={QIMASTER_SYMBOL_PFADE['finanzierung-null']} />
-          </svg>
-          <b>0% Finanzierung</b> mit PayPal und Klarna
-        </li>
+        {/* HIER STAND BIS 29.10.2026 DIE SECHSTE ZEILE „<b>0% Finanzierung</b>
+            mit PayPal und Klarna" (Christian 2026-09-16). Sie ist raus, weil
+            der Kaufweg dieser Liste die Finanzierung über 10.000 EUR nicht
+            trägt (Begründung im Kopf dieser Datei, „Ratenzahlungs-Bausteine").
+            Das Symbol app/assets/qi-master-symbole/finanzierung-null.svg
+            bleibt im Bestand. */}
       </ul>
     </div>
   );

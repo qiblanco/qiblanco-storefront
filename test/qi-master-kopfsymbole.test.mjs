@@ -252,28 +252,24 @@ test('die generierte Datei stimmt mit den SVG-Dateien ueberein', async () => {
   );
 });
 
-test('die sechste Zeile der Nutzenliste steht zuletzt und ist wie ihre Nachbarn gesetzt', () => {
+test('die Nutzenliste trägt keine Ratenzeile, die ihr Kaufweg nicht hält', () => {
+  // Bis 29.10.2026 stand hier der Arm „die sechste Zeile der Nutzenliste steht
+  // zuletzt": „<b>0% Finanzierung</b> mit PayPal und Klarna" (Christian
+  // 2026-09-16). PayPal Ratenzahlung und Klarna Finanzierung gehen bis
+  // 10.000 EUR, der Qi Alpha kostet 10.639 EUR, und die geteilte Zahlung gibt
+  // es nur im Konfigurator von /products/qi-alpha, nicht in der QiOneBuyBox,
+  // über der diese Liste steht (Christian 28.10.2026 Z3; Grossjob 20261025-
+  // qi-alpha-produktseite-englisch-aufbauen-a-auf-b-niveau, s04-r1-r2).
   const quelle = readFileSync(QIMASTER_JSX, 'utf8');
   const ab = quelle.indexOf('export function QiMasterBenefitList');
   assert.ok(ab > 0, 'QiMasterBenefitList nicht gefunden');
-  const liste = quelle.slice(ab, quelle.indexOf('function MainFeatures', ab));
-
-  assert.ok(
-    /<b>0% Finanzierung<\/b> mit PayPal und Klarna/.test(liste),
-    'Christians Wortlaut fehlt oder ist anders ausgezeichnet (fett ist NUR „0% Finanzierung")',
-  );
-  // „als letzten Punkt" (Christian): hinter dem Gewaehrleistungs-Slot.
-  assert.ok(
-    liste.indexOf('{zusatzPunkt}') < liste.indexOf('0% Finanzierung'),
-    'die Finanzierungszeile steht vor der Gewaehrleistung statt dahinter',
-  );
-  // Gleiche Auszeichnung wie die Nachbarn: <b> um den vorderen Teil, kein eigener Stil.
-  assert.ok(
-    !/0% Finanzierung[\s\S]{0,80}(style=|className=)/.test(liste),
-    'die neue Zeile trägt eigenen Stil -- kein Element ist wichtiger als seine Nachbarn',
-  );
-  assert.ok(
-    liste.includes("QIMASTER_SYMBOL_PFADE['finanzierung-null']"),
-    'die Zeile zeichnet ihr Symbol nicht aus der gemeinsamen Quelle',
+  const liste = quelle
+    .slice(ab, quelle.indexOf('function MainFeatures', ab))
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, '');
+  assert.ok(liste.includes('{zusatzPunkt}'), 'der Gewaehrleistungs-Slot fehlt');
+  assert.doesNotMatch(
+    liste,
+    /Finanzierung|Ratenpreis|in Raten|finanzierung-null/,
+    'die Nutzenliste verspricht eine Finanzierung, die der Kaufweg der QiOneBuyBox nicht hat',
   );
 });
