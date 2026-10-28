@@ -301,7 +301,7 @@ export function FaqSeite() {
               <Link className="faq-weg" to="/pages/technologie">
                 <strong>Wie das Modell gedacht ist</strong>
                 <span>
-                  Die Erklärung hinter dem GitterChip™ — ausdrücklich als
+                  Die Erklärung hinter dem Gitterchip<sup>®</sup> — ausdrücklich als
                   Hypothese, nicht als gesicherte Wissenschaft.
                 </span>
               </Link>

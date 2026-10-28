@@ -177,19 +177,19 @@ export default function QiMasterVorverkaufRoute() {
           Ein Diamant ist reiner Kohlenstoff, dasselbe Element, aus dem jede
           Zelle deines Körpers gebaut ist. Aus diesem Gedanken ist der
           Qi Alpha® entstanden. Er trägt genau diesen Grundstoff, gefasst am
-          Gitterchip™.
+          Gitterchip<sup>®</sup>.
         </p>
 
-        <h3>Der Gitterchip™ der zweiten Generation</h3>
+        <h3>Der Gitterchip<sup>®</sup> der zweiten Generation</h3>
         <p>
-          Der Kern ist derselbe Gitterchip™, den auch der QiOne® 2 Pro trägt:
+          Der Kern ist derselbe Gitterchip<sup>®</sup>, den auch der QiOne® 2 Pro trägt:
           eine 750er Goldlegierung, deren Atome in einer festgelegten Ordnung
           stehen. Ohne Elektronik, ohne Batterie, ohne Verschleiß.
         </p>
 
         <h3>Ein Stück, das es nur einmal gibt</h3>
         <ul className="qm-lp__liste">
-          <li>Echte Diamanten, gefasst am Gitterchip™.</li>
+          <li>Echte Diamanten, gefasst am Gitterchip<sup>®</sup>.</li>
           {/* CHRISTIAN 2026-09-22: die Gold-Aussage wechselt den Gegenstand —
               von Kette und Verschluss auf den Gitterchip™. Bis dahin stand
               hier „Kette und Verschluss aus 750er Gold, beides mit
@@ -197,7 +197,7 @@ export default function QiMasterVorverkaufRoute() {
               /products/qi-master und in der Fragenliste und ist dort im selben
               Zug mitgezogen. */}
           <li>
-            Für den Gitterchip™ kommt eine eigene spezielle 750er
+            Für den Gitterchip<sup>®</sup> kommt eine eigene spezielle 750er
             Goldlegierung zum Einsatz.
           </li>
           <li>
@@ -213,7 +213,7 @@ export default function QiMasterVorverkaufRoute() {
       >
         <h2 id="qm-lp-grenzen">Was er kann und was er nicht kann</h2>
         <p>
-          Untersucht wurde der Gitterchip™, nicht das Schmuckstück: die
+          Untersucht wurde der Gitterchip<sup>®</sup>, nicht das Schmuckstück: die
           Zellstudien sind am QiOne® 2 Pro in vitro durchgeführt worden, also
           an Zellen im Labor. Sie belegen keinen Heileffekt am Menschen.
         </p>

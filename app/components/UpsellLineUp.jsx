@@ -21,7 +21,7 @@ const ITEMS = [
     // Grammatik-Fix 20260718: „Gitterchip™ -Technologie" (Leerzeichen) +
     // „für unterwegs und dem Büro" (Kasus) korrigiert.
     description:
-      'Die effiziente Gitterchip™-Technologie reduziert die Auswirkungen von E-Smog und unterstützt ein Umfeld, das Klarheit und Fokus ermöglicht – perfekt für unterwegs und im Büro.',
+      'Die effiziente Gitterchip®-Technologie reduziert die Auswirkungen von E-Smog und unterstützt ein Umfeld, das Klarheit und Fokus ermöglicht – perfekt für unterwegs und im Büro.',
     produktId: 'qione-2-pro',
   },
   {
@@ -32,7 +32,7 @@ const ITEMS = [
     // Grammatik-Fix 20260718: haengender Relativsatz („..., das Wohlbefinden
     // und Klarheit ermöglicht") sauber angebunden.
     description:
-      'Der elegant integrierte Gitterchip™ reduziert die Auswirkungen von E-Smog und 5G und unterstützt ein Umfeld, das Wohlbefinden und Klarheit ermöglicht – für ein erfülltes Leben, zu Hause und unterwegs.',
+      'Der elegant integrierte Gitterchip® reduziert die Auswirkungen von E-Smog und 5G und unterstützt ein Umfeld, das Wohlbefinden und Klarheit ermöglicht – für ein erfülltes Leben, zu Hause und unterwegs.',
     produktId: 'qibracelet',
   },
   {
@@ -49,7 +49,7 @@ const ITEMS = [
     // die Zahl seit 2026-09-02 als falsch). Kanonisch ist der Radius als
     // AUSLEGUNG, nie in Quadratmetern (GL-SPR-0007, Christian 2026-09-16).
     description:
-      'Ein Gitterchip™ für den ganzen Raum: Das QiHome® Air ist auf einen Radius von bis zu 160 m ausgelegt. Es schafft ein Umfeld, das dir helfen kann, dich wohler zu fühlen und in einer harmonischen Atmosphäre fokussierter zu arbeiten.',
+      'Ein Gitterchip® für den ganzen Raum: Das QiHome® Air ist auf einen Radius von bis zu 160 m ausgelegt. Es schafft ein Umfeld, das dir helfen kann, dich wohler zu fühlen und in einer harmonischen Atmosphäre fokussierter zu arbeiten.',
     produktId: 'qihome-air',
   },
 ];

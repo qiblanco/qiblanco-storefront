@@ -53,7 +53,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
   {
     videoId: "3prNkfss1Uc",
     sprecher: "Yann Sura",
-    titel: "Der Unterschied in meinem Wohlbefinden ist enorm! – Yann Sura | QiHome® Air | Gitterchip™",
+    titel: "Der Unterschied in meinem Wohlbefinden ist enorm! – Yann Sura | QiHome® Air | Gitterchip®",
     sprache: "de",
     veroeffentlicht: "2023-02-08T20:23:36Z",
     dauer: "PT7M49S",
@@ -73,7 +73,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
   {
     videoId: "aG36zJKxDzg",
     sprecher: "Nada & Kurt Tepperwein",
-    titel: "Man spürt die Aktivierung der Seele in den Zellen – Nada & Kurt Tepperwein | QiOne®2Pro |Gitterchip™",
+    titel: "Man spürt die Aktivierung der Seele in den Zellen – Nada & Kurt Tepperwein | QiOne®2Pro |Gitterchip®",
     sprache: "de",
     veroeffentlicht: "2022-10-26T04:49:50Z",
     dauer: "PT15M",
@@ -93,7 +93,7 @@ export const ERFAHRUNGS_BEITRAEGE = [
   {
     videoId: "EjXTIldVrk4",
     sprecher: "Yann Sura",
-    titel: "\"Ich war sehr skeptisch, nun absoluter Fan!\" – Yann Sura | QiOne® 2 Pro | Gitterchip™",
+    titel: "\"Ich war sehr skeptisch, nun absoluter Fan!\" – Yann Sura | QiOne® 2 Pro | Gitterchip®",
     sprache: "de",
     veroeffentlicht: "2022-10-26T04:32:16Z",
     dauer: "PT5M31S",

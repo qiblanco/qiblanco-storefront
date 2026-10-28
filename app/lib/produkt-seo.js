@@ -85,7 +85,7 @@ export const MARKE = 'Qi Blanco';
  */
 export const PRODUKT_BESCHREIBUNGEN = {
   '/products/qione-2-pro':
-    'E-Smog ist überall, wo du bist — der QiOne® 2 Pro auch. Sein Gitterchip™ ' +
+    'E-Smog ist überall, wo du bist — der QiOne® 2 Pro auch. Sein Gitterchip® ' +
     'reduziert die Auswirkungen. Original vom Hersteller, 20 Tage risikofrei.',
   // GEO-Maßnahme M1 (2026-10-10, Job 20261010-geo-sageo-m1-kundenwortschatz-
   // strukturfelder-de-us): QiBracelet und QiHome Air sind Arm A, die
@@ -100,7 +100,7 @@ export const PRODUKT_BESCHREIBUNGEN = {
   // den ganzen Raum: …" (Vorher-Abzug im Job-Ordner).
   '/products/qibracelet':
     'Schutz vor E-Smog und 5G am Handgelenk: Der QiBracelet® reduziert mit ' +
-    'Gitterchip™ die Auswirkungen von Elektrosmog. Chirurgenstahl, S, M oder L, ' +
+    'Gitterchip® die Auswirkungen von Elektrosmog. Chirurgenstahl, S, M oder L, ' +
     '20 Tage testen.',
   '/products/qihome-air':
     'Schutz vor E-Smog und 5G fürs ganze Zuhause: Das QiHome® Air ist auf einen ' +
@@ -127,7 +127,7 @@ export const PRODUKT_BESCHREIBUNGEN = {
   // Seit 27.10.2026 wieder /products/qi-alpha (Umzug Qi Alpha).
   '/products/qi-alpha':
     'Qi Alpha®: Alpha Serie, limitiert auf 111 Stück. Der QiOne mit Diamanten, ' +
-    'Gitterchip™ der zweiten Generation, eigene Goldlegierung. 20 Tage risikofrei.',
+    'Gitterchip® der zweiten Generation, eigene Goldlegierung. 20 Tage risikofrei.',
   '/products/qione-kette':
     'Die passende Kette für deinen QiOne® 2 Pro: hochwertig verarbeitet und ' +
     'angenehm zu tragen, damit dein Anhänger überall dabei ist.',

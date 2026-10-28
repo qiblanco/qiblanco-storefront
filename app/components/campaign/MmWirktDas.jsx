@@ -437,7 +437,7 @@ export function MmWirktDas() {
         }
         media={{
           src: `${CDN}QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861`,
-          alt: 'QiOne 2 Pro, Vorderseite mit sichtbarem GitterChip.',
+          alt: 'QiOne 2 Pro, Vorderseite mit sichtbarem Gitterchip®.',
           hint: 'QiOne® 2 Pro, der Gegenstand, um den es geht.',
         }}
       />
@@ -486,7 +486,7 @@ export function MmWirktDas() {
             text: 'Wie sich das auf Zellen auswirkt, wurde gemessen. Warum es so ist, ist eine offene Frage.',
           },
         ]}
-        fussnote="Animation: Aufbau des GitterChip im QiOne® 2 Pro und die modellhafte Ausrichtung benachbarter Wassermoleküle. Eine Darstellung des Erklärmodells, keine Aufnahme eines Versuchs."
+        fussnote="Animation: Aufbau des Gitterchip® im QiOne® 2 Pro und die modellhafte Ausrichtung benachbarter Wassermoleküle. Eine Darstellung des Erklärmodells, keine Aufnahme eines Versuchs."
       />
 
       <MmMechanism

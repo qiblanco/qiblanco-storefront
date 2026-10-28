@@ -124,7 +124,7 @@ export const THE_ALPHA_LIGA = {
     },
     {
       titel: 'Pure Leistung. Pure Entspannung.',
-      text: 'Durch dieses einmalige Duett des Gitterchips® und „The One Eye“ ist der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet. Egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Alpha® leistet auf jeder Ebene das erdenkliche Maximum.',
+      text: 'Durch dieses einmalige Duett des Gitterchip® und „The One Eye“ ist der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet. Egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Alpha® leistet auf jeder Ebene das erdenkliche Maximum.',
     },
   ],
   quellen: [`${KOENIG}, S. 169–172.`],

@@ -416,7 +416,7 @@ function TechnologieSection() {
             <strong>Für dein gesamtes Zuhause</strong>
           </p>
           <p className="mt-2">
-            Der Gitterchip™ des QiHome® Air wurde dafür entwickelt, dein
+            Der Gitterchip<sup>®</sup> des QiHome® Air wurde dafür entwickelt, dein
             gesamtes Zuhause mit der kohärenten Struktur zu versorgen. Dafür
             sorgt ein eigens entwickelter Quarzoszillator, der den Wirkungsbereich
             des QiHome® Air um ein vielfaches verstärkt.
@@ -463,7 +463,7 @@ function TechnologieSection() {
           </p>
           <p className="mt-2" style={{clear: 'left'}}>
             Der QiHome® Air enthält keinerlei elektronische Bauteile.
-            Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip™.
+            Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip<sup>®</sup>.
             Dieser prägt durch sein statisches Feld, das maßgeblich durch die
             spezifische Atompositionierung von Goldatomen erreicht wird, die
             Wassermoleküle. Somit steigt die Wahrscheinlichkeit an, dass Wasser

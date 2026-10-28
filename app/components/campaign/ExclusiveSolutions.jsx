@@ -29,7 +29,7 @@ function HeroStackedVisuals() {
   const slides = [
     {
       label: "QiBracelet®",
-      tag: "GitterChip™ — am Handgelenk",
+      tag: "Gitterchip® — am Handgelenk",
       video: "new-360-QiBracelet-1x1.mov",
       ersatz: ERSATZBILD_360.qibracelet,
     },
@@ -80,7 +80,7 @@ function GeldheldenHero() {
             Drei Pakete für alle, die nicht einsteigen, sondern ankommen wollen.
           </p>
           <p className="ghx-lead">
-            Die gesamte proprietäre Gitterchip™-Technologie als komplettes Set
+            Die gesamte proprietäre Gitterchip<sup>®</sup>-Technologie als komplettes Set
             für dich und deine Familie.
           </p>
           <div className="ghx-hero__trust-row">
@@ -233,7 +233,7 @@ function SolutionSection() {
           Ein unsichtbarer Schutzschild für dein Zuhause.
         </h2>
         <p className="ghx-sub">
-          Die proprietäre Gitterchip™-Technologie von Qi Blanco erzeugt ein
+          Die proprietäre Gitterchip<sup>®</sup>-Technologie von Qi Blanco erzeugt ein
           kohärentes Feld, das die natürliche Struktur des Wassers in deinen
           Zellen unterstützt — für dich, deine Partnerin und deine ganze Familie.
         </p>
@@ -241,7 +241,7 @@ function SolutionSection() {
           <span className="ghx-solution__shield" aria-hidden="true">🛡️</span>
           <h3 className="ghx-solution__how">So funktioniert der Schutz</h3>
           <p className="ghx-solution__text">
-            Der GitterChip<sup>®</sup> im Inneren jedes Qi Blanco Produkts erzeugt ein
+            Der Gitterchip<sup>®</sup> im Inneren jedes Qi Blanco Produkts erzeugt ein
             kohärentes Feld. Dieses Feld unterstützt die natürliche Struktur des
             Wassers in deinen Zellen. Keine Batterien, kein Strom, kein Verschleiß.
           </p>
@@ -306,7 +306,7 @@ function MarcoSection() {
           </div>
           <div className="ghx-marco__copy">
             <blockquote className="ghx-marco__quote">
-              „Als ich zum ersten Mal von der Gitterchip-Technologie gehört habe,
+              „Als ich zum ersten Mal von der Gitterchip<sup>®</sup>-Technologie gehört habe,
               war ich skeptisch. Dann habe ich Christian interviewt und die
               Studien gelesen. Heute hat jeder in meiner Familie ein Qi Blanco
               Produkt — und meine Frau sagt, sie schläft besser als seit Jahren.“
@@ -1011,7 +1011,7 @@ function HRVSection() {
       <span className="eyebrow">Messbare Ergebnisse</span>
       <h2>Biologisches Alter unter E-Smog.</h2>
       <p className="lp-vp-section__lede">
-        Kurzzeit-HRV-Messung zeigt: Die Gitterchip™-Technologie kann das biologische
+        Kurzzeit-HRV-Messung zeigt: Die Gitterchip<sup>®</sup>-Technologie kann das biologische
         Alter unter WLAN-Belastung nicht nur ausgleichen, sondern sogar verbessern.
       </p>
       <div className="lp-vp-hrv-row lp-vp-hrv-row--two">
@@ -1021,7 +1021,7 @@ function HRVSection() {
           <span className="lp-vp-hrv-card__sub">biol. HRV-Alter (Kurzzeit-HRV)</span>
         </div>
         <div className="lp-vp-hrv-card lp-vp-hrv-card--win">
-          <span className="lp-vp-hrv-card__label">Mit Gitterchip™-Technologie</span>
+          <span className="lp-vp-hrv-card__label">Mit Gitterchip<sup>®</sup>-Technologie</span>
           <span className="lp-vp-hrv-card__value">9 Jahre jünger</span>
           <span className="lp-vp-hrv-card__sub">biol. HRV-Alter (Kurzzeit-HRV)</span>
         </div>
@@ -1128,7 +1128,7 @@ function VideoSection() {
       <span className="eyebrow">Video-Erfahrungen</span>
       <h2>Echte Menschen. Echte Geschichten.</h2>
       <p className="lp-vp-section__lede">
-        Sieh dir an, wie die Gitterchip™-Technologie den Alltag unserer Nutzer verändert hat.
+        Sieh dir an, wie die Gitterchip<sup>®</sup>-Technologie den Alltag unserer Nutzer verändert hat.
       </p>
       <div className="lp-vp-videos-grid">
         {videos.map((v) => (

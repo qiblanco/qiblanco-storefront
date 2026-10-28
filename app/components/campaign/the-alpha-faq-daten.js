@@ -97,7 +97,7 @@ export const THE_ALPHA_FAQ = [
     id: 'sechs-g',
     frage: 'Bin ich mit dem Qi Alpha® für 6G gerüstet?',
     antwort: [
-      'Ja. Durch das einmalige Duett des Gitterchips® und „The One Eye“ ist der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet, egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet.',
+      'Ja. Durch das einmalige Duett des Gitterchip® und „The One Eye“ ist der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet, egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet.',
       'Den Gitterchip® des QiOne® 2 Pro hat Prof. Dr. Peter C. Dartsch unter der Strahlung eines sendenden Smartphones in zwei Zellstudien untersucht.',
     ],
   },

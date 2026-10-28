@@ -68,7 +68,7 @@ function imgixVideo(pfad, standbild) {
  */
 export const WIE_FUNKTIONIERT_LINK = true;
 export const WIE_FUNKTIONIERT_PFAD = '/pages/wie-funktioniert-der-gitterchip-im-qione';
-export const WIE_FUNKTIONIERT_TEXT = 'Wie funktioniert der GitterChip im QiOne?';
+export const WIE_FUNKTIONIERT_TEXT = 'Wie funktioniert der Gitterchip® im QiOne?';
 
 export const PRODUKT_VIDEOS = {
   'qione-2-pro': {
@@ -124,7 +124,7 @@ export const PRODUKT_VIDEOS = {
         aktiv: true,
         art: 'animation',
         // Überschrift der Animation auf DIESER Seite (GitterchipMoleculesScrub).
-        titel: 'Der GitterChip™ in Aktion',
+        titel: 'Der Gitterchip® in Aktion',
         text: '',
         quelle: '',
         link: null,

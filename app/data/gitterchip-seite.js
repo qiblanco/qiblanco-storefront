@@ -63,17 +63,17 @@ export const SEITE = {
   // Gitterchip-im-QiOne?") und bleibt wortgleich, auch wenn ihm das
   // Kundenwort der GEO-Seitenregel R3 fehlt (Ausnahme im RESULT des Jobs
   // 20261011-geo-sageo-m5f3-frageseiten-schema-strukturfelder-de-us).
-  titel: 'Wie funktioniert der GitterChip im QiOne? | Qi Blanco',
+  titel: 'Wie funktioniert der Gitterchip® im QiOne? | Qi Blanco',
   // Beschreibung seit 2026-10-11 höchstens 160 Zeichen (R4). „Abgeleitet"
   // ist das Wort der Seite („So leiten wir es aus der Forschung ab") und
   // hängt an der Wirkkette, nicht an jeder Stufe; die Zellstudien stehen
   // getrennt, weil sie von Dartsch stammen, nicht von den drei Forschern.
-  beschreibung: `Der GitterChip im QiOne® 2 Pro bringt Ordnung ins Wasser, abgeleitet aus Forschung von Warnke, Del Giudice und Pollack. Sieben Stufen, ${ZELLSTUDIEN} Zellstudien.`,
-  dachzeile: 'QiOne® 2 Pro · GitterChip™',
-  h1: 'Wie funktioniert der GitterChip im QiOne?',
+  beschreibung: `Der Gitterchip® im QiOne® 2 Pro bringt Ordnung ins Wasser, abgeleitet aus Forschung von Warnke, Del Giudice und Pollack. Sieben Stufen, ${ZELLSTUDIEN} Zellstudien.`,
+  dachzeile: 'QiOne® 2 Pro · Gitterchip®',
+  h1: 'Wie funktioniert der Gitterchip® im QiOne?',
   kurz: [
-    'Der GitterChip bringt Ordnung ins Wasser. Sein statisches Feld regt Wassermoleküle an, in einen geordneten, energiereichen Zustand zu wechseln.',
-    `So leiten wir es aus der Forschung von Dr. Ulrich Warnke, Prof. Emilio Del Giudice und Prof. Dr. Gerald Pollack ab. In ${ZELLSTUDIEN} international publizierten Studien hat die GitterChip-Technik an Zellen im Labor deutlich gewirkt.`,
+    'Der Gitterchip® bringt Ordnung ins Wasser. Sein statisches Feld regt Wassermoleküle an, in einen geordneten, energiereichen Zustand zu wechseln.',
+    `So leiten wir es aus der Forschung von Dr. Ulrich Warnke, Prof. Emilio Del Giudice und Prof. Dr. Gerald Pollack ab. In ${ZELLSTUDIEN} international publizierten Studien hat die Gitterchip®-Technik an Zellen im Labor deutlich gewirkt.`,
   ],
   inhaltTitel: 'In sieben Stufen erklärt',
   kopfGrafik: {
@@ -81,7 +81,7 @@ export const SEITE = {
     beschriftungStahl: 'in Chirurgenstahl',
     beschriftungFeld: 'statisches Feld',
     legende:
-      'Der GitterChip im Querschnitt: ein Gitter aus 750er Goldlegierung in Chirurgenstahl. Sein statisches Feld umgibt ihn dauerhaft, und Wassermoleküle darin richten sich aus.',
+      'Der Gitterchip® im Querschnitt: ein Gitter aus 750er Goldlegierung in Chirurgenstahl. Sein statisches Feld umgibt ihn dauerhaft, und Wassermoleküle darin richten sich aus.',
   },
 };
 
@@ -101,7 +101,7 @@ export const STUFEN = [
     titel: 'Ein Gitter aus Gold, das ohne Strom arbeitet',
     oeffner: 'innenansicht',
     absaetze: [
-      'Das Herz des QiOne® 2 Pro ist der GitterChip™: ein präzise strukturiertes Gitter aus einer eigens entwickelten 750er Goldlegierung. Er wird von Hand fertiggestellt und in Chirurgenstahl gefasst.',
+      'Das Herz des QiOne® 2 Pro ist der Gitterchip®: ein präzise strukturiertes Gitter aus einer eigens entwickelten 750er Goldlegierung. Er wird von Hand fertiggestellt und in Chirurgenstahl gefasst.',
       'Im Chip steckt keine Elektronik, kein Akku und keine Batterie, und er sendet nichts. Seine Kraft liegt in der Struktur selbst: Das Gitter trägt ein statisches Feld, das ohne Energiezufuhr besteht.',
       'Du musst nichts laden und nichts einschalten. Das Feld ist da, solange du den QiOne® 2 Pro trägst.',
     ],
@@ -167,7 +167,7 @@ export const STUFEN = [
       legende:
         'An einer wasserliebenden Oberfläche wächst die Zone und schiebt gelöste Teilchen hinaus. Sie ist negativ geladen, das Wasser davor positiv. Nach Prof. Dr. Pollack.',
     },
-    weiter: {text: 'Weiter: Wie der GitterChip die Kette anstößt', anker: 'verbindung'},
+    weiter: {text: 'Weiter: Wie der Gitterchip® die Kette anstößt', anker: 'verbindung'},
   },
   {
     id: 'verbindung',
@@ -176,7 +176,7 @@ export const STUFEN = [
     marke: 'Die Verbindung',
     titel: 'Vom Chip über das Wasser bis zur Zelle',
     absaetze: [
-      'Aus diesen drei Forschungslinien leiten wir ab, wie der GitterChip wirkt. Sein statisches Feld regt Wassermoleküle an, in den geordneten Zustand zu wechseln, den Dr. Warnke beschreibt.',
+      'Aus diesen drei Forschungslinien leiten wir ab, wie der Gitterchip® wirkt. Sein statisches Feld regt Wassermoleküle an, in den geordneten Zustand zu wechseln, den Dr. Warnke beschreibt.',
       'Die Moleküle finden in den Gleichtakt der Domänen nach Prof. Del Giudice. Wo dieses Wasser auf eine Oberfläche trifft, wächst die stabile Schicht, die Prof. Dr. Pollack gemessen hat.',
       'Jede Zelle ist eine solche Oberfläche. Sie ist von Wasser umgeben und besteht selbst zum größten Teil daraus. So entsteht die Kette, die der QiOne® 2 Pro anstößt: Feld, geordnetes Wasser, Zelle.',
       `Wie deutlich Zellen darauf reagieren, hat Prof. Dr. Peter C. Dartsch in ${ZELLSTUDIEN} Studien gemessen.`,
@@ -187,8 +187,8 @@ export const STUFEN = [
         {
           id: 'feld',
           titel: 'Feld',
-          text: 'Der GitterChip trägt ein statisches Feld.',
-          quelle: 'GitterChip™ im QiOne® 2 Pro',
+          text: 'Der Gitterchip® trägt ein statisches Feld.',
+          quelle: 'Gitterchip® im QiOne® 2 Pro',
         },
         {
           id: 'ordnung',
@@ -218,7 +218,7 @@ export const STUFEN = [
     // gemessen (Prüferbefund, Job 20261015-m5f3-frageseiten-rest-studien-und-kundenwort).
     titel: `${ZELLSTUDIEN_GROSS} Studien, gemessen an Zellen im Labor`,
     absaetze: [
-      `Prof. Dr. Peter C. Dartsch hat die GitterChip-Technik an seinem Institut für zellbiologische Testsysteme untersucht. Fünf Studien sind international publiziert und Peer-Review-kontrolliert. ${ZELLSTUDIEN_GROSS} davon messen an Zellen, die fünfte wertet Berichte von Nutzern aus.`,
+      `Prof. Dr. Peter C. Dartsch hat die Gitterchip®-Technik an seinem Institut für zellbiologische Testsysteme untersucht. Fünf Studien sind international publiziert und Peer-Review-kontrolliert. ${ZELLSTUDIEN_GROSS} davon messen an Zellen, die fünfte wertet Berichte von Nutzern aus.`,
       'Gemessen hat er an Immunzellen, Darmzellen, Leberzellen und Nervenzellen, unter Handystrahlung und unter oxidativem Stress.',
     ],
     diagramme: [
@@ -268,7 +268,7 @@ export const STUFEN = [
           {bezeichnung: 'Mit QiBracelet®', wert: 88, stellen: 0, ton: 'mit'},
         ],
         studie: 'studie-oxidativer-stress',
-        zeile: 'Studie zu QiBracelet® mit Leberzellen, gleiche GitterChip-Technik.',
+        zeile: 'Studie zu QiBracelet® mit Leberzellen, gleiche Gitterchip®-Technik.',
       },
     ],
     kennzahlen: [

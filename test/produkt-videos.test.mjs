@@ -103,7 +103,7 @@ test('kein Ersatzwortlaut: sichtbare Texte sind Bestand oder leer', () => {
     'Wissenschaftliche Publikation an Darmepithelzellen, veröffentlicht in Applied Cell Biology 2021',
     'Daniela Cebula: Kein Tag ohne QiOne',
     'Aus dem Daniela Cebula Podcast',
-    'Der GitterChip™ in Aktion',
+    'Der Gitterchip® in Aktion',
     'Schutzwirkung des QiBracelet® gegen oxidativen Stress',
     'Wissenschaftliche Publikation zum Schutz vor oxidativem Stress, veröffentlicht in Applied Cell Biology am 12. Januar 2024',
     '',

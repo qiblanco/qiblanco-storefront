@@ -139,7 +139,7 @@ export const TEILBILDER = {
       'QiOne1.webp?width=1200',
     breite: 1200,
     hoehe: 1200,
-    alt: 'QiOne® 2 Pro, Vorderseite mit sichtbarem GitterChip',
+    alt: 'QiOne® 2 Pro, Vorderseite mit sichtbarem Gitterchip®',
   },
   '/pages/qibracelet-details': {
     url:

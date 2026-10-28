@@ -193,7 +193,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
           <div className="qa-lp__kopf-text">
             <span className="qa-auge">Erste Edition · {QA_AUFLAGE}</span>
             <h1 className="qa-lp__titel">
-              Qi Alpha®. Ein Diamant, gefasst am Gitterchip™, mit deiner eigenen
+              Qi Alpha®. Ein Diamant, gefasst am Gitterchip<sup>®</sup>, mit deiner eigenen
               Seriennummer.
             </h1>
             <p className="qa-lp__zeile">
@@ -214,9 +214,9 @@ export default function QiAlphaLpB({bild = null, preise}) {
 
         <section className="qa-abschnitt" data-section="qa-lp-unikat" aria-labelledby="qa-unikat">
           <h2 id="qa-unikat">Was du bekommst</h2>
-          <p>Einen hochreinen Naturdiamanten, gefasst am Gitterchip™ der zweiten Generation.</p>
+          <p>Einen hochreinen Naturdiamanten, gefasst am Gitterchip<sup>®</sup> der zweiten Generation.</p>
           <p>
-            Der Gitterchip™ besteht aus einer eigenen 750er Goldlegierung. Ihre
+            Der Gitterchip<sup>®</sup> besteht aus einer eigenen 750er Goldlegierung. Ihre
             Atome stehen in einer festgelegten Ordnung. Er arbeitet ohne
             Elektronik und ohne Verschleiß.
           </p>
@@ -236,7 +236,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
           <div className="qa-abschnitt__inner">
             <h2 id="qa-beweis">Fünf Publikationen aus dem Labor von Prof. Dartsch</h2>
             <p>
-              Vier Zellstudien zum Gitterchip™ im QiOne® 2 Pro, im QiBracelet®
+              Vier Zellstudien zum Gitterchip<sup>®</sup> im QiOne® 2 Pro, im QiBracelet®
               und im QiHome® Air, durchgeführt in vitro an Zellen im Labor. Dazu
               kommt eine Auswertung von 171 Nutzerberichten.
             </p>
@@ -249,7 +249,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
               die Herzratenvariabilität (HRV).
             </p>
           </div>
-          <StudienCards headline="Publizierte Zellstudien zum Gitterchip™" />
+          <StudienCards headline="Publizierte Zellstudien zum Gitterchip®" />
         </section>
 
         {/* Fester Kaufknopf mobil (gs050): position: sticky am Ende dieser

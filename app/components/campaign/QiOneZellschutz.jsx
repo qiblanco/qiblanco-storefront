@@ -53,7 +53,7 @@ function Hero() {
             <img src={heroImg} alt="QiOne® 2 Pro" loading="eager" />
           </div>
           <p className="lead">
-            Der QiOne<sup>®</sup> 2 Pro nutzt proprietäre GitterChip™-Technologie,
+            Der QiOne<sup>®</sup> 2 Pro nutzt proprietäre Gitterchip<sup>®</sup>-Technologie,
             um dein Wohlbefinden auf Zellebene messbar zu verbessern.
             Über 14.000 Menschen tragen ihn bereits täglich.
           </p>
@@ -274,7 +274,7 @@ function PricingSection({block = BLOCK_LP}) {
               <span className="lp-vp-product__price">{priceOf(bracelet) || '—'}</span>
             </div>
             <ul className="lp-vp-product__features">
-              <li>✓  Eleganter Gitterchip™ integriert</li>
+              <li>✓  Eleganter Gitterchip<sup>®</sup> integriert</li>
               <li>✓  Reduziert E-Smog & 5G</li>
               <li>✓  Wohlbefinden & Klarheit für unterwegs</li>
             </ul>

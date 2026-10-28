@@ -107,14 +107,14 @@ export const AUTORENKASTEN_VORSCHAU_WERT = 'vorschau';
  * (Arm A0) und hermetisch von test/autorenkasten.test.mjs.
  */
 export const AUTORENKASTEN_SSOT_SHA256 =
-  '6f8c84baf08b218c8a61397788f6dbd6848534026c5e8d5a6ab206050a9edc8f';
+  '22cd5bfd2930782abf1e347f2edca68a22dac29947f8a395358b6e74b2b4c2f1';
 
 /** Der Inhalt. Wort für Wort aus dem SSoT, echte Umlaute (Hausregel). */
 export const AUTORENKASTEN = {
   name: 'Dipl.-Ing. (FH) Christian Bernd Bauer',
-  rolle: 'Erfinder des GitterChip™ und Geschäftsführer von Qi Blanco',
+  rolle: 'Erfinder des Gitterchip® und Geschäftsführer von Qi Blanco',
   saetze: [
-    'Dipl.-Ing. (FH) Christian Bernd Bauer ist Erfinder des GitterChip™ und Geschäftsführer von Qi Blanco.',
+    'Dipl.-Ing. (FH) Christian Bernd Bauer ist Erfinder des Gitterchip® und Geschäftsführer von Qi Blanco.',
     'Die Technik, die in jedem Qi-Blanco-Produkt steckt, geht auf seine eigene Entwicklungsarbeit als Ingenieur zurück.',
     'In seinen Fachartikeln steht zu jeder Aussage die gemessene Größe mit ihrer Quelle — und ebenso, welche Frage damit offen bleibt. So können Sie sich Ihr eigenes Urteil bilden.',
   ],
