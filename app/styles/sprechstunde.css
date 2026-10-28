@@ -223,6 +223,17 @@
   }
 }
 
+/* Kopf der Landingpage mobil (2026-10-28, Job 20261021-sprechstunde-mobil-
+   kopf-cta-im-ersten-bildschirm): Ueberschrift, Nutzensatz und „Termin wählen"
+   stehen nach dem Cookie-Entscheid im ersten Bildschirm (375x667, 390x844).
+   Christians Bild steht deshalb unter dem Knopf statt darueber, spaltenbreit
+   und mittig (Shop-Regel D2). Die Fassung 'alt' behaelt das Bild oben. */
+@media (max-width: 899px) {
+  .sp .sp__kopf figure.sp__foto {
+    order: 0;
+  }
+}
+
 /* ─── Akte ─────────────────────────────────────────────────────────────────── */
 .sp .sp__akt-flaeche {
   background: var(--sp-flaeche);

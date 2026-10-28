@@ -348,7 +348,7 @@ function Foto() {
 function Kopf({termine, preisText, zeit}) {
   const naechster = termine[0] ? terminText(termine[0], zeit.zone) : null;
   return (
-    <section className="sp__einstieg" data-section="sp-kopf">
+    <section className="sp__einstieg sp__kopf" data-section="sp-kopf">
       <div className="sp__inhalt sp__inhalt--breit sp__einstieg-raster">
         <div className="sp__einstieg-text">
           <h1>Sprechstunde mit Christian</h1>
