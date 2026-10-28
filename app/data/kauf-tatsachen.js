@@ -68,7 +68,7 @@ export const IM_PREIS = [
     id: 'versand',
     text:
       'Nach Deutschland und Österreich schicken wir QiOne® 2 Pro, ' +
-      'QiBracelet®, QiHome® Air und Qi Alpha versandkostenfrei. In die ' +
+      'QiBracelet®, QiHome® Air und Qi Alpha® versandkostenfrei. In die ' +
       'Schweiz kostet der Versand 21 €, an der Kasse in Franken zum ' +
       'Tageskurs. Zoll und Einfuhrabgaben sind dort im Preis enthalten.',
     beleg: 'Versandrichtlinie',

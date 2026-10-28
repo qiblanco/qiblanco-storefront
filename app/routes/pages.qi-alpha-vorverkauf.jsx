@@ -140,11 +140,11 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Qi Alpha – Alpha Serie, limitiert auf 111 Stück | Qi Blanco'},
+  {title: 'Qi Alpha® – Alpha Serie, limitiert auf 111 Stück | Qi Blanco'},
   {
     name: 'description',
     content:
-      'Der Preis des Qi Alpha ist fixiert. Limitierte Auflage von 111 Stück, von Goldschmieden per Hand poliert. Designed in Germany. Made in Germany.',
+      'Der Preis des Qi Alpha® ist fixiert. Limitierte Auflage von 111 Stück, von Goldschmieden per Hand poliert. Designed in Germany. Made in Germany.',
   },
   noindexMeta(),
 ];
@@ -162,7 +162,7 @@ export default function QiMasterVorverkaufRoute() {
         <div className="qm-lp__kopf-inhalt">
           <span className="qm-lp__auge">Alpha Serie</span>
           <h1 className="qm-lp__titel">
-            Qi Alpha: 111 Stück, von Hand poliert, zu einem festen Preis.
+            Qi Alpha®: 111 Stück, von Hand poliert, zu einem festen Preis.
           </h1>
         </div>
       </header>
@@ -172,11 +172,11 @@ export default function QiMasterVorverkaufRoute() {
       </section>
 
       <section className="qm-lp__inhalt" aria-labelledby="qm-lp-gerät">
-        <h2 id="qm-lp-gerät">Warum es den Qi Alpha überhaupt gibt</h2>
+        <h2 id="qm-lp-gerät">Warum es den Qi Alpha® überhaupt gibt</h2>
         <p>
           Ein Diamant ist reiner Kohlenstoff, dasselbe Element, aus dem jede
           Zelle deines Körpers gebaut ist. Aus diesem Gedanken ist der
-          Qi Alpha entstanden. Er trägt genau diesen Grundstoff, gefasst am
+          Qi Alpha® entstanden. Er trägt genau diesen Grundstoff, gefasst am
           Gitterchip™.
         </p>
 
@@ -201,7 +201,7 @@ export default function QiMasterVorverkaufRoute() {
             Goldlegierung zum Einsatz.
           </li>
           <li>
-            Jedes Stück trägt eine eigene Seriennummer. Deinen Qi Alpha gibt
+            Jedes Stück trägt eine eigene Seriennummer. Deinen Qi Alpha® gibt
             es kein zweites Mal.
           </li>
         </ul>
@@ -234,7 +234,7 @@ export default function QiMasterVorverkaufRoute() {
             href="/products/qi-alpha"
             data-qb-kaufknopf=""
           >
-            Zum Qi Alpha
+            Zum Qi Alpha®
           </a>
           <p className="qm-lp__knopf-hinweis">
             Preis, Bilder und alle Details stehen auf der Produktseite.

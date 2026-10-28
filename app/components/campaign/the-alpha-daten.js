@@ -34,7 +34,7 @@ export const THE_ALPHA_VIDEO = {
   },
   videoStandbild: {
     url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-01-front.jpg?v=1792849253',
-    alt: 'Qi Alpha mit Diamant, Vorderseite',
+    alt: 'Qi Alpha® mit Diamant, Vorderseite',
     width: 2048,
     height: 2048,
   },
@@ -102,14 +102,14 @@ export const THE_ALPHA_ABSCHNITTE = [
     bilder: [
       {
         url: `${CDN}/qi-alpha-01-front.jpg?v=1792849253`,
-        alt: 'Qi Alpha mit Diamant und Logo',
+        alt: 'Qi Alpha® mit Diamant und Logo',
         etikett: 'ENDLESS',
         width: 2048,
         height: 2048,
       },
       {
         url: `${CDN}/qi-alpha-02-detail.jpg?v=1792849261`,
-        alt: 'Nahaufnahme des Diamanten im Qi Alpha mit Strahlengravur',
+        alt: 'Nahaufnahme des Diamanten im Qi Alpha® mit Strahlengravur',
         etikett: 'POSSIBILITY',
         width: 2048,
         height: 2048,
@@ -122,7 +122,7 @@ export const THE_ALPHA_ABSCHNITTE = [
     zeilen: ['Starkes Leben.', 'Starke Ausstrahlung.', 'Starke Anziehung.'],
     banner: {
       url: `${CDN}/the-alpha-banner-seite.jpg?v=1792922808`,
-      alt: 'Seitenband des Qi Alpha mit Gravur Qi Alpha',
+      alt: 'Seitenband des Qi Alpha® mit Gravur Qi Alpha®',
       width: 1720,
       height: 405,
     },

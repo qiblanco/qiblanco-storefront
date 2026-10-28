@@ -126,7 +126,7 @@ export const PRODUKT_BESCHREIBUNGEN = {
   // alten Pfade sind 301-Hüllen und brauchen keine Meta.
   // Seit 27.10.2026 wieder /products/qi-alpha (Umzug Qi Alpha).
   '/products/qi-alpha':
-    'Qi Alpha: Alpha Serie, limitiert auf 111 Stück. Der QiOne mit Diamanten, ' +
+    'Qi Alpha®: Alpha Serie, limitiert auf 111 Stück. Der QiOne mit Diamanten, ' +
     'Gitterchip™ der zweiten Generation, eigene Goldlegierung. 20 Tage risikofrei.',
   '/products/qione-kette':
     'Die passende Kette für deinen QiOne® 2 Pro: hochwertig verarbeitet und ' +

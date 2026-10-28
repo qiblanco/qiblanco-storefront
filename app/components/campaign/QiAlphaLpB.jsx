@@ -25,13 +25,14 @@ import {FAQ_QI_MASTER} from '~/data/product-faqs';
  * eines anderen Produkts. Der Video-Slot ist leer und damit unsichtbar.
  */
 
-export const QA_NAME = 'Qi Alpha';
+export const QA_NAME = 'Qi Alpha®';
 export const QA_AUFLAGE = '111 Stück';
 export const QA_ZIEL = '/products/qi-alpha-b';
 
 /**
  * Bestandstext mit dem neuen Namen. Nur der Name wechselt, kein anderes Wort
- * (Christian hat Qi Master in Qi Alpha umbenannt, Schreibweise ohne ®).
+ * (Christian hat Qi Master in Qi Alpha umbenannt; seit 27.10.2026 immer mit ®,
+ * „Qi Alpha immer mit R“, SSoT ai-ceo/wissen/kanon/qi-alpha-immer-mit-r.md).
  * @param {string} text
  */
 export function alpha(text) {
@@ -103,7 +104,7 @@ export const QA_PRODUKTVIDEO = {
     'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-reveal-poster.jpg?v=1793023786',
   breite: 1920,
   hoehe: 1080,
-  alt: 'Qi Alpha: Nahaufnahme des Naturdiamanten, dann der Alpha von allen Seiten',
+  alt: 'Qi Alpha®: Nahaufnahme des Naturdiamanten, dann der Alpha von allen Seiten',
   schleife: true,
 };
 
@@ -192,7 +193,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
           <div className="qa-lp__kopf-text">
             <span className="qa-auge">Erste Edition · {QA_AUFLAGE}</span>
             <h1 className="qa-lp__titel">
-              Qi Alpha. Ein Diamant, gefasst am Gitterchip™, mit deiner eigenen
+              Qi Alpha®. Ein Diamant, gefasst am Gitterchip™, mit deiner eigenen
               Seriennummer.
             </h1>
             <p className="qa-lp__zeile">
@@ -200,7 +201,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
               2027, zu 100 % versichert
             </p>
             <a className="qa-knopf" href={QA_ZIEL} data-qb-kaufknopf="">
-              Zur Qi Alpha
+              Zur Qi Alpha®
             </a>
           </div>
         </div>
@@ -257,7 +258,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
             Skript, kein Scroll-Jacking. Am Desktop ausgeblendet. */}
         <div className="qa-lp__fest">
           <a className="qa-knopf qa-knopf--fest" href={QA_ZIEL} data-qb-kaufknopf="">
-            Zur Qi Alpha
+            Zur Qi Alpha®
           </a>
         </div>
       </div>
@@ -267,7 +268,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
         <dl className="qa-preise">
           {preise.haupt ? (
             <div className="qa-preise__zeile">
-              <dt>Qi Alpha</dt>
+              <dt>Qi Alpha®</dt>
               <dd className="qa-preise__wert">{preise.haupt}</dd>
             </div>
           ) : null}
@@ -279,7 +280,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
           ) : null}
           {preise.kette ? (
             <div className="qa-preise__zeile">
-              <dt>Goldkette mit Logo und Spezialsicherheitsverschluss</dt>
+              <dt>Qi Blanco® Goldkette – 750er ethisches Vollgold</dt>
               <dd>+ {preise.kette}</dd>
             </div>
           ) : null}
@@ -293,7 +294,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
           <li>0 % Finanzierung mit PayPal und Klarna</li>
         </ul>
         <a className="qa-knopf" href={QA_ZIEL} data-qb-kaufknopf="">
-          Zur Qi Alpha
+          Zur Qi Alpha®
         </a>
       </section>
 
@@ -301,7 +302,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
         <div className="qa-abschnitt__inner">
           <h2 id="qa-garantie">20 Tage erleben</h2>
           <p>
-            Wie jedes Stück aus unserem Haus kannst du den Qi Alpha 20 Tage lang
+            Wie jedes Stück aus unserem Haus kannst du den Qi Alpha® 20 Tage lang
             tragen und innerhalb dieser Frist zurückgeben. Du erhältst den vollen
             Kaufpreis zurück.
           </p>
@@ -312,7 +313,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
         <ProductFAQ items={alphaFragen({ohneStaerke: true})} />
       </div>
 
-      <section className="qa-abschnitt qa-abschluss" data-section="qa-lp-final" aria-label="Preis, Auflage und Versand des Qi Alpha">
+      <section className="qa-abschnitt qa-abschluss" data-section="qa-lp-final" aria-label="Preis, Auflage und Versand des Qi Alpha®">
         <div className="qa-abschluss__inhalt">
           {wortlaut.map((text) => (
             <p className="qa-wortlaut" key={text.slice(0, 32)}>
@@ -321,7 +322,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
           ))}
           <div className="qa-knoepfe">
             <a className="qa-knopf" href={QA_ZIEL} data-qb-kaufknopf="">
-              Zur Qi Alpha
+              Zur Qi Alpha®
             </a>
             <a className="qa-knopf qa-knopf--zweit" href="/pages/produktberatung">
               Persönlich beraten lassen

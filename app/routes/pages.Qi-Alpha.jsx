@@ -44,13 +44,13 @@ export function links() {
 
 /** @type {MetaFunction} */
 export const meta = () => [
-  {title: 'Qi Alpha, Limited 1st. Edition 111/111 | Qi Blanco'},
+  {title: 'Qi Alpha®, Limited 1st. Edition 111/111 | Qi Blanco'},
   {
     name: 'description',
     content:
-      'Qi Alpha mit Diamant, Limited 1st. Edition: 111 Stück, jedes mit eigener Nummer der Alpha-Serie. Jetzt exklusiv reservieren.',
+      'Qi Alpha® mit Diamant, Limited 1st. Edition: 111 Stück, jedes mit eigener Nummer der Alpha-Serie. Jetzt exklusiv reservieren.',
   },
-  {property: 'og:title', content: 'Qi Alpha, Limited 1st. Edition 111/111'},
+  {property: 'og:title', content: 'Qi Alpha®, Limited 1st. Edition 111/111'},
   {
     property: 'og:image',
     content:

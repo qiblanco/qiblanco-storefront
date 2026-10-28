@@ -48,7 +48,7 @@ const ROLLE = ['grund', 'herkunft', 'termin', 'versand'];
  * auf `(t) => t` setzen.
  */
 export function heutigerName(text) {
-  return String(text ?? '').replace(/Qi Master®?/g, 'Qi Alpha');
+  return String(text ?? '').replace(/Qi Master®?/g, 'Qi Alpha®');
 }
 
 /**
@@ -58,7 +58,7 @@ export function heutigerName(text) {
  */
 export function QiMasterWortlaut({
   kompakt = false,
-  ariaLabel = 'Preis, Auflage und Versand des Qi Alpha',
+  ariaLabel = 'Preis, Auflage und Versand des Qi Alpha®',
 }) {
   const absaetze = quelle?.wortlaut?.absaetze ?? [];
   if (!absaetze.length) return null;
