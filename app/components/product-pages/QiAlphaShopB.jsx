@@ -35,7 +35,8 @@ import {
  * gestrichen). Shop B behält deshalb Christians Inhalte und Texte aus
  * DERSELBEN Quelle (app/data/qi-master-*.js) und ändert nur, was die
  * Blaupause verlangt:
- *   - Name „Qi Alpha" ohne ® (alpha(), nur der Name, kein anderes Wort);
+ *   - Name „Qi Alpha®" (alpha(), nur der Name, kein anderes Wort; das ® seit
+ *     27.10.2026, Christian: „Qi Alpha immer mit R“);
  *   - „Erste Edition, 111 Stück" hochgezogen vor den Beweis (ENTWURF, die
  *     Auflage entscheidet Christian, abweichungen.json lp.auflage);
  *   - Beweis vor die Literatur, mit der Zeile zur Humanstudie (in
@@ -72,13 +73,13 @@ export default function QiAlphaShopB() {
         backgroundImage={
           '/2023-03-01-qiblanco-milva-martin-1020791_1.webp?v=1680003385'
         }
-        headline={<>Dein Qi Alpha begleitet dich<br />Tag und Nacht.</>}
+        headline={<>Dein Qi Alpha® begleitet dich<br />Tag und Nacht.</>}
         subheadline={'Ein Stück, das du nicht ablegen musst.'}
         parallax={true}
         size={850}
         link={'#qm-buybox'}
         linkStyling={'primary'}
-        linkText={'Hole dir deinen Qi Alpha'}
+        linkText={'Hole dir deinen Qi Alpha®'}
       />
       <ProductFAQ items={alphaFragen()} />
       <GoogleRezensionenBereich dataSection="qa-sb-stimmen" />
@@ -91,12 +92,12 @@ export default function QiAlphaShopB() {
 function Liga() {
   return (
     <div className="MainFeaturesWrapper" data-section="qa-sb-liga">
-      <h2 className="text-center">Qi Alpha - Eine bisher unerreichte Liga</h2>
+      <h2 className="text-center">Qi Alpha® - Eine bisher unerreichte Liga</h2>
       <div className="MainFeatures NormalSectionSize">
         <div className="MainFeaturesColumn">
           <h3>Der Gitterchip™ der ultimativen Generation</h3>
           <p>
-            Der Kern des Qi Alpha ist ein zweiteiliger Gitterchip™, definiert
+            Der Kern des Qi Alpha® ist ein zweiteiliger Gitterchip™, definiert
             durch die über ein Jahrzehnt andauernde Forschung am QiOne®. Das
             Ergebnis ist die außergewöhnlichste Erscheinung: Eine Goldlegierung,
             deren Atome in einer einmalig definierten Ordnung stehen. Kohärent
@@ -118,8 +119,8 @@ function Liga() {
           <h3>Pure Leistung. Pure Entspannung.</h3>
           <p>
             {'Durch dieses einmalige Duett des Gitterchips™ und "The One Eye" ist ' +
-              'der Qi Alpha auf jegliche erdenkbare Zukunft vorbereitet. Egal ob ' +
-              'sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Alpha ' +
+              'der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet. Egal ob ' +
+              'sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Alpha® ' +
               'leistet auf jeder Ebene das erdenkliche Maximum.'}
           </p>
         </div>
@@ -198,7 +199,7 @@ function Edition() {
       <div className="MassgeschneidertWrapper">
         <div className="Column">
           <h3 className="mt-3">Eigene Seriennummer</h3>
-          <p>Jeder Qi Alpha ist mit einer einmaligen Seriennummer versehen.</p>
+          <p>Jeder Qi Alpha® ist mit einer einmaligen Seriennummer versehen.</p>
           <h3 className="mt-3">Eigene Goldlegierung</h3>
           <p>
             Für den Gitterchip™ kommt eine eigene spezielle 750iger Goldlegierung
@@ -213,7 +214,7 @@ function Edition() {
           </p>
           <h3 className="mt-3">The One Eye</h3>
           <p>
-            Rund um das Auge des Qi Alpha laufen 108 Striche – die Zahl, die in
+            Rund um das Auge des Qi Alpha® laufen 108 Striche – die Zahl, die in
             der Yoga-Überlieferung für Vollständigkeit steht.
           </p>
         </div>
@@ -350,7 +351,7 @@ function Beratung() {
     <section className="qa-abschnitt qa-abschluss" data-section="qa-sb-beratung" aria-labelledby="qa-sb-beratung">
       <div className="qa-abschluss__inhalt">
         <h2 id="qa-sb-beratung">Noch eine Frage vor dem Kauf?</h2>
-        <p>Wähl dir einen Termin. Wir beraten dich persönlich zum Qi Alpha.</p>
+        <p>Wähl dir einen Termin. Wir beraten dich persönlich zum Qi Alpha®.</p>
         <div className="qa-knoepfe">
           <a className="qa-knopf" href="#qm-buybox" data-qb-kaufknopf="">
             In den Warenkorb

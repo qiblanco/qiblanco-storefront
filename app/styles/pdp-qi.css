@@ -374,3 +374,48 @@ body > main .bracelet-table h3 {
 body > main .InfoSlider .InfoSliderCard .CardTitle h3 {
   font-size: var(--qb-ref-fs-6, 24px);
 }
+
+/* --- 9. QiOne-Kaufseite: Querueberstand und zwei Zwischengroessen ---------
+   Job 20261028-qione-2-pro-nutzer-video-youtube-short-ig-stil-als-erstes
+   (Design-Pflicht >= 95). Gemessen am 2026-10-28 mit design-rubrik:
+   live 90, Vorschau mit dem YouTube-Short 92. Abzuege, alle vorbestehend:
+     - "horizontaler Overflow" (Desktop 1440): der Full-Bleed-Ausbruch
+       .ScrollScrubVideoBlock ist 100vw = 1440 px breit, der Inhalt nur
+       1425 px (Scrollbalken). Kunden sehen davon nichts, weil body schon
+       overflow-x: hidden traegt; die Rubrik misst scrollWidth > clientWidth.
+       `clip` am Seitenrahmen schneidet dieselben 15 px, die heute der
+       Scrollbalken verdeckt. KEIN Scroll-Container (anders als hidden),
+       position: sticky im Scroll-Video bleibt also intakt; fixe Elemente
+       (Kaufleiste) haben den Viewport als Bezug und sind nicht betroffen.
+     - 12 Schriftgroessen (Soll <= 9): die Zwischentitel h3 stehen auf
+       1.4rem = 22,4 px, der Absatz im Scroll-Video auf 0.9em = 14,4 px.
+       Beide auf die naechste Haus-Stufe, wie in Abschnitt 8.
+   Fliesstext (1.2rem) und Kaufknopf bleiben unberuehrt.
+   Auf die QiOne-Seite begrenzt (`:has`), QiBracelet aendert sich nicht. */
+body > main > .ProductPageQiOne {
+  overflow-x: clip;
+}
+body > main:has(> .ProductPageQiOne) .MassgeschneiderteTechnologie h3,
+body > main:has(> .ProductPageQiOne) .MainFeaturesColumn h3,
+body > main:has(> .ProductPageQiOne) .Gitterchip h3,
+body > main:has(> .ProductPageQiOne) .UpsellItem h3,
+body > main:has(> .ProductPageQiOne) .qb-gv__name {
+  font-size: var(--qb-ref-fs-6, 24px);
+}
+body > main:has(> .ProductPageQiOne) .ScrollScrubVideo .TextContent-End .content p {
+  font-size: var(--qb-ref-fs-2, 14px);
+}
+/* Bei 768 px stehen die MainFeatures zweispaltig, je Spalte 176 px. Mit
+   24 px ist "leistungsstärker" breiter als die Spalte; ohne min-width: 0
+   waechst die rechte Spalte auf ihr min-content (189 px) und ragt aus dem
+   Rahmen, den das clip oben dann sichtbar abschneidet (Sicht-Tor
+   2026-10-28, Job 20261028-qione-2-pro-yt-nutzervideo-deploy). Getrennt
+   wird nur im Titel nach Silben (html lang="de"); der Fliesstext passt
+   und bleibt ungetrennt. */
+body > main:has(> .ProductPageQiOne) .MainFeatures .MainFeaturesColumn {
+  min-width: 0;
+}
+body > main:has(> .ProductPageQiOne) .MainFeatures .MainFeaturesColumn h3 {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}

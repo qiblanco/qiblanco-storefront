@@ -44,7 +44,7 @@ const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files';
  * Z38). Original-Rendering 2048 px. */
 export const TAB_UNTERSEITE = {
   url: `${CDN}/qi-alpha-04-unterseite.jpg?v=1792849274`,
-  alt: 'Unterseite des Qi Alpha mit der Gravur Made in Germany',
+  alt: 'Unterseite des Qi Alpha® mit der Gravur Made in Germany',
   width: 2048,
   height: 2048,
 };
@@ -54,7 +54,7 @@ export const TAB_UNTERSEITE = {
  * Varianten am selben Bild aufgeht. */
 export const TAB_SEITENBAND = {
   url: `${CDN}/the-alpha-seitenband-2zu1.jpg?v=1793010108`,
-  alt: 'Seitenband des Qi Alpha mit der Gravur Qi Alpha',
+  alt: 'Seitenband des Qi Alpha® mit der Gravur Qi Alpha®',
   width: 1936,
   height: 968,
 };
@@ -74,34 +74,34 @@ export const TAB_LIVE = {
   titel: 'Erst live kennenlernen?',
   wann: 'Sonntag, 8. November 2026, 12 Uhr (Berlin), auf Zoom',
   text:
-    'Christian stellt den Qi Alpha zum ersten Mal live vor. Du siehst ihn aus nächster Nähe ' +
+    'Christian stellt den Qi Alpha® zum ersten Mal live vor. Du siehst ihn aus nächster Nähe ' +
     'und kannst Christian alles fragen.',
 };
 
 /** Fragen vor dem Kauf, hinter dem Abschluss. */
 export const TAB_FRAGEN = {
-  titel: 'Fragen zum Qi Alpha',
+  titel: 'Fragen zum Qi Alpha®',
   liste: [
     {
       frage: 'Wirkt das wirklich?',
       antwort:
-        'Das findest du am besten selbst heraus: Du trägst deinen Qi Alpha 20 Tage. ' +
+        'Das findest du am besten selbst heraus: Du trägst deinen Qi Alpha® 20 Tage. ' +
         'Spürst du nichts, schickst du ihn zurück und bekommst den vollen Kaufpreis.',
     },
     {
       frage: 'Wird er irgendwann günstiger?',
       antwort:
-        'Den Qi Alpha wird es nie in einem Sale geben wie Black Friday oder Sommer Sale. ' +
+        'Den Qi Alpha® wird es nie in einem Sale geben wie Black Friday oder Sommer Sale. ' +
         'Durch seine sehr aufwendige Herstellung ist der Preis fixiert.',
     },
     {
-      frage: 'Wann bekomme ich meinen Qi Alpha?',
+      frage: 'Wann bekomme ich meinen Qi Alpha®?',
       antwort: 'Der Versand startet ab Mitte Januar 2027, weltweit und zu 100 % versichert.',
     },
     {
       frage: 'Kann ich meine Nummer wählen?',
       antwort:
-        'Ja. Jeder Qi Alpha trägt eine eigene Seriennummer von 1 bis 111. Deine Wunschnummer kostet ' +
+        'Ja. Jeder Qi Alpha® trägt eine eigene Seriennummer von 1 bis 111. Deine Wunschnummer kostet ' +
         '2.000 € extra. Ohne Wunschnummer bekommst du beim Versand eine freie Nummer der Serie.',
     },
     {

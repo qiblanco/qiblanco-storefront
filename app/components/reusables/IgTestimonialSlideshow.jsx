@@ -1,6 +1,9 @@
 import {useEffect, useId, useMemo, useRef, useState} from 'react';
 import {useDragSwipe} from './useDragSwipe';
 import {IG_TESTIMONIALS} from '~/data/ig-testimonials';
+import {YT_NUTZER_VIDEOS} from '~/data/yt-nutzer-videos';
+import {nutzerVideoReihe} from '~/lib/nutzer-video-reihe';
+import {YoutubeTimestamp} from './YoutubeTimestamp';
 
 /*
  * IgTestimonialSlideshow — die Instagram-Stimmen eines Produkts als
@@ -208,6 +211,10 @@ const SPRACH_RANG_DE = {de: 0, beide: 1, keine: 2, en: 3};
  */
 const UEBERSCHRIFT_MEHRERE = 'Echte Stimmen auf Instagram';
 const UEBERSCHRIFT_EINE = 'Eine echte Stimme auf Instagram';
+/* Steht ein YouTube-Video in der Reihe, nennt die Überschrift beide Quellen:
+ * „auf Instagram" über einer Kachel „auf YouTube" wäre dieselbe Art
+ * Unwahrheit wie der Plural über einer einzigen Stimme. */
+const UEBERSCHRIFT_MIT_YOUTUBE = 'Echte Stimmen auf Instagram und YouTube';
 
 /* Wie lange nach `loadeddata` noch gewartet wird, bevor der Player eingeblendet
  * wird. Dieselbe Zahl wie im YouTube-Bau — dort begründet als „kurz genug,
@@ -538,6 +545,67 @@ function Kachel({t}) {
   );
 }
 
+/*
+ * DIE YOUTUBE-KACHEL (Christian 2026-10-28: „als erstes video aber in IG Style
+ * auch wenn es youtbe ist").
+ *
+ * KEIN DRITTES REGIME. Gespielt wird über die Haus-Fassade für YouTube
+ * (YoutubeTimestamp: youtube-nocookie, Player erst nach dem Klick, Vorschau
+ * bleibt liegen, Watchtime-Anbindung, Ausweg bei gesperrtem YouTube). Hier
+ * kommt nur das Kleid dazu: dieselbe 4:5-Bühne, derselbe Rahmen, dasselbe
+ * Gold-Abzeichen wie bei den Instagram-Kacheln (ig-testimonials.css,
+ * Abschnitt `qb-igt__kachel--yt`).
+ *
+ * KEINE YOUTUBE-LEISTE: `controls=0` (ein Tipp auf das Video hält es an),
+ * `loop` über die Playlist aus demselben Video, damit am Ende keine
+ * Empfehlungen erscheinen. Das CSS schneidet den 9:16-Player wie
+ * `object-fit: cover` auf die Bühne zu; der Rand mit Titelzeile liegt
+ * ausserhalb.
+ *
+ * `data-yt-video` statt `data-ig-reel`: die Proben der Instagram-Reihe lesen
+ * jeden `data-ig-reel` als Reel-Code (siehe Kopf von app/data/yt-nutzer-videos.js).
+ */
+const YT_PARAMETER = (id) =>
+  `controls=0&loop=1&playlist=${id}&rel=0&playsinline=1&iv_load_policy=3&fs=0&disablekb=1`;
+
+function YtKachel({t}) {
+  const original = `https://www.youtube.com/shorts/${t.youtubeId}`;
+  return (
+    <article
+      className="qb-igt__kachel qb-igt__kachel--yt"
+      data-yt-video={t.youtubeId}
+      data-qb-plattform="youtube"
+    >
+      <YoutubeTimestamp
+        videoId={t.youtubeId}
+        titel={t.titel}
+        posterAlt={t.posterAlt}
+        /* maxresdefault ist bei einem Short ein 16:9-Bild mit dem Video als
+           Mittelstreifen; das CSS vergrößert es auf genau diesen Streifen.
+           Die kleineren Stufen haben eine andere Geometrie (4:3 mit Balken)
+           und kommen deshalb nicht in Frage. */
+        thumbnail={`https://i.ytimg.com/vi/${t.youtubeId}/maxresdefault.jpg`}
+        seitenverhaeltnis={BUEHNE}
+        className="qb-igt__flaeche"
+        playClassName="qb-igt__zeichen"
+        zusatzParameter={YT_PARAMETER(t.youtubeId)}
+      />
+      {/* Die Unterzeile im Kleid der Namenszeile, ohne @handle: das Video
+          liegt auf unserem Kanal und nennt keine Person. Sie ist zugleich der
+          Weg zum Original und funktioniert ohne JavaScript. */}
+      <a
+        className="qb-igt__profil"
+        href={original}
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+      >
+        <span className="qb-igt__handle">{t.unterzeile}</span>
+        <span className="qb-igt__aufig">auf YouTube</span>
+      </a>
+    </article>
+  );
+}
+
 /**
  * @param {{
  *   produkt: string,
@@ -546,6 +614,7 @@ function Kachel({t}) {
  *   eintraege?: Array<object>,
  *   sprachRang?: Record<string, number>,
  *   dataSection?: string,
+ *   ytEintraege?: Array<object>,
  * }} props
  */
 export function IgTestimonialSlideshow({
@@ -555,6 +624,7 @@ export function IgTestimonialSlideshow({
   eintraege = IG_TESTIMONIALS,
   sprachRang = SPRACH_RANG_DE,
   dataSection,
+  ytEintraege = YT_NUTZER_VIDEOS,
 }) {
   const titelId = useId();
   const bahnRef = useRef(null);
@@ -609,12 +679,22 @@ export function IgTestimonialSlideshow({
     });
   }, [eintraege, produkt, sprachRang]);
 
-  if (liste.length === 0) return null;
+  /* Die YouTube-Kacheln dieses Produkts, an ihrer `vorn`-Stelle in die
+   * fertig sortierte Instagram-Reihe gesetzt; deren Ordnung bleibt unberührt. */
+  const reihe = useMemo(
+    () => nutzerVideoReihe(liste, ytEintraege, produkt),
+    [liste, ytEintraege, produkt],
+  );
+
+  if (reihe.length === 0) return null;
 
   /* Eine Kachel ist eine Stimme, mehrere sind Stimmen. Die Begründung steht
    * oben an den zwei Konstanten; eine ausdrueckliche Prop sticht. */
-  const eine = liste.length === 1;
-  const titel = ueberschrift ?? (eine ? UEBERSCHRIFT_EINE : UEBERSCHRIFT_MEHRERE);
+  const eine = reihe.length === 1;
+  const mitYoutube = reihe.some((k) => k.art === 'yt');
+  const titel =
+    ueberschrift ??
+    (eine ? UEBERSCHRIFT_EINE : mitYoutube ? UEBERSCHRIFT_MIT_YOUTUBE : UEBERSCHRIFT_MEHRERE);
 
   const blaettere = (richtung) => {
     const bahn = bahnRef.current;
@@ -670,9 +750,13 @@ export function IgTestimonialSlideshow({
         onKeyDown={beiTaste}
         {...handlers}
       >
-        {liste.map((t) => (
-          <Kachel key={`${t.produkt}-${t.code}`} t={t} />
-        ))}
+        {reihe.map(({art, t}) =>
+          art === 'yt' ? (
+            <YtKachel key={`${t.produkt}-yt-${t.youtubeId}`} t={t} />
+          ) : (
+            <Kachel key={`${t.produkt}-${t.code}`} t={t} />
+          ),
+        )}
       </div>
 
       {/*

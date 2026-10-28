@@ -1,5 +1,6 @@
 import {useEffect, useRef} from 'react';
 import {THE_ALPHA_LIGA, THE_ALPHA_WISSEN} from './the-alpha-wissen-daten.js';
+import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {PERIODE_S, POSTER_T, SZENEN, WISSEN_POSTER} from './wissen-animationen.js';
 
 /*
@@ -33,15 +34,15 @@ export function TheAlphaWissen() {
             <div className="taw-text">
               <div data-fremdtext={a.wortlaut || undefined}>
                 {a.absaetze.map((p) => (
-                  <p key={p}>{p}</p>
+                  <p key={p}>{mitMarkeR(p)}</p>
                 ))}
               </div>
               {a.zitat ? (
                 <blockquote className="taw-zitat">
-                  <p>{a.zitat}</p>
+                  <p>{mitMarkeR(a.zitat)}</p>
                   {/* <cite>, nicht <footer>: app.css gibt jedem footer
                       50 px Abstand und weiße Schrift (Seiten-Fuß). */}
-                  <cite className="taw-zitat-von">{a.zitatVon}</cite>
+                  <cite className="taw-zitat-von">{mitMarkeR(a.zitatVon)}</cite>
                 </blockquote>
               ) : null}
               <Quellen liste={a.quellen} />
@@ -66,8 +67,8 @@ export function TheAlphaWissen() {
         >
           {THE_ALPHA_LIGA.spalten.map((s) => (
             <div key={s.titel} className="taw-spalte">
-              <h3 className="taw-spalte-titel">{s.titel}</h3>
-              <p>{s.text}</p>
+              <h3 className="taw-spalte-titel">{mitMarkeR(s.titel)}</h3>
+              <p>{mitMarkeR(s.text)}</p>
             </div>
           ))}
         </div>
@@ -192,9 +193,9 @@ function WissensBild({id, bild}) {
 function Kopf({etikett, titel, id}) {
   return (
     <header className="taw-kopf">
-      <p className="taw-etikett">{etikett}</p>
+      <p className="taw-etikett">{mitMarkeR(etikett)}</p>
       <h2 id={id} className="taw-titel">
-        {titel}
+        {mitMarkeR(titel)}
       </h2>
     </header>
   );
@@ -205,7 +206,7 @@ function Quellen({liste}) {
   return (
     <ol className="taw-quellen" aria-label="Quellen">
       {liste.map((q) => (
-        <li key={q}>{q}</li>
+        <li key={q}>{mitMarkeR(q)}</li>
       ))}
     </ol>
   );

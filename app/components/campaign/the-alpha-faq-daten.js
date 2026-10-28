@@ -57,7 +57,7 @@ export const THE_ALPHA_FAQ = [
     frage: THE_ALPHA_FAQ_LEITFRAGE,
     antwort: [
       `Du trägst die Kraft eines QiHome® Air am Körper. Der Qi Alpha® schützt auf dem Niveau unseres Raumgeräts, nur eben dort, wo du gerade bist. Gegenüber dem QiOne® 2 Pro ist seine Stärke um den Faktor 100 erweitert.`,
-      `Diese Kraft kommt aus dem zweiteiligen Gitterchip™ der ultimativen Generation und aus „The One Eye“, einem hochreinen Naturdiamanten. Beides gibt es nur im Qi Alpha®. Es gibt ${THE_ALPHA_SERIE} Stück. Deine Nummer wählst du selbst, solange sie frei ist.`,
+      `Diese Kraft kommt aus dem zweiteiligen Gitterchip® der ultimativen Generation und aus „The One Eye“, einem hochreinen Naturdiamanten. Beides gibt es nur im Qi Alpha®. Es gibt ${THE_ALPHA_SERIE} Stück. Deine Nummer wählst du selbst, solange sie frei ist.`,
     ],
   },
   {
@@ -72,16 +72,16 @@ export const THE_ALPHA_FAQ = [
     id: 'unterschied',
     frage: 'Was trägt der Qi Alpha®, das mein QiOne® 2 Pro nicht hat?',
     antwort: [
-      'Im Auge des Qi Alpha® sitzt „The One Eye“: ein hochreiner Naturdiamant in einer Iris mit 108 Strichen. Der Kern ist ein zweiteiliger Gitterchip™ aus unserer eigenen 750er Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen.',
+      'Im Auge des Qi Alpha® sitzt „The One Eye“: ein hochreiner Naturdiamant in einer Iris mit 108 Strichen. Der Kern ist ein zweiteiliger Gitterchip® aus unserer eigenen 750er Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen.',
       (vergeben) =>
         `Jeder Qi Alpha® trägt seine eigene Nummer und wird von Spezialisten mit jahrzehntelanger Erfahrung Stück für Stück durch die Fertigung begleitet. Die finale Politur wird per Hand von Goldschmieden mit meisterhafter Genauigkeit durchgeführt. Bereits vergeben sind die Nummern ${vergeben}.`,
     ],
   },
   {
     id: 'gitterchip',
-    frage: 'Wie arbeitet der Gitterchip™ der ultimativen Generation?',
+    frage: 'Wie arbeitet der Gitterchip® der ultimativen Generation?',
     antwort: [
-      'Er ordnet das Wasser um dich herum: Seine Moleküle schwingen im Gleichtakt. Der Gitterchip™ ist das Ergebnis von über einem Jahrzehnt Forschung am QiOne® und die außergewöhnlichste Erscheinung: eine Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen. Kohärent wirkend und ihre Umgebung aktiv prägend.',
+      'Er ordnet das Wasser um dich herum: Seine Moleküle schwingen im Gleichtakt. Der Gitterchip® ist das Ergebnis von über einem Jahrzehnt Forschung am QiOne® und die außergewöhnlichste Erscheinung: eine Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen. Kohärent wirkend und ihre Umgebung aktiv prägend.',
       'Der Physiker Emilio Del Giudice hat solche geordneten Bereiche im Wasser beschrieben, ein Zehntel Mikrometer groß, mit Millionen Molekülen im selben Takt.',
     ],
   },
@@ -90,22 +90,22 @@ export const THE_ALPHA_FAQ = [
     frage: 'Warum sitzt ein Diamant im Auge des Qi Alpha®?',
     antwort: [
       'Weil er dieselbe Sprache spricht wie deine Zellen: Licht. Deine Zellen leuchten, das hat der Biophysiker Fritz-Albert Popp über Jahrzehnte gemessen, und ein Diamant ordnet Licht.',
-      'Zusammen mit dem Gitterchip™ ordnet „The One Eye“ Licht und Wasser direkt an deinem Körper. Das gibt es nur im Qi Alpha®.',
+      'Zusammen mit dem Gitterchip® ordnet „The One Eye“ Licht und Wasser direkt an deinem Körper. Das gibt es nur im Qi Alpha®.',
     ],
   },
   {
     id: 'sechs-g',
     frage: 'Bin ich mit dem Qi Alpha® für 6G gerüstet?',
     antwort: [
-      'Ja. Durch das einmalige Duett des Gitterchips™ und „The One Eye“ ist der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet, egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet.',
-      'Den Gitterchip™ des QiOne® 2 Pro hat Prof. Dr. Peter C. Dartsch unter der Strahlung eines sendenden Smartphones in zwei Zellstudien untersucht.',
+      'Ja. Durch das einmalige Duett des Gitterchips® und „The One Eye“ ist der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet, egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet.',
+      'Den Gitterchip® des QiOne® 2 Pro hat Prof. Dr. Peter C. Dartsch unter der Strahlung eines sendenden Smartphones in zwei Zellstudien untersucht.',
     ],
   },
   {
     id: 'sauna-wasser',
     frage: 'Darf er mit in die Sauna, ins Meer und unter die Dusche?',
     antwort: [
-      'Der Qi Alpha® begleitet dich überallhin. Der Gitterchip™ ist unempfindlich gegen Wasser, Chlor und Salzwasser sowie gegen Schweiß und Hitze.',
+      'Der Qi Alpha® begleitet dich überallhin. Der Gitterchip® ist unempfindlich gegen Wasser, Chlor und Salzwasser sowie gegen Schweiß und Hitze.',
       'Die Goldkette nehme ich selbst bei langen Stunden im Chlorwasser ab, wie jeden Goldschmuck.',
     ],
   },

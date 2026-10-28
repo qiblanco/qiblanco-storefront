@@ -51,7 +51,7 @@ export function QiMasterAddons({addons, qmPreis, auswahl, setAuswahl}) {
           der schmalen Kaufspalte lauter als der Preis. Die Zeile benennt den
           Bereich über aria-labelledby. */}
       <p id="qm-addons-titel" className="qm-addons__titel">
-        Dazu für deinen Qi Alpha
+        Dazu für deinen Qi Alpha®
       </p>
       <div className="qm-addons__karten">
         {wn ? (
@@ -64,7 +64,7 @@ export function QiMasterAddons({addons, qmPreis, auswahl, setAuswahl}) {
               />
             </div>
             <p className="qm-addon__text">
-              Jeder Qi Alpha trägt eine Nummer der Alpha-Serie von 1 bis 111.
+              Jeder Qi Alpha® trägt eine Nummer der Alpha-Serie von 1 bis 111.
               Wähle deine.
             </p>
             <label className="qm-addon__feld">

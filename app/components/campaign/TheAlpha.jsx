@@ -35,7 +35,7 @@ const [MANIFESTATION, PROTECTION, LONGEVITY] = THE_ALPHA_ABSCHNITTE;
  * bilder/the-alpha-seitenband-2zu1.jpg. */
 const SEITENBAND = {
   url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/the-alpha-seitenband-2zu1.jpg?v=1793010108',
-  alt: 'Seitenband des Qi Alpha mit der Gravur Qi Alpha',
+  alt: 'Seitenband des Qi Alpha® mit der Gravur Qi Alpha®',
   width: 1936,
   height: 968,
 };

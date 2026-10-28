@@ -120,13 +120,13 @@ export default function QiMaster({block = undefined}) {
       <HeroBannerParallax
         backgroundImage={'qi-alpha-01-front.jpg?v=1792849253'}
         reverse
-        headline={<>Dein Qi Alpha begleitet dich<br />Tag und Nacht.</>}
+        headline={<>Dein Qi Alpha® begleitet dich<br />Tag und Nacht.</>}
         subheadline={'Ein Stück, das du nicht ablegen musst.'}
         parallax={true}
         size={850}
         link={'#qm-buybox'}
         linkStyling={'primary'}
-        linkText={'Hole dir deinen Qi Alpha'}
+        linkText={'Hole dir deinen Qi Alpha®'}
       />
       {/* Die Überschrift sagt, WAS die Studien sind — veröffentlicht —, statt
           vorwegzunehmen, woran sie gemessen wurden (Christian 2026-09-16,
@@ -380,12 +380,12 @@ function MainFeatures() {
           - Ein Diamant", und seit dem 2026-09-17 trägt er gar keine mehr (sie
           steht jetzt über dem Bildpaar). Ein Verweis auf eine Prosa-Zeile
           altert mit ihr. */}
-      <h2 className="text-center">Qi Alpha - Eine bisher unerreichte Liga</h2>
+      <h2 className="text-center">Qi Alpha® - Eine bisher unerreichte Liga</h2>
       <div className="MainFeatures NormalSectionSize">
         <div className="MainFeaturesColumn">
           <h3>Der Gitterchip™ der ultimativen Generation</h3>
           <p>
-            Der Kern des Qi Alpha ist ein zweiteiliger Gitterchip™, definiert
+            Der Kern des Qi Alpha® ist ein zweiteiliger Gitterchip™, definiert
             durch die über ein Jahrzehnt andauernde Forschung am QiOne®. Das
             Ergebnis ist die außergewöhnlichste Erscheinung: Eine Goldlegierung,
             deren Atome in einer einmalig definierten Ordnung stehen. Kohärent
@@ -443,8 +443,8 @@ function MainFeatures() {
           <h3>Pure Leistung. Pure Entspannung.</h3>
           <p>
             Durch dieses einmalige Duett des Gitterchips™ und "The One Eye" ist
-            der Qi Alpha auf jegliche erdenkbare Zukunft vorbereitet. Egal ob
-            sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Alpha
+            der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet. Egal ob
+            sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Alpha®
             leistet auf jeder Ebene das erdenkliche Maximum.
           </p>
         </div>
@@ -820,7 +820,7 @@ function AlphaSerie() {
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 17h3l-4 4l-4-4h3V3h2zM9 13H7c-1.1 0-2 .9-2 2v1a2 2 0 0 0 2 2h2v1H5v2h4c1.11 0 2-.89 2-2v-4a2 2 0 0 0-2-2m0 3H7v-1h2zM9 3H7c-1.1 0-2 .9-2 2v4a2 2 0 0 0 2 2h2c1.11 0 2-.89 2-2V5a2 2 0 0 0-2-2m0 6H7V5h2z"></path></svg>{' '}
             Eigene Seriennummer
           </h3>
-          <p>Jeder Qi Alpha ist mit einer einmaligen Seriennummer versehen. "Alpha - 1/111"</p>
+          <p>Jeder Qi Alpha® ist mit einer einmaligen Seriennummer versehen. "Alpha - 1/111"</p>
           <h3 className="mt-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m1 22l1.5-5h7l1.5 5zm12 0l1.5-5h7l1.5 5zm-7-7l1.5-5h7l1.5 5zm17-8.95l-3.86 1.09L18.05 11l-1.09-3.86l-3.86-1.09l3.86-1.09l1.09-3.86l1.09 3.86z"></path></svg>{' '}
             Eigene Goldlegierung
@@ -844,7 +844,7 @@ function AlphaSerie() {
             The One Eye
           </h3>
           <p>
-            Rund um das Auge des Qi Alpha laufen 108 Striche – die Zahl, die in
+            Rund um das Auge des Qi Alpha® laufen 108 Striche – die Zahl, die in
             der Yoga-Überlieferung für Vollständigkeit steht.
           </p>
         </div>
