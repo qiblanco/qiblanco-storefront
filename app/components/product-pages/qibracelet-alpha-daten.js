@@ -32,7 +32,7 @@ export const PRODUKT = {
   modus: null,
   name: 'QiBracelet®',
   claim: 'Entwickelt für Superhumans.',
-  kurzzeile: 'Drei Größen · Chirurgenstahl 316L · Gitterchip™ aus 750er Gold',
+  kurzzeile: 'Drei Größen · Chirurgenstahl 316L · Gitterchip® aus 750er Gold',
   preisanker: {nutzer: '+ 14.000 Nutzer', banner: 'Ultimate Power'},
   punkte: [
     {zeichen: 'wachstum', text: 'Persönliches Wachstum'},
@@ -176,10 +176,10 @@ export const WISSEN = {
       bild: null,
     },
     {
-      etikett: 'Gitterchip™',
+      etikett: 'Gitterchip®',
       titel: 'Gleiche Leistung wie der QiOne® 2 Pro.',
       absaetze: [
-        'Im Ende des Reifs sitzt der Gitterchip™ aus 750er Gold.',
+        'Im Ende des Reifs sitzt der Gitterchip® aus 750er Gold.',
         'Er ist rund 10 % stärker gebaut als im QiOne® 2 Pro, denn das Handgelenk liegt weiter von deiner Körpermitte entfernt.',
       ],
       bild: 2,
@@ -234,7 +234,7 @@ export const FAQ = {
   fragen: [
     {
       f: 'Kette oder Armband: Was ist der Unterschied?',
-      a: 'Die Wirkung ist dieselbe, der Ort ist ein anderer: der QiOne® 2 Pro am Hals, das QiBracelet® am Handgelenk. Der Gitterchip™ im QiBracelet® ist rund 10 % stärker gebaut. So gleicht er den weiteren Weg zur Körpermitte aus.',
+      a: 'Die Wirkung ist dieselbe, der Ort ist ein anderer: der QiOne® 2 Pro am Hals, das QiBracelet® am Handgelenk. Der Gitterchip® im QiBracelet® ist rund 10 % stärker gebaut. So gleicht er den weiteren Weg zur Körpermitte aus.',
     },
     {
       f: 'Welche Größe brauche ich?',
@@ -242,7 +242,7 @@ export const FAQ = {
     },
     {
       f: 'Was bekomme ich für den Preis?',
-      a: 'Einen Gitterchip™ aus 750er Gold, rund 10 % stärker gebaut als im QiOne® 2 Pro, in einem Reif aus Chirurgenstahl 316L. Entwickelt und gefertigt in Bayern, von Goldschmieden von Hand vollendet. Gebaut für Jahrzehnte.',
+      a: 'Einen Gitterchip® aus 750er Gold, rund 10 % stärker gebaut als im QiOne® 2 Pro, in einem Reif aus Chirurgenstahl 316L. Entwickelt und gefertigt in Bayern, von Goldschmieden von Hand vollendet. Gebaut für Jahrzehnte.',
     },
     {
       f: 'Darf das QiBracelet® in die Sauna und ins Wasser?',
@@ -254,7 +254,7 @@ export const FAQ = {
     },
     {
       f: 'Lässt die Wirkung mit der Zeit nach?',
-      a: 'Nein. Der Gitterchip™ arbeitet ohne Akku und nutzt sich nicht ab. Du gewöhnst dich nur an das Gefühl: Was am Anfang neu ist, wird nach einigen Tagen Alltag.',
+      a: 'Nein. Der Gitterchip® arbeitet ohne Akku und nutzt sich nicht ab. Du gewöhnst dich nur an das Gefühl: Was am Anfang neu ist, wird nach einigen Tagen Alltag.',
     },
     {
       f: 'Wie zahle ich in Raten?',

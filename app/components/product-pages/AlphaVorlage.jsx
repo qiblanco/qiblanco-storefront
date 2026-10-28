@@ -282,7 +282,7 @@ export function AlphaVorlage({
               <MarkeR text={PRODUKT.name} />
             </h1>
             {PRODUKT.claim ? <p className="tas-claim">{PRODUKT.claim}</p> : null}
-            {PRODUKT.kurzzeile ? <p className="tas-edition">{PRODUKT.kurzzeile}</p> : null}
+            {PRODUKT.kurzzeile ? <p className="tas-edition">{mitMarkeR(PRODUKT.kurzzeile)}</p> : null}
             <ul className="tas-punkte">
               {PRODUKT.punkte.map((p) => (
                 <li key={p.text} className="tas-punkt">
