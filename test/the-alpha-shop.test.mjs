@@ -201,9 +201,17 @@ test('Erstes Fenster (Christian Z2, 27.10.; Z1/Z2 28.10.): Preis allein im Kopf,
   assert.match(shop, /id="tas-konfigurator"\s+className="tas-schritt tas-schritt--erster"\s+aria-labelledby="tas-nummer-titel"/);
   assert.match(shop, /id=\{nummernAn \? undefined : 'tas-konfigurator'\}/);
   const css = lies('app/styles/the-alpha-produkt.css');
-  // Handy: Kopf, erste Option, dann Bühne; keine Spalte breiter als das Fenster
+  // Handy (Christian 28.10. Z21, Apple-Modus): Kopf mit Preis, dann die Galerie,
+  // dann die Schritte am Stück (Wunschnummer → Kette → Bezahlart); die Galerie
+  // steht nie zwischen zwei Schritten. Keine Spalte breiter als das Fenster.
   assert.match(css, /\.tas-produkt \{\s*order: -2;/);
-  assert.match(css, /\.tas-schritt--erster \{\s*order: -1;/);
+  assert.match(css, /\.tas-galerie \{\s*order: -1;/);
+  assert.doesNotMatch(css, /\.tas-schritt--erster \{\s*order: -1;/);
+  // der erste Schritt folgt am Handy auf die Galerie: Schrittabstand, nicht 0
+  assert.doesNotMatch(css.slice(0, css.indexOf('@media')), /\.tas-schritt--erster \{\s*margin-top: 0;/);
+  // Desktop (ab 1024) bleibt wie Z16: Galerie links, Auswahl rechts
+  const desk = css.slice(css.indexOf('@media (min-width: 1024px)'));
+  assert.match(desk, /\.tas-galerie \{\s*order: 0;/);
   assert.match(css, /grid-template-columns: minmax\(0, 1fr\);/);
   // Nutzerzahl >= 80 % der Preisschrift (28 zu 32 px)
   assert.match(css, /--tas-fs-5: 1\.75rem;/);
@@ -342,4 +350,89 @@ test('jede gezeichnete Stelle mit ® läuft durch den Helfer (Kopf, Zusammenfass
     const roh = new RegExp(`>\\s*\\{${stelle.replace('.', '\\.')}\\}\\s*<`);
     assert.doesNotMatch(wissen, roh, `Wissen: {${stelle}} roh`);
   }
+});
+
+/*
+ * EIGENER FUNNEL-KOPF DER QI-ALPHA-KAUFSEITE (Christian 28.10.2026 Z13, Z17;
+ * Grossjob 20261028-qi-alpha-kopf-99-registered-hochgestellt-ohne-bewertungen-
+ * chat-ratenzahlung, s04): auf /products/qi-alpha kein Ankündigungsband, links
+ * die Wortmarke „Qi Alpha®“ (Ziel die Seite selbst), rechts NUR Konto und
+ * Warenkorb, kein Menü, kein Shop-Wechsel, kein Fuß. Andere Seiten unverändert.
+ * ROT VOR GRÜN: auf origin/main 5f0aa3e9 fehlen QiAlphaFunnelKopf und der
+ * Funnel-Zweig im Layout (rot).
+ */
+const kopfQuelle = lies('app/components/Header.jsx');
+const layoutQuelle = lies('app/components/PageLayout.jsx');
+const funktion = (src, name) => {
+  const a = src.indexOf(`function ${name}(`);
+  assert.ok(a >= 0, `${name} fehlt`);
+  // bis zur schließenden Klammer in Spalte 0 (Ende des Funktionsrumpfs)
+  const ende = src.indexOf('\n}\n', a);
+  return src.slice(a, ende < 0 ? src.length : ende);
+};
+
+test('Funnel-Kopf: Wortmarke Qi Alpha® auf die Seite selbst, rechts nur Konto und Warenkorb', () => {
+  assert.match(kopfQuelle, /export function QiAlphaFunnelKopf\(/);
+  const k = funktion(kopfQuelle, 'QiAlphaFunnelKopf');
+  assert.match(k, /<MarkeR text="Qi Alpha®" \/>/);
+  assert.match(k, /to=\{QI_ALPHA_FUNNEL_PFAD\}/);
+  assert.match(kopfQuelle, /const QI_ALPHA_FUNNEL_PFAD = '\/products\/qi-alpha';/);
+  assert.match(k, /<AccountToggle isLoggedIn=\{isLoggedIn\} \/>/);
+  assert.match(k, /<CartToggle cart=\{cart\} \/>/);
+  for (const weg of [
+    'AnnouncementBanner',
+    'HeaderMenu',
+    'ShopSwitch',
+    'HeaderMenuMobileToggle',
+    'SearchToggle',
+    'CdnBild',
+    'GoogleSterneBadge',
+    'to="/"',
+  ]) {
+    assert.doesNotMatch(k, new RegExp(weg.replace(/[/"]/g, '\\$&')), `${weg} im Funnel-Kopf`);
+  }
+});
+
+test('Funnel-Kopf: nur /products/qi-alpha, nicht B-Fassung, Wunschnummer oder Kette', () => {
+  const f = funktion(kopfQuelle, 'istQiAlphaFunnelPfad');
+  const re = f.match(/\/\^.*\$\/i/);
+  assert.ok(re, 'Pfadmuster fehlt');
+  // eslint-disable-next-line no-eval
+  const muster = eval(re[0]);
+  for (const ja of ['/products/qi-alpha', '/products/qi-alpha/', '/products/Qi-Alpha', '/en/products/qi-alpha']) {
+    assert.ok(muster.test(ja), ja);
+  }
+  for (const nein of [
+    '/products/qi-alpha-b',
+    '/products/qi-alpha-wunschnummer',
+    '/products/qi-alpha-goldkette',
+    '/products/qione-2-pro',
+    '/pages/Qi-Alpha',
+    '/cart',
+    '/',
+  ]) {
+    assert.ok(!muster.test(nein), nein);
+  }
+});
+
+test('Layout: auf dem Funnel-Pfad Funnel-Kopf, Warenkorb-Schublade, kein Fuß, kein Menü', () => {
+  assert.match(layoutQuelle, /istQiAlphaFunnelPfad\(pathname\)/);
+  const f = funktion(layoutQuelle, 'QiAlphaFunnelLayout');
+  assert.match(f, /<CartAside cart=\{cart\} \/>/);
+  assert.match(f, /<QiAlphaFunnelKopf/);
+  assert.match(f, /<main data-qa-funnel="">\{children\}<\/main>/);
+  for (const weg of ['<Footer', '<Header', '<MobileMenuAside', '<SearchAside', '<WissenVertrauenWeiter']) {
+    assert.ok(!f.includes(weg), `${weg} im Funnel-Layout`);
+  }
+  // Gegenprobe: das Standard-Layout aller anderen Seiten trägt Kopf und Fuß weiter.
+  const p = funktion(layoutQuelle, 'PageLayout');
+  assert.ok(p.includes('<Header') && p.includes('<Footer') && p.includes('<MobileMenuAside'));
+});
+
+test('Funnel-Kopf-Stil: eigene Datei, Token, hängt am Layout', () => {
+  const css = lies('app/styles/qi-alpha-funnel-kopf.css');
+  assert.match(css, /\.qfk\s*\{/);
+  assert.match(css, /--qfk-hoehe:/);
+  assert.match(css, /main\[data-qa-funnel\]/);
+  assert.match(lies('app/root.jsx'), /qi-alpha-funnel-kopf\.css\?url/);
 });

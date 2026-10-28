@@ -518,7 +518,7 @@ function IntroSection() {
     <section className="lp-vp-section" data-section="lp-a-intro">
       <h2>Wirkprinzip</h2>
       <p className="lp-vp-section__lede">
-        Der GitterChip™ ermöglicht es den umliegenden Wassermolekülen, in den kohärenten
+        Der Gitterchip<sup>®</sup> ermöglicht es den umliegenden Wassermolekülen, in den kohärenten
         Zustand überzugehen – den Superzustand des Wassers. Aus normalem Wasser wird
         energetisch hoch aufgeladenes Wasser, mit deutlich mehr Elektronenvolt. Das ist die
         Grundlage für Zellprozesse im Körper: Sie verfügen über mehr Energie, etwa für die
@@ -622,7 +622,7 @@ function MechanismSection() {
    slider → Knopf. Die Animation eröffnet den Themenblock, die Erklärung folgt
    darunter. Das ist EINE Sektion geblieben, nur anders geordnet — der Slider
    steht weiterhin genau einmal auf der Seite. */
-function ScienceSection() {
+function ScienceSection({ohneScrollVideo = false}) {
   return (
     <section className="lp-vp-section" data-section="lp-a-wissenschaft">
       {/* Mikroskop-Beweis als Scroll-Scrub-Video (ersetzt die typografische
@@ -635,26 +635,31 @@ function ScienceSection() {
           Erst die Zellen zeigen, dann sagen, was sechs Jahre Forschung daran
           gemessen haben. Die Regel gilt über diese Stelle hinaus und liegt als
           Standard in SKILL-SCROLL-ANIMATIONEN.md, Kapitel 7. */}
-      <ScrollScrubVideo
-        dataSection="lp-a-mikroskop-video"
-        srcDesktop="https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov"
-        srcMobile="https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov"
-        overlayStart={{
-          titel: 'Zellbiologisch geprüft',
-          text: 'Entdecke die Effekte auf Zellebene.',
-        }}
-        overlayEnd={[
-          {
-            titel: 'Ohne GitterChip™',
-            text: 'Zellen unter Mobilfunk-Stress zeigen eine geschwächte Barriere und mehr oxidative Belastung.',
-          },
-          {
-            titel: 'Mit GitterChip™',
-            text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
-          },
-        ]}
-        fussnote="Gegenüberstellung aus den in-vitro-Zellstudien. Kein Erfahrungsbericht, keine Heilaussage."
-      />
+      {/* Kurz-Arm K50 (szs-e3-gs079, GS-079 Bestandteil „Scrollanimationen
+          raus“): ohne dieses Video. Der Beweis, den es zeigt, steht direkt
+          darunter in Zahlen („6 Jahre Forschung“, Studienslider). */}
+      {!ohneScrollVideo && (
+        <ScrollScrubVideo
+          dataSection="lp-a-mikroskop-video"
+          srcDesktop="https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov"
+          srcMobile="https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov"
+          overlayStart={{
+            titel: 'Zellbiologisch geprüft',
+            text: 'Entdecke die Effekte auf Zellebene.',
+          }}
+          overlayEnd={[
+            {
+              titel: 'Ohne Gitterchip®',
+              text: 'Zellen unter Mobilfunk-Stress zeigen eine geschwächte Barriere und mehr oxidative Belastung.',
+            },
+            {
+              titel: 'Mit Gitterchip®',
+              text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
+            },
+          ]}
+          fussnote="Gegenüberstellung aus den in-vitro-Zellstudien. Kein Erfahrungsbericht, keine Heilaussage."
+        />
+      )}
       {/* DIE SCHRIFTLICHE ERKLÄRUNG ZUM BLOCK, den das Video darueber eröffnet:
           „6 Jahre Forschung" (PeerReviewStudies, von der Startseite übernommen)
           und der Studienslider „Wirkung an menschlichen Zellen bestätigt!".
@@ -789,7 +794,7 @@ function PricingSection() {
       name: 'QiBracelet®',
       handle: 'qibracelet',
       tagline: 'Eleganz & Schutz für unterwegs',
-      features: ['Eleganter GitterChip™ integriert', 'E-Smog- & 5G-Puffer', 'Ruhe für unterwegs'],
+      features: ['Eleganter Gitterchip® integriert', 'E-Smog- & 5G-Puffer', 'Ruhe für unterwegs'],
       featured: false,
     },
     {
@@ -1130,9 +1135,16 @@ function StickyKaufknopf({nurMobil = false}) {
    Knöpfe stehen in A also auch auf dem Desktop im HTML, dort aber mit
    display: none (.lp-a-nur-mobil, styles/schlaf-zellen-schutz-seite.css) —
    kein Kasten, kein Klick, keine Sichtung. Der feste Knopf behält dazu seine
-   Breitengrenze aus B (bis 767 px), Tablets sehen ihn also wie in B nicht. */
+   Breitengrenze aus B (bis 767 px), Tablets sehen ihn also wie in B nicht.
+
+   KURZ-ARME K50/K25 (27.10.2026, Job 20261017-ads-lp-radikal-kurz-tests-
+   gs079-durch-sim-tor-s03): sie sind der Champion je Gerät minus Abschnitte
+   (Christian 17.10.: „eine Gewinner-LP dann kürzen“). Sie tragen deshalb
+   dieselbe Bedingung: mobil den festen Knopf, K50 dazu lp-a-weiter-1;
+   desktop beides nicht, wie A. Ohne den festen Knopf wäre „fester Knopf
+   raus“ mit „kürzen“ in einem Arm gebündelt. */
 export function traegtChampionMobil(variante) {
-  return variante === 'a';
+  return variante === 'a' || variante === 'k50' || variante === 'k25';
 }
 
 /* ───────── Root ─────────
@@ -1144,18 +1156,43 @@ export function traegtChampionMobil(variante) {
    'b2' (zweiter Arm, szs-e2-gs126, 10.10.2026) = A plus die Weiter-Knöpfe
    nr=1 und nr=2 an ihren Stellen von vor dem 20.09., OHNE festen Kaufknopf
    (nr=6 steht in A schon). NUR pages.schlaf-zellen-schutz-b2.jsx übergibt
-   'b2'. Mobil und desktop gleich. */
+   'b2'. Mobil und desktop gleich.
+
+   KURZ-ARME (Job 20261017-ads-lp-radikal-kurz-tests-gs079-durch-sim-tor,
+   Christian 17.10.2026: „und auch mal radikale Ideen testen, wo die LP für
+   die Ads deutlich kürzer ist"). Gekürzt wird NUR durch Weglassen ganzer
+   Abschnitte; kein Satz ist umformuliert, kein Abschnitt neu. Was hier fehlt,
+   steht unverändert in A.
+   'k50' (szs-e3-gs079, Stufe-1-Paket GS-079, rund die Hälfte): ohne beide
+     Scrollanimationen (GitterChip vor dem ersten Argument, Mikroskop im
+     Wissenschaftsblock), ohne
+     Externe Stimmen, Video-Stimmen, Kachelreihe und Schlussblock. Gemessen an
+     der Vorschau 17.10.: mit dem Mikroskop-Video blieb die Seite mobil bei
+     79 % von A; die Hälfte erreicht sie nur ohne (Begründung und die Frage
+     „eine Animation je Seite“, GS-175: experimente.yaml szs-e3-gs079).
+   'k25' (szs-e4-gs174, Radikal-Kurz, rund ein Viertel): Kopf, Bewertungen,
+     Garantie, Preisblock. Der eine Beleg sind die Bewertungen:
+     Menschen ziehen, Studien überzeugen erst beim Zweifel (Kaufüberzeugung,
+     Kanon 2026-10-10).
+   SEIT DEM 27.10.2026 VOM CHAMPION ABGELEITET (Urteil szs-e1-gs050, B
+   gewinnt mobil): beide tragen traegtChampionMobil (oben), also mobil den
+   festen Kaufknopf und K50 dazu den Kaufblock nach dem Mechanismus (nr=1);
+   desktop beides nicht, wie A. Vorher (17.10.) trug K50 nr=1 auf beiden
+   Geräten und keiner der beiden den festen Knopf. */
 export function SchlafZellenSchutz({products, variante = 'a'}) {
   const data = {products: products || []};
   const istB = variante === 'b';
   const istB2 = variante === 'b2';
+  const istK50 = variante === 'k50';
+  const istK25 = variante === 'k25';
+  const istKurz = istK50 || istK25;
   const championMobil = traegtChampionMobil(variante);
 
   return (
     <LiveDataCtx.Provider value={{data}}>
       <div className="lp-vp lp-a3">
         <Hero />
-        <DreiThemenBand dataSection="lp-a-drei-themen" block="lp" />
+        {!istK25 && <DreiThemenBand dataSection="lp-a-drei-themen" block="lp" />}
         {/* Christian, 19.09.2026: „danach unsere Scroll-down-Animation einfügen“.
             Derselbe Baustein, den Startseite, /products/qione-2-pro,
             /pages/tiefer-schlaf und /pages/E-Smog-Schutz schon tragen — EINE
@@ -1175,13 +1212,15 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             jüngere Anweisung sticht: erst zeigen, dann erklären. Die
             Animation blieb stehen, der Abschnitt ist gewandert — als ein
             Stück, unverändert im Wortlaut und nur an EINER Stelle. */}
-        <GitterchipMoleculesScrub
-          dataSection="lp-a-gitterchip-video"
-          heightVhDesktop={300}
-          heightVhMobile={250}
-        />
-        <IntroSection />
-        <MechanismSection />
+        {!istKurz && (
+          <GitterchipMoleculesScrub
+            dataSection="lp-a-gitterchip-video"
+            heightVhDesktop={300}
+            heightVhMobile={250}
+          />
+        )}
+        {!istK25 && <IntroSection />}
+        {!istK25 && <MechanismSection />}
         {/* <WeiterCta nr={1} /> ERSATZLOS GESTRICHEN — Christian, 20.09.2026:
             der Knopf unter „3 Wirkebenen". Eindeutig benannt, keine Auslegung.
             IN VARIANTE B KEHRT ER ZURÜCK (Christian 06.10.2026, Test GS-050:
@@ -1192,13 +1231,16 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
         {(istB || istB2) && <WeiterCta nr={1} />}
         {/* SEIT DEM 20.10.2026 AUCH IN A, NUR MOBIL: B hat mobil gewonnen
             (szs-e1-gs050, Champion mobil oben). Derselbe Baustein, derselbe
-            Schlüssel lp-a-weiter-1, damit seine Historie weiterläuft. */}
-        {championMobil && (
+            Schlüssel lp-a-weiter-1, damit seine Historie weiterläuft.
+            K50 trägt ihn als Ableitung vom Champion mit (mobil ja, desktop
+            nein, wie A); K25 lässt ihn mit dem Mechanismus-Block weg, nach
+            dem er steht. */}
+        {championMobil && !istK25 && (
           <div className="lp-a-nur-mobil">
             <WeiterCta nr={1} />
           </div>
         )}
-        <ScienceSection />
+        {!istK25 && <ScienceSection ohneScrollVideo={istK50} />}
         {/* IN VARIANTE B2 KEHRT AUCH nr=2 ZURÜCK (Christian 10.10.2026, Test
             GS-126: „mobil auch nochmal mit der alten Ansicht und mehr Knöpfen
             … einfach nur einen Button …, der häufiger vorkommt"). Stelle bis
@@ -1272,8 +1314,8 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             Derselbe geteilte Baustein, dieselbe Reihenfolge MAXIM → BRAINEFFECT →
             Geldhelden. Erst dadurch haben Christians MAXIM-/Andi-Lew-Textwechsel
             auf dieser Seite überhaupt einen Gegenstand. */}
-        <ExterneStimmen dataSection="lp-a-externe-stimmen" />
-        <VideoSection />
+        {!istKurz && <ExterneStimmen dataSection="lp-a-externe-stimmen" />}
+        {!istKurz && <VideoSection />}
         {/* Kachelreihe NACH den Video-Testimonials (Christian, 2026-09-19):
             „Beeindruckende Kundenerfahrungen / alle Google-Bewertungen / und
             dann die 4,8 Sterne klickbar" ist EIN Bereich zusammen. Bis heute
@@ -1282,10 +1324,10 @@ export function SchlafZellenSchutz({products, variante = 'a'}) {
             zerschnitt ihn: der Leser bekam Erfahrungsberichte, dann
             Werbekacheln, dann wieder Erfahrungsberichte. Verschoben, nicht
             umgebaut — dieselben fünf Kacheln, dieselbe Bedienung. */}
-        <InfoSlider dataSection="lp-a-info-slider" />
+        {!istKurz && <InfoSlider dataSection="lp-a-info-slider" />}
         <GuaranteeSection />
         <PricingSection />
-        <FinalCTA />
+        {!istKurz && <FinalCTA />}
         {(istB || championMobil) && <StickyKaufknopf nurMobil={championMobil} />}
       </div>
     </LiveDataCtx.Provider>

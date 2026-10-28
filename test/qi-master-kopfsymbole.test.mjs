@@ -59,11 +59,11 @@ const QIMASTER_JSX = join(WURZEL, 'app/components/product-pages/QiMaster.jsx');
  * Christians Anweisung desselben Tages). Der Rest ist der Stand vom 2026-09-16.
  */
 const KOPFBLOCK_HTML = `<div class="qi-de">
-<p class="p1">Das ultimative Wearable der Zukunft – Gitterchip™ der nächsten Generation</p>
+<p class="p1">Das ultimative Wearable der Zukunft – Gitterchip® der nächsten Generation</p>
 <ul>
 <li><b>"The One Eye" - Look</b></li>
-<li><b>Zweiteiliger Gitterchip™</b></li>
-<li><b>Hochreiner Natur Diamant eingelassen in den Gitterchip™</b></li>
+<li><b>Zweiteiliger Gitterchip®</b></li>
+<li><b>Hochreiner Natur Diamant eingelassen in den Gitterchip®</b></li>
 <li><b>Alpha Edition - Limitiert auf 100 Stück</b></li>
 </ul>
 </div>`;
@@ -166,8 +166,8 @@ test('die vier Zeilen des Kopfblocks haben je ein eigenes Symbol', () => {
   // Der Text bleibt Wort für Wort unberuehrt -- er gehört einem anderen Auftrag.
   for (const zeile of [
     '"The One Eye" - Look',
-    'Zweiteiliger Gitterchip™',
-    'Hochreiner Natur Diamant eingelassen in den Gitterchip™',
+    'Zweiteiliger Gitterchip®',
+    'Hochreiner Natur Diamant eingelassen in den Gitterchip®',
     'Alpha Edition - Limitiert auf 100 Stück',
   ]) {
     assert.ok(html.includes(zeile), `Zeile verändert: ${zeile}`);
@@ -199,8 +199,8 @@ test('UMBENENNUNG: beide Fassungen der vierten Zeile bekommen ihr Symbol', () =>
 test('TRENNSCHAERFE: keine Regel greift die Zeile einer anderen', () => {
   const zeilen = {
     '"The One Eye" - Look': 'one-eye',
-    'Zweiteiliger Gitterchip™': 'gitterchip-zweiteilig',
-    'Hochreiner Natur Diamant eingelassen in den Gitterchip™': 'diamant-gefasst',
+    'Zweiteiliger Gitterchip®': 'gitterchip-zweiteilig',
+    'Hochreiner Natur Diamant eingelassen in den Gitterchip®': 'diamant-gefasst',
     'Alpha Edition - Limitiert auf 100 Stück': 'alpha-charge',
   };
   for (const [text, erwartet] of Object.entries(zeilen)) {

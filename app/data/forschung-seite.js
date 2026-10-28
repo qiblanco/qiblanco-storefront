@@ -267,7 +267,7 @@ export const WARUMS = [
     id: 'gitter',
     frage: 'Warum reagiert Wasser auf ein statisches Gitter?',
     befund:
-      'Der GitterChip™ ist ein Gitter aus einer 750er Goldlegierung, gefasst in Chirurgenstahl. Er hat keine Elektronik und keinen Akku und sendet nichts. Die Publikationen beschreiben sein statisches Feld als Anstoß für Wassermoleküle, in den kohärenten Zustand zu wechseln.',
+      'Der Gitterchip® ist ein Gitter aus einer 750er Goldlegierung, gefasst in Chirurgenstahl. Er hat keine Elektronik und keinen Akku und sendet nichts. Die Publikationen beschreiben sein statisches Feld als Anstoß für Wassermoleküle, in den kohärenten Zustand zu wechseln.',
     hypothese:
       'Das präzise geschnittene Gitter gibt dem benachbarten Wasser eine Vorlage, an der es sich ausrichtet.',
     versuch:
@@ -282,7 +282,7 @@ export const WARUMS = [
     hypothese:
       'Die drei beschreiben dieselbe Ordnung auf drei Größenordnungen: im einzelnen Molekül, in der Domäne und an der Oberfläche.',
     versuch:
-      'Aus jedem Modell eine Vorhersage ableiten, die die anderen nicht machen, und sie messen. Wächst die geordnete Schicht neben dem GitterChip™ schneller, und unter Infrarotlicht noch stärker, spricht das für den Weg über das EZ-Wasser nach Prof. Dr. Pollack.',
+      'Aus jedem Modell eine Vorhersage ableiten, die die anderen nicht machen, und sie messen. Wächst die geordnete Schicht neben dem Gitterchip® schneller, und unter Infrarotlicht noch stärker, spricht das für den Weg über das EZ-Wasser nach Prof. Dr. Pollack.',
     link: {href: '/pages/was-ist-kohaerentes-wasser', text: 'Kohärentes Wasser einfach erklärt'},
   },
   {

@@ -97,7 +97,7 @@ function artikelSchema() {
     dateModified: isoMitZone(GEAENDERT),
     author: qiBlanco,
     publisher: qiBlanco,
-    about: {'@type': 'Thing', name: 'GitterChip'},
+    about: {'@type': 'Thing', name: 'Gitterchip®'},
   };
 }
 

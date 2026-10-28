@@ -212,7 +212,7 @@ const KAKAO_HERKUNFT =
 const PRODUKT_GRUPPEN = [
   {
     id: 'gitterchip',
-    titel: 'Gitterchip™ für dich und dein Zuhause',
+    titel: 'Gitterchip® für dich und dein Zuhause',
     produkte: [
       {
         name: 'QiOne® 2 Pro',

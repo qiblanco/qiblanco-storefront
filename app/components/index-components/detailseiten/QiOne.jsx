@@ -297,15 +297,15 @@ function HerzQiOne() {
       <div className="Flex-Image mt-2">
         <img
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-e1668521164461_1_21efb1fc-4b64-469f-96d2-33dcf70d6506.jpg?v=1670809038"
-          alt="Gitterchip™ des QiOne® 2 Pro: goldfarbene Scheibe mit gleichmäßigem, wabenartigem Gittermuster"
+          alt="Gitterchip® des QiOne® 2 Pro: goldfarbene Scheibe mit gleichmäßigem, wabenartigem Gittermuster"
         />
       </div>
       <div className="Flex-Content mt-2">
         <p></p>
         <h2>Das Herz des QiOne® 2 Pro</h2>
-        <h3>Gitterchip™ aus eigens entwickelter Goldlegierung</h3>
+        <h3>Gitterchip<sup>®</sup> aus eigens entwickelter Goldlegierung</h3>
         <p className='mt-2'>
-          Der revolutionäre Gitterchip™ des QiOne® prägt ein statisches Feld
+          Der revolutionäre Gitterchip<sup>®</sup> des QiOne® prägt ein statisches Feld
           aus, das Wassermoleküle dazu anregt, in den kohärenten Zustand – den
           Superzustand – überzugehen.
         </p>
@@ -367,7 +367,7 @@ function HerzQiOne() {
 
         <p></p>
         <p className='mt-2'>
-          Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip™.
+          Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip<sup>®</sup>.
           Dieser prägt durch sein statisches Feld, das maßgeblich durch die
           spezifische Atompositionierung von Goldatomen erreicht wird, die
           Wassermoleküle. Somit steigt die Wahrscheinlichkeit an, dass Wasser

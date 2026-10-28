@@ -163,7 +163,7 @@ describe('Autorenkasten - der Text', () => {
   });
 
   it('hält die Markenschreibung ein', () => {
-    assert.ok(AUTORENKASTEN.saetze.some((s) => s.includes('GitterChip™')));
+    assert.ok(AUTORENKASTEN.saetze.some((s) => s.includes('Gitterchip®')));
   });
 
   it('ohne Foto ist ein gueltiger Zustand, kein leeres Bild', () => {

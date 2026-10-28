@@ -56,14 +56,29 @@ Oxygen-Runtime-Env kommt aus dem `--env-file` des Deploy-Workflows
    sonst nur `shadow` an und weist jedes `on`-Verdikt mit 400 ab; die tägliche
    Probe `senke_rand` wird dann rot.
 
-## Vor dem Flip offen (adversariale Prüfung 2026-10-10)
+## Vor dem Flip offen (adversariale Prüfung 2026-10-10) — erledigt 2026-10-26
 
-- `/api/` (Storefront-API-Proxy) steht nicht in `CHECKOUT_PFADE`. Bei `on` könnte
-  der Proxy eine HTML-Antwort mit 429/503 bekommen. Vor dem Flip in die
-  geschützten Pfade aufnehmen.
-- Beim ersten Request eines Schlüssels trägt der Verlauf nur einen Wert, die
-  Hysterese greift dann nicht. Ein einzelner Ausreißer eskaliert bei `on` sofort.
-- Beides wirkt nur bei `SM_MODE=on`. Im Schatten ändert die Middleware keine Antwort.
+Erledigt von Job `20261011-fm-folge-sicherheitsmeister-asn-und-kalibrierung-s02`,
+in `eskalation.js` und in der Python-SSoT `src/eskalation.py` gleich
+(`scripts/abwehr/paritaet.mjs` 4560/0, `inv1-test.mjs` 4b/4c):
+
+- **`/api/` (Storefront-API-Proxy):** eigene Klasse `API_PFADE`, höchstens S1
+  (200, Body gleich, `Retry-After` + Tarpit). Nie Challenge, nie Block: ein
+  `fetch()` kann die Challenge-Seite nicht lösen. Nur `CHECKOUT_PFADE` hätte
+  503 auf 429 gekappt, die HTML-429 aber stehen lassen.
+  `.data`, `__manifest` und `/collect` gehören nicht dazu: Rechenzentrums-Scraper
+  greifen gemessen stark über `.data` ab.
+- **Erste Anfrage ohne Hysterese:** weniger als `HYSTERESE_N` (3) Beobachtungen
+  sind nicht gehalten, also höchstens S1. Challenge und Block erst ab einem
+  vollen Fenster.
+- **Senke:** nimmt seit demselben Job Zeilen an, deren angewandte Stufe unter
+  `stufe(score)` liegt (Hysterese, Checkout-Kappe, API-Kappe). Vorher wies sie
+  genau diese echten Zeilen ab. Eine Stufe ÜBER dem Score bleibt abgewiesen.
+- **Good-Bot-Politik (F-7):** gemessen gegenstandslos. Vom 2026-10-12 bis zum
+  2026-10-25 gab es 872 Good-Bot-Schlüssel und 0 davon auf S2 oder höher; im
+  7-Tage-Rohbestand lag der Höchstscore bei 16, alle auf S0. Keine Sonderregel
+  im Worker. Wache: `sicherheitsmeister kalibrierung` zählt `n_goodbot_s2plus`
+  weiter, und ein Wert über 0 ist ein Befund (Rückweg `SM_MODE=shadow`).
 
 ## Rollback
 
@@ -92,5 +107,5 @@ Oxygen-Runtime-Env kommt aus dem `--env-file` des Deploy-Workflows
 - **F-5:** Adaptive Scraper lösen Challenges. Die Middleware ist Dämpfer
   im Mehrschicht-Verbund, kein Wall.
 - **Gute Bots:** Reverse-DNS-Verifikation (Googlebot) ist im Worker nicht
-  möglich. Vor `SM_MODE=on` gehört die Good-Bot-Policy entschieden
-  (SEO-Schutz F-7); bis dahin schützt der shadow-Default.
+  möglich. Die Good-Bot-Politik ist seit 2026-10-26 gemessen entschieden
+  (siehe „Vor dem Flip offen“): keine Sonderregel, weil kein Good-Bot S2 erreicht.

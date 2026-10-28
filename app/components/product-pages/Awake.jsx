@@ -209,7 +209,7 @@ const herkunftRows = [
         <p className="mt-3">
           Nach der Formung geben wir dem Kakao die Zeit, die er braucht: In der
           harmonisierenden <b>QiHome® Air</b> Atmosphäre – unterstützt durch
-          die <b>GitterChip™-Technologie</b> – kristallisiert er langsam aus
+          die <b>Gitterchip<sup>®</sup>-Technologie</b> – kristallisiert er langsam aus
           und entfaltet dabei sein charakteristisches Kristallmuster.
         </p>
       </>

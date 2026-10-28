@@ -209,7 +209,7 @@ export const QIMASTER_DIAMANT = {
       label: null,
       beleg: false,
       absaetze: [
-        'Kohärenz heißt: viele Teilchen schwingen im Gleichtakt. Kristalle sind das alltäglichste Beispiel dafür – der Physiker Emilio Del Giudice und seine Kollegen nennen den Diamanten, der seine Kohärenz erst bei rund 3.545 °C verliert, wenn er schmilzt. Dieselbe Arbeitsgruppe hat beschrieben, dass auch flüssiges Wasser kohärente Bereiche bildet: Domänen von etwa einem Zehntel Mikrometer, in denen Millionen Moleküle im Takt schwingen. Von dieser Ordnung im Wasser her denken wir auch den Gitterchip™.',
+        'Kohärenz heißt: viele Teilchen schwingen im Gleichtakt. Kristalle sind das alltäglichste Beispiel dafür – der Physiker Emilio Del Giudice und seine Kollegen nennen den Diamanten, der seine Kohärenz erst bei rund 3.545 °C verliert, wenn er schmilzt. Dieselbe Arbeitsgruppe hat beschrieben, dass auch flüssiges Wasser kohärente Bereiche bildet: Domänen von etwa einem Zehntel Mikrometer, in denen Millionen Moleküle im Takt schwingen. Von dieser Ordnung im Wasser her denken wir auch den Gitterchip®.',
       ],
       zitat: null,
       quelle:
@@ -251,7 +251,7 @@ export const QIMASTER_DIAMANT = {
   schluss: [
     'Qi Alpha®',
     'The One Eye - ordnet Licht',
-    'Gitterchip™ - ordnet Wasser',
+    'Gitterchip® - ordnet Wasser',
   ],
 };
 

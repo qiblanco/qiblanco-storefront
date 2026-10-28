@@ -272,7 +272,7 @@ function MechanismusSection() {
         />
         <figcaption>
           Schema: links ungeordnetes Wasser, rechts kohärent geordnet. Der
-          GitterChip™ gibt die Ordnung vor.
+          Gitterchip<sup>®</sup> gibt die Ordnung vor.
         </figcaption>
       </figure>
       <div className="v3-kapitel">
@@ -442,7 +442,7 @@ function ProdukteSection() {
       handle: 'qibracelet',
       ziel: '/pages/qibracelet',
       tagline: 'Eleganz & Schutz für unterwegs',
-      features: ['GitterChip™ integriert', 'E-Smog- & 5G-Puffer', 'Drei Größen'],
+      features: ['Gitterchip® integriert', 'E-Smog- & 5G-Puffer', 'Drei Größen'],
       held: false,
     },
     {
@@ -560,11 +560,11 @@ function MikroskopSection() {
       }}
       overlayEnd={[
         {
-          titel: 'Ohne GitterChip™',
+          titel: 'Ohne Gitterchip®',
           text: 'Zellen unter Mobilfunk-Stress zeigen eine geschwächte Barriere und mehr oxidative Belastung.',
         },
         {
-          titel: 'Mit GitterChip™',
+          titel: 'Mit Gitterchip®',
           text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
         },
       ]}

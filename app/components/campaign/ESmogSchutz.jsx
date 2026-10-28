@@ -359,11 +359,11 @@ function ScienceSection() {
         }}
         overlayEnd={[
           {
-            titel: 'Ohne GitterChip™',
+            titel: 'Ohne Gitterchip®',
             text: 'Zellen unter Mobilfunk-Stress zeigen eine geschwächte Barriere und mehr oxidative Belastung.',
           },
           {
-            titel: 'Mit GitterChip™',
+            titel: 'Mit Gitterchip®',
             text: 'Dieselben Zellen halten ihre Barrierefunktion unter Mobilfunk-Stress messbar besser aufrecht (TEER-Messung, in vitro).',
           },
         ]}
@@ -580,7 +580,7 @@ function PricingSection() {
       name: 'QiBracelet®',
       handle: 'qibracelet',
       tagline: 'Ruhiger Puffer für unterwegs',
-      features: ['Eleganter GitterChip™ integriert', 'Kohärentes Wasser am Handgelenk', 'Dabei, wo das Handy ist'],
+      features: ['Eleganter Gitterchip® integriert', 'Kohärentes Wasser am Handgelenk', 'Dabei, wo das Handy ist'],
       featured: false,
     },
     {
@@ -593,7 +593,7 @@ function PricingSection() {
         // (alle Produkte tragen denselben Gitterchip; Stärke-Ranking =
         // Christian/Legal-Gate, HARDWARE_ENTSCHEIDUNGSHILFE_V1) — ersetzt
         // durch das belegte Material-Merkmal.
-        'GitterChip™ aus 750er Goldlegierung, von Hand veredelt',
+        'Gitterchip® aus 750er Goldlegierung, von Hand veredelt',
         'Tragbar als Anhänger',
         'Kohärente Wasserstruktur',
         'Unser Bestseller',

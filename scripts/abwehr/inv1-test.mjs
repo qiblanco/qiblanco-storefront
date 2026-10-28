@@ -18,7 +18,7 @@ import {
   _testReset,
   _testKatalogMax,
 } from '../../app/lib/abwehr/abwehr.js';
-import {aktion, AKTION_FELDER} from '../../app/lib/abwehr/eskalation.js';
+import {aktion, AKTION_FELDER, HYSTERESE_N} from '../../app/lib/abwehr/eskalation.js';
 
 let pass = 0;
 let fail = 0;
@@ -69,6 +69,18 @@ const SIGNALE_90 = {
 // Stufe erzwingen wollen, müssen die Lane-Lage deshalb explizit benennen —
 // sie zu umgehen wäre genau die Test-Umgebung, in der die Lane nie läuft.
 const LANE_BULK = {evasion: true}; // positive Bulk-Evidenz => kein Deckel
+
+// HYSTERESE (seit Job 20261011-fm-folge-sicherheitsmeister-asn-und-kalibrierung-s02):
+// Challenge und Block brauchen ein VOLLES gehaltenes Fenster. Wer S2/S3
+// erzwingen will, schickt denselben Abruf HYSTERESE_N-mal (gleicher Schlüssel)
+// und misst die letzte Antwort.
+async function gehalten(mkReq, env, signale, lane) {
+  let r = null;
+  for (let i = 0; i < HYSTERESE_N; i++) {
+    r = await mitAbwehr(mkReq(), env, undefined, next, signale, lane);
+  }
+  return r;
+}
 
 // ---- 1) Struktur: Aktions-Objekt kann baulich keinen Content tragen --------
 {
@@ -129,10 +141,37 @@ const LANE_BULK = {evasion: true}; // positive Bulk-Evidenz => kein Deckel
 {
   _testReset();
   const env = {SM_MODE: 'on'};
-  const r90 = await mitAbwehr(req(), env, undefined, next, SIGNALE_90, LANE_BULK);
+  const r90 = await gehalten(() => req(), env, SIGNALE_90, LANE_BULK);
   ok(
     r90.status === 503 && r90.headers.get('Retry-After') === '900',
     'On/S3: uniformer befristeter 503-Temp-Block (Statuscode-Eskalation erlaubt)',
+  );
+}
+
+// ---- 4b) ON: die ERSTE Anfrage eines Schlüssels eskaliert nie über S1 -------
+// (LIVEFLIP "Vor dem Flip offen": ohne gehaltenes Fenster griff die Hysterese
+// nicht, ein einzelner Ausreisser bekam sofort 503.)
+{
+  _testReset();
+  const env = {SM_MODE: 'on'};
+  const r1 = await mitAbwehr(req(), env, undefined, next, SIGNALE_90, LANE_BULK);
+  const r2 = await mitAbwehr(req(), env, undefined, next, SIGNALE_90, LANE_BULK);
+  ok(
+    r1.status === 200 && r1.headers.get('Retry-After') === '5' &&
+      r2.status === 200 && (await hash(r1)) === (await hash(await next())),
+    'On/Hysterese: erste und zweite Anfrage mit Score 90 bleiben 200 (höchstens S1, Body gleich)',
+  );
+}
+
+// ---- 4c) ON: Storefront-API-Proxy bekommt nie Challenge/Block ---------------
+{
+  _testReset();
+  const env = {SM_MODE: 'on'};
+  const api = await gehalten(() => req('/api/unstable/graphql.json'), env, SIGNALE_90, LANE_BULK);
+  ok(
+    api.status === 200 && api.headers.get('Retry-After') === '5' &&
+      (await hash(api)) === (await hash(await next())),
+    'On/API: gehaltenes S3 auf /api/... bleibt 200 + Retry-After (höchstens S1, Body gleich)',
   );
 }
 
@@ -140,7 +179,7 @@ const LANE_BULK = {evasion: true}; // positive Bulk-Evidenz => kein Deckel
 {
   _testReset();
   const env = {SM_MODE: 'on'};
-  const rCart = await mitAbwehr(req('/cart'), env, undefined, next, SIGNALE_90, LANE_BULK);
+  const rCart = await gehalten(() => req('/cart'), env, SIGNALE_90, LANE_BULK);
   ok(
     rCart.status === 429,
     'On/Checkout: S3 auf /cart wird zur Challenge gekappt (never-block-Checkout)',
@@ -152,20 +191,16 @@ const LANE_BULK = {evasion: true}; // positive Bulk-Evidenz => kein Deckel
   _testReset();
   const env = {SM_MODE: 'on'};
   const SIGNALE_65 = {rate_over_pct: 100, header_anomaly: true, missing_behavior_token: true};
-  const a = await mitAbwehr(
-    req('/products/a', {'User-Agent': 'BesucherA/1.0'}),
+  const a = await gehalten(
+    () => req('/products/a', {'User-Agent': 'BesucherA/1.0'}),
     env,
-    undefined,
-    next,
     SIGNALE_65,
     LANE_BULK,
   );
   _testReset();
-  const b = await mitAbwehr(
-    req('/products/b', {'User-Agent': 'BesucherB/2.0', 'oxygen-buyer-ip': '198.51.100.9'}),
+  const b = await gehalten(
+    () => req('/products/b', {'User-Agent': 'BesucherB/2.0', 'oxygen-buyer-ip': '198.51.100.9'}),
     env,
-    undefined,
-    next,
     SIGNALE_65,
     LANE_BULK,
   );

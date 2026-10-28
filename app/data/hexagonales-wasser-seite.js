@@ -406,7 +406,7 @@ export const WEITER = [
   {
     to: '/pages/technologie',
     titel: 'Die Technologie',
-    text: 'Wie der GitterChip™ gebaut ist und was er mit geordnetem Wasser zu tun hat.',
+    text: 'Wie der Gitterchip® gebaut ist und was er mit geordnetem Wasser zu tun hat.',
   },
 ];
 

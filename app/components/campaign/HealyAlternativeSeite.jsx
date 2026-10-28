@@ -74,7 +74,7 @@ export const VERGLEICH = [
     id: 'bauart',
     merkmal: 'Bauart',
     healy: 'Kleines Gerät mit Akku für Mikrostrom-Frequenz-Programme, Healy Discover 55 × 57 × 13 mm und 32 g.',
-    qione: 'Anhänger aus 316L-Chirurgenstahl mit GitterChip™ aus 750er Gold, ohne Elektronik.',
+    qione: 'Anhänger aus 316L-Chirurgenstahl mit Gitterchip® aus 750er Gold, ohne Elektronik.',
   },
   {
     id: 'anwendung',
@@ -149,7 +149,7 @@ export const WAHL = [
 export const BELEG = {
   titel: 'Was im QiOne® 2 Pro steckt und was gemessen ist',
   material:
-    'Im QiOne® 2 Pro steckt der GitterChip™ aus 750er Gold, den wir in Bayern selbst herstellen. Das Gehäuse ist aus 316L-Chirurgenstahl, wie man ihn für Implantate verwendet, und jeder QiOne® trägt seine eigene Seriennummer.',
+    'Im QiOne® 2 Pro steckt der Gitterchip® aus 750er Gold, den wir in Bayern selbst herstellen. Das Gehäuse ist aus 316L-Chirurgenstahl, wie man ihn für Implantate verwendet, und jeder QiOne® trägt seine eigene Seriennummer.',
   klasse: 'Im Labor an Zellkulturen gemessen',
   klasseErfahrung: 'Von Anwenderinnen und Anwendern berichtet',
   klasseErklaerung: 'Unsere Erklärung',
@@ -215,7 +215,7 @@ export function fragen(preis) {
     {
       id: 'herstellung',
       q: 'Wo wird der QiOne® 2 Pro hergestellt?',
-      a: 'In Bayern. Wir entwickeln und fertigen den QiOne® 2 Pro dort vollständig, und auch den GitterChip™ aus 750er Gold stellen wir selbst her. Jeder QiOne® trägt seine eigene Seriennummer.',
+      a: 'In Bayern. Wir entwickeln und fertigen den QiOne® 2 Pro dort vollständig, und auch den Gitterchip® aus 750er Gold stellen wir selbst her. Jeder QiOne® trägt seine eigene Seriennummer.',
     },
   ];
 }

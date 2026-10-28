@@ -610,7 +610,7 @@ export const NUR_ROUTE_SEITEN = [
     pfad: '/pages/wie-funktioniert-der-gitterchip-im-qione',
     lastmod: '2026-10-01T01:00:00Z',
     grund:
-      'Die Seite „Wie funktioniert der GitterChip im QiOne?“ (Christian ' +
+      'Die Seite „Wie funktioniert der Gitterchip® im QiOne?“ (Christian ' +
       '23.09.2026, Grossjob 20260923-GROSSJOB-seite-wie-funktioniert-der-' +
       'gitterchip-im-qione-versteckt), bis zur Leitplanken-Frage 7 versteckt. ' +
       'Freigegeben am 2026-10-01 (Job growth-m-lp-produktseite-verkauft-s05, ' +

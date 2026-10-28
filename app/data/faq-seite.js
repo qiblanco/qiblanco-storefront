@@ -171,7 +171,7 @@ export const FAQ_ALLTAG = [
     a:
       'Nein, nichts davon. Im QiOne® 2 Pro steckt weder Elektronik noch ein Akku oder eine Batterie, ' +
       'also gibt es nichts zu laden, nichts nachzufüllen und keine Teile, die sich abnutzen. Das ' +
-      'Gehäuse ist aus Chirurgenstahl, der GitterChip™ aus einer maßgeschneiderten 750er ' +
+      'Gehäuse ist aus Chirurgenstahl, der Gitterchip® aus einer maßgeschneiderten 750er ' +
       'Goldlegierung, und fertiggestellt wird er von Hand. Du kaufst ihn einmal, und danach kommen ' +
       'keine Kosten mehr dazu.',
     quelle:
@@ -227,7 +227,7 @@ export const FAQ_BELEGE = [
     a:
       'Im Labor ist unter Handystrahlung ein deutlicher Unterschied gemessen, und du kannst jede ' +
       'Zahl nachlesen. Untersucht wurde der QiOne® 2 Pro, das QiBracelet® arbeitet mit derselben ' +
-      'GitterChip™-Technik. Menschliche Immunzellen lagen vier Stunden unter der Strahlung eines sendenden ' +
+      'Gitterchip®-Technik. Menschliche Immunzellen lagen vier Stunden unter der Strahlung eines sendenden ' +
       'Handys. Ohne Gerät sank ihre Fähigkeit, Abwehr-Radikale zu bilden, auf 60,5 Prozent des ' +
       'Normalwerts, mit einem QiOne® 2 Pro daneben blieben 84,7 Prozent erhalten. Bei Darmzellen ' +
       'unter derselben Belastung brach die Zellbarriere ohne Gerät auf 6 Prozent ein, mit Gerät ' +
@@ -376,7 +376,7 @@ export const FAQ_BELEGE = [
   {
     q: 'Wie funktioniert das eigentlich, ganz ohne Elektronik?',
     a:
-      'Im Inneren sitzt der GitterChip™ aus einer eigens entwickelten 750er Goldlegierung. Er ' +
+      'Im Inneren sitzt der Gitterchip® aus einer eigens entwickelten 750er Goldlegierung. Er ' +
       'kommt ohne Elektronik, Akku oder Batterie aus, sendet nichts und schirmt nichts ab. Unsere ' +
       'Erklärung dafür dreht sich um die Ordnung von Wasser, und wir stellen sie als Hypothese vor, ' +
       'so wie es auch unsere Publikationen tun. Die Messwerte hängen an dieser Erklärung nicht: Was ' +
@@ -553,7 +553,7 @@ export const FAQ_KAUF = [
     q: 'Warum kostet das so viel?',
     a:
       'Weil in dem Stück wertvolles Material und Handarbeit stecken und du nur einmal zahlst. Das ' +
-      'Gehäuse ist aus Chirurgenstahl, der GitterChip™ aus einer maßgeschneiderten 750er ' +
+      'Gehäuse ist aus Chirurgenstahl, der Gitterchip® aus einer maßgeschneiderten 750er ' +
       'Goldlegierung, und fertiggestellt wird er von Oberflächenveredlern und Goldschmieden in ' +
       'Handarbeit. Nach dem Kauf kommt nichts mehr dazu, keine Batterie, kein Abo und nichts zum ' +
       'Nachkaufen. Entscheiden musst du dich trotzdem nicht sofort: 20 Tage ab Erhalt kannst du es ' +
