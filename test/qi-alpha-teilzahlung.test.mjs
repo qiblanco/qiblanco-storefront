@@ -100,7 +100,7 @@ test('Merkmale aus der Adresse: nur die zwei Vertragsschlüssel, geprüft und ge
     _qa_vorgang: 'qa-abc123-x7k2',
     _qa_konfig: 'qi-alpha=1;nummer=2;kette=-;partner=-',
     _fremd: 'boese',
-    _qpx_anon: 'darf-nicht-ueber-die-adresse',
+    _qpx_anon: 'nicht-aus-der-adresse',
   });
   assert.deepEqual(tz.merkmaleAusQuery(q), [
     {key: '_qa_vorgang', value: 'qa-abc123-x7k2'},

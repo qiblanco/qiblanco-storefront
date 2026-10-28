@@ -235,7 +235,7 @@ export const TEILZAHLUNG_TEXT = {
     versand: 'Dein Qi Alpha® geht auf den Weg, sobald beide Zahlungen da sind.',
     rechnungen: 'Du bekommst zwei Rechnungen mit einer Vorgangsnummer.',
     knopf: (raten) => `Schritt 1: ${raten} in Raten beantragen`,
-    schliessen: 'Fenster schließen',
+    fensterZu: 'Fenster schließen',
   },
 };
 

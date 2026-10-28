@@ -94,7 +94,7 @@ export function TeilzahlungFenster({teilung, betrag, link, onClose}) {
         <button
           type="button"
           className="qat-zu"
-          aria-label={T.schliessen}
+          aria-label={T.fensterZu}
           data-qat-zu=""
           onClick={onClose}
         >

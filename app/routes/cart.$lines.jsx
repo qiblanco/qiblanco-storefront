@@ -68,7 +68,7 @@ export async function loader({request, context, params}) {
   if (
     !teil1Erlaubt({
       varianten: linesMap.map((l) => l.merchandiseId),
-      land: storefront.i18n.country,
+      land: storefront?.i18n?.country,
     })
   ) {
     return redirect('/products/qi-alpha');
