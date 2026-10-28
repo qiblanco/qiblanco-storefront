@@ -59,9 +59,9 @@
 /* Der Versandsatz ist eine Auskunft, keine Werbung: ruhigste Stufe im Block. */
 .qm-wortlaut__absatz--versand { color: var(--qm-muted); }
 
-/* Auf der Produktseite sitzt der Block im priceLabel-Slot neben der
-   inline-flex-Preiszeile (.qm-pdp .Bestseller-Price > .product-price, gesetzt
-   in qi-master.css) und muss als eigener Block darunter stehen, statt
-   daneben zu rutschen. Die Regel greift nur dort; auf der Landingpage gibt es
-   kein .qm-pdp. */
+/* Auf der Produktseite sitzt der Block im priceLabel-Slot unter der
+   Preiszeile und steht als eigener Block darunter. Bis 2026-10-27 war die
+   Preiszeile inline-flex (fuer den entfernten Steuerhinweis, qi-master.css);
+   die Regel bleibt, damit der Block nie neben den Preis rutscht. Sie greift
+   nur dort; auf der Landingpage gibt es kein .qm-pdp. */
 .qm-pdp .Bestseller-Price > .qm-wortlaut { display: block; }
