@@ -14,6 +14,16 @@ import * as ALPHA_DATEN from '~/components/product-pages/qihome-air-alpha-daten'
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
 import alphaVorlageStyles from '~/styles/alpha-vorlage.css?url';
+import alphaSlotStyles from '~/styles/alpha-vorlage-slots.css?url';
+import wissenStyles from '~/styles/the-alpha-shop.css?url';
+import faqStyles from '~/styles/the-alpha-faq.css?url';
+import {
+  AlphaFaqMitRate,
+  AlphaStimmen,
+  AlphaVergleich,
+  AlphaWissen,
+} from '~/components/product-pages/AlphaVorlageSlots';
+import {mitMarkeR} from '~/components/reusables/MarkeR';
 /*
  * Die Stylesheets der Seite (samt Begründung und tragender Reihenfolge) stehen
  * seit dem 28.09.2026 in QiHomeAirSeite.jsx, weil /pages/qihome-air dieselbe Seite
@@ -91,12 +101,18 @@ function loadDeferredData({ context, params }) {
 export default function Product() {
   /** @type {LoaderReturnData} */
   const {product, vergleichsPreise, konfigurator, ketten} = useLoaderData();
-  const kaufbereich = konfigurator ? (
-    <Konfigurator product={product} ketten={ketten} />
-  ) : null;
+  // A-FASSUNG (s07): mit Schalter steht der Konfigurator allein, mit den neuen
+  // Texten (s04) in seinen Slots. Die heutige Seite darunter trüge die alten
+  // Texte (über 500 Haushalte, 7-Tage-Service, Revolutions-Floskeln, zweiter
+  // Kaufknopf) und bleibt B unter /products/qihome-air-b. Gleiches Muster wie
+  // products.qibracelet.jsx (s08).
+  if (konfigurator) {
+    return (
+      <Konfigurator product={product} ketten={ketten} vergleichsPreise={vergleichsPreise} />
+    );
+  }
   return (
     <QiHomeAirSeite
-      kaufbereich={kaufbereich}
       kaufleiste
       product={product}
       vergleichsPreise={vergleichsPreise}
@@ -119,18 +135,69 @@ export default function Product() {
  * nur mit Konfigurator (links() kennt die Loaderdaten nicht): aus heißt
  * dieselben <link>-Tags wie vor s05.
  */
-function Konfigurator({product, ketten}) {
+function Konfigurator({product, ketten, vergleichsPreise}) {
   return (
     <>
       <link rel="stylesheet" href={produktVorlageStyles} />
       <link rel="stylesheet" href={alphaVorlageStyles} />
+      <link rel="stylesheet" href={wissenStyles} />
+      <link rel="stylesheet" href={faqStyles} />
+      <link rel="stylesheet" href={alphaSlotStyles} />
       <AlphaVorlage
         product={product}
         daten={ALPHA_DATEN}
         ketten={ketten}
         vertrauen={<EuGewaehrleistungsHinweis />}
+        slots={{
+          // Erst „wo“ (Einsatz statt Varianten-Schritt, s04), dann „welches“:
+          // der Gewinner-Kandidat Gerätevergleich (s02 Z40) als „Modelle
+          // vergleichen“. Die Einsatzkarte bleibt in B (ihr fester Text „über
+          // 450 … Teil der Revolution“ widerspricht Kachel „Über 400“ und den
+          // in s04 gestrichenen Floskeln).
+          vergleich: (
+            <>
+              <Einsatz daten={ALPHA_DATEN.EINSATZ} />
+              <AlphaVergleich
+                handle="qihome-air"
+                daten={ALPHA_DATEN.VERGLEICH}
+                preise={vergleichsPreise}
+                eigenerPreis={product?.selectedOrFirstAvailableVariant?.price}
+              />
+            </>
+          ),
+          wissen: (
+            <AlphaWissen
+              kapitel={ALPHA_DATEN.WISSEN.kapitel}
+              studien={ALPHA_DATEN.WISSEN.studien}
+              bilder={product?.images?.nodes ?? []}
+            />
+          ),
+          stimmen: <AlphaStimmen daten={ALPHA_DATEN.STIMMEN_GOOGLE} />,
+          faq: <AlphaFaqMitRate daten={ALPHA_DATEN.FAQ} product={product} />,
+        }}
       />
     </>
+  );
+}
+
+/*
+ * EINSATZ (nur QiHome Air, s04): drei Orte, keine Auswahl. Kachel-Stil der
+ * Faktenkacheln (av-kacheln), eine Überschrift im H2-Stil der Slots.
+ */
+function Einsatz({daten}) {
+  if (!daten?.zeilen?.length) return null;
+  return (
+    <div className="av-einsatz" data-av-einsatz="" style={{marginBottom: 'var(--tas-s-8)'}}>
+      <h2 className="tas-box-titel">{mitMarkeR(daten.ueberschrift)}</h2>
+      <ul className="av-kacheln">
+        {daten.zeilen.map((z) => (
+          <li key={z.titel} className="av-kachel">
+            <span className="av-kachel-zahl">{z.titel}</span>
+            <span className="av-kachel-satz">{mitMarkeR(z.zeile)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
