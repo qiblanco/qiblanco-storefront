@@ -176,19 +176,14 @@ test('360-Grad-Loop im schwarzen Band (Z218–Z220): stumm, Schleife, inline, Po
   assert.match(route, /rel: 'preload', as: 'image', href: KOPF\.loop\.poster/);
 });
 
-test('Erstes Fenster (Christian Z2, 27.10.): Preisanker-Dreizeiler im Kopf, erste Option direkt darunter, kein Sprung', () => {
+test('Erstes Fenster (Christian Z2, 27.10.; Z1/Z2 28.10.): Preis allein im Kopf, ohne Bewertung und Nutzerzahl, erste Option direkt darunter, kein Sprung', () => {
   assert.equal(daten.PRODUKT.sprung, undefined);
   const shop = lies('app/components/campaign/TheAlphaShop.jsx');
   assert.doesNotMatch(shop, /data-tas-sprung|springeZumKonfigurator/);
   const kopf = shop.slice(shop.indexOf('data-tas-kopf'), shop.indexOf('</section>', shop.indexOf('data-tas-kopf')));
-  assert.match(kopf, /<TasPreisanker betrag=\{betragText\(hauptPreis, waehrung\)\} \/>/);
-  // Kanon preisanker-und-videokante.md: Bewertung -> Nutzer -> Preis, die Klassen des Haus-Bausteins (Shop-Tor S3)
-  const anker = shop.slice(shop.indexOf('function TasPreisanker'), shop.indexOf('/** Eine Auswahl-Karte'));
-  const pos = ['qb-preisanker__bewertung"', 'qb-preisanker__nutzer', 'qb-preisanker__preiszeile'].map((k) => anker.indexOf(k));
-  assert.ok(pos.every((x) => x > 0) && pos[0] < pos[1] && pos[1] < pos[2], 'Reihenfolge Bewertung, Nutzer, Preis');
-  assert.match(anker, /data-qb-preisanker=""/);
-  assert.match(anker, /href=\{GOOGLE_REVIEWS_URL\}/);
-  assert.doesNotMatch(anker, /SterneSprung|qb-preisanker__banner/);
+  // Launch ohne Bewertungen (Shop-Regel S5_launch_ohne_bewertung): kein Preisanker, keine Sterne, keine Nutzerzahl
+  assert.match(kopf, /className="tas-preiszeile"[\s\S]*data-tas-preis=""[\s\S]*\{betragText\(hauptPreis, waehrung\)\}/);
+  assert.doesNotMatch(shop, /TasPreisanker|data-qb-preisanker|qb-preisanker|StarRating|Google Bewertungen|14\.000 Nutzer/);
   // Punkte als Liste: Text direkt im <li> (Shop-Tor D4 K1), Zeichen davor
   assert.match(kopf, /<Zeichen art=\{p\.zeichen\} \/>\s*\{p\.text\}/);
   // genau ein erster Schritt je Zustand: Nummer-Schritt, sonst Ketten-Schritt

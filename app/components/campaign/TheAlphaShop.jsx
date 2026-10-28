@@ -4,10 +4,6 @@ import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
-import {
-  GOOGLE_REVIEWS_URL,
-  StarRating,
-} from '~/components/reusables/StarRating';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
 import {addonLinien, ADDON_WAEHRUNGEN, QM_ADDON} from '~/lib/qi-master-addons';
@@ -247,8 +243,9 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         <div className="tas-auswahl">
           {/* Produktkopf in Christians Folge (27.10. Z243–Z248): Name, Claim,
               Edition, drei Punkte mit rotem Zeichen, Preis, Herkunft. Der Preis
-              steht im Preisanker-Dreizeiler (Shop-Regel S3, Kanon
-              preisanker-und-videokante.md). Kein Knopf, keine Steuerzeile:
+              steht allein, ohne Bewertung und Nutzerzahl: der Qi Alpha wird
+              erst vorgestellt (Christian 28.10. Z1/Z2, Shop-Regel
+              S5_launch_ohne_bewertung). Kein Knopf, keine Steuerzeile:
               gekauft wird im Konfigurator direkt darunter (Z229–Z233). */}
           <section
             className="tas-produkt"
@@ -268,7 +265,11 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                 </li>
               ))}
             </ul>
-            <TasPreisanker betrag={betragText(hauptPreis, waehrung)} />
+            <p className="tas-preiszeile">
+              <span className="tas-preis" data-tas-preis="">
+                {betragText(hauptPreis, waehrung)}
+              </span>
+            </p>
             <p className="tas-herkunft">{PRODUKT.herkunft.join(' ')}</p>
           </section>
 
@@ -739,45 +740,6 @@ function Zeichen({art}) {
         </g>
       </g>
     </svg>
-  );
-}
-
-/**
- * PREISANKER-DREIZEILER der Konfigurator-Seite: „4.8 ★★★★★ Google
- * Bewertungen“ / „+ 14.000 Nutzer“ / Preis (Kanon preisanker-und-videokante.md,
- * Christian 25./26.10.2026; Shop-Regel S3). Dieselben Klassen wie der
- * Haus-Baustein reusables/Preisanker.jsx, daran misst das Shop-Tor. Eigene
- * Fassung aus zwei Gründen: der Preis ist derselbe Betrag wie in der
- * Zusammenfassung (betragText, eine Rechnung für Kopf und Summe), und die
- * Bewertung ist hier kein Sprung-Knopf, weil diese Seite keinen
- * Bewertungsbereich trägt (ein Knopf ohne Ziel wäre ein toter Klick). Kein
- * Banner: der Kanon nennt für den Qi Alpha keines (Regel 3). Gestaltung im
- * Scope .tas-seite (the-alpha-produkt.css), Tokens der Seite.
- */
-function TasPreisanker({betrag}) {
-  return (
-    <div className="qb-preisanker tas-anker" data-qb-preisanker="">
-      <p className="qb-preisanker__bewertungszeile">
-        <span className="qb-preisanker__bewertung">
-          <span className="qb-preisanker__note">4.8</span>
-          <StarRating value={4.8} size={16} qb={null} />
-        </span>
-        <a
-          className="qb-preisanker__quelle"
-          href={GOOGLE_REVIEWS_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google Bewertungen
-        </a>
-      </p>
-      <p className="qb-preisanker__nutzer">+ 14.000 Nutzer</p>
-      <p className="qb-preisanker__preiszeile">
-        <span className="tas-preis" data-tas-preis="">
-          {betrag}
-        </span>
-      </p>
-    </div>
   );
 }
 
