@@ -31,7 +31,7 @@ export const KOPF = {
   loop: {
     src: 'https://cdn.shopify.com/videos/c/vp/719017d4447d42eabe22c203cb6a3f51/719017d4447d42eabe22c203cb6a3f51.HD-720p-1.6Mbps-98929981.mp4',
     poster: `${CDN}/files/qi-alpha-360-poster.jpg?v=1793023790`,
-    alt: 'Qi Alpha, 360-Grad-Ansicht',
+    alt: 'Qi Alpha®, 360-Grad-Ansicht',
   },
 };
 
@@ -73,23 +73,23 @@ export const GALERIE = {
   bilder: [
     {
       url: `${CDN}/files/qi-alpha-01-front.jpg?v=1792849253`,
-      alt: 'Qi Alpha, Vorderseite mit Diamant in goldener Fassung',
+      alt: 'Qi Alpha®, Vorderseite mit Diamant in goldener Fassung',
     },
     {
       url: `${CDN}/files/qi-alpha-02-detail.jpg?v=1792849261`,
-      alt: 'Qi Alpha, Nahaufnahme des Diamanten mit Strahlengravur',
+      alt: 'Qi Alpha®, Nahaufnahme des Diamanten mit Strahlengravur',
     },
     {
       url: `${CDN}/files/qi-alpha-03-rueckseite.jpg?v=1792849267`,
-      alt: 'Qi Alpha, Rückseite mit Qi-Blanco-Logo',
+      alt: 'Qi Alpha®, Rückseite mit Qi-Blanco-Logo',
     },
     {
       url: `${CDN}/files/qi-alpha-04-unterseite.jpg?v=1792849274`,
-      alt: 'Qi Alpha, Unterseite mit Gravur „Made in Germany“',
+      alt: 'Qi Alpha®, Unterseite mit Gravur „Made in Germany“',
     },
     {
       url: `${CDN}/files/qi-alpha-05-seite.jpg?v=1792849280`,
-      alt: 'Qi Alpha, Seitenansicht mit Namensgravur',
+      alt: 'Qi Alpha®, Seitenansicht mit Namensgravur',
     },
   ],
 };
@@ -116,7 +116,7 @@ export const NUMMER = {
   freiTitel: 'Freie Auswahl',
   bildGravur: {
     url: `${CDN}/files/qi-alpha-05-seite-gravurflaeche.jpg?v=1793021845`,
-    alt: 'Qi Alpha, Seitenansicht mit deiner Seriennummer als Gravur',
+    alt: 'Qi Alpha®, Seitenansicht mit deiner Seriennummer als Gravur',
     gravur: {x: 0.552, y: 0.491, breite: 0.2},
   },
 };
@@ -206,12 +206,12 @@ export const RATEN = {
   text: 'Mit PayPal und Klarna zum Ratenpreis von 9.999\u00a0€',
   code: 'Deinen Ratencode bekommst du von Anna, unten rechts im Chat.',
   mitExtras:
-    'Den Qi Alpha ohne Wunschnummer und mit der Kette aus Chirurgenstahl kannst du auch in Raten zahlen.',
+    'Den Qi Alpha® ohne Wunschnummer und mit der Kette aus Chirurgenstahl kannst du auch in Raten zahlen.',
   extrasAbwaehlen: 'Wunschnummer und Goldkette abwählen',
 };
 
 export const ZUSAMMENFASSUNG = {
-  titel: 'Dein neuer Qi Alpha.',
+  titel: 'Dein neuer Qi Alpha®.',
   unter: 'Genau so, wie du ihn willst.',
   versand: ['Weltweit Kostenloser Versand', '100% Versicherter Versand'],
   frist: '20 Tage volles Rückgaberecht nach Erhalt der Ware',

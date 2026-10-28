@@ -95,7 +95,7 @@ test('Inhalte nur aus Christians Vorlage: Kopf, Produkt, Zusammenfassung, Box', 
   assert.equal(daten.PRODUKT.name, 'Qi Alpha®');
   assert.equal(daten.PRODUKT.edition, '1st. Edition · 111 Stück');
   assert.deepEqual(daten.PRODUKT.herkunft, ['Designed in Germany.', 'Made in Germany.']);
-  assert.equal(daten.ZUSAMMENFASSUNG.titel, 'Dein neuer Qi Alpha.');
+  assert.equal(daten.ZUSAMMENFASSUNG.titel, 'Dein neuer Qi Alpha®.');
   assert.equal(daten.ZUSAMMENFASSUNG.unter, 'Genau so, wie du ihn willst.');
   assert.equal(daten.BOX.titel, "What's in the Box");
   // keine QiOne-2-Pro-Fotos in der Galerie
@@ -229,4 +229,25 @@ test('Nummern-Schritt: nur das Gravurbild, kein zweites Bild „Made in Germany�
   const shop = lies('app/components/campaign/TheAlphaShop.jsx');
   assert.doesNotMatch(shop, /bildRueckseite/);
   assert.match(shop, /tas-bildpaar tas-bildpaar--einzeln/);
+});
+
+test('Shopseite: jeder Text nennt „Qi Alpha®“ mit Zeichen (Christian 27.10.: „Qi Alpha immer mit R“)', async () => {
+  const module = [
+    daten,
+    await import(join(WURZEL, 'app/components/campaign/the-alpha-faq-daten.js')),
+    await import(join(WURZEL, 'app/components/the-alpha-shop/the-alpha-wissen-daten.js')),
+  ];
+  const ohneZeichen = /(?<![\w-])Qi Alpha(?![\w-]|\s*®)/;
+  const funde = [];
+  const gehe = (wert, pfad) => {
+    if (typeof wert === 'string') {
+      if (ohneZeichen.test(wert)) funde.push(`${pfad}: ${wert.slice(0, 60)}`);
+    } else if (typeof wert === 'function') {
+      if (wert.length === 0) gehe(wert(), `${pfad}()`);
+    } else if (wert && typeof wert === 'object') {
+      for (const [k, v] of Object.entries(wert)) gehe(v, `${pfad}.${k}`);
+    }
+  };
+  module.forEach((m, i) => gehe(m, `modul${i}`));
+  assert.deepEqual(funde, []);
 });

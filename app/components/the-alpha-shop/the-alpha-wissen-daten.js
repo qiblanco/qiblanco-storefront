@@ -44,7 +44,7 @@ export const THE_ALPHA_WISSEN = [
     titel: 'Diamant ist reiner Kohlenstoff.',
     bild: BILD.kohlenstoff,
     absaetze: [
-      'Die Grundlage unseres Lebens. Jedes Eiweiß, jede Zellmembran, jeder Strang deiner DNA hat ein Skelett aus Kohlenstoffatomen. Im Qi Alpha trägst du Kohlenstoff in seiner edelsten Form.',
+      'Die Grundlage unseres Lebens. Jedes Eiweiß, jede Zellmembran, jeder Strang deiner DNA hat ein Skelett aus Kohlenstoffatomen. Im Qi Alpha® trägst du Kohlenstoff in seiner edelsten Form.',
     ],
     zitat:
       '„Zum einen besteht der Diamant zu hundert Prozent aus Kohlenstoff. Das chemische Element Kohlenstoff spielt ja gerade in biologischen Systemen eine bedeutende Rolle. […] Alles Leben, so wie wir es auf der Erde kennen, basiert auf Kohlenstoff.“',
@@ -85,7 +85,7 @@ export const THE_ALPHA_WISSEN = [
     bild: BILD.licht,
     absaetze: [
       'Jede lebende Zelle gibt Licht ab, so fein, dass dein Auge es nicht sieht. Der Biophysiker Fritz-Albert Popp hat es über Jahrzehnte gemessen: geordnetes Licht zwischen 200 und 800 Nanometern, mit der DNA als Quelle. Genau an seinem ultravioletten Ende nimmt ein Diamant Licht auf.',
-      'Licht ordnet auch Wasser. Der Bioingenieur Gerald Pollack hat Wasser fünf Minuten lang mit mittlerem Infrarot bestrahlt, danach war die geordnete Wasserschicht 41 Prozent breiter. Im Qi Alpha arbeiten beide zusammen: „The One Eye“ ordnet das Licht, der Gitterchip™ das Wasser.',
+      'Licht ordnet auch Wasser. Der Bioingenieur Gerald Pollack hat Wasser fünf Minuten lang mit mittlerem Infrarot bestrahlt, danach war die geordnete Wasserschicht 41 Prozent breiter. Im Qi Alpha® arbeiten beide zusammen: „The One Eye“ ordnet das Licht, der Gitterchip™ das Wasser.',
     ],
     quellen: [
       'Fritz-Albert Popp: Biophotonen – Neue Horizonte in der Medizin. 3. Auflage, Haug, 2006, S. 51–54 und 229.',
@@ -110,13 +110,13 @@ export const THE_ALPHA_WISSEN = [
 /* Abschnitt 6, Christians drei Spalten Wort für Wort (Figma „Qi Alpha“,
    bisher QiMaster.jsx „Eine bisher unerreichte Liga“). */
 export const THE_ALPHA_LIGA = {
-  etikett: 'Qi Alpha',
+  etikett: 'Qi Alpha®',
   wortlaut: 'christian-liga-2026-09-17',
-  titel: 'Qi Alpha – eine bisher unerreichte Liga.',
+  titel: 'Qi Alpha® – eine bisher unerreichte Liga.',
   spalten: [
     {
       titel: 'Der Gitterchip™ der ultimativen Generation',
-      text: 'Der Kern des Qi Alpha ist ein zweiteiliger Gitterchip™, definiert durch die über ein Jahrzehnt andauernde Forschung am QiOne®. Das Ergebnis ist die außergewöhnlichste Erscheinung: Eine Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen. Kohärent wirkend und ihre Umgebung aktiv prägend.',
+      text: 'Der Kern des Qi Alpha® ist ein zweiteiliger Gitterchip™, definiert durch die über ein Jahrzehnt andauernde Forschung am QiOne®. Das Ergebnis ist die außergewöhnlichste Erscheinung: Eine Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen. Kohärent wirkend und ihre Umgebung aktiv prägend.',
     },
     {
       titel: '„The One Eye“ – Hochreiner Natur Diamant',
@@ -124,7 +124,7 @@ export const THE_ALPHA_LIGA = {
     },
     {
       titel: 'Pure Leistung. Pure Entspannung.',
-      text: 'Durch dieses einmalige Duett des Gitterchips™ und „The One Eye“ ist der Qi Alpha auf jegliche erdenkbare Zukunft vorbereitet. Egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Alpha leistet auf jeder Ebene das erdenkliche Maximum.',
+      text: 'Durch dieses einmalige Duett des Gitterchips™ und „The One Eye“ ist der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet. Egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Alpha® leistet auf jeder Ebene das erdenkliche Maximum.',
     },
   ],
   quellen: [`${KOENIG}, S. 169–172.`],
