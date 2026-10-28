@@ -27,7 +27,7 @@
   "coverUrl": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Cell_Biology_Cover_Remake_Seite_3.png?v=1710540229",
   "studientyp": "In-vitro-Zellstudie (Zellkultur)",
   "materialLabel": "Zellen / Material",
-  "material": "MDCK (Hund), Hep G2 (Mensch), IPEC-J2 (Schwein), A-549 (Mensch), L-929 (Maus) — 5 Zelltypen in 3 Serien",
+  "material": "MDCK (Hund), Hep G2 (Mensch), IPEC-J2 (Schwein), A-549 (Mensch), L-929 (Maus); 5 Zelltypen in 3 Serien",
   "geprueft": "QiBracelet®",
   "coverMasse": {
    "w": 2480,
@@ -44,11 +44,11 @@
  },
  "laienSummary": {
   "frage": "Kann das QiBracelet® Zellen vor oxidativem Stress schützen?",
-  "antwort": "In dieser Laborstudie wurden fünf verschiedene menschliche und tierische Zelltypen mit Wasserstoffperoxid behandelt – einem chemischen Stoff, der oxidativen Stress erzeugt. Zellen, die in Gegenwart des QiBracelet® gehalten wurden, überlebten diesen Stress in der Laborschale deutlich besser als ungeschützte Kontrollzellen.",
+  "antwort": "In dieser Laborstudie wurden fünf verschiedene menschliche und tierische Zelltypen mit Wasserstoffperoxid behandelt, einem chemischen Stoff, der oxidativen Stress erzeugt. Zellen, die in Gegenwart des QiBracelet® gehalten wurden, überlebten diesen Stress in der Laborschale deutlich besser als ungeschützte Kontrollzellen.",
   "punkte": [
    "Alle 5 Zelltypen (Niere, Leber, Darm, Lunge, Bindegewebe) zeigten in Gegenwart des QiBracelet® eine bessere Überlebensrate.",
    "Den stärksten Schutzeffekt verzeichneten Leberzellen (+47,3 ± 7,1 %), den geringsten Lungenzellen (+3,9 ± 2,8 %).",
-   "Der Stressor war Wasserstoffperoxid (H₂O₂) im Kulturmedium – kein Elektrosmog oder Handystrahlung.",
+   "Den Stress löste Wasserstoffperoxid (H₂O₂) im Kulturmedium aus. Elektrosmog und Handystrahlung spielten in diesem Versuch keine Rolle.",
    "Getestetes Produkt ist das QiBracelet®, nicht der QiOne® 2 Pro."
   ],
   "einordnung": "Die Studie wurde ausschließlich an Zellkulturen im Labor durchgeführt (In-vitro). Ob und wie diese Ergebnisse auf den Menschen übertragbar sind, ist nicht untersucht worden und kann aus dieser Studie nicht abgeleitet werden."
@@ -280,17 +280,17 @@
  },
  "grenzen": [
   "Die Studie wurde ausschließlich in Zellkulturen durchgeführt (In-vitro); eine Übertragbarkeit der Ergebnisse auf den lebenden Organismus (in vivo) ist nicht belegt.",
-  "Als oxidativer Stressor wurde Wasserstoffperoxid (H₂O₂) eingesetzt – ein chemisches Modell für Umweltstress. Die Studie untersucht keinen Schutz vor Elektrosmog oder Mobilfunkstrahlung.",
-  "Getestetes Produkt ist das QiBracelet® – die Ergebnisse sind nicht auf andere Qi Blanco-Produkte (z. B. QiOne® 2 Pro) übertragbar.",
+  "Als oxidativer Stressor diente Wasserstoffperoxid (H₂O₂), ein chemisches Modell für Umweltstress. Die Studie untersucht keinen Schutz vor Elektrosmog oder Mobilfunkstrahlung.",
+  "Getestet wurde das QiBracelet®. Die Ergebnisse sind nicht auf andere Qi Blanco-Produkte (z. B. QiOne® 2 Pro) übertragbar.",
   "Der relative Schutzeffekt variiert stark zwischen den Zelltypen (3,9 % bis 47,3 %); bei Lungenzellen ist er marginal.",
   "Die Studie wurde in einem einzigen Labor durchgeführt; das Testgerät wurde vom Hersteller zur Verfügung gestellt. Unabhängige Replikationen liegen nicht vor.",
   "p-Werte werden im Originaltext nicht separat je Zelltyp ausgewiesen; der angewandte statistische Test (Wilcoxon-Mann-Whitney) wird nur global genannt.",
-  "Der postulierte Wirkmechanismus (kohärentes Wasser via Quantenelektrodynamik) ist in der konventionellen Medizin nicht anerkannt und wird von den Autoren selbst als hypothetisch eingestuft."
+  "Den Wirkmechanismus (kohärentes Wasser via Quantenelektrodynamik) stufen die Autoren selbst als Hypothese ein."
  ],
  "faq": [
   {
    "frage": "Was wurde in dieser Studie getestet?",
-   "antwort": "In dieser Studie wurde untersucht, ob das QiBracelet® fünf verschiedene Zelltypen (Niere, Leber, Darm, Lunge, Bindegewebe) vor oxidativem Stress schützen kann. Als Stressor wurde Wasserstoffperoxid (2 mM) eingesetzt – ein chemisches Modell für Umweltstress. Die Studie ist eine In-vitro-Untersuchung an Zellkulturen im Labor."
+   "antwort": "In dieser Studie wurde untersucht, ob das QiBracelet® fünf verschiedene Zelltypen (Niere, Leber, Darm, Lunge, Bindegewebe) vor oxidativem Stress schützen kann. Als Stressor diente Wasserstoffperoxid (2 mM), ein chemisches Modell für Umweltstress. Die Studie ist eine In-vitro-Untersuchung an Zellkulturen im Labor."
   },
   {
    "frage": "Welche Ergebnisse zeigte die Studie?",
@@ -302,7 +302,7 @@
   },
   {
    "frage": "Gilt das Ergebnis auch für den QiOne® 2 Pro?",
-   "antwort": "Ja — denn die untersuchte Technologie steckt in beiden Produkten. QiBracelet® und QiOne® 2 Pro arbeiten mit derselben QTA-Gitterchip®-Technologie: einer Goldlegierung, die ein statisches Feld aufbaut und Wassermoleküle in den kohärenten Zustand versetzt. Der Chip ist dabei auf die jeweilige Bauform abgestimmt — QTA-O-400 im QiBracelet®, QTA-T-333 im QiOne® 2 Pro —, das Wirkprinzip ist dasselbe. Die hier gemessene Schutzwirkung beruht auf genau dieser Technologie und ist damit auf den QiOne® 2 Pro übertragbar. Für den QiOne® 2 Pro liegen zusätzlich eigene Studien vor."
+   "antwort": "Ja, denn die untersuchte Technologie steckt in beiden Produkten. QiBracelet® und QiOne® 2 Pro arbeiten mit derselben QTA-Gitterchip®-Technologie: einer Goldlegierung, die ein statisches Feld aufbaut und Wassermoleküle in den kohärenten Zustand versetzt. Der Chip ist auf die jeweilige Bauform abgestimmt (QTA-O-400 im QiBracelet®, QTA-T-333 im QiOne® 2 Pro), das Wirkprinzip ist dasselbe. Die hier gemessene Schutzwirkung beruht auf genau dieser Technologie und ist damit auf den QiOne® 2 Pro übertragbar. Für den QiOne® 2 Pro liegen zusätzlich eigene Studien vor."
   }
  ],
  "verwandt": [
