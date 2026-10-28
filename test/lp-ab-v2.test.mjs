@@ -174,7 +174,11 @@ import {
  * (Erwartungswerte gepinnt, nicht aus dem laufenden Schalter gelesen). Was der
  * ausgelieferte Schalter bewirkt, prüft der eigene Test „E1 beendet". */
 function entscheideMitE1(request, env, codeSchalter = true, ...weitere) {
-  return entscheideLpExperiment(request, env, codeSchalter, ...weitere);
+  // Die Kurz-Arme K50/K25 sind seit dem 28.10.2026 scharf und belegen die
+  // Eimer 0..29. Diese Tests prüfen die Mechanik von E1/B2 für sich: die
+  // Kurz-Arme bleiben hier aus, solange ein Test sie nicht ausdrücklich setzt.
+  const [b2 = E2_AKTIV, k50 = false, k25 = false] = weitere;
+  return entscheideLpExperiment(request, env, codeSchalter, b2, k50, k25);
 }
 
 /** Request-Stub mit Kopfzeilen (IP + UA), wie Oxygen sie liefert. */
@@ -448,4 +452,133 @@ test('B2: Ad-Weiche schließt B2 aus (sonst Schleife B2 -> A -> B2 für bezahlte
   assert.ok(AUSSCHLUSS_SEGMENTE.includes(LP_EXP_B2_PFAD));
   assert.equal(istAusgeschlossen(LP_EXP_B2_PFAD), true);
   assert.equal(entscheideAdWeiche(`${BASIS}${LP_EXP_B2_PFAD}?utm_medium=paid&fbclid=X&lp_m=z`), null);
+});
+
+// ═══ Kurz-Arme K50 (szs-e3-gs079) und K25 (szs-e4-gs174), 17.10.2026 ════════
+// Job 20261017-ads-lp-radikal-kurz-tests-gs079-durch-sim-tor. Vorgebaut und
+// seit dem 28.10.2026 SCHARF (E3_AKTIV/E4_AKTIV true): start-freigabe beider
+// Tests exit 0 am Sim-Tor, gs050 hat am 20.10. geurteilt.
+import {
+  E3,
+  E4,
+  E3_AKTIV,
+  E4_AKTIV,
+  LP_EXP_K50_PFAD,
+  LP_EXP_K25_PFAD,
+  LP_EXP_K50_MARKER,
+  LP_EXP_K25_MARKER,
+  experimentKurzAktiv,
+} from '../app/lib/lp-ab-v2.server.js';
+
+/** entscheideLpExperiment mit allen vier Code-Schaltern. */
+const entscheide4 = (req, env, e1, e2, k50, k25) => entscheideLpExperiment(req, env, e1, e2, k50, k25);
+
+test('Kurz-Arme: Definition, Pfade, Marker; im Code SCHARF', () => {
+  assert.equal(E3.id, 'szs-e3-gs079');
+  assert.equal(E3.hypothese_id, 'GS-079');
+  assert.equal(E4.id, 'szs-e4-gs174');
+  assert.equal(E4.hypothese_id, 'GS-174');
+  assert.equal(E3.salz, E1.salz);
+  assert.equal(E4.salz, E1.salz);
+  assert.equal(E3_AKTIV, true);
+  assert.equal(E4_AKTIV, true);
+  assert.equal(LP_EXP_K50_PFAD, '/pages/schlaf-zellen-schutz-k50');
+  assert.equal(LP_EXP_K25_PFAD, '/pages/schlaf-zellen-schutz-k25');
+  const belegt = ['w', 'r', 'h', 'p', 'b', 'f', 'v', 'm', 'x', 's', 'q', 'k', 'n', 'z'];
+  assert.ok(!belegt.includes(LP_EXP_K50_MARKER) && !belegt.includes(LP_EXP_K25_MARKER));
+  assert.notEqual(LP_EXP_K50_MARKER, LP_EXP_K25_MARKER);
+});
+
+test('Kurz-Arme: Auslieferungszustand = K50/K25 scharf, B2 und alle übrigen Besucher unverändert', () => {
+  const z = {a: 0, k50: 0, k25: 0, b2: 0};
+  for (const b of POP_B2.slice(0, 5000)) {
+    const heute = entscheideLpExperiment(reqK(LP_A, b), {});
+    // Vergleich gegen den Stand vor dem Start (E1 beendet, B2 läuft, K50/K25 aus):
+    // wer dort A oder B2 hatte und nicht in den Eimern 0..29 liegt, behält es.
+    const vorher = entscheide4(reqK(LP_A, b), {}, E1_AKTIV, E2_AKTIV, false, false);
+    const eimer = besucherEimer(b.ip, b.ua);
+    if (eimer >= 30) assert.deepEqual(heute, vorher, `Eimer ${eimer}`);
+    else assert.equal(heute?.arm, eimer < 15 ? 'k50' : 'k25', `Eimer ${eimer}`);
+    z[heute?.arm ?? 'a'] += 1;
+  }
+  assert.ok(z.k50 > 0 && z.k25 > 0 && z.b2 > 0 && z.a > 0, JSON.stringify(z));
+  // Pins auf die scharfen Kurz-Arme führen dorthin; der Env-Kill schaltet sie ab.
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=k50`, {ip: '10.9.9.9'}), {}).arm, 'k50');
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=k25`, {ip: '10.9.9.9'}), {}).arm, 'k25');
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=k50`, {ip: '10.9.9.9'}), {LP_EXP_SZS_K50_MODE: 'off'}), null);
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=k25`, {ip: '10.9.9.9'}), {LP_EXP_SZS_K25_MODE: 'off'}), null);
+});
+
+test('Kurz-Arme: K50 nimmt die Eimer von B nur, wenn B aus ist (laufender Test wird nicht gestoppt)', () => {
+  assert.equal(experimentKurzAktiv({}, E3, true, 'LP_EXP_SZS_K50_MODE', true), false);
+  assert.equal(experimentKurzAktiv({}, E3, true, 'LP_EXP_SZS_K50_MODE', false), true);
+  // Seit dem 20.10.2026 ist E1 beendet (E1_AKTIV false): mit dem
+  // ausgelieferten E1-Zustand (Default-Parameter) ist K50 frei.
+  assert.equal(E1_AKTIV, false);
+  assert.equal(experimentKurzAktiv({}, E3, true, 'LP_EXP_SZS_K50_MODE'), true);
+  // K25 (Eimer 15-29) überschneidet B nicht und darf neben B stehen.
+  assert.equal(experimentKurzAktiv({}, E4, true, 'LP_EXP_SZS_K25_MODE', true), true);
+  for (const b of POP_B2.slice(0, 5000)) {
+    const e = entscheide4(reqK(LP_A, b), {}, true, true, true, true);
+    assert.notEqual(e?.arm, 'k50', 'K50 darf neben B nie würfeln');
+  }
+});
+
+test('Kurz-Arme scharf (B aus): A/K50/K25/B2 = 55/15/15/15, ausschließend, B2 unverändert', () => {
+  const z = {a: 0, b: 0, b2: 0, k50: 0, k25: 0};
+  for (const b of POP_B2) {
+    const e = entscheide4(reqK(LP_A, b), {}, false, true, true, true);
+    const eimer = besucherEimer(b.ip, b.ua);
+    const soll = eimer < 15 ? 'k50' : eimer < 30 ? 'k25' : eimer >= 85 ? 'b2' : 'a';
+    assert.equal(e?.arm ?? 'a', soll, `${b.ip} Eimer ${eimer}`);
+    // B2 sieht genau dieselben Besucher wie heute.
+    assert.equal(e?.arm === 'b2', entscheideLpExperiment(reqK(LP_A, b), {})?.arm === 'b2');
+    z[e?.arm ?? 'a'] += 1;
+  }
+  const n = POP_B2.length;
+  assert.equal(z.b, 0);
+  assert.ok(Math.abs(z.a / n - 0.55) < 0.01, `A ${z.a / n}`);
+  assert.ok(Math.abs(z.k50 / n - 0.15) < 0.01, `K50 ${z.k50 / n}`);
+  assert.ok(Math.abs(z.k25 / n - 0.15) < 0.01, `K25 ${z.k25 / n}`);
+});
+
+test('Kurz-Arme: K50 übernimmt genau die Besucher von B (gleicher Eimer)', () => {
+  for (const b of POP_B2.slice(0, 5000)) {
+    const e = entscheide4(reqK(LP_A, b), {}, false, true, true, false);
+    assert.equal(e?.arm === 'k50', bVorher(b));
+  }
+});
+
+test('Kurz-Arme: Ziel trägt den rohen Query byte-identisch + eigener Marker; Pins', () => {
+  let ip = null;
+  for (let i = 1; i < 5000 && !ip; i += 1) {
+    const kand = `10.2.${i >> 8}.${i & 255}`;
+    const ei = besucherEimer(kand, 'Mozilla/5.0 (iPhone)');
+    if (ei >= 15 && ei < 30) ip = kand;
+  }
+  const q = '?utm_source=facebook&utm_medium=paid&fbclid=AbC_123&gclid=G-9&utm_campaign=x%20y';
+  const e = entscheide4(reqK(`${LP_A}${q}`, {ip}), {}, false, true, true, true);
+  assert.equal(e.arm, 'k25');
+  assert.equal(e.ziel, `${LP_EXP_K25_PFAD}${q}&lp_m=${LP_EXP_K25_MARKER}`);
+  const p50 = entscheide4(reqK(`${LP_A}?lp_exp=k50`, {ip}), {}, false, true, true, true);
+  assert.ok(p50.ziel.startsWith(`${LP_EXP_K50_PFAD}?lp_exp=k50`), p50.ziel);
+  assert.equal(p50.eimer, -1);
+});
+
+test('Kurz-Arme: Kill per Env und Eimer-Grenze zu B2 (Fail-Richtung Bestand)', () => {
+  assert.equal(experimentKurzAktiv({LP_EXP_SZS_K50_MODE: 'off'}, E3, true, 'LP_EXP_SZS_K50_MODE', false), false);
+  assert.equal(experimentKurzAktiv({LP_EXP_SZS_K25_MODE: 'off'}, E4, true, 'LP_EXP_SZS_K25_MODE', false), false);
+  assert.equal(experimentKurzAktiv({}, E4, false, 'LP_EXP_SZS_K25_MODE', false), false);
+  const zuWeit = {...E4, eimer_ab: 80};
+  assert.equal(experimentKurzAktiv({}, zuWeit, true, 'LP_EXP_SZS_K25_MODE', false), false);
+  const fremdesSalz = {...E4, salz: 'anders'};
+  assert.equal(experimentKurzAktiv({}, fremdesSalz, true, 'LP_EXP_SZS_K25_MODE', false), false);
+});
+
+test('Kurz-Arme: Ad-Weiche schließt K50 und K25 aus (sonst Schleife)', () => {
+  for (const p of [LP_EXP_K50_PFAD, LP_EXP_K25_PFAD]) {
+    assert.ok(AUSSCHLUSS_SEGMENTE.includes(p));
+    assert.equal(istAusgeschlossen(p), true);
+    assert.equal(entscheideAdWeiche(`${BASIS}${p}?utm_medium=paid&fbclid=X&lp_m=c`), null);
+  }
 });
