@@ -196,4 +196,6 @@ export const THE_ALPHA_SCHLUSS = {
  * (bis dahin /products/qi-alpha); die neue Shopseite im Apple-Stil (Z9) zieht
  * an dieselbe Adresse ein. Rückweg: '/products/qi-master'.
  */
-export const THE_ALPHA_KAUF_ZIEL = '/products/the-alpha';
+// UMZUG QI ALPHA 27.10.2026 (Christian Z1): wieder /products/qi-alpha;
+// /products/the-alpha ist eine 301-Hülle. Rückweg: '/products/the-alpha'.
+export const THE_ALPHA_KAUF_ZIEL = '/products/qi-alpha';

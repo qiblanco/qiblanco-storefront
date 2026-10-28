@@ -3,7 +3,8 @@ import {useMemo} from 'react';
 
 /**
  * SHOPIFY-HANDLE UND SEITENPFAD SIND BEIM QI ALPHA ZWEI DINGE. Die Kaufseite
- * steht seit 2026-10-26 unter /products/the-alpha (Christian Z4 vom
+ * steht seit 2026-10-27 wieder unter /products/qi-alpha (Christian Z1
+ * vom 27.10.2026), vom 26.10. bis dahin unter /products/the-alpha (Z4 vom
  * 25.10.2026: „wir gehen im link weg von qi-alpha hin zu the alpha"; Grossjob
  * 20261025-prio1-the-alpha-..., s06). In Shopify heißt das Produkt weiter
  * qi-master (ab dem Handle-Wechsel des Umbenennungs-Grossjobs qi-alpha), die
@@ -12,12 +13,12 @@ import {useMemo} from 'react';
  * Rückweg: Karte leeren, die 301-Hüllen tragen die alten Pfade weiter.
  */
 const PFAD_HANDLE_JE_SHOPIFY_HANDLE = {
-  'qi-master': 'the-alpha',
-  'qi-alpha': 'the-alpha',
-  'qi-master-wunschnummer': 'the-alpha',
-  'qi-alpha-wunschnummer': 'the-alpha',
-  'qi-master-goldkette': 'the-alpha',
-  'qi-alpha-goldkette': 'the-alpha',
+  'qi-master': 'qi-alpha',
+  'qi-alpha': 'qi-alpha',
+  'qi-master-wunschnummer': 'qi-alpha',
+  'qi-alpha-wunschnummer': 'qi-alpha',
+  'qi-master-goldkette': 'qi-alpha',
+  'qi-alpha-goldkette': 'qi-alpha',
 };
 
 /**

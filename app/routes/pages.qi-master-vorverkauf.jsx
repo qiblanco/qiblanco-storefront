@@ -19,7 +19,7 @@ import {redirect} from 'react-router';
  */
 export async function loader({request}) {
   const url = new URL(request.url);
-  throw redirect(`/pages/The-Alpha${url.search}`, 301);
+  throw redirect(`/pages/Qi-Alpha${url.search}`, 301);
 }
 
 export default function QiMasterVorverkaufRedirect() {

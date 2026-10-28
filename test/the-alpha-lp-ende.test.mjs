@@ -23,9 +23,9 @@ const lies = (f) => readFileSync(join(WURZEL, f), 'utf8');
 const daten = await import(join(WURZEL, 'app/components/campaign/the-alpha-daten.js'));
 
 const FILM_ROUTEN = [
-  'app/routes/pages.The-Alpha.jsx',
-  'app/routes/pages.The-Alpha-B.jsx',
-  'app/routes/pages.The-Alpha-C.jsx',
+  'app/routes/pages.Qi-Alpha.jsx',
+  'app/routes/pages.Qi-Alpha-B.jsx',
+  'app/routes/pages.Qi-Alpha-C.jsx',
 ];
 
 test('Film-Routen tragen das Merkmal handle.filmSeite', () => {
@@ -33,7 +33,7 @@ test('Film-Routen tragen das Merkmal handle.filmSeite', () => {
     assert.match(lies(r), /export const handle = \{filmSeite: true\};/, r);
   }
   // Gegenprobe: die Shopseite bleibt ein Shop (Kopf, Band, Anna nach Standard).
-  assert.doesNotMatch(lies('app/routes/products.the-alpha.jsx'), /filmSeite/);
+  assert.doesNotMatch(lies('app/routes/products.qi-alpha.jsx'), /filmSeite/);
 });
 
 test('root.jsx: Film-Seite ohne PageLayout und ohne Assistent', () => {
@@ -111,7 +111,7 @@ test('Schluss-Szene ohne Preis und Detailzeile, kein zweiter Knopf (A, B, C)', (
     assert.doesNotMatch(s, /data-tac-zwischen|data-tac-preis|data-tac-sicher|data-tab-preis/, f);
     assert.equal((s.match(/<TheAlphaKauf/g) || []).length, 0, `${f}: kein eigener Knopf neben dem roten`);
   }
-  for (const r of ['app/routes/pages.The-Alpha-B.jsx', 'app/routes/pages.The-Alpha-C.jsx']) {
+  for (const r of ['app/routes/pages.Qi-Alpha-B.jsx', 'app/routes/pages.Qi-Alpha-C.jsx']) {
     assert.doesNotMatch(lies(r), /PREIS_QUERY|preis=/, `${r}: lädt keinen Preis mehr`);
   }
 });

@@ -1286,8 +1286,8 @@ export const NUR_ROUTE_SEITEN = [
       's03->s05), dazu der tägliche Design-Watch (design_gate_seiten.yaml).',
   },
   {
-    pfad: '/pages/The-Alpha',
-    lastmod: '2026-10-25T15:00:00Z',
+    pfad: '/pages/Qi-Alpha',
+    lastmod: '2026-10-27T12:00:00Z',
     grund:
       'Die Seite „The Alpha“ (Variante A, Christians Figma-Vorlage 1:1, roter ' +
       'Knopf auf die Kaufseite; Grossjob 20261025-prio1-the-alpha-landingpage-figma-' +
@@ -1295,7 +1295,9 @@ export const NUR_ROUTE_SEITEN = [
       'https://qiblanco.com/pages/The-Alpha“). Sie besteht allein aus der Route ' +
       'pages.The-Alpha.jsx und hat KEIN Shopify-Seitenobjekt. Kriterium 2: kein ' +
       'noindex, canonicalLink() in der Route; andere Schreibweisen bekommen ein ' +
-      '301 auf genau diesen Pfad. Die Testarme /pages/The-Alpha-B und -C stehen ' +
+      '301 auf genau diesen Pfad. Seit 27.10.2026 unter /pages/Qi-Alpha (Christian ' +
+      'Z1: „den Link ändern wir auch wieder von The Alpha in Qi Alpha“), ' +
+      '/pages/The-Alpha ist eine 301-Hülle. Die Testarme -B und -C stehen ' +
       'NICHT hier (lib/vorschau-noindex.js). lastmod ist die Obergrenze des ' +
       'Merge-Fensters dieses Commits. WACHE (Kriterium 3): ' +
       'claude-jobs/20261025-prio1-the-alpha-landingpage-figma-vorlage-a-server-' +

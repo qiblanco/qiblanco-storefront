@@ -28,7 +28,7 @@ import {
 } from '~/lib/vorschau-noindex';
 import {istQiAlpha} from '~/lib/qi-master-addons';
 
-const THE_ALPHA_PFAD = '/products/the-alpha';
+const THE_ALPHA_PFAD = '/products/qi-alpha';
 
 /**
  * Welche Handles fliegen aus welchem Sitemap-Typ?

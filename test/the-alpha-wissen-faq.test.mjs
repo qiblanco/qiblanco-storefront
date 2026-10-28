@@ -53,7 +53,7 @@ test('Wissen: sechs Abschnitte in Christians Folge, jeder mit Quelle', () => {
 });
 
 test('Verdrahtung: Wissen und Fragen unter der Box, Stile route-gebunden', () => {
-  const r = lies('app/routes/products.the-alpha.jsx');
+  const r = lies('app/routes/products.qi-alpha.jsx');
   assert.match(r, /nachDerBox=\{\s*<>\s*<TheAlphaWissen \/>\s*<TheAlphaFaq ton="hell" \/>/);
   for (const s of ['shopStyles', 'wissenStyles', 'faqStyles']) assert.match(r, new RegExp(`href: ${s}`));
 });
