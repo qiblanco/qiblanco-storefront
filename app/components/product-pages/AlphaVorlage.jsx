@@ -387,7 +387,9 @@ export function AlphaVorlage({
               name="bezahlart"
               erster={erster === 'bezahlart'}
               auszeichnung={BEZAHLART.auszeichnung}
-              titel={angebot ? BEZAHLART.titel : BEZAHLART.titelDirekt ?? BEZAHLART.titel}
+              // Ohne Ratenangebot (Markt nicht DE, unter 500 €) kein Raten-Titel:
+              // titelDirekt oder gar keiner, nie ein Versprechen ohne Angebot.
+              titel={angebot ? BEZAHLART.titel : BEZAHLART.titelDirekt}
             >
               <div
                 className={`tas-karten${zahlOptionen.length > 1 ? ' av-karten--drei' : ''}`}
