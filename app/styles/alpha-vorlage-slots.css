@@ -209,3 +209,15 @@
 .av-slot--faq .taf {
   padding-inline: 0;
 }
+
+/* Instagram-Reihe in den Stimmen: Überschrift links wie alle Slot-H2, Zeichen
+   auf der tas-Skala (Rubrik: höchstens neun Schriftgrößen je Seite). */
+.avs .qb-igt__kopf {
+  text-align: left;
+}
+.avs .qb-igt__abzeichen {
+  font-size: var(--tas-fs-4);
+}
+.avs .qb-igt__pfeil {
+  font-size: var(--tas-fs-3);
+}
