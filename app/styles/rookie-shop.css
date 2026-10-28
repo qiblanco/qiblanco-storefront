@@ -90,3 +90,38 @@
     padding: calc(var(--rs-s1) * 1.5);
   }
 }
+
+/* ---- Premium-Pflicht 95 (s03-r4, Christian 27.10.: jede Seite Premium) ----
+   Gemessen live 2026-10-28 mit design-rubrik: 93 = technisch 97 (11 Größen),
+   layout 70 (Buybox-Abstand 85 px neben dem 8-px-Raster, H2-Ausrichtung
+   gemischt center/left).
+
+   BUYBOX AUF DEM RASTER: app.css gibt .product 85 px Kopfabstand, der
+   einzige Sektionsabstand der Seite neben dem Raster. 88 = 11 x 8.
+
+   EINE H2-REGEL: links an der Inhaltskante, wie „Kunden fragen“, die FAQ und
+   die Ratenzahlung. Die vier zentrierten Titel (Rezensionen, Instagram,
+   Maßgeschneidert, Gerätevergleich) stehen über Bahnen und Rastern, die links
+   beginnen. Der Instagram-Kopf zieht als Ganzes mit.
+
+   H2-STUFE UND H3 AUF DIE TOKEN: die Seite führte ihre H2 mit 35,2 px (2.2rem)
+   neben der Haus-Stufe 32 (--qb-text-h2), die H3 der Technologie-Spalten und
+   der Gerätenamen mit 22,5 px neben 24 (--qb-text-h3). Mobil bleiben 24 bzw.
+   20 (die -mobil-Token), wie bisher gerendert.
+   Rückweg: diesen Block löschen. */
+.qb-rookie-shop .product {
+  margin-top: calc(var(--rs-s1) * 11);
+}
+.qb-rookie-shop h2,
+.qb-rookie-shop .qb-igt__kopf {
+  text-align: left;
+}
+@media (min-width: 768px) {
+  .qb-rookie-shop h2 {
+    font-size: var(--qb-text-h2, 32px);
+  }
+  .qb-rookie-shop .MassgeschneiderteTechnologie h3,
+  .qb-rookie-shop .qb-gv__name {
+    font-size: var(--qb-text-h3, 24px);
+  }
+}
