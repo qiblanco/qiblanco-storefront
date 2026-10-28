@@ -125,3 +125,24 @@
     font-size: var(--qb-text-h3, 24px);
   }
 }
+
+/* ---- Kopf der Buybox (Shop-Tor D4, Kopf-Bewertung desktop 89 < 95) --------
+   Gemessen 2026-10-28 an Vorschau und live gleich (Bestand): T4 vier
+   Schriftstärken im Kopf [400, 500, 600, 700], A1 Gedränge zwischen Stufen
+   („QiOne® 2 Pro“ -> „4.8“ 0 px, „Mehr als 14.000+ aktive Nutzer“ -> Preis
+   1 px).
+   - Die Nutzerzahl neben den Sternen trägt 500 (app.css, .sterne-sprung) als
+     einzige Stelle im Kopf. 400 wie der Fließtext: klein und ruhig bleibt
+     sie über Größe und Farbe.
+   - Zwischen Name und Sternen, Nutzerzeile und Preis je eine Rasterstufe
+     (8 px), damit jede Stufe für sich steht.
+   Rückweg: diesen Block löschen. */
+.qb-rookie-shop .product .sterne-sprung.product-rating span:last-child {
+  font-weight: 400;
+}
+.qb-rookie-shop .product-main h1 {
+  margin-bottom: var(--rs-s1);
+}
+.qb-rookie-shop .product-main .Bestseller-Price {
+  margin-top: var(--rs-s1);
+}
