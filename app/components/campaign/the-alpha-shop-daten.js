@@ -119,10 +119,6 @@ export const NUMMER = {
     alt: 'Qi Alpha, Seitenansicht mit deiner Seriennummer als Gravur',
     gravur: {x: 0.552, y: 0.491, breite: 0.2},
   },
-  bildRueckseite: {
-    url: `${CDN}/files/qi-alpha-04-unterseite.jpg?v=1792849274`,
-    alt: 'Qi Alpha, Unterseite mit Gravur „Made in Germany“',
-  },
 };
 
 /*
