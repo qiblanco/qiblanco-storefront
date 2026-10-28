@@ -33,3 +33,168 @@
   background: var(--tap-nacht);
 }
 
+
+/* ---------- Scrollgefühl wie Apple (Christian 27.10.2026) ---------- */
+/* „muss sich vom scrollgeüfhl so anfühlen wie die
+   https://www.apple.com/iphone-18-pro/“. Gemessen am 28.10.2026 (Handy
+   390 px, Desktop 1440 px): natives Scrollen ohne Einrasten; stehende Szenen
+   mit gut einem Bildschirm Laufbahn, deren Inhalt im Stehen aus- und
+   einblendet; Einmal-Einblendungen 0,9 s mit 0,15 s Versatz; Videos spielen
+   beim Erreichen. Know-how: ai-ceo/wissen/kanon/scrollgefuehl-apple-iphone-
+   pro.md. Treiber: app/components/campaign/the-alpha-c-scroll.js (setzt
+   .tac-scroll an der Wurzel, schreibt nur opacity und transform). */
+.tap-seite[data-the-alpha-premium='c'] {
+  /* Ausblendweg am Ende jeder Bühne; gehört zu TAC_SZENE.aus = 0,35. */
+  --tac-aus: 35svh;
+  /* Laufbahn der Film-Bühne: so lange steht das Video und öffnet sich. */
+  --tac-film-lauf: 100svh;
+  /* Apples Einmal-Einblendung (StaggeredFadeIn): 0,9 s, Versatz 0,15 s. */
+  --tac-ein: 900ms;
+  --tac-versatz: 150ms;
+}
+
+/* Jede stehende Bühne ist um den Ausblendweg länger: der Inhalt geht im
+   Stehen aus, statt aus dem Bild gezogen zu werden. */
+.tap-seite[data-the-alpha-premium='c'] .tap-scrub {
+  height: calc(100svh + (var(--tap-schritte, 0) + 1) * var(--tap-schritt) + var(--tac-aus));
+}
+
+/* Szenen greifen ineinander wie Blenden im Film: die nächste Bühne steht in
+   dem Moment, in dem die vorige ausgeblendet ist. Ohne das lag zwischen den
+   Szenen ein ganzer Bildschirm Schwarz (Aufnahme vorher, 28.10.). Nur mit
+   Treiber, weil erst er die ausgehende Szene unsichtbar macht. */
+.tap-seite[data-the-alpha-premium='c'].tac-scroll .tap-titelkarte + .tap-woerterbuch,
+.tap-seite[data-the-alpha-premium='c'].tac-scroll .tap-woerterbuch + .tac-film-buehne,
+.tap-seite[data-the-alpha-premium='c'].tac-scroll .tac-film-buehne + .tap-kapitel {
+  margin-top: -100svh;
+}
+
+/* Die Karten eines Kapitels rücken um ihre eigene Höhe unter die
+   ausblendende Bühne: die erste Karte ist ganz im Bild, wenn die Zeilen weg
+   sind, und blendet dann ein (Christian Z283: erst wenn ganz sichtbar). */
+.tap-seite[data-the-alpha-premium='c'].tac-scroll .tap-kapitel-buehne + .tap-karten {
+  margin-top: calc(-1 * min(560px, 100vw - 2 * var(--tap-s-3)));
+}
+
+@media (min-width: 768px) {
+  .tap-seite[data-the-alpha-premium='c'].tac-scroll .tap-kapitel-buehne + .tap-karten {
+    margin-top: calc((var(--tap-s-4) - min(1152px, 100vw - 2 * var(--tap-s-3))) / 2);
+  }
+}
+
+/* Dasselbe für das Seitenband nach Longevity (dem einzigen Kapitel ohne
+   Karten): es rückt um Kapitel-Abstand, eigenen Abstand und Bandhöhe nach
+   oben und steht ganz im Bild, wenn die Zeilen weg sind. Band 2:1 am Handy,
+   3:1 ab 768 px (the-alpha-premium.css). */
+.tap-seite[data-the-alpha-premium='c'].tac-scroll .tap-kapitel + .tap-marke {
+  margin-top: calc(-1 * (var(--tap-takt) + var(--tap-s-8) + min(1152px, 100vw - 2 * var(--tap-s-3)) / 2));
+}
+
+@media (min-width: 768px) {
+  .tap-seite[data-the-alpha-premium='c'].tac-scroll .tap-kapitel + .tap-marke {
+    margin-top: calc(-1 * (var(--tap-takt) + var(--tap-s-8) + min(1152px, 100vw - 2 * var(--tap-s-3)) / 3));
+  }
+}
+
+/* Wörter und Absätze folgen dem Finger (Deckung je Scrollschritt aus dem
+   Treiber); ohne Treiber bleibt der kurze Fade aus dem Gerüst. */
+.tap-seite[data-the-alpha-premium='c'].tac-scroll [data-tap-schritt]:not(.tap-bam) {
+  transition: none;
+}
+
+/* Film-Bühne: das Video steht mittig still, öffnet sich von 86 % auf volle
+   Breite und blendet am Ende aus. Ganz im Bild ist es, sobald die Bühne
+   steht; vorher hält der Treiber es unsichtbar. */
+.tap-seite[data-the-alpha-premium='c'] .tac-film-buehne {
+  position: relative;
+  height: calc(100svh + var(--tac-film-lauf));
+}
+
+.tap-seite[data-the-alpha-premium='c'] .tac-film-bild {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.tap-seite[data-the-alpha-premium='c'] .tac-film-bild .tap-film {
+  width: 100%;
+  margin-block: 0;
+}
+
+.tap-seite[data-the-alpha-premium='c'].tac-scroll .tac-film-bild .tap-film {
+  transition: none;
+}
+
+/* Karten: Apples Einblendung, sobald die Karte ganz im Bild ist; das Bild
+   setzt sich dabei im Rahmen von 106 % auf 100 % (Zoom, kein Hereinschieben). */
+.tap-seite[data-the-alpha-premium='c'].tap-js .tap-karte[data-tap-ein] {
+  transition: opacity var(--tac-ein) ease calc(var(--tap-folge, 0) * var(--tac-versatz) / 3);
+}
+
+.tap-seite[data-the-alpha-premium='c'].tap-js .tap-karte-quadrat img {
+  transform: scale(1.06);
+  transition: transform 1400ms var(--tap-kurve) calc(var(--tap-folge, 0) * var(--tac-versatz) / 3);
+}
+
+.tap-seite[data-the-alpha-premium='c'].tap-js .tap-karte-quadrat.tap-sichtbar img {
+  transform: none;
+}
+
+/* Schluss-Szene im selben Takt: Qi Alpha® setzt sich von 104 % auf 100 %,
+   Edition, Auflage und Knopf folgen mit 0,15 s Versatz. */
+.tap-seite[data-the-alpha-premium='c'].tap-js .tap-edition [data-tap-ein] {
+  transition: opacity var(--tac-ein) ease calc(var(--tap-folge, 0) * var(--tac-versatz));
+}
+
+.tap-seite[data-the-alpha-premium='c'].tap-js .tap-edition .tap-marke-name[data-tap-ein] {
+  transform: scale(1.04);
+  transition:
+    opacity var(--tac-ein) ease,
+    transform 1400ms var(--tap-kurve);
+}
+
+.tap-seite[data-the-alpha-premium='c'].tap-js .tap-edition .tap-marke-name.tap-sichtbar {
+  transform: none;
+}
+
+/* Ohne Bewegung (prefers-reduced-motion, ?film=still): keine stehenden
+   Bühnen, kein Zoom, alles sofort da, wie im Gerüst. */
+@media (prefers-reduced-motion: reduce) {
+  .tap-seite[data-the-alpha-premium='c'] .tap-scrub,
+  .tap-seite[data-the-alpha-premium='c'] .tac-film-buehne {
+    height: auto;
+  }
+
+  .tap-seite[data-the-alpha-premium='c'] .tac-film-bild {
+    position: static;
+    height: auto;
+    padding-block: var(--tap-takt);
+  }
+
+  .tap-seite[data-the-alpha-premium='c'].tap-js .tap-karte-quadrat img,
+  .tap-seite[data-the-alpha-premium='c'].tap-js .tap-edition .tap-marke-name[data-tap-ein] {
+    transform: none;
+    transition: none;
+  }
+}
+
+.tap-seite[data-the-alpha-premium='c'].tap-still .tap-scrub,
+.tap-seite[data-the-alpha-premium='c'].tap-still .tac-film-buehne {
+  height: auto;
+}
+
+.tap-seite[data-the-alpha-premium='c'].tap-still .tac-film-bild {
+  position: static;
+  height: auto;
+  padding-block: var(--tap-takt);
+}
+
+.tap-seite[data-the-alpha-premium='c'].tap-js.tap-still .tap-karte-quadrat img,
+.tap-seite[data-the-alpha-premium='c'].tap-js.tap-still .tap-edition .tap-marke-name[data-tap-ein] {
+  transform: none;
+  transition: none;
+}

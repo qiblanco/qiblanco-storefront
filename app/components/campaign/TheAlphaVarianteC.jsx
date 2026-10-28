@@ -1,3 +1,4 @@
+import {useEffect, useRef} from 'react';
 import {
   TapSeite,
   TapTitelkarte,
@@ -9,6 +10,7 @@ import {
   TapEdition,
 } from '~/components/campaign/TheAlphaPremium';
 import {THE_ALPHA_VIDEO, THE_ALPHA_ABSCHNITTE} from '~/components/campaign/the-alpha-daten';
+import {tacScrollFilm} from '~/components/campaign/the-alpha-c-scroll';
 
 /*
  * THE ALPHA, Variante C (KI-optimiert), Adresse /pages/The-Alpha-B.
@@ -30,6 +32,13 @@ import {THE_ALPHA_VIDEO, THE_ALPHA_ABSCHNITTE} from '~/components/campaign/the-a
  * heißt genau Qi Alpha® / Limited 1st. Edition / 111/111 / roter Knopf / Ende,
  * wie in A und B. Preis und Details zeigt die Shopseite.
  *
+ * SCROLLGEFÜHL WIE APPLE (Christian 27.10.2026: „muss sich vom scrollgeüfhl so
+ * anfühlen wie die https://www.apple.com/iphone-18-pro/“): jede stehende Bühne
+ * blendet am Ende im Stehen aus, das Video steht auf einer eigenen Bühne und
+ * öffnet sich dort, die Wörter folgen dem Finger, Karten und Schluss blenden
+ * in Apples Takt ein (0,9 s, 0,15 s Versatz), das Seitenband zoomt im Rahmen.
+ * Nur C; Rechenregeln und Messwerte in the-alpha-c-scroll.js.
+ *
  * Bausteine und Tokens: TheAlphaPremium.jsx / the-alpha-premium.css (geteilt,
  * hier nicht geändert). Eigenes nur im Scope
  * .tap-seite[data-the-alpha-premium='c'] in app/styles/the-alpha-variante-c.css.
@@ -47,12 +56,26 @@ const SEITENBAND = {
   height: 968,
 };
 
+/** Schaltet das Scrollgefühl an der Wurzel von C zu (nach dem Laden, nur
+ * mit Bewegung). Rendert selbst nichts Sichtbares. */
+function TacScrollFilm() {
+  const anker = useRef(null);
+  useEffect(() => tacScrollFilm(anker.current?.closest('.tap-seite'), window), []);
+  return <span ref={anker} hidden />;
+}
+
 export default function TheAlphaVarianteC() {
   return (
     <TapSeite variante="c">
+      <TacScrollFilm />
       <TapTitelkarte />
       <TapWoerterbuch />
-      <TapFilm film={THE_ALPHA_VIDEO} />
+      {/* Film-Bühne: das Video steht still und öffnet sich (Apple). */}
+      <div className="tac-film-buehne">
+        <div className="tac-film-bild">
+          <TapFilm film={THE_ALPHA_VIDEO} />
+        </div>
+      </div>
       <TapKapitel abschnitt={MANIFESTATION}>
         <TapKarten bilder={MANIFESTATION.bilder} />
       </TapKapitel>
