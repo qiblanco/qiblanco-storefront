@@ -1,4 +1,5 @@
 import {useId, useState} from 'react';
+import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {
   THE_ALPHA_FAQ_ANNA,
   THE_ALPHA_FAQ_TITEL,
@@ -55,7 +56,7 @@ export function TheAlphaFaq({ton = 'hell', vergeben}) {
     >
       <div className="taf-innen">
         <h2 id={`${basis}-titel`} className="taf-titel">
-          {THE_ALPHA_FAQ_TITEL}
+          {mitMarkeR(THE_ALPHA_FAQ_TITEL)}
         </h2>
         <ul className="taf-liste">
           {fragen.map((f, i) => {
@@ -79,7 +80,7 @@ export function TheAlphaFaq({ton = 'hell', vergeben}) {
                     onClick={() => setOffen(istOffen ? null : f.id)}
                     onKeyDown={(e) => taste(e, i)}
                   >
-                    <span>{f.frage}</span>
+                    <span>{mitMarkeR(f.frage)}</span>
                     <span className="taf-zeichen" aria-hidden="true" />
                   </button>
                 </h3>
@@ -92,7 +93,7 @@ export function TheAlphaFaq({ton = 'hell', vergeben}) {
                 >
                   <div className="taf-antwort-innen">
                     {f.antwort.map((a) => (
-                      <p key={a}>{a}</p>
+                      <p key={a}>{mitMarkeR(a)}</p>
                     ))}
                   </div>
                 </div>
@@ -102,8 +103,8 @@ export function TheAlphaFaq({ton = 'hell', vergeben}) {
         </ul>
         <div className="taf-anna" data-the-alpha-faq-anna="">
           <span className="taf-kugel" aria-hidden="true" />
-          <p className="taf-anna-titel">{THE_ALPHA_FAQ_ANNA.titel}</p>
-          <p className="taf-anna-text">{THE_ALPHA_FAQ_ANNA.text}</p>
+          <p className="taf-anna-titel">{mitMarkeR(THE_ALPHA_FAQ_ANNA.titel)}</p>
+          <p className="taf-anna-text">{mitMarkeR(THE_ALPHA_FAQ_ANNA.text)}</p>
         </div>
       </div>
     </section>

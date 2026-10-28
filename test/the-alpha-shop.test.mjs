@@ -54,17 +54,17 @@ test('Kettenwahl: Christians 60/50/45 in seiner Reihenfolge, dann Chirurgenstahl
   };
   const o = regeln.kettenOptionen(kette);
   assert.deepEqual(o.map((x) => x.name), [
-    '60 cm - 750iger ethisches Vollgold',
-    '50 cm - 750iger ethisches Vollgold',
-    '45 cm - 750iger ethisches Vollgold',
+    '60 cm - 750er ethisches Vollgold',
+    '50 cm - 750er ethisches Vollgold',
+    '45 cm - 750er ethisches Vollgold',
     '60 cm Kette aus Chirurgenstahl',
   ]);
   assert.equal(o[3].variante, null);
-  // Box-Unterschrift (Christian 26.10.: „so wie "60 cm - 750iger ethisches Vollgold"“)
+  // Box-Unterschrift (Christian 26.10.: „so wie "60 cm - 750er ethisches Vollgold"“)
   assert.deepEqual(o.map((x) => x.box), [
-    '60 cm - 750iger ethisches Vollgold',
-    '50 cm - 750iger ethisches Vollgold',
-    '45 cm - 750iger ethisches Vollgold',
+    '60 cm - 750er ethisches Vollgold',
+    '50 cm - 750er ethisches Vollgold',
+    '45 cm - 750er ethisches Vollgold',
     '60 cm - Kette aus Chirurgenstahl',
   ]);
   // ohne Goldkette-Produkt bleibt nur der Stahl
@@ -128,7 +128,7 @@ test('Kettenbilder: je Aufnahme ein Stahl- und ein Goldbild, die Box-Unterschrif
     assert.match(b.gold, /the-alpha-kette-.+-gold(-f5)?\.jpg/);
   }
   const shop = lies('app/components/campaign/TheAlphaShop.jsx');
-  assert.match(shop, /data-tas-box-kette="">\s*\{kette\?\.box/);
+  assert.match(shop, /data-tas-box-kette="">\s*\{mitMarkeR\(kette\?\.box/);
 });
 
 test('Produktkopf (s07-r2, Christian 27.10. Z237–Z252): genau Christians Zeilen, kein Knopf, keine Steuerzeile', () => {
@@ -156,22 +156,33 @@ test('Produktkopf (s07-r2, Christian 27.10. Z237–Z252): genau Christians Zeile
   assert.match(css, /prefers-reduced-motion: reduce\)[\s\S]*\.tas-zeichen-puls/);
 });
 
-test('360-Grad-Loop im schwarzen Band (Z218–Z220): stumm, Schleife, inline, Poster vom CDN, ohne Viereck', () => {
+test('360-Grad-Loop oben im eigenen Abschnitt „Kohärentes Licht“ (Z218–Z220, Christian 28.10. Z16): stumm, Schleife, inline, Poster vom CDN, ohne Viereck, nicht mehr in der Galerie', () => {
   assert.match(daten.KOPF.loop.src, /^https:\/\/cdn\.shopify\.com\/videos\/.+\.mp4$/);
   assert.match(daten.KOPF.loop.poster, /^https:\/\/cdn\.shopify\.com\/.+qi-alpha-360-poster\.jpg/);
   const shop = lies('app/components/campaign/TheAlphaShop.jsx');
-  const band = shop.slice(shop.indexOf('data-tas-band'), shop.indexOf('</header>'));
-  assert.match(band, /<BandLoop loop=\{KOPF\.loop\}/);
-  // Z2 (27.10.): das Band ist die Bühne der Galerie-Spalte, nicht mehr ein Streifen über dem Raster
-  const galerie = shop.indexOf('data-tas-galerie');
-  assert.ok(galerie > 0 && galerie < shop.indexOf('data-tas-band'), 'Band steht in der Galerie');
-  assert.ok(shop.indexOf('data-tas-band') < shop.indexOf('className="tas-auswahl"'), 'Band vor der Auswahl-Spalte');
-  assert.match(shop, /useState\(KOPF\.loop \? -1 : 0\)/);
-  assert.match(shop, /tas-daumen-knopf--loop/);
+  const licht = shop.indexOf('data-tas-licht=""');
+  const galerie = shop.indexOf('data-tas-galerie=""');
+  assert.ok(licht > 0, 'Abschnitt Kohärentes Licht fehlt');
+  // Z16: erst die Rotation, dann Bilder und Shop-Beschreibung
+  assert.ok(licht < shop.indexOf('className="tas-raster-seite"'), 'Licht steht über dem Raster');
+  const abschnitt = shop.slice(licht, galerie);
+  assert.match(abschnitt, /<BandLoop loop=\{KOPF\.loop\}/);
+  assert.match(abschnitt, /\{KOPF\.titel\}[\s\S]*\{KOPF\.unter\}/);
+  // die Galerie zeigt nur Bilder: kein Loop, kein Loop-Daumen, Start auf Bild 0
+  const galerieTeil = shop.slice(galerie, shop.indexOf('className="tas-auswahl"'));
+  assert.doesNotMatch(galerieTeil, /BandLoop|KOPF\.loop|tas-daumen-knopf--loop/);
+  assert.match(shop, /useState\(0\)/);
   const loop = shop.slice(shop.indexOf('function BandLoop'), shop.indexOf('function Zeichen'));
   for (const attr of ['autoPlay', 'muted', 'loop', 'playsInline', 'poster={loop.poster}']) assert.ok(loop.includes(attr), attr);
   const css = lies('app/styles/the-alpha-produkt.css');
   assert.match(css, /\.tas-band-loop \{[^}]*mix-blend-mode: lighten;/);
+  // Desktop: dasselbe Raster wie Galerie | Auswahl, Rotation füllt die Galeriespalte (gleich groß wie das Galeriebild)
+  const desktop = css.slice(css.indexOf('@media (min-width: 1024px)'));
+  assert.match(desktop, /\.tas-licht-raster \{[^}]*grid-template-columns: minmax\(0, 7fr\) minmax\(0, 5fr\);[^}]*gap: var\(--tas-s-6\);/);
+  assert.match(desktop, /\.tas-raster-seite \{[^}]*grid-template-columns: minmax\(0, 7fr\) minmax\(0, 5fr\);[^}]*gap: var\(--tas-s-6\);/);
+  assert.match(desktop, /\.tas-licht-buehne \{[^}]*width: 100%;/);
+  // Handy: untereinander, Text zuerst
+  assert.match(css, /\.tas-licht-text \{\s*order: -1;/);
   const route = lies('app/routes/products.qi-alpha.jsx');
   assert.match(route, /rel: 'preload', as: 'image', href: KOPF\.loop\.poster/);
 });
@@ -185,7 +196,7 @@ test('Erstes Fenster (Christian Z2, 27.10.; Z1/Z2 28.10.): Preis allein im Kopf,
   assert.match(kopf, /className="tas-preiszeile"[\s\S]*data-tas-preis=""[\s\S]*\{betragText\(hauptPreis, waehrung\)\}/);
   assert.doesNotMatch(shop, /TasPreisanker|data-qb-preisanker|qb-preisanker|StarRating|Google Bewertungen|14\.000 Nutzer/);
   // Punkte als Liste: Text direkt im <li> (Shop-Tor D4 K1), Zeichen davor
-  assert.match(kopf, /<Zeichen art=\{p\.zeichen\} \/>\s*\{p\.text\}/);
+  assert.match(kopf, /<Zeichen art=\{p\.zeichen\} \/>\s*\{mitMarkeR\(p\.text\)\}/);
   // genau ein erster Schritt je Zustand: Nummer-Schritt, sonst Ketten-Schritt
   assert.match(shop, /id="tas-konfigurator"\s+className="tas-schritt tas-schritt--erster"\s+aria-labelledby="tas-nummer-titel"/);
   assert.match(shop, /id=\{nummernAn \? undefined : 'tas-konfigurator'\}/);

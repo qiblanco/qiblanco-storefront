@@ -71,7 +71,7 @@ export const THE_ALPHA_WISSEN = [
     bild: BILD['Kohärenz'],
     absaetze: [
       'Kohärenz heißt, dass viele Teilchen im selben Takt schwingen, wie ein Chor, in dem jede Stimme genau mit den anderen singt. Der Physiker Emilio Del Giudice nennt den Diamanten als Beispiel: Er hält diesen Takt bis 3.545 °C und verliert ihn erst, wenn er schmilzt.',
-      'Auch Wasser kann das. Del Giudice hat darin Inseln von einem Zehntel Mikrometer beschrieben, in denen Millionen Moleküle im Takt schwingen. Der Gitterchip™ bringt die Wassermoleküle um dich herum in genau diesen Gleichtakt.',
+      'Auch Wasser kann das. Del Giudice hat darin Inseln von einem Zehntel Mikrometer beschrieben, in denen Millionen Moleküle im Takt schwingen. Der Gitterchip® bringt die Wassermoleküle um dich herum in genau diesen Gleichtakt.',
     ],
     quellen: [
       'Emilio Del Giudice u. a.: The origin and the special role of coherent water in living systems. In: Fields of the Cell. Research Signpost, 2015, S. 97 und 100.',
@@ -85,7 +85,7 @@ export const THE_ALPHA_WISSEN = [
     bild: BILD.licht,
     absaetze: [
       'Jede lebende Zelle gibt Licht ab, so fein, dass dein Auge es nicht sieht. Der Biophysiker Fritz-Albert Popp hat es über Jahrzehnte gemessen: geordnetes Licht zwischen 200 und 800 Nanometern, mit der DNA als Quelle. Genau an seinem ultravioletten Ende nimmt ein Diamant Licht auf.',
-      'Licht ordnet auch Wasser. Der Bioingenieur Gerald Pollack hat Wasser fünf Minuten lang mit mittlerem Infrarot bestrahlt, danach war die geordnete Wasserschicht 41 Prozent breiter. Im Qi Alpha® arbeiten beide zusammen: „The One Eye“ ordnet das Licht, der Gitterchip™ das Wasser.',
+      'Licht ordnet auch Wasser. Der Bioingenieur Gerald Pollack hat Wasser fünf Minuten lang mit mittlerem Infrarot bestrahlt, danach war die geordnete Wasserschicht 41 Prozent breiter. Im Qi Alpha® arbeiten beide zusammen: „The One Eye“ ordnet das Licht, der Gitterchip® das Wasser.',
     ],
     quellen: [
       'Fritz-Albert Popp: Biophotonen – Neue Horizonte in der Medizin. 3. Auflage, Haug, 2006, S. 51–54 und 229.',
@@ -115,8 +115,8 @@ export const THE_ALPHA_LIGA = {
   titel: 'Qi Alpha® – eine bisher unerreichte Liga.',
   spalten: [
     {
-      titel: 'Der Gitterchip™ der ultimativen Generation',
-      text: 'Der Kern des Qi Alpha® ist ein zweiteiliger Gitterchip™, definiert durch die über ein Jahrzehnt andauernde Forschung am QiOne®. Das Ergebnis ist die außergewöhnlichste Erscheinung: Eine Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen. Kohärent wirkend und ihre Umgebung aktiv prägend.',
+      titel: 'Der Gitterchip® der ultimativen Generation',
+      text: 'Der Kern des Qi Alpha® ist ein zweiteiliger Gitterchip®, definiert durch die über ein Jahrzehnt andauernde Forschung am QiOne®. Das Ergebnis ist die außergewöhnlichste Erscheinung: Eine Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen. Kohärent wirkend und ihre Umgebung aktiv prägend.',
     },
     {
       titel: '„The One Eye“ – Hochreiner Natur Diamant',
@@ -124,7 +124,7 @@ export const THE_ALPHA_LIGA = {
     },
     {
       titel: 'Pure Leistung. Pure Entspannung.',
-      text: 'Durch dieses einmalige Duett des Gitterchips™ und „The One Eye“ ist der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet. Egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Alpha® leistet auf jeder Ebene das erdenkliche Maximum.',
+      text: 'Durch dieses einmalige Duett des Gitterchips® und „The One Eye“ ist der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet. Egal ob sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Alpha® leistet auf jeder Ebene das erdenkliche Maximum.',
     },
   ],
   quellen: [`${KOENIG}, S. 169–172.`],
