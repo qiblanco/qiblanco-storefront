@@ -216,3 +216,106 @@ test('farbeDeckt: transparent und Alpha 0 decken nicht, beide Schreibweisen', as
     assert.equal(farbeDeckt(farbe), false, String(farbe));
   }
 });
+
+// ─── s03 (25.10.2026): das Gesicht rutscht über die Kaufleiste ─────────────
+// Gemessen live 25.10.2026, /products/qione-2-pro, 390x844: Kugel-Rahmen
+// [309,763,74,74], Leiste [0,781,390,63], Knopf der Leiste ab y≈789.
+const KUGEL = {left: 309, top: 763, right: 383, bottom: 837};
+const LEISTE = {left: 0, top: 781, right: 390, bottom: 844};
+const LEISTEN_KNOPF = {left: 150, top: 789, right: 374, bottom: 836};
+
+test('chatHub: Unterkante des Rahmens 8 px über der Leiste, aus beiden Rechtecken', async () => {
+  const {chatHub, ABSTAND_PX} = await import('../app/lib/kaufknopf-chat.js');
+  const hub = chatHub({ruhe: KUGEL, leisten: [LEISTE], fensterHoehe: 844, angedockt: false, an: true});
+  assert.equal(hub, 837 - 781 + ABSTAND_PX);
+  // Blase (größer) rutscht um dieselbe Regel, nicht um eine Konstante
+  const blase = {left: 85, top: 612, right: 383, bottom: 837};
+  assert.equal(chatHub({ruhe: blase, leisten: [LEISTE], fensterHoehe: 844, angedockt: false, an: true}), 64);
+  // höhere Leiste -> größerer Hub
+  assert.equal(chatHub({ruhe: KUGEL, leisten: [{...LEISTE, top: 760}], fensterHoehe: 844,
+    angedockt: false, an: true}), 837 - 760 + 8);
+});
+
+test('chatHub: kein Hub ohne Leiste, bei offenem Chat, angedockt, Schalter aus', async () => {
+  const {chatHub} = await import('../app/lib/kaufknopf-chat.js');
+  const basis = {ruhe: KUGEL, leisten: [LEISTE], fensterHoehe: 844, angedockt: false, an: true};
+  assert.equal(chatHub({...basis, leisten: []}), 0);
+  assert.equal(chatHub({...basis, angedockt: true}), 0);
+  assert.equal(chatHub({...basis, an: false}), 0);
+  // offenes Fenster auf dem Handy (fast so hoch wie der Schirm)
+  assert.equal(chatHub({...basis, ruhe: {left: 8, top: 60, right: 382, bottom: 836}}), 0);
+  // Leiste unter dem Fenster (versteckt: translateY(110%)) zählt nicht
+  assert.equal(chatHub({...basis, leisten: [{left: 0, top: 850, right: 390, bottom: 913}]}), 0);
+  // Leiste nicht waagrecht unter dem Rahmen
+  assert.equal(chatHub({...basis, leisten: [{left: 0, top: 781, right: 200, bottom: 844}]}), 0);
+  // Rahmen ohne Kasten (display:none bei offenem Dialog)
+  assert.equal(chatHub({...basis, ruhe: {left: 0, top: 0, right: 0, bottom: 0}}), 0);
+  // Rahmen schon frei über der Leiste
+  assert.equal(chatHub({...basis, ruhe: {left: 309, top: 600, right: 383, bottom: 700}}), 0);
+});
+
+test('Hochrutschen: Zielrechteck deckt den Knopf der Leiste nicht, die Ruhelage schon', async () => {
+  const {chatHub, verschoben, ueberdecktKaufknopf} = await import('../app/lib/kaufknopf-chat.js');
+  const lage = (rahmen) => ueberdecktKaufknopf({rahmen, knoepfe: [LEISTEN_KNOPF], fensterHoehe: 844,
+    angedockt: false, beruehrt: false});
+  assert.equal(lage(KUGEL), true, 'Stand vor s03: Ausblenden');
+  const hub = chatHub({ruhe: KUGEL, leisten: [LEISTE], fensterHoehe: 844, angedockt: false, an: true});
+  assert.equal(lage(verschoben(KUGEL, hub)), false);
+});
+
+test('verschiebungY/ruhelage: Zwischenwert des Übergangs wird herausgerechnet', async () => {
+  const {verschiebungY, ruhelage} = await import('../app/lib/kaufknopf-chat.js');
+  assert.equal(verschiebungY('none'), 0);
+  assert.equal(verschiebungY(''), 0);
+  assert.equal(verschiebungY(undefined), 0);
+  assert.equal(verschiebungY('matrix(1, 0, 0, 1, 0, -31.5)'), -31.5);
+  assert.equal(verschiebungY('matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -64, 0, 1)'), -64);
+  assert.equal(verschiebungY('matrix(kaputt)'), 0);
+  // mitten im Hochrutschen gemessen: top 731.5 bei ty -31.5 -> Ruhelage 763
+  const r = ruhelage({left: 309, top: 731.5, right: 383, bottom: 805.5}, -31.5);
+  assert.deepEqual(r, KUGEL);
+  assert.equal(ruhelage(null, 3), null);
+});
+
+test('rahmenOffen: angedockt oder höher als der Deckel', async () => {
+  const {rahmenOffen} = await import('../app/lib/kaufknopf-chat.js');
+  assert.equal(rahmenOffen({rahmen: KUGEL, fensterHoehe: 844, angedockt: false}), false);
+  assert.equal(rahmenOffen({rahmen: KUGEL, fensterHoehe: 844, angedockt: true}), true);
+  assert.equal(rahmenOffen({rahmen: {left: 8, top: 60, right: 382, bottom: 836}, fensterHoehe: 844,
+    angedockt: false}), true);
+  assert.equal(rahmenOffen({rahmen: null, fensterHoehe: 844, angedockt: false}), false);
+});
+
+test('jede Sticky-Kaufleiste trägt data-qb-chat-weicht (s03-r2, Christian 26.10.: Gesicht rutscht hoch)', async () => {
+  // Eigenschaft statt Liste: jede Komponente, die eine Leiste per
+  // `<name>-sticky--sichtbar` bzw. `qb-kaufleiste--sichtbar` einblendet, muss
+  // der Kugel sagen, dass sie ausweichen soll. Belegfall: /pages/start-b
+  // (StickyKaufknopf) - die Kugel lag auf „Jetzt kaufen“.
+  const {readFileSync, readdirSync, statSync} = await import('node:fs');
+  const {join} = await import('node:path');
+  const wurzel = new URL('../app/components/', import.meta.url).pathname;
+  const dateien = [];
+  const lauf = (d) => {
+    for (const n of readdirSync(d)) {
+      const p = join(d, n);
+      if (statSync(p).isDirectory()) lauf(p);
+      else if (n.endsWith('.jsx')) dateien.push(p);
+    }
+  };
+  lauf(wurzel);
+  const leisten = dateien.filter((p) =>
+    /(-sticky|qb-kaufleiste)--sichtbar/.test(readFileSync(p, 'utf8')));
+  assert.ok(leisten.length >= 4, `zu wenige Leisten gefunden: ${leisten.length}`);
+  // AUSSTEHEND (s03-r3, Teil 1a): LP B und die beiden Rookie-Leisten (start-b, Rookie-Shop) kommen mit
+  // dem Folgelauf s03-r4 (Zweig feat/kaufleiste-ab-z4-r3-20261027). hb-deploy Gate 9 verlangt seit 27.10.
+  // Premium >= 95 je beruehrter Seite; start-b 92, qione-2-pro-b 93, schlaf-zellen-schutz 84 sind Bestand.
+  // Der Folgelauf leert die Liste.
+  const AUSSTEHEND = [
+    'campaign/SchlafZellenSchutz.jsx',
+    'rookie/start/StickyKaufknopf.jsx',
+    'rookie/shop/StickyWarenkorb.jsx',
+  ];
+  const ohne = leisten.filter((p) => !readFileSync(p, 'utf8').includes("data-qb-chat-weicht={sichtbar ? '' : undefined}"))
+    .filter((p) => !AUSSTEHEND.some((a) => p.endsWith(a)));
+  assert.deepEqual(ohne, []);
+});

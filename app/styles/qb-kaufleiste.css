@@ -85,6 +85,20 @@ html[data-dialog-offen] .qb-kaufleiste { display: none; }
   color: var(--qb-text-gedaempft);
 }
 
+/* ─── Arm b des A/B-Tests: Nutzenaussage statt Preis ────────────────────────
+   kaufleiste-lage.js (kaufleisteAnzeige). Dieselbe Rolle und Größe wie der
+   Preis, den sie in Arm b ersetzt, damit die Leiste in beiden Armen gleich
+   hoch ist und der Test nur den Inhalt vergleicht. Eine Zeile bei 390 px. */
+.qb-kaufleiste__nutzen {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-size: var(--qb-text-h3);
+  font-weight: var(--qb-fw-preis);
+  line-height: var(--qb-lh-h3);
+  color: var(--qb-text);
+  white-space: nowrap;
+}
+
 /* ─── Knopf: .btn--primary aus app.css, in der Leiste flacher ──────────────
    Höhe mindestens das Tippziel (knopf_primaer.hoehe_min_px 44), nicht die
    70 px der Kaufbox: die Leiste soll das Fenster nicht zu einem Zehntel

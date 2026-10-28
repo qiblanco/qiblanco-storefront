@@ -872,6 +872,42 @@ html:not([data-chat-signal-bereit]) #qiblanco-salesbot-widget-frame {
   pointer-events: none !important;
 }
 
+/* DAS GESICHT RUTSCHT UEBER DIE KAUFLEISTE — statt zu verschwinden.
+ *
+ * Christian 25.10.2026: „wenn dieser jetzt Kauf button mit Preis kommt ist
+ * cool, aber dann sollte das gesicht nicht verschweinden sondern
+ * hochrutschen". Steht die Kaufleiste (data-qb-chat-weicht), setzt
+ * KaufknopfChatSignal `data-chat-rutscht` und die Strecke `--qb-chat-hub`:
+ * Unterkante des Rahmens 8 px ueber der Leiste. Gemessen wird dort, die
+ * Regel hier nur verschiebt. Nur transform, also kein Layoutsprung (CLS 0).
+ *
+ * `!important`, weil der Loader die Geometrie des Rahmens inline schreibt;
+ * transform steht heute nicht darin (nachgemessen 25.10.2026 an
+ * qi-salesbot/src/app/embed/qiblanco-widget.js/route.ts), aber eine
+ * Verschiebung, die beim naechsten Loader-Stand still verliert, saehe aus
+ * wie eine wirksame.
+ *
+ * Gleiten 280 ms in beide Richtungen; der offene Chat gleitet nie
+ * (`data-chat-offen`): oeffnet der Kunde die Kugel ueber der Leiste, faellt
+ * die Verschiebung im selben Bild weg. prefers-reduced-motion: ohne Gleiten.
+ *
+ * RUECKWEG: HOCHRUTSCHEN_AN = false in app/lib/kaufknopf-chat.js (dann setzt
+ * niemand das Attribut, Stand vor s03), oder diesen Block loeschen. */
+#qiblanco-salesbot-widget-frame {
+  transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+html[data-chat-rutscht] #qiblanco-salesbot-widget-frame {
+  transform: translate3d(0, calc(-1 * var(--qb-chat-hub, 0px)), 0) !important;
+}
+html[data-chat-offen] #qiblanco-salesbot-widget-frame {
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  #qiblanco-salesbot-widget-frame {
+    transition: none !important;
+  }
+}
+
 .overlay {
   background: rgba(0, 0, 0, 0.2);
   bottom: 0;
