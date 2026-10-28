@@ -1,6 +1,6 @@
 // Christian 28.10.2026: „ja Gitterchip machen wir ab jetzt überall mit ®“
 // (Job 20261028-gitterchip-ueberall-mit-registered-zeichen; ersetzt die TM-Regel
-// vom 16.09.2026). Waechter ueber JEDEN Kundentext im Repo: kein „Gitterchip“
+// vom 16.09.2026). Wächter über JEDEN Kundentext im Repo: kein „Gitterchip“
 // (GitterChip, Gitter-Chip, mit ™ oder nackt) ohne unmittelbar folgendes ® bzw.
 // <sup>®</sup>. Ausgenommen: Kommentare, Bezeichner (Komponenten, Klassen,
 // Slugs), der Publikationstitel „QTA Gitterchip Technology“ und in den
@@ -46,7 +46,7 @@ export function verstoesse(pfad, text) {
 }
 
 describe('Gitterchip® – Schreibregel im Kundentext (Christian 28.10.2026)', () => {
-  it('Waechter erkennt ™, nackt und GitterChip – und laesst ® und <sup>®</sup> durch', () => {
+  it('Wächter erkennt ™, nackt und GitterChip – und lässt ® und <sup>®</sup> durch', () => {
     const p = WURZEL + 'x.jsx';
     assert.equal(verstoesse(p, "'Der Gitterchip™ wirkt'").length, 1);
     assert.equal(verstoesse(p, '<p>Der GitterChip hilft</p>').length, 1);
@@ -58,7 +58,7 @@ describe('Gitterchip® – Schreibregel im Kundentext (Christian 28.10.2026)', (
     assert.equal(verstoesse(p, "'Dartsch PC. QTA Gitterchip Technology: Relationship'").length, 0);
   });
 
-  it('kein Kundentext im Repo traegt „Gitterchip“ ohne ®', () => {
+  it('kein Kundentext im Repo trägt „Gitterchip“ ohne ®', () => {
     const funde = dateien(WURZEL).flatMap((p) => verstoesse(p, readFileSync(p, 'utf8')));
     assert.deepEqual(funde, []);
   });
