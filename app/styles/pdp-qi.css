@@ -405,3 +405,17 @@ body > main:has(> .ProductPageQiOne) .qb-gv__name {
 body > main:has(> .ProductPageQiOne) .ScrollScrubVideo .TextContent-End .content p {
   font-size: var(--qb-ref-fs-2, 14px);
 }
+/* Bei 768 px stehen die MainFeatures zweispaltig, je Spalte 176 px. Mit
+   24 px ist "leistungsstärker" breiter als die Spalte; ohne min-width: 0
+   waechst die rechte Spalte auf ihr min-content (189 px) und ragt aus dem
+   Rahmen, den das clip oben dann sichtbar abschneidet (Sicht-Tor
+   2026-10-28, Job 20261028-qione-2-pro-yt-nutzervideo-deploy). Getrennt
+   wird nur im Titel nach Silben (html lang="de"); der Fliesstext passt
+   und bleibt ungetrennt. */
+body > main:has(> .ProductPageQiOne) .MainFeatures .MainFeaturesColumn {
+  min-width: 0;
+}
+body > main:has(> .ProductPageQiOne) .MainFeatures .MainFeaturesColumn h3 {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
