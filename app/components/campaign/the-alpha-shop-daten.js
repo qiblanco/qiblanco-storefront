@@ -183,12 +183,12 @@ export const KETTE_STAHL = {
 export const BEZAHLUNG = {
   titel: 'Bezahlart.',
   unter: 'Zahle direkt oder bequem in Raten.',
-  // Markt ohne geteilte Zahlung (CHF, USD): nur die direkte Zahlung.
-  unterDirekt: 'Zahle sicher an der Kasse.',
   direkt: {
     name: 'Direkt bezahlen',
     text: 'PayPal, Klarna, Karte oder Überweisung',
   },
+  // Markt ohne geteilte Zahlung (CHF, USD): nur die direkte Zahlung.
+  unterDirekt: 'Zahle sicher an der Kasse.',
   raten: {
     // Christian 27.10.2026 Z13: „Und das Feld könnte ja Ratenzahlung heißen,
     // zahle 10.000 Euro der Gesamtsumme in Raten zum Beispiel.“
@@ -211,10 +211,10 @@ export const BEZAHLUNG = {
  * Zusammenfassung; hier stehen nur Wörter.
  */
 export const TEILZAHLUNG_TEXT = {
-  sofort: 'Zahle jetzt sofort',
-  raten: 'Bequem in Raten',
   hinweis: (sofort, raten) =>
     `Zahle jetzt sofort ${sofort} und ${raten} bequem in Raten.`,
+  sofort: 'Zahle jetzt sofort',
+  raten: 'Bequem in Raten',
   ablauf: 'So läuft die Ratenzahlung',
   weiter: 'Weiter zur Ratenzahlung',
   fenster: {
