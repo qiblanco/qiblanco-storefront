@@ -138,7 +138,7 @@ jobs:
           # Nur main; Previews '' = shadow. RUECKWEG MIT EINEM WORT: 'on' ->
           # 'shadow' (rechnet und loggt weiter, wirkt nicht). Kill: 'off'.
           # Server im selben Schritt: sicherheitsmeister.conf SM_SENKE_MODI=shadow,on.
-          SM_MODE: ${{ github.ref_name == 'main' && 'on' || '' }}
+          SM_MODE: ${{ github.ref_name == 'main' && 'shadow' || '' }}
         run: |
           {
             printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
