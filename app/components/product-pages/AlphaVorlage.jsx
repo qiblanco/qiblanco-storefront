@@ -1,45 +1,69 @@
-import {useState} from 'react';
-import {useNavigate} from 'react-router';
+import {useEffect, useRef, useState} from 'react';
 import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
-import {betragText} from '~/components/campaign/the-alpha-kauf-laden';
+import {betragText} from '~/lib/betrag-text';
 import {MarkenName} from '~/components/reusables/MarkenName';
-import {BEWERTUNGEN_PFAD} from '~/components/reusables/AlleBewertungenLink';
-import {
-  findeRezensionsZiel,
-  scrolleZuRezensionen,
-} from '~/components/reusables/GoogleRezensionenBereich';
+import {Preisanker} from '~/components/reusables/Preisanker';
+import {Produkt360Video} from '~/components/reusables/Produkt360Video';
+import {ImgixVideo} from '~/components/reusables/ImgixVideo';
+import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {PRODUCT_VARIANT_FRAGMENT} from '~/lib/qioneProductQuery';
+import {
+  bezahlOptionen,
+  boxInhalt,
+  kettenKacheln,
+  mitBreite,
+  mitRate,
+  ratenAngebot,
+  schrittAbschnitt,
+  startWahl,
+  variantenOptionen,
+  varianteZurWahl,
+  warenkorbZeilen,
+  zusammenfassung,
+} from './alpha-vorlage-logik';
+
+export {kettenKacheln};
 
 /*
- * ALPHA-VORLAGE FÜR PRODUKTSEITEN (Elina EL-20261027-c05a2273, 27.10.2026:
- * „Neue Produktseiten-Vorlage nach Qi Alpha … Quiet Luxury“, Dauerregel:
- * Standard für alle Produktseiten, schrittweise nach Elinas GO). Erste Seite:
- * /products/qione-2-pro, NUR VORSCHAU.
+ * PRODUKT-KONFIGURATOR NACH DER QI-ALPHA-KAUFSEITE (Christian 27.10.2026, Z2:
+ * „dieses shopdesing auf die Verkaufseiten von qione 2 pro, qihome udn
+ * qibralcet … von der Farbe her aber in gold statt rot ton“; Grossjob
+ * 20261027-GROSSJOB-apple-konfigurator-qione-qihome-qibracelet-ab, s05,
+ * KONZEPT §3). Ausgebaut aus Elinas Alpha-Vorlage (EL-20261027-c05a2273,
+ * Dauerregel: Standard für alle Produktseiten, live je Seite nach ihrem GO).
  *
- * Bauform und Stil kommen von der Qi-Alpha-Kaufseite (campaign/TheAlphaShop.jsx,
- * styles/the-alpha-produkt.css): dieselben tas-*-Klassen, damit eine Änderung
- * am Alpha-Stil hier mitgeht. Eigenes steht in styles/alpha-vorlage.css.
+ * EIN GERÜST, DATEN JE PRODUKT: diese Datei kennt kein Produkt. Was eine Seite
+ * zeigt, steht in <handle>-alpha-daten.js (Schnittstelle: claude-jobs/<grossjob>/
+ * s05/SCHNITTSTELLE.md); Preise, Varianten und Lieferbarkeit nur aus Shopify.
+ * Die reinen Regeln (Optionen, Raten, Zusammenfassung, Box) stehen in
+ * alpha-vorlage-logik.js und sind ohne Build getestet.
  *
- * AUFBAU (Elinas Reihenfolge, rechte Spalte von oben):
- *   1 Name mit kleinem ®   2 Claim   3 Sterne + Nutzerzahl
- *   4 drei Merkmale, dünne Linien, Linien-Icons in Gold
- *   5 Preis groß + „Designed in Germany. Made in Germany.“
- *   6 Ketten-Kacheln mit Länge, Preis, Kettenbildern (Gold vorbereitet, aus)
- *   7 „In den Warenkorb legen“ (Gerät + gewählte Kette)
- *   8 Vertrauens-Icons (Slot `vertrauen`)
- * Links Galerie, ab 1024 px klebend, bis die rechte Spalte durch ist.
- * Danach „What's in the Box“ — nur, wenn eine Kette gewählt ist.
+ * AUFBAU wie /products/qi-alpha, Schritt für Schritt untereinander:
+ *   1 schwarzes Band mit dem 360-Grad-Loop (Poster zuerst, nie Schwarz)
+ *   2 Produktkopf: Overline, Modus, Name®, Claim, Kurzzeile, drei Kernpunkte
+ *     mit ruhig bewegten Zeichen in Gold, Preisanker-Dreizeiler, Herkunft
+ *   3 Variante (nur wenn Shopify eine echte Wahl führt, z. B. Größe)
+ *   4 Kette (nur wenn die Daten sie verlangen)
+ *   5 Bezahlart: direkt oder in Raten, Monatsbetrag live aus dem Preis
+ *   6 Zusammenfassung mit EINEM Kaufknopf
+ *   7 What's in the Box
+ *   8 Slots: Faktenkacheln, 20-Tage-Element, Vergleich, Wissen, Stimmen, FAQ
+ * Keine Seriennummer-Auswahl (Christian Z5). Akzent ist das Hausgold aus
+ * qb-tokens.css (--qb-akzent), kein zweiter Goldton.
  *
- * WARENKORB: Hauptzeile = Variante aus PRODUCT_QUERY (trägt product.handle,
- * sonst stürzt die optimistische Zeile ab), Kette als eigene Zeile derselben
- * LinesAdd-Aktion. Partnercodes hängen am WARENKORB, nicht an der Zeile
- * (lib/partnercode.server.js legt sie beim Seitenaufruf mit sca_ref an; ein
- * Code bleibt bei LinesAdd stehen). Kein eigener Pixel-Code: ViewContent über
- * <Analytics.ProductView>, AddToCart als Cart-Event.
+ * MESSUNG OHNE EIGENEN PIXEL: die Wurzel trägt data-konfigurator="<handle>",
+ * jeder Schritt data-konfigurator-schritt="<name>" und data-section=
+ * "konfig-<name>". Die cookielose Zählung (public/qiblanco-qpx-basis.js) zählt
+ * damit „Schritt gesehen“ und jeden Klick im Schritt; ViewContent kommt aus
+ * <Analytics.ProductView>, AddToCart als Cart-Event. Kein neuer Identitäts-Key.
+ *
+ * WARENKORB: Gerät (gewählte Variante aus PRODUCT_QUERY, trägt product.handle)
+ * zuerst, die Kette als eigene Zeile derselben LinesAdd-Aktion. Partnercodes
+ * hängen am Warenkorb (lib/partnercode.server.js).
  */
 
 /** Ketten-Abfrage: Stahlkette und (vorbereitet) Goldkette, je fail-soft. */
@@ -68,86 +92,121 @@ export function kettenQuery({gold}) {
 `;
 }
 
-/** Länge in cm aus dem Variantentitel („S - 45cm“, „L - 60 cm“). */
-function laengeCm(titel) {
-  const m = /(\d{2,3})\s*cm/i.exec(String(titel || ''));
-  return m ? Number(m[1]) : null;
+/**
+ * Lädt die Ketten für die Daten einer Seite; null ohne Kette oder bei Fehler
+ * (dann entfällt nur der Schritt, der Kauf des Geräts bleibt heil).
+ */
+export async function ladeAlphaKetten(storefront, daten) {
+  if (!daten?.KETTE?.handle) return null;
+  const gold = Boolean(daten.KETTE_GOLD?.sichtbar);
+  try {
+    return await storefront.query(kettenQuery({gold}), {
+      variables: {
+        stahl: daten.KETTE.handle,
+        ...(gold ? {gold: daten.KETTE_GOLD.handle} : {}),
+      },
+    });
+  } catch {
+    return null;
+  }
 }
 
 /**
- * Kachel-Liste aus den Shopify-Varianten: nur kaufbare Größen, kurz nach lang.
- * @returns {Array<{schluessel: string, art: string, cm: number, name: string, box: string, variante: object}>}
+ * @param {{
+ *   product: object,
+ *   daten: object,
+ *   ketten?: object|null,
+ *   slots?: {vergleich?: import('react').ReactNode, wissen?: import('react').ReactNode,
+ *            stimmen?: import('react').ReactNode, faq?: import('react').ReactNode},
+ *   vertrauen?: import('react').ReactNode,
+ *   videoKachel?: import('react').ReactNode,
+ * }} props
  */
-export function kettenKacheln(produkt, art, texte) {
-  const nodes = produkt?.variants?.nodes ?? [];
-  return nodes
-    .filter((v) => v?.availableForSale && v?.id)
-    .map((v) => ({v, cm: laengeCm(v.title)}))
-    .filter((x) => x.cm)
-    .sort((a, b) => a.cm - b.cm)
-    .map(({v, cm}) => ({
-      schluessel: `${art}-${cm}`,
-      art,
-      cm,
-      name: texte.name(cm),
-      box: texte.box(cm),
-      variante: v,
-    }));
-}
-
 export function AlphaVorlage({
   product,
   daten,
-  ketten,
+  ketten = null,
+  slots = {},
   vertrauen = null,
   videoKachel = null,
 }) {
-  const {PRODUKT, KETTE, KETTE_GOLD, BOX} = daten;
+  const {PRODUKT, BAND, VARIANTE, KETTE, KETTE_GOLD, BEZAHLART, ZUSAMMENFASSUNG, BOX} =
+    daten;
   const land = useMarktLand();
   const {open} = useAside();
-  const haupt = product.selectedOrFirstAvailableVariant;
-  const waehrung = haupt?.price?.currencyCode || 'EUR';
+  const handle = product.handle;
+
+  const optionen = variantenOptionen(product);
+  const [wahl, setWahl] = useState(() => startWahl(product));
+  const variante = varianteZurWahl(product, wahl);
+  const waehrung =
+    variante?.price?.currencyCode ||
+    product.selectedOrFirstAvailableVariant?.price?.currencyCode ||
+    'EUR';
+
   const bilder = product?.images?.nodes ?? [];
-  const [bild, setBild] = useState(0);
-  const grossesBild = bilder[bild] ?? bilder[0];
+  const band = bandQuelle(BAND);
+  const [bild, setBild] = useState(band ? -1 : 0);
+  const grossesBild = bilder[Math.max(bild, 0)] ?? bilder[0];
 
-  const kacheln = [
-    ...kettenKacheln(ketten?.stahl, 'stahl', KETTE),
-    ...(KETTE_GOLD?.sichtbar ? kettenKacheln(ketten?.gold, 'gold', KETTE_GOLD) : []),
-  ];
-  const [wahl, setWahl] = useState(null);
-  const kette = kacheln.find((k) => k.schluessel === wahl) ?? null;
-
-  const preis = (money, handle) =>
-    money ? bruttoAnzeige(money.amount, handle, money.currencyCode, land) : 0;
-  const hauptPreis = preis(haupt?.price, product.handle);
-  const kettenPreis = (k) =>
-    preis(k.variante.price, k.art === 'gold' ? KETTE_GOLD.handle : KETTE.handle);
-  const kettenBilder =
-    kette?.art === 'gold' && KETTE_GOLD.bilder ? KETTE_GOLD.bilder : KETTE.bilder;
-
-  const linien = haupt?.id
+  const kacheln = KETTE
     ? [
-        {merchandiseId: haupt.id, quantity: 1, selectedVariant: haupt},
-        ...(kette
-          ? [
-              {
-                merchandiseId: kette.variante.id,
-                quantity: 1,
-                selectedVariant: kette.variante,
-              },
-            ]
-          : []),
+        ...kettenKacheln(ketten?.stahl, 'stahl', KETTE),
+        ...(KETTE_GOLD?.sichtbar ? kettenKacheln(ketten?.gold, 'gold', KETTE_GOLD) : []),
       ]
     : [];
+  const [ketteWahl, setKetteWahl] = useState(null);
+  const kette = kacheln.find((k) => k.schluessel === ketteWahl) ?? null;
+
+  const preis = (money, h) =>
+    money ? bruttoAnzeige(money.amount, h, money.currencyCode, land) : 0;
+  const hauptPreis = preis(variante?.price, handle);
+  const kettenPreis = (k) =>
+    preis(k.variante.price, k.art === 'gold' ? KETTE_GOLD.handle : KETTE.handle);
+
+  const angebot = ratenAngebot({brutto: hauptPreis, waehrung, land});
+  const zahlOptionen = bezahlOptionen(BEZAHLART?.optionen, angebot);
+  const [zahlart, setZahlart] = useState('direkt');
+  const art = zahlOptionen.some((o) => o.id === zahlart) ? zahlart : 'direkt';
+  const summe = zusammenfassung({
+    name: PRODUKT.name,
+    variante,
+    hauptPreis,
+    kette,
+    kettePreis: kette ? kettenPreis(kette) : 0,
+    zahlart: art,
+    waehrung,
+    land,
+  });
+  const linien = warenkorbZeilen(variante, kette);
+  const kaufbar = linien.length > 0;
+  const kettenBilder =
+    kette?.art === 'gold' && KETTE_GOLD?.bilder ? KETTE_GOLD.bilder : KETTE?.bilder ?? [];
+  const boxTeile = boxInhalt(BOX?.teile, kette);
+  const erster = optionen.length ? 'variante' : kacheln.length ? 'kette' : 'bezahlart';
 
   return (
-    <div className="tas-seite av-seite" data-alpha-vorlage={product.handle}>
+    <div
+      className="tas-seite av-seite"
+      data-konfigurator={handle}
+      data-alpha-vorlage={handle}
+    >
       <div className="tas-raster-seite">
         <div className="tas-galerie" data-tas-galerie="">
           <div className="tas-galerie-fest">
-            <div className="tas-galerie-haupt">
-              {grossesBild ? (
+            {bild < 0 && band ? (
+              <header
+                className="tas-band av-band"
+                data-tas-band=""
+                data-konfigurator-schritt="band"
+                data-section={schrittAbschnitt('band')}
+              >
+                {BAND.titel ? <p className="tas-band-titel">{BAND.titel}</p> : null}
+                {BAND.unter ? <p className="tas-band-unter">{BAND.unter}</p> : null}
+                <BandVideo band={band} />
+              </header>
+            ) : grossesBild ? (
+              <div className="tas-galerie-haupt">
                 <img
                   key={grossesBild.url}
                   className="tas-bild tas-blende"
@@ -155,11 +214,27 @@ export function AlphaVorlage({
                   alt={grossesBild.altText || product.title}
                   width="1200"
                   height="1200"
-                  fetchPriority="high"
                 />
-              ) : null}
-            </div>
+              </div>
+            ) : null}
             <div className="tas-daumen" role="group" aria-label="Ansichten">
+              {band ? (
+                <button
+                  type="button"
+                  className="tas-daumen-knopf tas-daumen-knopf--loop"
+                  aria-pressed={bild < 0}
+                  aria-label={band.alt}
+                  onClick={() => setBild(-1)}
+                >
+                  <img
+                    src={mitBreite(band.poster, 160)}
+                    alt=""
+                    width="80"
+                    height="80"
+                    loading="lazy"
+                  />
+                </button>
+              ) : null}
               {bilder.map((b, i) => (
                 <button
                   key={b.url}
@@ -184,16 +259,23 @@ export function AlphaVorlage({
         </div>
 
         <div className="tas-auswahl">
+          {/* Produktkopf in der Folge der Qi-Alpha-Seite. Kein Knopf im Kopf:
+              gekauft wird im Konfigurator direkt darunter (Shop-Regel: kein
+              zweiter Kaufknopf). */}
           <section
             className="tas-produkt"
             aria-labelledby="av-name"
             data-tas-kopf=""
+            data-konfigurator-schritt="kopf"
+            data-section={schrittAbschnitt('kopf')}
           >
+            {PRODUKT.overline ? <p className="av-overline">{PRODUKT.overline}</p> : null}
+            {PRODUKT.modus ? <p className="av-modus">{PRODUKT.modus}</p> : null}
             <h1 id="av-name" className="tas-name">
               <MarkenName text={PRODUKT.name} />
             </h1>
-            <p className="tas-claim">{PRODUKT.claim}</p>
-            <Bewertung bewertung={PRODUKT.bewertung} />
+            {PRODUKT.claim ? <p className="tas-claim">{PRODUKT.claim}</p> : null}
+            {PRODUKT.kurzzeile ? <p className="tas-edition">{PRODUKT.kurzzeile}</p> : null}
             <ul className="tas-punkte">
               {PRODUKT.punkte.map((p) => (
                 <li key={p.text} className="tas-punkt">
@@ -202,34 +284,70 @@ export function AlphaVorlage({
                 </li>
               ))}
             </ul>
-            <p className="tas-preis" data-tas-preis="">
-              {betragText(hauptPreis, waehrung)}
-            </p>
+            {variante?.price ? (
+              <div className="av-preisanker" data-tas-preis="">
+                <Preisanker
+                  preis={{
+                    handle,
+                    price: variante.price,
+                    compareAtPrice: variante.compareAtPrice,
+                  }}
+                  nutzer={PRODUKT.preisanker?.nutzer}
+                  banner={PRODUKT.preisanker?.banner ?? null}
+                  quelle={PRODUKT.preisanker?.quelle}
+                />
+              </div>
+            ) : null}
             <p className="tas-herkunft">
               {PRODUKT.herkunft.map((z) => (
-                <span key={z}>{z}</span>
+                <span key={z}>{z} </span>
               ))}
             </p>
           </section>
 
-          {kacheln.length ? (
-            <section
-              className="tas-schritt av-kette"
-              aria-labelledby="av-kette-titel"
-              data-tas-schritt="kette"
+          {optionen.length ? (
+            <Schritt
+              name="variante"
+              erster={erster === 'variante'}
+              auszeichnung={VARIANTE?.auszeichnung ?? optionen[0].name}
+              titel={VARIANTE?.titel}
             >
-              <h2 id="av-kette-titel" className="tas-schritt-titel">
-                <span className="tas-auszeichnung">{KETTE.auszeichnung}</span>{' '}
-                <span className="tas-titel-rest">{KETTE.titel}</span>
-              </h2>
-              <div
-                className="tas-karten"
-                role="radiogroup"
-                aria-labelledby="av-kette-titel"
-              >
+              {VARIANTE?.anleitung ? <p className="av-anleitung">{VARIANTE.anleitung}</p> : null}
+              {optionen.map((o) => (
+                <div
+                  key={o.name}
+                  className="tas-karten av-karten--drei"
+                  role="radiogroup"
+                  aria-label={o.name}
+                >
+                  {o.werte.map((w) => (
+                    <Karte
+                      key={w.name}
+                      an={wahl[o.name] === w.name}
+                      aus={!w.verfuegbar}
+                      onClick={() => setWahl({...wahl, [o.name]: w.name})}
+                      titel={w.name}
+                      text={VARIANTE?.zeilen?.[w.name] ?? (w.verfuegbar ? null : 'Ausverkauft')}
+                      data={{'data-av-variante': w.name}}
+                    />
+                  ))}
+                </div>
+              ))}
+              {VARIANTE?.grenzregel ? <p className="tas-klein">{VARIANTE.grenzregel}</p> : null}
+            </Schritt>
+          ) : null}
+
+          {kacheln.length ? (
+            <Schritt
+              name="kette"
+              erster={erster === 'kette'}
+              auszeichnung={KETTE.auszeichnung}
+              titel={KETTE.titel}
+            >
+              <div className="tas-karten" role="radiogroup" aria-label={KETTE.auszeichnung}>
                 <Karte
                   an={!kette}
-                  onClick={() => setWahl(null)}
+                  onClick={() => setKetteWahl(null)}
                   titel={KETTE.ohne.titel}
                   text={KETTE.ohne.text}
                   preis={betragText(0, waehrung)}
@@ -239,49 +357,142 @@ export function AlphaVorlage({
                   <Karte
                     key={k.schluessel}
                     an={kette?.schluessel === k.schluessel}
-                    onClick={() => setWahl(k.schluessel)}
+                    onClick={() => setKetteWahl(k.schluessel)}
                     titel={k.name}
                     preis={betragText(kettenPreis(k), waehrung)}
                     data={{'data-av-kette': k.schluessel}}
                   />
                 ))}
               </div>
-              <div className="tas-bildpaar">
-                {kettenBilder.map((b) => (
-                  <figure key={b.url} className="tas-kette-bild av-kette-bild">
-                    <img
-                      src={mitBreite(b.url, 900)}
-                      alt={b.alt}
-                      width="900"
-                      height="900"
-                      loading="lazy"
-                    />
-                  </figure>
-                ))}
-              </div>
-            </section>
+              {kettenBilder.length ? (
+                <div className="tas-bildpaar">
+                  {kettenBilder.map((b) => (
+                    <figure key={b.url} className="tas-kette-bild av-kette-bild">
+                      <img
+                        src={mitBreite(b.url, 900)}
+                        alt={b.alt}
+                        width="900"
+                        height="900"
+                        loading="lazy"
+                      />
+                    </figure>
+                  ))}
+                </div>
+              ) : null}
+            </Schritt>
           ) : null}
 
-          <div className="av-kauf" data-av-kauf="">
-            <div className="tas-kaufknopf av-kaufknopf">
-              <AddToCartButton
-                disabled={!haupt?.availableForSale}
-                onClick={() => open('cart')}
-                lines={linien}
+          {BEZAHLART ? (
+            <Schritt
+              name="bezahlart"
+              erster={erster === 'bezahlart'}
+              auszeichnung={BEZAHLART.auszeichnung}
+              titel={angebot ? BEZAHLART.titel : BEZAHLART.titelDirekt ?? BEZAHLART.titel}
+            >
+              <div
+                className={`tas-karten${zahlOptionen.length > 1 ? ' av-karten--drei' : ''}`}
+                role="radiogroup"
+                aria-label={BEZAHLART.auszeichnung}
               >
-                {haupt?.availableForSale ? 'In den Warenkorb legen' : 'Ausverkauft'}
-              </AddToCartButton>
-            </div>
-            {vertrauen}
-          </div>
+                {zahlOptionen.map((o) => (
+                  <Karte
+                    key={o.id}
+                    an={art === o.id}
+                    onClick={() => setZahlart(o.id)}
+                    titel={o.titel}
+                    text={o.zeile}
+                    data={{'data-av-zahlart': o.id}}
+                  />
+                ))}
+              </div>
+              {angebot && art !== 'direkt' && BEZAHLART.hinweis ? (
+                <p className="tas-klein" data-av-raten="" aria-live="polite">
+                  {mitRate(BEZAHLART.hinweis, angebot)}
+                </p>
+              ) : null}
+            </Schritt>
+          ) : null}
         </div>
       </div>
 
-      {kette ? (
+      <section
+        className="tas-summe"
+        aria-labelledby="av-summe-titel"
+        data-tas-zusammenfassung=""
+        data-konfigurator-schritt="zusammenfassung"
+        data-section={schrittAbschnitt('zusammenfassung')}
+      >
+        <div className="tas-summe-kopf">
+          <h2 id="av-summe-titel" className="tas-summe-titel">
+            {ZUSAMMENFASSUNG.auszeichnung}{' '}
+            {ZUSAMMENFASSUNG.titel ? (
+              <span className="tas-titel-rest tas-summe-unter">{ZUSAMMENFASSUNG.titel}</span>
+            ) : null}
+          </h2>
+          {bilder[0] ? (
+            <img
+              className="tas-summe-bild"
+              src={mitBreite(bilder[0].url, 480)}
+              alt={bilder[0].altText || product.title}
+              width="240"
+              height="240"
+              loading="lazy"
+            />
+          ) : null}
+        </div>
+        <div className="tas-summe-zeilen">
+          <dl className="tas-posten">
+            {summe.posten.map((p) => (
+              <div key={p.schluessel}>
+                <dt>
+                  <MarkenName text={p.name} />
+                </dt>
+                <dd>{betragText(p.betrag, waehrung)}</dd>
+              </div>
+            ))}
+            <div className="tas-posten-summe">
+              <dt>Summe</dt>
+              <dd data-av-summe="">{betragText(summe.summe, waehrung)}</dd>
+            </div>
+            {summe.rate ? (
+              <div className="tas-posten-teil" data-av-summe-rate="">
+                <dt>{ZUSAMMENFASSUNG.rateName ?? 'Monatlich'}</dt>
+                <dd>
+                  {summe.rate.anzahl} × {summe.rate.text}
+                </dd>
+              </div>
+            ) : null}
+          </dl>
+        </div>
+        <div className="tas-summe-kasse">
+          <ul className="tas-versand">
+            {(ZUSAMMENFASSUNG.zeilen ?? []).map((z) => (
+              <li key={z}>{z}</li>
+            ))}
+          </ul>
+          <div className="tas-kaufknopf av-kaufknopf">
+            <AddToCartButton
+              disabled={!kaufbar}
+              onClick={() => open('cart')}
+              lines={linien}
+            >
+              {kaufbar ? ZUSAMMENFASSUNG.knopf : 'Ausverkauft'}
+            </AddToCartButton>
+          </div>
+          {ZUSAMMENFASSUNG.rueckgabe ? (
+            <p className="tas-klein">{ZUSAMMENFASSUNG.rueckgabe}</p>
+          ) : null}
+          {vertrauen}
+        </div>
+      </section>
+
+      {BOX ? (
         <section
           className="tas-box av-box"
           aria-labelledby="av-box-titel"
           data-av-box=""
+          data-konfigurator-schritt="box"
+          data-section={schrittAbschnitt('box')}
         >
           <h2 id="av-box-titel" className="tas-box-titel">
             {BOX.titel}
@@ -301,19 +512,32 @@ export function AlphaVorlage({
                 </figcaption>
               </figure>
             ) : null}
-            <figure className="tas-box-teil">
-              <img
-                src={mitBreite(kettenBilder[0].url, 600)}
-                alt={kettenBilder[0].alt}
-                width="300"
-                height="300"
-                loading="lazy"
-              />
-              <figcaption data-av-box-kette="">{kette.box}</figcaption>
-            </figure>
+            {kette && kettenBilder[0] ? (
+              <figure className="tas-box-teil">
+                <img
+                  src={mitBreite(kettenBilder[0].url, 600)}
+                  alt={kettenBilder[0].alt}
+                  width="300"
+                  height="300"
+                  loading="lazy"
+                />
+                <figcaption data-av-box-kette="">{kette.box}</figcaption>
+              </figure>
+            ) : null}
           </div>
+          {boxTeile.length ? (
+            <ul className="av-box-liste" data-av-box-liste="">
+              {boxTeile.map((t) => (
+                <li key={t}>
+                  <MarkenName text={t} />
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </section>
       ) : null}
+
+      <Slots daten={daten} slots={slots} />
 
       <Analytics.ProductView
         data={{
@@ -321,10 +545,10 @@ export function AlphaVorlage({
             {
               id: product.id,
               title: product.title,
-              price: haupt?.price?.amount || '0',
+              price: variante?.price?.amount || '0',
               vendor: product.vendor,
-              variantId: haupt?.id || '',
-              variantTitle: haupt?.title || '',
+              variantId: variante?.id || '',
+              variantTitle: variante?.title || '',
               quantity: 1,
             },
           ],
@@ -334,54 +558,193 @@ export function AlphaVorlage({
   );
 }
 
-/** Shopify-CDN-Breite anhängen, egal ob die URL schon eine Query trägt. */
-function mitBreite(url, breite) {
-  return `${url}${url.includes('?') ? '&' : '?'}width=${breite}`;
+/** Ein Konfigurator-Schritt: ein H2-Stil, Messanker je Schritt. */
+function Schritt({name, erster = false, auszeichnung, titel = null, children}) {
+  const id = `av-${name}-titel`;
+  return (
+    <section
+      id={erster ? 'av-konfigurator' : undefined}
+      className={erster ? 'tas-schritt tas-schritt--erster' : 'tas-schritt'}
+      aria-labelledby={id}
+      data-tas-schritt={name}
+      data-konfigurator-schritt={name}
+      data-section={schrittAbschnitt(name)}
+    >
+      <h2 id={id} className="tas-schritt-titel">
+        <span className="tas-auszeichnung">{auszeichnung}</span>
+        {titel ? (
+          <>
+            {' '}
+            <span className="tas-titel-rest">{titel}</span>
+          </>
+        ) : null}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
+/*
+ * Slots unter der Box, feste Reihenfolge (KONZEPT §3.8): Faktenkacheln,
+ * 20-Tage-Element, Vergleich, Wissen, Stimmen, FAQ. Datengetrieben, wo die
+ * Daten den Block tragen (FAKTEN, RISIKOFREI, STIMMEN, FAQ); Vergleich und
+ * Wissen sind Bausteine, die die Route hereingibt (z. B. AmazonStil). Ein
+ * leerer Slot rendert nichts.
+ */
+function Slots({daten, slots}) {
+  const {FAKTEN, RISIKOFREI, STIMMEN, FAQ} = daten;
+  return (
+    <>
+      {FAKTEN?.kacheln?.length ? (
+        <SlotHuelle name="fakten" titel={FAKTEN.ueberschrift}>
+          <ul className="av-kacheln">
+            {FAKTEN.kacheln.map((k) => (
+              <li key={`${k.zahl}-${k.satz}`} className="av-kachel">
+                <span className="av-kachel-zahl">{k.zahl}</span>
+                <span className="av-kachel-satz">
+                  <MarkenName text={k.satz} />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </SlotHuelle>
+      ) : null}
+      {RISIKOFREI?.zeile ? (
+        <SlotHuelle name="risikofrei">
+          <details className="av-risikofrei">
+            <summary>
+              <SymbolSchild />
+              <span>{RISIKOFREI.zeile}</span>
+            </summary>
+            {(RISIKOFREI.details ?? []).map((d) => (
+              <p key={d}>{d}</p>
+            ))}
+            {RISIKOFREI.link?.href ? (
+              <p>
+                {RISIKOFREI.link.vor ? `${RISIKOFREI.link.vor} ` : null}
+                <a href={RISIKOFREI.link.href}>{RISIKOFREI.link.text}</a>.
+              </p>
+            ) : null}
+          </details>
+        </SlotHuelle>
+      ) : null}
+      {slots.vergleich ? <SlotHuelle name="vergleich">{slots.vergleich}</SlotHuelle> : null}
+      {slots.wissen ? <SlotHuelle name="wissen">{slots.wissen}</SlotHuelle> : null}
+      {slots.stimmen ? (
+        <SlotHuelle name="stimmen">{slots.stimmen}</SlotHuelle>
+      ) : STIMMEN?.stimmen?.length ? (
+        <SlotHuelle name="stimmen" titel={STIMMEN.ueberschrift}>
+          <ul className="av-stimmen">
+            {STIMMEN.stimmen.map((s) => (
+              <li key={s.text}>
+                <blockquote>{s.text}</blockquote>
+                {s.name ? <p className="tas-klein">{s.name}</p> : null}
+              </li>
+            ))}
+          </ul>
+        </SlotHuelle>
+      ) : null}
+      {slots.faq ? (
+        <SlotHuelle name="faq">{slots.faq}</SlotHuelle>
+      ) : FAQ?.fragen?.length ? (
+        <SlotHuelle name="faq" titel={FAQ.ueberschrift}>
+          <div className="av-faq">
+            {FAQ.fragen.map((f) => (
+              <details key={f.f}>
+                <summary>{f.f}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </SlotHuelle>
+      ) : null}
+    </>
+  );
+}
+
+function SlotHuelle({name, titel = null, children}) {
+  return (
+    <section
+      className={`av-slot av-slot--${name}`}
+      data-konfigurator-slot={name}
+      data-section={schrittAbschnitt(name)}
+    >
+      {titel ? <h2 className="tas-box-titel">{titel}</h2> : null}
+      {children}
+    </section>
+  );
 }
 
 /**
- * Sterne und Nutzerzahl an der Stelle der Alpha-Edition (Elina Punkt 3).
- * Der Klick führt zu den Google-Bewertungen weiter unten auf der Seite
- * (dasselbe Ziel wie der Bewertungspunkt der Vertrauensliste).
+ * Quelle der Bühne aus den Daten: ein eigener Loop (src + poster wie bei der
+ * Qi Alpha) oder die vorhandene 360-Grad-Drehung je Produkt mit Ersatzbild.
  */
-function Bewertung({bewertung}) {
-  const navigate = useNavigate();
-  if (!bewertung) return null;
-  const zuDenBewertungen = () => {
-    const ziel = findeRezensionsZiel();
-    if (ziel) scrolleZuRezensionen(ziel);
-    else navigate(BEWERTUNGEN_PFAD);
-  };
+function bandQuelle(BAND) {
+  if (!BAND) return null;
+  if (BAND.loop?.src) return {art: 'loop', ...BAND.loop};
+  const ersatz = BAND.drehung ? ERSATZBILD_360[BAND.drehung] : null;
+  if (!ersatz) return null;
+  return {art: BAND.drehung, poster: ersatz.bild, alt: ersatz.alt, ersatz, videoPath: BAND.videoPath};
+}
+
+/*
+ * Die Bühne im Band. Poster zuerst, nie ein schwarzer Ladebildschirm: der
+ * eigene Loop setzt das Poster, die 360-Drehungen bringen ihr Ersatzbild mit
+ * (video360-ersatzbild.jsx), bis das Video wirklich läuft.
+ */
+function BandVideo({band}) {
+  if (band.art === 'loop') return <BandLoop loop={band} />;
+  if (band.art === 'qione') {
+    return (
+      <div className="av-band-buehne">
+        <Produkt360Video className="av-band-video" />
+      </div>
+    );
+  }
   return (
-    <p className="tas-edition av-bewertung" data-av-bewertung="">
-      <button
-        type="button"
-        className="av-bewertung-knopf"
-        onClick={zuDenBewertungen}
-        aria-label={`Bewertung ${bewertung.wert} von 5 Sternen, zu den Google-Bewertungen`}
-      >
-        <span className="av-bewertung-wert">{bewertung.wert}</span>
-        <span className="av-sterne" aria-hidden="true">
-          ★★★★★
-        </span>
-      </button>
-      <span className="av-trenner" aria-hidden="true">
-        ·
-      </span>
-      <span>{bewertung.nutzer}</span>
-    </p>
+    <div className="av-band-buehne">
+      <ImgixVideo videoPath={band.videoPath} ersatz={band.ersatz} className="av-band-video" />
+    </div>
+  );
+}
+
+function BandLoop({loop}) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v || typeof window.matchMedia !== 'function') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) v.pause();
+  }, []);
+  return (
+    <video
+      ref={ref}
+      className="tas-band-loop"
+      src={loop.src}
+      poster={loop.poster}
+      width="720"
+      height="720"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      disablePictureInPicture
+      aria-label={loop.alt}
+      data-tas-loop=""
+    />
   );
 }
 
 /** Auswahl-Karte im Alpha-Stil (gleiches Markup wie TheAlphaShop). */
-function Karte({an, onClick, titel, text = null, preis = null, data = {}}) {
+function Karte({an, aus = false, onClick, titel, text = null, preis = null, data = {}}) {
   return (
     <button
       type="button"
       role="radio"
       aria-checked={an}
+      aria-disabled={aus || undefined}
       className="tas-karte"
-      onClick={onClick}
+      onClick={aus ? undefined : onClick}
       {...data}
     >
       <span className="tas-karte-kopf">
@@ -393,10 +756,31 @@ function Karte({an, onClick, titel, text = null, preis = null, data = {}}) {
   );
 }
 
+function SymbolSchild() {
+  return (
+    <svg
+      className="av-symbol"
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M12 3 20 6v6c0 4.6-3.3 8-8 9-4.7-1-8-4.4-8-9V6z" />
+      <path d="m8.5 12 2.4 2.4 4.6-4.8" />
+    </svg>
+  );
+}
+
 /*
- * Linien-Icons der drei Merkmale, in Gold (Elina Punkt 4: „Linien-Icons in
- * GOLD statt Rot“). Gleiches Feld, gleiche Linie und dieselbe ruhige Bewegung
- * wie die Alpha-Zeichen (tas-zeichen-puls, ruht bei prefers-reduced-motion).
+ * Linien-Zeichen der drei Kernpunkte, in Gold (Christian Z4, Elina Punkt 4).
+ * Gleiches Feld, gleiche Linie und dieselbe ruhige Bewegung wie die
+ * Alpha-Zeichen (tas-zeichen-puls, ruht bei prefers-reduced-motion).
  */
 function Zeichen({art}) {
   const gemeinsam = {
@@ -427,7 +811,7 @@ function Zeichen({art}) {
     );
   }
   if (art === 'schutz') {
-    // Schild mit drei Funkbögen, die außen abprallen.
+    // Schild mit Funkbögen, die außen abprallen.
     return (
       <svg {...gemeinsam}>
         <path d="M16 4.5 26 8v7.5c0 6-4.2 10.4-10 12-5.8-1.6-10-6-10-12V8z" />
@@ -436,6 +820,19 @@ function Zeichen({art}) {
           <path d="M13.6 20.4a3.4 3.4 0 0 1 4.8 0" />
         </g>
         <circle cx="16" cy="23" r="0.6" fill="currentColor" />
+      </svg>
+    );
+  }
+  if (art === 'zuhause') {
+    // Haus mit ruhig atmender Wärme darüber (QiHome® Air: Wohlfühlatmosphäre).
+    return (
+      <svg {...gemeinsam}>
+        <path d="M5 15.5 16 6l11 9.5" />
+        <path d="M8 13.5V26h16V13.5" />
+        <path d="M13.5 26v-6h5v6" />
+        <g className="tas-zeichen-puls">
+          <path d="M22 3.5c1 1 1 2 0 3s-1 2 0 3" />
+        </g>
       </svg>
     );
   }

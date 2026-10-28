@@ -1,53 +1,203 @@
 /*
- * ALPHA-VORLAGE FÜR PRODUKTSEITEN — nur, was über den Alpha-Stil hinausgeht
- * (Elina EL-20261027-c05a2273). Grundlage ist styles/the-alpha-produkt.css
- * (tas-*), die jede Route mit der Vorlage davor lädt. Scope: .av-seite.
+ * PRODUKT-KONFIGURATOR (Alpha-Vorlage) — nur, was über den Qi-Alpha-Stil
+ * hinausgeht. Grundlage ist styles/the-alpha-produkt.css (tas-*), die jede
+ * Route mit der Vorlage davor lädt. Scope: .av-seite.
+ *
+ * TOKENS (Design-Pflicht, Grossjob 20261027-GROSSJOB-apple-konfigurator-qione-
+ * qihome-qibracelet-ab, s05): keine freien Werte. Schrift nur die Stufen der
+ * Alpha (--tas-fs-1 … --tas-fs-7, --tas-fs-preis, --tas-fs-h2-handy: 9
+ * Stufen), Abstände nur --tas-s-* (8-pt-Raster), EIN Bild-Radius
+ * (--tas-radius), EIN H2-Stil (.tas-schritt-titel / .tas-box-titel), Knopf
+ * .btn--primary des Hauses.
+ *
+ * GOLD STATT QI-ALPHA-ROT (Christian Z4: „von der Farbe her aber in gold statt
+ * rot ton“): EIN Hausgold aus qb-tokens.css in seinen zwei Rollen —
+ * --qb-akzent für Fläche und Linie (Zeichen, Sterne, Banner), --qb-akzent-
+ * tinte für goldene Schrift auf Hell (Etiketten). Kein zweiter Goldton; das
+ * bisherige --qb-ref-gold der Vorschau ist eine Referenz ohne Semantik und
+ * fällt weg.
  */
 .av-seite {
-  /* Marken-Gold (qb-tokens.css --qb-ref-gold, marke.gold) statt Qi-Alpha-Rot:
-     Elina Punkt 4 „Linien-Icons in GOLD statt Rot“. */
-  --av-gold: var(--qb-ref-gold, #c9a14b);
+  --av-gold: var(--qb-akzent, rgb(242, 191, 114));
+  --av-gold-tinte: var(--qb-akzent-tinte, #856828);
   /* Die Alpha schließt mit Zusammenfassung und Box; hier folgt der übrige
      Seiteninhalt, also kein Polster der Alpha-Hülle unten. */
   padding-bottom: 0;
+}
+
+/* KLEINES, HOCHGESTELLTES ® wie im Qi-Blanco-Logo (Elina EL-20261027-c05a2273:
+   „nicht in Schriftgröße des Namens“). Gesetzt von reusables/MarkenName.jsx.
+   Seit s05 hier statt in the-alpha-produkt.css: die Qi-Alpha-Seite bleibt
+   unberührt. */
+.av-seite .qb-reg {
+  font-size: 0.3em;
+  font-weight: 400;
+  line-height: 0;
+  vertical-align: 0;
+  position: relative;
+  top: -1.75em;
+  margin-left: 0.08em;
+  letter-spacing: 0;
+}
+.av-seite .tas-posten .qb-reg,
+.av-seite .av-box-liste .qb-reg,
+.av-seite figcaption .qb-reg,
+.av-seite .av-kachel-satz .qb-reg {
+  font-size: 0.6em;
+  top: -0.6em;
+}
+
+/* Overline und Modus über dem Namen (Qi-Alpha-Folge), Gold-Tinte. */
+.av-overline,
+.av-modus {
+  margin: 0;
+  font-size: var(--tas-fs-2);
+  letter-spacing: 0.04em;
+  color: var(--av-gold-tinte);
+}
+.av-modus {
+  color: var(--tas-grau);
+  margin-bottom: var(--tas-s-1);
+}
+
+/* Preisanker-Dreizeiler: Banner im Hausgold statt Qi-Alpha-Rot, Schrift in
+   Tinte (Weiß auf diesem Gold reißt den Kontrast). */
+.av-seite .qb-preisanker {
+  --qb-pa-alpha-rot: var(--av-gold);
+}
+.av-seite .qb-preisanker__banner {
+  color: var(--tas-tinte);
+}
+
+/* Bühne im Band: die 360-Drehung füllt die Mitte, Poster bzw. Ersatzbild
+   zuerst (nie Schwarz). */
+.av-band-buehne {
+  position: relative;
+  width: min(80vw, 420px);
+  margin: var(--tas-s-2) auto 0;
+  aspect-ratio: 1 / 1;
+}
+.av-band-buehne video,
+.av-band-buehne img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.av-band {
+  padding-bottom: var(--tas-s-4);
+}
+
+/* Drei Karten nebeneinander ab Tablet (Größe, Bezahlart). */
+@media (min-width: 750px) {
+  .av-karten--drei {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.av-seite .tas-karte[aria-disabled='true'] {
+  color: var(--tas-grau);
+  cursor: not-allowed;
+}
+.av-anleitung {
+  margin: var(--tas-s-2) 0 0;
+  color: var(--tas-grau);
+}
+
+/* What's in the Box: Liste der Teile unter den Bildern. */
+.av-box-liste {
+  list-style: none;
+  margin: var(--tas-s-3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--tas-s-1);
+}
+.av-box-liste li::before {
+  content: '';
+  display: inline-block;
+  width: var(--tas-s-1);
+  height: var(--tas-s-1);
+  margin-right: var(--tas-s-1);
+  border-radius: 50%;
+  background: var(--av-gold);
+  vertical-align: middle;
+}
+
+/* Slots unter der Box (Fakten, 20 Tage, Vergleich, Wissen, Stimmen, FAQ). */
+.av-slot {
+  max-width: var(--tas-breite);
+  margin: var(--tas-s-8) auto 0;
+  padding: 0 var(--tas-s-2);
+}
+.av-kacheln {
+  list-style: none;
+  margin: var(--tas-s-3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--tas-s-2);
+}
+@media (min-width: 750px) {
+  .av-kacheln {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.av-kachel {
+  background: var(--tas-flaeche);
+  border-radius: var(--tas-radius);
+  padding: var(--tas-s-3);
+}
+.av-kachel-zahl {
+  display: block;
+  font-size: var(--tas-fs-5);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.av-kachel-satz {
+  display: block;
+  margin-top: var(--tas-s-1);
+  color: var(--tas-grau);
+}
+.av-risikofrei summary {
+  display: flex;
+  align-items: center;
+  gap: var(--tas-s-2);
+  cursor: pointer;
+  font-weight: 600;
+}
+.av-symbol {
+  flex: 0 0 auto;
+  color: var(--av-gold);
+}
+.av-risikofrei p,
+.av-faq p {
+  margin: var(--tas-s-1) 0 0;
+  color: var(--tas-grau);
+}
+.av-faq details {
+  border-top: 1px solid var(--tas-linie);
+  padding: var(--tas-s-2) 0;
+}
+.av-faq summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.av-stimmen {
+  list-style: none;
+  margin: var(--tas-s-3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--tas-s-3);
+}
+.av-stimmen blockquote {
+  margin: 0;
+  font-size: var(--tas-fs-4);
+  line-height: 1.4;
 }
 
 .av-seite .tas-zeichen {
   color: var(--av-gold);
 }
 
-/* 3: Sterne + Nutzerzahl an der Stelle der Edition, gleiche Zeilenart. */
-.av-bewertung {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-.av-bewertung-knopf {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  min-height: 24px;
-}
-.av-bewertung-knopf:hover .av-bewertung-wert,
-.av-bewertung-knopf:focus-visible .av-bewertung-wert {
-  text-decoration: underline;
-}
-.av-bewertung-knopf:focus-visible {
-  outline: 2px solid var(--tas-tinte);
-  outline-offset: 2px;
-}
-.av-sterne {
-  color: var(--av-gold);
-  letter-spacing: 0.08em;
-  font-size: 1.05em;
-}
+/* Sterne + Nutzerzahl stehen seit s05 im Preisanker-Dreizeiler
+   (reusables/Preisanker.jsx, qb-preisanker.css), nicht mehr als eigene Zeile. */
 
 /* 6: Kettenbilder ruhen auf der Fläche wie bei der Alpha. */
 .av-kette-bild {

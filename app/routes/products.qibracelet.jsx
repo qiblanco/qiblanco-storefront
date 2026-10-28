@@ -1,15 +1,19 @@
-import {useLoaderData} from 'react-router';
-import {getSelectedProductOptions} from '@shopify/hydrogen';
-import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {redirect, useLoaderData} from 'react-router';
 import {
   QiBraceletSeite,
   qiBraceletSeiteLinks,
   PRODUCT_QUERY,
 } from '~/components/product-pages/QiBraceletSeite';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
-import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
+import {entscheideSeitenExperiment} from '~/lib/experiment-weiche.server';
+import {konfiguratorAn, ladeProduktSeite} from '~/lib/produkt-seite-laden.server';
+import {AlphaVorlage} from '~/components/product-pages/AlphaVorlage';
+import * as ALPHA_DATEN from '~/components/product-pages/qibracelet-alpha-daten';
+import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
+import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
+import alphaVorlageStyles from '~/styles/alpha-vorlage.css?url';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
 /*
  * Die Stylesheets der Seite (samt Begründung und tragender Reihenfolge) stehen
@@ -52,53 +56,27 @@ export const meta = ({data}) => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  // SEITEN-EXPERIMENT konfig-qibracelet-e1 (Grossjob 20261027-GROSSJOB-apple-konfigurator-
+  // qione-qihome-qibracelet-ab, KONZEPT §4): VOR dem ersten await. B ist die
+  // heutige Seite unter /products/qibracelet-b. Vorbau mit aktiv: false, scharf
+  // schaltet s09; Kill EXP_KONFIG_QIBRACELET_MODE=off.
+  const exp = entscheideSeitenExperiment(args.request, args.context.env, 'konfig-qibracelet-e1');
+  if (exp) throw redirect(exp.ziel, {status: 302, headers: {'Cache-Control': 'no-store'}});
+
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args, 'qibracelet'); // ✅ pass hardcoded handle
+  // Await the critical data required to render initial state of the page.
+  // Eine Ladefunktion für A und B (lib/produkt-seite-laden.server.js); der
+  // Konfigurator nur mit KONFIGURATOR_QIBRACELET=on (Default AUS = heutige Seite).
+  const criticalData = await ladeProduktSeite(args, {
+    handle: 'qibracelet',
+    query: PRODUCT_QUERY,
+    daten: ALPHA_DATEN,
+    konfigurator: konfiguratorAn(args.context.env, 'qibracelet'),
+  });
 
-  return { ...deferredData, ...criticalData };
-}
-
-/**
- * Load critical data (above-the-fold content)
- * @param {LoaderFunctionArgs} args
- * @param {string} handle
- */
-async function loadCriticalData({ context, request }, handle) {
-  const { storefront } = context;
-
-  const [{ product }, vergleichsPreise] = await Promise.all([
-    storefront.query(PRODUCT_QUERY, {
-      variables: {
-        handle, // ✅ use the static handle
-        selectedOptions: getSelectedProductOptions(request),
-      },
-    }),
-    // Preise der drei Geräte für den Gerätevergleich, parallel zur Kaufbox
-    // und aus demselben Variantenfeld (amazonstil-daten.js). Fail-soft;
-    // null = Vergleich aus, dann fragt niemand.
-    ladeVergleichsPreise(storefront),
-  ]);
-
-  if (!product?.id) {
-    throw new Response(null, { status: 404 });
-  }
-
-  redirectIfHandleIsLocalized(request, { handle, data: product });
-
-  return {
-    product,
-    // Markt-Land für die Produkt-Auszeichnung: `meta()` hat keinen Kontext,
-    // und der ausgezeichnete Preis muss derselbe sein wie der sichtbare
-    // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
-    // kasse-nimmt-20-prio8.
-    marktLand: storefront.i18n.country,
-    // Nur bei eingeschaltetem Vergleich: aus heißt auch ohne Schlüssel in
-    // den Loaderdaten, die Seite ist dann byte-gleich zum Stand vor s04.
-    ...(vergleichsPreise ? {vergleichsPreise} : {}),
-  };
+  return {...deferredData, ...criticalData};
 }
 
 /**
@@ -116,9 +94,13 @@ function loadDeferredData({ context, params }) {
  */
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, vergleichsPreise} = useLoaderData();
+  const {product, vergleichsPreise, konfigurator, ketten} = useLoaderData();
+  const kaufbereich = konfigurator ? (
+    <Konfigurator product={product} ketten={ketten} />
+  ) : null;
   return (
     <QiBraceletSeite
+      kaufbereich={kaufbereich}
       kaufleiste
       product={product}
       vergleichsPreise={vergleichsPreise}
@@ -131,6 +113,28 @@ export default function Product() {
         />
       }
     />
+  );
+}
+
+/*
+ * KONFIGURATOR (Christian 27.10.2026 Z2–Z6; Grossjob 20261027-GROSSJOB-apple-
+ * konfigurator-qione-qihome-qibracelet-ab): steht an der Stelle der Buy-Box,
+ * alles darunter bleibt die heutige Seite. Die Stylesheets der Alpha laden
+ * nur mit Konfigurator (links() kennt die Loaderdaten nicht): aus heißt
+ * dieselben <link>-Tags wie vor s05.
+ */
+function Konfigurator({product, ketten}) {
+  return (
+    <>
+      <link rel="stylesheet" href={produktVorlageStyles} />
+      <link rel="stylesheet" href={alphaVorlageStyles} />
+      <AlphaVorlage
+        product={product}
+        daten={ALPHA_DATEN}
+        ketten={ketten}
+        vertrauen={<EuGewaehrleistungsHinweis />}
+      />
+    </>
   );
 }
 

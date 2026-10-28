@@ -1,15 +1,24 @@
 /*
- * DATENSTELLE der QiOne-2-Pro-Kaufseite in der ALPHA-VORLAGE (Elina
- * EL-20261027-c05a2273, 27.10.2026, NUR VORSCHAU: kein Livegang ohne ihr GO).
+ * DATENSTELLE der QiOne-2-Pro-Kaufseite im Konfigurator (Alpha-Vorlage).
+ * Schnittstelle: claude-jobs/20261027-GROSSJOB-apple-konfigurator-qione-qihome-
+ * qibracelet-ab/s05/SCHNITTSTELLE.md (Pflicht/optional je Schlüssel). Das
+ * Gerüst ist product-pages/AlphaVorlage.jsx; hier steht nur, was die Seite
+ * hineingibt.
  *
- * Elina: „Neue Produktseiten-Vorlage nach Qi Alpha … zuerst als Testseite auf
- * QiOne 2 Pro“. Die Vorlage selbst ist product-pages/AlphaVorlage.jsx; hier
- * steht nur, was die QiOne-2-Pro-Seite hineingibt. Wortlaut der Zeilen 1–5 ist
- * Elinas Auftrag, Wort für Wort („von Elina entschieden“).
+ * STAND s05 (2026-10-28): Wortlaut von heute bzw. aus Elinas Vorschau
+ * (EL-20261027-c05a2273: Name, Claim, drei Merkmale „von Elina entschieden“).
+ * Die neuen Texte (s03, nach der Challenger-Gegenprobe s11) setzt s06 ein.
  *
  * PREISE stehen hier NICHT: Gerät und Ketten kommen aus Shopify (Seite und
  * Kasse nennen dieselbe Zahl).
  */
+
+/** Bühne: die vorhandene 360-Grad-Drehung des QiOne® 2 Pro (Produkt360Video). */
+export const BAND = {
+  titel: null,
+  unter: null,
+  drehung: 'qione',
+};
 
 export const PRODUKT = {
   // „QiOne 2 Pro“ mit kleinem hochgestelltem ® wie im Qi-Blanco-Logo. Das
@@ -17,8 +26,11 @@ export const PRODUKT = {
   // „QiOne® 2 Pro“; MarkenName setzt es klein und hoch.
   name: 'QiOne® 2 Pro',
   claim: 'Essential Wearable',
-  // Ersetzt „1st. Edition · 111 Stück“ der Alpha (Elina Punkt 3).
-  bewertung: {wert: '4,8', nutzer: '+14.000 Nutzer'},
+  // Kurzzeile: heutiger Satz der Seite (Shopify-Beschreibung, s02 B01 #8).
+  kurzzeile: 'Für Superhumans – dank zweiter Chip Generation und 8-facher Stärke.',
+  // Preisanker-Dreizeiler (reusables/Preisanker.jsx): 4.8 ★ Google
+  // Bewertungen (Link), Nutzer, Preis. Heute ohne Banner.
+  preisanker: {nutzer: '+ 14.000 Nutzer', banner: null},
   punkte: [
     {zeichen: 'wachstum', text: 'Persönliches Wachstum'},
     {zeichen: 'schutz', text: 'Schutz vor E-Smog, 5G & 6G'},
@@ -26,6 +38,9 @@ export const PRODUKT = {
   ],
   herkunft: ['Designed in Germany.', 'Made in Germany.'],
 };
+
+/* Shopify führt heute nur „Default Title“: der Schritt Variante entfällt. */
+export const VARIANTE = null;
 
 /*
  * KETTE (Elina Punkt 6): „die normale Chirurgenstahl-Kette in allen
@@ -75,6 +90,45 @@ export const KETTE_GOLD = {
   bilder: null,
 };
 
+/*
+ * BEZAHLART: direkt, PayPal, Klarna. `{rate}` setzt die Logik aus dem Preis
+ * ein (Hausformel ceil(Preis / 12), nur Markt DE, ab 500 €); ohne Raten-
+ * angebot steht nur „direkt“. Wortlaut heute: KaufZusage.jsx („In 12 Raten à
+ * 91 € zahlen, mit 0 % Finanzierung mit PayPal und Klarna“).
+ */
+export const BEZAHLART = {
+  auszeichnung: 'Bezahlart.',
+  titel: 'In Raten zahlen, mit 0 % Finanzierung mit PayPal und Klarna.',
+  titelDirekt: null,
+  optionen: [
+    {id: 'direkt', titel: 'Direkt bezahlen', zeile: null},
+    {id: 'paypal', titel: 'PayPal', zeile: 'In 12 Raten à {rate} € zahlen'},
+    {id: 'klarna', titel: 'Klarna', zeile: 'In 12 Raten à {rate} € zahlen'},
+  ],
+  hinweis: 'In 12 Raten à {rate} € zahlen, mit 0 % Finanzierung mit PayPal und Klarna.',
+};
+
+/* Zusammenfassung mit EINEM Kaufknopf. Zeilen: heutige Versandpunkte. */
+export const ZUSAMMENFASSUNG = {
+  auszeichnung: 'Deine Auswahl.',
+  titel: null,
+  zeilen: [
+    'Kostenloser Versand innerhalb Deutschlands',
+    'In 2-3 Tagen bei Dir',
+    '100% Versicherter Versand',
+  ],
+  knopf: 'In den Warenkorb legen',
+  rueckgabe: '20 Tage zu Hause testen, 100% Geld-zurück-Garantie',
+};
+
 export const BOX = {
   titel: "What's in the Box",
+  // Heute: „Inklusive Baumwollband | Sofort umhängen!“ (QiOneBuyBox).
+  teile: ['QiOne® 2 Pro', 'Baumwollband zum Sofort-Umhängen'],
 };
+
+/* Slots unter der Box: in s05 leer, der heutige Seiteninhalt steht darunter. */
+export const FAKTEN = null;
+export const RISIKOFREI = null;
+export const STIMMEN = null;
+export const FAQ = null;

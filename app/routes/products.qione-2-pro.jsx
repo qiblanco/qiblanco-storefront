@@ -1,6 +1,4 @@
-import {useLoaderData} from 'react-router';
-import {getSelectedProductOptions} from '@shopify/hydrogen';
-import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {redirect, useLoaderData} from 'react-router';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {
   QiOne2ProSeite,
@@ -8,26 +6,16 @@ import {
 } from '~/components/product-pages/QiOne2ProSeite';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
-import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
-import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
-import {AlphaVorlage, kettenQuery} from '~/components/product-pages/AlphaVorlage';
+import {entscheideSeitenExperiment} from '~/lib/experiment-weiche.server';
+import {konfiguratorAn, ladeProduktSeite} from '~/lib/produkt-seite-laden.server';
+import {AlphaVorlage} from '~/components/product-pages/AlphaVorlage';
 import * as ALPHA_DATEN from '~/components/product-pages/qione-2-pro-alpha-daten';
-import {QiOneBenefitList} from '~/components/product-pages/QiOneBuyBox';
-import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
-import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
+import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
+import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
 import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
 import alphaVorlageStyles from '~/styles/alpha-vorlage.css?url';
-
-/*
- * ALPHA-VORLAGE (Elina EL-20261027-c05a2273, 27.10.2026, NUR VORSCHAU — kein
- * Livegang ohne ihr GO): der Kaufbereich oben ist die neue Produktseiten-
- * Vorlage nach der Qi-Alpha-Kaufseite (product-pages/AlphaVorlage.jsx, Daten
- * qione-2-pro-alpha-daten.js). Alles darunter bleibt, wie es war.
- * RÜCKWEG: ALPHA_VORLAGE auf false = die bisherige Buy-Box, byte-gleich.
- */
-const ALPHA_VORLAGE = true;
 /*
  * ZWEIFEL-BELEG IST HIER ENTFALLEN (2026-09-08, Elina EL-20260908-d8349a01).
  *
@@ -45,17 +33,7 @@ const ALPHA_VORLAGE = true;
 export function links() {
   // Die Kaufleiste (reusables/Kaufleiste.jsx) steht nur auf der Kaufseite,
   // nicht auf dem Landingpage-Spiegel; ihr Stylesheet lädt deshalb hier.
-  return [
-    ...qiOne2ProSeiteLinks(),
-    {rel: 'stylesheet', href: kaufleisteStyles},
-    // Alpha-Stil zuerst, die Vorlage danach (sie verfeinert ihn).
-    ...(ALPHA_VORLAGE
-      ? [
-          {rel: 'stylesheet', href: produktVorlageStyles},
-          {rel: 'stylesheet', href: alphaVorlageStyles},
-        ]
-      : []),
-  ];
+  return [...qiOne2ProSeiteLinks(), {rel: 'stylesheet', href: kaufleisteStyles}];
 }
 
 /**
@@ -88,72 +66,27 @@ export const meta = ({data}) => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  // SEITEN-EXPERIMENT konfig-qione-2-pro-e1 (Grossjob 20261027-GROSSJOB-apple-konfigurator-
+  // qione-qihome-qibracelet-ab, KONZEPT §4): VOR dem ersten await. B ist die
+  // heutige Seite unter /products/qione-2-pro-b. Vorbau mit aktiv: false, scharf
+  // schaltet s09; Kill EXP_KONFIG_QIONE_2_PRO_MODE=off.
+  const exp = entscheideSeitenExperiment(args.request, args.context.env, 'konfig-qione-2-pro-e1');
+  if (exp) throw redirect(exp.ziel, {status: 302, headers: {'Cache-Control': 'no-store'}});
+
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args, 'qione-2-pro'); // ✅ pass hardcoded handle
+  // Await the critical data required to render initial state of the page.
+  // Eine Ladefunktion für A und B (lib/produkt-seite-laden.server.js); der
+  // Konfigurator nur mit KONFIGURATOR_QIONE_2_PRO=on (Default AUS = heutige Seite).
+  const criticalData = await ladeProduktSeite(args, {
+    handle: 'qione-2-pro',
+    query: PRODUCT_QUERY,
+    daten: ALPHA_DATEN,
+    konfigurator: konfiguratorAn(args.context.env, 'qione-2-pro'),
+  });
 
   return {...deferredData, ...criticalData};
-}
-
-/**
- * Load critical data (above-the-fold content)
- * @param {LoaderFunctionArgs} args
- * @param {string} handle
- */
-async function loadCriticalData({context, request}, handle) {
-  const {storefront} = context;
-
-  const [{product}, vergleichsPreise, ketten] = await Promise.all([
-    storefront.query(PRODUCT_QUERY, {
-      variables: {
-        handle, // ✅ use the static handle
-        selectedOptions: getSelectedProductOptions(request),
-      },
-    }),
-    // Preise der drei Geräte für den Gerätevergleich, parallel zur Kaufbox
-    // und aus demselben Variantenfeld (amazonstil-daten.js). Fail-soft;
-    // null = Vergleich aus, dann fragt niemand.
-    ladeVergleichsPreise(storefront),
-    // Ketten-Kacheln der Alpha-Vorlage. FAIL-SOFT: scheitert die Abfrage,
-    // entfallen nur die Kacheln, der Kauf des Geräts bleibt heil.
-    ALPHA_VORLAGE ? ladeKetten(storefront) : null,
-  ]);
-
-  if (!product?.id) {
-    throw new Response(null, {status: 404});
-  }
-
-  redirectIfHandleIsLocalized(request, {handle, data: product});
-
-  return {
-    product,
-    // Markt-Land für die Produkt-Auszeichnung: `meta()` hat keinen Kontext,
-    // und der ausgezeichnete Preis muss derselbe sein wie der sichtbare
-    // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
-    // kasse-nimmt-20-prio8.
-    marktLand: storefront.i18n.country,
-    // Nur bei eingeschaltetem Vergleich: aus heißt auch ohne Schlüssel in
-    // den Loaderdaten, die Seite ist dann byte-gleich zum Stand vor s04.
-    ...(vergleichsPreise ? {vergleichsPreise} : {}),
-    ...(ketten ? {ketten} : {}),
-  };
-}
-
-/** Stahlkette und (nur wenn eingeschaltet) Goldkette; null bei Fehler. */
-async function ladeKetten(storefront) {
-  const gold = Boolean(ALPHA_DATEN.KETTE_GOLD.sichtbar);
-  try {
-    return await storefront.query(kettenQuery({gold}), {
-      variables: {
-        stahl: ALPHA_DATEN.KETTE.handle,
-        ...(gold ? {gold: ALPHA_DATEN.KETTE_GOLD.handle} : {}),
-      },
-    });
-  } catch {
-    return null;
-  }
 }
 
 /**
@@ -170,28 +103,9 @@ function loadDeferredData({context, params}) {
  */
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, vergleichsPreise, ketten} = useLoaderData();
-  const kaufbereich = ALPHA_VORLAGE ? (
-    <AlphaVorlage
-      product={product}
-      daten={ALPHA_DATEN}
-      ketten={ketten}
-      videoKachel={<ProduktVideoKachel handle="qione-2-pro" />}
-      vertrauen={
-        /* Die bisherigen Vertrauens-Icons OHNE „444 Google-Bewertungen“,
-           die gesetzliche Gewährleistung bleibt (Elina Punkt 8). */
-        <QiOneBenefitList
-          vorPunkte={
-            <KaufZusagePunkte
-              preis={product?.selectedOrFirstAvailableVariant?.price}
-              handle={product?.handle}
-              bewertungen={false}
-            />
-          }
-          zusatzPunkt={<EuGewaehrleistungsListenpunkt />}
-        />
-      }
-    />
+  const {product, vergleichsPreise, konfigurator, ketten} = useLoaderData();
+  const kaufbereich = konfigurator ? (
+    <Konfigurator product={product} ketten={ketten} />
   ) : null;
   return (
     <QiOne2ProSeite
@@ -208,6 +122,29 @@ export default function Product() {
         />
       }
     />
+  );
+}
+
+/*
+ * KONFIGURATOR (Christian 27.10.2026 Z2–Z6; Grossjob 20261027-GROSSJOB-apple-
+ * konfigurator-qione-qihome-qibracelet-ab): steht an der Stelle der Buy-Box,
+ * alles darunter bleibt die heutige Seite. Die Stylesheets der Alpha laden
+ * nur mit Konfigurator (links() kennt die Loaderdaten nicht): aus heißt
+ * dieselben <link>-Tags wie vor s05.
+ */
+function Konfigurator({product, ketten}) {
+  return (
+    <>
+      <link rel="stylesheet" href={produktVorlageStyles} />
+      <link rel="stylesheet" href={alphaVorlageStyles} />
+      <AlphaVorlage
+        product={product}
+        daten={ALPHA_DATEN}
+        ketten={ketten}
+        videoKachel={<ProduktVideoKachel handle="qione-2-pro" />}
+        vertrauen={<EuGewaehrleistungsHinweis />}
+      />
+    </>
   );
 }
 
