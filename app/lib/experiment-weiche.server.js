@@ -9,6 +9,8 @@
  *   GET /pages/qione-2-pro -> beendet 21.10.2026 (aktiv: false), alle sehen A
  *   GET /pages/produktberatung -> Loader pages.produktberatung.jsx
  *                                 -> 302 /pages/produktberatung-b       (50 %)
+ *   GET /products/qione-2-pro | qihome-air | qibracelet -> Loader products.<h>.jsx
+ *                                 -> 302 /products/<h>-b   (vorbereitet, aktiv: false)
  *
  * SHOPSEITE SEIT 14.10.2026 AUF 50 % (Fix-Segment s08 desselben Grossjobs;
  * Entscheidung Coworker A 07.10. im Auftrag Christians: nach 7 Tagen ohne
@@ -99,6 +101,18 @@
  * heatmap-manager/config/experimente.yaml (aktiv[].weiche); die Naht-Probe
  * heatmap-manager/pruefungen/probe_seiten_weiche_naht.py vergleicht beide.
  *
+ * VIERTER BIS SECHSTER EINTRAG konfig-<h>-e1 (Grossjob 20261027-GROSSJOB-apple-konfigurator-
+ * qione-qihome-qibracelet-ab, s05; Christian 27.10.2026: „die jetzigen A werden
+ * zu den B versionen und dann im Vergleich laufen lassen"). UMGEKEHRTE ROLLEN:
+ * A /products/<h> trägt den Konfigurator (Schalter KONFIGURATOR_<X>, lib/
+ * produkt-seite-laden.server.js), B /products/<h>-b ist die heutige Seite
+ * (noindex). Hypothese GS-230. VORBEREITET: aktiv false, bis s09 sie scharf
+ * schaltet; bis dahin sieht niemand B, auch nicht per Pin ?konfig_exp=b.
+ * Desktop wird getrennt ausgewertet (experimente.yaml geraete), geteilt wird
+ * mit EINEM Anteil (kein anteil_prozent_desktop). Kill je Produkt:
+ * EXP_KONFIG_QIONE_2_PRO_MODE / EXP_KONFIG_QIHOME_AIR_MODE /
+ * EXP_KONFIG_QIBRACELET_MODE=off.
+ *
  * CROSS-BOUNDARY-LINKAGE: kein neuer Identitäts-Key, kein Set-Cookie, keine
  * Änderung an TRACKING_COOKIE_NAMES. Der rohe Query reist unverändert mit.
  */
@@ -109,7 +123,7 @@ import {besucherEimer} from './lp-ab-v2.server.js';
 
 /**
  * Laufende Seiten-Experimente. Neuer Test = neue id + neues Salz.
- * marker: Buchstabe für lp_m (belegt sind w r f v x m h p b n s q k).
+ * marker: Buchstabe für lp_m (belegt sind w r f v x m h p b n s q k e l y).
  */
 export const SEITEN_EXPERIMENTE = Object.freeze({
   'start-e1-gs081': Object.freeze({
@@ -149,6 +163,41 @@ export const SEITEN_EXPERIMENTE = Object.freeze({
     env_kill: 'EXP_PB_MODE',
     marker: 'k',
     aktiv: true,
+  }),  'konfig-qione-2-pro-e1': Object.freeze({
+    id: 'konfig-qione-2-pro-e1',
+    hypothese_id: 'GS-230',
+    pfad_a: '/products/qione-2-pro',
+    pfad_b: '/products/qione-2-pro-b',
+    salz: 'konfig-qione-2-pro-e1',
+    anteil_prozent: 50,
+    pin_param: 'konfig_exp',
+    env_kill: 'EXP_KONFIG_QIONE_2_PRO_MODE',
+    marker: 'e',
+    aktiv: false, // vorbereitet (s05), scharf erst mit dem Livegang (s09)
+  }),
+  'konfig-qihome-air-e1': Object.freeze({
+    id: 'konfig-qihome-air-e1',
+    hypothese_id: 'GS-230',
+    pfad_a: '/products/qihome-air',
+    pfad_b: '/products/qihome-air-b',
+    salz: 'konfig-qihome-air-e1',
+    anteil_prozent: 50,
+    pin_param: 'konfig_exp',
+    env_kill: 'EXP_KONFIG_QIHOME_AIR_MODE',
+    marker: 'l',
+    aktiv: false, // vorbereitet (s05), scharf erst mit dem Livegang (s09)
+  }),
+  'konfig-qibracelet-e1': Object.freeze({
+    id: 'konfig-qibracelet-e1',
+    hypothese_id: 'GS-230',
+    pfad_a: '/products/qibracelet',
+    pfad_b: '/products/qibracelet-b',
+    salz: 'konfig-qibracelet-e1',
+    anteil_prozent: 50,
+    pin_param: 'konfig_exp',
+    env_kill: 'EXP_KONFIG_QIBRACELET_MODE',
+    marker: 'y',
+    aktiv: false, // vorbereitet (s05), scharf erst mit dem Livegang (s09)
   }),
 });
 

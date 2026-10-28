@@ -28,7 +28,15 @@ import {E1, besucherEimer, fnv1a} from './lp-ab-v2.server.js';
 const START = 'start-e1-gs081';
 const SHOP = 'q2p-e1-gs080';
 const PB = 'pb-e1-gs107';
-const ALLE = [START, SHOP, PB];
+// Konfigurator-Tests (Grossjob 20261027-GROSSJOB-apple-konfigurator-qione-qihome-qibracelet-ab, s05): vorbereitet,
+// aktiv false bis zum Livegang (s09). A /products/<h> = Konfigurator, B /products/<h>-b = heutige Seite.
+const KONFIG = {
+  'konfig-qione-2-pro-e1': {h: 'qione-2-pro', kill: 'EXP_KONFIG_QIONE_2_PRO_MODE', marker: 'e'},
+  'konfig-qihome-air-e1': {h: 'qihome-air', kill: 'EXP_KONFIG_QIHOME_AIR_MODE', marker: 'l'},
+  'konfig-qibracelet-e1': {h: 'qibracelet', kill: 'EXP_KONFIG_QIBRACELET_MODE', marker: 'y'},
+};
+const KONFIG_IDS = Object.keys(KONFIG);
+const ALLE = [START, SHOP, PB, ...KONFIG_IDS];
 // Laufende Experimente (Code-Schalter aktiv). q2p-e1-gs080 ist seit 21.10.2026 beendet (s09, A bleibt): es fällt aus
 // den Anteils-, Pin- und Kill-Tests heraus und hat einen eigenen Test unten.
 const LAUFEND = ALLE.filter((id) => SEITEN_EXPERIMENTE[id].aktiv);
@@ -86,8 +94,8 @@ function istB(id, {ip, ua}) {
 
 const POP = population(20000);
 
-test('Tabelle: drei Experimente, Salz = id, Anteile Start 50 (mobil und Desktop) / Shop beendet / Beratung 50, eigene Marker, keine Kollision mit E1', () => {
-  assert.deepEqual(Object.keys(SEITEN_EXPERIMENTE).sort(), [PB, SHOP, START].sort());
+test('Tabelle: sechs Experimente, Salz = id, Anteile Start 50 (mobil und Desktop) / Shop beendet / Beratung 50, eigene Marker, keine Kollision mit E1', () => {
+  assert.deepEqual(Object.keys(SEITEN_EXPERIMENTE).sort(), [...ALLE].sort());
   const s = SEITEN_EXPERIMENTE[START];
   const q = SEITEN_EXPERIMENTE[SHOP];
   const k = SEITEN_EXPERIMENTE[PB];
@@ -126,8 +134,9 @@ test('Tabelle: drei Experimente, Salz = id, Anteile Start 50 (mobil und Desktop)
   assert.equal(s.env_kill, 'EXP_START_MODE');
   assert.equal(q.env_kill, 'EXP_SHOP_MODE');
   const belegt = new Set(['w', 'r', 'f', 'v', 'x', 'm', 'h', 'p', 'b', 'n']);
-  assert.ok(!belegt.has(s.marker) && !belegt.has(q.marker) && !belegt.has(k.marker));
-  assert.equal(new Set([s.marker, q.marker, k.marker]).size, 3);
+  const marker = ALLE.map((id) => SEITEN_EXPERIMENTE[id].marker);
+  assert.ok(marker.every((m) => !belegt.has(m)), `Marker ${marker} kollidiert mit ${[...belegt]}`);
+  assert.equal(new Set(marker).size, ALLE.length);
   assert.notEqual(s.salz, E1.salz);
   assert.notEqual(q.salz, E1.salz);
   assert.notEqual(k.salz, E1.salz);
@@ -139,6 +148,10 @@ test('Goldwerte: Eimer = fnv1a(salz|ip|ua) % 100 je Experiment-Salz (festgeschri
     [START]: [65, 31, 56, 24, 57, 23],
     [SHOP]: [77, 91, 12, 40, 81, 87],
     [PB]: [26, 58, 55, 97, 64, 72], // festgeschrieben 08.10.2026
+    // festgeschrieben 28.10.2026 (Konfigurator, s05)
+    'konfig-qione-2-pro-e1': [23, 37, 94, 38, 51, 33],
+    'konfig-qihome-air-e1': [8, 96, 61, 63, 18, 26],
+    'konfig-qibracelet-e1': [30, 50, 67, 85, 40, 4],
   };
   for (const id of ALLE) {
     const salz = SEITEN_EXPERIMENTE[id].salz;
@@ -462,4 +475,90 @@ test('Naht: geraeteKlasse ist zeichengleich mit der Zählung in entry.server.jsx
   const hier = readFileSync(new URL('./experiment-weiche.server.js', import.meta.url), 'utf8');
   const zaehlung = readFileSync(new URL('../entry.server.jsx', import.meta.url), 'utf8');
   assert.equal(rumpf(hier), rumpf(zaehlung));
+});
+
+test('Konfigurator konfig-<h>-e1 (s05): Zeilen wie beauftragt, vorbereitet, eigene Marker, eigenes Salz', () => {
+  for (const id of KONFIG_IDS) {
+    const e = SEITEN_EXPERIMENTE[id];
+    const soll = KONFIG[id];
+    assert.equal(e.id, id);
+    assert.equal(e.salz, id);
+    assert.equal(e.hypothese_id, 'GS-230');
+    assert.equal(e.pfad_a, `/products/${soll.h}`);
+    assert.equal(e.pfad_b, `/products/${soll.h}-b`);
+    assert.equal(e.anteil_prozent, 50);
+    // Desktop wird getrennt AUSGEWERTET (experimente.yaml), geteilt wird mit einem Anteil
+    assert.equal(e.anteil_prozent_desktop, undefined);
+    assert.equal(e.pin_param, 'konfig_exp');
+    assert.equal(e.env_kill, soll.kill);
+    assert.equal(e.marker, soll.marker);
+    assert.equal(e.aktiv, false);
+    assert.notEqual(e.salz, E1.salz);
+    assert.ok(!LAUFEND.includes(id));
+  }
+});
+
+test('Konfigurator vorbereitet: niemand sieht B, auch nicht per Pin b; ohne Kill und mit Kill', () => {
+  for (const id of KONFIG_IDS) {
+    const e = SEITEN_EXPERIMENTE[id];
+    assert.equal(seitenExperimentAktiv(e, {}), false);
+    assert.equal(entscheideSeitenExperiment(req(`${e.pfad_a}?konfig_exp=b`), {}, id), null);
+    assert.equal(entscheideSeitenExperiment(req(`${e.pfad_a}?konfig_exp=b`), {[e.env_kill]: 'on'}, id), null);
+    const b = POP.slice(0, 2000).filter((p) => istB(id, p)).length;
+    assert.equal(b, 0, `${id}: ${b} von 2000 sähen B, obwohl aktiv false`);
+  }
+});
+
+test('Konfigurator scharf (Tabelle mit aktiv true, wie s09 sie setzt): Ziel /products/<h>-b mit Marker, Pin, Kill, Anteil je Gerät', () => {
+  for (const id of KONFIG_IDS) {
+    const e = {...SEITEN_EXPERIMENTE[id], aktiv: true};
+    const tab = {[id]: e};
+    const pin = entscheideSeitenExperiment(req(`${e.pfad_a}?fbclid=AbC&konfig_exp=b`), {}, id, tab);
+    assert.equal(pin.ziel, `${e.pfad_b}?fbclid=AbC&konfig_exp=b&lp_m=${KONFIG[id].marker}`);
+    assert.equal(entscheideSeitenExperiment(req(`${e.pfad_a}?konfig_exp=a`, {ua: DESKTOP}), {}, id, tab), null);
+    // fremder Pin lenkt nicht um (start_exp, shop_exp gehören anderen Zeilen)
+    const fremd = entscheideSeitenExperiment(req(`${e.pfad_a}?shop_exp=b`), {}, id, tab);
+    assert.ok(fremd === null || fremd.eimer >= 0);
+    assert.equal(entscheideSeitenExperiment(req(`${e.pfad_a}?konfig_exp=b`), {[e.env_kill]: 'off'}, id, tab), null);
+    assert.notEqual(entscheideSeitenExperiment(req(`${e.pfad_a}?konfig_exp=b`), {[e.env_kill]: 'aus'}, id, tab), null);
+    for (const geraet of ['mobile', 'desktop']) {
+      const pop = POP.filter((p) => (geraet === 'desktop') === (geraeteKlasse(p.ua) === 'desktop'));
+      const k = pop.filter((p) => entscheideSeitenExperiment(req(e.pfad_a, p), {}, id, tab) !== null).length;
+      const [lo, hi] = wilson(k, pop.length);
+      assert.ok(lo <= 0.5 && 0.5 <= hi, `${id} ${geraet}: ${k}/${pop.length} B, Wilson [${lo}, ${hi}]`);
+    }
+    // Crawler sehen A, auch mit Pin
+    const bot = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
+    assert.equal(entscheideSeitenExperiment(req(`${e.pfad_a}?konfig_exp=b`, {ua: bot}), {}, id, tab), null);
+  }
+});
+
+test('Konfigurator: Salze unabhängig von Start, Shop, Beratung, LP-E1 und untereinander (beide B wie Zufall)', () => {
+  // Gemessen wird wie im Bestandstest oben: P(beide B) = Anteil x Anteil. NICHT über gleiche Eimer: FNV-1a
+  // ändert die unteren Bits nur aus den unteren Bits, Eimer mod 4 ist je Salzpaar eine feste Permutation
+  // (gleiche Eimer kommen je nach Paar nie oder gehäuft vor), die B-Zuteilung bleibt trotzdem unabhängig.
+  const bArm = (salz, anteil) => (b) => besucherEimer(b.ip, b.ua, salz) < anteil;
+  const arme = {
+    start: [bArm(START, SEITEN_EXPERIMENTE[START].anteil_prozent), SEITEN_EXPERIMENTE[START].anteil_prozent / 100],
+    shop: [bArm(SHOP, SEITEN_EXPERIMENTE[SHOP].anteil_prozent), SEITEN_EXPERIMENTE[SHOP].anteil_prozent / 100],
+    pb: [bArm(PB, SEITEN_EXPERIMENTE[PB].anteil_prozent), SEITEN_EXPERIMENTE[PB].anteil_prozent / 100],
+    lp: [bArm(E1.salz, E1.anteil_prozent), E1.anteil_prozent / 100],
+  };
+  for (const id of KONFIG_IDS) arme[id] = [bArm(id, SEITEN_EXPERIMENTE[id].anteil_prozent), SEITEN_EXPERIMENTE[id].anteil_prozent / 100];
+  const namen = Object.keys(arme);
+  const n = POP.length;
+  let paare = 0;
+  for (let i = 0; i < namen.length; i += 1) {
+    for (let j = i + 1; j < namen.length; j += 1) {
+      if (!KONFIG_IDS.includes(namen[i]) && !KONFIG_IDS.includes(namen[j])) continue;
+      const [fx, ax] = arme[namen[i]];
+      const [fy, ay] = arme[namen[j]];
+      const p = ax * ay;
+      const toleranz = 4 * Math.sqrt(n * p * (1 - p));
+      const beide = POP.filter((b) => fx(b) && fy(b)).length;
+      assert.ok(Math.abs(beide - n * p) < toleranz, `${namen[i]}×${namen[j]}: beide B ${beide}, erwartet ${(n * p).toFixed(0)} ± ${toleranz.toFixed(0)}`);
+      paare += 1;
+    }
+  }
+  assert.equal(paare, 4 * 3 + 3);
 });
