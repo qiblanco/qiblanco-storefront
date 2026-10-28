@@ -174,7 +174,11 @@ import {
  * (Erwartungswerte gepinnt, nicht aus dem laufenden Schalter gelesen). Was der
  * ausgelieferte Schalter bewirkt, prüft der eigene Test „E1 beendet". */
 function entscheideMitE1(request, env, codeSchalter = true, ...weitere) {
-  return entscheideLpExperiment(request, env, codeSchalter, ...weitere);
+  // Die Kurz-Arme K50/K25 sind seit dem 28.10.2026 scharf und belegen die
+  // Eimer 0..29. Diese Tests prüfen die Mechanik von E1/B2 für sich: die
+  // Kurz-Arme bleiben hier aus, solange ein Test sie nicht ausdrücklich setzt.
+  const [b2 = E2_AKTIV, k50 = false, k25 = false] = weitere;
+  return entscheideLpExperiment(request, env, codeSchalter, b2, k50, k25);
 }
 
 /** Request-Stub mit Kopfzeilen (IP + UA), wie Oxygen sie liefert. */
@@ -451,9 +455,9 @@ test('B2: Ad-Weiche schließt B2 aus (sonst Schleife B2 -> A -> B2 für bezahlte
 });
 
 // ═══ Kurz-Arme K50 (szs-e3-gs079) und K25 (szs-e4-gs174), 17.10.2026 ════════
-// Job 20261017-ads-lp-radikal-kurz-tests-gs079-durch-sim-tor. Vorgebaut und AUS
-// (E3_AKTIV/E4_AKTIV false): bis zum Start nach dem Urteil von gs050 und dem
-// bestandenen Sim-Tor sieht kein Besucher die Kurz-Arme.
+// Job 20261017-ads-lp-radikal-kurz-tests-gs079-durch-sim-tor. Vorgebaut und
+// seit dem 28.10.2026 SCHARF (E3_AKTIV/E4_AKTIV true): start-freigabe beider
+// Tests exit 0 am Sim-Tor, gs050 hat am 20.10. geurteilt.
 import {
   E3,
   E4,
@@ -469,15 +473,15 @@ import {
 /** entscheideLpExperiment mit allen vier Code-Schaltern. */
 const entscheide4 = (req, env, e1, e2, k50, k25) => entscheideLpExperiment(req, env, e1, e2, k50, k25);
 
-test('Kurz-Arme: Definition, Pfade, Marker; im Code AUS', () => {
+test('Kurz-Arme: Definition, Pfade, Marker; im Code SCHARF', () => {
   assert.equal(E3.id, 'szs-e3-gs079');
   assert.equal(E3.hypothese_id, 'GS-079');
   assert.equal(E4.id, 'szs-e4-gs174');
   assert.equal(E4.hypothese_id, 'GS-174');
   assert.equal(E3.salz, E1.salz);
   assert.equal(E4.salz, E1.salz);
-  assert.equal(E3_AKTIV, false);
-  assert.equal(E4_AKTIV, false);
+  assert.equal(E3_AKTIV, true);
+  assert.equal(E4_AKTIV, true);
   assert.equal(LP_EXP_K50_PFAD, '/pages/schlaf-zellen-schutz-k50');
   assert.equal(LP_EXP_K25_PFAD, '/pages/schlaf-zellen-schutz-k25');
   const belegt = ['w', 'r', 'h', 'p', 'b', 'f', 'v', 'm', 'x', 's', 'q', 'k', 'n', 'z'];
@@ -485,17 +489,24 @@ test('Kurz-Arme: Definition, Pfade, Marker; im Code AUS', () => {
   assert.notEqual(LP_EXP_K50_MARKER, LP_EXP_K25_MARKER);
 });
 
-test('Kurz-Arme: im Auslieferungszustand ändert sich für keinen Besucher etwas', () => {
+test('Kurz-Arme: Auslieferungszustand = K50/K25 scharf, B2 und alle übrigen Besucher unverändert', () => {
+  const z = {a: 0, k50: 0, k25: 0, b2: 0};
   for (const b of POP_B2.slice(0, 5000)) {
     const heute = entscheideLpExperiment(reqK(LP_A, b), {});
-    // Vergleich gegen den ausgelieferten Stand ohne Kurz-Arme (seit 20.10.
-    // E1 beendet, B2 läuft): die Schalter von main, K50/K25 aus.
-    const alt = entscheide4(reqK(LP_A, b), {}, E1_AKTIV, E2_AKTIV, false, false);
-    assert.deepEqual(heute, alt);
+    // Vergleich gegen den Stand vor dem Start (E1 beendet, B2 läuft, K50/K25 aus):
+    // wer dort A oder B2 hatte und nicht in den Eimern 0..29 liegt, behält es.
+    const vorher = entscheide4(reqK(LP_A, b), {}, E1_AKTIV, E2_AKTIV, false, false);
+    const eimer = besucherEimer(b.ip, b.ua);
+    if (eimer >= 30) assert.deepEqual(heute, vorher, `Eimer ${eimer}`);
+    else assert.equal(heute?.arm, eimer < 15 ? 'k50' : 'k25', `Eimer ${eimer}`);
+    z[heute?.arm ?? 'a'] += 1;
   }
-  // Pins auf abgeschaltete Kurz-Arme zeigen A.
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=k50`, {ip: '10.9.9.9'}), {}), null);
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=k25`, {ip: '10.9.9.9'}), {}), null);
+  assert.ok(z.k50 > 0 && z.k25 > 0 && z.b2 > 0 && z.a > 0, JSON.stringify(z));
+  // Pins auf die scharfen Kurz-Arme führen dorthin; der Env-Kill schaltet sie ab.
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=k50`, {ip: '10.9.9.9'}), {}).arm, 'k50');
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=k25`, {ip: '10.9.9.9'}), {}).arm, 'k25');
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=k50`, {ip: '10.9.9.9'}), {LP_EXP_SZS_K50_MODE: 'off'}), null);
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=k25`, {ip: '10.9.9.9'}), {LP_EXP_SZS_K25_MODE: 'off'}), null);
 });
 
 test('Kurz-Arme: K50 nimmt die Eimer von B nur, wenn B aus ist (laufender Test wird nicht gestoppt)', () => {
