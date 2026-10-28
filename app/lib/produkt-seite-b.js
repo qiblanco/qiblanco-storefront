@@ -8,12 +8,13 @@
 
 /**
  * meta() der B-Fassung: dieselben Tags wie A (Titel, Beschreibung, Product-
- * Auszeichnung, Kanonische auf den A-Pfad aus produktMeta), dazu noindex.
- * Ein vorhandenes robots-Tag wird ersetzt, nicht verdoppelt.
+ * Auszeichnung, Kanonische auf den A-Pfad aus produktMeta) OHNE deren robots-
+ * Tag. Das noindex-Tag schreibt jede B-Route selbst als festes Objekt in ihr
+ * meta() (das Zufahrts-Gate erkennt nur ein statisches robots-Objekt im
+ * Routen-Quelltext). So steht genau ein robots-Tag im Kopf.
  */
 export function bMeta(basis) {
-  const ohneRobots = (basis ?? []).filter((t) => t?.name !== 'robots');
-  return [...ohneRobots, {name: 'robots', content: 'noindex,nofollow'}];
+  return (basis ?? []).filter((t) => t?.name !== 'robots');
 }
 
 /** headers() der B-Fassung (Hausmuster pages.qione-2-pro-b.jsx). */

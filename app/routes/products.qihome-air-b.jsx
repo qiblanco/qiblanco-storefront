@@ -48,7 +48,10 @@ function metaVonA({data}) {
 }
 
 /** @type {MetaFunction<typeof loader>} */
-export const meta = (args) => bMeta(metaVonA(args));
+export const meta = (args) => [
+  ...bMeta(metaVonA(args)),
+  {name: 'robots', content: 'noindex,nofollow'},
+];
 
 export const headers = () => B_HEADERS;
 

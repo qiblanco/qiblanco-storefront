@@ -509,8 +509,8 @@ export function AlphaVorlage({
               {kaufbar ? ZUSAMMENFASSUNG.knopf : 'Ausverkauft'}
             </AddToCartButton>
           </div>
-          {ZUSAMMENFASSUNG.rueckgabe ? (
-            <p className="tas-klein">{mitMarkeR(ZUSAMMENFASSUNG.rueckgabe)}</p>
+          {ZUSAMMENFASSUNG.ruecknahme ? (
+            <p className="tas-klein">{mitMarkeR(ZUSAMMENFASSUNG.ruecknahme)}</p>
           ) : null}
           {vertrauen}
         </div>

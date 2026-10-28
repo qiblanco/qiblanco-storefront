@@ -125,7 +125,7 @@ export const ZUSAMMENFASSUNG = {
     '20 Tage zu Hause testen, voller Kaufpreis zurück',
   ],
   knopf: 'In den Warenkorb legen',
-  rueckgabe: null,
+  ruecknahme: null,
 };
 
 /*

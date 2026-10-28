@@ -74,7 +74,7 @@ export const ZUSAMMENFASSUNG = {
   titel: 'Ein Gerät. Jedes Zimmer.',
   zeilen: ['Versand am nächsten Werktag. Kostenlos in Deutschland und voll versichert.'],
   knopf: 'In den Warenkorb',
-  rueckgabe: '20 Tage zu Hause testen. Voller Kaufpreis zurück.',
+  ruecknahme: '20 Tage zu Hause testen. Voller Kaufpreis zurück.',
 };
 
 /*

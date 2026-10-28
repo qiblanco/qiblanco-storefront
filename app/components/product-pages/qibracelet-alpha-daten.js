@@ -50,7 +50,7 @@ export const PRODUKT = {
  * den nackten Buchstaben, damit die Anzeige stimmt, wenn der Repair die
  * Shopify-Titel auf S/M/L kürzt.
  */
-const GROESSEN = {
+const BREITEN = {
   S: '4,5 bis 5 cm breit',
   M: '6 cm breit',
   L: '7 bis 7,5 cm breit',
@@ -58,7 +58,7 @@ const GROESSEN = {
 const SHOPIFY_WERTE = {S: '17', M: '19', L: '21'};
 const proWert = (f) =>
   Object.fromEntries(
-    Object.keys(GROESSEN).flatMap((g) => [
+    Object.keys(BREITEN).flatMap((g) => [
       [`${g} – ${SHOPIFY_WERTE[g]}`, f(g)],
       [`${g} - ${SHOPIFY_WERTE[g]}`, f(g)],
       [g, f(g)],
@@ -71,7 +71,7 @@ export const VARIANTE = {
   anleitung:
     'Leg ein Lineal an die breiteste Stelle deines Handgelenks, dort, wo du an beiden Seiten die Knöchel spürst. Schließ ein Auge und lies ab, auf den halben Zentimeter gerundet.',
   namen: proWert((g) => g),
-  zeilen: proWert((g) => GROESSEN[g]),
+  zeilen: proWert((g) => BREITEN[g]),
   grenzregel: '5,5 oder 6,5 cm? Nimm die kleinere Größe. Sie liegt an.',
   anpassen:
     'Der Reif ist dafür gebaut, dass du ihn anpasst: Mit beiden Händen drückst du ihn enger oder dehnst ihn weiter. Das darfst du.',
@@ -104,7 +104,7 @@ export const ZUSAMMENFASSUNG = {
   titel: 'In deiner Größe.',
   zeilen: ['Versand am nächsten Werktag. Kostenlos in Deutschland und voll versichert.'],
   knopf: 'In den Warenkorb',
-  rueckgabe: '20 Tage tragen und testen. Voller Kaufpreis zurück.',
+  ruecknahme: '20 Tage tragen und testen. Voller Kaufpreis zurück.',
 };
 
 /*

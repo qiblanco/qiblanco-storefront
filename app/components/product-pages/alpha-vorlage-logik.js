@@ -123,7 +123,7 @@ export function zusammenfassung({
     variante?.title && !OHNE_AUSWAHL.has(variante.title) ? anzeige || variante.title : null;
   const posten = [
     {
-      schluessel: 'geraet',
+      schluessel: 'produkt',
       name: varianteName ? `${name} · ${varianteName}` : name,
       betrag: hauptPreis || 0,
     },
