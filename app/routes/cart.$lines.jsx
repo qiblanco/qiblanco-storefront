@@ -13,6 +13,7 @@ import {
   merkmaleAusQuery,
   rabattcodesAusQuery,
   TEILZAHLUNG,
+  teil1Erlaubt,
 } from '~/lib/qi-alpha-teilzahlung';
 
 /**
@@ -61,6 +62,17 @@ export async function loader({request, context, params}) {
       quantity,
     };
   });
+
+  // Teil 1 der geteilten Zahlung nur im Markt DE/AT (lib/qi-alpha-
+  // teilzahlung.js): anderswo kein Warenkorb, zurück zur Kaufseite.
+  if (
+    !teil1Erlaubt({
+      varianten: linesMap.map((l) => l.merchandiseId),
+      land: storefront.i18n.country,
+    })
+  ) {
+    return redirect('/products/qi-alpha');
+  }
 
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);

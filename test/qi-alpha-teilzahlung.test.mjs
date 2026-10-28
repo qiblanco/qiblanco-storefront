@@ -147,6 +147,15 @@ test('Rabattcodes: Komma-Liste wird zu mehreren Codes, ein Code bleibt einer', (
   assert.deepEqual(tz.rabattcodesAusQuery(new URLSearchParams('')), []);
 });
 
+test('Teil-1-Warenkorb nur in DE/AT, andere Permalinks überall', () => {
+  const anteil = `gid://shopify/ProductVariant/${tz.TEILZAHLUNG.variante}`;
+  assert.equal(tz.teil1Erlaubt({varianten: [anteil], land: 'DE'}), true);
+  assert.equal(tz.teil1Erlaubt({varianten: [anteil], land: 'AT'}), true);
+  assert.equal(tz.teil1Erlaubt({varianten: [anteil], land: 'CH'}), false);
+  assert.equal(tz.teil1Erlaubt({varianten: [anteil], land: 'US'}), false);
+  assert.equal(tz.teil1Erlaubt({varianten: ['gid://shopify/ProductVariant/1'], land: 'US'}), true);
+});
+
 test('NAHT Vertrag: Variante, Betrag, Märkte und Merkmale der Seite = vertrag.json', () => {
   assert.ok(existsSync(VERTRAG_PFAD), `Vertrag fehlt: ${VERTRAG_PFAD}`);
   const v = JSON.parse(readFileSync(VERTRAG_PFAD, 'utf8'));
@@ -170,6 +179,7 @@ test('Verdrahtung: Seite zeigt Ratenzahlung statt Ratencode, cart.$lines liest M
   const permalink = lies('app/routes/cart.$lines.jsx');
   assert.match(permalink, /merkmaleAusQuery\(/);
   assert.match(permalink, /rabattcodesAusQuery\(/);
+  assert.match(permalink, /teil1Erlaubt\(/);
   const route = lies('app/routes/products.qi-alpha.jsx');
   assert.match(route, /qi-alpha-teilzahlung\.css\?url/);
 });

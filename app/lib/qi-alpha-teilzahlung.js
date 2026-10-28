@@ -136,6 +136,19 @@ export function merkmaleAusQuery(searchParams, {sitzungsCodes = []} = {}) {
 }
 
 /**
+ * Darf dieser Permalink einen Warenkorb anlegen? Trägt er den Ratenanteil,
+ * nur im Markt DE/AT: der Storefront-Warenkorb nimmt die Zeile in CH/US
+ * sonst trotzdem an (s06 gemessen: 9.409 CHF / 9.538 USD ohne Fehler), und
+ * der Ratenanteil wäre dort kein 10.000-€-Teil mehr.
+ */
+export function teil1Erlaubt({varianten, land}) {
+  const mitAnteil = varianten.some(
+    (v) => String(v).split('/').pop() === TEILZAHLUNG.variante,
+  );
+  return !mitAnteil || TEILZAHLUNG.maerkte.includes(land);
+}
+
+/**
  * `?discount=` als Komma-Liste: der Restzahlungs-Link des Wächters trägt den
  * Anrechnungscode und, wenn kombinierbar, den Partnercode. Ein einzelner
  * Code bleibt ein Code (bisheriges Verhalten). Höchstens fünf.
