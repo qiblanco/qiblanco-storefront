@@ -238,7 +238,7 @@ export const FAQ = {
     },
     {
       f: 'Wie funktioniert das QiHome® Air?',
-      a: 'Sein Herz ist der Gitterchip™ aus einer eigens entwickelten Goldlegierung. Sein statisches Feld prägt die Wassermoleküle in deinem Raum. Wir nennen diesen Zustand kohärentes Wasser. Strom und Elektronik braucht es dafür keine.',
+      a: 'Sein Herz ist der Gitterchip® aus einer eigens entwickelten Goldlegierung. Sein statisches Feld prägt die Wassermoleküle in deinem Raum. Wir nennen diesen Zustand kohärentes Wasser. Strom und Elektronik braucht es dafür keine.',
     },
     {
       f: 'Muss das QiHome® Air in die Steckdose?',
@@ -258,11 +258,11 @@ export const FAQ = {
     },
     {
       f: 'Lässt die Wirkung mit der Zeit nach?',
-      a: 'Nein. Der Gitterchip™ arbeitet ohne Akku und nutzt sich nicht ab. Du gewöhnst dich nur an das Gefühl: Was am Anfang neu ist, wird nach einigen Tagen Alltag.',
+      a: 'Nein. Der Gitterchip® arbeitet ohne Akku und nutzt sich nicht ab. Du gewöhnst dich nur an das Gefühl: Was am Anfang neu ist, wird nach einigen Tagen Alltag.',
     },
     {
       f: 'Aus welchem Material ist das QiHome® Air?',
-      a: 'Gehäuse aus Chirurgenstahl, Gitterchip™ aus einer eigenen Goldlegierung, Holz aus regionaler deutscher Eiche. Den letzten Schliff geben Goldschmiede von Hand.',
+      a: 'Gehäuse aus Chirurgenstahl, Gitterchip® aus einer eigenen Goldlegierung, Holz aus regionaler deutscher Eiche. Den letzten Schliff geben Goldschmiede von Hand.',
     },
     {
       f: 'Wie zahle ich in Raten?',
