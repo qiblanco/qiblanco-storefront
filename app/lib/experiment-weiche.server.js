@@ -104,8 +104,9 @@
  *
  * VIERTER EINTRAG the-alpha-abc-e1 MIT DREI ARMEN (Grossjob 20261025-prio1-
  * the-alpha-landingpage-figma-vorlage-a-server-b-ki-c, s07; Christian Z5: „A/B/C
- * Test wie bei den Ads"). A = /pages/The-Alpha (Figma 1:1), B = /pages/The-Alpha-C
- * (Server), C = /pages/The-Alpha-B (KI). Additiv verallgemeinert: eine Zeile mit
+ * Test wie bei den Ads"). A = /pages/Qi-Alpha (Figma 1:1), B = /pages/Qi-Alpha-C
+ * (Server), C = /pages/Qi-Alpha-B (KI); bis zum Umzug 27.10.2026 unter
+ * /pages/The-Alpha(-C,-B). Additiv verallgemeinert: eine Zeile mit
  * pfad_c teilt Eimer < anteil_prozent auf B, Eimer < anteil_prozent +
  * anteil_prozent_c auf C, den Rest auf A (33/33/34). Zeilen ohne pfad_c
  * rechnen byte-gleich wie vorher (kein C, Pin c wirkt nicht). Die Rückgabe
@@ -174,9 +175,11 @@ export const SEITEN_EXPERIMENTE = Object.freeze({
   'the-alpha-abc-e1': Object.freeze({
     id: 'the-alpha-abc-e1',
     hypothese_id: 'GS-221',
-    pfad_a: '/pages/The-Alpha',
-    pfad_b: '/pages/The-Alpha-C',
-    pfad_c: '/pages/The-Alpha-B',
+    // Seit dem Umzug Qi Alpha (27.10.2026) die neuen Adressen; die alten
+    // /pages/The-Alpha(-B,-C) sind 301-Hüllen und reichen den Pin mit durch.
+    pfad_a: '/pages/Qi-Alpha',
+    pfad_b: '/pages/Qi-Alpha-C',
+    pfad_c: '/pages/Qi-Alpha-B',
     salz: 'the-alpha-abc-e1',
     // RUHEND bis zur Startfreigabe: 0/0 lenkt keinen Besucher um, Pins a|b|c
     // wirken (Messung, Ende-zu-Ende-Proben). Scharf = eigener PR auf 33/33;
