@@ -95,9 +95,9 @@ function Liga() {
       <h2 className="text-center">Qi Alpha® - Eine bisher unerreichte Liga</h2>
       <div className="MainFeatures NormalSectionSize">
         <div className="MainFeaturesColumn">
-          <h3>Der Gitterchip™ der ultimativen Generation</h3>
+          <h3>Der Gitterchip<sup>®</sup> der ultimativen Generation</h3>
           <p>
-            Der Kern des Qi Alpha® ist ein zweiteiliger Gitterchip™, definiert
+            Der Kern des Qi Alpha® ist ein zweiteiliger Gitterchip<sup>®</sup>, definiert
             durch die über ein Jahrzehnt andauernde Forschung am QiOne®. Das
             Ergebnis ist die außergewöhnlichste Erscheinung: Eine Goldlegierung,
             deren Atome in einer einmalig definierten Ordnung stehen. Kohärent
@@ -118,7 +118,7 @@ function Liga() {
         <div className="MainFeaturesColumn">
           <h3>Pure Leistung. Pure Entspannung.</h3>
           <p>
-            {'Durch dieses einmalige Duett des Gitterchips™ und "The One Eye" ist ' +
+            {'Durch dieses einmalige Duett des Gitterchip® und "The One Eye" ist ' +
               'der Qi Alpha® auf jegliche erdenkbare Zukunft vorbereitet. Egal ob ' +
               'sie 6G, Umweltgifte oder Schicksalsschläge lautet. Der Qi Alpha® ' +
               'leistet auf jeder Ebene das erdenkliche Maximum.'}
@@ -202,7 +202,7 @@ function Edition() {
           <p>Jeder Qi Alpha® ist mit einer einmaligen Seriennummer versehen.</p>
           <h3 className="mt-3">Eigene Goldlegierung</h3>
           <p>
-            Für den Gitterchip™ kommt eine eigene spezielle 750iger Goldlegierung
+            Für den Gitterchip<sup>®</sup> kommt eine eigene spezielle 750iger Goldlegierung
             zum Einsatz um die gewohnten Eigenschaften zu gewährleisten.
           </p>
         </div>
@@ -210,7 +210,7 @@ function Edition() {
           <h3 className="mt-3">Diamant</h3>
           <p>
             Wir verwenden ausschließlich zertifizierte hochreichen Natur
-            Diamanten – reiner Kohlenstoff, gefasst am Gitterchip™.
+            Diamanten – reiner Kohlenstoff, gefasst am Gitterchip<sup>®</sup>.
           </p>
           <h3 className="mt-3">The One Eye</h3>
           <p>
@@ -226,7 +226,7 @@ function Edition() {
 function Beweis() {
   return (
     <div className="qa-shop__beweis" data-section="qa-sb-beweis">
-      <StudienCards headline="Publizierte Zellstudien zum Gitterchip™" />
+      <StudienCards headline="Publizierte Zellstudien zum Gitterchip®" />
       <p className="qa-shop__zeile">
         Eine Humanstudie mit Prof. Walach ist in Vorbereitung. Sie misst die
         Herzratenvariabilität (HRV).

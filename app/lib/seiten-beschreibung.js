@@ -108,7 +108,7 @@ export const BESCHREIBUNGEN = {
   // Satz zur Produktseite bleibt. Vorher: „QiBracelet® im Detail: wie der
   // Gitterchip™ dich vor Strahlung im Alltag schützt …“.
   '/pages/qibracelet-details':
-    'Wie das Armband dich vor E-Smog und Strahlung schützt: der Gitterchip™ des QiBracelet® und was Zellstudien zeigen. Kaufen kannst du es auf der Produktseite.',
+    'Wie das Armband dich vor E-Smog und Strahlung schützt: der Gitterchip® des QiBracelet® und was Zellstudien zeigen. Kaufen kannst du es auf der Produktseite.',
 
   // --- Service -------------------------------------------------------------
   // Quelle: Shopify-`body` von /pages/support-1 (Rückmeldeformular).

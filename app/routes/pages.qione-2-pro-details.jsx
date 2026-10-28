@@ -88,7 +88,7 @@ export const meta = () => {
   // k\u00FCnftig etwas \u00E4ndert, braucht also einen frischen Design-Beleg --
   // das ist kein Hindernis mehr, sondern der Normalfall.
   const BESCHREIBUNG =
-    'QiOne\u00AE 2 Pro im Detail: Gitterchip\u2122, Zelluntersuchungen und ' +
+    'QiOne\u00AE 2 Pro im Detail: Gitterchip®, Zelluntersuchungen und ' +
     'Expertenmeinungen zum Nachlesen. Bestellen kannst du ihn auf der Produktseite.';
   const titel = 'QiOne\u00AE 2 Pro im Detail | Qi Blanco';
   return [

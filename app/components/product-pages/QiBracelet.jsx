@@ -88,7 +88,7 @@ export function QiBracelet({block = undefined, faqItems = FAQ_QIBRACELET}) {
         img={'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px-Alpha.webp?v=1732220427'}
         imgBreite={2048}
         imgHoehe={2048}
-        imgAlt="Geöffnetes QiBracelet® mit goldfarbenem Gitterchip™"
+        imgAlt="Geöffnetes QiBracelet® mit goldfarbenem Gitterchip®"
       />
       <UpsellLineUp block={block} />
       <ProductFAQ items={faqItems} />
@@ -111,7 +111,7 @@ function EinmalInvestieren() {
         <b>✔ Zeitloses Design:</b> Ein stilvolles Statement für dein Handgelenk,
         das elegant, dezent und kraftvoll zugleich wirkt. <br />
         <b>
-          ✔ Innovative <b>GitterChip™</b>-Technologie:
+          ✔ Innovative <b>Gitterchip<sup>®</sup></b>-Technologie:
         </b>{' '}
         Entwickelt, um die molekulare Struktur von Wasser gezielt zu
         beeinflussen und deine Umgebung zu optimieren.
@@ -120,7 +120,7 @@ function EinmalInvestieren() {
         <b>1. Technologie, die Maßstäbe setzt</b>
       </p>
       <p className="mt-1">
-        Das <b>QiBracelet®</b> basiert auf der <b>GitterChip™</b>-Technologie,
+        Das <b>QiBracelet®</b> basiert auf der <b>Gitterchip<sup>®</sup></b>-Technologie,
         einem wegweisenden Ansatz, der entwickelt wurde, um Wassermoleküle in
         einen kohärenten Zustand zu überführen. Diese innovative Technologie
         trägt dazu bei, dein Umfeld zu strukturieren. Sie hilft, eine Umgebung
@@ -133,7 +133,7 @@ function EinmalInvestieren() {
       <p className="mt-1">
         Das <b>QiBracelet®</b> ist ein ästhetisches Accessoire und basiert auf
         wissenschaftlich geprüften Prinzipien. Studien belegen den Einfluss der{' '}
-        <b>GitterChip™</b>-Technologie auf molekulare Strukturen und
+        <b>Gitterchip<sup>®</sup></b>-Technologie auf molekulare Strukturen und
         Umweltfaktoren.
       </p>
       <p className="mt-2">
@@ -174,7 +174,7 @@ function MainFeatures() {
           <h3>Noch mehr POWER. Noch mehr FOCUS. Und noch mehr KOHÄRENZ.</h3>
           <p>
             Das QiBracelet®: Der ultimative Schutz vor Mobilfunkstrahlung,
-            jetzt mit der revolutionären Gitterchip™-Technologie der dritten
+            jetzt mit der revolutionären Gitterchip<sup>®</sup>-Technologie der dritten
             Generation und 10-facher Stärke. Perfekt für alle, die den nächsten
             Schritt gehen wollen.
           </p>
@@ -185,7 +185,7 @@ function MainFeatures() {
             allen Ebenen.
           </h3>
           <p>
-            Erlebe mit unserem neuesten Gitterchip™ eine klarere Intuition,
+            Erlebe mit unserem neuesten Gitterchip<sup>®</sup> eine klarere Intuition,
             eine intensivere Verbindung zwischen Körper und Geist und eine
             tiefere Resonanz mit dem Quantenfeld.
           </p>
@@ -348,18 +348,18 @@ function PerfektePassform() {
 
 function Gitterchip() {
   return (
-    <div className="Gitterchip NormalSectionSize">
-      <h2 className="text-center">Der revolutionäre Gitterchip™ 2.2</h2>
+    <div className="Gitterchip® NormalSectionSize">
+      <h2 className="text-center">Der revolutionäre Gitterchip<sup>®</sup> 2.2</h2>
       <div className="GitterchipImageWrapper mt-2">
         <img
           width={300}
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-e1668521164461_1_21efb1fc-4b64-469f-96d2-33dcf70d6506.jpg?v=1670809038"
-          alt="Gitterchip™ in Nahaufnahme: goldfarbene Scheibe mit wabenartigem Gittermuster"
+          alt="Gitterchip® in Nahaufnahme: goldfarbene Scheibe mit wabenartigem Gittermuster"
         />
         <img
           width={300}
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px.jpg_1_f94bd190-0e41-40bc-aa0c-e94cf253f975.webp?v=1670809046"
-          alt="Ende des QiBracelet® in Nahaufnahme, mit eingelassenem goldfarbenem Gitterchip™"
+          alt="Ende des QiBracelet® in Nahaufnahme, mit eingelassenem goldfarbenem Gitterchip®"
         />
       </div>
       <div className="mb-3 mt-2 text-center">
@@ -550,7 +550,7 @@ function RisikofreiErleben() {
       </h2>
       <p>
         Das <b>QiBracelet®</b> vereint modernes Design mit innovativer{' '}
-        <b>GitterChip™-Technologie</b>. Es ist stilvoll, tragbar und immer an
+        <b>Gitterchip<sup>®</sup>-Technologie</b>. Es ist stilvoll, tragbar und immer an
         deiner Seite. Im Alltag, beim Sport und auf Reisen passt es sich perfekt
         deinem Lebensstil an. Erlebe es selbst und integriere das
         QiBracelet® <b>20 Tage lang mühelos in deine Routine</b>.

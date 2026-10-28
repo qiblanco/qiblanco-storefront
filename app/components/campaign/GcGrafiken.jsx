@@ -120,7 +120,7 @@ export function GrafikGitterChip({beschriftungGold, beschriftungStahl, beschrift
       className="gc-grafik gc-grafik--chip"
       viewBox="0 0 640 320"
       role="img"
-      aria-label={`Der GitterChip im Querschnitt: ${beschriftungGold} in einer ${beschriftungStahl}, umgeben von den Linien seines statischen Feldes. Die Wassermoleküle im Feld richten sich gleich aus.`}
+      aria-label={`Der Gitterchip® im Querschnitt: ${beschriftungGold} in einer ${beschriftungStahl}, umgeben von den Linien seines statischen Feldes. Die Wassermoleküle im Feld richten sich gleich aus.`}
       data-gc-grafik="chip"
     >
       <g className="gc-feld">
@@ -183,7 +183,7 @@ export function GrafikGitterChip({beschriftungGold, beschriftungStahl, beschrift
 
 function TafelFeld() {
   return (
-    <svg className="gc-grafik gc-tafel" viewBox="0 0 240 180" role="img" aria-label="Der GitterChip mit den Ringen seines statischen Feldes" data-gc-grafik="kette-feld">
+    <svg className="gc-grafik gc-tafel" viewBox="0 0 240 180" role="img" aria-label="Der Gitterchip® mit den Ringen seines statischen Feldes" data-gc-grafik="kette-feld">
       {[0, 1, 2].map((i) => (
         <rect
           key={`r${i}`}

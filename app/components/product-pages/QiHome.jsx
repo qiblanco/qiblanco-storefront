@@ -22,7 +22,7 @@ export function QiHome({block = undefined, faqItems = FAQ_QIHOME_AIR}) {
       <LogoBar />
       <DasQiHome />
       <MainFeatures />
-      <YoutubeIframe link={"https://www.youtube.com/embed/gr2KTESB3JM"} titel="Der Unterschied in meinem Wohlbefinden ist enorm! | Yann Sura | QiHome® Air | Gitterchip™" />
+      <YoutubeIframe link={"https://www.youtube.com/embed/gr2KTESB3JM"} titel="Der Unterschied in meinem Wohlbefinden ist enorm! | Yann Sura | QiHome® Air | Gitterchip®" />
       <YoutubeIframe link={"https://www.youtube.com/embed/gcml34L0TF0"} titel="QiHome® Air auf 1590m | Schweizer Alpen Berggasthaus | Dominik & Christian" />
       <RisikofreiErleben />
       <HeroBannerParallax
@@ -70,7 +70,7 @@ export function QiHome({block = undefined, faqItems = FAQ_QIHOME_AIR}) {
         img={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiHomeAir-Front-Alpha-Web2_1024x1024_a9b8e70e-d183-48e9-96cd-81b9a5efed82.webp?v=1732708229"}
         imgBreite={1024}
         imgHoehe={906}
-        imgAlt="QiHome® Air mit Holzkappe und goldfarbenem Gitterchip™"
+        imgAlt="QiHome® Air mit Holzkappe und goldfarbenem Gitterchip®"
         text={
         <>
             <h2>Fördere die Gesundheit deines Zuhauses mit dem QiHome® Air.</h2>
@@ -103,7 +103,7 @@ function MainFeatures() {
           <p>
             Der ultimative Schutz vor elektromagnetischer Strahlung, jetzt mit
             der 100-fachen Stärke des QiHome® Air dank unserer revolutionären
-            Gitterchip™-Technologie der dritten Generation. Das QiHome® Air ist
+            Gitterchip<sup>®</sup>-Technologie der dritten Generation. Das QiHome® Air ist
             für alle gemacht, die ihre Lebensqualität deutlich steigern möchten.
           </p>
         </div>
@@ -139,7 +139,7 @@ function DasQiHome() {
       </p>
       <h3 className="mt-2">Technologie, die dein Raumklima revolutioniert</h3>
       <p>
-        Mit der weiterentwickelten Gitterchip™-Technologie unterstützt das{' '}
+        Mit der weiterentwickelten Gitterchip<sup>®</sup>-Technologie unterstützt das{' '}
         <b>QiHome® Air</b> die molekulare Struktur von Wassermolekülen in der
         Luft. Das Ergebnis? Ein Umfeld, das viele Anwender zu Hause und im
         Unternehmen als angenehmer und produktiver erleben.

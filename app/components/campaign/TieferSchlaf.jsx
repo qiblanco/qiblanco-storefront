@@ -196,7 +196,7 @@ function MechanismSection() {
     {
       num: '01',
       title: 'Das Feld ordnet das Wasser an deinen Zellen',
-      body: 'Der GitterChip™ im QiOne® 2 Pro erzeugt ein statisches Feld — ganz ohne Batterie oder Magnet. Es hilft Wassermolekülen, an biologischen Grenzflächen in den kohärenten, geordneten Zustand überzugehen (Pollacks „EZ-Wasser").',
+      body: 'Der Gitterchip® im QiOne® 2 Pro erzeugt ein statisches Feld — ganz ohne Batterie oder Magnet. Es hilft Wassermolekülen, an biologischen Grenzflächen in den kohärenten, geordneten Zustand überzugehen (Pollacks „EZ-Wasser").',
     },
     {
       num: '02',
@@ -257,7 +257,7 @@ function RitualSection() {
     {
       zeit: '21:45',
       titel: 'Das Feld arbeitet — leise, ohne dass du etwas tust.',
-      text: 'Der GitterChip™ ordnet Wasser an deinen Zellen in den kohärenten Zustand. Du musst nichts spüren, nichts kontrollieren. Es läuft im Hintergrund, während du das Licht dimmst und das Handy weglegst.',
+      text: 'Der Gitterchip® ordnet Wasser an deinen Zellen in den kohärenten Zustand. Du musst nichts spüren, nichts kontrollieren. Es läuft im Hintergrund, während du das Licht dimmst und das Handy weglegst.',
     },
     {
       zeit: '22:30',
@@ -356,7 +356,7 @@ function ScienceSection() {
             text: 'Zellkulturen unter E-Smog-Belastung: sichtbar reduzierte Regeneration.',
           },
           {
-            titel: 'Gitterchip™',
+            titel: 'Gitterchip®',
             text: 'Deutlich gesteigerte Zellregeneration, trotz starkem E-Smog Einfluss.',
           },
         ]}

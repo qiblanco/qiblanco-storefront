@@ -196,10 +196,10 @@ export const FRAGEN = [
   {
     id: 'K5',
     frage: 'Über 1000 Euro: wofür eigentlich?',
-    kurz: 'Der Preis stimmt, und er steckt im GitterChip aus 750er Gold und in fünf Publikationen.',
+    kurz: 'Der Preis stimmt, und er steckt im Gitterchip® aus 750er Gold und in fünf Publikationen.',
     ton: 'ja',
     antwort: [
-      'Der Preis ist hoch, und das Geld steckt vor allem im Inneren: Dort sitzt der GitterChip aus einer eigens entwickelten 750er Goldlegierung. Dazu kommen die fünf Publikationen, die wir bezahlt haben. Ob dir das den Preis wert ist, entscheidest ganz allein du.',
+      'Der Preis ist hoch, und das Geld steckt vor allem im Inneren: Dort sitzt der Gitterchip® aus einer eigens entwickelten 750er Goldlegierung. Dazu kommen die fünf Publikationen, die wir bezahlt haben. Ob dir das den Preis wert ist, entscheidest ganz allein du.',
       'Damit du das in Ruhe entscheiden kannst, trägst du es erst einmal 20 Tage, und wenn es nichts für dich ist, schickst du es ohne Angabe von Gründen zurück.',
     ],
   },

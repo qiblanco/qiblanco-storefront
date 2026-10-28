@@ -518,7 +518,7 @@ function IntroSection() {
     <section className="lp-vp-section" data-section="lp-a-intro">
       <h2>Wirkprinzip</h2>
       <p className="lp-vp-section__lede">
-        Der GitterChip™ ermöglicht es den umliegenden Wassermolekülen, in den kohärenten
+        Der Gitterchip<sup>®</sup> ermöglicht es den umliegenden Wassermolekülen, in den kohärenten
         Zustand überzugehen – den Superzustand des Wassers. Aus normalem Wasser wird
         energetisch hoch aufgeladenes Wasser, mit deutlich mehr Elektronenvolt. Das ist die
         Grundlage für Zellprozesse im Körper: Sie verfügen über mehr Energie, etwa für die
@@ -645,11 +645,11 @@ function ScienceSection() {
         }}
         overlayEnd={[
           {
-            titel: 'Ohne GitterChip™',
+            titel: 'Ohne Gitterchip®',
             text: 'Zellen unter Mobilfunk-Stress zeigen eine geschwächte Barriere und mehr oxidative Belastung.',
           },
           {
-            titel: 'Mit GitterChip™',
+            titel: 'Mit Gitterchip®',
             text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
           },
         ]}
@@ -789,7 +789,7 @@ function PricingSection() {
       name: 'QiBracelet®',
       handle: 'qibracelet',
       tagline: 'Eleganz & Schutz für unterwegs',
-      features: ['Eleganter GitterChip™ integriert', 'E-Smog- & 5G-Puffer', 'Ruhe für unterwegs'],
+      features: ['Eleganter Gitterchip® integriert', 'E-Smog- & 5G-Puffer', 'Ruhe für unterwegs'],
       featured: false,
     },
     {

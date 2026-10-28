@@ -721,14 +721,14 @@ function MainFeatures() {
             <p>
               Der QiOne® 2 Pro: Dein täglicher Begleiter für effektiven Schutz
               vor Mobilfunkstrahlung - ausgestattet mit der fortschrittlichen
-              Gitterchip™-Technologie der zweiten Generation und 8-facher
+              Gitterchip<sup>®</sup>-Technologie der zweiten Generation und 8-facher
               Stärke. Perfekt für eine Welt, die nie stillsteht.
             </p>
           </article>
           <article>
             <h3>Der QiOne® 2 Pro jetzt noch leistungsstärker.</h3>
             <p>
-              Erlebe dank des optimierten Gitterchip™ eine bessere Balance,
+              Erlebe dank des optimierten Gitterchip<sup>®</sup> eine bessere Balance,
               eine verbesserte Körper-Geist-Verbindung und einen klaren Zugang
               zu deinem inneren Potenzial.
             </p>
@@ -745,7 +745,7 @@ function FrequencyVideoScience() {
       <div>
         <h3>Superwasser <br />die Grundlage unserer Evolution</h3>
         <YoutubeIframe link="https://www.youtube.com/embed/6rNuQoIrdZQ?controls=0" titel="Superwasser: Die kohärente Struktur - Grundlage unserer Evolution" />
-        <YoutubeIframe link="https://www.youtube.com/embed/aG36zJKxDzg?controls=0" titel="Man spürt die Aktivierung der Seele in den Zellen – Nada & Kurt Tepperwein | QiOne®2Pro |Gitterchip™" />
+        <YoutubeIframe link="https://www.youtube.com/embed/aG36zJKxDzg?controls=0" titel="Man spürt die Aktivierung der Seele in den Zellen – Nada & Kurt Tepperwein | QiOne®2Pro |Gitterchip®" />
       </div>
       <div>
         <h3>Schutz vor E-Smog: <br />kohärente Wasserstruktur</h3>
@@ -759,7 +759,7 @@ function FrequencyVideoScience() {
 function GitterchipSection() {
   return (
     <section className="j-sale-deal__gitterchip">
-      <h2>Der revolutionäre Gitterchip™ 2.0</h2>
+      <h2>Der revolutionäre Gitterchip<sup>®</sup> 2.0</h2>
       <h3>Dank neuartigem Chip Design ist dein QiOne® nun 8x stärker</h3>
       <div className="j-sale-deal__image-pair">
         <img
@@ -1151,7 +1151,7 @@ function CacaoFaq() {
     },
     {
       title: 'Welche Effekte entstehen durch die Kombination von Qi Blanco®-Produkten und zeremoniellem Kakao?',
-      html: '<p>Die Verwendung von Qi Blanco®-Produkten in Verbindung mit psychoaktivem Kakao kann die psychoaktive Erfahrung intensivieren und klarer erlebbar machen. Die speziellen Eigenschaften des Gitterchips 2.0 fördert die Bildung kohärenter Strukturen, die dazu beitragen, die tiefgehende mentale Wirkung des Kakaos zu unterstützen.</p>',
+      html: '<p>Die Verwendung von Qi Blanco®-Produkten in Verbindung mit psychoaktivem Kakao kann die psychoaktive Erfahrung intensivieren und klarer erlebbar machen. Die speziellen Eigenschaften des Gitterchip® 2.0 fördert die Bildung kohärenter Strukturen, die dazu beitragen, die tiefgehende mentale Wirkung des Kakaos zu unterstützen.</p>',
     },
   ];
 

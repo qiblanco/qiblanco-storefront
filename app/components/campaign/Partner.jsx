@@ -180,7 +180,7 @@ function MechanismSection() {
         Dein Körper besteht zu über 70&nbsp;% aus Wasser, und fast alle
         biologischen Prozesse laufen an wasserumhüllten Grenzflächen ab. Ist
         dieses Wasser geordnet, also kohärent, arbeiten Zellen, Membranen und
-        Nervensystem ruhiger. Genau da setzt die GitterChip™-Technologie an.
+        Nervensystem ruhiger. Genau da setzt die Gitterchip<sup>®</sup>-Technologie an.
         Jede Ebene hat ihre eigene Seite, wenn du tiefer einsteigen willst.
       </p>
       <div className="lp-a-mechs">
@@ -420,7 +420,7 @@ function ProdukteSection() {
       name: 'QiBracelet®',
       handle: 'qibracelet',
       tagline: 'Eleganz & Schutz für unterwegs',
-      features: ['Eleganter GitterChip™ integriert', 'E-Smog- & 5G-Puffer', 'Ruhe für unterwegs'],
+      features: ['Eleganter Gitterchip® integriert', 'E-Smog- & 5G-Puffer', 'Ruhe für unterwegs'],
       featured: false,
     },
     {

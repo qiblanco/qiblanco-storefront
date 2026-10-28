@@ -29,7 +29,7 @@ export function QiBracelet() {
         }
         imgBreite={1024}
         imgHoehe={1024}
-        imgAlt={'QiBracelet® aus gebürstetem Edelstahl, geöffneter Reif mit goldfarbenem Gitterchip™'}
+        imgAlt={'QiBracelet® aus gebürstetem Edelstahl, geöffneter Reif mit goldfarbenem Gitterchip®'}
         link={'/products/qibracelet'}
         linkStyle={'secondary'}
         linkText={"Hol' dir jetzt deinen QiBracelet®"}
@@ -166,9 +166,9 @@ function TechnologieQiBlanco() {
       <div className="Flex-Content mt-2">
         <p></p>
         <h2>Das Herz des QiBracelet®</h2>
-        <h3>Gitterchip™ aus eigens entwickelter Goldlegierung</h3>
+        <h3>Gitterchip<sup>®</sup> aus eigens entwickelter Goldlegierung</h3>
         <p className='mt-2'>
-          Der revolutionäre Gitterchip™ des QiBracelet® prägt ein statisches Feld
+          Der revolutionäre Gitterchip<sup>®</sup> des QiBracelet® prägt ein statisches Feld
           aus, das Wassermoleküle dazu anregt, in den kohärenten Zustand
           überzugehen, den Superzustand.
         </p>
@@ -230,7 +230,7 @@ function TechnologieQiBlanco() {
 
         <p></p>
         <p className='mt-2'>
-          Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip™.
+          Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip<sup>®</sup>.
           Dieser prägt durch sein statisches Feld, das maßgeblich durch die
           spezifische Atompositionierung von Goldatomen erreicht wird, die
           Wassermoleküle. Somit steigt die Wahrscheinlichkeit an, dass Wasser
@@ -245,11 +245,11 @@ function TechnologieQiBlanco() {
             <div className="Flex-Image mt-2">
         <img
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne_Gitterchip-1-e1668521164461_1_21efb1fc-4b64-469f-96d2-33dcf70d6506.jpg?v=1670809038"
-          alt="Gitterchip™: goldfarbene Scheibe mit gleichmäßigem, wabenartigem Gittermuster"
+          alt="Gitterchip®: goldfarbene Scheibe mit gleichmäßigem, wabenartigem Gittermuster"
         />
         <img
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/01_2048px.jpg_1_f94bd190-0e41-40bc-aa0c-e94cf253f975.webp?v=1670809046"
-          alt="Ende des QiBracelet® in Nahaufnahme, mit eingelassenem goldfarbenem Gitterchip™"
+          alt="Ende des QiBracelet® in Nahaufnahme, mit eingelassenem goldfarbenem Gitterchip®"
         />
       </div>
     </div>
@@ -317,7 +317,7 @@ function LeistungsstarkeUnterstutzungReverse(){
       <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010701-min-1-973x1024.jpg_1_9996827d-05d7-4796-884d-6d651e7214b0.webp?v=1670807590" alt="Mehrere QiBracelet® aufgereiht auf weißen Schmuckschachteln" />
       </div>
       <div>
-        <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010711-min-819x1024.jpg_1_967270d0-a41c-4da4-8539-498fdbb832a6.webp?v=1670807595" alt="QiBracelet® in Nahaufnahme, der goldfarbene Gitterchip™ am geöffneten Ende" />
+        <img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/2022-11-02-qiblanco-bracelet-L1010711-min-819x1024.jpg_1_967270d0-a41c-4da4-8539-498fdbb832a6.webp?v=1670807595" alt="QiBracelet® in Nahaufnahme, der goldfarbene Gitterchip® am geöffneten Ende" />
       </div>
     </div>
   )
@@ -350,10 +350,10 @@ function Superzustand() {
 function BraceletYT() {
   return (
     <div className="NormalSectionSize text-center">
-      <h2 className="text-center">Die Kraft des QiBracelet® <br /> Der erprobte Gitterchip™</h2>
+      <h2 className="text-center">Die Kraft des QiBracelet® <br /> Der erprobte Gitterchip<sup>®</sup></h2>
       <h3 className="mt-2">- Yann Sura -</h3>
       <h4>Mental Coach</h4>
-      <YoutubeIframe link={'https://www.youtube.com/embed/EjXTIldVrk4'} titel={"\"Ich war sehr skeptisch, nun absoluter Fan!\" – Yann Sura | QiOne® 2 Pro | Gitterchip™"} />
+      <YoutubeIframe link={'https://www.youtube.com/embed/EjXTIldVrk4'} titel={"\"Ich war sehr skeptisch, nun absoluter Fan!\" – Yann Sura | QiOne® 2 Pro | Gitterchip®"} />
 
       <h3 className="mt-2">- Julie Christin Boeng -</h3>
       <h4>Holistic Detox Coach</h4>

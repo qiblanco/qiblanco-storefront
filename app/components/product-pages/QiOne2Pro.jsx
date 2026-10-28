@@ -121,7 +121,7 @@ export default function QiOne2Pro({
         link={
           'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/GitterChips_Vergleich-min.webp?v=1699381065'
         }
-        alt="Gitterchips im Vergleich: QiOne® 1, QiOne® 2 Pro und QiBracelet®, jeweils von der Seite, schräg und von vorn"
+        alt="Gitterchip® im Vergleich: QiOne® 1, QiOne® 2 Pro und QiBracelet®, jeweils von der Seite, schräg und von vorn"
         size={'normal'}
       />
       <div style={{marginBottom: '50px'}} className="text-center mt-2 NormalSectionSize">
@@ -136,7 +136,7 @@ export default function QiOne2Pro({
         }
         imgBreite={1080}
         imgHoehe={1080}
-        imgAlt="QiOne® 2 Pro von vorn, mit goldfarbenem Gitterchip™"
+        imgAlt="QiOne® 2 Pro von vorn, mit goldfarbenem Gitterchip®"
         text={
           <>
             <h2>
@@ -223,14 +223,14 @@ function OneTimeInvestment() {
       <ol>
         <li>
           <strong>Revolutionäre Technologie:</strong> Der QiOne® 2 Pro setzt
-          auf die wegweisende GitterChip™-Technologie, die entwickelt wurde, um
+          auf die wegweisende Gitterchip<sup>®</sup>-Technologie, die entwickelt wurde, um
           dein Umfeld auf ein neues Niveau zu heben, indem sie die Struktur von
           Wassermolekülen in deiner Umgebung optimiert.
         </li>
         <li>
           <strong>Wissenschaftlich validiert:</strong> Basierend auf fundierten
           Studien nutzt der QiOne® 2 Pro die fortschrittliche
-          GitterChip™-Technologie, die entwickelt wurde, um molekulare
+          Gitterchip<sup>®</sup>-Technologie, die entwickelt wurde, um molekulare
           Strukturen gezielt zu beeinflussen. Durch präzise abgestimmte Prozesse
           wird die Umgebung optimiert und die Effekte elektromagnetischer
           Strahlung reduziert – ein technologischer Meilenstein für deinen
@@ -274,7 +274,7 @@ function MainFeatures() {
           <p>
             Der QiOne® 2 Pro: Dein täglicher Begleiter für effektiven Schutz
             vor Mobilfunkstrahlung – ausgestattet mit der fortschrittlichen
-            Gitterchip™ -Technologie der zweiten Generation und 8-facher
+            Gitterchip<sup>®</sup> -Technologie der zweiten Generation und 8-facher
             Stärke. Perfekt für eine Welt, die nie stillsteht.
           </p>
         </div>
@@ -284,7 +284,7 @@ function MainFeatures() {
             Unterstützung für deinen Alltag!
           </h3>
           <p>
-            Erlebe dank des optimierten Gitterchip™ eine bessere Balance, eine
+            Erlebe dank des optimierten Gitterchip<sup>®</sup> eine bessere Balance, eine
             verbesserte Körper-Geist-Verbindung und einen klaren Zugang zu
             deinem inneren Potenzial.
           </p>

@@ -43,7 +43,7 @@ const HTML = `<p>\u00A0</p>
 <li><b><img style="float: none;" height="23" width="23" alt="" src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Molecule_Icon_1930bc3d-20ef-4d76-a729-d9b6a19cc772_16x16.webp?v=1676669033">\u00A0 ${BULLET_TEXTE.zellen}</b></li>
 </ul>
 <p>\u00A0</p>
-<p class="p1"><span style="color: #39682c;"><strong><img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Green_Checkmark_480x480.webp?v=1676668861" alt="" width="21" height="21" style="float: none;">\u00A0Wirkung des verbauten Gitterchip\u2122 in Zellstudien best\u00E4tigt</strong></span></p>
+<p class="p1"><span style="color: #39682c;"><strong><img src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Green_Checkmark_480x480.webp?v=1676668861" alt="" width="21" height="21" style="float: none;">\u00A0Wirkung des verbauten Gitterchip® in Zellstudien best\u00E4tigt</strong></span></p>
 <p>\u00A0</p>`;
 
 export function QiHomeHeroBullets() {

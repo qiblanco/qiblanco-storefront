@@ -95,7 +95,7 @@ test('Zellwerte-Block: kein Export, kein Render (qm-zellwerte)', () => {
   assert.doesNotMatch(qm, /QIMASTER_ZELLWERTE/, 'QiMaster.jsx liest QIMASTER_ZELLWERTE');
   assert.doesNotMatch(qm, /qm-zellwerte/, 'QiMaster.jsx rendert data-block="qm-zellwerte"');
   // Positivkontrolle: der Abschnitt selbst bleibt (nur der Werteblock ging).
-  assert.match(qm, /<StudienCards headline="Publizierte Zellstudien zum Gitterchip™"/);
+  assert.match(qm, /<StudienCards headline="Publizierte Zellstudien zum Gitterchip®"/);
 });
 
 test('Quellen [8]/[9] zeigen nicht ins Leere', () => {

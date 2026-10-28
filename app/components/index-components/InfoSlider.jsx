@@ -107,7 +107,7 @@ export function InfoSlider({dataSection}){
                     <InfoSliderCard data-index="2"
                     title={<h3>Mach deinen Kopf frei - und deine Ziele greifbar.</h3>}
                     label={<p><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" d="M12 5a3 3 0 1 0-6 .13a4 4 0 0 0-2.53 5.77a4 4 0 0 0 .56 6.58A4 4 0 1 0 12 18zM12 5a3 3 0 1 1 6 .13a4 4 0 0 1 2.53 5.77a4 4 0 0 1-.56 6.58A4 4 0 1 1 12 18zM15 13a4.5 4.5 0 0 1-3-4a4.5 4.5 0 0 1-3 4"></path></svg>Klarer Kopf</p>}
-                    description="Mit seinem einzigartigen GitterChip™ besitzt der QiOne® 2 Pro die Fähigkeit, um äußere Einflüsse wie E-Smog zu reduzieren. Viele Anwender schätzen ihn für seine Vielseitigkeit und das Gefühl, ihn bei jeder Aktivität an ihrer Seite zu haben."
+                    description="Mit seinem einzigartigen Gitterchip® besitzt der QiOne® 2 Pro die Fähigkeit, um äußere Einflüsse wie E-Smog zu reduzieren. Viele Anwender schätzen ihn für seine Vielseitigkeit und das Gefühl, ihn bei jeder Aktivität an ihrer Seite zu haben."
                     background={BILD.kopf}
                     shouldSuppressClick={shouldSuppressClick}
                     />
@@ -121,7 +121,7 @@ export function InfoSlider({dataSection}){
                     <InfoSliderCard data-index="4"
                     title={<h3>Energie, die deinen Alltag antreibt</h3>}
                     label={<p><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 1024 1024"><path fill="currentColor" d="M595.344 64.72h.176zm0 0l-72.207 379.377l261.584.88L428.657 959.28l72.208-417.376l-261.568-.912zm.049-63.999c-1.728 0-3.455.063-5.151.19c-11.296.913-18.785 4.689-27.664 10.657a64.3 64.3 0 0 0-13.392 11.936a57 57 0 0 0-3.297 4.288L187.281 502.4c-14.16 19.408-16.24 45.025-5.36 66.433c10.864 21.408 32.832 34.976 56.912 35.152l184.736 1.344l-58.08 342.192c-5.52 29.408 10.16 58.72 37.76 70.528a64.2 64.2 0 0 0 25.391 5.216c20.112 0 36.64-9.408 49.041-26.4L836.737 482.56c14.16-19.409 16.225-45.057 5.36-66.433c-10.864-21.408-32.832-34.977-56.912-35.152l-184.736-.32l57.456-300.88a62.5 62.5 0 0 0 1.825-15.056c0-34.624-27.569-62.848-62.065-63.968c-.767-.032-1.52-.032-2.271-.032z"></path></svg>Mehr Energie</p>}
-                    description="Meditation ist eine der effektivsten Methoden, um innere Balance und Klarheit zu finden - und mit dem QiOne® 2 Pro kannst du deine Achtsamkeitsübungen auf eine neue Ebene heben. Dank seiner fortschrittlichen GitterChip™-Technologie fördert der QiOne® 2 Pro die Bildung kohärenter Wasserstrukturen, die dazu beitragen können, eine beruhigende und harmonisierende Atmosphäre zu schaffen."
+                    description="Meditation ist eine der effektivsten Methoden, um innere Balance und Klarheit zu finden - und mit dem QiOne® 2 Pro kannst du deine Achtsamkeitsübungen auf eine neue Ebene heben. Dank seiner fortschrittlichen Gitterchip®-Technologie fördert der QiOne® 2 Pro die Bildung kohärenter Wasserstrukturen, die dazu beitragen können, eine beruhigende und harmonisierende Atmosphäre zu schaffen."
                     background="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Shooting_-_2021-04-qiblanco-bali-11_1623305c-198d-4cea-9d20-12ba96d6a740.jpg?v=1738526957"
                     shouldSuppressClick={shouldSuppressClick}
                     />

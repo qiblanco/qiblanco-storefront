@@ -318,11 +318,11 @@ function ScienceSection() {
         }}
         overlayEnd={[
           {
-            titel: 'Ohne GitterChip™',
+            titel: 'Ohne Gitterchip®',
             text: 'Zellen unter Mobilfunk-Stress zeigen eine geschwächte Barriere und mehr oxidative Belastung.',
           },
           {
-            titel: 'Mit GitterChip™',
+            titel: 'Mit Gitterchip®',
             text: 'Dieselben Zellen halten ihre Barrierefunktion messbar besser aufrecht (TEER-Messung, in vitro).',
           },
         ]}

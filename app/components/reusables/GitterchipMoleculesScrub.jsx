@@ -40,13 +40,13 @@ export function GitterchipMoleculesScrub({
       srcDesktop={GITTERCHIP_VIDEO_DESKTOP}
       srcMobile={GITTERCHIP_VIDEO_MOBILE}
       overlayStart={{
-        titel: 'Der GitterChip\u2122 in Aktion',
+        titel: 'Der Gitterchip® in Aktion',
         text: 'Scrolle: der Blick ins Innere des QiOne\u00ae 2 Pro.',
       }}
       overlayEnd={[
         {
           titel: 'Koh\u00e4rente Ordnung',
-          text: 'Der GitterChip\u2122 hilft Wassermolek\u00fclen, in den koh\u00e4renten, geordneten Zustand \u00fcberzugehen.',
+          text: 'Der Gitterchip® hilft Wassermolek\u00fclen, in den koh\u00e4renten, geordneten Zustand \u00fcberzugehen.',
         },
       ]}
     />

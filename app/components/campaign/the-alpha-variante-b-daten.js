@@ -107,7 +107,7 @@ export const TAB_FRAGEN = {
     {
       frage: 'Kann ich damit in die Sauna oder ins Meer?',
       antwort:
-        'Ja. Der Gitterchip™ ist unempfindlich gegenüber Wasser, Chlor, Salzwasser, Schweiß und Hitze. ' +
+        'Ja. Der Gitterchip® ist unempfindlich gegenüber Wasser, Chlor, Salzwasser, Schweiß und Hitze. ' +
         'Die Goldkette sollte nicht dauerhaft Chlorwasser ausgesetzt werden.',
     },
     {

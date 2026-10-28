@@ -169,7 +169,7 @@ export function ScrollMikroskopVideo({dataSection, laden = "naehe"}) {
           <div><div className="content"><h2>Ohne Schutz</h2></div></div>
           <div>
             <div className="content">
-              <h2>Gitterchip™</h2>
+              <h2>Gitterchip<sup>®</sup></h2>
               <p>Deutlich gesteigerte Zellregeneration, trotz starkem E-Smog Einfluss</p>
             </div>
           </div>

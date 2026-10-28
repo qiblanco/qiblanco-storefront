@@ -26,7 +26,7 @@
 export const FAQ_QIONE_2_PRO = [
   {
     q: 'Wie funktioniert der QiOne®?',
-    a: 'Der QiOne® enthält keinerlei elektronische Bauteile. Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip™. Dieser prägt durch sein statisches Feld, das maßgeblich durch die spezifische Atompositionierung von Goldatomen erreicht wird, Wassermoleküle. Somit steigt die Wahrscheinlichkeit an, dass Wasser Wasserstoffbrücken ausbaut. Dieser Zustand wird als kohärente Wasserstruktur bezeichnet und ist auch unter dem Begriff EZ-Water (extended zone) oder CD-Wasser (kohärente Domäne) bekannt. Der kohärente Zustand des Wassers ist selbstvermehrend.',
+    a: 'Der QiOne® enthält keinerlei elektronische Bauteile. Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip®. Dieser prägt durch sein statisches Feld, das maßgeblich durch die spezifische Atompositionierung von Goldatomen erreicht wird, Wassermoleküle. Somit steigt die Wahrscheinlichkeit an, dass Wasser Wasserstoffbrücken ausbaut. Dieser Zustand wird als kohärente Wasserstruktur bezeichnet und ist auch unter dem Begriff EZ-Water (extended zone) oder CD-Wasser (kohärente Domäne) bekannt. Der kohärente Zustand des Wassers ist selbstvermehrend.',
     flag: 'eso-buzzword',
   },
   {
@@ -36,7 +36,7 @@ export const FAQ_QIONE_2_PRO = [
   },
   {
     q: 'Aus welchem Material bestehen die Qi Blanco® Produkte?',
-    a: 'Unsere Produkte bestehen aus erstklassigen Materialien: Für das Gehäuse verwenden wir ausschließlich hochwertigen Chirurgenstahl, und der Gitterchip™ wird aus einer maßgeschneiderten 750er Goldlegierung gefertigt. Ihre finale Optik bekommen sie von Oberflächenveredlern und Goldschmieden, die jedes Detail per Hand vollenden.',
+    a: 'Unsere Produkte bestehen aus erstklassigen Materialien: Für das Gehäuse verwenden wir ausschließlich hochwertigen Chirurgenstahl, und der Gitterchip® wird aus einer maßgeschneiderten 750er Goldlegierung gefertigt. Ihre finale Optik bekommen sie von Oberflächenveredlern und Goldschmieden, die jedes Detail per Hand vollenden.',
   },
   {
     q: 'Darf der QiOne® in die Sauna bzw. nass werden?',
@@ -86,11 +86,11 @@ export const FAQ_QI_MASTER = [
   },
   {
     q: 'Was unterscheidet den Qi Alpha® vom QiOne® 2 Pro?',
-    a: 'Der Qi Alpha® ist der QiOne mit Diamanten: Er trägt denselben Gitterchip™ der zweiten Generation wie der QiOne® 2 Pro – dazu echte Diamanten und eine Iris mit 108 Strichen rund um das Auge. Für den Gitterchip™ kommt eine eigene spezielle 750er Goldlegierung zum Einsatz. Jeder Qi Alpha® ist nummeriert.',
+    a: 'Der Qi Alpha® ist der QiOne mit Diamanten: Er trägt denselben Gitterchip® der zweiten Generation wie der QiOne® 2 Pro – dazu echte Diamanten und eine Iris mit 108 Strichen rund um das Auge. Für den Gitterchip® kommt eine eigene spezielle 750er Goldlegierung zum Einsatz. Jeder Qi Alpha® ist nummeriert.',
   },
   {
-    q: 'Wie funktioniert der Gitterchip™?',
-    a: 'Der Gitterchip™ enthält keinerlei elektronische Bauteile. Maßgeblich ist sein statisches Feld, das durch die spezifische Anordnung von Goldatomen in einer maßgeschneiderten 750er Goldlegierung entsteht. Es prägt Wassermoleküle in seiner Umgebung: Die Wahrscheinlichkeit steigt, dass Wasser Wasserstoffbrücken ausbaut – der Zustand, der als kohärente Wasserstruktur, EZ-Wasser oder kohärente Domäne beschrieben wird.',
+    q: 'Wie funktioniert der Gitterchip®?',
+    a: 'Der Gitterchip® enthält keinerlei elektronische Bauteile. Maßgeblich ist sein statisches Feld, das durch die spezifische Anordnung von Goldatomen in einer maßgeschneiderten 750er Goldlegierung entsteht. Es prägt Wassermoleküle in seiner Umgebung: Die Wahrscheinlichkeit steigt, dass Wasser Wasserstoffbrücken ausbaut – der Zustand, der als kohärente Wasserstruktur, EZ-Wasser oder kohärente Domäne beschrieben wird.',
     flag: 'eso-buzzword',
   },
   {
@@ -99,11 +99,11 @@ export const FAQ_QI_MASTER = [
   },
   {
     q: 'Schützt der Qi Alpha® vor 6G?',
-    a: 'Ja. Der Gitterchip™ ist nicht auf ein Frequenzband gebaut – er ist ein passives Bauteil ohne Elektronik und ohne frequenzselektive Abschirmung. Er arbeitet deshalb unabhängig davon, welches Netz gerade sendet: 5G heute, 6G morgen. Gemessen wurde in Zellstudien (in vitro, Dartsch 2021) die Wirkung unter der Strahlung eines sendenden Smartphones mit aktivem WLAN (SAR 0,76 W/kg).',
+    a: 'Ja. Der Gitterchip® ist nicht auf ein Frequenzband gebaut – er ist ein passives Bauteil ohne Elektronik und ohne frequenzselektive Abschirmung. Er arbeitet deshalb unabhängig davon, welches Netz gerade sendet: 5G heute, 6G morgen. Gemessen wurde in Zellstudien (in vitro, Dartsch 2021) die Wirkung unter der Strahlung eines sendenden Smartphones mit aktivem WLAN (SAR 0,76 W/kg).',
   },
   {
     q: 'Darf der Qi Alpha® in die Sauna oder ins Wasser?',
-    a: 'Der Gitterchip™ ist unempfindlich gegenüber Wasser, Chlor, Salzwasser, Schweiß und Hitze. Für die Goldkette gilt, was für jedes Goldschmuckstück gilt: Sie ist beständig, sollte aber nicht dauerhaft Chlorwasser ausgesetzt werden.',
+    a: 'Der Gitterchip® ist unempfindlich gegenüber Wasser, Chlor, Salzwasser, Schweiß und Hitze. Für die Goldkette gilt, was für jedes Goldschmuckstück gilt: Sie ist beständig, sollte aber nicht dauerhaft Chlorwasser ausgesetzt werden.',
   },
   {
     q: 'Kann ich den Qi Alpha® zurückgeben?',
@@ -114,7 +114,7 @@ export const FAQ_QI_MASTER = [
 export const FAQ_QIBRACELET = [
   {
     q: 'Was ist der Unterschied zwischen dem QiOne® 2 Pro und dem QiBracelet®?',
-    a: 'Der Hauptunterschied zwischen dem QiOne® 2 Pro und dem QiBracelet® liegt in ihrer äußeren Gestaltung und dem Tragekomfort. Beide verwenden den gleichen innovativen Gitterchip™ 2.0, der durch die spezifische Atompositionierung von Goldatomen die Bildung kohärenter Wasserstrukturen fördert. Der QiOne® 2 Pro ist als Gehäuse mit einem Anhänger konzipiert und eignet sich daher ideal zum Tragen um den Hals. Im Gegensatz dazu ist das QiBracelet® als Armreifen aus Chirurgenstahl gestaltet. So sieht es edel aus und trägt sich am Handgelenk besonders komfortabel.',
+    a: 'Der Hauptunterschied zwischen dem QiOne® 2 Pro und dem QiBracelet® liegt in ihrer äußeren Gestaltung und dem Tragekomfort. Beide verwenden den gleichen innovativen Gitterchip® 2.0, der durch die spezifische Atompositionierung von Goldatomen die Bildung kohärenter Wasserstrukturen fördert. Der QiOne® 2 Pro ist als Gehäuse mit einem Anhänger konzipiert und eignet sich daher ideal zum Tragen um den Hals. Im Gegensatz dazu ist das QiBracelet® als Armreifen aus Chirurgenstahl gestaltet. So sieht es edel aus und trägt sich am Handgelenk besonders komfortabel.',
     flag: 'wirkmechanismus',
   },
   {
@@ -124,7 +124,7 @@ export const FAQ_QIBRACELET = [
   },
   {
     q: 'Aus welchem Material bestehen die Qi Blanco® Produkte?',
-    a: 'Das Gehäuse ist aus hochwertigem Chirurgenstahl, und der Gitterchip™ darin entsteht aus einer maßgeschneiderten 750er Goldlegierung. Den Feinschliff machen am Ende Oberflächenveredler und Goldschmiede, die jedes Detail von Hand vollenden.',
+    a: 'Das Gehäuse ist aus hochwertigem Chirurgenstahl, und der Gitterchip® darin entsteht aus einer maßgeschneiderten 750er Goldlegierung. Den Feinschliff machen am Ende Oberflächenveredler und Goldschmiede, die jedes Detail von Hand vollenden.',
   },
   {
     q: 'Darf das QiBracelet® nass werden, bzw. in die Sauna?',
@@ -148,7 +148,7 @@ export const FAQ_QIBRACELET = [
 export const FAQ_QIHOME_AIR = [
   {
     q: 'Wie funktioniert das QiHome® Air?',
-    a: 'Das QiHome® Air enthält keinerlei elektronische Bauteile. Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip™. Dieser prägt durch sein statisches Feld, das maßgeblich durch die spezifische Atompositionierung von Goldatomen erreicht wird, Wassermoleküle. Somit steigt die Wahrscheinlichkeit an, dass Wasser Wasserstoffbrücken ausbaut. Dieser Zustand wird als kohärente Wasserstruktur bezeichnet und ist auch unter dem Begriff EZ-Water (extended zone) oder CD-Wasser (kohärente Domäne) bekannt. Der kohärente Zustand des Wassers ist selbstvermehrend.',
+    a: 'Das QiHome® Air enthält keinerlei elektronische Bauteile. Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip®. Dieser prägt durch sein statisches Feld, das maßgeblich durch die spezifische Atompositionierung von Goldatomen erreicht wird, Wassermoleküle. Somit steigt die Wahrscheinlichkeit an, dass Wasser Wasserstoffbrücken ausbaut. Dieser Zustand wird als kohärente Wasserstruktur bezeichnet und ist auch unter dem Begriff EZ-Water (extended zone) oder CD-Wasser (kohärente Domäne) bekannt. Der kohärente Zustand des Wassers ist selbstvermehrend.',
     flag: 'eso-buzzword',
   },
   {
@@ -158,7 +158,7 @@ export const FAQ_QIHOME_AIR = [
   },
   {
     q: 'Aus welchem Material bestehen die Qi Blanco® Produkte?',
-    a: 'Das Gehäuse ist aus hochwertigem Chirurgenstahl, der Gitterchip™ entsteht aus einer maßgeschneiderten High-Carat-Goldlegierung, und die Holzteile des QiHome Air® sind aus regionaler deutscher Eiche. Den Feinschliff machen am Ende Oberflächenveredler und Goldschmiede, die jedes Detail von Hand vollenden.',
+    a: 'Das Gehäuse ist aus hochwertigem Chirurgenstahl, der Gitterchip® entsteht aus einer maßgeschneiderten High-Carat-Goldlegierung, und die Holzteile des QiHome Air® sind aus regionaler deutscher Eiche. Den Feinschliff machen am Ende Oberflächenveredler und Goldschmiede, die jedes Detail von Hand vollenden.',
   },
   {
     q: 'Kann das QiHome® Air im Freien verwendet werden?',
@@ -172,7 +172,7 @@ export const FAQ_QIHOME_AIR = [
   },
   {
     q: 'Muss das QiHome® Air in die Steckdose eingesteckt werden?',
-    a: 'Nein, das QiHome® Air muss nicht in die Steckdose eingesteckt werden. Obwohl es eine Möglichkeit gibt, das Gerät in europäische Schuko-Steckdosen des Typs C einzustecken, ist dies nicht erforderlich für die Wirksamkeit. Die Funktionalität des QiHome® Air basiert auf dem eigens entwickelten Gitterchip™, der unabhängig von einer Stromquelle arbeitet.',
+    a: 'Nein, das QiHome® Air muss nicht in die Steckdose eingesteckt werden. Obwohl es eine Möglichkeit gibt, das Gerät in europäische Schuko-Steckdosen des Typs C einzustecken, ist dies nicht erforderlich für die Wirksamkeit. Die Funktionalität des QiHome® Air basiert auf dem eigens entwickelten Gitterchip®, der unabhängig von einer Stromquelle arbeitet.',
     flag: 'wirkmechanismus',
   },
   {
@@ -198,7 +198,7 @@ export const FAQ_QIHOME_AIR = [
 export const FAQ_QIONE_KETTE = [
   {
     q: 'Wie funktioniert der QiOne®?',
-    a: 'Der QiOne® enthält keinerlei elektronische Bauteile. Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip™. Dieser prägt durch sein statisches Feld, das maßgeblich durch die spezifische Atompositionierung von Goldatomen erreicht wird, Wassermoleküle. Somit steigt die Wahrscheinlichkeit an, dass Wasser Wasserstoffbrücken ausbaut. Dieser Zustand wird als kohärente Wasserstruktur bezeichnet und ist auch unter dem Begriff EZ-Water (extended zone) oder CD-Wasser (kohärente Domäne) bekannt. Der kohärente Zustand des Wassers ist selbstvermehrend.',
+    a: 'Der QiOne® enthält keinerlei elektronische Bauteile. Maßgeblich für die Funktion ist der eigens entwickelte Gitterchip®. Dieser prägt durch sein statisches Feld, das maßgeblich durch die spezifische Atompositionierung von Goldatomen erreicht wird, Wassermoleküle. Somit steigt die Wahrscheinlichkeit an, dass Wasser Wasserstoffbrücken ausbaut. Dieser Zustand wird als kohärente Wasserstruktur bezeichnet und ist auch unter dem Begriff EZ-Water (extended zone) oder CD-Wasser (kohärente Domäne) bekannt. Der kohärente Zustand des Wassers ist selbstvermehrend.',
     flag: 'eso-buzzword',
   },
   {
@@ -225,7 +225,7 @@ export const FAQ_QIONE_KETTE = [
   },
   {
     q: 'Aus welchem Material bestehen die Qi Blanco® Produkte?',
-    a: 'Das Gehäuse ist aus hochwertigem Chirurgenstahl, und der Gitterchip™ darin entsteht aus einer maßgeschneiderten 750er Goldlegierung. Den Feinschliff machen am Ende Oberflächenveredler und Goldschmiede, die jedes Detail von Hand vollenden.',
+    a: 'Das Gehäuse ist aus hochwertigem Chirurgenstahl, und der Gitterchip® darin entsteht aus einer maßgeschneiderten 750er Goldlegierung. Den Feinschliff machen am Ende Oberflächenveredler und Goldschmiede, die jedes Detail von Hand vollenden.',
   },
 ];
 
@@ -258,7 +258,7 @@ export const FAQ_CACAO = [
   },
   {
     q: 'Welche Effekte entstehen durch die Kombination von Qi Blanco®-Produkten und zeremoniellem Kakao?',
-    a: 'Die Verwendung von Qi Blanco®-Produkten in Verbindung mit psychoaktivem Kakao kann die psychoaktive Erfahrung intensivieren und klarer erlebbar machen. Die speziellen Eigenschaften des Gitterchip™s 2.0 fördert die Bildung kohärenter Strukturen, die dazu beitragen, die tiefgehende mentale Wirkung des Kakaos zu unterstützen.',
+    a: 'Die Verwendung von Qi Blanco®-Produkten in Verbindung mit psychoaktivem Kakao kann die psychoaktive Erfahrung intensivieren und klarer erlebbar machen. Die speziellen Eigenschaften des Gitterchip® 2.0 fördert die Bildung kohärenter Strukturen, die dazu beitragen, die tiefgehende mentale Wirkung des Kakaos zu unterstützen.',
     flag: 'wirkmechanismus',
   },
 ];
