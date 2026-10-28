@@ -27,7 +27,6 @@ import {TEILZAHLUNG_TEXT} from './the-alpha-shop-daten';
  */
 export function TeilzahlungFenster({teilung, betrag, link, onClose}) {
   const fensterRef = useRef(null);
-  const zuRef = useRef(null);
   const titelId = useId();
   const T = TEILZAHLUNG_TEXT.fenster;
 
@@ -35,7 +34,9 @@ export function TeilzahlungFenster({teilung, betrag, link, onClose}) {
     const ausloeser = document.activeElement;
     const vorher = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    zuRef.current?.focus({preventScroll: true});
+    // Fokus aufs Fenster selbst (tabIndex -1): der Leser startet beim Titel,
+    // Tab führt zum Kreuz und zum Knopf.
+    fensterRef.current?.focus({preventScroll: true});
     function taste(e) {
       if (e.key === 'Escape') {
         e.preventDefault();
@@ -87,10 +88,10 @@ export function TeilzahlungFenster({teilung, betrag, link, onClose}) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titelId}
+        tabIndex={-1}
         data-qat-fenster=""
       >
         <button
-          ref={zuRef}
           type="button"
           className="qat-zu"
           aria-label={T.schliessen}
@@ -153,19 +154,21 @@ export function TeilzahlungFenster({teilung, betrag, link, onClose}) {
           ))}
         </ol>
 
-        <ul className="qat-zusagen">
-          <li>{T.versand}</li>
-          <li>{T.rechnungen}</li>
-        </ul>
+        <div className="qat-zusagen">
+          <p>{T.versand}</p>
+          <p>{T.rechnungen}</p>
+        </div>
 
-        <a
-          className="btn--primary qat-knopf"
-          href={link}
-          data-qat-schritt1=""
-          data-qb-kaufknopf=""
-        >
-          {T.knopf(raten)}
-        </a>
+        <div className="qat-fuss">
+          <a
+            className="btn--primary qat-knopf"
+            href={link}
+            data-qat-schritt1=""
+            data-qb-kaufknopf=""
+          >
+            {T.knopf(raten)}
+          </a>
+        </div>
       </div>
     </div>,
     document.body,

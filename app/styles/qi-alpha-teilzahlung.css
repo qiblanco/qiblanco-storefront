@@ -81,6 +81,10 @@
   background: var(--qat-linie);
 }
 
+.qat-fenster:focus {
+  outline: none;
+}
+
 .qat-zu:focus-visible,
 .qat-knopf:focus-visible {
   outline: 2px solid var(--qat-tinte);
@@ -99,7 +103,7 @@
 /* Aufteilung: Gesamt, Balken, die zwei Teile */
 .qat-aufteilung {
   margin-top: var(--qat-s-3);
-  padding: var(--qat-s-3);
+  padding: var(--qat-s-2);
   background: var(--qat-flaeche);
   border-radius: var(--qat-radius);
 }
@@ -151,6 +155,7 @@
   gap: var(--qat-s-1);
   font-size: var(--qat-fs-2);
   color: var(--qat-grau);
+  white-space: nowrap;
 }
 
 .qat-teil dt::before {
@@ -231,16 +236,28 @@
 .qat-zusagen {
   display: grid;
   gap: var(--qat-s-1);
-  margin: var(--qat-s-4) 0 0;
-  padding: var(--qat-s-2) 0 0;
-  list-style: none;
+  margin-top: var(--qat-s-4);
+  padding-top: var(--qat-s-2);
   border-top: 1px solid var(--qat-linie);
+}
+
+.qat-zusagen p {
+  margin: 0;
   font-size: var(--qat-fs-2);
   line-height: 1.5;
 }
 
+/* Der Knopf bleibt am Fuß des Fensters stehen, wenn der Inhalt scrollt
+   (Handy: das Blatt ist höher als der Bildschirm). */
+.qat-fuss {
+  position: sticky;
+  bottom: calc(-1 * var(--qat-s-3));
+  margin: var(--qat-s-3) calc(-1 * var(--qat-s-3)) calc(-1 * var(--qat-s-3));
+  padding: var(--qat-s-2) var(--qat-s-3) var(--qat-s-3);
+  background: var(--qat-weiss);
+}
+
 .qat-knopf {
-  margin-top: var(--qat-s-3);
   max-width: none !important;
   text-decoration: none;
 }
@@ -281,6 +298,16 @@
   .qat-zu {
     top: var(--qat-s-3);
     right: var(--qat-s-3);
+  }
+
+  .qat-aufteilung {
+    padding: var(--qat-s-3);
+  }
+
+  .qat-fuss {
+    bottom: calc(-1 * var(--qat-s-6));
+    margin: var(--qat-s-3) calc(-1 * var(--qat-s-6)) calc(-1 * var(--qat-s-6));
+    padding: var(--qat-s-2) var(--qat-s-6) var(--qat-s-6);
   }
 
   .qat-titel {
