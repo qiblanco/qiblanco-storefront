@@ -35,7 +35,6 @@ import {
   ZUSAMMENFASSUNG,
 } from './the-alpha-shop-daten';
 import {THE_ALPHA_SERIE} from './the-alpha-daten-serie-vergeben';
-import {MarkenName} from '~/components/reusables/MarkenName';
 
 /*
  * SHOPSEITE /products/the-alpha — Apple-nahe Kaufseite (Christian 25.10.2026
@@ -253,10 +252,8 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
             aria-labelledby="tas-name"
             data-tas-kopf=""
           >
-            {/* ® klein und hochgestellt wie im Logo (Elina
-                EL-20261027-c05a2273); sonst bleibt die Alpha unverändert. */}
             <h1 id="tas-name" className="tas-name">
-              <MarkenName text={PRODUKT.name} />
+              {PRODUKT.name}
             </h1>
             <p className="tas-claim">{PRODUKT.claim}</p>
             <p className="tas-edition">{PRODUKT.edition}</p>

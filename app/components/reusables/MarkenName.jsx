@@ -4,8 +4,8 @@
  * Qi-Blanco-Logo (nicht in Schriftgröße des Namens)“).
  *
  * Teilt den Text an jedem ® und setzt das Zeichen als <sup className="qb-reg">.
- * Größe und Lage stehen in styles/the-alpha-produkt.css (.qb-reg); jede
- * Seite, die den Namen so setzt, lädt diese Datei (Qi Alpha, Alpha-Vorlage). Der Text bleibt für Suche und
+ * Größe und Lage stehen in styles/alpha-vorlage.css (.qb-reg); jede
+ * Seite, die den Namen so setzt, lädt diese Datei (Alpha-Vorlage). Der Text bleibt für Suche und
  * Vorleser derselbe („Qi Alpha®“).
  */
 export function MarkenName({text}) {
