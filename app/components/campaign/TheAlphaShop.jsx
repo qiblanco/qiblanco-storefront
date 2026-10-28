@@ -35,6 +35,7 @@ import {
   ZUSAMMENFASSUNG,
 } from './the-alpha-shop-daten';
 import {THE_ALPHA_SERIE} from './the-alpha-daten-serie-vergeben';
+import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
 
 /*
  * SHOPSEITE /products/the-alpha — Apple-nahe Kaufseite (Christian 25.10.2026
@@ -45,9 +46,13 @@ import {THE_ALPHA_SERIE} from './the-alpha-daten-serie-vergeben';
  *
  * AUFBAU wie Apple, Schritt für Schritt untereinander (Christian 26.10.: „man
  * wählt das Produkt aus und da unten drunter dann die Seriennummer und dann die
- * Ketten“): schwarzes Band, Produkt (Galerie links, fest beim Scrollen am
- * Desktop), Seriennummer mit Live-Gravur, Kette mit Gold-Ansicht, Bezahlart,
- * Zusammenfassung mit Kaufknopf, „What's in the Box“.
+ * Ketten“): oben der eigene Abschnitt „Kohärentes Licht“ mit der 360-Grad-
+ * Rotation (Christian 28.10. Z16), dann Produkt (Galerie links, fest beim
+ * Scrollen am Desktop), Seriennummer mit Live-Gravur, Kette mit Gold-Ansicht,
+ * Bezahlart, Zusammenfassung mit Kaufknopf, „What's in the Box“.
+ *
+ * MARKENZEICHEN: jedes „®“ zeichnet MarkeR klein hochgestellt (Christian
+ * 28.10. Z1); die Daten tragen es als normales Zeichen.
  *
  * KAUFWEG AUS DEM BESTAND: Hauptzeile = die Variante aus PRODUCT_QUERY (trägt
  * product.handle, sonst stürzt die optimistische Warenkorbzeile ab), Add-ons
@@ -96,7 +101,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   const vorwahlRaten = such.get('bezahlart') === 'ratenzahlung';
   const [zahlart, setZahlart] = useState(vorwahlRaten ? 'raten' : 'direkt');
   const [fenster, setFenster] = useState(null);
-  const [bild, setBild] = useState(KOPF.loop ? -1 : 0);
+  const [bild, setBild] = useState(0);
 
   const nummerEintrag = stand.nummern.find(
     (x) => x.n === nummer && x.status === 'frei',
@@ -165,59 +170,50 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
     stand.nummern.find((x) => x.n === n)?.status === 'frei';
   const freiGewaehlt =
     nummerEintrag && !NUMMER.vorschlaege.includes(nummerEintrag.n);
-  const grossesBild = GALERIE.bilder[Math.max(bild, 0)] ?? GALERIE.bilder[0];
+  const grossesBild = GALERIE.bilder[bild] ?? GALERIE.bilder[0];
 
   return (
     <div className="tas-seite" data-the-alpha-shop="">
-      {/* ERSTES FENSTER (Christian 27.10. Z2 „abständige, schriftgrößen,
-          kompositionen“; Sicht-Tor seitenregeln.pdp_falz.konfigurator): Bühne,
-          Preis und die erste Option stehen ohne Scrollen da. Das schwarze Band
-          mit dem 360-Grad-Loop (Z218) ist dafür die Bühne der linken Spalte
-          geworden: am Desktop steht es neben dem Kopf statt darüber (vorher
-          Preis y=1205, erste Option y=1525 bei 1440x900). */}
+      {/* KOHÄRENTES LICHT OBEN, EIGENER ABSCHNITT (Christian 28.10.2026 Z16:
+          „dass dieses kohärente Licht oben in der 360-Grad-Rotation steht …
+          Und dann geht es runter zu den Bildern und zu der Shop-Beschreibung“).
+          Am Desktop stehen Animation und Text nebeneinander, die Animation so
+          groß wie das Galeriebild darunter (gleiches Raster 7fr | 5fr); am
+          Handy untereinander, Text zuerst. Die Galerie zeigt nur Bilder. */}
+      <section
+        className="tas-licht"
+        aria-labelledby="tas-licht-titel"
+        data-tas-licht=""
+      >
+        <div className="tas-licht-raster">
+          <div className="tas-licht-buehne" data-tas-band="">
+            {KOPF.loop ? <BandLoop loop={KOPF.loop} /> : null}
+          </div>
+          <div className="tas-licht-text">
+            {/* <p>, keine Überschrift: die erste Überschrift der Seite bleibt
+                das h1 „Qi Alpha®“ im Produktkopf. */}
+            <p id="tas-licht-titel" className="tas-band-titel">
+              {KOPF.titel}
+            </p>
+            <p className="tas-band-unter">{KOPF.unter}</p>
+          </div>
+        </div>
+      </section>
+
       <div className="tas-raster-seite">
         <div className="tas-galerie" data-tas-galerie="">
           <div className="tas-galerie-fest">
-            {bild < 0 ? (
-              <header
-                className="tas-band"
-                data-tas-band=""
-                data-tas-buehne="loop"
-              >
-                <p className="tas-band-titel">{KOPF.titel}</p>
-                <p className="tas-band-unter">{KOPF.unter}</p>
-                {KOPF.loop ? <BandLoop loop={KOPF.loop} /> : null}
-              </header>
-            ) : (
-              <div className="tas-galerie-haupt" data-tas-buehne="bild">
-                <img
-                  key={grossesBild.url}
-                  className="tas-bild tas-blende"
-                  src={`${grossesBild.url}&width=1200`}
-                  alt={grossesBild.alt}
-                  width="1200"
-                  height="1200"
-                />
-              </div>
-            )}
+            <div className="tas-galerie-haupt" data-tas-buehne="bild">
+              <img
+                key={grossesBild.url}
+                className="tas-bild tas-blende"
+                src={`${grossesBild.url}&width=1200`}
+                alt={grossesBild.alt}
+                width="1200"
+                height="1200"
+              />
+            </div>
             <div className="tas-daumen" role="group" aria-label="Ansichten">
-              {KOPF.loop ? (
-                <button
-                  type="button"
-                  className="tas-daumen-knopf tas-daumen-knopf--loop"
-                  aria-pressed={bild < 0}
-                  aria-label={KOPF.loop.alt}
-                  onClick={() => setBild(-1)}
-                >
-                  <img
-                    src={`${KOPF.loop.poster}&width=160`}
-                    alt=""
-                    width="80"
-                    height="80"
-                    loading="lazy"
-                  />
-                </button>
-              ) : null}
               {GALERIE.bilder.map((b, i) => (
                 <button
                   key={b.url}
@@ -253,7 +249,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
             data-tas-kopf=""
           >
             <h1 id="tas-name" className="tas-name">
-              {PRODUKT.name}
+              <MarkeR text={PRODUKT.name} />
             </h1>
             <p className="tas-claim">{PRODUKT.claim}</p>
             <p className="tas-edition">{PRODUKT.edition}</p>
@@ -261,7 +257,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               {PRODUKT.punkte.map((p) => (
                 <li key={p.text} className="tas-punkt">
                   <Zeichen art={p.zeichen} />
-                  {p.text}
+                  {mitMarkeR(p.text)}
                 </li>
               ))}
             </ul>
@@ -484,7 +480,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
       >
         <div className="tas-summe-kopf">
           <h2 id="tas-summe-titel" className="tas-summe-titel">
-            {ZUSAMMENFASSUNG.titel}{' '}
+            <MarkeR text={ZUSAMMENFASSUNG.titel} />{' '}
             <span className="tas-titel-rest tas-summe-unter">
               {ZUSAMMENFASSUNG.unter}
             </span>
@@ -502,7 +498,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
           <dl className="tas-posten">
             <div>
               <dt>
-                {PRODUKT.name} · {gravur}
+                <MarkeR text={PRODUKT.name} /> · {gravur}
               </dt>
               <dd>
                 {betragText(
@@ -512,7 +508,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               </dd>
             </div>
             <div>
-              <dt>{kette?.name}</dt>
+              <dt>{mitMarkeR(kette?.name)}</dt>
               <dd>
                 {ketteGold ? betragText(kettePreis(kette), waehrung) : '0 €'}
               </dd>
@@ -590,7 +586,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               loading="lazy"
             />
             <figcaption data-tas-box-haupt="">
-              {PRODUKT.name} · {gravur}
+              <MarkeR text={PRODUKT.name} /> · {gravur}
             </figcaption>
           </figure>
           <figure
@@ -599,7 +595,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
           >
             <KettenBild bild={KETTE.bilder[1]} breite={600} />
             <figcaption data-tas-box-kette="">
-              {kette?.box ?? kette?.name}
+              {mitMarkeR(kette?.box ?? kette?.name)}
             </figcaption>
           </figure>
         </div>
@@ -642,7 +638,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
 }
 
 /**
- * Lucas 360-Grad-Loop im schwarzen Band: stumm, inline, in Schleife, ohne
+ * Lucas 360-Grad-Loop im Abschnitt „Kohärentes Licht“: stumm, inline, in Schleife, ohne
  * Bedienleiste; beim Laden steht das Poster. Wer weniger Bewegung wünscht
  * (prefers-reduced-motion), sieht den ersten Rahmen still.
  */

@@ -15,11 +15,11 @@
  * Handy zuerst; ab 1024 px zwei Spalten, die Galerie bleibt beim Scrollen
  * stehen wie bei Apple.
  *
- * ERSTES FENSTER (Christian 27.10.2026 Z2: „abständige, schriftgrößen,
- * kompositionen“; Sicht-Tor seitenregeln.pdp_falz.konfigurator): Bühne, Preis
- * und die erste Option ohne Scrollen. Das schwarze Band mit dem 360-Grad-Loop
- * ist die Bühne der linken Spalte (Desktop) bzw. steht am Handy nach der
- * ersten Option. Der Kopf rückt eng in der Gruppe, weit zwischen den Gruppen:
+ * ERSTES FENSTER (Christian 28.10.2026 Z16, ersetzt Z2 vom 27.10.): oben der
+ * eigene Abschnitt „Kohärentes Licht“ mit der 360-Grad-Rotation, darunter
+ * Galerie und Kauf. Am Handy folgen Kopf und erste Option direkt auf den
+ * Abschnitt, die Galerie danach. Der Kopf rückt eng in der Gruppe, weit
+ * zwischen den Gruppen:
  * Name · Claim · Edition (8) | Punkte und Preis (24 Desktop, 16 Handy) |
  * Herkunft (8) | erste Option (32: Desktop Rand, Handy Rasterabstand).
  */
@@ -132,58 +132,79 @@
   overflow: hidden;
 }
 
-/* Schwarzes Band = Bühne der Galerie (Z218 + Z2): dieselbe Fläche, derselbe
-   Loop, aber neben dem Kopf statt darüber. Karte mit dem einen Radius-Token
-   wie Galerie und Bilder. */
-.tas-band {
+/* KOHÄRENTES LICHT, eigener Abschnitt über der Galerie (Christian 28.10.2026
+   Z16): schwarze Karte im Seitenraster (ein Radius-Token wie Galerie und
+   Bilder), 32 unter dem Seitenkopf, damit das Hauslogo am Handy frei steht.
+   Handy: Text, dann die Rotation, mittig. Ab 1024 px dieselben Spalten wie
+   Galerie und Auswahl darunter (7fr | 5fr, Abstand 48): die Rotation füllt
+   die Galeriespalte, ist also genau so groß wie das Galeriebild, der Text
+   steht in der Auswahlspalte. */
+.tas-licht {
+  max-width: var(--tas-breite);
+  margin: var(--tas-s-4) auto 0;
+  padding-inline: var(--tas-s-2);
+}
+
+.tas-licht-raster {
   background: var(--tas-band);
   color: var(--tas-weiss);
-  padding: var(--tas-s-4) var(--tas-s-3) 0;
   border-radius: var(--tas-radius);
-  text-align: center;
-  /* Die Mischung des Loops (unten) rechnet nur gegen das Band; was über die
-     Bandkante ragte, hätte keinen Grund mehr und stünde als Schwarz da. */
+  /* Die Mischung des Loops (unten) rechnet nur gegen diese Fläche; was über
+     die Kante ragte, hätte keinen Grund mehr und stünde als Schwarz da. */
   isolation: isolate;
   overflow: hidden;
+  padding: var(--tas-s-6) var(--tas-s-3) 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  text-align: center;
+}
+
+.tas-licht-text {
+  order: -1;
 }
 
 /* 360-Grad-Loop (Z218–Z220): Lucas Film hat reines Schwarz als Grund. `lighten`
    nimmt je Kanal den helleren Wert, also wird sein Schwarz genau zum Schwarz
-   des Bandes und das Gerät bleibt unverändert: kein Viereck, auch nicht im
-   Poster beim Laden. Handy zuerst: das Gerät füllt die Mitte unter dem Titel. */
-.tas-band-loop {
+   der Fläche und das Gerät bleibt unverändert: kein Viereck, auch nicht im
+   Poster beim Laden. */
+.tas-licht-buehne {
   /* Breite des Films; das Gerät füllt davon in der Höhe 62 % (Rand oben
-     18,8 %, unten 19,4 %, an Lucas Film gemessen). Die Ränder werden so weit
-     unter Untertitel und Bandkante gezogen, dass über und unter dem Gerät
-     derselbe Raum steht (Designmeister s07-r2: Handy 40, Desktop 56). */
-  --tas-loop: min(80vw, 320px);
+     18,8 %, unten 19,4 %, an Lucas Film gemessen). Am Handy werden die
+     Ränder so weit unter Untertitel und Flächenkante gezogen, dass über und
+     unter dem Gerät derselbe Raum steht (40). */
+  --tas-loop: min(100%, 320px);
   --tas-loop-luft: 40px;
-  display: block;
   width: var(--tas-loop);
-  height: auto;
-  aspect-ratio: 1 / 1;
   margin: calc(var(--tas-loop-luft) - 0.188 * var(--tas-loop)) auto
     calc(var(--tas-loop-luft) - 0.194 * var(--tas-loop));
+}
+
+.tas-band-loop {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
   background: transparent;
   mix-blend-mode: lighten;
   pointer-events: none;
 }
 
-.tas-band-titel {
+.tas-seite .tas-band-titel {
   font-size: var(--tas-fs-6);
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -0.01em;
+  color: var(--tas-weiss);
 }
 
-.tas-band-unter {
+.tas-seite .tas-band-unter {
   margin-top: var(--tas-s-1);
   font-size: var(--tas-fs-4);
   color: var(--tas-weiss);
 }
 
-/* Raster: Galerie + Auswahl. Das Polster oben (32) hält den Kopf vom
-   Hauslogo frei, das auf dem Handy über den Abstand von main ragt. */
+/* Raster: Galerie + Auswahl, 32 unter dem Abschnitt „Kohärentes Licht“
+   (Desktop 48). */
 .tas-raster-seite {
   max-width: var(--tas-breite);
   margin: 0 auto;
@@ -226,10 +247,6 @@
   overflow: hidden;
   background: var(--tas-flaeche);
   cursor: pointer;
-}
-
-.tas-daumen-knopf--loop {
-  background: var(--tas-band);
 }
 
 .tas-daumen-knopf[aria-pressed='true'] {
@@ -291,20 +308,29 @@
   border-top: 1px solid var(--tas-linie);
 }
 
-/* Der Text steht direkt im <li> (zweite Rasterspalte), nicht in einem
-   eigenen <span>: so ist die Punktzeile eine Liste und keine dritte linke
-   Kante im Kopf (Shop-Tor D4 K1). */
+/* Der Text steht direkt im <li>, nicht in einem eigenen <span>: so ist die
+   Punktzeile eine Liste und keine dritte linke Kante im Kopf (Shop-Tor D4
+   K1). Seit dem hochgestellten ® (Christian 28.10. Z1) ist die Zeile ein
+   Block und das Zeichen steht absolut links: in einem Raster würde das <sup>
+   eine eigene Zelle und rutschte unter den Text. Abstände wie zuvor (Spalte
+   32, Abstand 16 = Einzug 48), eine Zeile füllt genau 48. */
 .tas-punkt {
   text-wrap: balance;
-  display: grid;
-  grid-template-columns: var(--tas-s-4) 1fr;
-  align-items: center;
-  gap: var(--tas-s-2);
+  position: relative;
+  display: block;
   min-height: var(--tas-s-6);
-  padding-block: var(--tas-s-1);
+  padding-block: max(var(--tas-s-1), calc((var(--tas-s-6) - 1.3em) / 2));
+  padding-left: calc(var(--tas-s-4) + var(--tas-s-2));
   border-bottom: 1px solid var(--tas-linie);
   font-size: var(--tas-fs-3);
   line-height: 1.3;
+}
+
+.tas-punkt .tas-zeichen {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* Die Zeichen: Linien in Qi-Alpha-Rot, Bewegung langsam (4–6 s) und klein,
@@ -793,17 +819,17 @@
 }
 
 @media (min-width: 750px) {
-  .tas-band {
-    padding: var(--tas-s-6) var(--tas-s-3) 0;
+  .tas-licht-raster {
+    padding-top: var(--tas-s-8);
   }
-  .tas-band-titel {
+  .tas-seite .tas-band-titel {
     font-size: var(--tas-fs-7);
   }
   /* Ab 750 px gilt die Haus-H2-Stufe des Handys nicht mehr (reset.css). */
   .tas-produkt .tas-claim {
     font-size: var(--tas-fs-5);
   }
-  .tas-band-loop {
+  .tas-licht-buehne {
     --tas-loop: 480px;
     --tas-loop-luft: 56px;
   }
@@ -823,7 +849,6 @@
   .tas-raster-seite {
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     gap: var(--tas-s-6);
-    padding-top: var(--tas-s-4);
   }
   .tas-auswahl {
     display: block;
@@ -838,17 +863,28 @@
   .tas-produkt .tas-preiszeile {
     margin-top: var(--tas-s-3);
   }
-  /* Bühne quadratisch wie das Bildfeld: der Wechsel Loop ↔ Rendering
-     springt nicht. Der Loop steht in der Mitte unter Titel und Untertitel. */
-  .tas-band {
-    aspect-ratio: 1 / 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: var(--tas-s-6) var(--tas-s-4) 0;
+  /* Desktop: Rotation und Text nebeneinander im Raster der Galerie
+     (7fr | 5fr, Abstand 48). Die Rotation füllt die Galeriespalte ganz:
+     Breite = Galeriebild darunter (Z16 „in gleicher Größe“). Der Text steht
+     mittig zur Rotation, bündig mit der Kante der Auswahl. */
+  .tas-licht-raster {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--tas-s-6);
+    align-items: center;
+    padding: 0;
+    text-align: left;
   }
-  .tas-band-titel {
-    font-size: var(--tas-fs-6);
+  .tas-licht-text {
+    order: 0;
+    padding-right: var(--tas-s-6);
+  }
+  .tas-licht-buehne {
+    --tas-loop: 100%;
+    width: 100%;
+    margin: 0;
+  }
+  .tas-raster-seite {
+    padding-top: var(--tas-s-6);
   }
   .tas-seite .tas-name {
     font-size: var(--tas-fs-7) !important;

@@ -135,7 +135,7 @@ export const NUMMER = {
 export const KETTE = {
   auszeichnung: 'Trage ihn luxuriös.',
   titel:
-    'Hole Dir jetzt Deine Qi Blanco Goldkette - 750iger ethisches Vollgold',
+    'Hole Dir jetzt Deine Qi Blanco Goldkette - 750er ethisches Vollgold',
   bilder: [
     {
       stahl: `${CDN}/files/the-alpha-kette-verschluss-stahl-f5.jpg?v=1793037744`,
@@ -153,23 +153,23 @@ export const KETTE = {
 /**
  * Christians drei Goldlängen, in seiner Reihenfolge; `titel` = Shopify-Variante,
  * `box` = Bildunterschrift in „What's in the Box“ (Christian 26.10.: „so wie
- * "60 cm - 750iger ethisches Vollgold"“).
+ * "60 cm - 750er ethisches Vollgold"“).
  */
 export const KETTE_LAENGEN = [
   {
     titel: '60 cm',
-    name: '60 cm - 750iger ethisches Vollgold',
-    box: '60 cm - 750iger ethisches Vollgold',
+    name: '60 cm - 750er ethisches Vollgold',
+    box: '60 cm - 750er ethisches Vollgold',
   },
   {
     titel: '50 cm',
-    name: '50 cm - 750iger ethisches Vollgold',
-    box: '50 cm - 750iger ethisches Vollgold',
+    name: '50 cm - 750er ethisches Vollgold',
+    box: '50 cm - 750er ethisches Vollgold',
   },
   {
     titel: '45 cm',
-    name: '45 cm - 750iger ethisches Vollgold',
-    box: '45 cm - 750iger ethisches Vollgold',
+    name: '45 cm - 750er ethisches Vollgold',
+    box: '45 cm - 750er ethisches Vollgold',
   },
 ];
 
