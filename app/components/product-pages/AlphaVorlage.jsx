@@ -147,8 +147,8 @@ export function AlphaVorlage({
 
   const bilder = product?.images?.nodes ?? [];
   const band = bandQuelle(BAND);
-  const [bild, setBild] = useState(band ? -1 : 0);
-  const grossesBild = bilder[Math.max(bild, 0)] ?? bilder[0];
+  const [bild, setBild] = useState(0);
+  const grossesBild = bilder[bild] ?? bilder[0];
 
   const kacheln = KETTE
     ? [
@@ -172,6 +172,7 @@ export function AlphaVorlage({
   const summe = zusammenfassung({
     name: PRODUKT.name,
     variante,
+    varianteName: anzeigeName(VARIANTE, variante?.title),
     hauptPreis,
     kette,
     kettePreis: kette ? kettenPreis(kette) : 0,
@@ -192,21 +193,43 @@ export function AlphaVorlage({
       data-konfigurator={handle}
       data-alpha-vorlage={handle}
     >
+      {/* BAND OBEN, EIGENER ABSCHNITT wie der Qi-Alpha-Endstand (#1068,
+          Christian 28.10.2026 Z16 zur Qi Alpha; hier Z34 „der obere Bereich
+          sehr, sehr, sehr ähnlich“): Desktop 360-Grad-Bühne so groß wie das
+          Galeriebild, Text daneben; Handy untereinander, Text zuerst. Die
+          Galerie darunter zeigt nur Bilder. Seit s08 (vorher stand das Band
+          im Galeriefeld). */}
+      {band ? (
+        <section
+          className="tas-licht av-licht"
+          aria-labelledby={BAND.titel ? 'av-licht-titel' : undefined}
+          data-tas-licht=""
+          data-konfigurator-schritt="band"
+          data-section={schrittAbschnitt('band')}
+        >
+          <div className="tas-licht-raster">
+            <div className="tas-licht-buehne av-licht-buehne" data-tas-band="">
+              <BandVideo band={band} />
+            </div>
+            {BAND.titel || BAND.unter ? (
+              <div className="tas-licht-text">
+                {/* <p>, keine Überschrift: die erste Überschrift bleibt das h1. */}
+                {BAND.titel ? (
+                  <p id="av-licht-titel" className="tas-band-titel">
+                    {mitMarkeR(BAND.titel)}
+                  </p>
+                ) : null}
+                {BAND.unter ? <p className="tas-band-unter">{mitMarkeR(BAND.unter)}</p> : null}
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
       <div className="tas-raster-seite">
         <div className="tas-galerie" data-tas-galerie="">
           <div className="tas-galerie-fest">
-            {bild < 0 && band ? (
-              <header
-                className="tas-band av-band"
-                data-tas-band=""
-                data-konfigurator-schritt="band"
-                data-section={schrittAbschnitt('band')}
-              >
-                {BAND.titel ? <p className="tas-band-titel">{BAND.titel}</p> : null}
-                {BAND.unter ? <p className="tas-band-unter">{BAND.unter}</p> : null}
-                <BandVideo band={band} />
-              </header>
-            ) : grossesBild ? (
+            {grossesBild ? (
               <div className="tas-galerie-haupt">
                 <img
                   key={grossesBild.url}
@@ -219,23 +242,6 @@ export function AlphaVorlage({
               </div>
             ) : null}
             <div className="tas-daumen" role="group" aria-label="Ansichten">
-              {band ? (
-                <button
-                  type="button"
-                  className="tas-daumen-knopf tas-daumen-knopf--loop"
-                  aria-pressed={bild < 0}
-                  aria-label={band.alt}
-                  onClick={() => setBild(-1)}
-                >
-                  <img
-                    src={mitBreite(band.poster, 160)}
-                    alt=""
-                    width="80"
-                    height="80"
-                    loading="lazy"
-                  />
-                </button>
-              ) : null}
               {bilder.map((b, i) => (
                 <button
                   key={b.url}
@@ -327,14 +333,23 @@ export function AlphaVorlage({
                       an={wahl[o.name] === w.name}
                       aus={!w.verfuegbar}
                       onClick={() => setWahl({...wahl, [o.name]: w.name})}
-                      titel={w.name}
-                      text={VARIANTE?.zeilen?.[w.name] ?? (w.verfuegbar ? null : 'Ausverkauft')}
+                      titel={anzeigeName(VARIANTE, w.name)}
+                      text={
+                        w.verfuegbar
+                          ? VARIANTE?.zeilen?.[w.name] ?? null
+                          : [VARIANTE?.zeilen?.[w.name], 'Ausverkauft'].filter(Boolean).join(' · ')
+                      }
                       data={{'data-av-variante': w.name}}
                     />
                   ))}
                 </div>
               ))}
-              {VARIANTE?.grenzregel ? <p className="tas-klein">{VARIANTE.grenzregel}</p> : null}
+              {VARIANTE?.grenzregel ? (
+                <p className="av-grenzregel" data-av-grenzregel="">
+                  {VARIANTE.grenzregel}
+                </p>
+              ) : null}
+              {VARIANTE?.anpassen ? <p className="tas-klein">{VARIANTE.anpassen}</p> : null}
             </Schritt>
           ) : null}
 
@@ -393,7 +408,7 @@ export function AlphaVorlage({
               titel={angebot ? BEZAHLART.titel : BEZAHLART.titelDirekt}
             >
               <div
-                className={`tas-karten${zahlOptionen.length > 1 ? ' av-karten--drei' : ''}`}
+                className={`tas-karten${zahlOptionen.length > 2 ? ' av-karten--drei' : ''}`}
                 role="radiogroup"
                 aria-label={BEZAHLART.auszeichnung}
               >
@@ -427,9 +442,11 @@ export function AlphaVorlage({
       >
         <div className="tas-summe-kopf">
           <h2 id="av-summe-titel" className="tas-summe-titel">
-            {ZUSAMMENFASSUNG.auszeichnung}{' '}
+            {mitMarkeR(ZUSAMMENFASSUNG.auszeichnung)}{' '}
             {ZUSAMMENFASSUNG.titel ? (
-              <span className="tas-titel-rest tas-summe-unter">{ZUSAMMENFASSUNG.titel}</span>
+              <span className="tas-titel-rest tas-summe-unter">
+                {mitMarkeR(ZUSAMMENFASSUNG.titel)}
+              </span>
             ) : null}
           </h2>
           {bilder[0] ? (
@@ -470,7 +487,7 @@ export function AlphaVorlage({
         <div className="tas-summe-kasse">
           <ul className="tas-versand">
             {(ZUSAMMENFASSUNG.zeilen ?? []).map((z) => (
-              <li key={z}>{z}</li>
+              <li key={z}>{mitMarkeR(z)}</li>
             ))}
           </ul>
           <div className="tas-kaufknopf av-kaufknopf">
@@ -483,7 +500,7 @@ export function AlphaVorlage({
             </AddToCartButton>
           </div>
           {ZUSAMMENFASSUNG.rueckgabe ? (
-            <p className="tas-klein">{ZUSAMMENFASSUNG.rueckgabe}</p>
+            <p className="tas-klein">{mitMarkeR(ZUSAMMENFASSUNG.rueckgabe)}</p>
           ) : null}
           {vertrauen}
         </div>
@@ -574,11 +591,11 @@ function Schritt({name, erster = false, auszeichnung, titel = null, children}) {
       data-section={schrittAbschnitt(name)}
     >
       <h2 id={id} className="tas-schritt-titel">
-        <span className="tas-auszeichnung">{auszeichnung}</span>
+        <span className="tas-auszeichnung">{mitMarkeR(auszeichnung)}</span>
         {titel ? (
           <>
             {' '}
-            <span className="tas-titel-rest">{titel}</span>
+            <span className="tas-titel-rest">{mitMarkeR(titel)}</span>
           </>
         ) : null}
       </h2>
@@ -603,6 +620,7 @@ function Slots({daten, slots}) {
           <ul className="av-kacheln">
             {FAKTEN.kacheln.map((k) => (
               <li key={`${k.zahl}-${k.satz}`} className="av-kachel">
+                {k.icon ? <FaktZeichen art={k.icon} /> : null}
                 <span className="av-kachel-zahl">{k.zahl}</span>
                 <span className="av-kachel-satz">
                   <MarkeR text={k.satz} />
@@ -617,7 +635,7 @@ function Slots({daten, slots}) {
           <details className="av-risikofrei">
             <summary>
               <SymbolSchild />
-              <span>{RISIKOFREI.zeile}</span>
+              <span>{mitMarkeR(RISIKOFREI.zeile)}</span>
             </summary>
             {(RISIKOFREI.details ?? []).map((d) => (
               <p key={d}>{d}</p>
@@ -672,7 +690,7 @@ function SlotHuelle({name, titel = null, children}) {
       data-konfigurator-slot={name}
       data-section={schrittAbschnitt(name)}
     >
-      {titel ? <h2 className="tas-box-titel">{titel}</h2> : null}
+      {titel ? <h2 className="tas-box-titel">{mitMarkeR(titel)}</h2> : null}
       {children}
     </section>
   );
@@ -697,18 +715,18 @@ function bandQuelle(BAND) {
  */
 function BandVideo({band}) {
   if (band.art === 'loop') return <BandLoop loop={band} />;
-  if (band.art === 'qione') {
-    return (
-      <div className="av-band-buehne">
-        <Produkt360Video className="av-band-video" />
-      </div>
-    );
-  }
-  return (
-    <div className="av-band-buehne">
-      <ImgixVideo videoPath={band.videoPath} ersatz={band.ersatz} className="av-band-video" />
-    </div>
-  );
+  if (band.art === 'qione') return <Produkt360Video className="av-band-video" />;
+  return <ImgixVideo videoPath={band.videoPath} ersatz={band.ersatz} className="av-band-video" />;
+}
+
+/**
+ * Anzeigename eines Variantenwerts: VARIANTE.namen bildet den Shopify-Wert auf
+ * das ab, was der Kunde liest (QiBracelet: „S – 17“ -> „S“, EIN Maßsystem,
+ * Repair 20261023-repair-qibracelet-groessenhilfe-eindeutig-machen). Ohne
+ * Eintrag bleibt der Shopify-Wert stehen.
+ */
+function anzeigeName(VARIANTE, wert) {
+  return VARIANTE?.namen?.[wert] ?? wert;
 }
 
 function BandLoop({loop}) {
@@ -776,6 +794,49 @@ function SymbolSchild() {
     >
       <path d="M12 3 20 6v6c0 4.6-3.3 8-8 9-4.7-1-8-4.4-8-9V6z" />
       <path d="m8.5 12 2.4 2.4 4.6-4.8" />
+    </svg>
+  );
+}
+
+/*
+ * Zeichen der Faktenkacheln (Shop-Regel: Icons statt nackter Listenpunkte),
+ * gleiche Linie und Farbe wie die Kernpunkt-Zeichen, ohne Bewegung. Unbekannte
+ * Art: kein Zeichen.
+ */
+const FAKT_PFADE = {
+  generationen: ['M10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z', 'M4 25c0-4 2.7-7 6-7s6 3 6 7', 'M22 15a2.4 2.4 0 1 0 0-4.8 2.4 2.4 0 0 0 0 4.8Z', 'M18 25c0-3.3 1.8-5.6 4-5.6s4 2.3 4 5.6'],
+  wellen: ['M4 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0 4 2 6 0', 'M4 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0 4 2 6 0', 'M4 24c2-2 4-2 6 0s4 2 6 0 4-2 6 0 4 2 6 0'],
+  material: ['M16 4 27 10v12l-11 6-11-6V10z', 'M5 10l11 6 11-6', 'M16 16v12'],
+  handgelenk: ['M9 6c-2.5 2.6-4 6.2-4 10s1.5 7.4 4 10', 'M23 6c2.5 2.6 4 6.2 4 10s-1.5 7.4-4 10', 'M12.5 16h7'],
+  bayern: ['M16 28s-9-7.6-9-15a9 9 0 0 1 18 0c0 7.4-9 15-9 15Z', 'M16 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z'],
+  // QiHome® Air (s07): Reichweite, Kraft, ohne Strom, Zuhause.
+  radius: ['M16 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z', 'M10.3 21.7a8 8 0 0 1 0-11.4', 'M21.7 10.3a8 8 0 0 1 0 11.4', 'M6.1 25.9a14 14 0 0 1 0-19.8', 'M25.9 6.1a14 14 0 0 1 0 19.8'],
+  kraft: ['M18 3 7 18h8l-2 11 12-16h-8z'],
+  'ohne-strom': ['M11 4v6', 'M21 4v6', 'M8 10h16v4a8 8 0 0 1-16 0z', 'M16 22v6', 'M5 27 27 5'],
+  haus: ['M5 15.5 16 6l11 9.5', 'M8 13.5V26h16V13.5', 'M13.5 26v-6h5v6'],
+};
+
+function FaktZeichen({art}) {
+  const pfade = FAKT_PFADE[art];
+  if (!pfade) return null;
+  return (
+    <svg
+      className="av-fakt-zeichen"
+      viewBox="0 0 32 32"
+      width="32"
+      height="32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+      data-av-fakt-zeichen={art}
+    >
+      {pfade.map((d) => (
+        <path key={d} d={d} />
+      ))}
     </svg>
   );
 }

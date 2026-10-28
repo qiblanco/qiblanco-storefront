@@ -120,6 +120,12 @@ test('zusammenfassung: Posten, Summe, Rate der Summe nur bei Raten', () => {
   assert.equal(d.posten[0].name, 'QiBracelet® · M – 19');
   assert.equal(d.summe, 1578);
   assert.equal(d.rate, null);
+  // Anzeigename (VARIANTE.namen, s08): ein Maßsystem, „S“ statt „S – 17“.
+  const n = L.zusammenfassung({name: 'QiBracelet®', variante: M, varianteName: 'M', hauptPreis: 1578, land: 'DE'});
+  assert.equal(n.posten[0].name, 'QiBracelet® · M');
+  // Bezahlart „raten“ (s04-Schema direkt/raten) trägt die Rate wie paypal/klarna.
+  const r = L.zusammenfassung({name: 'QiBracelet®', variante: M, hauptPreis: 1578, zahlart: 'raten', land: 'DE'});
+  assert.equal(r.rate.rate, 132);
 });
 
 test('boxInhalt: feste Teile, die Kette nur wenn gewählt', () => {
@@ -169,4 +175,19 @@ test('warenkorbZeilen: Gerät zuerst, Kette danach, ohne kaufbares Gerät leer',
 test('schrittAbschnitt: Name für die cookielose Zählung', () => {
   assert.equal(L.schrittAbschnitt('bezahlart'), 'konfig-bezahlart');
   assert.match(L.schrittAbschnitt('was ist drin?'), /^[A-Za-z0-9_.:-]{1,64}$/);
+});
+
+test('faqSichtbar: Rate live einsetzen, ohne Angebot die Raten-Frage weglassen', () => {
+  const fragen = [
+    {f: 'Welche Größe?', a: 'Miss die Breite.'},
+    {f: 'Wie zahle ich in Raten?', a: '12 Monatsraten à {rate12} €.'},
+    {f: '', a: 'leer'},
+  ];
+  const an = L.ratenAngebot({brutto: 1578, waehrung: 'EUR', land: 'DE'});
+  const mit = L.faqSichtbar(fragen, an);
+  assert.equal(mit.length, 2);
+  assert.equal(mit[1].a, '12 Monatsraten à 132 €.');
+  const ohne = L.faqSichtbar(fragen, null);
+  assert.deepEqual(ohne.map((x) => x.f), ['Welche Größe?']);
+  assert.ok(!JSON.stringify(ohne).includes('{rate'));
 });

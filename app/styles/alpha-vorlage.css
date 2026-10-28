@@ -268,3 +268,69 @@
 .av-seite > .tas-raster-seite + .av-box {
   margin-top: 0;
 }
+
+/* BAND OBEN (s08, wie der Qi-Alpha-Endstand .tas-licht): die 360-Drehung des
+   Produkts statt des Qi-Alpha-Films. Ihr schwarzer Grund verschwindet per
+   `lighten` in der Fläche des Bands (kein Viereck, auch nicht im Ersatzbild);
+   das Gerät steht mittig, die Ränder des Films werden nicht beschnitten. */
+.av-licht-buehne {
+  --tas-loop: min(100%, 360px);
+  margin: var(--tas-s-3) auto 0;
+}
+.av-licht-buehne .ImgixVideo-wrap,
+.av-licht-buehne .av-band-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+.av-licht-buehne video,
+.av-licht-buehne img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: lighten;
+}
+@media (min-width: 1024px) {
+  .av-licht-buehne {
+    --tas-loop: 100%;
+    margin: 0;
+  }
+}
+
+/* Größe: Grenzregel als Entscheidung lesbar, der Satz zum Anpassen leise. */
+.av-grenzregel {
+  margin: var(--tas-s-2) 0 0;
+  font-weight: 600;
+}
+.av-seite .tas-schritt .tas-klein {
+  margin-top: var(--tas-s-1);
+}
+
+/* Zeichen der Faktenkacheln in Gold, über der Zahl. */
+.av-fakt-zeichen {
+  display: block;
+  color: var(--av-gold);
+  margin-bottom: var(--tas-s-2);
+}
+
+/* Slot-Überschrift mit Luft zum Inhalt (Box, Fakten, Stimmen). */
+.av-slot > .tas-box-titel {
+  margin-bottom: var(--tas-s-3);
+}
+/* Fünf Kacheln: drei oben, zwei breite unten, keine Lücke im Raster. */
+@media (min-width: 750px) {
+  .av-kacheln:has(> :nth-child(5):last-child) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .av-kacheln:has(> :nth-child(5):last-child) > li {
+    grid-column: span 2;
+  }
+  .av-kacheln:has(> :nth-child(5):last-child) > li:nth-child(n + 4) {
+    grid-column: span 3;
+  }
+}
+/* Wissenskapitel ohne Bild: Text an der Überschriftenkante, nicht eingerückt. */
+.av-seite .taw-abschnitt--text .taw-text {
+  margin-left: 0;
+}

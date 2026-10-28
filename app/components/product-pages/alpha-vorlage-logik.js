@@ -109,6 +109,7 @@ export function mitRate(text, angebot) {
 export function zusammenfassung({
   name,
   variante,
+  varianteName: anzeige = null,
   hauptPreis,
   kette = null,
   kettePreis = 0,
@@ -116,8 +117,10 @@ export function zusammenfassung({
   waehrung = 'EUR',
   land,
 }) {
+  // `anzeige`: Anzeigename der Variante (VARIANTE.namen, z. B. „S“ statt
+  // Shopifys „S – 17“); ohne ihn der Shopify-Titel.
   const varianteName =
-    variante?.title && !OHNE_AUSWAHL.has(variante.title) ? variante.title : null;
+    variante?.title && !OHNE_AUSWAHL.has(variante.title) ? anzeige || variante.title : null;
   const posten = [
     {
       schluessel: 'geraet',
@@ -190,4 +193,18 @@ export function warenkorbZeilen(variante, kette = null) {
 /** Name des Messabschnitts eines Schritts (qpx-basis: [A-Za-z0-9_.:-]{1,64}). */
 export function schrittAbschnitt(schritt) {
   return `konfig-${String(schritt).replace(/[^A-Za-z0-9_.:-]/g, '-')}`.slice(0, 64);
+}
+
+/**
+ * Sichtbare FAQ des Konfigurators (Slot AlphaFaq, s08): {rate}/{rate12} aus
+ * dem Ratenangebot; ohne Angebot entfällt jede Frage, die eine Rate nennt
+ * (nie ein Raten-Versprechen ohne Angebot, wie BEZAHLART.titelDirekt).
+ * Eingang [{f, a}], Ausgang [{f, a}] ohne Platzhalter.
+ */
+export function faqSichtbar(fragen, angebot) {
+  const rate = /\{rate(?:12)?\}/;
+  return (fragen ?? [])
+    .filter((x) => x?.f && x?.a)
+    .filter((x) => angebot || !rate.test(`${x.f} ${x.a}`))
+    .map((x) => ({f: mitRate(x.f, angebot), a: mitRate(x.a, angebot)}));
 }

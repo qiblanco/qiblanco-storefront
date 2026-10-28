@@ -14,6 +14,15 @@ import * as ALPHA_DATEN from '~/components/product-pages/qibracelet-alpha-daten'
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
 import alphaVorlageStyles from '~/styles/alpha-vorlage.css?url';
+import alphaSlotStyles from '~/styles/alpha-vorlage-slots.css?url';
+import wissenStyles from '~/styles/the-alpha-shop.css?url';
+import faqStyles from '~/styles/the-alpha-faq.css?url';
+import {
+  AlphaFaqMitRate,
+  AlphaStimmen,
+  AlphaVergleich,
+  AlphaWissen,
+} from '~/components/product-pages/AlphaVorlageSlots';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
 /*
  * Die Stylesheets der Seite (samt Begründung und tragender Reihenfolge) stehen
@@ -95,12 +104,17 @@ function loadDeferredData({ context, params }) {
 export default function Product() {
   /** @type {LoaderReturnData} */
   const {product, vergleichsPreise, konfigurator, ketten} = useLoaderData();
-  const kaufbereich = konfigurator ? (
-    <Konfigurator product={product} ketten={ketten} />
-  ) : null;
+  // A-FASSUNG (s08): mit Schalter steht der Konfigurator allein, mit den neuen
+  // Texten in seinen Slots. Die heutige Seite darunter trüge die alten Texte
+  // (S – 17, 10-fache Stärke, Kaufleiste als zweiter Knopf) und bleibt B.
+  if (konfigurator) {
+    return (
+      <Konfigurator product={product} ketten={ketten} vergleichsPreise={vergleichsPreise} />
+    );
+  }
   return (
     <QiBraceletSeite
-      kaufbereich={kaufbereich}
+      kaufbereich={null}
       kaufleiste
       product={product}
       vergleichsPreise={vergleichsPreise}
@@ -123,16 +137,39 @@ export default function Product() {
  * nur mit Konfigurator (links() kennt die Loaderdaten nicht): aus heißt
  * dieselben <link>-Tags wie vor s05.
  */
-function Konfigurator({product, ketten}) {
+function Konfigurator({product, ketten, vergleichsPreise}) {
   return (
     <>
       <link rel="stylesheet" href={produktVorlageStyles} />
       <link rel="stylesheet" href={alphaVorlageStyles} />
+      <link rel="stylesheet" href={wissenStyles} />
+      <link rel="stylesheet" href={faqStyles} />
+      <link rel="stylesheet" href={alphaSlotStyles} />
       <AlphaVorlage
         product={product}
         daten={ALPHA_DATEN}
         ketten={ketten}
         vertrauen={<EuGewaehrleistungsHinweis />}
+        slots={{
+          // Gewinner (s02 Z40): Gerätevergleich als „Modelle vergleichen“.
+          vergleich: (
+            <AlphaVergleich
+              handle="qibracelet"
+              daten={ALPHA_DATEN.VERGLEICH}
+              preise={vergleichsPreise}
+              eigenerPreis={product?.selectedOrFirstAvailableVariant?.price}
+            />
+          ),
+          wissen: (
+            <AlphaWissen
+              kapitel={ALPHA_DATEN.WISSEN.kapitel}
+              studien={ALPHA_DATEN.WISSEN.studien}
+              bilder={product?.images?.nodes ?? []}
+            />
+          ),
+          stimmen: <AlphaStimmen daten={ALPHA_DATEN.STIMMEN_GOOGLE} igProdukt="QiBracelet" />,
+          faq: <AlphaFaqMitRate daten={ALPHA_DATEN.FAQ} product={product} />,
+        }}
       />
     </>
   );

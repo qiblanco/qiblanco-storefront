@@ -1,93 +1,264 @@
 /*
  * DATENSTELLE der QiBracelet-Kaufseite im Konfigurator (Alpha-Vorlage).
  * Schnittstelle: claude-jobs/20261027-GROSSJOB-apple-konfigurator-qione-qihome-
- * qibracelet-ab/s05/SCHNITTSTELLE.md (Pflicht/optional je Schlüssel). Das
- * Gerüst ist product-pages/AlphaVorlage.jsx; hier steht nur, was die Seite
+ * qibracelet-ab/s05/SCHNITTSTELLE.md. Das Gerüst ist product-pages/AlphaVorlage.jsx,
+ * die Slots stehen in AlphaVorlageSlots.jsx; hier steht nur, was die Seite
  * hineingibt.
  *
- * STAND s05 (2026-10-28): Wortlaut der heutigen Seite /products/qibracelet
- * (Inventar s02/alt-texte/qibracelet.md, Live-Abruf 27.10.2026). Die neuen
- * Texte (s04) setzt s08 ein.
+ * STAND s08 (2026-10-28): die neuen Texte der A-Fassung, wörtlich aus
+ * s04/texte-qibracelet.json (Runde 3, PR + Sales frei, Challenger
+ * gegengeprüft). Nicht umformuliert. Wo ein s04-Feld auf zwei Felder der
+ * Vorlage verteilt wird (Überschrift = Auszeichnung + Titel), ist der Wortlaut
+ * an der Satzgrenze geteilt. Die alten Texte bleiben in B (/products/qibracelet-b).
  *
- * PREISE und Varianten stehen hier NICHT: sie kommen aus Shopify.
+ * PREISE, Varianten und Lieferbarkeit stehen hier NICHT: sie kommen aus Shopify.
  */
 
-/** Bühne: die vorhandene 360-Grad-Drehung (ImgixVideo mit Ersatzbild). */
+/*
+ * Band oben (wie /products/qi-alpha „Kohärentes Licht / - Ultra High Vibe
+ * Mode -“): s04 kopf.kicker als Titel, kopf.modus als Unterzeile, dazu die
+ * 360-Grad-Drehung des Reifs (Ersatzbild zuerst, nie Schwarz).
+ */
 export const BAND = {
-  titel: null,
-  unter: null,
+  titel: 'Zellschutz für unterwegs',
+  unter: '- All Day Mode -',
   drehung: 'qibracelet',
   videoPath: 'new-360-QiBracelet-1x1.mov',
 };
 
 export const PRODUKT = {
+  // overline/modus stehen im Band darüber (einmal, nicht doppelt).
+  overline: null,
+  modus: null,
   name: 'QiBracelet®',
-  claim: null,
-  // Heutiger Satz der Seite (Shopify-Beschreibung, s02 B02).
-  kurzzeile: 'Für Superhumans – dank zweiter Chip Generation und 8-facher Stärke.',
-  preisanker: {nutzer: '+ 14.000 Nutzer', banner: null},
+  claim: 'Entwickelt für Superhumans.',
+  kurzzeile: 'Drei Größen · Chirurgenstahl 316L · Gitterchip™ aus 750er Gold',
+  preisanker: {nutzer: '+ 14.000 Nutzer', banner: 'Ultimate Power'},
   punkte: [
     {zeichen: 'wachstum', text: 'Persönliches Wachstum'},
-    {zeichen: 'schutz', text: 'Schutz vor E-Smog & 5G'},
+    {zeichen: 'schutz', text: 'Schutz vor E-Smog, 5G & 6G'},
     {zeichen: 'quantenfeld', text: 'Gesteigerte Anbindung zum Quantenfeld'},
   ],
   herkunft: ['Designed in Germany.', 'Made in Germany.'],
 };
 
 /*
- * VARIANTE: die Größen kommen aus Shopify (Option „Größe“: S – 17, M – 19,
- * L – 21). `zeilen` je Wert ist optional (s08: Breite je Größe aus s04).
+ * GRÖSSE: Werte aus Shopify (heute „S – 17“, „M – 19“, „L – 21“). Angezeigt
+ * wird EIN Maßsystem: S/M/L mit der Breite des Handgelenks (Repair
+ * 20261023-repair-qibracelet-groessenhilfe-eindeutig-machen, Peggy; s04
+ * variante). `namen` und `zeilen` tragen beide Schreibweisen des Strichs und
+ * den nackten Buchstaben, damit die Anzeige stimmt, wenn der Repair die
+ * Shopify-Titel auf S/M/L kürzt.
  */
+const GROESSEN = {
+  S: '4,5 bis 5 cm breit',
+  M: '6 cm breit',
+  L: '7 bis 7,5 cm breit',
+};
+const SHOPIFY_WERTE = {S: '17', M: '19', L: '21'};
+const proWert = (f) =>
+  Object.fromEntries(
+    Object.keys(GROESSEN).flatMap((g) => [
+      [`${g} – ${SHOPIFY_WERTE[g]}`, f(g)],
+      [`${g} - ${SHOPIFY_WERTE[g]}`, f(g)],
+      [g, f(g)],
+    ]),
+  );
+
 export const VARIANTE = {
   auszeichnung: 'Größe.',
-  titel: null,
-  anleitung: null,
-  zeilen: null,
-  grenzregel: null,
+  titel: 'Miss die Breite, nicht den Umfang.',
+  anleitung:
+    'Leg ein Lineal an die breiteste Stelle deines Handgelenks, dort, wo du an beiden Seiten die Knöchel spürst. Schließ ein Auge und lies ab, auf den halben Zentimeter gerundet.',
+  namen: proWert((g) => g),
+  zeilen: proWert((g) => GROESSEN[g]),
+  grenzregel: '5,5 oder 6,5 cm? Nimm die kleinere Größe. Sie liegt an.',
+  anpassen:
+    'Der Reif ist dafür gebaut, dass du ihn anpasst: Mit beiden Händen drückst du ihn enger oder dehnst ihn weiter. Das darfst du.',
 };
 
 /*
- * BEZAHLART: direkt, PayPal, Klarna. `{rate}` setzt die Logik aus dem Preis
- * ein (Hausformel ceil(Preis / 12), nur Markt DE, ab 500 €). Wortlaut heute:
- * KaufZusage.jsx („In Raten zahlen, mit 0 % Finanzierung mit PayPal und
- * Klarna“).
+ * BEZAHLART (Qi-Alpha-Form: zwei Karten). {rate12} setzt die Logik aus dem
+ * Preis ein (ceil(Preis / 12), nur Markt DE, ab 500 €). Ohne Ratenangebot
+ * bleibt nur „Direkt bezahlen“ und kein Raten-Titel (titelDirekt null).
  */
 export const BEZAHLART = {
   auszeichnung: 'Bezahlart.',
-  titel: 'In Raten zahlen, mit 0 % Finanzierung mit PayPal und Klarna.',
+  titel: 'Zahle direkt oder bequem in Raten.',
   titelDirekt: null,
   optionen: [
-    {id: 'direkt', titel: 'Direkt bezahlen', zeile: null},
-    {id: 'paypal', titel: 'PayPal', zeile: 'In 12 Raten à {rate} € zahlen'},
-    {id: 'klarna', titel: 'Klarna', zeile: 'In 12 Raten à {rate} € zahlen'},
+    {id: 'direkt', titel: 'Direkt bezahlen', zeile: 'PayPal, Klarna, Karte oder Überweisung'},
+    {
+      id: 'raten',
+      titel: 'In Raten zahlen',
+      zeile: '12 Monatsraten à {rate12} €. 0 % Finanzierung mit PayPal und Klarna.',
+    },
   ],
-  hinweis: 'In 12 Raten à {rate} € zahlen, mit 0 % Finanzierung mit PayPal und Klarna.',
+  hinweis:
+    'Den Anbieter wählst du an der Kasse. Klarna und PayPal bestätigen die Raten direkt bei der Bestellung. Voraussetzung ist ein Wohnsitz in Deutschland.',
 };
 
-/* Zusammenfassung mit EINEM Kaufknopf. Zeilen: heutige Versandpunkte. */
+/* Zusammenfassung mit EINEM Kaufknopf. */
 export const ZUSAMMENFASSUNG = {
-  auszeichnung: 'Deine Auswahl.',
-  titel: null,
-  zeilen: [
-    'Kostenloser Versand innerhalb Deutschlands',
-    'In 2-3 Tagen bei Dir',
-    '100% Versicherter Versand',
-  ],
-  knopf: 'In den Warenkorb legen',
-  rueckgabe: '20 Tage zu Hause testen, 100% Geld-zurück-Garantie',
+  auszeichnung: 'Dein neues QiBracelet®.',
+  titel: 'In deiner Größe.',
+  zeilen: ['Versand am nächsten Werktag. Kostenlos in Deutschland und voll versichert.'],
+  knopf: 'In den Warenkorb',
+  rueckgabe: '20 Tage tragen und testen. Voller Kaufpreis zurück.',
 };
 
+/*
+ * What's in the Box: der Reif selbst (Bild + Name). Weitere Teile (Schachtel,
+ * Ständer) sind nicht als Lieferumfang belegt (s04 offene Flanke): keine Liste.
+ */
 export const BOX = {
   titel: "What's in the Box",
-  teile: ['QiBracelet®'],
+  teile: [],
 };
 
 /* Keine Kette: der Schritt entfällt. */
 export const KETTE = null;
 export const KETTE_GOLD = null;
 
-/* Slots unter der Box: in s05 leer, der heutige Seiteninhalt steht darunter. */
-export const FAKTEN = null;
-export const RISIKOFREI = null;
+export const FAKTEN = {
+  ueberschrift: 'Einmal kaufen. An die Familie weitergeben.',
+  kacheln: [
+    {icon: 'generationen', zahl: 'Jahrzehnte', satz: 'Lebensdauer. Nahezu unzerstörbar.'},
+    {icon: 'wellen', zahl: 'Sauna · Meer · Pool', satz: 'Es bleibt dran.'},
+    {icon: 'material', zahl: '316L', satz: 'Implantatstahl aus der Orthopädie.'},
+    {icon: 'handgelenk', zahl: 'Über 1.000', satz: 'QiBracelet® im Einsatz.'},
+    {
+      icon: 'bayern',
+      zahl: '100 %',
+      satz: 'in Bayern entwickelt und gefertigt. Von Goldschmieden von Hand vollendet.',
+    },
+  ],
+};
+
+export const RISIKOFREI = {
+  zeile: '20 Tage tragen. Passt es nicht, bekommst du den vollen Kaufpreis zurück.',
+  details: [
+    'Die 20 Tage zählen ab Ankunft.',
+    'Einen Grund brauchst du nicht.',
+    'Die Rücksendung ist für dich kostenlos.',
+  ],
+  // Bewachter Inhaltslink (probe_neue_seiten_inhaltslinks__20260925.py, s02-Falle).
+  link: {
+    text: 'Alles zu Rückgabe und Gewährleistung: Neu oder gebraucht',
+    href: '/pages/neu-oder-gebraucht#ruecknahme',
+  },
+};
+
+/* Slot „Modelle vergleichen“ (Gewinner Gerätevergleich, s02 Z40). */
+export const VERGLEICH = {
+  ueberschrift: 'Kette oder Armband?',
+  intro: 'Dieselbe Wirkung. Du entscheidest, wo du sie trägst.',
+  zeilen: {
+    'qione-2-pro': 'Am Hals. Unter oder über der Kleidung.',
+    qibracelet: 'Am Handgelenk. Den ganzen Tag.',
+    'qihome-air': 'Im Raum. Für alle unter deinem Dach.',
+  },
+};
+
+/* Slot „Wissen“ (Qi-Alpha-Stil). `bild`: Index des Shopify-Produktbilds. */
+export const WISSEN = {
+  kapitel: [
+    {
+      etikett: 'Zelle',
+      titel: 'Fünf von fünf Zelltypen geschützt.',
+      absaetze: [
+        'Prof. Dr. Peter C. Dartsch hat das QiBracelet® im Labor an fünf Typen menschlicher Zellen getestet. Er setzte sie oxidativem Stress aus.',
+        'Bei Leberzellen lag der Schutz bei 47,3 %.',
+      ],
+      quellen: [
+        'Peter C. Dartsch: Protective Effect of the QiBracelet® Against Oxidative Stress. Applied Cell Biology 12(1), 2024. DOI 10.53043/2320-1991.acb12001.',
+      ],
+      bild: null,
+    },
+    {
+      etikett: 'Gitterchip™',
+      titel: 'Gleiche Leistung wie der QiOne® 2 Pro.',
+      absaetze: [
+        'Im Ende des Reifs sitzt der Gitterchip™ aus 750er Gold.',
+        'Er ist rund 10 % stärker gebaut als im QiOne® 2 Pro, denn das Handgelenk liegt weiter von deiner Körpermitte entfernt.',
+      ],
+      bild: 2,
+    },
+    {
+      etikett: 'Erde',
+      titel: 'Wasseradern, Erdstrahlen, Gitternetze.',
+      absaetze: [
+        'Geopathogene Strahlung hat viele Namen. Sensible Menschen spüren sie, zum Beispiel im Schlaf.',
+        'Sie kommt zu Handy, WLAN und 5G hinzu. Das QiBracelet® wirkt dem entgegen. Es ist immer an deiner Seite.',
+      ],
+      bild: 5,
+    },
+  ],
+  studien: {
+    ueberschrift: 'Fünf Veröffentlichungen.',
+    link_text: 'Alle Studien ansehen',
+    href: '/pages/studien',
+  },
+};
+
+/*
+ * Slot „Stimmen“: s04 stimmen.bewertungen_ueberschrift, darunter echte
+ * Google-Bewertungen zum QiBracelet® im Wortlaut (s02/quellen/
+ * bewertungen-auszug.txt, Google, 5 Sterne). Die Zeile zu den ersten Nächten
+ * aus derselben Bewertung steht NICHT da (Fakten-Basis F-TRAGEN, s04-Flanke).
+ */
+export const STIMMEN_GOOGLE = {
+  ueberschrift: '{bewertung} ★ auf Google. Lies selbst.',
+  note: '4,8',
+  instagram: 'Auf Instagram.',
+  stimmen: [
+    {
+      text: 'Seither wache ich mit einem klaren Kopf auf und fühle mich fokussierter, strukturierter und einfach ausgeglichener.',
+      quelle: 'Google-Bewertung, Dezember 2025',
+    },
+    {
+      text: 'Ich bin viel ruhiger und selbst in stressigen Situationen viel gelassener.',
+      quelle: 'Google-Bewertung, Dezember 2025',
+    },
+    {
+      text: 'Würde ich auf jeden Fall weiterempfehlen!',
+      quelle: 'Google-Bewertung, August 2026',
+    },
+  ],
+};
+/* Daten-Slot STIMMEN der Vorlage bleibt leer: die Route gibt den Slot herein. */
 export const STIMMEN = null;
-export const FAQ = null;
+
+export const FAQ = {
+  ueberschrift: 'Deine Fragen zum QiBracelet®.',
+  fragen: [
+    {
+      f: 'Kette oder Armband: Was ist der Unterschied?',
+      a: 'Die Wirkung ist dieselbe, der Ort ist ein anderer: der QiOne® 2 Pro am Hals, das QiBracelet® am Handgelenk. Der Gitterchip™ im QiBracelet® ist rund 10 % stärker gebaut. So gleicht er den weiteren Weg zur Körpermitte aus.',
+    },
+    {
+      f: 'Welche Größe brauche ich?',
+      a: 'Miss die Breite deines Handgelenks an der breitesten Stelle, nicht den Umfang. 4,5 bis 5 cm: S. 6 cm: M. 7 bis 7,5 cm: L. Liegst du bei 5,5 oder 6,5 cm, nimm die kleinere Größe. Mit beiden Händen drückst du den Reif enger oder dehnst ihn weiter. Das darfst du.',
+    },
+    {
+      f: 'Was bekomme ich für den Preis?',
+      a: 'Einen Gitterchip™ aus 750er Gold, rund 10 % stärker gebaut als im QiOne® 2 Pro, in einem Reif aus Chirurgenstahl 316L. Entwickelt und gefertigt in Bayern, von Goldschmieden von Hand vollendet. Gebaut für Jahrzehnte.',
+    },
+    {
+      f: 'Darf das QiBracelet® in die Sauna und ins Wasser?',
+      a: 'Ja. Wasser, Chlor, Salzwasser, Schweiß und Sonne machen ihm nichts. In der Sauna nimmt das Metall die Hitze der Luft auf.',
+    },
+    {
+      f: 'Ist das QiBracelet® für Allergiker geeignet?',
+      a: 'Das Gehäuse ist aus Chirurgenstahl 316L. Denselben Stahl nutzt die Orthopädie für Implantate. Allergische Reaktionen sind äußerst selten. Bist du empfindlich, trag es über dem Ärmel.',
+    },
+    {
+      f: 'Lässt die Wirkung mit der Zeit nach?',
+      a: 'Nein. Der Gitterchip™ arbeitet ohne Akku und nutzt sich nicht ab. Du gewöhnst dich nur an das Gefühl: Was am Anfang neu ist, wird nach einigen Tagen Alltag.',
+    },
+    {
+      f: 'Wie zahle ich in Raten?',
+      a: 'Wähle im Schritt Bezahlart „In Raten zahlen“ und an der Kasse PayPal oder Klarna. Du zahlst 12 Monatsraten à {rate12} €, bei Klarna auch bis zu 24. Klarna und PayPal bestätigen die Raten bei der Bestellung. Voraussetzung ist ein Wohnsitz in Deutschland.',
+    },
+  ],
+};
