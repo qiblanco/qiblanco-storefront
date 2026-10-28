@@ -281,11 +281,11 @@ export function experimentB2Aktiv(env, codeSchalter = E2_AKTIV, e1 = E1, e2 = E2
  * schon den Sticky-Arm GS-127 meint).
  *
  * ENTSCHEIDE, je begründet:
- *  - VORGEBAUT, ABER AUS: E3_AKTIV und E4_AKTIV stehen auf false. Scharf
- *    werden sie erst, wenn das Sim-Tor die Fassung je Gerät bestanden hat
- *    (heatmap-manager kreislauf start-freigabe <id> exit 0) und B von
- *    szs-e1-gs050 sein Urteil hat. Bis dahin sieht kein Besucher K50 oder K25;
- *    die Routen sind nur über den Pin erreichbar (Vorschau, Tor-Prüfung).
+ *  - SCHARF SEIT DEM MERGE VOM 28.10.2026: E3_AKTIV und E4_AKTIV stehen auf
+ *    true. Bedingung war, dass das Sim-Tor die Fassung je Gerät bestanden hat
+ *    (heatmap-manager kreislauf start-freigabe <id> exit 0, beide am
+ *    2026-10-28T05:20Z) und B von szs-e1-gs050 sein Urteil hat (20.10.).
+ *    Zurück: Schalter auf false (PR) oder Env-Kill unten.
  *  - DASSELBE SALZ WIE E1, EIGENE EIMER: K50 übernimmt die Eimer von B
  *    (< 15), K25 die nächsten (15 bis 29). B2 behält die obersten. Ein Besucher
  *    hat genau einen Eimer, also höchstens einen Arm.
@@ -330,8 +330,8 @@ export const E4 = Object.freeze({
 });
 
 /** Code-Schalter der Kurz-Arme; false = kein Besucher auf K50 bzw. K25. */
-export const E3_AKTIV = false;
-export const E4_AKTIV = false;
+export const E3_AKTIV = true;
+export const E4_AKTIV = true;
 
 /**
  * Ein Kurz-Arm läuft nur, wenn sein Code-Schalter steht, die Env ihn nicht
