@@ -44,12 +44,12 @@
  },
  "laienSummary": {
   "frage": "Gibt es zum QiHome® Air eine wissenschaftliche Studie?",
-  "antwort": "Ja. Der QiHome® Air ist in einer eigenen Fachpublikation untersucht worden — als bisher einziges Raumgerät von Qi Blanco. Zellkulturen, die neben dem aufgestellten Gerät standen, schlossen eine künstlich gesetzte Lücke deutlich schneller als Kontrollkulturen ohne Gerät, und sie überstanden künstlich erzeugten Zellstress besser.",
+  "antwort": "Ja. Der QiHome® Air ist als bisher einziges Raumgerät von Qi Blanco in einer eigenen Fachpublikation untersucht worden. Zellkulturen, die neben dem aufgestellten Gerät standen, schlossen eine künstlich gesetzte Lücke deutlich schneller als Kontrollkulturen ohne Gerät, und sie überstanden künstlich erzeugten Zellstress besser.",
   "punkte": [
    "53,3 % bessere Zellregeneration neben dem QiHome® Air als ohne Gerät (p ≤ 0,01)",
    "Unter künstlichem Zellstress überlebten bei 1 mM Wasserstoffperoxid 34 % mehr Zellen als in der Kontrolle.",
    "Bei bestimmten Immunzellen stieg der Grundumsatz um 20,7 %, während ihre Radikalbildung um 16,4 % sank.",
-   "Alle Werte stammen aus Zellkulturen im Labor — Daten am Menschen gibt es zu diesem Gerät nicht."
+   "Alle Werte stammen aus Zellkulturen im Labor. Daten am Menschen gibt es zu diesem Gerät nicht."
   ],
   "einordnung": "Die Untersuchung fand ausschließlich in Zellkulturen statt (in vitro). Das verwendete Regenerationsmodell bildet nach Angabe der Publikation nur das periphere Nervensystem ab; über Erkrankungen des zentralen Nervensystems sagt die Arbeit ausdrücklich nichts aus. Sie wurde von Qi Blanco finanziert und stammt aus einem einzelnen Labor."
  },
@@ -71,7 +71,7 @@
   {
    "id": "einleitung",
    "titel": "1. Einleitung",
-   "einordnung": "Die Originalarbeit ordnet ihr Thema an dieser Stelle in die Fachliteratur zu Nervenzell-Abbau und Entzündungsprozessen ein und nennt dabei Krankheitsbeispiele. Wir geben diese Passagen bewusst ohne die Krankheitsbezüge wieder — die Arbeit stellt selbst fest, dass ihr Befund sich nicht auf Erkrankungen des zentralen Nervensystems bezieht. Der ungekürzte englische Originaltext ist oben als PDF verlinkt.",
+   "einordnung": "Die Originalarbeit ordnet ihr Thema an dieser Stelle in die Fachliteratur zu Nervenzell-Abbau und Entzündungsprozessen ein und nennt dabei Krankheitsbeispiele. Diese Passagen stehen hier ohne die Krankheitsbezüge. Die Arbeit stellt selbst fest, dass ihr Befund sich nicht auf Erkrankungen des zentralen Nervensystems bezieht. Der ungekürzte englische Originaltext ist oben als PDF verlinkt.",
    "absaetze": [
     "Umwelteinflüsse wie Industriechemikalien, Fremdstoffe, Luftverschmutzung, ultraviolette und ionisierende Strahlung, elektromagnetische und geopathogene Strahlung und viele andere können im Körper eine vermehrte Bildung reaktiver Sauerstoffspezies verursachen, die die körpereigenen antioxidativen Enzymsysteme überfordern. Das Ergebnis ist oxidativer Stress, der Zellen und Organe schädigen kann. Im Nervensystem können beispielsweise Schäden an Lipiden, Proteinen und der DNA zu einer gestörten Funktion der Nervenzellen führen und Prozesse anstoßen, die mit dem Abbau von Nervengewebe und mit Entzündungen einhergehen. Darüber hinaus stehen akute und chronische Entzündungsprozesse auch mit einem Überschuss an Radikalen im Gewebe in Zusammenhang, der durch einen oxidativen Ausbruch entzündungsvermittelnder Zellen wie der Neutrophilen verursacht wird.",
     "Frühere Untersuchungen mit der Qi Blanco Gitterchip-Technologie haben deren günstige Effekte auf zellulärer Ebene gezeigt. Die Gitterchip-Technologie bildet ein statisches Feld, das Wassermoleküle zum Übergang in den kohärenten Zustand anregt. Da unser Körper zu etwa 70–85 % aus Wasser besteht, sollte der kohärente Zustand der Wassermoleküle die Zellen unseres gesamten Körpers positiv beeinflussen können. Diese Gitterchip-Technologie wird hier durch den QiHome® Air vertreten, der zur Optimierung der Umgebungsbedingungen in Wohn- und Arbeitsräumen empfohlen wird. Insbesondere elektromagnetische Felder durch Mobiltelefone oder Funkwellen sowie geopathogene Störungen, die ihrerseits eine zusätzliche Strahlenbelastung über die technisch erzeugte Strahlung hinaus darstellen, können bei Menschen mit höherer individueller Empfindlichkeit allgemeine gesundheitliche Beschwerden verursachen.",
@@ -130,7 +130,7 @@
   {
    "id": "diskussion",
    "titel": "5. Diskussion",
-   "einordnung": "Die Originalarbeit ordnet ihr Thema an dieser Stelle in die Fachliteratur zu Nervenzell-Abbau und Entzündungsprozessen ein und nennt dabei Krankheitsbeispiele. Wir geben diese Passagen bewusst ohne die Krankheitsbezüge wieder — die Arbeit stellt selbst fest, dass ihr Befund sich nicht auf Erkrankungen des zentralen Nervensystems bezieht. Der ungekürzte englische Originaltext ist oben als PDF verlinkt.",
+   "einordnung": "Die Originalarbeit ordnet ihr Thema an dieser Stelle in die Fachliteratur zu Nervenzell-Abbau und Entzündungsprozessen ein und nennt dabei Krankheitsbeispiele. Diese Passagen stehen hier ohne die Krankheitsbezüge. Die Arbeit stellt selbst fest, dass ihr Befund sich nicht auf Erkrankungen des zentralen Nervensystems bezieht. Der ungekürzte englische Originaltext ist oben als PDF verlinkt.",
    "absaetze": [
     "Es ist bekannt, dass verschiedene Umwelteinflüsse auf den Körper wirken und oxidativen Stress verursachen können, der zu Prozessen führen kann, die mit dem Abbau von Nervengewebe und mit Entzündungen einhergehen. Insbesondere elektromagnetischer und geopathogener Stress durch Störungen der natürlichen Energieflüsse der Erde und deren mögliche körperliche und mentale Auswirkungen haben in den letzten Jahren viel Aufmerksamkeit erhalten. Darunter wirken sich Beschwerden wie Kopfschmerzen, Müdigkeit und gestörte Schlafmuster häufig negativ auf das Wohlbefinden und in der Folge auf die allgemeine Gesundheit aus.",
     "Vor diesem Hintergrund untersuchten wir die Wirkung des QiHome® Air auf Umwelteinflüsse. In dieser tierversuchsfreien Studie mit kultivierten neuronalen und entzündungsvermittelnden Zellen konzentrierten wir uns auf Nervenzell-Abbau und Nervenentzündung, um zu sehen, ob kohärente Wasserstrukturen, wie sie durch die Exposition gegenüber dem QiHome® Air induziert werden, die gesamten Umwelteinflüsse ausgleichen können.",
@@ -286,15 +286,15 @@
  "faq": [
   {
    "frage": "Was wurde in dieser Studie untersucht?",
-   "antwort": "Zellkulturen wurden für 10 bis 24 Stunden neben einem aufgestellten QiHome® Air gehalten, Kontrollkulturen in einem baugleichen Mini-Inkubator ohne Gerät. Gemessen wurden drei Dinge: wie schnell die Zellen eine künstlich gesetzte Lücke wieder schließen, wie gut sie künstlich erzeugten Zellstress überstehen, und wie sich Stoffwechsel und Radikalbildung bestimmter Immunzellen verändern."
+   "antwort": "Zellkulturen wurden für 10 bis 24 Stunden neben einem aufgestellten QiHome® Air gehalten, Kontrollkulturen in einem baugleichen Mini-Inkubator ohne Gerät. Der Autor hat gemessen, wie schnell die Zellen eine künstlich gesetzte Lücke wieder schließen und wie gut sie künstlich erzeugten Zellstress überstehen. Bei bestimmten Immunzellen hat er außerdem verfolgt, wie sich ihr Stoffwechsel und ihre Radikalbildung verändern."
   },
   {
    "frage": "Was bedeutet „53,3 % bessere Regeneration“ genau?",
-   "antwort": "Nach 10 Stunden war die künstlich gesetzte zellfreie Fläche neben dem QiHome® Air auf 11,8 % geschrumpft, ohne Gerät nur auf 25,2 %. Die 53,3 % sind die relative Verbesserung zwischen diesen beiden Werten — je kleiner die Restfläche, desto stärker die Regeneration."
+   "antwort": "Nach 10 Stunden war die künstlich gesetzte zellfreie Fläche neben dem QiHome® Air auf 11,8 % geschrumpft, ohne Gerät nur auf 25,2 %. Die 53,3 % sind die relative Verbesserung zwischen diesen beiden Werten. Je kleiner die Restfläche, desto stärker die Regeneration."
   },
   {
    "frage": "Wie wurden die Kontrollzellen vom Gerät ferngehalten?",
-   "antwort": "In einem anderen Haus, rund 1,5 km Luftlinie entfernt. Beide Zellkulturen standen in baugleichen Mini-Inkubatoren bei 37 °C im selben Kulturmedium, damit die Bedingungen identisch waren — den Abstand wählte der Autor bewusst so groß, dass eine wechselseitige Beeinflussung ausgeschlossen war. Die Regenerationsversuche liefen 10 Stunden, die Versuche zum oxidativen Stress 24 Stunden."
+   "antwort": "Die Kontrollzellen standen in einem anderen Haus, rund 1,5 km Luftlinie entfernt. Beide Zellkulturen standen in baugleichen Mini-Inkubatoren bei 37 °C im selben Kulturmedium, damit die Bedingungen identisch waren. Den Abstand hat der Autor so groß gewählt, dass sich die beiden Kulturen nicht gegenseitig beeinflussen konnten. Die Regenerationsversuche liefen 10 Stunden, die Versuche zum oxidativen Stress 24 Stunden."
   }
  ],
  "verwandt": [
