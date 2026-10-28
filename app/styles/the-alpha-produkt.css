@@ -17,11 +17,12 @@
  *
  * ERSTES FENSTER (Christian 28.10.2026 Z16, ersetzt Z2 vom 27.10.): oben der
  * eigene Abschnitt „Kohärentes Licht“ mit der 360-Grad-Rotation, darunter
- * Galerie und Kauf. Am Handy folgen Kopf und erste Option direkt auf den
- * Abschnitt, die Galerie danach. Der Kopf rückt eng in der Gruppe, weit
- * zwischen den Gruppen:
+ * Galerie und Kauf. Am Handy (Z21, Apple-Modus) folgen Kopf mit Preis, dann
+ * die Galerie, dann die Schritte am Stück. Der Kopf rückt eng in der Gruppe,
+ * weit zwischen den Gruppen:
  * Name · Claim · Edition (8) | Punkte und Preis (24 Desktop, 16 Handy) |
- * Herkunft (8) | erste Option (32: Desktop Rand, Handy Rasterabstand).
+ * Herkunft (8) | Galerie bzw. erste Option (32: Desktop Rand, Handy
+ * Rasterabstand).
  */
 .tas-seite {
   --tas-fs-1: 0.75rem;
@@ -415,10 +416,11 @@
   scroll-margin-top: 136px;
 }
 
-/* Handy und Tablet: Kopf mit Preisanker, dann die erste Option, dann die
-   Bühne (Sicht-Tor: Preis und erste Option im ersten Fenster 390x844). Der
-   Rasterabstand 32 trennt die drei. Ab 1024 px steht die Auswahl wieder als
-   Spalte neben der Bühne. */
+/* Handy und Tablet (Christian 28.10. Z21, Apple-Modus): Kopf mit Preis, dann
+   die Galerie, dann die Schritte am Stück (Wunschnummer → Kette → Bezahlart).
+   Wie bei Apple steht das Produktbild vor der ersten Auswahl und nie zwischen
+   zwei Schritten. Der Rasterabstand 32 trennt Kopf, Galerie und ersten
+   Schritt. Ab 1024 px steht die Auswahl wieder als Spalte neben der Bühne. */
 .tas-auswahl {
   display: contents;
 }
@@ -427,7 +429,7 @@
   order: -2;
 }
 
-.tas-schritt--erster {
+.tas-galerie {
   order: -1;
 }
 
@@ -853,7 +855,8 @@
   .tas-auswahl {
     display: block;
   }
-  .tas-produkt {
+  .tas-produkt,
+  .tas-galerie {
     order: 0;
   }
   .tas-seite .tas-schritt--erster {

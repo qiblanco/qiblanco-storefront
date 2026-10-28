@@ -201,9 +201,15 @@ test('Erstes Fenster (Christian Z2, 27.10.; Z1/Z2 28.10.): Preis allein im Kopf,
   assert.match(shop, /id="tas-konfigurator"\s+className="tas-schritt tas-schritt--erster"\s+aria-labelledby="tas-nummer-titel"/);
   assert.match(shop, /id=\{nummernAn \? undefined : 'tas-konfigurator'\}/);
   const css = lies('app/styles/the-alpha-produkt.css');
-  // Handy: Kopf, erste Option, dann Bühne; keine Spalte breiter als das Fenster
+  // Handy (Christian 28.10. Z21, Apple-Modus): Kopf mit Preis, dann die Galerie,
+  // dann die Schritte am Stück (Wunschnummer → Kette → Bezahlart); die Galerie
+  // steht nie zwischen zwei Schritten. Keine Spalte breiter als das Fenster.
   assert.match(css, /\.tas-produkt \{\s*order: -2;/);
-  assert.match(css, /\.tas-schritt--erster \{\s*order: -1;/);
+  assert.match(css, /\.tas-galerie \{\s*order: -1;/);
+  assert.doesNotMatch(css, /\.tas-schritt--erster \{\s*order: -1;/);
+  // Desktop (ab 1024) bleibt wie Z16: Galerie links, Auswahl rechts
+  const desk = css.slice(css.indexOf('@media (min-width: 1024px)'));
+  assert.match(desk, /\.tas-galerie \{\s*order: 0;/);
   assert.match(css, /grid-template-columns: minmax\(0, 1fr\);/);
   // Nutzerzahl >= 80 % der Preisschrift (28 zu 32 px)
   assert.match(css, /--tas-fs-5: 1\.75rem;/);
