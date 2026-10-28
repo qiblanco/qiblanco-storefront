@@ -84,14 +84,20 @@ const ESKALATION = [];
 for (let s = 0; s <= 100; s++) {
   ESKALATION.push({score: s});
 }
-for (const pfad of ['/checkout', '/cart/add', '/warenkorb', '/kasse', '/pay', '/payments/x', '/products/qione', '/CHECKOUT']) {
+for (const pfad of ['/checkout', '/cart/add', '/warenkorb', '/kasse', '/pay', '/payments/x', '/products/qione', '/CHECKOUT',
+  // API-Kappe (Job 20261011-fm-folge-sicherheitsmeister-asn-und-kalibrierung-s02):
+  // Storefront-API-Proxy hoechstens S1; '/apis-x' und '/api' ohne Schraegstrich nicht.
+  '/api/unstable/graphql.json', '/API/2025-07/graphql.json', '/api/', '/api', '/apis-x']) {
   for (const s of [0, 45, 65, 85, 100]) {
     ESKALATION.push({score: s, pfad});
   }
 }
-for (const verlauf of [[85], [85, 85], [85, 85, 85], [10, 85, 85], [85, 85, 10], [10, 10, 85], [45, 65, 85], [65, 65, 65], [100, 0, 100], [40, 59, 60]]) {
+for (const verlauf of [[85], [85, 85], [85, 85, 85], [10, 85, 85], [85, 85, 10], [10, 10, 85], [45, 65, 85], [65, 65, 65], [100, 0, 100], [40, 59, 60],
+  // unvolles Fenster: hoechstens S1, S1 und S0 bleiben
+  [65], [65, 65], [45], [45, 45], [10], [100, 100], [60, 80]]) {
   ESKALATION.push({score: 0, pfad: '/products/x', verlauf});
   ESKALATION.push({score: 0, pfad: '/checkout', verlauf});
+  ESKALATION.push({score: 0, pfad: '/api/unstable/graphql.json', verlauf});
 }
 ESKALATION.push({score: -5}, {score: 101}, {score: 3.5});
 
@@ -99,6 +105,11 @@ const HYSTERESE = [
   [],
   [80],
   [80, 80],
+  [60],
+  [60, 60],
+  [45],
+  [45, 79],
+  [10, 90],
   [80, 80, 80],
   [0, 80, 80],
   [80, 80, 0],
