@@ -903,26 +903,25 @@
 
 /* Live mit Christian am 08.11. (s04-r1-r2 des Grossjobs 20261025-qi-alpha-
    produktseite-englisch-aufbauen-a-auf-b-niveau): eine Fläche zwischen
-   Wissens-Strecke und Fragen, Titel in der Stufe des Fragen-Titels
-   (the-alpha-faq.css, 2,5 rem), die weiße Formularkarte mittig darauf
-   (the-alpha-live-anmeldung.css). Nur Tokens dieser Datei. */
+   Wissens-Strecke und Fragen. Sie übernimmt nur Maße, die die Seite schon
+   hat: Abstand nach oben wie die Wissens-Abschnitte (96), Polster wie die
+   Zusammenfassung (48), H2 wie alle H2 der Seite (28 px, 600, links), die
+   weiße Formularkarte (the-alpha-live-anmeldung.css) links darunter. */
 .tas-live {
-  margin-top: var(--tas-s-8);
-  padding: var(--tas-s-8) var(--tas-s-2);
+  margin-top: var(--tas-s-12);
+  padding: var(--tas-s-6) var(--tas-s-2);
   background: var(--tas-flaeche);
 }
 
 .tas-live-innen {
   max-width: 760px;
   margin: 0 auto;
-  text-align: center;
 }
 
 .tas-seite .tas-live-titel {
-  font-size: var(--tas-fs-h2-handy);
+  font-size: var(--tas-fs-5);
   font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
 .tas-seite .tas-live-wann {
@@ -936,11 +935,5 @@
 }
 
 .tas-live-karte {
-  margin: var(--tas-s-4) auto 0;
-}
-
-@media (min-width: 750px) {
-  .tas-seite .tas-live-titel {
-    font-size: var(--tas-fs-6);
-  }
+  margin-top: var(--tas-s-4);
 }
