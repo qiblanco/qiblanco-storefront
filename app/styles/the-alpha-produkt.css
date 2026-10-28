@@ -904,11 +904,12 @@
 /* Live mit Christian am 08.11. (s04-r1-r2 des Grossjobs 20261025-qi-alpha-
    produktseite-englisch-aufbauen-a-auf-b-niveau): eine Fläche zwischen
    Wissens-Strecke und Fragen. Sie übernimmt nur Maße, die die Seite schon
-   hat: Abstand nach oben wie die Wissens-Abschnitte (96), Polster wie die
-   Zusammenfassung (48), H2 wie alle H2 der Seite (28 px, 600, links), die
-   weiße Formularkarte (the-alpha-live-anmeldung.css) links darunter. */
+   hat: Außenabstand und Polster wie die Zusammenfassung (48 + 48 = 96, die
+   Stufe der Wissens-Abschnitte), H2 wie alle H2 der Seite (28 px, 600,
+   links), die weiße Formularkarte (the-alpha-live-anmeldung.css) links
+   darunter. */
 .tas-live {
-  margin-top: var(--tas-s-12);
+  margin-top: var(--tas-s-6);
   padding: var(--tas-s-6) var(--tas-s-2);
   background: var(--tas-flaeche);
 }
