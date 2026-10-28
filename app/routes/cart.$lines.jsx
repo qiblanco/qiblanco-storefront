@@ -11,6 +11,7 @@ import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
 import {
   merkmaleAusQuery,
+  mitRatenanteil,
   rabattcodesAusQuery,
   TEILZAHLUNG,
   teil1Erlaubt,
@@ -83,12 +84,15 @@ export async function loader({request, context, params}) {
   // zahlung-10000-raten-rest-sofort, s03): der Schritt-1-Link trägt die zwei
   // Vertrags-Merkmale _qa_vorgang/_qa_konfig; der Wächter liest sie aus
   // Bestellung 1. Nur diese zwei Schlüssel, nur in ihrer Form
-  // (lib/qi-alpha-teilzahlung.js). Der Partnercode kommt aus dem Warenkorb,
+  // (lib/qi-alpha-teilzahlung.js), und nur, wenn der Link den Ratenanteil
+  // trägt. Der Partnercode kommt aus dem Warenkorb,
   // den der Kunde schon hat; gelesen wird nur, wenn ein Merkmal da ist.
-  const mitTeilzahlung = Boolean(
-    searchParams.get(TEILZAHLUNG.merkmale.konfig) ||
-      searchParams.get(TEILZAHLUNG.merkmale.vorgang),
-  );
+  const mitTeilzahlung =
+    mitRatenanteil(linesMap.map((l) => l.merchandiseId)) &&
+    Boolean(
+      searchParams.get(TEILZAHLUNG.merkmale.konfig) ||
+        searchParams.get(TEILZAHLUNG.merkmale.vorgang),
+    );
   let sitzungsCodes = [];
   if (mitTeilzahlung) {
     try {

@@ -156,6 +156,25 @@ test('Teil-1-Warenkorb nur in DE/AT, andere Permalinks überall', () => {
   assert.equal(tz.teil1Erlaubt({varianten: ['gid://shopify/ProductVariant/1'], land: 'US'}), true);
 });
 
+test('Teil-1-Sperre ist nicht per Schreibweise umgehbar (Gegenpruefer 28.10.: /cart/0<Variante>:1?markt=CH legte 9.428 CHF an)', () => {
+  const v = tz.TEILZAHLUNG.variante;
+  for (const roh of [`0${v}`, `000${v}`, ` ${v}`, `${v} `, `+${v}`]) {
+    const gid = `gid://shopify/ProductVariant/${roh}`;
+    assert.equal(tz.teil1Erlaubt({varianten: [gid], land: 'CH'}), false, roh);
+    assert.equal(tz.teil1Erlaubt({varianten: [gid], land: undefined}), false, roh);
+    assert.equal(tz.mitRatenanteil([gid]), true, roh);
+  }
+  assert.equal(tz.mitRatenanteil(['gid://shopify/ProductVariant/62077673767180']), false);
+  assert.equal(tz.mitRatenanteil([`gid://shopify/ProductVariant/1${v}`]), false);
+});
+
+test('Merkmale _qa_* nur am Permalink mit Ratenanteil (Gegenpruefer 28.10.)', () => {
+  const permalink = lies('app/routes/cart.$lines.jsx');
+  assert.match(permalink, /mitRatenanteil\(/);
+  const block = permalink.slice(permalink.indexOf('const mitTeilzahlung'), permalink.indexOf('let sitzungsCodes'));
+  assert.match(block, /mitRatenanteil\(/, 'mitTeilzahlung muss den Ratenanteil im Link verlangen');
+});
+
 test('NAHT Vertrag: Variante, Betrag, Märkte und Merkmale der Seite = vertrag.json', () => {
   assert.ok(existsSync(VERTRAG_PFAD), `Vertrag fehlt: ${VERTRAG_PFAD}`);
   const v = JSON.parse(readFileSync(VERTRAG_PFAD, 'utf8'));

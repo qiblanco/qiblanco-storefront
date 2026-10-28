@@ -142,10 +142,21 @@ export function merkmaleAusQuery(searchParams, {sitzungsCodes = []} = {}) {
  * der Ratenanteil wäre dort kein 10.000-€-Teil mehr.
  */
 export function teil1Erlaubt({varianten, land}) {
-  const mitAnteil = varianten.some(
-    (v) => String(v).split('/').pop() === TEILZAHLUNG.variante,
+  return !mitRatenanteil(varianten) || TEILZAHLUNG.maerkte.includes(land);
+}
+
+/**
+ * Trägt der Permalink den Ratenanteil? Verglichen wird die Variante so, wie
+ * Shopify sie liest: nur die Ziffern, ohne führende Nullen. Ein Textvergleich
+ * liess „/cart/0<Variante>:1?markt=CH“ durch, Shopify nahm die Null an und
+ * legte 9.428 CHF an (Gegenprüfer 28.10.2026).
+ */
+export function mitRatenanteil(varianten) {
+  return varianten.some(
+    (v) =>
+      String(v).split('/').pop().replace(/\D/g, '').replace(/^0+/, '') ===
+      TEILZAHLUNG.variante,
   );
-  return !mitAnteil || TEILZAHLUNG.maerkte.includes(land);
 }
 
 /**
