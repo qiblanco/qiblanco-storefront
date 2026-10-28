@@ -1,0 +1,147 @@
+/*
+ * EIGENER KOPF DER QI-ALPHA-KAUFSEITE /products/qi-alpha (Christian 28.10.2026
+ * Z13 und Z17; Grossjob 20261028-qi-alpha-kopf-99-registered-hochgestellt-
+ * ohne-bewertungen-chat-ratenzahlung, s04). Bauteil: QiAlphaFunnelKopf in
+ * app/components/Header.jsx, Weiche im Layout (PageLayout.jsx).
+ *
+ * REZEPT: die Kaufleiste der Landingpage /pages/Qi-Alpha (the-alpha-premium.css
+ * .tap-leiste) als ruhender Kopf. Schmal (52 px), Schwarz mit 90 % Deckkraft
+ * und Weichzeichner, eine feine helle Linie unten. Links die Wortmarke
+ * „Qi Alpha®“ in Weiß, das ® klein hochgestellt (MarkeR). Rechts nur Konto
+ * und Warenkorb als runde Felder mit heller Linie. Kein Rot im Kopf: das Rot
+ * gehört nur dem Kaufknopf (design-meister/db/designsprache/qi-alpha-rot.yaml).
+ * Die Innenkante folgt dem Raster der Kaufseite (1200 px, 16 px Rand), damit
+ * Marke und Warenkorb genau über Licht-Abschnitt und Kaufspalte stehen.
+ * Alle Regeln hängen an .qfk bzw. main[data-qa-funnel]; jede andere Seite
+ * sieht davon nichts (die Datei lädt global aus root.jsx).
+ */
+.qfk {
+  --qfk-hoehe: 52px;
+  --qfk-breite: 1200px;
+  --qfk-rand: 16px;
+  --qfk-luecke: 8px;
+  --qfk-feld: 40px;
+  --qfk-nacht: rgba(0, 0, 0, 0.9);
+  --qfk-weiss: #ffffff;
+  --qfk-linie: rgba(255, 255, 255, 0.12);
+  --qfk-feld-linie: rgba(255, 255, 255, 0.24);
+  --qfk-feld-hover: rgba(255, 255, 255, 0.1);
+  --qfk-fs-marke: 1.25rem; /* 20 */
+  --qfk-fs-zahl: 0.6875rem; /* 11 */
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: var(--z-kopf, 100);
+  padding-top: env(safe-area-inset-top, 0px);
+  background: var(--qfk-nacht);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  border-bottom: 1px solid var(--qfk-linie);
+  color: var(--qfk-weiss);
+}
+
+/* Angedockter Chat (Desktop): der Kopf endet an der Chat-Spalte wie der
+   Hauskopf (app.css, html.qb-chat-docked .header-wrapper). */
+html.qb-chat-docked .qfk {
+  width: calc(100% - var(--qb-chat-dock-breite, 0px));
+}
+
+.qfk-innen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--qfk-luecke);
+  box-sizing: border-box;
+  max-width: var(--qfk-breite);
+  min-height: var(--qfk-hoehe);
+  margin: 0 auto;
+  padding-inline: var(--qfk-rand);
+}
+
+.qfk .qfk-marke {
+  color: var(--qfk-weiss);
+  font-size: var(--qfk-fs-marke);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.qfk .qfk-marke:hover {
+  color: var(--qfk-weiss);
+  text-decoration: none;
+}
+
+.qfk-ctas {
+  display: flex;
+  align-items: center;
+  gap: var(--qfk-luecke);
+}
+
+/* Konto und Warenkorb: dieselben Bausteine wie im Hauskopf (.header-account,
+   .openCart), hier hell auf Schwarz. */
+.qfk .header-account,
+.qfk .openCart {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: var(--qfk-feld);
+  min-height: var(--qfk-feld);
+  padding: var(--qfk-luecke);
+  border: 1px solid var(--qfk-feld-linie);
+  border-radius: 1000px;
+  color: var(--qfk-weiss);
+  background: transparent;
+  transition: background 0.2s linear;
+}
+
+.qfk .header-account:hover,
+.qfk .openCart:hover {
+  background: var(--qfk-feld-hover);
+  border: 1px solid var(--qfk-feld-linie);
+  color: var(--qfk-weiss);
+}
+
+.qfk .header-account svg,
+.qfk .openCart svg {
+  display: block;
+}
+
+/* Zahl im Warenkorb: weiße Blase mit schwarzer Ziffer, oben rechts am Feld. */
+.qfk .openCart .cart-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 1000px;
+  background: var(--qfk-weiss);
+  color: #000000;
+  font-size: var(--qfk-fs-zahl);
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.qfk .header-account:focus-visible,
+.qfk .openCart:focus-visible,
+.qfk .qfk-marke:focus-visible {
+  outline: 2px solid var(--qfk-weiss);
+  outline-offset: 2px;
+}
+
+/* Inhalt beginnt unter dem Kopf; ohne Hauskopf entfällt dessen Reserve
+   (app.css main: Kopfhöhe 64 + 40). */
+main[data-qa-funnel] {
+  padding-top: calc(52px + env(safe-area-inset-top, 0px));
+}
