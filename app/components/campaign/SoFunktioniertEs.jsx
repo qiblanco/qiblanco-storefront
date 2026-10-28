@@ -10,7 +10,7 @@
    in 108,5 übergeht oder so.“ Bestätigt ~11:35Z: „Ja, 104,5 und 109,5. Passt.“
 
    WORTLAUT: seiner. Geändert sind nur der Winkel (109,5 statt „108,5 oder so“,
-   seine Bestätigung), die Marke (GitterChip™ wie auf der Seite) und die
+   seine Bestätigung), die Marke (Gitterchip® wie auf der Seite) und die
    Satzgrenzen: aus dem Relativsatz „bei dem der Winkel …“ wird ein eigener Satz.
    Grund für die Trennung: der Salesletter-Entwurf (Job 20261017-update-prio1-
    zuarbeit-salesletter-pdf-und-entwurf-im-sprachprofil-christian) stellt die
@@ -49,7 +49,7 @@ export const SO_FUNKTIONIERT_ES = Object.freeze({
   titel: 'So funktioniert es',
   saetze: [
     'Enthält keine elektronischen Bauteile.',
-    'Wirkt durch seinen passiven GitterChip™.',
+    'Wirkt durch seinen passiven Gitterchip®.',
     'Er hilft dabei, naheliegende Wassermoleküle in den Superzustand des Wassers übergehen zu lassen, den sogenannten kohärenten Zustand.',
     'Dabei geht der Winkel im Wassermolekül von 104,5 Grad in 109,5 Grad über.',
   ],
