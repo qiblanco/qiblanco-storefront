@@ -170,8 +170,8 @@ async function ordneQiAlphaZeilen({cart, cartId, result, geaendert, voll}) {
     if (!raus?.cart || raus.userErrors?.length) return result;
     const rein = await cart.addLines(plan.hinzufuegen, {cartId});
     if (rein?.cart && !rein.userErrors?.length) return rein;
-    const zurueck = await cart.addLines(vorher, {cartId});
-    return zurueck?.cart ? zurueck : result;
+    const alteFolge = await cart.addLines(vorher, {cartId});
+    return alteFolge?.cart ? alteFolge : result;
   } catch {
     return result;
   }
