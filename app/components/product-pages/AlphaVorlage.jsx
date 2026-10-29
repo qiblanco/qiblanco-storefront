@@ -912,6 +912,18 @@ function Zeichen({art}) {
       </svg>
     );
   }
+  // Weitere Seiten (s13, z. B. die Kette): ein Kernpunkt darf ein Zeichen der
+  // Faktenkacheln tragen (gleiche Linie, gleiche Farbe). Die drei Arten oben
+  // und das Quantenfeld bleiben unverändert.
+  if (art !== 'quantenfeld' && FAKT_PFADE[art]) {
+    return (
+      <svg {...gemeinsam}>
+        {FAKT_PFADE[art].map((d) => (
+          <path key={d} d={d} />
+        ))}
+      </svg>
+    );
+  }
   // Quantenfeld: Kern mit zwei Bahnen und Feldpunkten.
   return (
     <svg {...gemeinsam}>

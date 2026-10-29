@@ -1,0 +1,14 @@
+/*
+ * NECKLACE FÜR QIONE® IM KONFIGURATOR (Grossjob 20261027-GROSSJOB-apple-konfigurator-
+ * qione-qihome-qibracelet-ab, s13). Lädt nur die A-Route /products/qione-kette mit
+ * Konfigurator, NACH alpha-qione.css (Kacheltitel und Kopf-Link wie beim QiOne®).
+ * Nur Scope .av-seite[data-konfigurator='qione-kette'], nur Tokens der Alpha (tas-*).
+ *
+ *   av-kachel-titel   eine Stufe größer (--tas-fs-4): die Seite hat keinen Vergleich
+ *                     und kein Nutzen-Raster, die Kacheltitel tragen die Zwischenstufe
+ *                     zwischen Fließtext (fs-3) und Kachelzahl (fs-5) der Typo-Skala.
+ */
+.av-seite[data-konfigurator='qione-kette'] .av-kachel-titel {
+  font-size: var(--tas-fs-4);
+  line-height: 1.2;
+}

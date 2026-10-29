@@ -29,6 +29,22 @@ import preisankerStyles from '~/styles/qb-preisanker.css?url';
 import pdpKetteStyles from '~/styles/pdp-kette.css?url';
 import medienRandStyles from '~/styles/qb-360-rand.css?url';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
+import {konfiguratorAn, ladeProduktSeite} from '~/lib/produkt-seite-laden.server';
+import {AlphaVorlage} from '~/components/product-pages/AlphaVorlage';
+import * as ALPHA_DATEN from '~/components/product-pages/qione-kette-alpha-daten';
+import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
+import {
+  AlphaFaqMitRate,
+  AlphaStimmen,
+  AlphaWissen,
+} from '~/components/product-pages/AlphaVorlageSlots';
+import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
+import alphaVorlageStyles from '~/styles/alpha-vorlage.css?url';
+import alphaSlotStyles from '~/styles/alpha-vorlage-slots.css?url';
+import wissenStyles from '~/styles/the-alpha-shop.css?url';
+import faqStyles from '~/styles/the-alpha-faq.css?url';
+import alphaQiOneStyles from '~/styles/alpha-qione.css?url';
+import alphaKetteStyles from '~/styles/alpha-kette.css?url';
 /**
  * Kauf zuerst: Preis, Variante und Kaufknopf im ersten Fenster, der
  * Beschreibungstext darunter (components/product-pages/pdpKaufZuerst.js).
@@ -70,6 +86,19 @@ export const meta = ({data}) => {
 export async function loader(args) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
+
+  // APPLE-STIL (s13, Christian Zx 29.10.2026): mit KONFIGURATOR_QIONE_KETTE=on
+  // rendert die Seite das Gerüst der Qi-Alpha-Seite (AlphaVorlage). Default AUS
+  // = die heutige Seite, Loaderdaten wie bisher (Rueckweg: Schalter leer).
+  if (konfiguratorAn(args.context.env, 'qione-kette')) {
+    const daten = await ladeProduktSeite(args, {
+      handle: 'qione-kette',
+      query: PRODUCT_QUERY,
+      daten: ALPHA_DATEN,
+      konfigurator: true,
+    });
+    return {...deferredData, ...daten};
+  }
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args, 'qione-kette'); // ✅ pass hardcoded handle
@@ -120,7 +149,49 @@ function loadDeferredData({ context, params }) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product} = useLoaderData();
+  const {product, konfigurator} = useLoaderData();
+  if (konfigurator) return <Konfigurator product={product} />;
+  return <HeutigeSeite product={product} />;
+}
+
+/*
+ * KONFIGURATOR (s13): Band, Kopf, Länge, Bezahlart, Zusammenfassung, Box und
+ * die Slots. Die Stylesheets der Alpha laden nur mit Schalter (links() kennt
+ * die Loaderdaten nicht): aus heißt dieselben <link>-Tags wie vorher.
+ */
+function Konfigurator({product}) {
+  return (
+    <>
+      <link rel="stylesheet" href={produktVorlageStyles} />
+      <link rel="stylesheet" href={alphaVorlageStyles} />
+      <link rel="stylesheet" href={wissenStyles} />
+      <link rel="stylesheet" href={faqStyles} />
+      <link rel="stylesheet" href={alphaSlotStyles} />
+      <link rel="stylesheet" href={alphaQiOneStyles} />
+      <link rel="stylesheet" href={alphaKetteStyles} />
+      <AlphaVorlage
+        product={product}
+        daten={ALPHA_DATEN}
+        vertrauen={<EuGewaehrleistungsHinweis />}
+        slots={{
+          wissen: (
+            <AlphaWissen
+              kapitel={ALPHA_DATEN.WISSEN.kapitel}
+              studien={ALPHA_DATEN.WISSEN.studien}
+              bilder={product?.images?.nodes ?? []}
+            />
+          ),
+          stimmen: <AlphaStimmen daten={ALPHA_DATEN.STIMMEN_GOOGLE} />,
+          // Derselbe Fragen-Baustein wie QiOne® 2 Pro, QiHome® Air und QiBracelet®.
+          faq: <AlphaFaqMitRate daten={ALPHA_DATEN.FAQ} product={product} />,
+        }}
+      />
+    </>
+  );
+}
+
+/** Die heutige Seite (Schalter aus). */
+function HeutigeSeite({product}) {
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
