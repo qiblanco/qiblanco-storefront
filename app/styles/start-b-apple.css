@@ -5,7 +5,28 @@
  * Nur --as-*-Tokens aus apple-seite.css, keine freien Werte (BAUKASTEN §2).
  */
 
-/* Kopf: das Produktbild steht als Karte im dunklen Band, nicht bildbreit. */
+/*
+ * HAUS-GRUNDREGELN IM BAUKASTEN-SCOPE NEUTRALISIEREN. reset.css setzt
+ * `p, li {font-size: 1.2rem}` (19,2 px) direkt aufs Element und Schatten auf
+ * jede Überschrift. Gemessen in der Vorschau 29.10.: 17 Fließtextblöcke bei
+ * 19,2 px statt Stufe 3 (17 px), dadurch keine modulare Skala mehr
+ * (design-rubrik stimmig 94). `.as-seite :where(...)` hat die Spezifität einer
+ * Klasse: schlägt das Element, lässt .as-unter/.as-stimme-text p (später in
+ * apple-seite.css geladen) ihre eigene Stufe.
+ */
+.as-seite :where(p, li) {
+  font-size: var(--as-fs-3);
+}
+.as-seite :where(h1, h2, h3) {
+  text-shadow: none;
+}
+
+/* Text links, also auch der Knopf im Bild-Text-Band. */
+.as-band-text .as-knoepfe {
+  justify-content: flex-start;
+}
+
+/* Kopf: das Produktbild steht als Karte unter dem Text, nicht bildbreit. */
 :is([data-apple-seite='startseite'], [data-apple-seite='start-b']) .as-hero-bild {
   max-width: var(--as-text-breite);
 }
@@ -48,6 +69,7 @@
   margin-top: var(--as-s-3);
 }
 .sa-geraet-wege .as-link {
+  margin-top: 0;
   display: inline-flex;
   align-items: center;
   min-height: var(--as-tippziel);

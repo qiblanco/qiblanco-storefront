@@ -91,7 +91,6 @@ const KOPF = {
   unter: 'Schutz vor E-Smog, 5G und 6G. Gebaut für Jahrzehnte.',
   bild: BILD.qione,
   cta: {text: 'Jetzt kaufen', href: KAUFSEITE},
-  dunkel: true,
 };
 
 const FAKTEN = {
