@@ -26,14 +26,35 @@ const variante = (n, frei = true) => ({
   price: {amount: '2000.0', currencyCode: 'EUR'},
 });
 
-test('Nummernstand: 1..111, Christians vergebene 2/44/88/99/111 nie wählbar', () => {
+test('Nummernstand: 1..111, Christians vergebene 2/33/44/88/99/111 nie wählbar', () => {
   const alle = Array.from({length: 111}, (_, i) => variante(i + 1));
   const {nummern, frei} = regeln.nummernStand(alle);
   assert.equal(nummern.length, 111);
-  for (const n of [2, 44, 88, 99, 111]) assert.equal(nummern[n - 1].status, 'vergeben', String(n));
-  assert.equal(frei, 106);
+  for (const n of [2, 33, 44, 88, 99, 111]) assert.equal(nummern[n - 1].status, 'vergeben', String(n));
+  assert.equal(frei, 105);
   assert.equal(nummern[68].status, 'frei');
   assert.equal(nummern[68].variante.id, 'gid://shopify/ProductVariant/69');
+});
+
+test('Wunschnummer-Bild: das ganze Stück, Bohrung rechts, Gravur aufrecht (Christian 29.10.2026)', () => {
+  const b = daten.NUMMER.bildGravur;
+  // Ausschnitt 3:1 vom CDN, das Stück (x 159-1772, y 862-1146 der 2048-px-Datei) liegt ganz darin.
+  const q = new URL(b.url).searchParams;
+  assert.equal(q.get('crop'), 'region');
+  const [l, t, w, h] = ['crop_left', 'crop_top', 'crop_width', 'crop_height'].map((k) => Number(q.get(k)));
+  assert.ok(l <= 159 && l + w >= 1772 && t <= 862 && t + h >= 1146, 'Stück ganz im Ausschnitt');
+  assert.equal(w / h, 3);
+  assert.equal(b.breite / b.hoehe, 3);
+  // Gravur auf dem Band (nach der Spiegelung links der Fuge bei 1 - (640 - l) / w).
+  const fuge = 1 - (640 - l) / w;
+  assert.ok(b.gravur.x > 0.2 && b.gravur.x < fuge - 0.15, `Gravur ${b.gravur.x} links der Fuge ${fuge}`);
+  const css = lies('app/styles/the-alpha-produkt.css');
+  assert.match(css, /\.tas-gravur-rahmen \.tas-gravur-foto \{[^}]*transform: scaleX\(-1\)/);
+  assert.match(css, /\.tas-gravur-rahmen \{[^}]*aspect-ratio: 3 \/ 1/);
+  const shop = lies('app/components/campaign/TheAlphaShop.jsx');
+  assert.doesNotMatch(shop, /tas-zoom/);
+  // Die Gravur ist nicht im gespiegelten Foto, sondern ein eigenes Element daneben.
+  assert.match(shop, /className="tas-gravur-foto"[\s\S]*?\/>\s*<span\s+className="tas-gravur"/);
 });
 
 test('Nummernstand: Shopify-Sperre und fehlende Variante sind nicht wählbar', () => {
