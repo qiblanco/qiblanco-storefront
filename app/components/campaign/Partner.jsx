@@ -300,9 +300,10 @@ function ErfahrungenSection() {
       <h2>Was Trägerinnen und Träger berichten.</h2>
       <p className="lp-vp-section__lede">
         171 Erfahrungsberichte wurden 2024 als deskriptive Auswertung
-        publiziert. Am häufigsten genannt: Ruhe und tieferer Schlaf, danach
-        mehr Energie. Das ist kein Kausal-Beweis, aber ein ehrliches Bild
-        dessen, was Menschen erleben. Berichte einzelner Nutzer, deskriptiv.
+        publiziert. Am häufigsten berichten Nutzer von Ruhe und tieferem
+        Schlaf, danach von mehr Energie. Die Berichte zeigen, was Menschen
+        erleben, und sind kein Kausal-Beweis. Berichte einzelner Nutzer,
+        deskriptiv.
       </p>
       <div className="lp-vp-peer-stats">
         {stats.map((s) => (
@@ -335,7 +336,7 @@ function PasstSection() {
   ];
   return (
     <section className="lp-vp-section" data-section="lp-pt-passt">
-      <span className="eyebrow">Ehrliche Einordnung</span>
+      <span className="eyebrow">Einordnung</span>
       <h2>Passt Qi Blanco zu dir?</h2>
       <p className="lp-vp-section__lede">
         Schau kurz, wo du dich eher wiederfindest.
@@ -572,7 +573,7 @@ function FinalCTA() {
                 <span className="lp-vp-final-cta__price-value">{price}</span>
                 {compare && <sup className="lp-vp-final-cta__compare">{compare}</sup>}
               </div>
-              <span className="lp-vp-final-cta__price-meta">einmalig · inkl. MwSt.</span>
+              <span className="lp-vp-final-cta__price-meta">einmalig</span>
               <div className="lp-vp-final-cta__pay">
                 <img src={KLARNA_IMG} alt="Klarna" />
                 <img src={PAYPAL_IMG} alt="PayPal" />
