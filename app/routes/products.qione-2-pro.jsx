@@ -1,6 +1,4 @@
-import {useLoaderData} from 'react-router';
-import {getSelectedProductOptions} from '@shopify/hydrogen';
-import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {redirect, useLoaderData} from 'react-router';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {
   QiOne2ProSeite,
@@ -8,9 +6,32 @@ import {
 } from '~/components/product-pages/QiOne2ProSeite';
 import {igVideoDescriptor} from '~/lib/ig-video-schema';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
-import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
+import {entscheideSeitenExperiment} from '~/lib/experiment-weiche.server';
+import {konfiguratorAn, ladeProduktSeite} from '~/lib/produkt-seite-laden.server';
+import {AlphaVorlage} from '~/components/product-pages/AlphaVorlage';
+import * as ALPHA_DATEN from '~/components/product-pages/qione-2-pro-alpha-daten';
+import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
+import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
+import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
+import alphaVorlageStyles from '~/styles/alpha-vorlage.css?url';
+import alphaSlotStyles from '~/styles/alpha-vorlage-slots.css?url';
+import alphaQiOneStyles from '~/styles/alpha-qione.css?url';
+import wissenStyles from '~/styles/the-alpha-shop.css?url';
+import faqStyles from '~/styles/the-alpha-faq.css?url';
+import {
+  AlphaFaqMitRate,
+  AlphaStimmen,
+  AlphaVergleich,
+  AlphaWissen,
+} from '~/components/product-pages/AlphaVorlageSlots';
+import {mitMarkeR} from '~/components/reusables/MarkeR';
+import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
+import {useGoogleRating} from '~/lib/googleRating';
+import {useMarktLand} from '~/lib/markt-land';
+import {bruttoAnzeige} from '~/lib/markt-pricing';
+import {betragText} from '~/lib/betrag-text';
 /*
  * ZWEIFEL-BELEG IST HIER ENTFALLEN (2026-09-08, Elina EL-20260908-d8349a01).
  *
@@ -61,53 +82,27 @@ export const meta = ({data}) => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  // SEITEN-EXPERIMENT konfig-qione-2-pro-e1 (Grossjob 20261027-GROSSJOB-apple-konfigurator-
+  // qione-qihome-qibracelet-ab, KONZEPT §4): VOR dem ersten await. B ist die
+  // heutige Seite unter /products/qione-2-pro-b. Vorbau mit aktiv: false, scharf
+  // schaltet s09; Kill EXP_KONFIG_QIONE_2_PRO_MODE=off.
+  const exp = entscheideSeitenExperiment(args.request, args.context.env, 'konfig-qione-2-pro-e1');
+  if (exp) throw redirect(exp.ziel, {status: 302, headers: {'Cache-Control': 'no-store'}});
+
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args, 'qione-2-pro'); // ✅ pass hardcoded handle
+  // Await the critical data required to render initial state of the page.
+  // Eine Ladefunktion für A und B (lib/produkt-seite-laden.server.js); der
+  // Konfigurator nur mit KONFIGURATOR_QIONE_2_PRO=on (Default AUS = heutige Seite).
+  const criticalData = await ladeProduktSeite(args, {
+    handle: 'qione-2-pro',
+    query: PRODUCT_QUERY,
+    daten: ALPHA_DATEN,
+    konfigurator: konfiguratorAn(args.context.env, 'qione-2-pro'),
+  });
 
   return {...deferredData, ...criticalData};
-}
-
-/**
- * Load critical data (above-the-fold content)
- * @param {LoaderFunctionArgs} args
- * @param {string} handle
- */
-async function loadCriticalData({context, request}, handle) {
-  const {storefront} = context;
-
-  const [{product}, vergleichsPreise] = await Promise.all([
-    storefront.query(PRODUCT_QUERY, {
-      variables: {
-        handle, // ✅ use the static handle
-        selectedOptions: getSelectedProductOptions(request),
-      },
-    }),
-    // Preise der drei Geräte für den Gerätevergleich, parallel zur Kaufbox
-    // und aus demselben Variantenfeld (amazonstil-daten.js). Fail-soft;
-    // null = Vergleich aus, dann fragt niemand.
-    ladeVergleichsPreise(storefront),
-  ]);
-
-  if (!product?.id) {
-    throw new Response(null, {status: 404});
-  }
-
-  redirectIfHandleIsLocalized(request, {handle, data: product});
-
-  return {
-    product,
-    // Markt-Land für die Produkt-Auszeichnung: `meta()` hat keinen Kontext,
-    // und der ausgezeichnete Preis muss derselbe sein wie der sichtbare
-    // (AT 20 statt 19 %). Job 20260913-at-paketkarte-rechnet-19-prozent-
-    // kasse-nimmt-20-prio8.
-    marktLand: storefront.i18n.country,
-    // Nur bei eingeschaltetem Vergleich: aus heißt auch ohne Schlüssel in
-    // den Loaderdaten, die Seite ist dann byte-gleich zum Stand vor s04.
-    ...(vergleichsPreise ? {vergleichsPreise} : {}),
-  };
 }
 
 /**
@@ -124,9 +119,19 @@ function loadDeferredData({context, params}) {
  */
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, vergleichsPreise} = useLoaderData();
+  const {product, vergleichsPreise, konfigurator, ketten} = useLoaderData();
+  // A-FASSUNG (s06, wie s08): mit Schalter steht der Konfigurator allein, mit
+  // den neuen Texten in seinen Slots. Die heutige Seite darunter trüge die
+  // alten Texte („Dreifacher Weltrekordhalter“, Gitterchip™, Kaufleiste als
+  // zweiter Knopf) und bleibt B (/products/qione-2-pro-b).
+  if (konfigurator) {
+    return (
+      <Konfigurator product={product} ketten={ketten} vergleichsPreise={vergleichsPreise} />
+    );
+  }
   return (
     <QiOne2ProSeite
+      kaufbereich={null}
       kaufleiste
       product={product}
       vergleichsPreise={vergleichsPreise}
@@ -139,6 +144,157 @@ export default function Product() {
         />
       }
     />
+  );
+}
+
+/*
+ * KONFIGURATOR (Christian 27.10.2026 Z2–Z6; Grossjob 20261027-GROSSJOB-apple-
+ * konfigurator-qione-qihome-qibracelet-ab, s06): Band, Kopf, Kette, Bezahlart,
+ * Zusammenfassung, Box und die Slots mit den s03-Texten. Die Stylesheets der
+ * Alpha laden nur mit Konfigurator (links() kennt die Loaderdaten nicht): aus
+ * heißt dieselben <link>-Tags wie vor s05.
+ */
+function Konfigurator({product, ketten, vergleichsPreise}) {
+  const land = useMarktLand();
+  const money = product?.selectedOrFirstAvailableVariant?.price;
+  const preisText = money
+    ? betragText(
+        bruttoAnzeige(money.amount, product.handle, money.currencyCode, land),
+        money.currencyCode,
+      )
+    : null;
+  return (
+    <>
+      <link rel="stylesheet" href={produktVorlageStyles} />
+      <link rel="stylesheet" href={alphaVorlageStyles} />
+      <link rel="stylesheet" href={wissenStyles} />
+      <link rel="stylesheet" href={faqStyles} />
+      <link rel="stylesheet" href={alphaSlotStyles} />
+      <link rel="stylesheet" href={alphaQiOneStyles} />
+      <AlphaVorlage
+        product={product}
+        daten={ALPHA_DATEN}
+        ketten={ketten}
+        videoKachel={<ProduktVideoKachel handle="qione-2-pro" />}
+        vertrauen={<EuGewaehrleistungsHinweis />}
+        slots={{
+          // Gewinner (s02 Z40): Gerätevergleich als „Modelle vergleichen“.
+          // Die id ist das Ziel des Kopf-Links (s03 kopf.vergleich_link).
+          vergleich: (
+            <div id="geraetevergleich">
+              <AlphaVergleich
+                handle="qione-2-pro"
+                daten={ALPHA_DATEN.VERGLEICH}
+                preise={vergleichsPreise}
+                eigenerPreis={money}
+              />
+            </div>
+          ),
+          wissen: (
+            <>
+              <QiOneNutzen daten={ALPHA_DATEN.NUTZEN} />
+              <AlphaWissen
+                kapitel={ALPHA_DATEN.WISSEN.kapitel}
+                studien={ALPHA_DATEN.WISSEN.studien}
+                bilder={product?.images?.nodes ?? []}
+              />
+            </>
+          ),
+          // Menschen zuerst (Kanon: Menschen ziehen): der Weltrekordhalter,
+          // dann die Google-Stimmen und die Instagram-Reihe der heutigen Seite.
+          stimmen: (
+            <>
+              <QiOneWeltrekord daten={ALPHA_DATEN.WELTREKORD} />
+              <AlphaStimmen daten={ALPHA_DATEN.STIMMEN_GOOGLE} igProdukt="QiOne 2 Pro" />
+            </>
+          ),
+          faq: <AlphaFaqMitRate daten={mitPreis(ALPHA_DATEN.FAQ, preisText)} product={product} />,
+        }}
+      />
+    </>
+  );
+}
+
+/**
+ * `{preis}` in den Fragen durch den Shopify-Preis ersetzen (Seite und Kasse
+ * nennen dieselbe Zahl). Ohne Preis entfällt die Frage, die ihn nennt.
+ */
+function mitPreis(faq, preisText) {
+  const fragen = (faq?.fragen ?? [])
+    .filter((x) => preisText || !`${x.f} ${x.a}`.includes('{preis}'))
+    .map((x) => ({
+      f: x.f.replaceAll('{preis}', preisText ?? ''),
+      a: x.a.replaceAll('{preis}', preisText ?? ''),
+    }));
+  return {...faq, fragen};
+}
+
+/** Nutzen-Raster (s03 nutzen) nach Apple: vier Spalten, Etikett, Titel, Text. */
+function QiOneNutzen({daten}) {
+  const google = useGoogleRating();
+  if (!daten?.spalten?.length) return null;
+  return (
+    <div className="avq-nutzen" data-av-nutzen="">
+      <h2 className="tas-box-titel">{mitMarkeR(daten.ueberschrift)}</h2>
+      <ul className="avq-nutzen-raster">
+        {daten.spalten.map((s) => {
+          const link = s.link
+            ? {
+                text: s.link.text.replace('{sterne}', google.komma),
+                href: s.link.href === 'google' ? google.url : s.link.href,
+                fremd: s.link.href === 'google',
+              }
+            : null;
+          return (
+            <li key={s.etikett} className="avq-spalte">
+              <p className="avq-etikett">{s.etikett}</p>
+              <h3 className="avq-titel">{mitMarkeR(s.titel)}</h3>
+              <p className="avq-text">{mitMarkeR(s.text)}</p>
+              {link ? (
+                <a
+                  className="avq-link"
+                  href={link.href}
+                  {...(link.fremd ? {target: '_blank', rel: 'noopener noreferrer'} : {})}
+                >
+                  {link.text}
+                </a>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+/** Weltrekordhalter (s03 weltrekord): Video-Fassade links, Text rechts. */
+function QiOneWeltrekord({daten}) {
+  if (!daten?.video) return null;
+  return (
+    <div className="avq-weltrekord" data-av-weltrekord="">
+      <div className="avq-weltrekord-video">
+        <YoutubeIframe
+          link={`https://www.youtube.com/embed/${daten.video}`}
+          titel={daten.videoTitel}
+        />
+      </div>
+      <div className="avq-weltrekord-text">
+        <p className="taw-etikett">{daten.siegel}</p>
+        <h2 className="tas-box-titel">{daten.titel}</h2>
+        <p>{daten.text}</p>
+        {daten.quellen?.length ? (
+          <ul className="avq-quellen" aria-label="Quellen">
+            {daten.quellen.map((q) => (
+              <li key={q.href}>
+                <a href={q.href} target="_blank" rel="noopener noreferrer">
+                  {q.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+    </div>
   );
 }
 

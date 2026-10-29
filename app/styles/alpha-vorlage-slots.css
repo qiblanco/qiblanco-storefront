@@ -1,0 +1,223 @@
+/*
+ * SLOTS DES KONFIGURATORS (AlphaVorlageSlots.jsx, s08): Modelle vergleichen,
+ * Wissen, Stimmen, Fragen. Scope .av-seite; Tokens der Alpha (tas-*), Gold nur
+ * aus qb-tokens.css über --av-gold/--av-gold-tinte. Wissen und Fragen nutzen
+ * die Qi-Alpha-Bausteine (the-alpha-shop.css taw-*, the-alpha-faq.css taf-*);
+ * hier steht nur, was davon abweicht: Gold statt Qi-Alpha-Rot.
+ */
+
+/* Wissen: Etikett in Gold (Christian Z4), Schrift in Tinte für Kontrast. */
+.av-seite .taw-etikett {
+  background: var(--av-gold);
+  color: var(--tas-tinte);
+}
+.av-seite .taw {
+  margin-top: 0;
+}
+.avw-studien {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--tas-s-2);
+  margin: var(--tas-s-8) 0 0;
+  padding: var(--tas-s-3);
+  border-radius: var(--tas-radius);
+  background: var(--tas-flaeche);
+}
+.avw-studien-titel {
+  font-size: var(--tas-fs-4);
+  font-weight: 600;
+}
+.avw-studien-link {
+  color: var(--av-gold-tinte);
+  font-weight: 600;
+  text-decoration: none;
+}
+.avw-studien-link::after {
+  content: ' \203A';
+}
+
+/* Modelle vergleichen (nach Apple): Spalten nebeneinander ab Tablet, am
+   Handy waagrecht wischbar mit sichtbarer Nachbarspalte. */
+/* Überschrift links wie alle Slots (Rubrik: H2-Ausrichtung eine Regel). */
+.avv-intro {
+  margin: var(--tas-s-1) 0 0;
+  font-size: var(--tas-fs-4);
+  color: var(--tas-grau);
+}
+.avv-raster {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(78%, 1fr);
+  gap: var(--tas-s-2);
+  margin-top: var(--tas-s-6);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: var(--tas-s-2);
+}
+@media (min-width: 750px) {
+  .avv-raster {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+  }
+}
+.avv-modell {
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--tas-s-4) var(--tas-s-3);
+  border-radius: var(--tas-radius);
+  background: var(--tas-flaeche);
+}
+.avv-modell--hier {
+  box-shadow: inset 0 0 0 2px var(--av-gold);
+}
+.avv-bild {
+  width: 160px;
+  height: 160px;
+}
+.avv-bild img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: var(--tas-radius);
+}
+.av-seite .avv-name {
+  margin: var(--tas-s-3) 0 0;
+  font-size: var(--tas-fs-4);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.avv-ort {
+  margin: var(--tas-s-1) 0 0;
+  color: var(--tas-grau);
+}
+.avv-preis {
+  margin: var(--tas-s-2) 0 0;
+  font-size: var(--tas-fs-3);
+  font-weight: 600;
+}
+.avv-link,
+.avv-hier {
+  margin: var(--tas-s-2) 0 0;
+  font-size: var(--tas-fs-2);
+  font-weight: 600;
+}
+.avv-link {
+  display: inline-block;
+  padding: var(--tas-s-1) var(--tas-s-3);
+  border-radius: 999px;
+  background: var(--av-gold);
+  color: var(--tas-tinte);
+  text-decoration: none;
+}
+.avv-hier {
+  padding: var(--tas-s-1) 0;
+  color: var(--av-gold-tinte);
+}
+.avv-merkmale {
+  width: 100%;
+  margin: var(--tas-s-4) 0 0;
+  border-top: 1px solid var(--tas-linie);
+}
+.avv-merkmal {
+  display: grid;
+  justify-items: center;
+  gap: var(--tas-s-1);
+  padding: var(--tas-s-3) 0;
+  border-bottom: 1px solid var(--tas-linie);
+}
+.avv-merkmal:last-child {
+  border-bottom: 0;
+}
+.avv-zeichen {
+  color: var(--av-gold);
+}
+.avv-zeichen--nein {
+  color: var(--tas-grau);
+}
+.avv-merkmal dt {
+  font-size: var(--tas-fs-1);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tas-grau);
+}
+.avv-merkmal dd {
+  margin: 0;
+  font-size: var(--tas-fs-2);
+}
+.avv-merkmal a {
+  color: inherit;
+}
+
+/* Stimmen: Google-Wortlaut als ruhige Zitatkarten, Sterne gelb (Sterne-Vertrag). */
+.avs-liste {
+  list-style: none;
+  margin: var(--tas-s-6) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--tas-s-2);
+}
+@media (min-width: 750px) {
+  .avs-liste {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.avs-stimme {
+  display: flex;
+  flex-direction: column;
+  padding: var(--tas-s-4) var(--tas-s-3);
+  border-radius: var(--tas-radius);
+  background: var(--tas-flaeche);
+}
+.avs-sterne {
+  display: block;
+  line-height: 1;
+}
+.avs-text {
+  margin: var(--tas-s-2) 0 0;
+  flex: 1;
+}
+.av-seite .avs-text p {
+  margin: 0;
+  font-size: var(--tas-fs-3);
+  line-height: 1.5;
+}
+.avs-quelle {
+  margin: var(--tas-s-2) 0 0;
+  font-size: var(--tas-fs-2);
+  color: var(--tas-grau);
+}
+.avs-titel-link {
+  color: inherit;
+  text-decoration: none;
+}
+.avs-titel-link:hover,
+.avs-titel-link:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: var(--av-gold);
+}
+.avs-ig {
+  margin-top: var(--tas-s-8);
+}
+
+/* Fragen: der Qi-Alpha-Baustein steht im Slot, ohne zweiten Seitenrand. */
+.av-slot--faq .taf {
+  padding-inline: 0;
+}
+
+/* Instagram-Reihe in den Stimmen: Überschrift links wie alle Slot-H2, Zeichen
+   auf der tas-Skala (Rubrik: höchstens neun Schriftgrößen je Seite). */
+.avs .qb-igt__kopf {
+  text-align: left;
+}
+.avs .qb-igt__abzeichen {
+  font-size: var(--tas-fs-4);
+}
+.avs .qb-igt__pfeil {
+  font-size: var(--tas-fs-3);
+}

@@ -116,6 +116,7 @@ export function QiHomeAirSeite({
   block = BLOCK_PUBLIC,
   shopMarker = undefined,
   kaufleiste = false,
+  kaufbereich = null,
 }) {
   // Kundenfragen oben, der Rest bleibt in der FAQ unten (Regel und
   // Reihenfolge in amazonstil-daten.js). Schalter aus: oben leer, unten die
@@ -150,6 +151,14 @@ export function QiHomeAirSeite({
 
   return (
     <div className="ProductQiHomeAir">
+    {/* KONFIGURATOR (Grossjob 20261027-GROSSJOB-apple-konfigurator-qione-
+        qihome-qibracelet-ab, s05): gibt die Route einen `kaufbereich` herein,
+        steht er an der Stelle von 360-Kopf, Kaufbox und Kaufleiste; alles
+        darunter bleibt. Ohne die Prop ist die Seite byte-gleich: je Kind ein
+        Ausdruck an seiner alten Stelle, keine Hülle (eine Hülle verschöbe die
+        useId-Pfade aller Geschwister danach).
+        Muster: QiOne2ProSeite (Elina EL-20261027-c05a2273). */}
+    {kaufbereich ?? (
     <div className="qb-pdp-kopf" {...kaufZuerstAttribute()}>
     <div className="product-360-hero">
       <div className="product-360-hero__text">
@@ -222,10 +231,11 @@ export function QiHomeAirSeite({
       />
     </div>
     </div>
+    )}
     {/* Klebende Kaufleiste mobil (reusables/Kaufleiste.jsx): nur die
         Kaufseite schaltet sie ein (Prop `kaufleiste`), der Landingpage-
         Spiegel nicht. Preis und Warenkorbzeilen aus DIESER Kaufbox. */}
-    {kaufleiste ? (
+    {!kaufbereich && kaufleiste ? (
       <Kaufleiste
         kaufbox={kaufbox}
         preis={preis}
