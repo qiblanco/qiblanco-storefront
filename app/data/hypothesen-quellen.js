@@ -375,7 +375,7 @@ export const QUELLEN = [
     gezeigt:
       'Ohne Schutz sank die Radikalbildung auf 60,5 ± 3,9 % der unbestrahlten Kontrolle, mit QiOne 2 Pro blieb sie bei 84,7 ± 7,0 % (p ≤ 0,01). Die Werte der unbestrahlten Kontrolle wurden auch mit Schutz nicht vollständig erreicht.',
     nichtUeberUns:
-      'Das IST unser Produkt, und deshalb gilt hier die andere Reichweitenfrage: Zellkultur, nicht Mensch; ein Labor, vom Hersteller gestellt, ohne unabhängige Wiederholung; drei Experimente; Kontrollen in einem anderen Brutschrank. Die Publikation erklärt ihre Messung mit kohärentem Wasser und nennt das selbst eine Hypothese.',
+      'Für diese Arbeit gilt: Zellkultur, nicht Mensch; ein Labor, vom Hersteller gestellt, ohne unabhängige Wiederholung; drei Experimente; Kontrollen in einem anderen Brutschrank. Die Publikation erklärt ihre Messung mit kohärentem Wasser und nennt das selbst eine Hypothese.',
     zitat:
       'However, even for the protected conditions, the values of the untreated controls without mobile phone radiation were not completely achieved.',
     zitatOrt: 'S. 484, Abstract',

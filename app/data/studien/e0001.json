@@ -44,14 +44,14 @@
  },
  "laienSummary": {
   "frage": "Kann QiOne® 2 Pro meine Immunzellen vor den Auswirkungen von Handystrahlung schützen?",
-  "antwort": "In einer Zellkulturstudie wurden menschliche Immunzellen (Neutrophile) vier Stunden lang Mobilfunkstrahlung ausgesetzt. Ohne Schutz sank ihre Fähigkeit, Abwehr-Radikale zu bilden, auf rund 60 % des Ausgangswertes. Mit QiOne® 2 Pro in der Nähe blieb diese Fähigkeit bei etwa 85 % erhalten – ein statistisch hochsignifikanter Unterschied. Die Zellen blieben also vitaler.",
+  "antwort": "In einer Zellkulturstudie wurden menschliche Immunzellen (Neutrophile) vier Stunden lang Mobilfunkstrahlung ausgesetzt. Ohne Schutz sank ihre Fähigkeit, Abwehr-Radikale zu bilden, auf rund 60 % des Ausgangswertes. Mit QiOne® 2 Pro in der Nähe blieb diese Fähigkeit bei etwa 85 % erhalten. Der Unterschied ist statistisch hochsignifikant. Die Zellen blieben also vitaler.",
   "punkte": [
    "Handystrahlung (4 h, SAR 0,76 W/kg) reduzierte die Radikalbildung der Immunzellen auf 60,5 ± 3,9 % der unbestrahlten Kontrolle.",
-   "Mit QiOne® 2 Pro blieb die Radikalbildung bei 84,7 ± 7,0 % – nahezu 50 % besser als ohne Schutz.",
+   "Mit QiOne® 2 Pro blieb die Radikalbildung bei 84,7 ± 7,0 %, nahezu 50 % besser als ohne Schutz.",
    "Der Unterschied zwischen geschützten und ungeschützten Zellen war hochsignifikant (p ≤ 0,01).",
    "Auch die geschützten Zellen erreichten das Niveau vollständig unbestrahlter Kontrollen nicht ganz."
   ],
-  "einordnung": "Dies ist eine reine In-vitro-Studie an einer Zelllinie (HL-60) aus drei unabhängigen Experimenten – kein Nachweis einer Wirkung am lebenden Menschen. Das Gerät wurde vom Hersteller Qi Blanco bereitgestellt; eine Bestätigung durch unabhängige Labore liegt nicht vor."
+  "einordnung": "Dies ist eine reine In-vitro-Studie an einer Zelllinie (HL-60) aus drei unabhängigen Experimenten. Eine Wirkung am lebenden Menschen weist sie nicht nach. Das Gerät wurde vom Hersteller Qi Blanco bereitgestellt; eine Bestätigung durch unabhängige Labore liegt nicht vor."
  },
  "abschnitte": [
   {
@@ -205,12 +205,12 @@
   "Es wurden lediglich 3 unabhängige Experimente mit Vierfach-Kulturflaschen durchgeführt; die statistische Aussagekraft ist dementsprechend begrenzt.",
   "Das getestete Gerät (QiOne® 2 Pro) wurde vom Hersteller Qi Blanco UG zur Verfügung gestellt; eine unabhängige Replikation durch ein weiteres Labor ist nicht dokumentiert.",
   "Selbst unter Schutzbedingungen wurde das Niveau der vollständig unbestrahlten Kontrollen (100 %) nicht vollständig erreicht.",
-  "Der postulierte Wirkmechanismus (kohärenter Wasserzustand durch Quantenelektrodynamik) ist in der konventionellen Medizin nicht anerkannt und bleibt eine Hypothese, die weiterer Forschung bedarf."
+  "Der Wirkmechanismus, den die Arbeit annimmt (kohärenter Wasserzustand durch Quantenelektrodynamik), ist eine Hypothese und braucht weitere Forschung."
  ],
  "faq": [
   {
    "frage": "Was hat die Studie konkret gemessen?",
-   "antwort": "Die Studie hat gemessen, wie stark Mobilfunkstrahlung die Fähigkeit von Immunzellen (Neutrophilen) verringert, schützende Sauerstoffradikale zu bilden. Ohne QiOne® 2 Pro sank diese Fähigkeit im Labor auf durchschnittlich 60,5 % des normalen Niveaus. Mit QiOne® 2 Pro blieb sie bei 84,7 % – ein hochsignifikanter Unterschied (p ≤ 0,01)."
+   "antwort": "Die Studie hat gemessen, wie stark Mobilfunkstrahlung die Fähigkeit von Immunzellen (Neutrophilen) verringert, schützende Sauerstoffradikale zu bilden. Ohne QiOne® 2 Pro sank diese Fähigkeit im Labor auf durchschnittlich 60,5 % des normalen Niveaus. Mit QiOne® 2 Pro blieb sie bei 84,7 %, und der Unterschied ist hochsignifikant (p ≤ 0,01)."
   },
   {
    "frage": "Welches Mobiltelefon wurde verwendet, und wie stark war die Strahlung?",

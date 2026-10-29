@@ -92,7 +92,7 @@ export const GESCHICHTE = {
   },
   nachsatz: [
     'Diese drei Berufsbilder erklären das Modell: es ist von der Physik her gedacht, nicht von der Medizin her.',
-    'Eine persönliche Geschichte erklärt eine Motivation. Ein Beleg ist sie nicht. Als Beleg tritt bei uns eine nachlesbare Arbeit auf, mit Autor, Jahr und Fundstelle.',
+    'Eine persönliche Geschichte erklärt, warum jemand anfängt. Als Beleg nehmen wir eine Arbeit, die du nachlesen kannst, mit Autor, Jahr und Fundstelle.',
   ],
 };
 
@@ -271,7 +271,7 @@ export const HYPOTHESEN = [
     ],
     contra: [
       {
-        text: 'Derselbe Bericht hält fest, dass es keinen Konsens gibt: „a scientific consensus is not yet achieved". Er benennt methodische Schwächen der Studienlage, unter anderem Kontrollproben aus einem anderen Brutschrank. Dieses Design steckt auch in einer unserer eigenen Studien, und wir nennen es dort.',
+        text: 'Derselbe Bericht hält fest, dass es keinen Konsens gibt: „a scientific consensus is not yet achieved". Er benennt methodische Schwächen der Studienlage, unter anderem Kontrollproben aus einem anderen Brutschrank. Dieses Design steckt auch in einer unserer eigenen Studien.',
         quellen: ['berenis-2021', 'dartsch-2021a'],
       },
       {
@@ -324,7 +324,7 @@ export const HYPOTHESEN = [
     bedeutet:
       'Das ist der einzige Teil des Modells, zu dem wir eigene, veröffentlichte Messungen haben. Deshalb ist es auch der einzige Teil, zu dem wir überhaupt etwas behaupten.',
     bedeutetNicht:
-      'Einen Heileffekt am Menschen belegen sie nicht, und wir leiten keinen daraus ab.',
+      'Einen Heileffekt am Menschen belegen sie nicht.',
   },
 ];
 
@@ -387,6 +387,6 @@ export const ABGRENZUNG = [
   },
   {
     titel: 'Wir behaupten keinen Heileffekt am Menschen',
-    text: 'Die vorliegenden Arbeiten sind Zellkulturstudien. Sie belegen keinen Heileffekt am Menschen, und wir leiten keinen daraus ab.',
+    text: 'Die vorliegenden Arbeiten sind Zellkulturstudien. Sie belegen keinen Heileffekt am Menschen.',
   },
 ];

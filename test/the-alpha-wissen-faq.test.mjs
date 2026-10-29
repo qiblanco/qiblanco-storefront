@@ -54,7 +54,13 @@ test('Wissen: sechs Abschnitte in Christians Folge, jeder mit Quelle', () => {
 
 test('Verdrahtung: Wissen und Fragen unter der Box, Stile route-gebunden', () => {
   const r = lies('app/routes/products.qi-alpha.jsx');
-  assert.match(r, /nachDerBox=\{\s*<>\s*<TheAlphaWissen \/>\s*<TheAlphaFaq ton="hell" \/>/);
+  // Zwischen Wissen und Fragen steht seit 29.10.2026 die Live-Anmeldung
+  // (s04-r1-r2 des Grossjobs 20261025-qi-alpha-produktseite-englisch-aufbauen-
+  // a-auf-b-niveau); die Fragen samt Anna-Hinweis bleiben das Letzte (Z17).
+  assert.match(
+    r,
+    /nachDerBox=\{\s*<>\s*<TheAlphaWissen \/>\s*<LiveVorstellung \/>\s*<TheAlphaFaq ton="hell" \/>\s*<\/>/,
+  );
   for (const s of ['shopStyles', 'wissenStyles', 'faqStyles']) assert.match(r, new RegExp(`href: ${s}`));
 });
 

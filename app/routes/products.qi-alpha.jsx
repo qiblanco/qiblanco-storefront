@@ -11,6 +11,12 @@ import faqStyles from '~/styles/the-alpha-faq.css?url';
 import teilzahlungStyles from '~/styles/qi-alpha-teilzahlung.css?url';
 import {TheAlphaWissen} from '~/components/the-alpha-shop/TheAlphaWissen';
 import {TheAlphaFaq} from '~/components/campaign/TheAlphaFaq';
+import {
+  TheAlphaLiveAnmeldung,
+  THE_ALPHA_LIVE_ANMELDUNG_STIL,
+} from '~/components/campaign/TheAlphaLiveAnmeldung';
+import {TAB_LIVE} from '~/components/campaign/the-alpha-variante-b-daten';
+import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {istVorschauNoindex} from '~/lib/vorschau-noindex';
 import {QM_ADDONS_QUERY, QM_HANDLES} from '~/lib/qi-master-addons';
@@ -111,6 +117,7 @@ export function links() {
     {rel: 'stylesheet', href: wissenStyles},
     {rel: 'stylesheet', href: faqStyles},
     {rel: 'stylesheet', href: teilzahlungStyles},
+    {rel: 'stylesheet', href: THE_ALPHA_LIVE_ANMELDUNG_STIL},
   ];
 }
 
@@ -249,6 +256,11 @@ export default function Product() {
   const {product, addons} = useLoaderData();
   // Unter „What's in the Box“: Wissens-Strecke und Fragen (Christian
   // 26.10.2026, Z150–Z208; Grossjob 20261026-…-premium-gestaltung, s07).
+  // Dazwischen die Anmeldung zum Live am 08.11. (Christian 25.10.2026: „Es
+  // soll auf der qi alpha seite unteen eine anmeldungs möglciheite geben für
+  // das Live mit Christian“). Sie steht VOR den Fragen, weil die Seite nach
+  // dem Anna-Hinweis endet (Christian 28.10.2026 Z17) und von hier kein Link
+  // wegführt (Z13); das Formular sendet per fetcher an /pages/live.
   return (
     <TheAlphaShop
       product={product}
@@ -256,10 +268,38 @@ export default function Product() {
       nachDerBox={
         <>
           <TheAlphaWissen />
+          <LiveVorstellung />
           <TheAlphaFaq ton="hell" />
         </>
       }
     />
+  );
+}
+
+/* Zeilen aus TAB_LIVE (LP B), Formular und Einwilligung unverändert aus
+   TheAlphaLiveAnmeldung (Action /pages/live, ch-live-1). Grossjob 20261025-
+   qi-alpha-produktseite-englisch-aufbauen-a-auf-b-niveau, s04-r1-r2. */
+function LiveVorstellung() {
+  return (
+    <section
+      className="tas-live"
+      id={TAB_LIVE.anker}
+      aria-labelledby="tas-live-titel"
+      data-tas-live=""
+    >
+      <div className="tas-live-innen">
+        <h2 id="tas-live-titel" className="tas-live-titel">
+          {TAB_LIVE.titel}
+        </h2>
+        <p className="tas-live-wann">{TAB_LIVE.wann}</p>
+        <p className="tas-live-text">{mitMarkeR(TAB_LIVE.text)}</p>
+        <TheAlphaLiveAnmeldung
+          quelle="produkt-a"
+          variante="a"
+          className="tas-live-karte"
+        />
+      </div>
+    </section>
   );
 }
 

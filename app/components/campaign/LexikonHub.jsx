@@ -158,10 +158,10 @@ export function LexikonHub() {
             drei eine gemeinsame Sprache zu finden.
           </p>
           <p>
-            Zwischen Spiritualität und Physik liegt kein Widerspruch, sondern
-            ein Übersetzungsproblem. Beide Seiten beschreiben Erfahrungen, und
-            beide haben dafür eigene Wörter. Wer die Wörter der einen Seite in
-            die andere trägt, ohne zu sagen wie weit sie reichen, erzeugt
+            Spiritualität und Physik passen zusammen, sie sprechen nur
+            verschiedene Sprachen. Beide beschreiben Erfahrungen, und jede hat
+            dafür ihre eigenen Wörter. Wer die Wörter der einen Seite in die
+            andere trägt, ohne zu sagen, wie weit sie reichen, erzeugt
             Missverständnisse in beide Richtungen.
           </p>
           <p>Deshalb steht bei jedem Begriff hier auch, wie weit er trägt.</p>

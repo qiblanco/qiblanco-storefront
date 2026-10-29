@@ -1,5 +1,4 @@
 import {HeroBannerParallax} from '../reusables/HeroBannerParallaxButton';
-import {GoogleRezensionenBereich} from '../reusables/GoogleRezensionenBereich';
 import {ProductFAQ} from '../ProductFAQ';
 import {StudienCards} from './StudienCards';
 import {
@@ -23,6 +22,8 @@ import {
   alpha,
   alphaFragen,
 } from '~/components/campaign/QiAlphaLpB';
+import {TheAlphaLiveAnmeldung} from '~/components/campaign/TheAlphaLiveAnmeldung';
+import {TAB_LIVE} from '~/components/campaign/the-alpha-variante-b-daten';
 
 /*
  * Shop B /products/qi-alpha-b — der Seiteninhalt unter der geteilten Kaufbox
@@ -46,6 +47,18 @@ import {
  *     (Vorschlag, abweichungen.json shop.schluss-querverkauf).
  * QiMaster.jsx (Shop A) bleibt unberührt. Was dort gestrichen ist, fehlt hier
  * auch: Gitterchip-Block, Logo-Leiste, „Gemessen", „Alle Bewertungen lesen".
+ *
+ * NACHZUG s04-r1-r2 (Grossjob 20261025-qi-alpha-produktseite-englisch-
+ * aufbauen-a-auf-b-niveau, 29.10.2026):
+ *   - Die Google-Stimmen („Über 14.000 zufriedene Kunden") sind raus.
+ *     Christian 28.10.2026 Z1: „wir stellen das produkt erst vor es kann nochk
+ *     eien bewerugn geben". Die Zahl gehört der Marke, nicht dem Qi Alpha.
+ *   - Neu vor den Fragen: die Anmeldung zum Live mit Christian am 08.11.
+ *     (Christian 25.10.2026: „Es soll auf der qi alpha seite unteen eine
+ *     anmeldungs möglciheite geben für das Live mit Christian"). Formular und
+ *     Einwilligung kommen unverändert aus TheAlphaLiveAnmeldung (Action
+ *     /pages/live, ch-live-1), die Zeilen darüber aus TAB_LIVE von LP B.
+ *     Kein Link weg von der Seite.
  */
 
 /** Jede Zeichenkette eines Datenobjekts mit neuem Namen, Struktur unverändert. */
@@ -69,10 +82,14 @@ export default function QiAlphaShopB() {
       <Literatur />
       <SechsG />
       <Persoenlichkeit />
+      {/* KEIN QiOne-2-Pro-Foto auf der Qi-Alpha-Seite (Christian 25.10.2026:
+          „für den qi alpha keine fotos verwenden vom qione 2 pro, weil es ein
+          anderes logo hat“). Hier stand das Paar-Foto von 2023, auf dem die
+          Frau einen QiOne trägt. Jetzt wie in QiMaster.jsx das Qi-Alpha-
+          Rendering (Gerät links), der Text rechts daneben (reverse). */}
       <HeroBannerParallax
-        backgroundImage={
-          '/2023-03-01-qiblanco-milva-martin-1020791_1.webp?v=1680003385'
-        }
+        backgroundImage={'qi-alpha-01-front.jpg?v=1792849253'}
+        reverse
         headline={<>Dein Qi Alpha® begleitet dich<br />Tag und Nacht.</>}
         subheadline={'Ein Stück, das du nicht ablegen musst.'}
         parallax={true}
@@ -81,8 +98,8 @@ export default function QiAlphaShopB() {
         linkStyling={'primary'}
         linkText={'Hole dir deinen Qi Alpha®'}
       />
+      <Live />
       <ProductFAQ items={alphaFragen()} />
-      <GoogleRezensionenBereich dataSection="qa-sb-stimmen" />
       <Beratung />
     </div>
   );
@@ -337,6 +354,30 @@ function Persoenlichkeit() {
             <p key={abs.slice(0, 40)}>{abs}</p>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* Live-Vorstellung am 08.11. Die Zeilen sind die von LP B (TAB_LIVE), das
+   Formular sendet per fetcher an /pages/live und bleibt auf der Seite. */
+function Live() {
+  return (
+    <section
+      className="qa-abschnitt qa-live"
+      id={TAB_LIVE.anker}
+      data-section="qa-sb-live"
+      aria-labelledby="qa-sb-live"
+    >
+      <div className="qa-live__inhalt">
+        <h2 id="qa-sb-live">{TAB_LIVE.titel}</h2>
+        <p className="qa-live__wann">{TAB_LIVE.wann}</p>
+        <p className="qa-live__text">{TAB_LIVE.text}</p>
+        <TheAlphaLiveAnmeldung
+          quelle="produkt-b"
+          variante="b"
+          className="qa-live__karte"
+        />
       </div>
     </section>
   );
