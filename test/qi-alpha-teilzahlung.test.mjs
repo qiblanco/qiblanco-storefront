@@ -282,3 +282,163 @@ test('Zweite Linie (Verhalten): Shopify legt in CH den Ratenanteil an -> kein Co
   const lesefehler = await permalink({land: 'CH', angelegt: [], getWirft: true});
   assert.match(lesefehler.ort ?? '', /checkout\.qiblanco\.com/);
 });
+
+// ---------------------------------------------------------------------------
+// Storefront-Sperre für den Ratenanteil in POST /cart und Menge 1 im
+// Permalink (Großjob 20261028-qi-alpha-teilzahlung-waechter-zweite-linie-v3,
+// s02). Live am 29.10.2026 gemessen, Stand eb5f92c5: POST /cart?markt=CH legte
+// den Ratenanteil an, DE :3 30.000 €, Permalink :2 und :1,0<R>:1 je 20.000 €.
+// ROT VOR GRÜN: auf eb5f92c5 fehlen permalinkZeilen, ratenanteilKorrektur,
+// ratenanteilPruefen und bindeRatenanteil.
+const R_GID = `gid://shopify/ProductVariant/${tz.TEILZAHLUNG.variante}`;
+const QI_GID = 'gid://shopify/ProductVariant/62077673767180';
+
+test('Permalink-Zeilen: Ratenanteil höchstens einmal, Menge 1, andere Zeilen unverändert', () => {
+  assert.deepEqual(tz.permalinkZeilen([{merchandiseId: R_GID, quantity: 2}]), [
+    {merchandiseId: R_GID, quantity: 1},
+  ]);
+  const doppelt = tz.permalinkZeilen([
+    {merchandiseId: R_GID, quantity: 1},
+    {merchandiseId: QI_GID, quantity: 2},
+    {merchandiseId: `gid://shopify/ProductVariant/0${tz.TEILZAHLUNG.variante}`, quantity: 1},
+    {merchandiseId: `gid://shopify/ProductVariant/${tz.TEILZAHLUNG.variante}e0`, quantity: 5},
+  ]);
+  assert.deepEqual(doppelt, [
+    {merchandiseId: R_GID, quantity: 1},
+    {merchandiseId: QI_GID, quantity: 2},
+  ]);
+  // Menge 0/ungültig bleibt: dann entsteht wie bisher kein Warenkorb.
+  assert.deepEqual(tz.permalinkZeilen([{merchandiseId: R_GID, quantity: 0}]), [
+    {merchandiseId: R_GID, quantity: 0},
+  ]);
+});
+
+test('Korrektur POST /cart: außerhalb DE/AT fällt der Ratenanteil, in DE höchstens eine Zeile mit Menge 1', () => {
+  const z = [
+    {id: 'l1', quantity: 3, variantId: R_GID},
+    {id: 'l2', quantity: 1, variantId: QI_GID},
+    {id: 'l3', quantity: 1, variantId: R_GID},
+  ];
+  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: z, laender: ['DE', 'DE']}), {
+    entfernen: ['l3'],
+    aendern: [{id: 'l1', quantity: 1}],
+  });
+  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: z, laender: ['CH', 'CH']}), {
+    entfernen: ['l1', 'l3'],
+    aendern: [],
+  });
+  // Markt DE, Warenkorb aber in CH (Marktwechsel): zählt jedes Land.
+  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: z, laender: ['DE', 'CH']}).entfernen, ['l1', 'l3']);
+  // Kein Land bekannt: gesperrt (wie teil1Erlaubt).
+  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: z, laender: []}).entfernen, ['l1', 'l3']);
+  // Kontrolle: sauberer Schritt-1-Korb in AT bleibt, andere Artikel bleiben immer.
+  assert.deepEqual(
+    tz.ratenanteilKorrektur({zeilen: [{id: 'l1', quantity: 1, variantId: R_GID}, z[1]], laender: ['AT']}),
+    {entfernen: [], aendern: []},
+  );
+  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: [z[1]], laender: ['US']}), {entfernen: [], aendern: []});
+});
+
+test('Nachlesen nur, wenn die Aktion den Ratenanteil bringt oder eine Menge über 1 setzt', () => {
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesAdd', inputs: {lines: [{merchandiseId: QI_GID, quantity: 1}]}}), false);
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesAdd', inputs: {lines: [{merchandiseId: R_GID, quantity: 1}]}}), true);
+  assert.equal(
+    tz.ratenanteilPruefen({action: 'LinesAdd', inputs: {lines: [{merchandiseId: `0${tz.TEILZAHLUNG.variante}`}]}}),
+    true,
+  );
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesUpdate', inputs: {lines: [{id: 'l1', quantity: 1}]}}), false);
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesUpdate', inputs: {lines: [{id: 'l1', quantity: 2}]}}), true);
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesUpdate', inputs: {lines: [{id: 'l1', merchandiseId: R_GID}]}}), true);
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesRemove', inputs: {lineIds: ['l1']}}), false);
+  assert.equal(tz.ratenanteilPruefen({action: 'DiscountCodesUpdate', inputs: {}}), false);
+});
+
+function attrappenKorb({zeilen, land, getWirft = false}) {
+  const spur = {get: 0, removeLines: [], updateLines: []};
+  return {
+    spur,
+    cart: {
+      get: async () => {
+        spur.get += 1;
+        if (getWirft) throw new Error('Storefront-API nicht erreichbar');
+        return {
+          id: 'gid://cart/1',
+          buyerIdentity: {countryCode: land},
+          lines: {nodes: zeilen.map(([id, quantity, mid]) => ({id, quantity, merchandise: {id: mid}}))},
+        };
+      },
+      removeLines: async (ids) => {
+        spur.removeLines.push(ids);
+        return {cart: {id: 'gid://cart/1', totalQuantity: 0}};
+      },
+      updateLines: async (l) => {
+        spur.updateLines.push(l);
+        return {cart: {id: 'gid://cart/1', totalQuantity: 1}};
+      },
+    },
+  };
+}
+
+test('Bindung (Verhalten): CH entfernt, DE klemmt, Lesefehler und fremde Artikel lassen das Ergebnis stehen', async () => {
+  const ergebnis = {cart: {id: 'gid://cart/1', totalQuantity: 1}};
+  const add = {lines: [{merchandiseId: R_GID, quantity: 1}]};
+  const ch = attrappenKorb({zeilen: [['l1', 1, R_GID]], land: 'CH'});
+  await tz.bindeRatenanteil({cart: ch.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'CH'});
+  assert.deepEqual(ch.spur.removeLines, [['l1']]);
+  const de = attrappenKorb({zeilen: [['l1', 3, R_GID]], land: 'DE'});
+  await tz.bindeRatenanteil({cart: de.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'DE'});
+  assert.deepEqual(de.spur.updateLines, [[{id: 'l1', quantity: 1}]]);
+  assert.deepEqual(de.spur.removeLines, []);
+  // Kontrolle: sauberer DE-Korb wird gelesen, aber nicht verändert.
+  const sauber = attrappenKorb({zeilen: [['l1', 1, R_GID]], land: 'DE'});
+  const r = await tz.bindeRatenanteil({cart: sauber.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'DE'});
+  assert.equal(r, ergebnis);
+  assert.equal(sauber.spur.get, 1);
+  assert.deepEqual([sauber.spur.removeLines, sauber.spur.updateLines], [[], []]);
+  // Anderer Artikel: kein zusätzlicher Lesezugriff.
+  const fremd = attrappenKorb({zeilen: [['l1', 1, R_GID]], land: 'CH'});
+  await tz.bindeRatenanteil({
+    cart: fremd.cart,
+    action: 'LinesAdd',
+    inputs: {lines: [{merchandiseId: QI_GID, quantity: 1}]},
+    result: ergebnis,
+    land: 'CH',
+  });
+  assert.equal(fremd.spur.get, 0);
+  // Lesefehler: Ergebnis der Kundenaktion bleibt (der Wächter bleibt die Linie).
+  const kaputt = attrappenKorb({zeilen: [], land: 'CH', getWirft: true});
+  assert.equal(
+    await tz.bindeRatenanteil({cart: kaputt.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'CH'}),
+    ergebnis,
+  );
+});
+
+test('Verdrahtung: cart.jsx bindet den Ratenanteil vor den übrigen Bindungen, cart.$lines klemmt die Zeilen', () => {
+  const route = lies('app/routes/cart.jsx');
+  const bindung = route.indexOf('await bindeRatenanteil(');
+  assert.ok(bindung > 0, 'cart.jsx ruft bindeRatenanteil');
+  assert.ok(bindung < route.indexOf('await begrenzeAngebot('), 'vor begrenzeAngebot');
+  assert.match(route.slice(bindung, bindung + 200), /land: storefront\?\.i18n\?\.country/);
+  assert.match(lies('app/routes/cart.$lines.jsx'), /const linesMap = permalinkZeilen\(/);
+});
+
+test('Permalink (Verhalten): /cart/<R>:2 und /cart/<R>:1,0<R>:1 legen genau eine Zeile mit Menge 1 an', async () => {
+  const {loader} = await import('../app/routes/cart.$lines.jsx');
+  for (const lines of [`${tz.TEILZAHLUNG.variante}:2`, `${tz.TEILZAHLUNG.variante}:1,0${tz.TEILZAHLUNG.variante}:1`]) {
+    let angelegt;
+    const cart = {
+      get: async () => ({id: 'gid://cart/1', lines: {nodes: []}}),
+      create: async (e) => {
+        angelegt = e.lines;
+        return {cart: {id: 'gid://cart/1', checkoutUrl: 'https://checkout.qiblanco.com/c/1', totalQuantity: 1}};
+      },
+      setCartId: () => new Headers(),
+    };
+    await loader({
+      request: new Request(`https://qiblanco.com/cart/${lines}`),
+      context: {cart, env: {}, storefront: {i18n: {country: 'DE'}}},
+      params: {lines},
+    }).catch((e) => e);
+    assert.deepEqual(angelegt, [{merchandiseId: R_GID, quantity: 1}], lines);
+  }
+});

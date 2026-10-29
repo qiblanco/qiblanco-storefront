@@ -25,8 +25,10 @@
  * ohne Ware hätte Meta dagegen einen zweiten Qi-Alpha-Warenkorb gemeldet.
  * Herkunfts- und Tracking-Merkmale des Permalinks bleiben unverändert.
  *
- * Reine Regeln ohne Netz und ohne React: gelesen von der Kaufseite
- * (TheAlphaShop.jsx) und vom Warenkorb-Permalink (routes/cart.$lines.jsx).
+ * Regeln ohne eigenes Netz und ohne React: gelesen von der Kaufseite
+ * (TheAlphaShop.jsx), vom Warenkorb-Permalink (routes/cart.$lines.jsx) und
+ * von der Warenkorb-Action (routes/cart.jsx, bindeRatenanteil bekommt den
+ * Warenkorb-Handler der Route übergeben).
  */
 
 export const TEILZAHLUNG = {
@@ -157,6 +159,110 @@ export function mitRatenanteil(varianten) {
     const roh = String(v).split('/').pop().replace(/^\D+/, '');
     return roh.match(/^\d*/)[0].replace(/^0+/, '') === TEILZAHLUNG.variante;
   });
+}
+
+/**
+ * Permalink-Zeilen vor dem Anlegen: der Ratenanteil steht höchstens einmal
+ * und mit Menge 1 darin. Gemessen am 29.10.2026 (DE): `/cart/<R>:2` und
+ * `/cart/<R>:1,0<R>:1` legten je 20.000 € an. Eine zweite Ratenanteil-Zeile
+ * fällt weg, jede Schreibweise zählt so, wie Shopify sie liest
+ * (mitRatenanteil). Eine Menge unter 1 bleibt, wie sie ist: dann legt der
+ * Permalink wie bisher keinen Warenkorb an.
+ */
+export function permalinkZeilen(zeilen) {
+  let gesehen = false;
+  const out = [];
+  for (const z of zeilen) {
+    if (!mitRatenanteil([z.merchandiseId])) {
+      out.push(z);
+      continue;
+    }
+    if (gesehen) continue;
+    gesehen = true;
+    out.push(z.quantity >= 1 ? {...z, quantity: 1} : z);
+  }
+  return out;
+}
+
+/**
+ * Korrektur eines gelesenen Warenkorbs (POST /cart): der Ratenanteil steht
+ * nur in DE/AT darin, dort höchstens eine Zeile mit Menge 1. Zählen muss
+ * jedes Land, das am Warenkorb hängt (Markt der Anfrage UND Land des
+ * Warenkorbs): ein in DE angelegter Ratenanteil wäre nach einem Wechsel auf
+ * CH ein CHF-Betrag. `zeilen`: [{id, quantity, variantId}].
+ * Ergebnis im Format von bindungsKorrektur (lib/qi-master-addons.js).
+ */
+export function ratenanteilKorrektur({zeilen, laender}) {
+  const erlaubt =
+    laender.length > 0 &&
+    laender.every((l) => TEILZAHLUNG.maerkte.includes(l));
+  const entfernen = [];
+  const aendern = [];
+  let behalten = false;
+  for (const z of zeilen) {
+    if (!mitRatenanteil([z.variantId])) continue;
+    if (!erlaubt || behalten) {
+      entfernen.push(z.id);
+      continue;
+    }
+    behalten = true;
+    if (z.quantity !== 1) aendern.push({id: z.id, quantity: 1});
+  }
+  return {entfernen, aendern};
+}
+
+/**
+ * Muss die Warenkorb-Action nachlesen? Nur, wenn die Kundenaktion einen
+ * Ratenanteil hinzufügen oder eine Menge über 1 setzen kann. Jeder andere
+ * Klick kostet keinen zusätzlichen Lesezugriff.
+ */
+export function ratenanteilPruefen({action, inputs}) {
+  if (action === 'LinesAdd') {
+    return mitRatenanteil((inputs?.lines || []).map((l) => l?.merchandiseId));
+  }
+  if (action === 'LinesUpdate') {
+    return (inputs?.lines || []).some(
+      (l) =>
+        mitRatenanteil([l?.merchandiseId]) ||
+        !(Number(l?.quantity ?? 0) <= 1),
+    );
+  }
+  return false;
+}
+
+/**
+ * Bindung in routes/cart.jsx (Muster bindeQiMasterAddons): liest den
+ * Warenkorb nach der Kundenaktion und wendet ratenanteilKorrektur an.
+ * Fail-soft: scheitert das Lesen oder Korrigieren, bleibt das Ergebnis der
+ * Kundenaktion stehen. Dann bleibt der Wächter die Linie: er stellt für eine
+ * Bestellung 1, die nicht genau eine Zeile zu 10.000 € in EUR trägt, keinen
+ * Code aus.
+ */
+export async function bindeRatenanteil({cart, action, inputs, result, land}) {
+  const cartId = result?.cart?.id;
+  if (!cartId || !ratenanteilPruefen({action, inputs})) return result;
+  let voll;
+  try {
+    voll = await cart.get({cartId});
+  } catch {
+    return result;
+  }
+  const zeilen = (voll?.lines?.nodes || []).map((z) => ({
+    id: z.id,
+    quantity: z.quantity,
+    variantId: z.merchandise?.id,
+  }));
+  const laender = [land, voll?.buyerIdentity?.countryCode].filter(Boolean);
+  const {entfernen, aendern} = ratenanteilKorrektur({zeilen, laender});
+  if (!entfernen.length && !aendern.length) return result;
+  let neu = result;
+  try {
+    if (entfernen.length) neu = await cart.removeLines(entfernen, {cartId});
+    if (aendern.length) neu = await cart.updateLines(aendern, {cartId});
+  } catch {
+    return result;
+  }
+  return neu?.cart ? neu : result;
 }
 
 /**
