@@ -935,6 +935,8 @@ html:has(main[data-film-seite]) body {
   font-weight: 400;
   line-height: 1.25;
   color: var(--tap-weiss);
+  /* Zwei gleich lange Zeilen statt eines einzelnen Worts in der zweiten. */
+  text-wrap: balance;
 }
 
 .tap-js .tap-film-text {
