@@ -562,7 +562,7 @@ export function AlphaVorlage({
             {boxBilder.map((t) => (
               <figure key={t.name} className="tas-box-teil" data-av-box-teil={t.schluessel}>
                 <img
-                  src={t.bild.url}
+                  src={mitBreite(t.bild.url, 600)}
                   alt={t.bild.alt}
                   width="300"
                   height="300"

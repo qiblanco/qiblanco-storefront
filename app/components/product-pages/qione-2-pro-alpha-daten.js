@@ -141,7 +141,8 @@ export const BOX = {
     {
       name: 'Baumwollband',
       bild: {
-        url: '/produkte/qione-2-pro/box-baumwollband.webp',
+        // Shopify-Files Global Deutsch-Shop (GL-PRO-0015: Medien aufs CDN), gid://shopify/MediaImage/77521064132876
+        url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/box-baumwollband.webp?v=1793303086',
         alt: 'Schwarzes Baumwollband für den QiOne® 2 Pro, aufgerollt und geknotet',
       },
     },

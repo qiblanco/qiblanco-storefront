@@ -55,5 +55,5 @@ test('QiOne® 2 Pro: Baumwollband als Bild in der Box', async () => {
   const d = await import(DATEN[0].pfad);
   const band = (d.BOX.kacheln ?? []).find((k) => /Baumwollband/.test(k.name));
   assert.ok(band, 'Kachel Baumwollband fehlt');
-  assert.match(band.bild.url, /box-baumwollband\.webp$/);
+  assert.match(band.bild.url, /^https:\/\/cdn\.shopify\.com\/.*\/box-baumwollband\.webp(\?|$)/);
 });
