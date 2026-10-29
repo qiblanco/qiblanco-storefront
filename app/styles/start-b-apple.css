@@ -74,3 +74,27 @@
   align-items: center;
   min-height: var(--as-tippziel);
 }
+
+/*
+ * STICKY-KAUFKNOPF (nur Arm B, mobil). Die Rookie-Leiste bringt Lage und
+ * Sichtbarkeit aus rookie-start.css mit; ihre Farb- und Abstands-Tokens
+ * (--rs-*, --st-*) gelten nur unter .qb-rookie-start. In der Apple-Fassung
+ * setzt dieser Block dieselben Rollen mit --as-*.
+ */
+@media screen and (max-width: 749px) {
+  .as-seite .qb-rs-sticky {
+    gap: var(--as-s-2);
+    padding: var(--as-s-1) var(--as-s-2) max(var(--as-s-1), env(safe-area-inset-bottom));
+    background: var(--as-weiss);
+    border-top: var(--as-strich) solid var(--as-linie);
+  }
+  .as-seite .qb-rs-sticky__name {
+    font-size: var(--as-fs-3);
+    color: var(--as-tinte);
+  }
+  .as-seite .qb-rs-sticky .btn--primary {
+    padding: var(--as-s-1) var(--as-s-2);
+    min-height: var(--as-tippziel);
+    font-size: var(--as-fs-3) !important;
+  }
+}
