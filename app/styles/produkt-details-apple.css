@@ -1,0 +1,60 @@
+/*
+ * APPLE-FASSUNG DER PRODUKT-DETAILSEITEN und Produkt-LPs (Grossjob 20261029-
+ * GROSSJOB-alle-shop-seiten-apple-niveau-ausser-seo-geo, s05). Lädt nur mit
+ * der Apple-Fassung (components/apple-seite/produkt-details/). Nur --as-*-
+ * Tokens aus apple-seite.css, keine freien Werte (BAUKASTEN §2).
+ */
+
+/*
+ * Haus-Grundregeln im Baukasten-Scope neutralisieren (gemessen von s04:
+ * reset.css setzt `p, li {font-size: 1.2rem}` und Schatten auf h1-h3).
+ * `:where` hält die Spezifität bei einer Klasse, die Stufen der Sektionen
+ * (später in apple-seite.css) gewinnen weiter.
+ */
+.as-seite :where(p, li) {
+  font-size: var(--as-fs-3);
+}
+.as-seite :where(h1, h2, h3) {
+  text-shadow: none;
+}
+
+/* Text links, also auch der Knopf im Bild-Text-Band. */
+.as-band-text .as-knoepfe {
+  justify-content: flex-start;
+}
+
+/* Kopf: das Produktbild steht als Karte unter dem Text, nicht bildbreit. */
+.as-seite[data-apple-seite$='-details'] .as-hero-bild {
+  max-width: var(--as-text-breite);
+}
+
+/* Preiszeile unter dem Kaufknopf (AsKnoepfe preis). */
+.as-seite .as-preis {
+  margin: var(--as-s-2) 0 0;
+  font-size: var(--as-fs-2);
+  color: var(--as-tinte);
+}
+.as-seite .as-dunkel .as-preis {
+  color: var(--as-linie);
+}
+
+/* ---- Video ---------------------------------------------------------------- */
+.pd-video-rahmen {
+  max-width: var(--as-text-breite);
+  margin: var(--as-s-4) auto 0;
+  border-radius: var(--as-radius);
+  overflow: hidden;
+  background: var(--as-flaeche);
+}
+.pd-video-film,
+.pd-video-rahmen video,
+.pd-video-rahmen img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Mikroskop-Scrollvideo: volle Breite, ohne eigenen Abstand des Bestands. */
+.pd-mikroskop {
+  margin: var(--as-s-8) 0;
+}

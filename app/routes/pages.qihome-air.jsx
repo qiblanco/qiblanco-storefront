@@ -8,6 +8,12 @@ import {
 import {QiHomeHeroBullets} from '~/components/product-pages/QiHomeHeroBullets';
 import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {BLOCK_LP} from '~/components/reusables/blockLinks';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {ladeAlphaKetten} from '~/components/product-pages/AlphaVorlage';
+import {
+  QiHomeAirKampagneApple,
+  QIHOME_ALPHA_DATEN,
+} from '~/components/apple-seite/produkt-lp/QiHomeAirKampagneApple';
 
 /*
  * Campaign-PDP /pages/qihome-air — LP-Shopseite des LP-Blocks
@@ -59,7 +65,13 @@ export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
  * @param {LoaderFunctionArgs} args
  */
 export async function loader({context, request}) {
-  const [{product}, vergleichsPreise] = await Promise.all([
+  // APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+  // ausser-seo-geo, s05): Schalter in app/lib/apple-seiten.js, Seite qihome-air.
+  // An: derselbe Konfigurator wie /products/qihome-air (dazu die Ketten, fail-soft
+  // wie dort). Aus: die heutige Seite (C) mit denselben Loaderdaten wie
+  // vorher. Rückweg: `homepage-bauer/bin/apple-seite zurueck qihome-air`.
+  const appleSeite = appleSeiteLaden(context, 'qihome-air');
+  const [{product}, vergleichsPreise, ketten] = await Promise.all([
     context.storefront.query(PRODUCT_QUERY, {
       variables: {
         handle: 'qihome-air',
@@ -70,13 +82,18 @@ export async function loader({context, request}) {
     // Preise der drei Geräte für den Gerätevergleich (seit dem 28.09.2026 auch
     // hier, dieselbe Seite wie /products). Fail-soft; null = Vergleich aus.
     ladeVergleichsPreise(context.storefront),
+    appleSeite?.an ? ladeAlphaKetten(context.storefront, QIHOME_ALPHA_DATEN) : null,
   ]);
 
   if (!product?.id) {
     throw new Response(null, {status: 404});
   }
 
-  return {product, ...(vergleichsPreise ? {vergleichsPreise} : {})};
+  return {
+    product,
+    ...(vergleichsPreise ? {vergleichsPreise} : {}),
+    ...(appleSeite?.an ? {appleSeite, ...(ketten ? {ketten} : {})} : {}),
+  };
 }
 
 /*
@@ -85,7 +102,17 @@ export async function loader({context, request}) {
  * AddToCart als Cart-Event routen-unabhaengig; R1/R2/R3 im root-Layout.
  */
 export default function QiHomeAirSeiteRoute() {
-  const {product, vergleichsPreise} = useLoaderData();
+  const {product, vergleichsPreise, appleSeite, ketten} = useLoaderData();
+  if (appleSeite?.an) {
+    return (
+      <QiHomeAirKampagneApple
+        seite="qihome-air"
+        product={product}
+        ketten={ketten}
+        vergleichsPreise={vergleichsPreise}
+      />
+    );
+  }
   return (
     <QiHomeAirSeite
       product={product}

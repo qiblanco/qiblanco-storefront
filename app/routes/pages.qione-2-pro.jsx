@@ -9,6 +9,12 @@ import {
 import {QiOneHeroBulletsPages} from '~/components/product-pages/QiOneHeroBulletsPages';
 import {ladeVergleichsPreise} from '~/components/reusables/amazonstil-daten';
 import {BLOCK_LP} from '~/components/reusables/blockLinks';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {ladeAlphaKetten} from '~/components/product-pages/AlphaVorlage';
+import {
+  QiOneKampagneApple,
+  QIONE_ALPHA_DATEN,
+} from '~/components/apple-seite/produkt-lp/QiOneKampagneApple';
 
 /*
  * Campaign-PDP /pages/qione-2-pro — kaufbereite Fortsetzung der Paid-Strecke
@@ -81,7 +87,14 @@ export async function loader({context, request}) {
   const exp = entscheideSeitenExperiment(request, context.env, 'q2p-e1-gs080');
   if (exp) throw redirect(exp.ziel, {status: 302, headers: {'Cache-Control': 'no-store'}});
 
-  const [{product}, vergleichsPreise] = await Promise.all([
+  // APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+  // ausser-seo-geo, s05): Schalter APPLE_SEITE_QIONE_2_PRO_SHOP in
+  // app/lib/apple-seiten.js. An: derselbe Konfigurator wie /products/qione-2-pro
+  // (dazu die Ketten, fail-soft wie dort). Aus: die heutige Seite (C) mit
+  // denselben Loaderdaten wie vorher. Rückweg: `homepage-bauer/bin/apple-seite
+  // zurueck qione-2-pro-shop`.
+  const appleSeite = appleSeiteLaden(context, 'qione-2-pro-shop');
+  const [{product}, vergleichsPreise, ketten] = await Promise.all([
     context.storefront.query(PRODUCT_QUERY, {
       variables: {
         handle: 'qione-2-pro',
@@ -92,13 +105,18 @@ export async function loader({context, request}) {
     // Preise der drei Geräte für den Gerätevergleich (seit dem 28.09.2026 auch
     // hier, dieselbe Seite wie /products). Fail-soft; null = Vergleich aus.
     ladeVergleichsPreise(context.storefront),
+    appleSeite?.an ? ladeAlphaKetten(context.storefront, QIONE_ALPHA_DATEN) : null,
   ]);
 
   if (!product?.id) {
     throw new Response(null, {status: 404});
   }
 
-  return {product, ...(vergleichsPreise ? {vergleichsPreise} : {})};
+  return {
+    product,
+    ...(vergleichsPreise ? {vergleichsPreise} : {}),
+    ...(appleSeite?.an ? {appleSeite, ...(ketten ? {ketten} : {})} : {}),
+  };
 }
 
 /*
@@ -109,7 +127,17 @@ export async function loader({context, request}) {
  * zusätzlicher fbq/gtag/MetaPixel hier wäre Doppelzählung.
  */
 export default function QiOne2ProSeiteRoute() {
-  const {product, vergleichsPreise} = useLoaderData();
+  const {product, vergleichsPreise, appleSeite, ketten} = useLoaderData();
+  if (appleSeite?.an) {
+    return (
+      <QiOneKampagneApple
+        seite="qione-2-pro-shop"
+        product={product}
+        ketten={ketten}
+        vergleichsPreise={vergleichsPreise}
+      />
+    );
+  }
   return (
     <QiOne2ProSeite
       product={product}

@@ -4,6 +4,13 @@ import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import qihomeStyles from '~/styles/qihome.css?url';
 import {seitenSignale} from '~/lib/seiten-seo';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {ProduktDetailsApple} from '~/components/apple-seite/produkt-details/ProduktDetailsApple';
+import {
+  QIHOME_DETAILS,
+  VIDEO,
+} from '~/components/apple-seite/produkt-details/qihome-details-daten';
+import {startseiteProdukte} from '~/components/apple-seite/startseite/startseite-preise';
 
 /*
  * /pages/qihome-details — oeffentliche Detailseite QiHome Air
@@ -57,20 +64,39 @@ export const meta = ({data}) => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader({context}) {
-  const {page} = await context.storefront.query(PAGE_QUERY, {
-    variables: {handle: 'qihome'},
-  });
+  // APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+  // ausser-seo-geo, s05): Schalter in app/lib/apple-seiten.js, Seite qihome-details.
+  // Aus: die heutige Seite (C) unverändert, Rückweg `homepage-bauer/bin/
+  // apple-seite zurueck qihome-details`. An: die Apple-Fassung, dazu die Preise der
+  // Kaufseiten (fail-closed, parallel).
+  const appleSeite = appleSeiteLaden(context, 'qihome-details');
+  const [{page}, produkte] = await Promise.all([
+    context.storefront.query(PAGE_QUERY, {
+      variables: {handle: 'qihome'},
+    }),
+    appleSeite?.an ? startseiteProdukte(context) : [],
+  ]);
 
   if (!page) {
     throw new Response('Not Found', {status: 404});
   }
 
-  return {page};
+  return {page, appleSeite, produkte};
 }
 
 export default function QiHomeDetailsPage() {
-  useLoaderData();
+  const {appleSeite, produkte} = useLoaderData();
 
+  if (appleSeite?.an) {
+    return (
+      <ProduktDetailsApple
+        seite="qihome-details"
+        sektionen={QIHOME_DETAILS}
+        video={VIDEO}
+        produkte={produkte}
+      />
+    );
+  }
   return (
     <>
       <QiHomeLanding />
