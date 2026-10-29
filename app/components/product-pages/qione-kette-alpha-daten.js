@@ -33,7 +33,7 @@ export const PRODUKT = {
   punkte: [
     {zeichen: 'schutz', text: 'Hält deinen QiOne® den ganzen Tag am Körper'},
     {zeichen: 'material', text: 'Derselbe Stahl wie sein Gehäuse'},
-    {zeichen: 'wellen', text: 'Sauna, Meer und Sport gehen mit'},
+    {zeichen: 'wellen', text: 'Die Kette geht mit ins Meer und zum Sport'},
   ],
   // Bewachter SEO-Link der heutigen Seite (Grossjob 20261006-...-seo-strategie,
   // s02): die Kette verweist mit dem Produktnamen auf die Kaufseite des Geräts.
@@ -117,7 +117,7 @@ export const FAKTEN = {
       icon: 'wellen',
       zahl: 'Wasserfest',
       titel: 'Überall mit dir',
-      satz: 'Sauna, Meer, Chlor, Schweiß. Sie bleibt dran.',
+      satz: 'Meer, Chlor und Schweiß machen ihr nichts.',
     },
   ],
 };
@@ -140,7 +140,7 @@ export const WISSEN = {
       titel: 'Den ganzen Tag auf der Haut.',
       absaetze: [
         'An der Kette liegt dein QiOne® dort, wo du ihn haben willst: unter dem Hemd, über dem Pullover, beim Sport.',
-        'Der Karabiner schließt mit einer Hand. Abends legst du ihn ab oder behältst ihn auch nachts an.',
+        'Der Karabiner schließt mit einer Hand. Abends legst du die Kette ab oder behältst sie auch nachts an.',
         'Der Stahl braucht keine Pflege. Wasser und ein weiches Tuch genügen.',
       ],
       bild: 4,
@@ -191,13 +191,13 @@ export const FAQ = {
     },
     {
       f: 'Darf die Kette nass werden oder in die Sauna?',
-      a: 'Ja. Chirurgenstahl 316L rostet nicht und läuft nicht an. Im Meer, im Schwimmbad und in der Sauna bleibt sie dran. In der Sauna wird der Stahl so warm wie die Luft.',
+      a: 'Ja. Chirurgenstahl 316L rostet nicht und läuft nicht an. Im Meer und im Schwimmbad bleibt sie dran. In der Sauna wird der Stahl heiß. Leg sie dann kurz ab oder trag sie über dem Handtuch.',
     },
     {
-      // PR-Manager s13 (G1/P5): kein Verträglichkeitsversprechen, sondern der
-      // Vergleich mit dem Gehäuse, das der Kunde schon trägt.
+      // PR-Manager s13 (G1/P5): kein Verträglichkeitsversprechen, nur der
+      // Stahl und der Weg zum Hautarzt.
       f: 'Vertrage ich die Kette auf der Haut?',
-      a: 'Die Kette ist aus Chirurgenstahl 316L, aus demselben Stahl wie das Gehäuse deines QiOne®. Verträgst du deinen QiOne® auf der Haut, verträgst du auch die Kette. Hast du eine Nickelallergie, frag vorher deinen Hautarzt.',
+      a: 'Die Kette ist aus Chirurgenstahl 316L, aus demselben Stahl wie das Gehäuse deines QiOne®. Hast du eine Nickelallergie, frag vorher deinen Hautarzt.',
     },
     {
       f: 'Kann ich die Kette zusammen mit dem QiOne® 2 Pro kaufen?',
