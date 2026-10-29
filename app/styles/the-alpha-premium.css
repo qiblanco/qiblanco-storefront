@@ -946,6 +946,9 @@ html:has(main[data-film-seite]) body {
 
 .tap-js .tap-film-text.tap-film-text-an {
   opacity: 1;
+  /* Neues erst, wenn das Alte weg ist („wie im Film“): der neue Satz wartet,
+     bis der vorige ausgeblendet ist (gleiche Dauer wie dessen Blende). */
+  transition-delay: 450ms;
 }
 
 /* Ohne Bewegung: alle Sätze stehen untereinander, ohne Takt. */
