@@ -93,6 +93,9 @@ export const ZUSAMMENFASSUNG = {
   ruecknahme: null,
 };
 
+/* Box nur mit Bild und Bildunterschrift, ohne Liste darunter (Christian 29.10.: „wie beim
+ * QiBracelet, da wird auch nichts drunter geschrieben“); 316L, 1,6 mm und Karabiner stehen im Kopf
+ * und in den Fakten-Kacheln. */
 export const BOX = {
   titel: "What's in the Box",
   kacheln: [],
