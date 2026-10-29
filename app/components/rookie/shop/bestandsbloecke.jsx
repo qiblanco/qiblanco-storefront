@@ -78,7 +78,7 @@ export function MassgeschneiderteTechnologie() {
           <img
             width={400}
             src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_03_transparent_1.webp?v=1676978032"
-            alt=""
+            alt="Rückseite des QiOne® 2 Pro mit der Gravur „QiOne 2 Pro“, Seriennummer und „Made in Germany“"
           />
         </div>
       </div>

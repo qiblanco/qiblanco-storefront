@@ -159,3 +159,35 @@
     text-align: center;
   }
 }
+
+/* ---- Premium-Pflicht 95 (s03-r4, Christian 27.10.: jede Seite Premium) ----
+   Gemessen live 2026-10-28 mit design-rubrik: 92 = technisch 97 (11 Größen,
+   Soll <= 9), farbe 80, layout 85 (H2-Ausrichtung gemischt center/left).
+
+   EINE H2-REGEL: links an der Inhaltskante, wie der Kopf („QiOne® 2 Pro“ in
+   der linken Spalte). Die Produktkarten-H2 sind schon so breit wie ihr Wort
+   und stehen durch die Karte mittig, an ihnen ändert sich nichts Sichtbares.
+   Die Bewertungs- und Stimmen-Titel stehen über Bahnen, die links beginnen;
+   links gesetzt laufen Titel und Bahn auf derselben Kante. Das Zitat der
+   Nutzer-Statistik zieht als Ganzes mit, damit Zitat und Titel nicht
+   auseinanderfallen.
+
+   ZWISCHENGRÖSSEN AUF DIE HAUS-SKALA (wortgleich zu pdp-qi.css Abschnitt 8):
+     14,5   Etikett der InfoSlider-Karten (.CardLabel p)      -> 14 (fs-2)
+     15,25  „445 Bewertungen · Google“ (.google-rating-badge__powered)
+                                                               -> 14 (fs-2)
+     19,25  „Mehr als 14.000+ aktive Nutzer“ im Kopf (p 1.2rem) -> 20 (fs-5)
+   Jede Zielstufe steht schon im DOM, es kommt keine Größe dazu.
+   Rückweg: diesen Block löschen. */
+.qb-rookie-start h2,
+.qb-rookie-start [data-section='nutzer-statistik'] {
+  text-align: left;
+}
+.qb-rookie-start .InfoSlider .InfoSliderCard .CardLabel p,
+.qb-rookie-start .google-rating-badge__powered,
+.qb-rookie-start .google-rating-badge__powered strong {
+  font-size: var(--qb-ref-fs-2, 14px);
+}
+.qb-rookie-start .qb-rs-kopf .text-content > p > strong {
+  font-size: var(--qb-ref-fs-5, 20px);
+}
