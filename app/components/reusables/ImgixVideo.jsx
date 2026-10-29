@@ -3,6 +3,7 @@ import Hls from 'hls.js';
 import {videoQuellen} from '~/data/video-quellen';
 import {hatHoerbarenTon} from '~/lib/video-ton';
 import {Ersatzbild, bevorzugtRuhe, useErsatzbild} from '~/components/reusables/video360-ersatzbild';
+import {NAEHE_RAND} from '~/components/reusables/useNaeheLaden';
 
 /*
  * ImgixVideo — Sound-Toggle (Job bl-20260803T232952Z-b702ec, 2026-08-03),
@@ -66,9 +67,23 @@ const HLS_STUFENDECKEL = {
   maxDevicePixelRatio: 1.5,
 };
 
-// Vorlauf vor dem sichtbaren Bereich: knapp ein Handy-Bildschirm, damit das
-// erste Bild beim normalen Scrollen schon da ist.
-const SICHTWEITE = '600px 0px';
+/*
+ * Vorlauf vor dem sichtbaren Bereich: EIN Maßstab für "das Video kommt in die
+ * Nähe", NAEHE_RAND aus useNaeheLaden (rootMargin 50 %, Oberkante höchstens
+ * 1,5 Fensterhöhen unter dem oberen Rand). Das ist dieselbe Grenze, an der der
+ * tägliche Wächter (videostandard, LAZY_TIEFE_FAKTOR 1,5) "weit weg" von "nah"
+ * trennt (Christian Z12, 14.10.2026: "ob dieses Slow Motion Laden überall
+ * eingesetzt ist").
+ *
+ * Bis 29.10.2026 galt ein fester Vorlauf von 600px. Am Desktop (1366x900) lag
+ * die Ladegrenze damit bei 1500 px, die 360-Grad-Drehung auf /products/qibracelet
+ * (Oberkante 1452) und /products/qihome-air (1373) also darunter: beide luden
+ * beim Seitenaufruf 5,1 bzw. 7,0 MB, ohne dass jemand hinscrollte (Wächterlauf
+ * 22.10.2026). Mit 50 % liegt die Grenze dort bei 1350 px. Das Ersatzbild steht,
+ * bis das Video nachweislich läuft, ein späterer Start zeigt also kein leeres Bild.
+ * Mobil steht die Drehung im ersten Bildschirm und lädt unverändert sofort.
+ */
+const SICHTWEITE = NAEHE_RAND;
 
 function anfangsZustandStumm(videoPath) {
   // SSR/kein sessionStorage -> Default stumm (Policy-konform). Pro
