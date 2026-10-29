@@ -256,8 +256,15 @@
 .lp-a3 .lp-a-hero__startseiten-block {
   margin: var(--a-s2) 0 var(--a-s3);
 }
-.lp-a3 .lp-a-hero__startseiten-block h2 {
+.lp-a3 .lp-a-hero__startseiten-block .lp-a-hero__produktname {
+  /* Seit s03-r5 ein <p> (Unterzeile der H1): Schrift wie `.lp-a3 h2`, damit
+     die Optik gleich bleibt. */
+  font-family: var(--a-font);
   font-size: var(--a-fs-h2);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: inherit;
   margin: 0 0 var(--a-s1);
   /* Das Kit zentriert `.lp-a3 h2` seitenweit. Das ist fuer Sektions-
      Ueberschriften richtig und hier falsch: auf der Startseite steht
@@ -362,3 +369,36 @@
   }
   .lp-a3 .lp-b-sticky .lp-vp-btn { flex: 0 0 auto; }
 }
+
+/* ─── Premium 95: geteilte Widgets in die Token-Welt (s03-r5, 2026-10-29) ─────
+   Grossjob 20261025-design-ai-anna-fenster-wie-apple-handy-hochrutschen-ab-
+   jetzt-kaufen, Lauf s03-r5; Christian 27.10.2026: jede Seite ist Premium (95).
+   Gemessen live (Design-Rubrik 87): die Schuld lag nicht im Token-Block, sondern
+   in geteilten Widgets mit eigenen Werten. Rezept wie .lp-d3 (e-smog-schutz.css,
+   „Fremd-Widgets in die Token-Welt“):
+   - ScrollScrubVideo: Start-Ueberschrift 40 px -> der EINE H2-Stil, Start-Absatz
+     24 px -> --a-fs-lg, End-Absatz 14,5 px -> --a-fs-base.
+   - InfoSlider: Karten-Titel 28,75 px -> --a-fs-xl, Etikett 14,5 px -> --a-fs-xs.
+   - 19,25 px (1.2rem aus app.css) an Preis-Merkmalen, Studien-Ergebnissen,
+     Schluss-Vertrauenszeile, Kopf-Block und MAXIM-Zitat -> --a-fs-lg (20 px).
+   - Flaechen: Kaufblock-Karte Reinweiss -> --a-flaeche, YouTube-Grund der
+     Externen Stimmen #000 -> --a-dunkel. Damit vier Flaechen-Familien (Grund,
+     Flaeche, Gold-Handlung, Dunkel).
+   Eingefaerbt wird nur unter .lp-a3 (die Seiten dieses Bausteins); die
+   Komponenten selbst bleiben unberuehrt.
+   Rueckweg: diesen Block loeschen. */
+.lp-a3 .ScrollScrubVideo .TextContent-Start h2,
+.lp-a3 .ScrollScrubVideo .TextContent-End h2 { font-size: var(--a-fs-h2); font-weight: 600; }
+.lp-a3 .ScrollScrubVideo .TextContent-Start p { font-size: var(--a-fs-lg); }
+.lp-a3 .ScrollScrubVideo .TextContent-End p { font-size: var(--a-fs-base); }
+.lp-a3 .InfoSliderCard .CardTitle h3 { font-size: var(--a-fs-xl); }
+.lp-a3 .InfoSliderCard .CardLabel p { font-size: var(--a-fs-xs); }
+.lp-a3 .lp-a-product__features li,
+.lp-a3 .PeerReviewResults .PeerReviewResult p,
+.lp-a3 .PeerReviewStudies > p,
+.lp-a3 .lp-vp-final-cta__trust li,
+.lp-a3 .lp-a-hero__startseiten-block p,
+.lp-a3 .MaximText p { font-size: var(--a-fs-lg); }
+.lp-a3 .qb-kaufblock__karte { background: var(--a-flaeche); }
+.lp-a3 .ExterneStimmen__medium,
+.lp-a3 .ExterneStimmen__yt { background-color: var(--a-dunkel); }
