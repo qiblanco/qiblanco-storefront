@@ -76,10 +76,16 @@ export function gravurText(nummer, serie = THE_ALPHA_SERIE) {
  * lib/qi-alpha-teilzahlung.js.
  */
 
-/*
- * Ganzer Betrag ohne Nachkommastellen, echte Cents bleiben. Seit 2026-10-28
- * an neutraler Stelle (lib/betrag-text.js), damit die Alpha-Vorlage der
- * Produktseiten dieselbe Funktion nutzt; hier nur weitergereicht.
- */
-export {betragText} from '../../lib/betrag-text.js';
+/** Ganzer Betrag ohne Nachkommastellen, echte Cents bleiben. */
+export function betragText(wert, waehrung = 'EUR') {
+  const zahl = Number(wert);
+  if (!Number.isFinite(zahl)) return null;
+  const ganz = Math.round(zahl * 100) % 100 === 0;
+  return new Intl.NumberFormat('de-DE', {
+    style: 'currency',
+    currency: waehrung,
+    minimumFractionDigits: ganz ? 0 : 2,
+    maximumFractionDigits: ganz ? 0 : 2,
+  }).format(zahl);
+}
 

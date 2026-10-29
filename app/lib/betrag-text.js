@@ -2,21 +2,11 @@
  * Geldbetrag für Kundentext: ganze Beträge ohne Nachkommastellen, echte Cents
  * bleiben centgenau (Brain-Regel ganze-betraege-ohne-nachkommastellen).
  *
- * Neutraler Ort seit 2026-10-28 (Grossjob 20261027-GROSSJOB-apple-konfigurator-
- * qione-qihome-qibracelet-ab, s05): die Funktion stand bis dahin nur in
- * campaign/the-alpha-kauf-laden.js. Die Qi-Alpha-Kaufseite und die Alpha-
- * Vorlage der Produktseiten nutzen jetzt dieselbe Stelle; the-alpha-kauf-
- * laden.js reicht sie unverändert weiter. Kein Netz, kein React: testbar mit
- * node --test.
+ * EINE Funktion, EIN Ort: sie steht in campaign/the-alpha-kauf-laden.js (Qi-
+ * Alpha-Kaufseite). Die Alpha-Vorlage der Produktseiten (Grossjob 20261027-
+ * GROSSJOB-apple-konfigurator-qione-qihome-qibracelet-ab) liest sie über diese
+ * neutrale Adresse. Die Qi-Alpha-Datei bleibt bis zum Qi-Alpha-Launch
+ * (So 01.11.2026, Christian: nichts an /products/qi-alpha verändern) byte-gleich;
+ * danach darf die Funktion hierher umziehen und dort weitergereicht werden.
  */
-export function betragText(wert, waehrung = 'EUR') {
-  const zahl = Number(wert);
-  if (!Number.isFinite(zahl)) return null;
-  const ganz = Math.round(zahl * 100) % 100 === 0;
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: waehrung,
-    minimumFractionDigits: ganz ? 0 : 2,
-    maximumFractionDigits: ganz ? 0 : 2,
-  }).format(zahl);
-}
+export {betragText} from '../components/campaign/the-alpha-kauf-laden.js';
