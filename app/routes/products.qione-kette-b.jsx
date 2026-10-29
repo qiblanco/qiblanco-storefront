@@ -1,10 +1,6 @@
 import {useLoaderData} from 'react-router';
-import {
-  HeutigeSeite,
-  PRODUCT_QUERY,
-  links as heutigeLinks,
-  meta as metaVonA,
-} from './products.qione-kette';
+import {HeutigeSeite, PRODUCT_QUERY, links as heutigeLinks} from './products.qione-kette';
+import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {ladeProduktSeite} from '~/lib/produkt-seite-laden.server';
 import {bMeta, B_HEADERS} from '~/lib/produkt-seite-b';
 
@@ -17,6 +13,20 @@ import {bMeta, B_HEADERS} from '~/lib/produkt-seite-b';
  */
 export function links() {
   return heutigeLinks();
+}
+
+function metaVonA({data}) {
+  return produktMeta({
+    // Product-Auszeichnung (Preis/Verfügbarkeit) — siehe produkt-seo.js;
+    // Kanonische auf A (pfad von A), wie products.qibracelet-b.jsx.
+    produkt: data?.product,
+    marktLand: data?.marktLand,
+    pfad: '/products/qione-kette',
+    titel: `${data?.product?.title ?? ''} | ${MARKE}`,
+    bildUrl:
+      data?.product?.selectedOrFirstAvailableVariant?.image?.url ??
+      data?.product?.images?.nodes?.[0]?.url,
+  });
 }
 
 /** @type {MetaFunction<typeof loader>} */
