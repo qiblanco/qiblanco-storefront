@@ -1,0 +1,418 @@
+/*
+ * APPLE-SEITENBAUKASTEN — Token-CSS (Grossjob 20261029-GROSSJOB-alle-shop-
+ * seiten-apple-niveau-ausser-seo-geo, s03). Scope: .as-seite (Wurzel mit
+ * data-apple-seite, components/apple-seite/AppleSeite.jsx). Lädt nur, wenn
+ * eine Seite ihre Apple-Fassung rendert.
+ *
+ * HERKUNFT, KEINE NEUEN WERTE:
+ *   Gold        qb-tokens.css: --qb-akzent (Fläche, Linie) und
+ *               --qb-akzent-tinte (goldene Schrift auf Hell). Kein zweiter Ton.
+ *   Schrift,    die live Apple-Kaufseiten (styles/the-alpha-produkt.css,
+ *   Farben,     --tas-*): dieselben Stufen, dieselbe Tinte, dasselbe Grau,
+ *   Radius      derselbe Bild-Radius. Christian 29.10.: „die neuen apple
+ *               seiten sind der hit“ — sie sind der Maßstab.
+ *   Abstände    8-pt-Raster (qb-tokens --qb-ref-raster), Sektions-Takt aus
+ *               qb-tokens (--qb-abstand-sektion-*).
+ *
+ * REGELN: Typo-Skala 8 Stufen (--as-fs-1 … --as-fs-8, Grenze 9), Abstände nur
+ * --as-s-*, EIN Bild-Radius (--as-radius), EIN H2-Stil (.as-h2), Knöpfe des
+ * Hauses (.btn--primary/.btn--secondary), Gold nur auf Handlung und Etikett.
+ */
+.as-seite {
+  /* Typo: 12 · 14 · 17 · 21 · 24 · 28 · 40 · 56 px */
+  --as-fs-1: 0.75rem;
+  --as-fs-2: 0.875rem;
+  --as-fs-3: 1.0625rem;
+  --as-fs-4: 1.3125rem;
+  --as-fs-5: 1.5rem;
+  --as-fs-6: 1.75rem;
+  --as-fs-7: 2.5rem;
+  --as-fs-8: 3.5rem;
+  /* 8-pt-Raster */
+  --as-s-1: 8px;
+  --as-s-2: 16px;
+  --as-s-3: 24px;
+  --as-s-4: 32px;
+  --as-s-6: 48px;
+  --as-s-8: var(--qb-abstand-sektion-mittel, 64px);
+  --as-s-12: var(--qb-abstand-sektion-gross, 96px);
+  /* Farbe: neutrales Kontinuum + EIN Gold */
+  --as-tinte: #1d1d1f;
+  --as-grau: #6e6e73;
+  --as-linie: #d2d2d7;
+  --as-flaeche: #f5f5f7;
+  --as-weiss: #ffffff;
+  --as-band: #1e1e1e;
+  --as-gold: var(--qb-akzent, rgb(242, 191, 114));
+  --as-gold-tinte: var(--qb-akzent-tinte, #856828);
+  /* Form */
+  --as-radius: 18px;
+  --as-breite: 1200px;
+  --as-text-breite: 680px;
+  --as-dauer: 240ms;
+  /* Knöpfe und Tippziele (Knopf-Stil selbst: .btn--primary/.btn--secondary) */
+  --as-knopf-breite: 220px;
+  --as-tippziel: 48px;
+  --as-strich: 1px;
+  --as-strich-stark: 2px;
+
+  color: var(--as-tinte);
+  background: var(--as-weiss);
+  font-size: var(--as-fs-3);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.as-seite *,
+.as-seite *::before,
+.as-seite *::after {
+  box-sizing: border-box;
+}
+
+/* ---- Schrift: EIN H1-, EIN H2-Stil ---------------------------------------- */
+.as-h1 {
+  margin: 0;
+  font-size: var(--as-fs-7);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.as-h2 {
+  margin: 0;
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+@media (min-width: 750px) {
+  .as-h1 {
+    font-size: var(--as-fs-8);
+  }
+  .as-h2 {
+    font-size: var(--as-fs-7);
+  }
+}
+.as-overline,
+.as-etikett {
+  margin: 0 0 var(--as-s-1);
+  font-size: var(--as-fs-2);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--as-gold-tinte);
+}
+.as-unter {
+  margin: var(--as-s-2) auto 0;
+  max-width: var(--as-text-breite);
+  font-size: var(--as-fs-4);
+  line-height: 1.4;
+  color: var(--as-grau);
+  text-wrap: pretty;
+}
+.as-absatz {
+  margin: var(--as-s-2) 0 0;
+  max-width: var(--as-text-breite);
+  color: var(--as-grau);
+  text-wrap: pretty;
+}
+.as-link {
+  display: inline-block;
+  margin-top: var(--as-s-2);
+  font-weight: 600;
+  color: var(--as-tinte);
+  text-decoration: underline;
+  text-decoration-color: var(--as-gold);
+  text-underline-offset: 0.25em;
+}
+.as-link:hover {
+  text-decoration-thickness: var(--as-strich-stark);
+}
+
+/* ---- Knöpfe: die des Hauses, hier nur Lage ------------------------------- */
+.as-knoepfe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--as-s-2);
+  justify-content: center;
+  margin-top: var(--as-s-4);
+}
+.as-seite .as-knopf {
+  width: auto;
+  min-width: var(--as-knopf-breite);
+}
+
+/* ---- Bild: EIN Radius ----------------------------------------------------- */
+.as-bild {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--as-radius);
+}
+.as-seite figure {
+  margin: 0;
+}
+
+/* ---- Sektion -------------------------------------------------------------- */
+.as-sektion {
+  max-width: var(--as-breite);
+  margin: 0 auto;
+  padding: var(--as-s-8) var(--as-s-2) 0;
+}
+@media (min-width: 750px) {
+  .as-sektion {
+    padding: var(--as-s-12) var(--as-s-4) 0;
+  }
+}
+.as-seite > :last-child {
+  margin-bottom: var(--as-s-8);
+}
+
+/* ---- Hero ----------------------------------------------------------------- */
+.as-hero {
+  padding: var(--as-s-8) var(--as-s-2) 0;
+  text-align: center;
+}
+.as-hero-text {
+  max-width: var(--as-breite);
+  margin: 0 auto;
+}
+.as-hero-bild {
+  max-width: var(--as-breite);
+  margin: var(--as-s-6) auto 0;
+}
+@media (min-width: 750px) {
+  .as-hero {
+    padding: var(--as-s-12) var(--as-s-4) 0;
+  }
+}
+
+/* ---- Dunkel (Hero oder CTA-Band) ------------------------------------------ */
+.as-dunkel {
+  background: var(--as-band);
+  color: var(--as-weiss);
+  padding-bottom: var(--as-s-8);
+}
+.as-dunkel .as-unter,
+.as-dunkel .as-absatz {
+  color: var(--as-linie);
+}
+.as-dunkel .as-overline,
+.as-dunkel .as-etikett {
+  color: var(--as-gold);
+}
+
+/* ---- Fakten --------------------------------------------------------------- */
+.as-kacheln {
+  list-style: none;
+  margin: var(--as-s-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--as-s-2);
+}
+@media (min-width: 750px) {
+  .as-kacheln {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--as-s-3);
+  }
+}
+.as-kachel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--as-s-1);
+  padding: var(--as-s-4) var(--as-s-3);
+  background: var(--as-flaeche);
+  border-radius: var(--as-radius);
+}
+.as-kachel-zahl {
+  font-size: var(--as-fs-7);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--as-tinte);
+}
+.as-kachel-titel {
+  font-size: var(--as-fs-4);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.as-kachel-satz {
+  color: var(--as-grau);
+}
+
+/* ---- Bild-Text-Band ------------------------------------------------------- */
+.as-band {
+  display: grid;
+  gap: var(--as-s-4);
+  align-items: center;
+}
+@media (min-width: 750px) {
+  .as-band {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--as-s-8);
+  }
+  .as-band[data-band-seite='rechts'] .as-band-bild {
+    order: 2;
+  }
+}
+
+/* ---- Kapitel -------------------------------------------------------------- */
+.as-kapitel-kopf {
+  max-width: var(--as-text-breite);
+}
+.as-kapitel-raster {
+  display: grid;
+  gap: var(--as-s-4);
+  margin-top: var(--as-s-4);
+}
+@media (min-width: 1024px) {
+  .as-kapitel-raster {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--as-s-8);
+    align-items: start;
+  }
+  .as-kapitel-raster--text {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.as-quellen {
+  margin: var(--as-s-3) 0 0;
+  padding-left: var(--as-s-3);
+  font-size: var(--as-fs-1);
+  color: var(--as-grau);
+}
+
+/* ---- Stimmen -------------------------------------------------------------- */
+.as-stimmen {
+  list-style: none;
+  margin: var(--as-s-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--as-s-2);
+}
+@media (min-width: 750px) {
+  .as-stimmen {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--as-s-3);
+  }
+}
+.as-stimme {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--as-s-2);
+  padding: var(--as-s-4) var(--as-s-3);
+  background: var(--as-flaeche);
+  border-radius: var(--as-radius);
+}
+.as-stimme-text {
+  margin: 0;
+  font-size: var(--as-fs-4);
+  line-height: 1.4;
+}
+.as-stimme-text p {
+  margin: 0;
+}
+.as-stimme-quelle {
+  margin: 0;
+  font-size: var(--as-fs-2);
+  color: var(--as-grau);
+}
+
+/* ---- Fragen --------------------------------------------------------------- */
+.as-faq-liste {
+  margin-top: var(--as-s-4);
+  border-top: var(--as-strich) solid var(--as-linie);
+}
+.as-faq-eintrag {
+  border-bottom: var(--as-strich) solid var(--as-linie);
+}
+.as-faq-frage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--as-s-2);
+  min-height: var(--as-tippziel);
+  padding: var(--as-s-3) 0;
+  font-size: var(--as-fs-4);
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+  list-style: none;
+}
+.as-faq-frage::-webkit-details-marker {
+  display: none;
+}
+.as-faq-zeichen {
+  position: relative;
+  flex: none;
+  width: var(--as-s-2);
+  height: var(--as-s-2);
+}
+.as-faq-zeichen::before,
+.as-faq-zeichen::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  height: var(--as-strich-stark);
+  margin-top: calc(var(--as-strich-stark) / -2);
+  background: var(--as-tinte);
+  transition: transform var(--as-dauer) ease;
+}
+.as-faq-zeichen::after {
+  transform: rotate(90deg);
+}
+.as-faq-eintrag[open] .as-faq-zeichen::after {
+  transform: rotate(0deg);
+}
+.as-faq-antwort {
+  padding: 0 0 var(--as-s-3);
+  max-width: var(--as-text-breite);
+  color: var(--as-grau);
+}
+.as-faq-antwort p {
+  margin: 0;
+}
+
+/* ---- CTA-Band ------------------------------------------------------------- */
+.as-cta-band {
+  margin-top: var(--as-s-12);
+  padding: var(--as-s-8) var(--as-s-2);
+  text-align: center;
+}
+.as-cta-innen {
+  max-width: var(--as-text-breite);
+  margin: 0 auto;
+}
+@media (min-width: 750px) {
+  .as-cta-band {
+    padding: var(--as-s-12) var(--as-s-4);
+  }
+}
+
+/* ---- Anna ----------------------------------------------------------------- */
+.as-anna {
+  display: flex;
+  gap: var(--as-s-2);
+  align-items: flex-start;
+}
+.as-anna-zeichen {
+  flex: none;
+  width: var(--as-s-4);
+  height: var(--as-s-4);
+  margin-top: var(--as-s-1);
+  border-radius: 50%;
+  background: var(--as-gold);
+}
+.as-anna-titel {
+  margin: 0;
+  font-size: var(--as-fs-4);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .as-faq-zeichen::before,
+  .as-faq-zeichen::after {
+    transition: none;
+  }
+}
