@@ -64,6 +64,8 @@ test('appleSeiteAn: Standard gilt, Umgebung on/off gewinnt, sonst nichts', () =>
   assert.equal(lib.appleSeiteAn({[n]: 'ON'}, s), std);
   assert.equal(lib.appleSeiteAn({[n]: 'on'}, 'gibt-es-nicht'), false);
   assert.equal(lib.appleSeiteAn({toString: 'on'}, 'toString'), false);
+  assert.equal(lib.appleSeite('toString'), null);
+  assert.equal(lib.appleSeite('constructor'), null);
 });
 
 test('appleSeiteLaden liefert {seite, an}', () => {
