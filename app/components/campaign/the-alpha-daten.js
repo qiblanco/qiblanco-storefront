@@ -40,6 +40,43 @@ export const THE_ALPHA_VIDEO = {
   },
 };
 
+/**
+ * FILM OHNE TEXT IM BILD, nur Variante A (Christian 29.10.2026: „der text ist
+ * immer noch im Video zu sehen anstatt darunter - kann man das nicht
+ * ändern?“; Job 20261029-qi-alpha-lp-text-unter-video-abspann-zeilenweise-
+ * offene-wuensche). Derselbe Reveal von Luca, neu aus dem Original
+ * (Drive QiAlpha_Reveal_16x9.mp4, 1920x1080) auf ax41 aufbereitet: ohne die
+ * eingebrannten Sätze, ohne Tonspur (das Original ist stumm, -70 LUFS), das
+ * Schlussbild „Qi Alpha®“ steht 2,6 s, dann blendet es auf Schwarz (die
+ * Schleife beginnt auf Schwarz). 19,9 s.
+ *
+ * `texte`: die Sätze als echter Text UNTER dem Video, im Takt des Films
+ * (Sekunden der Videozeit). Einer nach dem anderen, der neue erst, wenn der
+ * alte weg ist („wie im Film“). Der letzte kommt erst, wenn das Logo voll
+ * sichtbar ist (gemessen: Logo ab 15,8 s, voll ab 16,75 s). Wortlaut: Christians
+ * drei Sätze vom 26.10.; der Schluss-Satz in seiner Fassung vom 28.10.
+ * („Qi Alpha – die nächste Dimension.“), mit ® wie überall beim Qi Alpha.
+ * B behält THE_ALPHA_VIDEO (Sätze im Bild) unverändert.
+ */
+export const THE_ALPHA_FILM_OHNE_TEXT = {
+  video: {
+    // CDN-VIDEO (cdn-publish 29.10.2026, gid://shopify/Video/77517194297612), 720p.
+    src: 'https://cdn.shopify.com/videos/c/vp/89a8e35542a04522913ab13cb2c7b738/89a8e35542a04522913ab13cb2c7b738.HD-720p-4.5Mbps-99309506.mp4',
+    poster: THE_ALPHA_VIDEO.video.poster,
+    ton: false,
+  },
+  videoStandbild: THE_ALPHA_VIDEO.videoStandbild,
+  texte: [
+    {von: 1.2, bis: 5.2, text: '„The One Eye“ – Hochreiner Natur Diamant.'},
+    {
+      von: 5.6,
+      bis: 10.6,
+      text: 'Die finale Politur wird per Hand von Goldschmieden mit meisterhafter Genauigkeit durchgeführt.',
+    },
+    {von: 16.8, bis: 19.3, text: 'Qi Alpha® – die nächste Dimension.'},
+  ],
+};
+
 /** Kopf, schwarz (Vorlage Punkt 1). Fettungen wie in vorlage/kopf-text.png. */
 export const THE_ALPHA_KOPF = {
   titel: 'Kohärentes Licht',

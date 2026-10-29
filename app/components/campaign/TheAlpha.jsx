@@ -9,7 +9,7 @@ import {
   TapEdition,
 } from '~/components/campaign/TheAlphaPremium';
 import {
-  THE_ALPHA_VIDEO,
+  THE_ALPHA_FILM_OHNE_TEXT,
   THE_ALPHA_ABSCHNITTE,
   THE_ALPHA_ETIKETT,
 } from '~/components/campaign/the-alpha-daten';
@@ -36,6 +36,14 @@ import {
  * für Zeile bis zum Reservierungsknopf), Ton als Standard mit Schalter rechts
  * unten (ton="an"), Etikett am Seitenband „THE ALPHA“. Nur hier geschaltet,
  * B und C bleiben unverändert.
+ *
+ * 29.10.2026 (Christian: „der text ist immer noch im Video zu sehen anstatt
+ * darunter“, „zeile für zeile aufbauen nicht wort für wort“, „sound on ist
+ * auf dem desktop immer noch nicht live“; Job 20261029-qi-alpha-lp-text-
+ * unter-video-abspann-zeilenweise-offene-wuensche): Lucas Reveal ohne Text im
+ * Bild, die Sätze groß darunter im Takt des Films (THE_ALPHA_FILM_OHNE_TEXT),
+ * die Unterzeile der Titelkarte als ganze Zeile, „Sound On“ unter
+ * „Kohärentes Licht“ solange der Browser den Ton noch zurückhält.
  */
 
 const [MANIFESTATION, PROTECTION, LONGEVITY] = THE_ALPHA_ABSCHNITTE;
@@ -56,7 +64,7 @@ export default function TheAlpha() {
     <TapSeite variante="a" film="szene" ton="an">
       <TapTitelkarte />
       <TapWoerterbuch />
-      <TapFilm film={THE_ALPHA_VIDEO} />
+      <TapFilm film={THE_ALPHA_FILM_OHNE_TEXT} />
       <TapKapitel abschnitt={MANIFESTATION}>
         <TapKarten bilder={MANIFESTATION.bilder} />
       </TapKapitel>

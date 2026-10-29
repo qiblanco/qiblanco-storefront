@@ -740,7 +740,8 @@ html:has(main[data-film-seite]) body {
   }
 }
 
-.tap-ton-fenster {
+.tap-ton-fenster,
+.tap-ton-hinweis {
   position: fixed;
   left: 50%;
   top: 26svh;
@@ -756,12 +757,14 @@ html:has(main[data-film-seite]) body {
   animation: tap-ton-auf 700ms var(--tap-kurve) 150ms both;
 }
 
-.tap-ton-fenster-zu {
+.tap-ton-fenster-zu,
+.tap-ton-hinweis-zu {
   animation: tap-ton-zu 500ms var(--tap-kurve) both;
   pointer-events: none;
 }
 
-.tap-ton-fenster button {
+.tap-ton-fenster button,
+.tap-ton-hinweis button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -843,6 +846,7 @@ html:has(main[data-film-seite]) body {
 }
 
 .tap-ton-fenster button:focus-visible,
+.tap-ton-hinweis button:focus-visible,
 .tap-ton-schalter:focus-visible,
 .tap-film-ton:focus-visible {
   outline: 2px solid var(--tap-weiss);
@@ -890,14 +894,120 @@ html:has(main[data-film-seite]) body {
   color: var(--tap-weiss);
 }
 
+/* Text UNTER dem Video (nur A, Christian 29.10.2026: „der text ist immer noch
+   im Video zu sehen anstatt darunter“). Lucas Reveal kommt ohne Text im Bild;
+   die Sätze stehen groß darunter, im Takt der Videozeit (TapFilm, texte).
+   Alle Sätze liegen übereinander in einer Gitterzelle: die Zelle ist so hoch
+   wie der längste Satz, beim Wechsel springt nichts. Es steht immer nur einer
+   da, der nächste kommt erst, wenn der vorige weg ist („wie im Film“). */
+.tap-film-bild {
+  position: relative;
+}
+
+/* Bild und Text passen zusammen auf einen Bildschirm (die Szene erscheint
+   erst, wenn sie ganz im Bild ist): das Video gibt dem Text die Höhe ab. */
+.tap-film-mit-text video {
+  max-width: min(var(--tap-breite), calc((100svh - 17rem) * 16 / 9));
+}
+
+/* Handy: näher heran (Christian 28.10.: „stärkerer Zoom“). Ohne Text im Bild
+   darf der Reveal beschnitten werden; Diamant, Gerät und Logo stehen mittig. */
+@media (max-width: 767px) {
+  .tap-film-mit-text video {
+    aspect-ratio: 1 / 1;
+    object-position: 50% 50%;
+  }
+}
+
+.tap-film-texte {
+  display: grid;
+  max-width: 58rem;
+  margin: var(--tap-s-4) auto 0;
+  padding: 0 var(--tap-s-3);
+  text-align: center;
+}
+
+.tap-film-text {
+  grid-area: 1 / 1;
+  align-self: start;
+  margin: 0;
+  font-size: var(--tap-fs-edition);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--tap-weiss);
+}
+
+.tap-js .tap-film-text {
+  opacity: 0;
+  transition: opacity 450ms ease;
+}
+
+.tap-js .tap-film-text.tap-film-text-an {
+  opacity: 1;
+}
+
+/* Ohne Bewegung: alle Sätze stehen untereinander, ohne Takt. */
+.tap-still .tap-film-texte {
+  display: block;
+}
+
+.tap-js.tap-still .tap-film-text {
+  opacity: 1;
+  transition: none;
+}
+
+.tap-still .tap-film-text + .tap-film-text {
+  margin-top: var(--tap-s-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap-film-texte {
+    display: block;
+  }
+
+  .tap-js .tap-film-text {
+    opacity: 1;
+    transition: none;
+  }
+
+  .tap-film-text + .tap-film-text {
+    margin-top: var(--tap-s-2);
+  }
+}
+
+/* „Sound On“-Hinweis bei Ton als Standard (A): unter „Kohärentes Licht“
+   (Lage setzt TapTon aus der Titel-Unterkante), das X links (Christian
+   28.10.). Gestaltet wie das Sound-on-Fenster von B, aber eine eigene
+   Klasse: A hat kein Fenster (Z6), nur diesen Hinweis. */
+.tap-ton-hinweis .tap-ton-fenster-ohne {
+  border-left: 0 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Wörterbuch am Handy zentriert (Christian 28.10.: „Definitionen
+   zentriert“), nur in der Szenen-Fassung (A). */
+@media (max-width: 767px) {
+  .tap-seite[data-tap-fassung='szene'] .tap-wb-blatt {
+    text-align: center;
+  }
+
+  .tap-seite[data-tap-fassung='szene'] .tap-wb-quelle {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tap-ton-fenster,
-  .tap-ton-fenster-zu {
+  .tap-ton-fenster-zu,
+  .tap-ton-hinweis,
+  .tap-ton-hinweis-zu {
     animation-name: tap-auf;
     clip-path: none;
   }
 
-  .tap-ton-fenster-zu {
+  .tap-ton-fenster-zu,
+  .tap-ton-hinweis-zu {
     animation-direction: reverse;
   }
 }

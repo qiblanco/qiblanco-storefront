@@ -326,12 +326,15 @@ function Bild({bild, sizes, className, loading = 'lazy'}) {
 
 /** Szene 1 und 2: Titelkarte auf Schwarz. „Kohärentes Licht“ blendet beim
  * Laden ein und bleibt stehen; mit dem Scrollen baut sich darunter
- * „- Ultra High Vibe Mode -“ Wort für Wort auf (Z53, Z286/Z294). */
+ * „- Ultra High Vibe Mode -“ Wort für Wort auf (Z53, Z286/Z294).
+ * Szenen-Fassung (A, Christian 29.10.2026: „zeile für zeile aufbauen nicht
+ * wort für wort“): die Unterzeile kommt als ganze Zeile, ein Schritt. */
 export function TapTitelkarte({titel = THE_ALPHA_KOPF.titel, untertitel = THE_ALPHA_KOPF.untertitel}) {
-  const worte = tapWorte(untertitel).length;
+  const {szene: zeilenweise} = useContext(TapFassung);
+  const worte = zeilenweise ? 1 : tapWorte(untertitel).length;
   return (
     <section
-      className="tap-titelkarte tap-scrub"
+      className={`tap-titelkarte tap-scrub${zeilenweise ? ' tap-scrub-zeilen' : ''}`}
       data-tap-anfang=""
       data-tap-szene=""
       data-tap-scrub=""
@@ -341,7 +344,13 @@ export function TapTitelkarte({titel = THE_ALPHA_KOPF.titel, untertitel = THE_AL
         <h1 className="tap-hero-titel" data-tap-ton="gong">
           <span className="tap-hero-zeile">{titel}</span>
           <span className="tap-hero-unter">
-            <Worte text={untertitel} />
+            {zeilenweise ? (
+              <span className="tap-zeile" data-tap-schritt="">
+                {untertitel}
+              </span>
+            ) : (
+              <Worte text={untertitel} />
+            )}
           </span>
         </h1>
       </div>
@@ -408,40 +417,92 @@ export function TapVollbild({bild, format = 'hoch', loading = 'lazy'}) {
  * Felder in the-alpha-daten.js THE_ALPHA_VIDEO.video: src (MP4, Pflicht),
  * poster, optional hls (sonst aus der Shopify-CDN-Adresse abgeleitet),
  * untertitel (WebVTT, gezeigt solange der Video-Ton nicht zu hören ist) und
- * ton (true/false; fehlt es, misst der Browser, ob Ton drin ist). */
+ * ton (true/false; fehlt es, misst der Browser, ob Ton drin ist).
+ *
+ * TEXT UNTER DEM VIDEO (`film.texte`, nur A; Christian 29.10.2026: „der text
+ * ist immer noch im Video zu sehen anstatt darunter“): die Sätze stehen als
+ * echter, großer Text unter dem Bild, im Takt der Videozeit. Es steht immer
+ * höchstens ein Satz da; der nächste kommt erst, wenn der vorige weg ist.
+ * Alle Sätze liegen übereinander in einer Zelle, so springt nichts. Ohne
+ * Bewegung (prefers-reduced-motion, ?film=still) und ohne JavaScript stehen
+ * alle untereinander. */
 export function TapFilm({film}) {
-  const {video, videoStandbild} = film;
+  const {video, videoStandbild, texte} = film;
+  const filmRef = useRef(null);
+  const [aktiv, setAktiv] = useState(-1);
+  const mitTexten = Boolean(video?.src && texte?.length);
+  useEffect(() => {
+    const v = filmRef.current;
+    if (!v || !mitTexten) return undefined;
+    const takt = () => {
+      const t = v.currentTime;
+      setAktiv(texte.findIndex((s) => t >= s.von && t < s.bis));
+    };
+    const ereignisse = ['timeupdate', 'seeked', 'playing', 'pause', 'emptied'];
+    ereignisse.forEach((e) => v.addEventListener(e, takt));
+    takt();
+    return () => ereignisse.forEach((e) => v.removeEventListener(e, takt));
+  }, [mitTexten, texte]);
   if (video?.src) {
     const tonFeld = video.ton === true ? 'ja' : video.ton === false ? 'nein' : undefined;
     return (
       <figure
-        className="tap-vollbild tap-format-hoch tap-film"
+        className={`tap-vollbild tap-format-hoch tap-film${mitTexten ? ' tap-film-mit-text' : ''}`}
         data-tap-ein=""
         data-tap-film=""
         data-tap-szene=""
       >
-        <video
-          data-tap-video=""
-          data-tap-video-ton={tonFeld}
-          data-tap-poster={video.poster || videoStandbild.url}
-          muted
-          loop
-          playsInline
-          preload="none"
-          aria-label={videoStandbild.alt}
-        >
-          {videoQuellen(video).map((q) => (
-            <source key={q.src} src={q.src} type={q.type} />
-          ))}
-          {video.untertitel ? (
-            <track kind="captions" src={video.untertitel} srcLang="de" label="Deutsch" default />
-          ) : null}
-        </video>
-        <TapFilmTon />
+        <div className="tap-film-bild">
+          <video
+            ref={filmRef}
+            data-tap-video=""
+            data-tap-video-ton={tonFeld}
+            data-tap-poster={video.poster || videoStandbild.url}
+            muted
+            loop
+            playsInline
+            preload="none"
+            aria-label={videoStandbild.alt}
+          >
+            {videoQuellen(video).map((q) => (
+              <source key={q.src} src={q.src} type={q.type} />
+            ))}
+            {video.untertitel ? (
+              <track kind="captions" src={video.untertitel} srcLang="de" label="Deutsch" default />
+            ) : null}
+          </video>
+          <TapFilmTon />
+        </div>
+        {mitTexten ? (
+          <figcaption className="tap-film-texte">
+            {texte.map((s, i) => (
+              <p
+                key={s.text}
+                className={`tap-film-text${i === aktiv ? ' tap-film-text-an' : ''}`}
+                data-tap-film-text=""
+              >
+                <MarkeImText text={s.text} />
+              </p>
+            ))}
+          </figcaption>
+        ) : null}
       </figure>
     );
   }
   return <TapVollbild bild={videoStandbild} />;
+}
+
+/** Fließtext mit „®“ an beliebiger Stelle: jedes Zeichen hochgestellt
+ * (MarkenName kennt nur das ® am Ende). */
+function MarkeImText({text}) {
+  const teile = String(text).split('®');
+  return teile.map((t, i) => (
+    // eslint-disable-next-line react/no-array-index-key
+    <span key={i}>
+      {t}
+      {i < teile.length - 1 ? <sup className="tap-reg">®</sup> : null}
+    </span>
+  ));
 }
 
 /** Ein Kapitel: die Bühne steht still, sobald sie den Bildschirm füllt; die
