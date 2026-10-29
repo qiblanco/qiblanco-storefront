@@ -212,57 +212,91 @@ export function ratenanteilKorrektur({zeilen, laender}) {
 }
 
 /**
- * Muss die Warenkorb-Action nachlesen? Nur, wenn die Kundenaktion einen
- * Ratenanteil hinzufügen oder eine Menge über 1 setzen kann. Jeder andere
- * Klick kostet keinen zusätzlichen Lesezugriff.
+ * Die eine Schreibweise, die nachweislich NICHT der Ratenanteil ist: die
+ * kanonische GID eines anderen Artikels. Jede andere Form kann Shopify als
+ * Ratenanteil lesen. Gemessen am 29.10.2026 (K3-Widerleger s02): auch
+ * „6604_8336396556“ (Unterstrich wie in Ruby-Zahlen), die Base64-GID und
+ * „…/66048336396556?a=/“ legten den Ratenanteil an, ohne dass mitRatenanteil
+ * sie erkannte. Entschieden wird deshalb am angelegten Warenkorb, nie an der
+ * Schreibweise; die Schreibweise sagt nur, ob nachgelesen werden muss.
  */
-export function ratenanteilPruefen({action, inputs}) {
-  if (action === 'LinesAdd') {
-    return mitRatenanteil((inputs?.lines || []).map((l) => l?.merchandiseId));
-  }
-  if (action === 'LinesUpdate') {
-    return (inputs?.lines || []).some(
-      (l) =>
-        mitRatenanteil([l?.merchandiseId]) ||
-        !(Number(l?.quantity ?? 0) <= 1),
-    );
-  }
-  return false;
+const KANONISCH_RX = /^gid:\/\/shopify\/ProductVariant\/[1-9]\d{0,19}$/;
+
+function sicherKeinRatenanteil(id) {
+  const s = String(id ?? '');
+  return KANONISCH_RX.test(s) && s.split('/').pop() !== TEILZAHLUNG.variante;
 }
 
 /**
- * Bindung in routes/cart.jsx (Muster bindeQiMasterAddons): liest den
- * Warenkorb nach der Kundenaktion und wendet ratenanteilKorrektur an.
- * Fail-soft: scheitert das Lesen oder Korrigieren, bleibt das Ergebnis der
- * Kundenaktion stehen. Dann bleibt der Wächter die Linie: er stellt für eine
+ * Muss nachgelesen werden? Ja, sobald eine Zeile der Aktion der Ratenanteil
+ * sein KANN (jede Schreibweise außer der kanonischen eines anderen Artikels)
+ * oder eine Menge über 1 setzt. Ein normaler Klick mit der GID eines anderen
+ * Artikels kostet keinen zusätzlichen Lesezugriff.
+ */
+export function ratenanteilPruefen({action, inputs}) {
+  const lines = inputs?.lines;
+  if (action !== 'LinesAdd' && action !== 'LinesUpdate') return false;
+  if (!Array.isArray(lines)) return true;
+  if (action === 'LinesAdd') {
+    return lines.some((l) => !sicherKeinRatenanteil(l?.merchandiseId));
+  }
+  return lines.some(
+    (l) =>
+      (l?.merchandiseId !== undefined &&
+        !sicherKeinRatenanteil(l.merchandiseId)) ||
+      !(Number(l?.quantity ?? 0) <= 1),
+  );
+}
+
+// Höchstwert der Storefront-API je Seite; eine Runde sieht so viele Zeilen.
+const SEITE = 250;
+const RUNDEN = 4;
+
+/**
+ * Bindung in routes/cart.jsx und routes/cart.$lines.jsx (Muster
+ * bindeQiMasterAddons): liest den angelegten Warenkorb und wendet
+ * ratenanteilKorrektur an, Runde um Runde, bis er sauber ist. Eine Runde
+ * sieht höchstens 250 Zeilen; mit 101 Ratenanteil-Zeilen blieb bei 100
+ * gelesenen eine zweite stehen (K3-Widerleger s02). Vier Runden decken
+ * jeden Warenkorb, den Shopify annimmt.
+ * Fail-soft: scheitert das Lesen oder Korrigieren, bleibt das letzte
+ * Ergebnis stehen. Dann bleibt der Wächter die Linie: er stellt für eine
  * Bestellung 1, die nicht genau eine Zeile zu 10.000 € in EUR trägt, keinen
  * Code aus.
  */
 export async function bindeRatenanteil({cart, action, inputs, result, land}) {
   const cartId = result?.cart?.id;
   if (!cartId || !ratenanteilPruefen({action, inputs})) return result;
-  let voll;
-  try {
-    voll = await cart.get({cartId});
-  } catch {
-    return result;
-  }
-  const zeilen = (voll?.lines?.nodes || []).map((z) => ({
-    id: z.id,
-    quantity: z.quantity,
-    variantId: z.merchandise?.id,
-  }));
-  const laender = [land, voll?.buyerIdentity?.countryCode].filter(Boolean);
-  const {entfernen, aendern} = ratenanteilKorrektur({zeilen, laender});
-  if (!entfernen.length && !aendern.length) return result;
   let neu = result;
-  try {
-    if (entfernen.length) neu = await cart.removeLines(entfernen, {cartId});
-    if (aendern.length) neu = await cart.updateLines(aendern, {cartId});
-  } catch {
-    return result;
+  for (let runde = 0; runde < RUNDEN; runde += 1) {
+    let voll;
+    try {
+      voll = await cart.get({cartId, numCartLines: SEITE});
+    } catch {
+      return neu;
+    }
+    const zeilen = (voll?.lines?.nodes || []).map((z) => ({
+      id: z.id,
+      quantity: z.quantity,
+      variantId: z.merchandise?.id,
+    }));
+    const laender = [land, voll?.buyerIdentity?.countryCode].filter(Boolean);
+    const {entfernen, aendern} = ratenanteilKorrektur({zeilen, laender});
+    if (!entfernen.length && !aendern.length) return neu;
+    try {
+      if (entfernen.length) {
+        const r = await cart.removeLines(entfernen, {cartId});
+        if (r?.cart) neu = r;
+      }
+      if (aendern.length) {
+        const r = await cart.updateLines(aendern, {cartId});
+        if (r?.cart) neu = r;
+      }
+    } catch {
+      return neu;
+    }
   }
-  return neu?.cart ? neu : result;
+  return neu;
 }
 
 /**
