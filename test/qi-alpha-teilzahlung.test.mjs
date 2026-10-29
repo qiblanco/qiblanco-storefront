@@ -313,30 +313,79 @@ test('Permalink-Zeilen: Ratenanteil höchstens einmal, Menge 1, andere Zeilen un
   ]);
 });
 
-test('Korrektur POST /cart: außerhalb DE/AT fällt der Ratenanteil, in DE höchstens eine Zeile mit Menge 1', () => {
+test('Korrektur Permalink: außerhalb DE/AT fällt der Ratenanteil, in DE höchstens eine Zeile mit Menge 1', () => {
   const z = [
     {id: 'l1', quantity: 3, variantId: R_GID},
-    {id: 'l2', quantity: 1, variantId: QI_GID},
     {id: 'l3', quantity: 1, variantId: R_GID},
   ];
-  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: z, laender: ['DE', 'DE']}), {
-    entfernen: ['l3'],
-    aendern: [{id: 'l1', quantity: 1}],
-  });
-  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: z, laender: ['CH', 'CH']}), {
-    entfernen: ['l1', 'l3'],
+  const k = (laender, zeilen = z) => tz.ratenanteilKorrektur({zeilen, laender, permalink: true});
+  assert.deepEqual(k(['DE', 'DE']), {entfernen: ['l3'], aendern: [{id: 'l1', quantity: 1}]});
+  assert.deepEqual(k(['CH', 'CH']), {entfernen: ['l1', 'l3'], aendern: []});
+  // Markt DE, Warenkorb aber in CH (Marktwechsel): zählt jedes Land.
+  assert.deepEqual(k(['DE', 'CH']).entfernen, ['l1', 'l3']);
+  // Kein Land bekannt: gesperrt (wie teil1Erlaubt).
+  assert.deepEqual(k([]).entfernen, ['l1', 'l3']);
+  // Kontrolle: sauberer Schritt-1-Korb in AT bleibt, andere Artikel bleiben immer.
+  assert.deepEqual(k(['AT'], [{id: 'l1', quantity: 1, variantId: R_GID}]), {entfernen: [], aendern: []});
+  assert.deepEqual(k(['US'], [{id: 'l2', quantity: 1, variantId: QI_GID}]), {entfernen: [], aendern: []});
+});
+
+// Folgejob 20261029-qi-alpha-ratenanteil-schritt1-ueberschreibt-sitzungskorb.
+// Live am 29.10.2026 (origin/main 53fac142): Schritt 1 setzte das Cookie
+// `cart` auf den Ratenanteil-Warenkorb; zurück + „Direkt bezahlen“ ergab eine
+// Kasse über 27.018 € statt 17.018 € (Ratenanteil + Ware).
+// ROT VOR GRÜN: die Tests bis „Verdrahtung Sitzungs-Warenkorb“ sind auf
+// 53fac142 rot (Sitzungs-Warenkorb behielt in DE einen Ratenanteil, der
+// Permalink setzte das Cookie, permalinkSetztSitzungskorb fehlte).
+test('Korrektur Sitzungs-Warenkorb (POST /cart): der Ratenanteil fällt immer, im Permalink fällt er neben Ware', () => {
+  const r = {id: 'l1', quantity: 1, variantId: R_GID};
+  const ware = [
+    {id: 'l2', quantity: 1, variantId: QI_GID},
+    {id: 'l4', quantity: 1, variantId: 'gid://shopify/ProductVariant/65965789577484'},
+  ];
+  // Vorgabe = Sitzungs-Warenkorb: auch allein und in DE kein Ratenanteil.
+  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: [r], laender: ['DE', 'DE']}), {entfernen: ['l1'], aendern: []});
+  // Der Mischkorb aus dem Befund: Ratenanteil fällt, Ware bleibt.
+  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: [r, ...ware], laender: ['DE', 'DE']}), {
+    entfernen: ['l1'],
     aendern: [],
   });
-  // Markt DE, Warenkorb aber in CH (Marktwechsel): zählt jedes Land.
-  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: z, laender: ['DE', 'CH']}).entfernen, ['l1', 'l3']);
-  // Kein Land bekannt: gesperrt (wie teil1Erlaubt).
-  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: z, laender: []}).entfernen, ['l1', 'l3']);
-  // Kontrolle: sauberer Schritt-1-Korb in AT bleibt, andere Artikel bleiben immer.
-  assert.deepEqual(
-    tz.ratenanteilKorrektur({zeilen: [{id: 'l1', quantity: 1, variantId: R_GID}, z[1]], laender: ['AT']}),
-    {entfernen: [], aendern: []},
+  // Auch im Permalink kein Mischkorb (/cart/<R>:1,<Qi Alpha>:1).
+  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: [ware[0], r], laender: ['DE'], permalink: true}), {
+    entfernen: ['l1'],
+    aendern: [],
+  });
+  // Kontrolle: Ware allein bleibt unverändert.
+  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: ware, laender: ['DE']}), {entfernen: [], aendern: []});
+});
+
+test('Nachlesen, wenn der Warenkorb ein Schritt-1-Merkmal trägt (alter Sitzungs-Warenkorb mit Ratenanteil)', () => {
+  const add = {lines: [{merchandiseId: QI_GID, quantity: 1}]};
+  const mit = (key) => ({cart: {id: 'gid://cart/1', attributes: [{key: '_qpx_anon', value: 'x'}, {key, value: 'v'}]}});
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesAdd', inputs: add, result: mit('_qa_vorgang')}), true);
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesAdd', inputs: add, result: mit('_qa_konfig')}), true);
+  assert.equal(
+    tz.ratenanteilPruefen({action: 'LinesUpdate', inputs: {lines: [{id: 'l2', quantity: 1}]}, result: mit('_qa_vorgang')}),
+    true,
   );
-  assert.deepEqual(tz.ratenanteilKorrektur({zeilen: [z[1]], laender: ['US']}), {entfernen: [], aendern: []});
+  // Kontrolle: ohne Merkmal kostet ein normaler Klick nichts, LinesRemove nie.
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesAdd', inputs: add, result: mit('_qa_anderes')}), false);
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesAdd', inputs: add, result: {cart: {id: 'c'}}}), false);
+  assert.equal(
+    tz.ratenanteilPruefen({action: 'LinesRemove', inputs: {lineIds: ['l1']}, result: mit('_qa_vorgang')}),
+    false,
+  );
+});
+
+test('Permalink setzt den Sitzungs-Warenkorb nur ohne mögliche Ratenanteil-Zeile', () => {
+  const z = (ids) => ids.map((merchandiseId) => ({merchandiseId, quantity: 1}));
+  assert.equal(tz.permalinkSetztSitzungskorb(z([QI_GID])), true);
+  assert.equal(tz.permalinkSetztSitzungskorb(z([QI_GID, 'gid://shopify/ProductVariant/41007289663544'])), true);
+  assert.equal(tz.permalinkSetztSitzungskorb(z([R_GID])), false);
+  assert.equal(tz.permalinkSetztSitzungskorb(z([QI_GID, R_GID])), false);
+  for (const id of ['gid://shopify/ProductVariant/6604_8336396556', `gid://shopify/ProductVariant/0${tz.TEILZAHLUNG.variante}`]) {
+    assert.equal(tz.permalinkSetztSitzungskorb(z([id])), false, id);
+  }
 });
 
 test('Nachlesen nur, wenn die Aktion den Ratenanteil bringt oder eine Menge über 1 setzt', () => {
@@ -389,15 +438,26 @@ test('Bindung (Verhalten): CH entfernt, DE klemmt, Lesefehler und fremde Artikel
   const ergebnis = {cart: {id: 'gid://cart/1', totalQuantity: 1}};
   const add = {lines: [{merchandiseId: R_GID, quantity: 1}]};
   const ch = attrappenKorb({zeilen: [['l1', 1, R_GID]], land: 'CH'});
-  await tz.bindeRatenanteil({cart: ch.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'CH'});
+  await tz.bindeRatenanteil({cart: ch.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'CH', permalink: true});
   assert.deepEqual(ch.spur.removeLines, [['l1']]);
   const de = attrappenKorb({zeilen: [['l1', 3, R_GID]], land: 'DE'});
-  await tz.bindeRatenanteil({cart: de.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'DE'});
+  await tz.bindeRatenanteil({cart: de.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'DE', permalink: true});
   assert.deepEqual(de.spur.updateLines, [[{id: 'l1', quantity: 1}]]);
   assert.deepEqual(de.spur.removeLines, []);
-  // Kontrolle: sauberer DE-Korb wird gelesen, aber nicht verändert.
+  // Sitzungs-Warenkorb (POST /cart, Vorgabe): auch in DE fällt der Ratenanteil.
+  const sitzung = attrappenKorb({zeilen: [['l1', 1, R_GID]], land: 'DE'});
+  await tz.bindeRatenanteil({cart: sitzung.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'DE'});
+  assert.deepEqual(sitzung.spur.removeLines, [['l1']]);
+  // Kontrolle: sauberer DE-Schritt-1-Korb wird gelesen, aber nicht verändert.
   const sauber = attrappenKorb({zeilen: [['l1', 1, R_GID]], land: 'DE'});
-  const r = await tz.bindeRatenanteil({cart: sauber.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'DE'});
+  const r = await tz.bindeRatenanteil({
+    cart: sauber.cart,
+    action: 'LinesAdd',
+    inputs: add,
+    result: ergebnis,
+    land: 'DE',
+    permalink: true,
+  });
   assert.equal(r, ergebnis);
   assert.equal(sauber.spur.get, 1);
   assert.deepEqual([sauber.spur.removeLines, sauber.spur.updateLines], [[], []]);
@@ -483,17 +543,18 @@ test('Widerleger F1: jede Schreibweise außer der kanonischen GID eines anderen 
 test('Widerleger F3: 101 und 600 Ratenanteil-Zeilen werden in Runden zu genau einer (DE) bzw. keiner (CH)', async () => {
   const ergebnis = {cart: {id: 'gid://cart/1', totalQuantity: 101}};
   const add = {lines: [{merchandiseId: R_GID, quantity: 1}]};
-  for (const [n, land, rest] of [
-    [101, 'DE', 1],
-    [600, 'DE', 1],
-    [101, 'CH', 0],
+  for (const [n, land, rest, permalink] of [
+    [101, 'DE', 1, true],
+    [600, 'DE', 1, true],
+    [101, 'CH', 0, true],
+    [600, 'DE', 0, false],
   ]) {
     const k = attrappenKorb({
       zeilen: Array.from({length: n}, (_, i) => [`l${i}`, 1, R_GID]),
       land,
       seite: 250,
     });
-    await tz.bindeRatenanteil({cart: k.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land});
+    await tz.bindeRatenanteil({cart: k.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land, permalink});
     assert.equal(k.korb().length, rest, `${n} Zeilen ${land}`);
     assert.ok(k.spur.numCartLines.every((x) => x === 250), 'liest die volle Seite');
   }
@@ -514,4 +575,86 @@ test('Widerleger F2 (Verhalten): Permalink /cart/6604_8336396556:3 in DE klemmt 
     params: {lines},
   }).catch((e) => e);
   assert.deepEqual(k.korb().map((z) => [z.id, z.quantity]), [['l1', 1]]);
+});
+
+// Folgejob 20261029-qi-alpha-ratenanteil-schritt1-ueberschreibt-sitzungskorb:
+// der Kundenweg aus dem Befund, am echten Loader bzw. an der Bindung.
+test('Permalink (Verhalten): Schritt 1 geht ohne Cookie in die Kasse, ein normaler Permalink setzt es weiter', async () => {
+  const {loader} = await import('../app/routes/cart.$lines.jsx');
+  const lauf = async (lines, query = '') => {
+    const spur = {setCartId: 0, attribute: null};
+    const cart = {
+      get: async () => ({id: 'gid://cart/9', lines: {nodes: lines.split(',').map((l) => ({id: l, quantity: 1, merchandise: {id: `gid://shopify/ProductVariant/${l.split(':')[0]}`}}))}}),
+      create: async (e) => {
+        spur.attribute = e.attributes;
+        return {cart: {id: 'gid://cart/9', checkoutUrl: 'https://checkout.qiblanco.com/cart/c/9', totalQuantity: 1, attributes: e.attributes ?? []}};
+      },
+      setCartId: () => {
+        spur.setCartId += 1;
+        return new Headers({'Set-Cookie': 'cart=9; path=/'});
+      },
+    };
+    const antwort = await loader({
+      request: new Request(`https://qiblanco.com/cart/${lines}${query}`),
+      context: {cart, env: {}, storefront: {i18n: {country: 'DE'}}},
+      params: {lines},
+    }).catch((e) => e);
+    return {ort: antwort?.headers?.get?.('Location'), cookie: antwort?.headers?.get?.('Set-Cookie'), spur};
+  };
+  const teil1 = await lauf(
+    `${tz.TEILZAHLUNG.variante}:1`,
+    '?_qa_vorgang=qa-test-0001&_qa_konfig=qi-alpha%3D62077673767180%3Bnummer%3D-%3Bkette%3D-%3Bpartner%3D-',
+  );
+  assert.match(teil1.ort ?? '', /checkout\.qiblanco\.com/, 'Schritt 1 führt in die Kasse');
+  assert.equal(teil1.spur.setCartId, 0, 'Schritt 1 setzt keinen Sitzungs-Warenkorb');
+  assert.equal(teil1.cookie, null);
+  // Wächter-Naht unverändert: beide Merkmale stehen am angelegten Warenkorb.
+  assert.deepEqual(
+    (teil1.spur.attribute || []).filter((a) => a.key.startsWith('_qa_')).map((a) => a.key),
+    ['_qa_vorgang', '_qa_konfig'],
+  );
+  // Kontrolle: ein normaler Permalink setzt das Cookie wie bisher.
+  const normal = await lauf('62077673767180:1');
+  assert.match(normal.ort ?? '', /checkout\.qiblanco\.com/);
+  assert.equal(normal.spur.setCartId, 1);
+  assert.match(normal.cookie ?? '', /^cart=/);
+});
+
+test('Zurück-Weg (Verhalten): Ware in einen alten Schritt-1-Sitzungs-Warenkorb -> Ratenanteil fällt, Ware bleibt', async () => {
+  const NR = 'gid://shopify/ProductVariant/65965789577484';
+  const KETTE = 'gid://shopify/ProductVariant/65965789610252';
+  const k = attrappenKorb({
+    zeilen: [['r', 1, R_GID], ['a', 1, QI_GID], ['n', 1, NR], ['k', 1, KETTE]],
+    land: 'DE',
+  });
+  // „In den Warenkorb“ nach „Direkt bezahlen“: drei kanonische GIDs, der
+  // Warenkorb trägt die Merkmale aus Schritt 1 (Ergebnis der Mutation).
+  const ergebnis = {
+    cart: {id: 'gid://cart/1', totalQuantity: 4, attributes: [{key: '_qa_vorgang', value: 'qa-x'}, {key: '_qa_konfig', value: 'k'}]},
+  };
+  const add = {lines: [QI_GID, NR, KETTE].map((merchandiseId) => ({merchandiseId, quantity: 1}))};
+  await tz.bindeRatenanteil({cart: k.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'DE'});
+  assert.deepEqual(k.korb().map((z) => z.id), ['a', 'n', 'k']);
+  // Kontrolle: ohne Merkmal und ohne Ratenanteil kein zusätzlicher Lesezugriff.
+  const leer = attrappenKorb({zeilen: [['a', 1, QI_GID]], land: 'DE'});
+  await tz.bindeRatenanteil({
+    cart: leer.cart,
+    action: 'LinesAdd',
+    inputs: add,
+    result: {cart: {id: 'gid://cart/2', totalQuantity: 1, attributes: []}},
+    land: 'DE',
+  });
+  assert.equal(leer.spur.get, 0);
+});
+
+test('Verdrahtung Sitzungs-Warenkorb: cart.$lines bindet als Permalink und setzt das Cookie nur über permalinkSetztSitzungskorb', () => {
+  const permalink = lies('app/routes/cart.$lines.jsx');
+  const bindung = permalink.slice(permalink.indexOf('await bindeRatenanteil('));
+  assert.match(bindung.slice(0, 300), /permalink: true/);
+  assert.match(permalink, /permalinkSetztSitzungskorb\(linesMap\)\s*\?\s*cart\.setCartId\(/);
+  assert.equal(permalink.match(/cart\.setCartId\(/g).length, 1, 'genau eine Stelle setzt das Cookie');
+  // POST /cart bindet als Sitzungs-Warenkorb (Vorgabe, kein permalink-Schalter).
+  const route = lies('app/routes/cart.jsx');
+  const b = route.indexOf('await bindeRatenanteil(');
+  assert.doesNotMatch(route.slice(b, b + 200), /permalink/);
 });

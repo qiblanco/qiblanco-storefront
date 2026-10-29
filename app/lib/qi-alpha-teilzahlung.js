@@ -185,15 +185,29 @@ export function permalinkZeilen(zeilen) {
 }
 
 /**
- * Korrektur eines gelesenen Warenkorbs (POST /cart): der Ratenanteil steht
- * nur in DE/AT darin, dort höchstens eine Zeile mit Menge 1. Zählen muss
- * jedes Land, das am Warenkorb hängt (Markt der Anfrage UND Land des
- * Warenkorbs): ein in DE angelegter Ratenanteil wäre nach einem Wechsel auf
- * CH ein CHF-Betrag. `zeilen`: [{id, quantity, variantId}].
+ * Korrektur eines gelesenen Warenkorbs. Der Ratenanteil steht nur im
+ * Schritt-1-Warenkorb des Permalinks (`permalink: true`), und auch dort nur
+ * in DE/AT, allein und als eine Zeile mit Menge 1. Zählen muss jedes Land,
+ * das am Warenkorb hängt (Markt der Anfrage UND Land des Warenkorbs): ein in
+ * DE angelegter Ratenanteil wäre nach einem Wechsel auf CH ein CHF-Betrag.
+ *
+ * SITZUNGS-WARENKORB (POST /cart, Vorgabe): dort steht der Ratenanteil nie.
+ * Gemessen am 29.10.2026 (Folgejob 20261029-qi-alpha-ratenanteil-schritt1-
+ * ueberschreibt-sitzungskorb): Schritt 1, zurück, „Direkt bezahlen“ ergab
+ * eine Kasse über 27.018 € statt 17.018 €, weil der Ratenanteil im
+ * Sitzungs-Warenkorb lag und die Ware dazukam. Der einzige Weg, der den
+ * Ratenanteil anlegen soll, ist teil1Link (ein Aufrufer im Repo), und der
+ * setzt seit diesem Job keinen Sitzungs-Warenkorb mehr
+ * (permalinkSetztSitzungskorb). Liegt Ware neben dem Ratenanteil
+ * (Mischkorb), fällt der Ratenanteil auch im Permalink heraus.
+ * `zeilen`: [{id, quantity, variantId}].
  * Ergebnis im Format von bindungsKorrektur (lib/qi-master-addons.js).
  */
-export function ratenanteilKorrektur({zeilen, laender}) {
+export function ratenanteilKorrektur({zeilen, laender, permalink = false}) {
+  const mitWare = zeilen.some((z) => !mitRatenanteil([z.variantId]));
   const erlaubt =
+    permalink &&
+    !mitWare &&
     laender.length > 0 &&
     laender.every((l) => TEILZAHLUNG.maerkte.includes(l));
   const entfernen = [];
@@ -230,13 +244,18 @@ function sicherKeinRatenanteil(id) {
 /**
  * Muss nachgelesen werden? Ja, sobald eine Zeile der Aktion der Ratenanteil
  * sein KANN (jede Schreibweise außer der kanonischen eines anderen Artikels)
- * oder eine Menge über 1 setzt. Ein normaler Klick mit der GID eines anderen
- * Artikels kostet keinen zusätzlichen Lesezugriff.
+ * oder eine Menge über 1 setzt. Ebenso, wenn der Warenkorb ein Merkmal
+ * _qa_vorgang/_qa_konfig trägt: dann ist er ein Schritt-1-Warenkorb, der vor
+ * diesem Job zum Sitzungs-Warenkorb wurde, und die Ware des Kunden darf nicht
+ * neben dem Ratenanteil liegen bleiben. Das Merkmal steht im Ergebnis der
+ * Mutation (CART_MUTATE_FRAGMENT trägt attributes). Ein normaler Klick mit
+ * der GID eines anderen Artikels kostet keinen zusätzlichen Lesezugriff.
  */
-export function ratenanteilPruefen({action, inputs}) {
+export function ratenanteilPruefen({action, inputs, result}) {
   const lines = inputs?.lines;
   if (action !== 'LinesAdd' && action !== 'LinesUpdate') return false;
   if (!Array.isArray(lines)) return true;
+  if (schrittEinsMerkmal(result?.cart?.attributes)) return true;
   if (action === 'LinesAdd') {
     return lines.some((l) => !sicherKeinRatenanteil(l?.merchandiseId));
   }
@@ -248,14 +267,37 @@ export function ratenanteilPruefen({action, inputs}) {
   );
 }
 
+const MERKMAL_SCHLUESSEL = Object.values(TEILZAHLUNG.merkmale);
+
+/** Trägt die Merkmalsliste eines Warenkorbs ein Schritt-1-Merkmal? */
+function schrittEinsMerkmal(attributes) {
+  return (
+    Array.isArray(attributes) &&
+    attributes.some((a) => MERKMAL_SCHLUESSEL.includes(a?.key))
+  );
+}
+
+/**
+ * Darf dieser Permalink den angelegten Warenkorb zum Sitzungs-Warenkorb
+ * (Cookie `cart`) machen? Nur, wenn keine Zeile der Ratenanteil sein kann
+ * (dieselbe Schreibweisen-Regel wie ratenanteilPruefen). Der Schritt-1-Link
+ * führt sonst direkt in die Kasse und lässt den Warenkorb des Kunden, wie er
+ * war: live am 29.10.2026 setzte /cart/<Ratenanteil>:1 das Cookie, und die
+ * Ware aus „Direkt bezahlen“ landete danach im Ratenanteil-Warenkorb.
+ */
+export function permalinkSetztSitzungskorb(zeilen) {
+  return !ratenanteilPruefen({action: 'LinesAdd', inputs: {lines: zeilen}});
+}
+
 // Höchstwert der Storefront-API je Seite; eine Runde sieht so viele Zeilen.
 const SEITE = 250;
 const RUNDEN = 4;
 
 /**
- * Bindung in routes/cart.jsx und routes/cart.$lines.jsx (Muster
- * bindeQiMasterAddons): liest den angelegten Warenkorb und wendet
- * ratenanteilKorrektur an, Runde um Runde, bis er sauber ist. Eine Runde
+ * Bindung in routes/cart.jsx (Sitzungs-Warenkorb) und routes/cart.$lines.jsx
+ * (`permalink: true`), Muster bindeQiMasterAddons: liest den angelegten
+ * Warenkorb und wendet ratenanteilKorrektur an, Runde um Runde, bis er
+ * sauber ist. Eine Runde
  * sieht höchstens 250 Zeilen; mit 101 Ratenanteil-Zeilen blieb bei 100
  * gelesenen eine zweite stehen (K3-Widerleger s02). Vier Runden decken
  * jeden Warenkorb, den Shopify annimmt.
@@ -264,9 +306,16 @@ const RUNDEN = 4;
  * Bestellung 1, die nicht genau eine Zeile zu 10.000 € in EUR trägt, keinen
  * Code aus.
  */
-export async function bindeRatenanteil({cart, action, inputs, result, land}) {
+export async function bindeRatenanteil({
+  cart,
+  action,
+  inputs,
+  result,
+  land,
+  permalink = false,
+}) {
   const cartId = result?.cart?.id;
-  if (!cartId || !ratenanteilPruefen({action, inputs})) return result;
+  if (!cartId || !ratenanteilPruefen({action, inputs, result})) return result;
   let neu = result;
   for (let runde = 0; runde < RUNDEN; runde += 1) {
     let voll;
@@ -281,7 +330,11 @@ export async function bindeRatenanteil({cart, action, inputs, result, land}) {
       variantId: z.merchandise?.id,
     }));
     const laender = [land, voll?.buyerIdentity?.countryCode].filter(Boolean);
-    const {entfernen, aendern} = ratenanteilKorrektur({zeilen, laender});
+    const {entfernen, aendern} = ratenanteilKorrektur({
+      zeilen,
+      laender,
+      permalink,
+    });
     if (!entfernen.length && !aendern.length) return neu;
     try {
       if (entfernen.length) {
