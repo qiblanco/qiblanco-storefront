@@ -1,0 +1,54 @@
+/*
+ * APPLE-FASSUNG DER STARTSEITE, / und /pages/start-b (Grossjob 20261029-
+ * GROSSJOB-alle-shop-seiten-apple-niveau-ausser-seo-geo, s04). Lädt nur mit
+ * der Apple-Fassung (components/apple-seite/startseite/StartseiteApple.jsx).
+ * Nur --as-*-Tokens aus apple-seite.css, keine freien Werte (BAUKASTEN §2).
+ */
+
+/* Kopf: das Produktbild steht als Karte im dunklen Band, nicht bildbreit. */
+:is([data-apple-seite='startseite'], [data-apple-seite='start-b']) .as-hero-bild {
+  max-width: var(--as-text-breite);
+}
+
+/* ---- Gerätereihe ---------------------------------------------------------- */
+.sa-geraete-liste {
+  list-style: none;
+  margin: var(--as-s-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--as-s-6);
+}
+@media (min-width: 750px) {
+  .sa-geraete-liste {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--as-s-3);
+  }
+}
+.sa-geraet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.sa-geraet-name {
+  margin: var(--as-s-3) 0 0;
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.sa-geraet-zeile {
+  margin: var(--as-s-1) 0 0;
+  color: var(--as-grau);
+}
+.sa-geraet-wege {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--as-s-2);
+  margin-top: var(--as-s-3);
+}
+.sa-geraet-wege .as-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--as-tippziel);
+}

@@ -1,10 +1,12 @@
-import {redirect} from 'react-router';
+import {redirect, useLoaderData} from 'react-router';
 import {HomepageSections} from '~/components/homepage/HomepageSections';
 import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {entityGraph} from '~/lib/entity-schema';
 import startseiteStyles from '~/styles/startseite.css?url';
 import {entscheideSeitenExperiment} from '~/lib/experiment-weiche.server';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {StartseiteApple} from '~/components/apple-seite/startseite/StartseiteApple';
 
 /**
  * Die beiden Scope-CSS-Dateien dieser Route — EINE links()-Ausfuhr, weil ein
@@ -185,7 +187,10 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  // APPLE-FASSUNG (Grossjob 20261029 alle-shop-seiten-apple-niveau, s04):
+  // nur der Schalter APPLE_SEITE_STARTSEITE, keine Abfrage. Die Weiche oben
+  // bleibt vor dem ersten await und unverändert.
+  return {...deferredData, ...criticalData, appleSeite: appleSeiteLaden(args.context, 'startseite')};
 }
 
 /**
@@ -228,7 +233,12 @@ export default function Homepage() {
   // Loader/meta/Queries bleiben bewusst unangetastet (never-break); die
   // Startseiten-Sektionen sind in HomepageSections extrahiert, damit die
   // Ad-Landingpages exakt denselben DOM rendern.
-  return <HomepageSections />;
+  //
+  // Apple-Fassung (s04): mit Schalter an Arm A von start-e1-gs081 im
+  // Baukasten (components/apple-seite/startseite/), aus = HomepageSections
+  // unverändert (C, Rückweg `homepage-bauer/bin/apple-seite zurueck startseite`).
+  const {appleSeite} = useLoaderData();
+  return appleSeite?.an ? <StartseiteApple seite="startseite" /> : <HomepageSections />;
 }
 
 const FEATURED_COLLECTION_QUERY = `#graphql
