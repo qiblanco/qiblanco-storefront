@@ -353,27 +353,33 @@ test('Nachlesen nur, wenn die Aktion den Ratenanteil bringt oder eine Menge übe
   assert.equal(tz.ratenanteilPruefen({action: 'DiscountCodesUpdate', inputs: {}}), false);
 });
 
-function attrappenKorb({zeilen, land, getWirft = false}) {
-  const spur = {get: 0, removeLines: [], updateLines: []};
+function attrappenKorb({zeilen, land, getWirft = false, seite = Infinity}) {
+  const spur = {get: 0, removeLines: [], updateLines: [], numCartLines: []};
+  let korb = zeilen.map(([id, quantity, mid]) => ({id, quantity, mid}));
   return {
     spur,
+    korb: () => korb,
     cart: {
-      get: async () => {
+      get: async (e) => {
         spur.get += 1;
+        spur.numCartLines.push(e?.numCartLines);
         if (getWirft) throw new Error('Storefront-API nicht erreichbar');
+        const n = Math.min(seite, e?.numCartLines ?? 100);
         return {
           id: 'gid://cart/1',
           buyerIdentity: {countryCode: land},
-          lines: {nodes: zeilen.map(([id, quantity, mid]) => ({id, quantity, merchandise: {id: mid}}))},
+          lines: {nodes: korb.slice(0, n).map((z) => ({id: z.id, quantity: z.quantity, merchandise: {id: z.mid}}))},
         };
       },
       removeLines: async (ids) => {
         spur.removeLines.push(ids);
-        return {cart: {id: 'gid://cart/1', totalQuantity: 0}};
+        korb = korb.filter((z) => !ids.includes(z.id));
+        return {cart: {id: 'gid://cart/1', totalQuantity: korb.length}};
       },
       updateLines: async (l) => {
         spur.updateLines.push(l);
-        return {cart: {id: 'gid://cart/1', totalQuantity: 1}};
+        for (const u of l) korb.find((z) => z.id === u.id).quantity = u.quantity;
+        return {cart: {id: 'gid://cart/1', totalQuantity: korb.length}};
       },
     },
   };
@@ -441,4 +447,71 @@ test('Permalink (Verhalten): /cart/<R>:2 und /cart/<R>:1,0<R>:1 legen genau eine
     }).catch((e) => e);
     assert.deepEqual(angelegt, [{merchandiseId: R_GID, quantity: 1}], lines);
   }
+});
+
+// K3-Widerleger s02 (29.10.2026, live gegen 6a9385cb): Shopify liest auch
+// „6604_8336396556“, die Base64-GID und „…/<R>?a=/“ als Ratenanteil; ein
+// LinesAdd mit 101 Ratenanteil-Zeilen ließ nach 100 gelesenen eine zweite
+// stehen; der Permalink /cart/6604_8336396556:3 legte in DE 30.000 € an.
+// ROT VOR GRÜN: die drei Tests unten sind auf 6a9385cb rot.
+const SCHREIBWEISEN = [
+  'gid://shopify/ProductVariant/6604_8336396556',
+  Buffer.from(R_GID).toString('base64'),
+  `${R_GID}?a=/`,
+  tz.TEILZAHLUNG.variante,
+];
+
+test('Widerleger F1: jede Schreibweise außer der kanonischen GID eines anderen Artikels löst das Nachlesen aus', () => {
+  for (const id of SCHREIBWEISEN) {
+    assert.equal(tz.ratenanteilPruefen({action: 'LinesAdd', inputs: {lines: [{merchandiseId: id, quantity: 3}]}}), true, id);
+    assert.equal(
+      tz.ratenanteilPruefen({action: 'LinesUpdate', inputs: {lines: [{id: 'l1', merchandiseId: id, quantity: 1}]}}),
+      true,
+      id,
+    );
+  }
+  // Kein Array: nachlesen statt raten.
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesAdd', inputs: {lines: {0: {merchandiseId: QI_GID}}}}), true);
+  // Kontrolle: kanonische GID eines anderen Artikels kostet nichts.
+  assert.equal(tz.ratenanteilPruefen({action: 'LinesAdd', inputs: {lines: [{merchandiseId: QI_GID, quantity: 5}]}}), false);
+  assert.equal(
+    tz.ratenanteilPruefen({action: 'LinesUpdate', inputs: {lines: [{id: 'l1', merchandiseId: QI_GID, quantity: 1}]}}),
+    false,
+  );
+});
+
+test('Widerleger F3: 101 und 600 Ratenanteil-Zeilen werden in Runden zu genau einer (DE) bzw. keiner (CH)', async () => {
+  const ergebnis = {cart: {id: 'gid://cart/1', totalQuantity: 101}};
+  const add = {lines: [{merchandiseId: R_GID, quantity: 1}]};
+  for (const [n, land, rest] of [
+    [101, 'DE', 1],
+    [600, 'DE', 1],
+    [101, 'CH', 0],
+  ]) {
+    const k = attrappenKorb({
+      zeilen: Array.from({length: n}, (_, i) => [`l${i}`, 1, R_GID]),
+      land,
+      seite: 250,
+    });
+    await tz.bindeRatenanteil({cart: k.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land});
+    assert.equal(k.korb().length, rest, `${n} Zeilen ${land}`);
+    assert.ok(k.spur.numCartLines.every((x) => x === 250), 'liest die volle Seite');
+  }
+});
+
+test('Widerleger F2 (Verhalten): Permalink /cart/6604_8336396556:3 in DE klemmt am angelegten Warenkorb', async () => {
+  const {loader} = await import('../app/routes/cart.$lines.jsx');
+  const lines = '6604_8336396556:3';
+  const k = attrappenKorb({zeilen: [['l1', 3, R_GID]], land: 'DE'});
+  const cart = {
+    ...k.cart,
+    create: async () => ({cart: {id: 'gid://cart/1', checkoutUrl: 'https://checkout.qiblanco.com/c/1', totalQuantity: 3}}),
+    setCartId: () => new Headers(),
+  };
+  await loader({
+    request: new Request(`https://qiblanco.com/cart/${lines}`),
+    context: {cart, env: {}, storefront: {i18n: {country: 'DE'}}},
+    params: {lines},
+  }).catch((e) => e);
+  assert.deepEqual(k.korb().map((z) => [z.id, z.quantity]), [['l1', 1]]);
 });

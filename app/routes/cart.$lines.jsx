@@ -10,6 +10,7 @@ import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
 import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
 import {
+  bindeRatenanteil,
   merkmaleAusQuery,
   mitRatenanteil,
   permalinkZeilen,
@@ -124,13 +125,30 @@ export async function loader({request, context, params}) {
   ];
 
   // create a cart
-  const angelegt = await cart.create({
+  const erstellt = await cart.create({
     lines: linesMap,
     discountCodes: discountArray,
     ...(attributionAttributes.length
       ? {attributes: attributionAttributes}
       : {}),
   });
+
+  // In DE/AT zählt, was Shopify angelegt hat: permalinkZeilen oben erkennt
+  // nur die Schreibweisen, die mitRatenanteil kennt. `/cart/6604_8336396556:3`
+  // legte am 29.10.2026 trotzdem 30.000 € an (K3-Widerleger s02). Gelesen wird
+  // nur, wenn eine Zeile der Ratenanteil sein kann (ratenanteilPruefen).
+  // Außerhalb DE/AT greift die zweite Linie unten.
+  const angelegt =
+    erstellt?.errors?.length ||
+    !TEILZAHLUNG.maerkte.includes(storefront?.i18n?.country)
+      ? erstellt
+      : await bindeRatenanteil({
+          cart,
+          action: 'LinesAdd',
+          inputs: {lines: linesMap},
+          result: erstellt,
+          land: storefront?.i18n?.country,
+        });
 
   // Qi-Master-Add-ons hängen am Qi Master — auch über den Permalink: ein
   // /cart/<Wunschnummer>:2 ohne Qi Master führte bis 2026-09-25 direkt zur
@@ -170,7 +188,11 @@ export async function loader({request, context, params}) {
   if (!TEILZAHLUNG.maerkte.includes(storefront?.i18n?.country)) {
     let angelegteZeilen = null;
     try {
-      angelegteZeilen = (await cart.get({cartId: cartResult.id}))?.lines?.nodes;
+      // 250 = Seitenhöchstwert der Storefront-API; ohne Angabe liest
+      // Hydrogen 100 Zeilen, und Zeile 101 bliebe ungesehen.
+      angelegteZeilen = (
+        await cart.get({cartId: cartResult.id, numCartLines: 250})
+      )?.lines?.nodes;
     } catch {
       angelegteZeilen = null;
     }
