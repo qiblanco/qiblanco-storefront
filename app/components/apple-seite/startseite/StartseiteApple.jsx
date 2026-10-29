@@ -4,7 +4,8 @@ import {StickyKaufknopf} from '~/components/rookie/start/StickyKaufknopf';
 import {AppleSeite} from '../AppleSeite';
 import {Sektion} from '../AppleSektionen';
 import {bildSrcSet, mitBreite} from '../apple-seite-logik';
-import {GERAETE, startseiteSektionen} from './startseite-daten';
+import {MODELLE, startseiteSektionen} from './startseite-daten';
+import {useStartseitePreise} from './startseite-preise';
 
 /*
  * APPLE-FASSUNG DER STARTSEITE (s04): / rendert Arm A, /pages/start-b Arm B
@@ -13,21 +14,21 @@ import {GERAETE, startseiteSektionen} from './startseite-daten';
  * Baukasten nicht kennt. Ihr Stil liegt in styles/start-b-apple.css und nimmt
  * nur --as-*-Tokens.
  *
- * Messanker wie der Baukasten: data-section="as-geraete" für die Reihe,
+ * Messanker wie der Baukasten: data-section="as-modelle" für die Reihe,
  * B trägt den Sticky-Kaufknopf der Rookie (data-section
  * "start-b-sticky-kaufknopf", Stil aus rookie-start.css, das links() von
  * start-b weiter lädt).
  */
 
-function Geraete() {
+function Modelle({preise}) {
   return (
-    <section className="as-sektion sa-geraete" data-section="as-geraete">
-      <h2 className="as-h2">{mitMarkeR(GERAETE.titel)}</h2>
-      <ul className="sa-geraete-liste">
-        {GERAETE.liste.map((g) => (
-          <li key={g.name} className="sa-geraet">
+    <section className="as-sektion sa-modelle" data-section="as-modelle">
+      <h2 className="as-h2">{mitMarkeR(MODELLE.titel)}</h2>
+      <ul className="sa-modelle-liste">
+        {MODELLE.liste.map((g) => (
+          <li key={g.name} className="sa-modell">
             <img
-              className="as-bild sa-geraet-bild"
+              className="as-bild sa-modell-bild"
               src={mitBreite(g.bild.url, 750)}
               srcSet={bildSrcSet(g.bild.url, [480, 750, 1080])}
               sizes="(min-width: 750px) 33vw, 100vw"
@@ -37,9 +38,10 @@ function Geraete() {
               loading="lazy"
               decoding="async"
             />
-            <h3 className="sa-geraet-name">{mitMarkeR(g.name)}</h3>
-            <p className="sa-geraet-zeile">{g.zeile}</p>
-            <div className="sa-geraet-wege">
+            <h3 className="sa-modell-name">{mitMarkeR(g.name)}</h3>
+            <p className="sa-modell-zeile">{g.zeile}</p>
+            {preise[g.kaufen] ? <p className="as-preis">{preise[g.kaufen]}</p> : null}
+            <div className="sa-modell-wege">
               <a className="btn btn--primary as-knopf" href={g.kaufen} data-as-cta="primary">
                 Jetzt kaufen
               </a>
@@ -54,17 +56,24 @@ function Geraete() {
   );
 }
 
-/** @param {{seite: 'startseite'|'start-b'}} props */
-export function StartseiteApple({seite}) {
+/**
+ * @param {{seite: 'startseite'|'start-b', produkte?: Array<any>}} props
+ *   produkte: aus startseiteProdukte() im Loader; jeder Kaufknopf bekommt
+ *   den Preis seiner Kaufseite als Zeile darunter.
+ */
+export function StartseiteApple({seite, produkte = []}) {
   const arm = seite === 'start-b' ? 'b' : 'a';
-  const sektionen = startseiteSektionen(arm);
+  const preise = useStartseitePreise(produkte);
+  const sektionen = startseiteSektionen(arm).map((s) =>
+    s.cta?.href && preise[s.cta.href] ? {...s, preis: preise[s.cta.href]} : s,
+  );
   return (
     <>
       <link rel="stylesheet" href={startseiteAppleStyles} />
       <AppleSeite seite={seite}>
         {sektionen.map((s, i) =>
-          s.art === 'geraete' ? (
-            <Geraete key="geraete" />
+          s.art === 'modelle' ? (
+            <Modelle key="modelle" preise={preise} />
           ) : (
             <Sektion key={`${s.art}-${i}`} index={i} {...s} />
           ),

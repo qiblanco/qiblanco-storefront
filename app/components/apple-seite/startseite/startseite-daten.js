@@ -57,7 +57,7 @@ const BILD = Object.freeze({
 });
 
 /** Die drei Geräte (Zeilen wie im Gerätevergleich der Kaufseiten). */
-export const GERAETE = Object.freeze({
+export const MODELLE = Object.freeze({
   titel: 'Welches passt zu mir?',
   liste: [
     {
@@ -151,7 +151,7 @@ const ABSCHLUSS = {
 const ANNA = {art: 'anna'};
 
 /** Platzhalter für die Gerätereihe (eigene Komponente, kein Baukasten-Typ). */
-export const GERAETE_PLATZ = Object.freeze({art: 'geraete'});
+export const MODELL_PLATZ = Object.freeze({art: 'modelle'});
 
 /**
  * Sektionsliste je Arm. `arm` 'b' = /pages/start-b, sonst A = /.
@@ -163,7 +163,7 @@ export function startseiteSektionen(arm) {
       KOPF,
       FAKTEN,
       {...LABOR, cta: {text: 'Jetzt kaufen', href: KAUFSEITE}},
-      GERAETE_PLATZ,
+      MODELL_PLATZ,
       ALLTAG,
       STIMMEN,
       ABSCHLUSS,
@@ -176,7 +176,7 @@ export function startseiteSektionen(arm) {
     {...LABOR, cta: {text: 'Zur Studie', href: '/pages/studie-immunzellen'}},
     ALLTAG,
     STIMMEN,
-    GERAETE_PLATZ,
+    MODELL_PLATZ,
     ABSCHLUSS,
     ANNA,
   ];

@@ -2,12 +2,12 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {pruefeSeite, texteVon} from '../apple-seite-logik.js';
-import {startseiteSektionen, GERAETE, KAUFSEITE} from './startseite-daten.js';
+import {startseiteSektionen, MODELLE, KAUFSEITE} from './startseite-daten.js';
 
-const ohneGeraete = (l) => l.filter((s) => s.art !== 'geraete');
+const ohneModelle = (l) => l.filter((s) => s.art !== 'modelle');
 
 test('beide Arme bestehen pruefeSeite (Hero zuerst, Anna, kein Preisanker, kein Konjunktiv)', () => {
-  for (const arm of ['a', 'b']) assert.deepEqual(pruefeSeite(ohneGeraete(startseiteSektionen(arm))), [], arm);
+  for (const arm of ['a', 'b']) assert.deepEqual(pruefeSeite(ohneModelle(startseiteSektionen(arm))), [], arm);
 });
 
 test('GS-081 bleibt je Arm unterscheidbar', () => {
@@ -17,7 +17,7 @@ test('GS-081 bleibt je Arm unterscheidbar', () => {
   assert.ok(a[0].cta2, 'A: zwei Knöpfe im Kopf');
   const laborB = b.find((s) => s.etikett === 'Wissenschaft');
   assert.equal(laborB.cta.href, KAUFSEITE, 'B: Kaufknopf nach dem Laborbefund');
-  assert.ok(b.findIndex((s) => s.art === 'geraete') < a.findIndex((s) => s.art === 'geraete'), 'B: Geräte früher');
+  assert.ok(b.findIndex((s) => s.art === 'modelle') < a.findIndex((s) => s.art === 'modelle'), 'B: Geräte früher');
 });
 
 test('jedes Ziel trägt genau eine Beschriftung', () => {
@@ -29,11 +29,11 @@ test('jedes Ziel trägt genau eine Beschriftung', () => {
       }
     }
   }
-  for (const g of GERAETE.liste) je.set(g.kaufen, new Set([...(je.get(g.kaufen) ?? []), 'Jetzt kaufen']));
+  for (const g of MODELLE.liste) je.set(g.kaufen, new Set([...(je.get(g.kaufen) ?? []), 'Jetzt kaufen']));
   for (const [ziel, texte] of je) assert.equal(texte.size, 1, `${ziel}: ${[...texte]}`);
 });
 
 test('kein Preisanker in der Gerätereihe', () => {
-  const t = texteVon(GERAETE).join(' ');
+  const t = texteVon(MODELLE).join(' ');
   assert.doesNotMatch(t, /14\.000|4,8|★|Ultimate Power/);
 });

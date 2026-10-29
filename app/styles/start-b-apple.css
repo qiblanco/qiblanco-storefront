@@ -32,7 +32,7 @@
 }
 
 /* ---- Gerätereihe ---------------------------------------------------------- */
-.sa-geraete-liste {
+.sa-modelle-liste {
   list-style: none;
   margin: var(--as-s-4) 0 0;
   padding: 0;
@@ -40,35 +40,35 @@
   gap: var(--as-s-6);
 }
 @media (min-width: 750px) {
-  .sa-geraete-liste {
+  .sa-modelle-liste {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--as-s-3);
   }
 }
-.sa-geraet {
+.sa-modell {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
-.sa-geraet-name {
+.sa-modell-name {
   margin: var(--as-s-3) 0 0;
   font-size: var(--as-fs-5);
   font-weight: 600;
   line-height: 1.3;
 }
-.sa-geraet-zeile {
+.sa-modell-zeile {
   margin: var(--as-s-1) 0 0;
   color: var(--as-grau);
 }
-.sa-geraet-wege {
+.sa-modell-wege {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--as-s-2);
   margin-top: var(--as-s-3);
 }
-.sa-geraet-wege .as-link {
+.sa-modell-wege .as-link {
   margin-top: 0;
   display: inline-flex;
   align-items: center;
@@ -97,4 +97,14 @@
     min-height: var(--as-tippziel);
     font-size: var(--as-fs-3) !important;
   }
+}
+
+/* Preiszeile unter dem Kaufknopf (AsKnoepfe preis, Modellreihe). */
+.as-seite .as-preis {
+  margin: var(--as-s-2) 0 0;
+  font-size: var(--as-fs-2);
+  color: var(--as-tinte);
+}
+.as-seite .as-dunkel .as-preis {
+  color: var(--as-linie);
 }
