@@ -139,6 +139,15 @@ jobs:
           # 'shadow' (rechnet und loggt weiter, wirkt nicht). Kill: 'off'.
           # Server im selben Schritt: sicherheitsmeister.conf SM_SENKE_MODI=shadow,on.
           SM_MODE: ${{ github.ref_name == 'main' && 'on' || '' }}
+          # APPLE-KONFIGURATOR (Grossjob 20261027-GROSSJOB-apple-konfigurator-qione-qihome-
+          # qibracelet-ab s09-r2, Christian 29.10.2026 Zx): A = neue Seite im Qi-Alpha-
+          # Stil fuer 100 % auf /products/<h>; C = alte Seite unter /products/<h>-b
+          # (noindex, unverlinkt). Nur 'on' schaltet (app/lib/produkt-seite-laden.server.js
+          # konfiguratorAn). Nur main; Previews '' = alte Seite. RUECKWEG MIT EINEM WORT
+          # je Seite: 'on' -> '' (alte Seite fuer alle, Code bleibt).
+          KONFIGURATOR_QIONE_2_PRO: ${{ github.ref_name == 'main' && 'on' || '' }}
+          KONFIGURATOR_QIHOME_AIR: ${{ github.ref_name == 'main' && 'on' || '' }}
+          KONFIGURATOR_QIBRACELET: ${{ github.ref_name == 'main' && 'on' || '' }}
         run: |
           {
             printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
@@ -164,6 +173,9 @@ jobs:
             printf 'LP_AB_V2_MODE=%s\n' "$LP_AB_V2_MODE"
             printf 'LP_AB_V2_SPLIT=%s\n' "$LP_AB_V2_SPLIT"
             printf 'SM_MODE=%s\n' "$SM_MODE"
+            printf 'KONFIGURATOR_QIONE_2_PRO=%s\n' "$KONFIGURATOR_QIONE_2_PRO"
+            printf 'KONFIGURATOR_QIHOME_AIR=%s\n' "$KONFIGURATOR_QIHOME_AIR"
+            printf 'KONFIGURATOR_QIBRACELET=%s\n' "$KONFIGURATOR_QIBRACELET"
           } > "$RUNNER_TEMP/oxygen.env"
           echo "OXYGEN_ENV_FILE=$RUNNER_TEMP/oxygen.env" >> "$GITHUB_ENV"
 
