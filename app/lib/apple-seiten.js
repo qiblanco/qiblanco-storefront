@@ -37,7 +37,7 @@ export const APPLE_SEITE_ATTR = 'data-apple-seite';
 export const APPLE_SEITEN = Object.freeze({
   // ---- s04 · Startseite ----
   'startseite': {pfad: '/', schalter: 'APPLE_SEITE_STARTSEITE', standard: 'on'},
-  'start-b': {pfad: '/pages/start-b', schalter: 'APPLE_SEITE_START_B', standard: 'on'},
+  'start-b': {pfad: '/pages/start-b', schalter: 'APPLE_SEITE_START_B', standard: 'off'},
 
   // ---- s05 · Produkt-Details und Produkt-LPs ----
   'qibracelet': {pfad: '/pages/qibracelet', schalter: 'APPLE_SEITE_QIBRACELET', standard: 'off'},
