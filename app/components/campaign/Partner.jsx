@@ -301,8 +301,8 @@ function ErfahrungenSection() {
       <p className="lp-vp-section__lede">
         171 Erfahrungsberichte wurden 2024 als deskriptive Auswertung
         publiziert. Am häufigsten genannt: Ruhe und tieferer Schlaf, danach
-        mehr Energie. Das ist kein Kausal-Beweis, aber ein ehrliches Bild
-        dessen, was Menschen erleben. Berichte einzelner Nutzer, deskriptiv.
+        mehr Energie. Die Berichte zeigen, was Menschen erleben, und sind
+        kein Kausal-Beweis. Berichte einzelner Nutzer, deskriptiv.
       </p>
       <div className="lp-vp-peer-stats">
         {stats.map((s) => (
@@ -335,7 +335,7 @@ function PasstSection() {
   ];
   return (
     <section className="lp-vp-section" data-section="lp-pt-passt">
-      <span className="eyebrow">Ehrliche Einordnung</span>
+      <span className="eyebrow">Einordnung</span>
       <h2>Passt Qi Blanco zu dir?</h2>
       <p className="lp-vp-section__lede">
         Schau kurz, wo du dich eher wiederfindest.
