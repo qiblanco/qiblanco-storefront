@@ -386,3 +386,17 @@
   flex: 1 1 100%;
   min-width: 0;
 }
+
+/* ─── Shop B ohne Bewertungsband (Job 20261029-qi-alpha-merge-reste-en-
+   snippet-b-balken-hreflang, Flanke F1 aus 20261025-qi-alpha-produktseite-
+   englisch-aufbauen-a-auf-b-niveau s04-r1-r2) ──────────────────────────────
+   Christian 28.10.2026: „wir stellen das produkt erst vor es kann noch keine
+   bewertung geben“. Das Band mit Sternen und Nutzerzahl im Hauskopf entfällt
+   nur hier, Hauskopf, Menü und Fuß bleiben (B bleibt mit Hauskopf neben A
+   vergleichbar). Diese Datei lädt allein die Route /products/qi-alpha-b
+   (links()), darum trifft die Regel keine andere Seite. Die Kopfhöhe misst
+   useKopfHoeheVariable live, ohne Band rückt der Inhalt nach. Rückweg: diesen
+   Block löschen. */
+.Header-AnnouncementBanner {
+  display: none;
+}
