@@ -290,6 +290,59 @@ const HARTE_FRIST_MS = 4000;
  * gegen seine eigene Erhebung der Player-Nachrichten.
  * ═══════════════════════════════════════════════════════════════════════════
  */
+/*
+ * ═══════════════════════════════════════════════════════════════════════════
+ * ÄNDERUNG 2026-10-29 (Grossjob 20261026-homepage-ladezeiten-manager-laender-
+ * adaptiv-laden-taegliche-wache, s03): DIE VORSCHAU WEICHT NUR NOCH DEM BILD,
+ * NICHT MEHR DER UHR.
+ *
+ * Christian: „Ladezustand wirkt hier super lang wenn man auf play klickt und es
+ * kommt ein schwarzer Bildschirm“ (Geldhelden-Karte, Start ab 13:37).
+ *
+ * WAS GESCHAH: die Gnadenfrist (900 ms nach dem load) und die harte Frist (4 s)
+ * blendeten um, sobald der Player GEANTWORTET hatte — auch wenn er noch
+ * PUFFERTE (playerState 3). Ein Player, der an `start=` spult, puffert und ist
+ * dabei schwarz. Gemessen in 208 von 208 Läufen der Wache videoumschaltung:
+ * umgeblendet per Frist, nie per „spielt“, Zustand dabei [-1, 3]. Mit einem
+ * Player, der 5 s puffert (Attrappe, Live-Code): Vorschau nach 0,9 s weg,
+ * danach 4,0–4,6 s schwarz.
+ *
+ * WIE JETZT: der Player sagt seinen Zustand selbst (postMessage, Ursprung und
+ * Absender-Fenster geprüft). Daraus folgt EINE Regel:
+ *   1 spielt              -> umblenden (der richtige Fall, wie bisher)
+ *   3 puffert             -> Vorschau + Ladezeichen BLEIBEN
+ *  -1/5/2 wartet auf Tipp -> nach TIPP_FRIST_MS umblenden: der Player braucht
+ *                            einen Tipp (Autoplay gesperrt, z.B. iOS), und den
+ *                            Knopf dafür zeigt nur er selbst
+ * Die alten Fristen gelten nur noch für einen Player, der ANTWORTET, aber
+ * keinen Zustand nennt — dort ist „nach der Uhr“ die einzige Auskunft.
+ * Puffert er länger als HINWEIS_MS, erscheint über der Vorschau der Weg zu
+ * YouTube (dieselbe Zeile wie beim Ausweg); nach DECKEL_MS wird umgeblendet,
+ * egal was er meldet — die Frist, die nicht ausfallen kann, bleibt.
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+const SPIELT = 1;
+const PUFFERT = 3;
+const TIPP_FRIST_MS = 1500;
+const HINWEIS_MS = 6000;
+const DECKEL_MS = 20000;
+const PLAYER_URSPRUNG = /^https:\/\/www\.youtube(-nocookie)?\.com$/;
+/* Der Zustand aus einer Player-Nachricht, sonst null. Zwei Formen, wie in
+ * app/lib/video-watchtime.js: onStateChange (Zahl) und infoDelivery.playerState. */
+function playerZustand(ev) {
+  let d;
+  try {
+    d = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data;
+  } catch {
+    return null;
+  }
+  if (!d || typeof d !== 'object') return null;
+  if (d.event === 'onStateChange' && typeof d.info === 'number') return d.info;
+  if (d.info && typeof d.info === 'object' && typeof d.info.playerState === 'number') {
+    return d.info.playerState;
+  }
+  return null;
+}
 /* Nach dem load der EIGENEN Quelle: so lange darf der Player schweigen. Er
  * meldet sich gemessen schon VOR dem load; das ist Luft für langsame Geräte. */
 const ANTWORT_FRIST_MS = 1500;
@@ -457,7 +510,13 @@ export function YoutubeTimestamp({
   const [ausweg, setAusweg] = useState(false);
   /* Wer den Ladezustand beendet hat: player | gnadenfrist | frist. */
   const [ausloeser, setAusloeser] = useState(null);
+  /* `hinweis`: er puffert schon HINWEIS_MS — der Weg zu YouTube steht dabei. */
+  const [hinweis, setHinweis] = useState(false);
   const antwort = useRef(false);
+  /* Hat der Player je einen ZUSTAND genannt? Erst dann gilt die Zustandsregel
+   * statt der Uhr. */
+  const zustandBekannt = useRef(false);
+  const tippUhr = useRef(0);
   const entschieden = useRef(false);
   const widgetId = useRef(0);
   const rahmen = useRef(null);
@@ -519,17 +578,52 @@ export function YoutubeTimestamp({
   useEffect(() => {
     if (!laueft) return undefined;
     const hart = setTimeout(() => {
-      if (antwort.current) entscheide('frist', 'spielt');
+      if (antwort.current && !zustandBekannt.current) entscheide('frist', 'spielt');
     }, HARTE_FRIST_MS);
     const absolut = setTimeout(() => pruefeSchweigen('frist'), ABSOLUTE_FRIST_MS);
+    const zeigeHinweis = setTimeout(() => {
+      if (!entschieden.current) setHinweis(true);
+    }, HINWEIS_MS);
+    const deckel = setTimeout(() => {
+      if (antwort.current) entscheide('deckel', 'spielt');
+    }, DECKEL_MS);
     return () => {
       clearTimeout(hart);
       clearTimeout(absolut);
+      clearTimeout(zeigeHinweis);
+      clearTimeout(deckel);
+      clearTimeout(tippUhr.current);
     };
     /* `entscheide`/`pruefeSchweigen` lesen nur Refs und stabile Setter; die
        Fristen laufen EINMAL je Klick und sollen nicht bei jedem Rendern neu
        starten. */
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [laueft]);
+
+  /*
+   * DER ZUSTAND DES PLAYERS — die Auskunft, nach der umgeblendet wird.
+   * Eigener Zuhörer neben der Watchtime-Anbindung, weil er auch OHNE Anker
+   * gelten muss und keine Messung ist: er liest nur, was der Player über den
+   * Handschlag der Anbindung ohnehin sendet. Angenommen wird nur, was aus
+   * DIESEM iframe (`ev.source`) und von YouTube (`ev.origin`) kommt.
+   */
+  useEffect(() => {
+    if (!laueft || typeof window === 'undefined') return undefined;
+    const aufNachricht = (ev) => {
+      const f = rahmen.current;
+      if (!f || ev.source !== f.contentWindow || !PLAYER_URSPRUNG.test(ev.origin || '')) return;
+      const st = playerZustand(ev);
+      if (st === null || entschieden.current) return;
+      zustandBekannt.current = true;
+      clearTimeout(tippUhr.current);
+      if (st === SPIELT) entscheide('player', 'spielt');
+      else if (st !== PUFFERT) {
+        tippUhr.current = setTimeout(() => entscheide('tippen', 'spielt'), TIPP_FRIST_MS);
+      }
+    };
+    window.addEventListener('message', aufNachricht);
+    return () => window.removeEventListener('message', aufNachricht);
+    /* `entscheide` liest nur Refs und stabile Setter. */
   }, [laueft]);
 
   /*
@@ -702,7 +796,8 @@ export function YoutubeTimestamp({
             const f = rahmen.current;
             if (entschieden.current || !f || f.getAttribute('src') !== quelle) return;
             setTimeout(() => {
-              if (antwort.current) entscheide('gnadenfrist', 'spielt');
+              /* Nur ohne Zustandsauskunft: ein puffernder Player ist schwarz. */
+              if (antwort.current && !zustandBekannt.current) entscheide('gnadenfrist', 'spielt');
             }, GNADENFRIST_MS);
             setTimeout(() => pruefeSchweigen('gnadenfrist'), ANTWORT_FRIST_MS);
           }}
@@ -763,6 +858,23 @@ export function YoutubeTimestamp({
           ) : null}
         </span>
       )}
+
+      {/* DER HINWEIS — der Player puffert schon HINWEIS_MS (langsames Netz).
+          Vorschau und Ladezeichen bleiben; dazu dieselbe Zeile wie beim
+          Ausweg, hier als Link: wer nicht warten will, sieht das Video an
+          derselben Stelle auf YouTube. Spielt der Player, ist sie weg. */}
+      {laueft && hinweis && !zeigt && !ausweg ? (
+        <a
+          href={watchUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-qb-video-hinweis=""
+          aria-label={`Video lädt langsam. Auf YouTube ansehen (neuer Tab): ${titel}`}
+          style={{...AUSWEG_ZEILE_STYLE, pointerEvents: 'auto', textDecoration: 'none'}}
+        >
+          {start > 0 ? `Auf YouTube ansehen · ab ${minuteWort}` : 'Auf YouTube ansehen'}
+        </a>
+      ) : null}
 
       {/* DER AUSWEG — kein Player hat geantwortet (Tracking-Schutz,
           Erweiterung, Firmennetz). Das Abzeichen bleibt, wo und wie es war;
