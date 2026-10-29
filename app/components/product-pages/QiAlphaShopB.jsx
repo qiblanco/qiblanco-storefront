@@ -219,7 +219,7 @@ function Edition() {
           <p>Jeder Qi Alpha® ist mit einer einmaligen Seriennummer versehen.</p>
           <h3 className="mt-3">Eigene Goldlegierung</h3>
           <p>
-            Für den Gitterchip<sup>®</sup> kommt eine eigene spezielle 750iger Goldlegierung
+            Für den Gitterchip<sup>®</sup> kommt eine eigene spezielle 750er Goldlegierung
             zum Einsatz um die gewohnten Eigenschaften zu gewährleisten.
           </p>
         </div>

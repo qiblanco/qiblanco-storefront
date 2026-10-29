@@ -107,7 +107,9 @@ test('NAHT: beide Komponenten lesen die SSoT und halten keinen eigenen Text', ()
 
 // Warenkorb der Qi-Alpha-Konfiguration wie die Kasse (Christian 27.10.2026,
 // Job 20261027-qi-alpha-immer-mit-registered-zeichen): „Qi Alpha immer mit R“,
-// Nummer als „Qi Alpha® 19/111“, Kette mit Länge darunter.
+// Kette mit Länge darunter. Seit 28.10.2026 Z14 (Grossjob 20261028-qi-alpha-
+// kopf-99-…, s06): Nummer als „Wunschnummer“, darunter „19/111 - 1st.
+// Edition“; Reihenfolge Qi Alpha®, Wunschnummer, Kette.
 const addons = await import('../app/lib/qi-master-addons.js');
 const addonLinie = (handle, titel, optionen = [], produktTitel = 'P') => ({
   merchandise: {
@@ -117,31 +119,100 @@ const addonLinie = (handle, titel, optionen = [], produktTitel = 'P') => ({
   },
 });
 
-test('Nummer in allen drei Schreibweisen wird „N/111“', () => {
-  for (const t of ['Alpha 19/100', 'Alpha 19/111', '19/111']) {
+test('Nummer in allen vier Schreibweisen wird „N/111“', () => {
+  for (const t of ['Alpha 19/100', 'Alpha 19/111', '19/111', '19/111 - 1st. Edition']) {
     assert.equal(addons.nummerKurz(t), '19/111', t);
   }
   assert.equal(addons.nummerKurz('60 cm'), null);
+  assert.equal(addons.nummerKurz('19/111 - 2nd. Edition'), null);
 });
 
-test('Nummern-Zeile heißt „Qi Alpha® 19/111 – Wunschnummer“, ohne Unterzeile', () => {
-  for (const t of ['Alpha 19/111', '19/111']) {
-    const z = addons.addonZeile(
-      addonLinie('qi-alpha-wunschnummer', t, [{name: 'Nummer', value: t}], 'Qi Alpha®'),
-    );
-    assert.deepEqual(z, {titel: 'Qi Alpha® 19/111 – Wunschnummer', unterzeilen: []});
+test('Nummern-Zeile heißt „Qi Alpha® 19/111 – Wunschnummer“, auch mit Edition-Variante (01.11. vor Z14)', () => {
+  for (const t of ['Alpha 19/111', '19/111', '19/111 - 1st. Edition']) {
+    for (const produkt of ['Qi Alpha®', 'Qi Alpha® Wunschnummer']) {
+      const z = addons.addonZeile(
+        addonLinie('qi-alpha-wunschnummer', t, [{name: 'Nummer', value: t}], produkt),
+      );
+      assert.deepEqual(z, {titel: 'Qi Alpha® 19/111 – Wunschnummer', unterzeilen: []}, t);
+    }
   }
 });
 
 test('Kette: Produkttitel, darunter nur die Länge', () => {
   const z = addons.addonZeile(
     addonLinie('qi-alpha-goldkette', '60 cm', [{name: 'Länge', value: '60 cm'}],
-      'Qi Blanco® Goldkette - 750iger ethisches Vollgold'),
+      'Qi Blanco® Goldkette – 750er ethisches Vollgold'),
   );
   assert.deepEqual(z, {
-    titel: 'Qi Blanco® Goldkette - 750iger ethisches Vollgold',
+    titel: 'Qi Blanco® Goldkette – 750er ethisches Vollgold',
     unterzeilen: ['60 cm'],
   });
+});
+
+const zeileH = (handle, id) => ({id, merchandise: {product: {handle}}});
+
+test('Warenkorb-Anzeige: Qi Alpha, Wunschnummer, Kette — egal wie hinzugefügt (Z14)', () => {
+  // So liefert Shopify, wenn erst der Qi Alpha, dann Kette, dann Nummer kam
+  // (gemessen 29.10.2026, s06 mess-reihenfolge.json Arm A).
+  const shopify = [
+    zeileH('qi-alpha-wunschnummer', 'n'),
+    zeileH('kakao-zeremonie', 'x'),
+    zeileH('qi-alpha-goldkette', 'k'),
+    zeileH('qi-alpha', 'q'),
+  ];
+  assert.deepEqual(addons.sortiereWarenkorb(shopify).map((z) => z.id), ['q', 'n', 'k', 'x']);
+  assert.deepEqual(addons.sortiereWarenkorb(undefined), []);
+});
+
+test('Inklusive Stahlkette (#1126) steht wie die Goldkette nach der Wunschnummer', () => {
+  // the-alpha-kauf-laden legt Qi Alpha + Stahlkette (0 €) + Nummer an.
+  const shopify = [
+    zeileH('qi-alpha-stahlkette', 's'),
+    zeileH('kakao-zeremonie', 'x'),
+    zeileH('qi-alpha-wunschnummer', 'n'),
+    zeileH('qi-alpha', 'q'),
+  ];
+  assert.deepEqual(addons.sortiereWarenkorb(shopify).map((z) => z.id), ['q', 'n', 's', 'x']);
+  const z = (handle, id) => ({id, quantity: 1, handle, merchandiseId: `gid://v/${id}`, attributes: []});
+  const plan = addons.reihenfolgeKorrektur([z('qi-alpha-stahlkette', 's'), z('qi-alpha-wunschnummer', 'n'), z('qi-alpha', 'q')]);
+  assert.deepEqual(plan.entfernen, ['s', 'n', 'q']);
+  assert.deepEqual(plan.hinzufuegen.map((e) => e.merchandiseId), ['gid://v/s', 'gid://v/n', 'gid://v/q']);
+});
+
+test('Kasse: reihenfolgeKorrektur nimmt die Gruppe heraus und legt sie umgekehrt wieder hinein', () => {
+  const z = (handle, id, attributes = []) => ({
+    id, handle, quantity: 1, merchandiseId: `gid://v/${id}`, attributes,
+  });
+  // schon richtig: nichts tun
+  assert.equal(
+    addons.reihenfolgeKorrektur([z('qi-alpha', 'q'), z('kakao', 'x'), z('qi-alpha-wunschnummer', 'n'), z('qi-alpha-goldkette', 'k')]),
+    null,
+  );
+  assert.equal(addons.reihenfolgeKorrektur([]), null);
+  // falsch (Permalink QA,Kette,Nummer): Shopify führt Nummer, Kette, QA
+  const plan = addons.reihenfolgeKorrektur([
+    z('qi-alpha-wunschnummer', 'n', [{key: '_qm_addon', value: 'wunschnummer'}]),
+    z('qi-alpha-goldkette', 'k'),
+    z('kakao', 'x'),
+    z('qi-alpha', 'q'),
+  ]);
+  assert.deepEqual(plan.entfernen, ['n', 'k', 'q']);
+  // Shopify setzt das LETZTE Element eines Aufrufs nach vorn -> Kette, Nummer, QA
+  assert.deepEqual(plan.hinzufuegen.map((l) => l.merchandiseId), ['gid://v/k', 'gid://v/n', 'gid://v/q']);
+  assert.deepEqual(plan.hinzufuegen[1].attributes, [{key: '_qm_addon', value: 'wunschnummer'}]);
+  assert.equal(plan.hinzufuegen[0].attributes, undefined);
+});
+
+test('Server ordnet nur nach dem Hinzufügen und legt bei Fehler die alte Folge zurück', () => {
+  const src = lies('app/lib/qi-master-addons.server.js');
+  assert.match(src, /if \(action !== CartForm\.ACTIONS\.LinesAdd\) return neu;/);
+  assert.match(src, /reihenfolgeKorrektur\(zeilen\)/);
+  assert.match(src, /cart\.addLines\(vorher, \{cartId\}\)/);
+});
+
+test('CartMain zeichnet die Zeilen sortiert', () => {
+  const src = lies('app/components/CartMain.jsx');
+  assert.match(src, /sortiereWarenkorb\(cart\?\.lines\?\.nodes\)\.map\(\(line\) =>/);
 });
 
 test('Hauptprodukt und Fremdes sind keine Add-on-Zeile', () => {
@@ -152,7 +223,8 @@ test('Hauptprodukt und Fremdes sind keine Add-on-Zeile', () => {
 
 test('CartLineItem: Titel aus addonZeile, zweite Zeile klein darunter statt „Name: Wert“', () => {
   const src = lies('app/components/CartLineItem.jsx');
-  assert.match(src, /<strong>\{addon\?\.titel \|\| warenkorbTitel\(line\)\}<\/strong>/);
+  // ® klein hochgestellt über mitMarkeR (Z1/Z14)
+  assert.match(src, /<strong>\{mitMarkeR\(addon\?\.titel \|\| warenkorbTitel\(line\)\)\}<\/strong>/);
   assert.match(src, /\(unterzeilen \?\? \[\]\)\.map\(\(zeile\) => \([\s\S]*?<br \/>[\s\S]*?<small>\{zeile\}<\/small>/);
   assert.match(src, /\(unterzeilen \? \[\] : selectedOptions\)\.map/);
   // der Wortlaut steht in den libs, nicht in der Komponente
