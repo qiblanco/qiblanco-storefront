@@ -86,7 +86,7 @@ export const ZUSAMMENFASSUNG = {
   titel: 'Bereit für deinen QiOne®.',
   zeilen: [
     'Versicherter Versand, in 2 bis 3 Tagen bei dir',
-    'Ab 99 € versenden wir kostenlos innerhalb Deutschlands',
+    'Versand nach Deutschland 5,90 €, ab 99 € kostenlos',
     '20 Tage zu Hause testen, voller Kaufpreis zurück',
   ],
   knopf: 'In den Warenkorb legen',
