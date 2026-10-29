@@ -49,7 +49,7 @@ export const INHALT = {
       },
       {
         titel: 'Wirken',
-        untertitel: 'QiOne® 2 Pro, QiBracelet®, Qi Alpha',
+        untertitel: 'QiOne® 2 Pro, QiBracelet®, Qi Alpha®',
         text: 'Sie zeigen dir keine Zahlen. Sie arbeiten dort, wo Longevity entschieden wird: in deinen Zellen. In vier Zellstudien im Labor von Prof. Dr. Dartsch blieben Zellen unter Stress mit Qi Blanco messbar besser geschützt.',
       },
     ],
@@ -79,21 +79,21 @@ export const INHALT = {
       {
         wearable: 'QiOne® 2 Pro',
         kategorie: 'Wirken',
-        tut: 'Gitterchip™ als Anhänger; in zwei Zellstudien schützte er Immun- und Darmzellen unter Handystrahlung',
+        tut: 'Gitterchip® als Anhänger; in zwei Zellstudien schützte er Immun- und Darmzellen unter Handystrahlung',
         zielgruppe: 'Alltag mit Handy, WLAN und 5G',
         link: '/products/qione-2-pro',
       },
       {
         wearable: 'QiBracelet®',
         kategorie: 'Wirken',
-        tut: 'Gitterchip™ im Armband aus Chirurgenstahl; in einer Zellstudie überlebten alle fünf Zelltypen oxidativen Stress besser',
+        tut: 'Gitterchip® im Armband aus Chirurgenstahl; in einer Zellstudie überlebten alle fünf Zelltypen oxidativen Stress besser',
         zielgruppe: 'Handgelenk, Sport, Sauna, Wasser',
         link: '/products/qibracelet',
       },
       {
-        wearable: 'Qi Alpha',
+        wearable: 'Qi Alpha®',
         kategorie: 'Wirken',
-        tut: 'Der Gitterchip™ des QiOne® 2 Pro mit Diamant, gefasst in 750er Gold, nummeriert',
+        tut: 'Der Gitterchip® des QiOne® 2 Pro mit Diamant, gefasst in 750er Gold, nummeriert',
         zielgruppe: 'Wer das Beste für ein ganzes Leben tragen will',
         link: '/products/the-alpha',
       },
@@ -176,13 +176,13 @@ export const INHALT = {
     anker: 'aktiv-wirken',
     h2: 'Die Wearables, die aktiv wirken: Qi Blanco',
     einleitung:
-      'Ein Tracker sagt dir, dass du schlecht geschlafen hast. Qi Blanco setzt dort an, wo der Schlaf entsteht: in der Zelle. Vier Zellstudien zeigen, was der Gitterchip™ dort verändert.',
+      'Ein Tracker sagt dir, dass du schlecht geschlafen hast. Qi Blanco setzt dort an, wo der Schlaf entsteht: in der Zelle. Vier Zellstudien zeigen, was der Gitterchip® dort verändert.',
     produkte: [
       {
         name: 'QiOne® 2 Pro',
         nutzen:
           'Du gehst mit Handy, WLAN und 5G durch den Tag, und deine Zellen bleiben geschützt.',
-        text: 'Der Anhänger mit dem Gitterchip™ ist überall dabei, wo du bist. In der Zellkultur erhielt er unter Handystrahlung die Abwehrkraft von Immunzellen und hielt die Darmbarriere nahezu intakt.',
+        text: 'Der Anhänger mit dem Gitterchip® ist überall dabei, wo du bist. In der Zellkultur erhielt er unter Handystrahlung die Abwehrkraft von Immunzellen und hielt die Darmbarriere nahezu intakt.',
         link: '/products/qione-2-pro',
         cta: 'QiOne® 2 Pro entdecken',
       },
@@ -190,7 +190,7 @@ export const INHALT = {
         name: 'QiBracelet®',
         nutzen:
           'Schutz am Handgelenk, beim Sport, in der Sauna und unter der Dusche.',
-        text: 'Das Armband aus Chirurgenstahl trägt den Gitterchip™ direkt auf der Haut. In der Zellkultur überlebten alle fünf getesteten Zelltypen oxidativen Stress besser, Leberzellen um 47 %.',
+        text: 'Das Armband aus Chirurgenstahl trägt den Gitterchip® direkt auf der Haut. In der Zellkultur überlebten alle fünf getesteten Zelltypen oxidativen Stress besser, Leberzellen um 47 %.',
         link: '/products/qibracelet',
         cta: 'QiBracelet® entdecken',
       },
@@ -202,11 +202,11 @@ export const INHALT = {
         cta: 'Necklace ansehen',
       },
       {
-        name: 'Qi Alpha',
+        name: 'Qi Alpha®',
         nutzen: 'Das Stück, das du ein Leben lang trägst.',
-        text: 'Der Gitterchip™ des QiOne® 2 Pro mit einem hochreinen Naturdiamanten, gefasst in einer eigenen 750er Goldlegierung, von Hand poliert und nummeriert.',
+        text: 'Der Gitterchip® des QiOne® 2 Pro mit einem hochreinen Naturdiamanten, gefasst in einer eigenen 750er Goldlegierung, von Hand poliert und nummeriert.',
         link: '/products/the-alpha',
-        cta: 'Qi Alpha ansehen',
+        cta: 'Qi Alpha® ansehen',
       },
     ],
     zuhause: {
@@ -282,7 +282,7 @@ export const INHALT = {
       {
         frage: 'Was ist der Unterschied zwischen einem Tracker und Qi Blanco?',
         antwort:
-          'Ein Tracker misst deinen Zustand und zeigt ihn dir in einer App. Qi Blanco misst nichts, sondern wirkt: Der Gitterchip™ im QiOne® 2 Pro und im QiBracelet® schützte in vier Zellstudien Zellen unter Stress.',
+          'Ein Tracker misst deinen Zustand und zeigt ihn dir in einer App. Qi Blanco misst nichts, sondern wirkt: Der Gitterchip® im QiOne® 2 Pro und im QiBracelet® schützte in vier Zellstudien Zellen unter Stress.',
       },
       {
         frage: 'Senden Smart Ringe und Uhren Strahlung aus?',
@@ -302,9 +302,9 @@ export const INHALT = {
           'Ja. Der QiBracelet® ist aus Chirurgenstahl und bleibt beim Duschen, Schwimmen und in der Sauna am Handgelenk.',
       },
       {
-        frage: 'Wie funktioniert der Gitterchip™?',
+        frage: 'Wie funktioniert der Gitterchip®?',
         antwort:
-          'Der Gitterchip™ wirkt auf das Wasser in deinem Körper, das den größten Teil jeder Zelle ausmacht. Er regt einen geordneten, energiereichen Zustand dieses Wassers an, den die Forschung als kohärentes Wasser beschreibt (Del Giudice, Warnke). Was das für die Zelle bedeutet, messen die Zellstudien von Prof. Dr. Dartsch.',
+          'Der Gitterchip® wirkt auf das Wasser in deinem Körper, das den größten Teil jeder Zelle ausmacht. Er regt einen geordneten, energiereichen Zustand dieses Wassers an, den die Forschung als kohärentes Wasser beschreibt (Del Giudice, Warnke). Was das für die Zelle bedeutet, messen die Zellstudien von Prof. Dr. Dartsch.',
       },
       {
         frage: 'Kann ich Qi Blanco testen?',

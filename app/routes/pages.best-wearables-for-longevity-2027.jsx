@@ -423,7 +423,7 @@ const ALT = {
   '/products/qibracelet': 'QiBracelet® offener Armreif, Vorderansicht',
   '/products/qione-kette': 'Necklace, Kette für den QiOne®',
   '/products/the-alpha':
-    'Qi Alpha, Vorderseite mit Diamant in goldener Fassung',
+    'Qi Alpha®, Vorderseite mit Diamant in goldener Fassung',
 };
 
 const ERSATZBILD = {
