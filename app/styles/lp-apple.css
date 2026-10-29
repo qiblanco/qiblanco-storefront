@@ -1,0 +1,24 @@
+/*
+ * APPLE-LANDINGPAGES (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-
+ * niveau-ausser-seo-geo, s07). Lädt nur mit der Apple-Fassung
+ * (components/apple-seite/lp/LpApple.jsx). Nur --as-*-Tokens aus
+ * apple-seite.css, keine freien Werte (BAUKASTEN §2).
+ */
+
+/*
+ * HAUS-GRUNDREGELN IM BAUKASTEN-SCOPE NEUTRALISIEREN (Befund s04, 29.10.):
+ * reset.css setzt `p, li {font-size: 1.2rem}` (19,2 px) direkt aufs Element
+ * und Schatten auf jede Überschrift. `.as-seite :where(...)` hat die
+ * Spezifität einer Klasse, die Stufen des Baukastens bleiben stehen.
+ */
+.as-seite :where(p, li) {
+  font-size: var(--as-fs-3);
+}
+.as-seite :where(h1, h2, h3) {
+  text-shadow: none;
+}
+
+/* Text links, also auch der Knopf im Bild-Text-Band. */
+.as-band-text .as-knoepfe {
+  justify-content: flex-start;
+}

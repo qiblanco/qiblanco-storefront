@@ -2,6 +2,9 @@ import {useLoaderData} from 'react-router';
 import {MmDas20TageVersprechen} from '~/components/campaign/MmDas20TageVersprechen';
 import mmStyles from '~/styles/mm-lp.css?url';
 import {mmLadeProdukte} from '~/components/campaign/mmProducts';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {LpApple} from '~/components/apple-seite/lp/LpApple';
+import {VERSPRECHEN_SEKTIONEN} from '~/components/apple-seite/lp/lp-versprechen';
 
 /**
  * Trust-Ketten-Hub „Garantie / Risiko-Umkehr" — 20-Tage-Rückgabe, Spür-Regel #7
@@ -28,12 +31,21 @@ export const meta = () => [
 /** @type {HeadersFunction} */
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
+/*
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s07): der Schalter steht in app/lib/apple-seiten.js. An:
+ * die Apple-Fassung ohne Produktabfrage. Aus: die Seite unverändert (C,
+ * Rückweg: homepage-bauer/bin/apple-seite zurueck <seite>).
+ */
 export async function loader({context}) {
-  return mmLadeProdukte(context);
+  const appleSeite = appleSeiteLaden(context, appleSeiteFuerPfad('/pages/das-20-tage-versprechen'));
+  if (appleSeite.an) return {appleSeite, products: []};
+  return {...(await mmLadeProdukte(context)), appleSeite};
 }
 
 export default function Das20TageVersprechenRoute() {
-  const {products} = useLoaderData();
+  const {products, appleSeite} = useLoaderData();
+  if (appleSeite?.an) return <LpApple seite={appleSeite.seite} sektionen={VERSPRECHEN_SEKTIONEN} />;
   return <MmDas20TageVersprechen products={products} />;
 }
 
