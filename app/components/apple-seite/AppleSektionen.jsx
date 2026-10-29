@@ -59,13 +59,25 @@ function AsKnopf({cta, art = 'primary'}) {
   );
 }
 
-function AsKnoepfe({cta, cta2}) {
+/**
+ * Knopfzeile. `preis` (optional, s04): der Shopify-Preis als Zeile unter dem
+ * Kaufknopf, damit kein Kaufknopf ohne Preis steht (Sicht-Tor
+ * kaufknopf_kontext). Ohne `preis` rendert die Zeile wie vorher.
+ */
+function AsKnoepfe({cta, cta2, preis}) {
   if (!cta && !cta2) return null;
-  return (
+  const knoepfe = (
     <div className="as-knoepfe">
       <AsKnopf cta={cta} />
       <AsKnopf cta={cta2} art="secondary" />
     </div>
+  );
+  if (!preis) return knoepfe;
+  return (
+    <>
+      {knoepfe}
+      <p className="as-preis">{preis}</p>
+    </>
   );
 }
 
@@ -76,14 +88,14 @@ function AsKnoepfe({cta, cta2}) {
  *   alt?: string, breite?: number, hoehe?: number}, cta?: {text: string, href: string},
  *   cta2?: {text: string, href: string}, dunkel?: boolean}} props
  */
-export function AppleHero({overline, titel, unter, bild, cta, cta2, dunkel = false}) {
+export function AppleHero({overline, titel, unter, bild, cta, cta2, preis, dunkel = false}) {
   return (
     <section className={`as-hero${dunkel ? ' as-dunkel' : ''}`} data-section="as-hero">
       <div className="as-hero-text">
         {overline ? <p className="as-overline">{mitMarkeR(overline)}</p> : null}
         <h1 className="as-h1">{mitMarkeR(titel)}</h1>
         {unter ? <p className="as-unter">{mitMarkeR(unter)}</p> : null}
-        <AsKnoepfe cta={cta} cta2={cta2} />
+        <AsKnoepfe cta={cta} cta2={cta2} preis={preis} />
       </div>
       <figure className="as-hero-bild">
         <AsBild bild={bild} sizes="(min-width: 1200px) 1200px, 100vw" sofort />
@@ -121,7 +133,7 @@ export function AppleFakten({titel, kacheln}) {
  * @param {{etikett?: string, titel: string, text: string|string[], bild: object,
  *   seite?: 'links'|'rechts', cta?: {text: string, href: string}, index?: number}} props
  */
-export function AppleBildBand({etikett, titel, text, bild, seite, cta, index = 0}) {
+export function AppleBildBand({etikett, titel, text, bild, seite, cta, preis, index = 0}) {
   return (
     <section className="as-sektion as-band" data-band-seite={bandSeite(index, seite)} data-section="as-band">
       <figure className="as-band-bild">
@@ -135,7 +147,7 @@ export function AppleBildBand({etikett, titel, text, bild, seite, cta, index = 0
             {mitMarkeR(p)}
           </p>
         ))}
-        <AsKnoepfe cta={cta} />
+        <AsKnoepfe cta={cta} preis={preis} />
       </div>
     </section>
   );
@@ -259,13 +271,13 @@ export function AppleFaq({titel, fragen, jsonLd = false}) {
  * @param {{titel: string, text?: string, cta: {text: string, href: string},
  *   cta2?: {text: string, href: string}, hell?: boolean}} props
  */
-export function AppleCtaBand({titel, text, cta, cta2, hell = false}) {
+export function AppleCtaBand({titel, text, cta, cta2, preis, hell = false}) {
   return (
     <section className={`as-cta-band${hell ? '' : ' as-dunkel'}`} data-section="as-cta">
       <div className="as-cta-innen">
         <h2 className="as-h2">{mitMarkeR(titel)}</h2>
         {text ? <p className="as-unter">{mitMarkeR(text)}</p> : null}
-        <AsKnoepfe cta={cta} cta2={cta2} />
+        <AsKnoepfe cta={cta} cta2={cta2} preis={preis} />
       </div>
     </section>
   );

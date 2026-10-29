@@ -1,0 +1,110 @@
+/*
+ * APPLE-FASSUNG DER STARTSEITE, / und /pages/start-b (Grossjob 20261029-
+ * GROSSJOB-alle-shop-seiten-apple-niveau-ausser-seo-geo, s04). Lädt nur mit
+ * der Apple-Fassung (components/apple-seite/startseite/StartseiteApple.jsx).
+ * Nur --as-*-Tokens aus apple-seite.css, keine freien Werte (BAUKASTEN §2).
+ */
+
+/*
+ * HAUS-GRUNDREGELN IM BAUKASTEN-SCOPE NEUTRALISIEREN. reset.css setzt
+ * `p, li {font-size: 1.2rem}` (19,2 px) direkt aufs Element und Schatten auf
+ * jede Überschrift. Gemessen in der Vorschau 29.10.: 17 Fließtextblöcke bei
+ * 19,2 px statt Stufe 3 (17 px), dadurch keine modulare Skala mehr
+ * (design-rubrik stimmig 94). `.as-seite :where(...)` hat die Spezifität einer
+ * Klasse: schlägt das Element, lässt .as-unter/.as-stimme-text p (später in
+ * apple-seite.css geladen) ihre eigene Stufe.
+ */
+.as-seite :where(p, li) {
+  font-size: var(--as-fs-3);
+}
+.as-seite :where(h1, h2, h3) {
+  text-shadow: none;
+}
+
+/* Text links, also auch der Knopf im Bild-Text-Band. */
+.as-band-text .as-knoepfe {
+  justify-content: flex-start;
+}
+
+/* Kopf: das Produktbild steht als Karte unter dem Text, nicht bildbreit. */
+:is([data-apple-seite='startseite'], [data-apple-seite='start-b']) .as-hero-bild {
+  max-width: var(--as-text-breite);
+}
+
+/* ---- Gerätereihe ---------------------------------------------------------- */
+.sa-modelle-liste {
+  list-style: none;
+  margin: var(--as-s-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--as-s-6);
+}
+@media (min-width: 750px) {
+  .sa-modelle-liste {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--as-s-3);
+  }
+}
+.sa-modell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.sa-modell-name {
+  margin: var(--as-s-3) 0 0;
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.sa-modell-zeile {
+  margin: var(--as-s-1) 0 0;
+  color: var(--as-grau);
+}
+.sa-modell-wege {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--as-s-2);
+  margin-top: var(--as-s-3);
+}
+.sa-modell-wege .as-link {
+  margin-top: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--as-tippziel);
+}
+
+/*
+ * STICKY-KAUFKNOPF (nur Arm B, mobil). Die Rookie-Leiste bringt Lage und
+ * Sichtbarkeit aus rookie-start.css mit; ihre Farb- und Abstands-Tokens
+ * (--rs-*, --st-*) gelten nur unter .qb-rookie-start. In der Apple-Fassung
+ * setzt dieser Block dieselben Rollen mit --as-*.
+ */
+@media screen and (max-width: 749px) {
+  .as-seite .qb-rs-sticky {
+    gap: var(--as-s-2);
+    padding: var(--as-s-1) var(--as-s-2) max(var(--as-s-1), env(safe-area-inset-bottom));
+    background: var(--as-weiss);
+    border-top: var(--as-strich) solid var(--as-linie);
+  }
+  .as-seite .qb-rs-sticky__name {
+    font-size: var(--as-fs-3);
+    color: var(--as-tinte);
+  }
+  .as-seite .qb-rs-sticky .btn--primary {
+    padding: var(--as-s-1) var(--as-s-2);
+    min-height: var(--as-tippziel);
+    font-size: var(--as-fs-3) !important;
+  }
+}
+
+/* Preiszeile unter dem Kaufknopf (AsKnoepfe preis, Modellreihe). */
+.as-seite .as-preis {
+  margin: var(--as-s-2) 0 0;
+  font-size: var(--as-fs-2);
+  color: var(--as-tinte);
+}
+.as-seite .as-dunkel .as-preis {
+  color: var(--as-linie);
+}

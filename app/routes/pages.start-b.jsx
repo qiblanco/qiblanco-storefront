@@ -1,4 +1,8 @@
+import {useLoaderData} from 'react-router';
 import {StartRookie} from '~/components/rookie/start/StartRookie';
+import {StartseiteApple} from '~/components/apple-seite/startseite/StartseiteApple';
+import {startseiteProdukte} from '~/components/apple-seite/startseite/startseite-preise';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
 import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
 import startseiteStyles from '~/styles/startseite.css?url';
 import rookieStartStyles from '~/styles/rookie-start.css?url';
@@ -43,9 +47,29 @@ export const meta = () => [
 /** @type {HeadersFunction} */
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
+/*
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s04): der Loader liest nur den Schalter APPLE_SEITE_START_B
+ * (app/lib/apple-seiten.js), keine Shopify-Abfrage. Aus: die Rookie unverändert
+ * (C, Rückweg: Befehl zurück in homepage-bauer/bin/apple-seite, Seite start-b). An: die
+ * Apple-Fassung, Arm B von start-e1-gs081 (components/apple-seite/startseite/).
+ * Die Weiche sitzt weiter im Loader von A; hier wird nichts zugeteilt.
+ */
+/** @param {LoaderFunctionArgs} args */
+export async function loader({context}) {
+  const appleSeite = appleSeiteLaden(context, 'start-b');
+  // Mit Schalter an: die Preise für die Kaufknöpfe (fail-closed, siehe
+  // startseite-preise.js). Aus: keine Abfrage, wie vorher.
+  const produkte = appleSeite?.an ? await startseiteProdukte(context) : [];
+  return {appleSeite, produkte};
+}
+
 export default function StartRookieRoute() {
-  return <StartRookie />;
+  const {appleSeite, produkte} = useLoaderData();
+  // StartseiteApple bringt die Wurzel AppleSeite (Marker) selbst mit.
+  return appleSeite?.an ? <StartseiteApple seite="start-b" produkte={produkte} /> : <StartRookie />;
 }
 
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
 /** @typedef {import('react-router').HeadersFunction} HeadersFunction */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
