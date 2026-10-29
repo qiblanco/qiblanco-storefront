@@ -140,7 +140,7 @@ export const WISSEN = {
       titel: 'Den ganzen Tag auf der Haut.',
       absaetze: [
         'An der Kette liegt dein QiOne® dort, wo du ihn haben willst: unter dem Hemd, über dem Pullover, beim Sport.',
-        'Der Karabiner schließt mit einer Hand. Abends legst du die Kette ab oder behältst sie auch nachts an.',
+        'Der Karabiner lässt sich mit einer Hand schließen. Die Kette kannst du jederzeit ablegen, nachts darf sie aber genauso dranbleiben.',
         'Der Stahl braucht keine Pflege. Wasser und ein weiches Tuch genügen.',
       ],
       bild: 4,
@@ -191,13 +191,13 @@ export const FAQ = {
     },
     {
       f: 'Darf die Kette nass werden oder in die Sauna?',
-      a: 'Ja. Chirurgenstahl 316L rostet nicht und läuft nicht an. Im Meer und im Schwimmbad bleibt sie dran. In der Sauna wird der Stahl heiß. Leg sie dann kurz ab oder trag sie über dem Handtuch.',
+      a: 'Ja. Chirurgenstahl 316L rostet nicht und läuft nicht an, darum bleibt die Kette im Meer und im Schwimmbad dran. In der Sauna wird der Stahl heiß: Leg sie dort ab oder trag sie über dem Handtuch.',
     },
     {
       // PR-Manager s13 (G1/P5): kein Verträglichkeitsversprechen, nur der
       // Stahl und der Weg zum Hautarzt.
       f: 'Vertrage ich die Kette auf der Haut?',
-      a: 'Die Kette ist aus Chirurgenstahl 316L, aus demselben Stahl wie das Gehäuse deines QiOne®. Hast du eine Nickelallergie, frag vorher deinen Hautarzt.',
+      a: 'Die Kette ist aus Chirurgenstahl 316L, also aus demselben Stahl wie das Gehäuse deines QiOne®. Hast du eine Nickelallergie, sprich vorher mit deinem Hautarzt.',
     },
     {
       f: 'Kann ich die Kette zusammen mit dem QiOne® 2 Pro kaufen?',
