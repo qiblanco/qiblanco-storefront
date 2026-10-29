@@ -168,6 +168,13 @@ export const THE_ALPHA_WOERTERBUCH = {
  * schwarz auf, D-Alpha“ = THE ALPHA, Figma-Ausschnitt christian-szene-3). */
 export const THE_ALPHA_MARKE = 'Qi Alpha®';
 
+/** Das schwarze Kästchen unter dem quer gezeigten Qi Alpha (Seitenband,
+ * TapMarke) in Variante A. Christian 28.10.2026 (Z11): „da steht ja unten
+ * drunter in einem schwarzen Kästchen Qi Alpha. Da hätte ich gern THE ALPHA
+ * stehen.“ Großbuchstaben wie das Etikett vorher, ohne ®. NICHT die Leiste
+ * links oben (QI_ALPHA_LEISTE), das ist eine andere Stelle. */
+export const THE_ALPHA_ETIKETT = 'THE ALPHA';
+
 /** Das Etikett links oben in der Kaufleiste. Christian 27.10.2026 (Z1): „Und
  * links oben das THE ALPHA machen wir zu QI ALPHA mit dem Registry-Zeichen.“
  * Am selben Vormittag: die Schluss-Szene zeigt „Qi Alpha®“ statt „THE ALPHA“

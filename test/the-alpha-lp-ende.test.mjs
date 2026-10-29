@@ -115,3 +115,80 @@ test('Schluss-Szene ohne Preis und Detailzeile, kein zweiter Knopf (A, B, C)', (
     assert.doesNotMatch(lies(r), /PREIS_QUERY|preis=/, `${r}: lädt keinen Preis mehr`);
   }
 });
+
+/*
+ * „WIE IM FILM“, ZEILEN, SCHLUSS-SZENE, ETIKETT, TON (Christian 28.10.2026,
+ * Z6, Z10–Z12; Grossjob 20261028-qi-alpha-kopf-99-registered-hochgestellt-
+ * ohne-bewertungen-chat-ratenzahlung, s07). Nur Variante A schaltet um; B und
+ * C behalten ihren Stand. Die Kanten selbst misst die Browser-Probe
+ * claude-jobs/<grossjob>/s07/probe_film_kanten.py, hier steht der Bauplan.
+ * ROT VOR GRÜN: auf origin/main e12e3b88 fehlen film="szene", ton="an",
+ * THE_ALPHA_ETIKETT, die Zeilen-Schritte und die Schluss-Bühne.
+ */
+const A = 'app/components/campaign/TheAlpha.jsx';
+const B = 'app/components/campaign/TheAlphaVarianteB.jsx';
+const C = 'app/components/campaign/TheAlphaVarianteC.jsx';
+const PREMIUM = 'app/components/campaign/TheAlphaPremium.jsx';
+
+test('A: Szenen-Fassung und Ton als Standard, B und C nicht', () => {
+  assert.match(lies(A), /<TapSeite variante="a" film="szene" ton="an">/);
+  for (const f of [B, C]) {
+    assert.doesNotMatch(lies(f), /film="szene"|ton="an"/, `${f} bleibt beim Stand vom 27.10.`);
+  }
+});
+
+test('A: Etikett am Seitenband heißt THE ALPHA, die Leiste bleibt QI ALPHA®', () => {
+  assert.equal(daten.THE_ALPHA_ETIKETT, 'THE ALPHA');
+  assert.match(lies(A), /<TapMarke bild=\{SEITENBAND\} etikett=\{THE_ALPHA_ETIKETT\} \/>/);
+  assert.equal(daten.QI_ALPHA_LEISTE, 'QI ALPHA®');
+});
+
+test('Kapitelzeilen: in der Szenen-Fassung ist jede Zeile EIN Schritt', () => {
+  const p = lies(PREMIUM);
+  const kapitel = p.slice(p.indexOf('export function TapKapitel'), p.indexOf('function Karte('));
+  assert.match(kapitel, /zeilenweise \? \(\s*<li key=\{z\} className="tap-zeile" data-tap-schritt="">\s*\{z\}/);
+  assert.match(kapitel, /zeilenweise\s*\?\s*abschnitt\.zeilen\.length/);
+});
+
+test('Schluss-Szene der Szenen-Fassung: Bühne, Zeile für Zeile, Knopf zuletzt', () => {
+  const p = lies(PREMIUM);
+  const ed = p.slice(p.indexOf('export function TapEdition'), p.indexOf('export default TapSeite'));
+  const szene = ed.slice(ed.indexOf('if (szene)'), ed.indexOf('return (\n    <section className="tap-edition"'));
+  assert.match(szene, /data-tap-scrub=""/);
+  assert.match(szene, /data-tap-scrub-start="1"/);
+  const reihe = ['tap-marke-name', 'tap-edition-titel', 'tap-zahl', 'tap-schluss-knopf'].map((k) =>
+    szene.indexOf(`className="${k}" data-tap-schritt=""`),
+  );
+  assert.ok(reihe.every((i, n) => i > 0 && (n === 0 || i > reihe[n - 1])), `Reihenfolge ${reihe}`);
+  assert.equal((szene.match(/data-tap-schritt=""/g) || []).length, 4, 'genau vier Zeilen');
+  assert.ok(szene.indexOf('</div>') > szene.indexOf('<TheAlphaKauf'), 'nach dem Knopf schließt die Bühne');
+});
+
+test('Einblenden erst, wenn die Szene davor aus dem Bild ist (bottom <= 0)', () => {
+  const p = lies(PREMIUM);
+  assert.match(p, /const frei = !vor \|\| unterkante\(vor\) <= 0;/);
+  assert.match(p, /if \(still \|\| \(frei && \(ganz \|\| r\.top < 0\)\)\)/);
+  // Jede Szene trägt die Marke, in Dokument-Reihenfolge gelesen.
+  for (const k of ['tap-titelkarte', 'tap-woerterbuch', 'tap-film', 'tap-kapitel-buehne', 'tap-karten', 'tap-marke', 'tap-edition-szene']) {
+    const i = p.indexOf(k);
+    assert.ok(i > 0 && p.slice(i, i + 400).includes('data-tap-szene=""'), `${k} trägt data-tap-szene`);
+  }
+});
+
+test('® klein hochgestellt in Leiste und Etikett (Z1)', () => {
+  const p = lies(PREMIUM);
+  assert.match(p, /<span className="tap-leiste-marke">\s*<MarkenName marke=\{QI_ALPHA_LEISTE\} \/>/);
+  assert.match(p, /<figcaption className="tap-etikett">\s*<MarkenName marke=\{bild\.etikett\} \/>/);
+});
+
+test('Ton als Standard: Start nur mit Aktivierungsgeste, Schalter rechts unten', () => {
+  const t = lies('app/components/campaign/TheAlphaTon.jsx');
+  const gesten = t.match(/const GESTEN = \[([^\]]*)\]/);
+  assert.ok(gesten, 'GESTEN fehlt');
+  assert.doesNotMatch(gesten[1], /scroll|wheel|touchmove|touchstart/, 'Scrollen ist keine Aktivierung');
+  assert.match(gesten[1], /'touchend'/);
+  assert.match(gesten[1], /'keydown'/);
+  assert.match(t, /export function TapTon\(\{wurzel, standard = 'fenster'\}\)/);
+  const css = lies('app/styles/the-alpha-premium.css');
+  assert.match(css, /\.tap-seite\[data-tap-ton-standard='an'\] \.tap-ton-schalter \{\s*left: auto;\s*right: calc\(env\(safe-area-inset-right, 0px\) \+ 20px\);/);
+});
