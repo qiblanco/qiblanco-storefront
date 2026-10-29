@@ -10,6 +10,7 @@ import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
 import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
 import {
+  alleZeilen,
   bindeRatenanteil,
   merkmaleAusQuery,
   mitRatenanteil,
@@ -144,6 +145,7 @@ export async function loader({request, context, params}) {
       ? erstellt
       : await bindeRatenanteil({
           cart,
+          storefront,
           action: 'LinesAdd',
           inputs: {lines: linesMap},
           result: erstellt,
@@ -188,18 +190,18 @@ export async function loader({request, context, params}) {
   if (!TEILZAHLUNG.maerkte.includes(storefront?.i18n?.country)) {
     let angelegteZeilen = null;
     try {
-      // 250 = Seitenhöchstwert der Storefront-API; ohne Angabe liest
-      // Hydrogen 100 Zeilen, und Zeile 101 bliebe ungesehen.
+      // Alle Seiten: ohne Angabe liest Hydrogen 100 Zeilen, und eine
+      // Ratenanteil-Zeile dahinter bliebe ungesehen (alleZeilen).
       angelegteZeilen = (
-        await cart.get({cartId: cartResult.id, numCartLines: 250})
-      )?.lines?.nodes;
+        await alleZeilen({storefront, cartId: cartResult.id})
+      ).zeilen;
     } catch {
       angelegteZeilen = null;
     }
     if (
       Array.isArray(angelegteZeilen) &&
       !teil1Erlaubt({
-        varianten: angelegteZeilen.map((z) => z?.merchandise?.id),
+        varianten: angelegteZeilen.map((z) => z?.variantId),
         land: storefront?.i18n?.country,
       })
     ) {

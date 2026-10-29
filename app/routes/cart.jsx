@@ -150,6 +150,7 @@ export async function action({request, context}) {
   // Aktion den Ratenanteil hinzufügt oder eine Menge über 1 setzt.
   result = await bindeRatenanteil({
     cart,
+    storefront,
     action,
     inputs,
     result,

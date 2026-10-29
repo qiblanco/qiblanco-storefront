@@ -175,7 +175,8 @@ test('Teil-1-Sperre ist nicht per Schreibweise umgehbar (Gegenpruefer 28.10.: /c
 test('Zweite Linie: außerhalb DE/AT zählt der angelegte Warenkorb, nicht die Schreibweise im Link', () => {
   const permalink = lies('app/routes/cart.$lines.jsx');
   const nachAnlage = permalink.slice(permalink.indexOf('const cartResult = result.cart'));
-  assert.match(nachAnlage, /cart\.get\(/, 'nach cart.create muss der angelegte Warenkorb gelesen werden');
+  // Seit s02 (Runde 2 des K3-Widerlegers) über alle Seiten: alleZeilen statt cart.get.
+  assert.match(nachAnlage, /alleZeilen\(\{storefront, cartId: cartResult\.id\}\)/, 'nach cart.create muss der angelegte Warenkorb vollständig gelesen werden');
   assert.match(nachAnlage, /teil1Erlaubt\(/, 'die angelegten Zeilen laufen durch teil1Erlaubt');
   const sperre = nachAnlage.slice(0, nachAnlage.indexOf('cart.setCartId'));
   assert.match(sperre, /redirect\('\/products\/qi-alpha'\)/, 'Sperre vor dem Cookie, ohne Warenkorb-Kopf');
@@ -237,12 +238,22 @@ registerHooks({
 
 async function permalink({land, angelegt, getWirft = false}) {
   const spur = {get: 0, setCartId: 0};
-  const cart = {
-    get: async () => {
+  const storefront = {
+    i18n: {country: land},
+    CacheNone: () => ({}),
+    query: async () => {
       spur.get += 1;
       if (getWirft) throw new Error('Storefront-API nicht erreichbar');
-      return {id: 'gid://cart/1', lines: {nodes: angelegt.map((id) => ({merchandise: {id}}))}};
+      return {
+        cart: {
+          buyerIdentity: {countryCode: land},
+          lines: {pageInfo: {hasNextPage: false}, nodes: angelegt.map((id, i) => ({id: `l${i}`, quantity: 1, merchandise: {id}}))},
+        },
+      };
     },
+  };
+  const cart = {
+    get: async () => ({id: 'gid://cart/1', lines: {nodes: []}}),
     create: async (e) => ({cart: {id: 'gid://cart/1', checkoutUrl: 'https://checkout.qiblanco.com/c/1', totalQuantity: 1, attributes: e.attributes ?? []}}),
     updateAttributes: async (attributes) => ({cart: {id: 'gid://cart/1', attributes}}),
     setCartId: () => {
@@ -255,7 +266,7 @@ async function permalink({land, angelegt, getWirft = false}) {
   try {
     antwort = await loader({
       request: new Request('https://qiblanco.com/cart/41007289663544:1'),
-      context: {cart, env: {}, storefront: {i18n: {country: land}}},
+      context: {cart, env: {}, storefront},
       params: {lines: '41007289663544:1'},
     });
   } catch (e) {
@@ -353,24 +364,36 @@ test('Nachlesen nur, wenn die Aktion den Ratenanteil bringt oder eine Menge übe
   assert.equal(tz.ratenanteilPruefen({action: 'DiscountCodesUpdate', inputs: {}}), false);
 });
 
-function attrappenKorb({zeilen, land, getWirft = false, seite = Infinity}) {
-  const spur = {get: 0, removeLines: [], updateLines: [], numCartLines: []};
+function attrappenKorb({zeilen, land, getWirft = false}) {
+  const spur = {get: 0, removeLines: [], updateLines: [], seiten: 0};
   let korb = zeilen.map(([id, quantity, mid]) => ({id, quantity, mid}));
+  const storefront = {
+    i18n: {country: land},
+    CacheNone: () => ({}),
+    query: async (q, {variables}) => {
+      spur.seiten += 1;
+      if (variables.nach == null) spur.get += 1;
+      if (getWirft) throw new Error('Storefront-API nicht erreichbar');
+      const ab = variables.nach == null ? 0 : Number(variables.nach);
+      const n = Number(q.match(/lines\(first: (\d+)/)[1]);
+      const teil = korb.slice(ab, ab + n);
+      return {
+        cart: {
+          buyerIdentity: {countryCode: land},
+          lines: {
+            pageInfo: {hasNextPage: ab + n < korb.length, endCursor: String(ab + n)},
+            nodes: teil.map((z) => ({id: z.id, quantity: z.quantity, merchandise: {id: z.mid}})),
+          },
+        },
+      };
+    },
+  };
   return {
     spur,
+    storefront,
     korb: () => korb,
     cart: {
-      get: async (e) => {
-        spur.get += 1;
-        spur.numCartLines.push(e?.numCartLines);
-        if (getWirft) throw new Error('Storefront-API nicht erreichbar');
-        const n = Math.min(seite, e?.numCartLines ?? 100);
-        return {
-          id: 'gid://cart/1',
-          buyerIdentity: {countryCode: land},
-          lines: {nodes: korb.slice(0, n).map((z) => ({id: z.id, quantity: z.quantity, merchandise: {id: z.mid}}))},
-        };
-      },
+      get: async () => ({id: 'gid://cart/1', lines: {nodes: []}}),
       removeLines: async (ids) => {
         spur.removeLines.push(ids);
         korb = korb.filter((z) => !ids.includes(z.id));
@@ -389,15 +412,15 @@ test('Bindung (Verhalten): CH entfernt, DE klemmt, Lesefehler und fremde Artikel
   const ergebnis = {cart: {id: 'gid://cart/1', totalQuantity: 1}};
   const add = {lines: [{merchandiseId: R_GID, quantity: 1}]};
   const ch = attrappenKorb({zeilen: [['l1', 1, R_GID]], land: 'CH'});
-  await tz.bindeRatenanteil({cart: ch.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'CH'});
+  await tz.bindeRatenanteil({cart: ch.cart, storefront: ch.storefront, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'CH'});
   assert.deepEqual(ch.spur.removeLines, [['l1']]);
   const de = attrappenKorb({zeilen: [['l1', 3, R_GID]], land: 'DE'});
-  await tz.bindeRatenanteil({cart: de.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'DE'});
+  await tz.bindeRatenanteil({cart: de.cart, storefront: de.storefront, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'DE'});
   assert.deepEqual(de.spur.updateLines, [[{id: 'l1', quantity: 1}]]);
   assert.deepEqual(de.spur.removeLines, []);
   // Kontrolle: sauberer DE-Korb wird gelesen, aber nicht verändert.
   const sauber = attrappenKorb({zeilen: [['l1', 1, R_GID]], land: 'DE'});
-  const r = await tz.bindeRatenanteil({cart: sauber.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'DE'});
+  const r = await tz.bindeRatenanteil({cart: sauber.cart, storefront: sauber.storefront, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'DE'});
   assert.equal(r, ergebnis);
   assert.equal(sauber.spur.get, 1);
   assert.deepEqual([sauber.spur.removeLines, sauber.spur.updateLines], [[], []]);
@@ -405,6 +428,7 @@ test('Bindung (Verhalten): CH entfernt, DE klemmt, Lesefehler und fremde Artikel
   const fremd = attrappenKorb({zeilen: [['l1', 1, R_GID]], land: 'CH'});
   await tz.bindeRatenanteil({
     cart: fremd.cart,
+    storefront: fremd.storefront,
     action: 'LinesAdd',
     inputs: {lines: [{merchandiseId: QI_GID, quantity: 1}]},
     result: ergebnis,
@@ -414,7 +438,7 @@ test('Bindung (Verhalten): CH entfernt, DE klemmt, Lesefehler und fremde Artikel
   // Lesefehler: Ergebnis der Kundenaktion bleibt (der Wächter bleibt die Linie).
   const kaputt = attrappenKorb({zeilen: [], land: 'CH', getWirft: true});
   assert.equal(
-    await tz.bindeRatenanteil({cart: kaputt.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'CH'}),
+    await tz.bindeRatenanteil({cart: kaputt.cart, storefront: kaputt.storefront, action: 'LinesAdd', inputs: add, result: ergebnis, land: 'CH'}),
     ergebnis,
   );
 });
@@ -491,11 +515,9 @@ test('Widerleger F3: 101 und 600 Ratenanteil-Zeilen werden in Runden zu genau ei
     const k = attrappenKorb({
       zeilen: Array.from({length: n}, (_, i) => [`l${i}`, 1, R_GID]),
       land,
-      seite: 250,
     });
-    await tz.bindeRatenanteil({cart: k.cart, action: 'LinesAdd', inputs: add, result: ergebnis, land});
+    await tz.bindeRatenanteil({cart: k.cart, storefront: k.storefront, action: 'LinesAdd', inputs: add, result: ergebnis, land});
     assert.equal(k.korb().length, rest, `${n} Zeilen ${land}`);
-    assert.ok(k.spur.numCartLines.every((x) => x === 250), 'liest die volle Seite');
   }
 });
 
@@ -510,8 +532,37 @@ test('Widerleger F2 (Verhalten): Permalink /cart/6604_8336396556:3 in DE klemmt 
   };
   await loader({
     request: new Request(`https://qiblanco.com/cart/${lines}`),
-    context: {cart, env: {}, storefront: {i18n: {country: 'DE'}}},
+    context: {cart, env: {}, storefront: k.storefront},
     params: {lines},
   }).catch((e) => e);
   assert.deepEqual(k.korb().map((z) => [z.id, z.quantity]), [['l1', 1]]);
+});
+
+// K3-Widerleger s02, Runde 2 (live 29.10.2026 gegen e12e3b88): Ratenanteil an
+// Position 1, 250 Qi-Alpha-Zeilen, zweiter Ratenanteil an Position 252. Eine
+// gelesene Seite zeigte nur eine saubere Zeile; nach dem Entfernen der 250
+// lagen 2 Zeilen = 20.000 € im Warenkorb. ROT VOR GRÜN: rot auf e12e3b88.
+test('Widerleger G1: ein Ratenanteil hinter Seite 1 wird gesehen und entfernt (alle Seiten)', async () => {
+  const zeilen = [['r1', 1, R_GID], ...Array.from({length: 250}, (_, i) => [`q${i}`, 1, QI_GID]), ['r2', 1, R_GID]];
+  const k = attrappenKorb({zeilen, land: 'DE'});
+  await tz.bindeRatenanteil({
+    cart: k.cart,
+    storefront: k.storefront,
+    action: 'LinesAdd',
+    inputs: {lines: [{merchandiseId: R_GID, quantity: 1}]},
+    result: {cart: {id: 'gid://cart/1'}},
+    land: 'DE',
+  });
+  assert.deepEqual(k.korb().filter((z) => z.mid === R_GID).map((z) => z.id), ['r1']);
+  assert.equal(k.korb().length, 251, 'andere Artikel bleiben');
+  // Zweite Linie im Permalink (CH) liest ebenfalls alle Seiten.
+  const ch = attrappenKorb({zeilen, land: 'CH'});
+  const {zeilen: alle} = await tz.alleZeilen({storefront: ch.storefront, cartId: 'gid://cart/1'});
+  assert.equal(alle.length, 252);
+  assert.equal(alle.at(-1).variantId, R_GID);
+});
+
+test('alleZeilen: Lesefehler wirft statt eines halben Warenkorbs (fail-soft liegt beim Aufrufer)', async () => {
+  const k = attrappenKorb({zeilen: [['r1', 1, R_GID]], land: 'DE', getWirft: true});
+  await assert.rejects(tz.alleZeilen({storefront: k.storefront, cartId: 'gid://cart/1'}));
 });

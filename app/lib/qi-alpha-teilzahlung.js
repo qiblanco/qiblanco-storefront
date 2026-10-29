@@ -248,40 +248,106 @@ export function ratenanteilPruefen({action, inputs}) {
   );
 }
 
-// Höchstwert der Storefront-API je Seite; eine Runde sieht so viele Zeilen.
+// Höchstwert der Storefront-API je Seite.
 const SEITE = 250;
-const RUNDEN = 4;
+// Shopify nimmt höchstens 500 Zeilen je Warenkorb an; 8 Seiten lassen Luft.
+const SEITEN_MAX = 8;
+const RUNDEN = 3;
+
+const ZEILEN_QUERY = `#graphql
+  query RatenanteilZeilen($cartId: ID!, $nach: String) {
+    cart(id: $cartId) {
+      buyerIdentity {
+        countryCode
+      }
+      lines(first: ${SEITE}, after: $nach) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          quantity
+          merchandise {
+            ... on ProductVariant {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * ALLE Zeilen eines Warenkorbs, Seite für Seite. Eine einzelne Seite ist
+ * nicht der Warenkorb: mit einem Ratenanteil an Position 1, 250 anderen
+ * Zeilen und einem zweiten Ratenanteil an Position 252 sah die Bindung nur
+ * eine saubere Zeile, und nach dem Entfernen der 250 lagen 20.000 € im
+ * Warenkorb (K3-Widerleger s02, Runde 2, live gemessen 29.10.2026).
+ * Wirft, wenn der Warenkorb nicht vollständig lesbar ist (Lesefehler,
+ * mehr Seiten als SEITEN_MAX): ein halber Warenkorb ist kein Warenkorb.
+ * Ergebnis: {zeilen: [{id, quantity, variantId}], land}.
+ */
+export async function alleZeilen({storefront, cartId}) {
+  const zeilen = [];
+  let nach = null;
+  let land = null;
+  for (let seite = 0; seite < SEITEN_MAX; seite += 1) {
+    const daten = await storefront.query(ZEILEN_QUERY, {
+      variables: {cartId, nach},
+      cache: storefront.CacheNone(),
+    });
+    const korb = daten?.cart;
+    if (!korb) throw new Error('Warenkorb nicht lesbar');
+    land = korb.buyerIdentity?.countryCode ?? null;
+    for (const z of korb.lines?.nodes || []) {
+      zeilen.push({
+        id: z.id,
+        quantity: z.quantity,
+        variantId: z.merchandise?.id,
+      });
+    }
+    const info = korb.lines?.pageInfo;
+    if (!info?.hasNextPage) return {zeilen, land};
+    nach = info.endCursor;
+  }
+  throw new Error('Warenkorb hat mehr Seiten als erwartet');
+}
 
 /**
  * Bindung in routes/cart.jsx und routes/cart.$lines.jsx (Muster
- * bindeQiMasterAddons): liest den angelegten Warenkorb und wendet
- * ratenanteilKorrektur an, Runde um Runde, bis er sauber ist. Eine Runde
- * sieht höchstens 250 Zeilen; mit 101 Ratenanteil-Zeilen blieb bei 100
- * gelesenen eine zweite stehen (K3-Widerleger s02). Vier Runden decken
- * jeden Warenkorb, den Shopify annimmt.
+ * bindeQiMasterAddons): liest den angelegten Warenkorb VOLLSTÄNDIG
+ * (alleZeilen) und wendet ratenanteilKorrektur an; danach liest sie nach,
+ * ob er sauber ist, höchstens RUNDEN Mal.
  * Fail-soft: scheitert das Lesen oder Korrigieren, bleibt das letzte
  * Ergebnis stehen. Dann bleibt der Wächter die Linie: er stellt für eine
  * Bestellung 1, die nicht genau eine Zeile zu 10.000 € in EUR trägt, keinen
  * Code aus.
  */
-export async function bindeRatenanteil({cart, action, inputs, result, land}) {
+export async function bindeRatenanteil({
+  cart,
+  storefront,
+  action,
+  inputs,
+  result,
+  land,
+}) {
   const cartId = result?.cart?.id;
   if (!cartId || !ratenanteilPruefen({action, inputs})) return result;
   let neu = result;
   for (let runde = 0; runde < RUNDEN; runde += 1) {
-    let voll;
+    let gelesen;
     try {
-      voll = await cart.get({cartId, numCartLines: SEITE});
+      gelesen = await alleZeilen({storefront, cartId});
     } catch {
       return neu;
     }
-    const zeilen = (voll?.lines?.nodes || []).map((z) => ({
-      id: z.id,
-      quantity: z.quantity,
-      variantId: z.merchandise?.id,
-    }));
-    const laender = [land, voll?.buyerIdentity?.countryCode].filter(Boolean);
-    const {entfernen, aendern} = ratenanteilKorrektur({zeilen, laender});
+    const laender = [land, gelesen.land].filter(Boolean);
+    const {entfernen, aendern} = ratenanteilKorrektur({
+      zeilen: gelesen.zeilen,
+      laender,
+    });
     if (!entfernen.length && !aendern.length) return neu;
     try {
       if (entfernen.length) {
