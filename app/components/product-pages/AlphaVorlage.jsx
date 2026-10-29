@@ -102,6 +102,9 @@ export async function ladeAlphaKetten(storefront, daten) {
   const gold = Boolean(daten.KETTE_GOLD?.sichtbar);
   try {
     return await storefront.query(kettenQuery({gold}), {
+      // PREIS FRISCH (Kettenpreis im Konfigurator): ohne `cache` CacheDefault =
+      // SWR 24 h. Grossjob 20261004-GROSSJOB-preisanzeige-netto-brutto-rundung-alle-shops-waehrungen s12-r2.
+      cache: storefront.CacheShort(),
       variables: {
         stahl: daten.KETTE.handle,
         ...(gold ? {gold: daten.KETTE_GOLD.handle} : {}),

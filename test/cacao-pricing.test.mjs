@@ -151,6 +151,8 @@ test('ladeStaffelKasse: Sorten-Set statt Einzelweg, wenn der Laden es legt', asy
   const sets = (antwort) => ({
     ...laden((m) => ({amount: m === 2 ? '127.53' : '168.53', currencyCode: 'CHF'}), z),
     query: async () => antwort,
+    // setsLesen fragt mit CacheShort (Preis frisch, Grossjob 20261004-...-s09)
+    CacheShort: () => ({mode: 'public', maxAge: 1, staleWhileRevalidate: 9}),
   });
   const preis = (amount, currencyCode = 'CHF', availableForSale = true) => ({
     selectedOrFirstAvailableVariant: {availableForSale, price: {amount, currencyCode}},
