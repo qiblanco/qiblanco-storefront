@@ -12,6 +12,7 @@ import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
 import {
   merkmaleAusQuery,
   mitRatenanteil,
+  permalinkZeilen,
   rabattcodesAusQuery,
   TEILZAHLUNG,
   teil1Erlaubt,
@@ -53,16 +54,21 @@ export async function loader({request, context, params}) {
   const {cart, env, storefront} = context;
   const {lines} = params;
   if (!lines) return redirect('/cart');
-  const linesMap = lines.split(',').map((line) => {
-    const lineDetails = line.split(':');
-    const variantId = lineDetails[0];
-    const quantity = parseInt(lineDetails[1], 10);
+  // Der Ratenanteil der geteilten Zahlung steht höchstens einmal und mit
+  // Menge 1 im Warenkorb (lib/qi-alpha-teilzahlung.js, permalinkZeilen):
+  // `/cart/<Ratenanteil>:2` legte bis zum 29.10.2026 20.000 € an.
+  const linesMap = permalinkZeilen(
+    lines.split(',').map((line) => {
+      const lineDetails = line.split(':');
+      const variantId = lineDetails[0];
+      const quantity = parseInt(lineDetails[1], 10);
 
-    return {
-      merchandiseId: `gid://shopify/ProductVariant/${variantId}`,
-      quantity,
-    };
-  });
+      return {
+        merchandiseId: `gid://shopify/ProductVariant/${variantId}`,
+        quantity,
+      };
+    }),
+  );
 
   // Teil 1 der geteilten Zahlung nur im Markt DE/AT (lib/qi-alpha-
   // teilzahlung.js): anderswo kein Warenkorb, zurück zur Kaufseite.

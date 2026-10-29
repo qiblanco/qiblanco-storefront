@@ -14,6 +14,7 @@ import {
   legeKakaoSetZeile,
 } from '~/lib/kakao-set-zeile.server';
 import {noindexMeta} from '~/lib/seo';
+import {bindeRatenanteil} from '~/lib/qi-alpha-teilzahlung';
 
 /**
  * Route-gebundenes Stylesheet (Muster mm-lp.css): die vier Regeln von
@@ -141,6 +142,19 @@ export async function action({request, context}) {
     default:
       throw new Error(`${action} cart action is not defined`);
   }
+
+  // Qi-Alpha-Ratenanteil (geteilte Zahlung) nur in DE/AT, höchstens eine
+  // Zeile mit Menge 1 (Großjob 20261028-qi-alpha-teilzahlung-waechter-zweite-
+  // linie-v3, s02). Ein POST mit der Variante legte in CH 9.423 CHF an, in DE
+  // mit Menge 3 30.000 € (K3-Gegenprüfung P2, B4). Liest nur nach, wenn die
+  // Aktion den Ratenanteil hinzufügt oder eine Menge über 1 setzt.
+  result = await bindeRatenanteil({
+    cart,
+    action,
+    inputs,
+    result,
+    land: storefront?.i18n?.country,
+  });
 
   // Das Einführungsangebot liegt höchstens einmal im Warenkorb (Großjob
   // 20261017 kakao-unter-herstellkosten, s02). Vor der Kakao-Normalform, die
