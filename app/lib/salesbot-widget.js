@@ -119,3 +119,31 @@ export function istSalesbotDeutscherShop(language) {
   const l = (language || '').trim().toUpperCase();
   return SALESBOT_SHOP_SPRACHEN.includes(l);
 }
+
+/**
+ * Muss SalesbotWidget den Loader beim Einhängen selbst nachziehen?
+ *
+ * JA, SOBALD KEIN RAHMEN STEHT UND KEIN NACHZUG UNTERWEGS IST — unabhängig
+ * davon, ob der Loader in diesem Dokument schon einmal gelaufen ist.
+ *
+ * Bis 29.10.2026 hing der Nachzug zusätzlich an `window.__QiBlancoWidgetLoaded`
+ * („Flag nicht gesetzt = React fügt gerade ein frisches <script> ein, das
+ * lädt selbst“). Diese Annahme ist falsch: React 18 legt client-seitig
+ * gerenderte <script>-Tags über innerHTML an, und solche Skripte führt der
+ * Browser nie aus. Live gemessen (Job 20261029-qi-alpha-kaufseite-ai-anna-
+ * fehlt-nur-lp-ohne): Klick von der LP /pages/Qi-Alpha (Film-Seite, ohne
+ * Loader) auf /products/qi-alpha → Loader-Tag im DOM, Flag false, 0 Rahmen,
+ * Desktop und Handy. Direkt aufgerufen stand Anna da. Christian sah die
+ * Kaufseite deshalb auf genau dem Weg ohne Anna, den der Funnel vorsieht.
+ *
+ * Doppelte Rahmen verhindert das nicht diese Entscheidung, sondern zweierlei,
+ * das unabhängig davon gilt: der Loader steigt beim gesetzten Flag selbst aus
+ * (der erste Lauf gewinnt), und der Entdoppler in SalesbotWidget hält „genau
+ * ein Rahmen“.
+ *
+ * @param {{rahmenDa: boolean, nachzugUnterwegs: boolean}} lage
+ * @returns {boolean}
+ */
+export function loaderNachziehen({rahmenDa, nachzugUnterwegs}) {
+  return !rahmenDa && !nachzugUnterwegs;
+}

@@ -1,4 +1,5 @@
 import {useEffect} from 'react';
+import {loaderNachziehen} from '~/lib/salesbot-widget';
 
 /** Die id, die der Loader seinem iframe gibt. */
 const RAHMEN_ID = 'qiblanco-salesbot-widget-frame';
@@ -82,39 +83,39 @@ export function SalesbotWidget({origin, nonce}) {
     waechter.observe(document.body, {childList: true});
 
     /**
-     * NACHZUG — behebt einen GEMESSENEN Wackler, keinen theoretischen:
-     * in 1 von 3 Läufen gegen den Produktionsbau war der Loader im DOM, das
-     * iframe aber NICHT. Ursache ist ein Rennen, das der Loader selbst nicht
-     * übersteht: er läuft als defer-Skript VOR dem React-Entry, hängt sein
-     * iframe an `document.body` und setzt `window.__QiBlancoWidgetLoaded`.
-     * Ersetzt React danach den Body (auf dieser Bank scheitert die Hydration
-     * auch auf der unangetasteten Bestands-LP), ist das iframe weg — und das
-     * erneut eingefügte Loader-Skript steigt wegen des schon gesetzten Flags
-     * sofort wieder aus. Loader da, Widget weg, keine Fehlermeldung.
+     * NACHZUG — zwei gemessene Fälle, eine Bedingung (lib/salesbot-widget.js,
+     * loaderNachziehen): kein Rahmen da und kein Nachzug unterwegs.
      *
-     * DIE BEDINGUNG IST BEWUSST ZWEITEILIG — hier hat die erste, naive Fassung
-     * einen zweiten Fehler gebaut (gemessen: nach einer SPA-Navigation auf die
-     * Testseite hingen ZWEI iframes übereinander, also genau der Doppel-Starter,
-     * den die Gorgias-Unterdrückung verhindern soll):
+     * (1) HYDRATION RÄUMT DEN RAHMEN WEG: in 1 von 3 Läufen gegen den
+     *     Produktionsbau war der Loader im DOM, das iframe aber NICHT. Der
+     *     Loader läuft als defer-Skript VOR dem React-Entry, hängt sein iframe
+     *     an `document.body` und setzt `window.__QiBlancoWidgetLoaded`. Ersetzt
+     *     React danach den Body, ist das iframe weg, und ein erneuter Lauf
+     *     stiege wegen des Flags sofort aus. Deshalb wird das Flag vor dem
+     *     Nachzug gelöscht.
      *
-     *   `__QiBlancoWidgetLoaded` gesetzt  = der Loader ist nachweislich schon
-     *                                       DURCHGELAUFEN. Fehlt das iframe
-     *                                       trotzdem, hat die Hydration es
-     *                                       weggeräumt → nachziehen ist richtig.
-     *   Flag NICHT gesetzt                = es lädt noch ein Loader-Tag (so ist
-     *                                       es bei Client-Navigation: React
-     *                                       fügt ein frisches <script> ein, das
-     *                                       asynchron lädt). Dann NICHTS tun —
-     *                                       dieses Tag erzeugt das iframe
-     *                                       selbst. Die alte Fassung löschte
-     *                                       hier das Flag und zog nach, worauf
-     *                                       BEIDE Skripte ein iframe bauten.
+     * (2) EINTRITT PER CLIENT-NAVIGATION (29.10.2026): kommt der Kunde von
+     *     einer Seite ohne Assistent (Film-Seite /pages/Qi-Alpha, handle.
+     *     filmSeite) per <Link> auf eine Seite mit Assistent, fügt React das
+     *     <script> unten ein — und React 18 führt client-seitig eingefügte
+     *     Skripte nie aus. Bis 29.10. stand hier „Flag nicht gesetzt = dieses
+     *     Tag erzeugt das iframe selbst, NICHTS tun“; gemessen war das Gegenteil:
+     *     Loader-Tag da, Flag false, 0 Rahmen, Kaufseite ohne Anna (Christian
+     *     29.10.: „auf der Kaufseite ist nun AI Anna komplett weg“).
      *
-     * So braucht der Nachzug keinen Timer und kein Zeitfenster: er hängt an
-     * einem Signal, das genau das bedeutet, was er wissen muss.
+     * DOPPELTE RAHMEN: die frühere Fassung, die hier ebenfalls nachzog, erzeugte
+     * nach einer SPA-Navigation einmal ZWEI iframes. Heute halten zwei
+     * unabhängige Riegel „genau ein Rahmen“: der Loader steigt beim gesetzten
+     * Flag selbst aus (wer zuerst läuft, gewinnt, auch wenn ein entferntes
+     * Nachzug-Skript noch ausgeführt wird), und der Entdoppler oben entfernt
+     * jeden weiteren Rahmen. Das Flag wird nur gelöscht, wenn kein Rahmen
+     * steht — einen laufenden Assistenten startet der Nachzug also nie neu.
      */
-    const loaderLiefSchon = Boolean(window.__QiBlancoWidgetLoaded);
-    if (loaderLiefSchon && !document.getElementById(RAHMEN_ID)) {
+    const rahmenDa = Boolean(document.getElementById(RAHMEN_ID));
+    const nachzugUnterwegs = Boolean(
+      document.querySelector('script[data-qiblanco-salesbot-loader="nachzug"]'),
+    );
+    if (loaderNachziehen({rahmenDa, nachzugUnterwegs})) {
       delete window.__QiBlancoWidgetLoaded;
       const nachzug = document.createElement('script');
       nachzug.src = `${origin}/embed/qiblanco-widget.js`;
