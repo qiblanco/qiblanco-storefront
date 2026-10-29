@@ -374,3 +374,15 @@
 .qa-live__karte {
   margin: 0;
 }
+
+/* ─── Shop B: Auswahl vor dem Kaufknopf (s04-r1-r2, Shop-Regel S2) ────────
+   Die Add-ons (Wunschnummer, Goldkette) stehen im Preis-Slot der QiOneBuyBox,
+   also in der Flex-Zeile .Bestseller-Price (app.css). Dort nehmen sie die
+   ganze Breite ein, unter Preis und Wortlaut, vor dem Knopf. */
+.qa-b .Bestseller-Price {
+  width: auto;
+}
+.qa-b .Bestseller-Price > .qa-b-auswahl {
+  flex: 1 1 100%;
+  min-width: 0;
+}

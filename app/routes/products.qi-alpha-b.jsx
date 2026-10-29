@@ -264,7 +264,8 @@ async function loadCriticalData({context, request}) {
     marktLand: storefront.i18n.country,
     addons: {
       // Neuer Handle zuerst, alter als Rückfall (s09 wechselt ihn).
-      wunschnummer: addonDaten?.wunschnummerNeu ?? addonDaten?.wunschnummer ?? null,
+      wunschnummer:
+        addonDaten?.wunschnummerNeu ?? addonDaten?.wunschnummer ?? null,
       kette: addonDaten?.ketteNeu ?? addonDaten?.kette ?? null,
     },
   };
@@ -295,7 +296,8 @@ export default function Product() {
     wunschnummer: null,
     ketteAn: false,
     kette:
-      addons?.kette?.variants?.nodes?.find((v) => v.title === KETTE_VORWAHL)?.id ??
+      addons?.kette?.variants?.nodes?.find((v) => v.title === KETTE_VORWAHL)
+        ?.id ??
       addons?.kette?.variants?.nodes?.[0]?.id ??
       null,
   }));
@@ -305,7 +307,9 @@ export default function Product() {
           (v) => v.id === auswahl.wunschnummer && v.availableForSale,
         ),
         kette: auswahl.ketteAn
-          ? addonsSichtbar.kette?.variants?.nodes?.find((v) => v.id === auswahl.kette)
+          ? addonsSichtbar.kette?.variants?.nodes?.find(
+              (v) => v.id === auswahl.kette,
+            )
           : null,
       })
     : [];
@@ -351,23 +355,24 @@ export default function Product() {
            Mehrheit der Kaufflächen, die über products.$handle laufen und
            gar keine Liste haben. */
         gewaehrleistungsHinweis={false}
-        /* DIE ADD-ONS STEHEN UNTER DEM KAUFKNOPF, nicht darüber (Christian
-           2026-09-24, woertlich: „einen Bereich unterhalb vom Kaufknopf, wo
-           man Add-ons auswählen kann"). Der Knopf legt die gewählten Add-ons
-           im selben Klick mit in den Warenkorb; die Warenkorb-Action bindet
-           sie dort an den Qi Master (lib/qi-master-addons.server.js). */
+        /* DIE ADD-ONS STEHEN VOR DEM KAUFKNOPF (seit 29.10.2026, s04-r1-r2).
+           Bis dahin standen sie darunter (Christian 2026-09-24: „einen Bereich
+           unterhalb vom Kaufknopf, wo man Add-ons auswählen kann"). Jünger ist
+           Christians Shop-Regel vom 27.10.2026 (Z1 „in den warenkorb muss hier
+           raus", design-meister/db/webdesign/shop-regeln.yaml
+           S2_kein_kaufknopf_im_konfigurator_kopf): gekauft wird NACH der
+           Auswahl, wie auf A. Die QiOneBuyBox hat vor dem Knopf nur den
+           Preis-Slot; die Auswahl steht deshalb dort, unter dem Wortlaut.
+           Der Knopf legt die gewählten Add-ons weiter im selben Klick mit in
+           den Warenkorb (zusatzLinien, lib/qi-master-addons.server.js). */
         zusatzLinien={zusatzLinien}
         /* B-Zeile über dem Preis: die Auflage, keine Bewertung und keine
            Nutzerzahl (Christian 28.10.2026 Z1: „wir stellen das produkt erst
            vor es kann nochk eien bewerugn geben"). */
-        socialProof={<p className="qa-auge qa-auge--kaufbox">Erste Edition · {QA_AUFLAGE}</p>}
-        unterKaufknopf={
-          <QiMasterAddons
-            addons={addonsSichtbar}
-            qmPreis={qmVariante?.price}
-            auswahl={auswahl}
-            setAuswahl={setAuswahl}
-          />
+        socialProof={
+          <p className="qa-auge qa-auge--kaufbox">
+            Erste Edition · {QA_AUFLAGE}
+          </p>
         }
         description={
           <div
@@ -392,25 +397,37 @@ export default function Product() {
            <p class="qm-steuerhinweis">inkl. 19 % MwSt.</p> (Christian
            2026-09-16); Element und CSS sind an der Quelle entfernt. */
         priceLabel={
-          /* Christians Fassung vom 22.09.2026 aus der einen Quelle
+          <>
+            {/* Christians Fassung vom 22.09.2026 aus der einen Quelle
              app/data/qi-master-wortlaut.json, in der B-Lesart (alphaWortlaut:
-             Name, 111 Stück, ohne den Terminsatz). */
-          <section
-            className="qm-wortlaut qm-wortlaut--kompakt"
-            aria-label="Preis, Auflage und Versand des Qi Alpha®"
-          >
-            {alphaWortlaut().map((text, i) => (
-              <p
-                className={`qm-wortlaut__absatz qm-wortlaut__absatz--${WORTLAUT_ROLLE[i] ?? 'grund'}`}
-                key={text.slice(0, 32)}
-              >
-                {text}
-              </p>
-            ))}
-          </section>
+             Name, 111 Stück, ohne den Terminsatz). */}
+            <section
+              className="qm-wortlaut qm-wortlaut--kompakt"
+              aria-label="Preis, Auflage und Versand des Qi Alpha®"
+            >
+              {alphaWortlaut().map((text, i) => (
+                <p
+                  className={`qm-wortlaut__absatz qm-wortlaut__absatz--${WORTLAUT_ROLLE[i] ?? 'grund'}`}
+                  key={text.slice(0, 32)}
+                >
+                  {text}
+                </p>
+              ))}
+            </section>
+            <div className="qa-b-auswahl">
+              <QiMasterAddons
+                addons={addonsSichtbar}
+                qmPreis={qmVariante?.price}
+                auswahl={auswahl}
+                setAuswahl={setAuswahl}
+              />
+            </div>
+          </>
         }
         benefitList={
-          <QiMasterBenefitList zusatzPunkt={<EuGewaehrleistungsListenpunkt />} />
+          <QiMasterBenefitList
+            zusatzPunkt={<EuGewaehrleistungsListenpunkt />}
+          />
         }
       />
       <QiAlphaShopB />
