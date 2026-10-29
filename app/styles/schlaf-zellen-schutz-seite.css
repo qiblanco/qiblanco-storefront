@@ -382,8 +382,8 @@
    - 19,25 px (1.2rem aus app.css) an Preis-Merkmalen, Studien-Ergebnissen,
      Schluss-Vertrauenszeile, Kopf-Block und MAXIM-Zitat -> --a-fs-lg (20 px).
    - Flaechen: Kaufblock-Karte Reinweiss -> --a-flaeche, YouTube-Grund der
-     Externen Stimmen #000 -> --a-dunkel. Damit vier Flaechen-Familien (Grund,
-     Flaeche, Gold-Handlung, Dunkel).
+     Externen Stimmen #000 -> --a-dunkel, Felder des Fussformulars -> --a-grund.
+     Damit vier Flaechen-Familien (Grund, Flaeche, Gold-Handlung, Dunkel).
    Eingefaerbt wird nur unter .lp-a3 (die Seiten dieses Bausteins); die
    Komponenten selbst bleiben unberuehrt.
    Rueckweg: diesen Block loeschen. */
@@ -400,5 +400,12 @@
 .lp-a3 .lp-a-hero__startseiten-block p,
 .lp-a3 .MaximText p { font-size: var(--a-fs-lg); }
 .lp-a3 .qb-kaufblock__karte { background: var(--a-flaeche); }
+/* Kaufblock zwischen zwei Abschnitten: 64 px statt 48 px nach oben und unten.
+   Die Seite fuehrt damit drei Abschnitts-Abstaende (24 Band, 64, 96) statt vier;
+   im Abschnitt (--im-abschnitt) stand er schon auf 64. */
+.lp-a3 .qb-kaufblock:not(.qb-kaufblock--im-abschnitt) { padding-block: var(--a-s8); }
+/* Fussformular (ActiveCampaign) auf dunklem Fuss: Felder im Seitengrund statt
+   Reinweiss, damit Weiss keine fuenfte Flaechen-Familie bildet. */
+body:has(.lp-a3) ._form-content input { background-color: var(--a-grund); }
 .lp-a3 .ExterneStimmen__medium,
 .lp-a3 .ExterneStimmen__yt { background-color: var(--a-dunkel); }
