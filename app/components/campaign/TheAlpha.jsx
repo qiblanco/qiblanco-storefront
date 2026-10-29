@@ -8,7 +8,11 @@ import {
   TapMarke,
   TapEdition,
 } from '~/components/campaign/TheAlphaPremium';
-import {THE_ALPHA_VIDEO, THE_ALPHA_ABSCHNITTE} from '~/components/campaign/the-alpha-daten';
+import {
+  THE_ALPHA_VIDEO,
+  THE_ALPHA_ABSCHNITTE,
+  THE_ALPHA_ETIKETT,
+} from '~/components/campaign/the-alpha-daten';
 
 /*
  * THE ALPHA, Variante A: Christians Figma-Geschichte, vom Designmeister
@@ -25,6 +29,13 @@ import {THE_ALPHA_VIDEO, THE_ALPHA_ABSCHNITTE} from '~/components/campaign/the-a
  * → Seitenansicht mit Etikett THE ALPHA → „THE ALPHA“ → Limited 1st. Edition
  * 111/111 → roter Balken „Jetzt Exklusiv Reservieren“ (TheAlphaKauf, Ziel aus
  * the-alpha-daten.js).
+ *
+ * 28.10.2026 (Christian Z6, Z10–Z12, Grossjob 20261028-qi-alpha-kopf-99-…,
+ * s07): „wie im Film“ für die ganze Seite (film="szene": Neues erst, wenn das
+ * Alte aus dem Bild ist; Kapitelzeilen als ganze Zeilen; Schluss-Szene Zeile
+ * für Zeile bis zum Reservierungsknopf), Ton als Standard mit Schalter rechts
+ * unten (ton="an"), Etikett am Seitenband „THE ALPHA“. Nur hier geschaltet,
+ * B und C bleiben unverändert.
  */
 
 const [MANIFESTATION, PROTECTION, LONGEVITY] = THE_ALPHA_ABSCHNITTE;
@@ -42,7 +53,7 @@ const SEITENBAND = {
 
 export default function TheAlpha() {
   return (
-    <TapSeite variante="a">
+    <TapSeite variante="a" film="szene" ton="an">
       <TapTitelkarte />
       <TapWoerterbuch />
       <TapFilm film={THE_ALPHA_VIDEO} />
@@ -53,7 +64,7 @@ export default function TheAlpha() {
         <TapKarten bilder={PROTECTION.bilder} />
       </TapKapitel>
       <TapKapitel abschnitt={LONGEVITY} />
-      <TapMarke bild={SEITENBAND} />
+      <TapMarke bild={SEITENBAND} etikett={THE_ALPHA_ETIKETT} />
       <TapEdition />
     </TapSeite>
   );

@@ -34,6 +34,18 @@ import {useEffect, useState} from 'react';
  *   Video-Ton an, danach wieder hoch. Ohne „Sound on“: stumm, Untertitel an,
  *   ein Ton-Symbol im Video schaltet ein.
  *
+ * TON ALS STANDARD (nur A, TapSeite ton="an"; Christian 28.10.2026, Z6: „auf
+ * dieser seite immer sound on … und den sound knopf auf die rechte seite
+ * stellen dort wo normalerweise ai anna wäre“): kein „Sound on“-Fenster, der
+ * Schalter steht rechts unten und zeigt „Ton an“. Hörbar wird es mit der
+ * ersten Geste, die der Browser als Nutzer-Aktivierung zählt: Tippen, Klick,
+ * Taste (pointerup/touchend/mousedown/keydown/click). Scrollen per Rad,
+ * Trackpad oder Wischen zählt in Chrome, Safari und Firefox NICHT; das ist
+ * Browser-Regel (Autoplay-Policy), keine Einstellung der Seite. Erlaubt ein
+ * Browser Ton ohne Geste (Chrome bei hoher Media-Engagement-Zahl, Safari mit
+ * „Automatische Wiedergabe: Alle erlauben“), läuft er sofort. Wer ausschaltet,
+ * bleibt für die Sitzung bei „aus“.
+ *
  * Klänge: Shopify-CDN (Shopify Files, GL-PRO-0015: Medien nicht ins Repo),
  * Eigenproduktion (additive Synthese wie die Qi-Blanco-Reihe qb-ambient-* aus
  * reel-musik), Rezept und Originale im Jobordner s06 (nachher/ton/).
@@ -52,6 +64,10 @@ const QUELLE = {
   schluss: `${CDN}schluss.mp3?v=1793065591`,
 };
 const SPEICHER = 'tap-ton'; // 'an' | 'aus' | 'gesehen'
+// Ereignisse, die Browser als Nutzer-Aktivierung zählen (HTML: „activation
+// triggering input event“). pointerdown zählt nur mit der Maus, darum
+// pointerup/touchend für Finger. Kein scroll/wheel/touchmove: zählt nirgends.
+const GESTEN = ['pointerup', 'touchend', 'mousedown', 'keydown', 'click'];
 
 // Lautstärke zurückhaltend (Z120). Gesamt 0,5; der Grundsound liegt darunter,
 // die Akzente sind über ihm gemischt und nie laut (Z119).
@@ -177,7 +193,10 @@ class TonMotor {
     this.hoerer.forEach((h) => h(this.zustand));
   }
 
-  /** Muss synchron in der Geste laufen (iOS gibt Audio sonst nicht frei). */
+  /** Muss synchron in der Geste laufen (iOS gibt Audio sonst nicht frei).
+   * Ohne Geste aufgerufen (Ton als Standard) ist es ein Versuch: läuft der
+   * AudioContext danach, erlaubt der Browser Ton ohne Geste; sonst bleibt
+   * der Zustand 'aus', bis eine Geste kommt. 'an' heißt immer: hörbar. */
   einschalten() {
     if (typeof window === 'undefined') return;
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -196,13 +215,23 @@ class TonMotor {
       this.bett = this.ctx.createGain();
       this.bett.gain.value = 0;
       this.bett.connect(this.master);
-      // stiller Puffer in der Geste: schaltet Audio auf iOS frei
-      const still = this.ctx.createBufferSource();
-      still.buffer = this.ctx.createBuffer(1, 1, 22050);
-      still.connect(this.ctx.destination);
-      still.start(0);
     }
-    this.ctx.resume();
+    this.gewollt = true;
+    // stiller Puffer in der Geste: schaltet Audio auf iOS frei
+    const still = this.ctx.createBufferSource();
+    still.buffer = this.ctx.createBuffer(1, 1, 22050);
+    still.connect(this.ctx.destination);
+    still.start(0);
+    const los = () => {
+      if (this.gewollt && this.ctx.state === 'running') this.hoerbar();
+    };
+    const p = this.ctx.resume();
+    if (p && p.then) p.then(los, () => {});
+    los();
+  }
+
+  hoerbar() {
+    if (this.zustand === 'an') return;
     this.zustand = 'an';
     this.blende(this.master.gain, MASTER, 1.2);
     this.lade().then(() => this.starteBett());
@@ -210,6 +239,7 @@ class TonMotor {
   }
 
   ausschalten() {
+    this.gewollt = false;
     this.zustand = 'aus';
     this.warteAkzent = null;
     if (this.ctx) {
@@ -434,14 +464,25 @@ function binde_videos(wurzel, m) {
     {rootMargin: '150% 0px 150% 0px'},
   );
   // Abspielen ab gut einem Drittel im Bild, Pause, wenn es fast weg ist.
+  // Ein Video in einer Einblendung ([data-tap-ein]) startet erst, wenn es
+  // eingeblendet ist; vorher liefe sein Anfang unsichtbar ab (bis 28.10.
+  // ab 35 % im Bild, eingeblendet wird erst ganz im Bild).
+  const eingeblendet = (v) => {
+    const figur = v.closest('[data-tap-ein]');
+    return !figur || !wurzel.classList.contains('tap-js') || figur.classList.contains('tap-sichtbar');
+  };
+  const spiele = (v) => {
+    if (!v.dataset.tapImBild || document.hidden || !eingeblendet(v)) return;
+    const p = v.play();
+    if (p && p.catch) p.catch(() => {});
+  };
   const szene = new IntersectionObserver(
     (eintraege) => {
       for (const e of eintraege) {
         const v = e.target;
         if (e.intersectionRatio >= 0.35 && !document.hidden) {
           v.dataset.tapImBild = '1';
-          const p = v.play();
-          if (p && p.catch) p.catch(() => {});
+          spiele(v);
         } else if (e.intersectionRatio < 0.1) {
           delete v.dataset.tapImBild;
           if (!v.paused) v.pause();
@@ -453,6 +494,12 @@ function binde_videos(wurzel, m) {
   videos.forEach((v) => {
     nah.observe(v);
     szene.observe(v);
+    const figur = v.closest('[data-tap-ein]');
+    if (figur) {
+      const wach = () => spiele(v);
+      figur.addEventListener('tap-sichtbar', wach);
+      aufraeumen.push(() => figur.removeEventListener('tap-sichtbar', wach));
+    }
   });
 
   const zustand = () => videos.forEach(tonSetzen);
@@ -460,7 +507,7 @@ function binde_videos(wurzel, m) {
   const sicht = () => {
     for (const v of videos) {
       if (document.hidden) v.pause();
-      else if (v.dataset.tapImBild) v.play()?.catch?.(() => {});
+      else spiele(v);
     }
   };
   document.addEventListener('visibilitychange', sicht);
@@ -570,9 +617,13 @@ function Kreuz() {
  * Akzente, Videos. Rendert auf dem Server nichts (kein Einfluss auf den
  * ersten Bildschirm), im Browser erst nach dem Hydrieren.
  */
-export function TapTon({wurzel}) {
+export function TapTon({wurzel, standard = 'fenster'}) {
+  const tonStandard = standard === 'an';
   const [bereit, setBereit] = useState(false);
   const [zustand, setZustand] = useState('aus');
+  // Was der Besucher will (Schalter-Anzeige), getrennt davon, ob es schon
+  // hörbar ist (zustand). Ohne Ton-Standard fallen beide zusammen.
+  const [wunsch, setWunsch] = useState(tonStandard ? 'an' : 'aus');
   // Fenster: null (nie) | 'auf' | 'zu' (schließt gerade) | 'weg'
   const [fenster, setFenster] = useState(null);
   const [oben, setOben] = useState(null);
@@ -592,8 +643,34 @@ export function TapTon({wurzel}) {
     const gemerkt = lies();
     let zuTimer = null;
     let anGeste = null;
+    let gesten = [];
     let warteHinweis = () => {};
-    if (!gemerkt) {
+    if (tonStandard) {
+      // Ton ist Standard (Z6): kein Fenster. Ausgeschaltet bleibt aus.
+      const will = gemerkt !== 'aus';
+      setWunsch(will ? 'an' : 'aus');
+      el.dataset.tapTonWunsch = will ? 'an' : 'aus';
+      if (will) {
+        anGeste = (e) => {
+          // Der Schalter regelt sich selbst (sonst schaltete derselbe Tipp
+          // erst ein und dann wieder aus).
+          if (e.target?.closest?.('.tap-ton-schalter')) return;
+          if (lies() === 'aus' || m.zustand === 'an') return;
+          m.einschalten();
+        };
+        gesten = GESTEN;
+        gesten.forEach((t) => document.addEventListener(t, anGeste, {capture: true, passive: true}));
+        const fertig = (z) => {
+          if (z !== 'an') return;
+          gesten.forEach((t) => document.removeEventListener(t, anGeste, {capture: true}));
+          gesten = [];
+          m.hoerer.delete(fertig);
+        };
+        m.hoerer.add(fertig);
+        // Versuch ohne Geste: manche Browser erlauben Ton sofort.
+        m.einschalten();
+      }
+    } else if (!gemerkt) {
       warteHinweis = nachEinwilligung(() => {
         // Fester Abstand über dem Titel (48 px), nie höher als knapp unter den
         // Kopf: „Sound on“, dann „Kohärentes Licht“ (Z109/Z114, Challenger 26.10.).
@@ -629,6 +706,7 @@ export function TapTon({wurzel}) {
     return () => {
       warteHinweis();
       window.clearTimeout(zuTimer);
+      gesten.forEach((t) => document.removeEventListener(t, anGeste, {capture: true}));
       if (anGeste) {
         document.removeEventListener('pointerdown', anGeste, {capture: true});
         document.removeEventListener('keydown', anGeste, {capture: true});
@@ -639,7 +717,7 @@ export function TapTon({wurzel}) {
       weg.forEach((f) => f());
       m.ausschalten();
     };
-  }, [wurzel]);
+  }, [wurzel, tonStandard]);
 
   if (!bereit) return null;
   const m = holeMotor();
@@ -653,12 +731,26 @@ export function TapTon({wurzel}) {
     merke('aus');
     setFenster('zu');
   };
+  const wunschSetzen = (w) => {
+    setWunsch(w);
+    if (wurzel.current) wurzel.current.dataset.tapTonWunsch = w;
+  };
   const umschalten = () => {
-    if (zustand === 'an') {
+    if (tonStandard && wunsch === 'an' && zustand !== 'an') {
+      // „Ton an“ steht schon, es war nur noch nicht hörbar: dieser Tipp ist
+      // die Geste, die der Browser verlangt.
+      merke('an');
+      m.einschalten();
+    } else if (zustand === 'an' || (tonStandard && wunsch === 'an')) {
       merke('aus');
       m.ausschalten();
-    } else tonAn();
+      if (tonStandard) wunschSetzen('aus');
+    } else {
+      tonAn();
+      if (tonStandard) wunschSetzen('an');
+    }
   };
+  const an = tonStandard ? wunsch === 'an' : zustand === 'an';
 
   return (
     <>
@@ -688,12 +780,13 @@ export function TapTon({wurzel}) {
       ) : null}
       <button
         type="button"
-        className={`tap-ton-schalter${zustand === 'an' ? ' tap-ton-schalter-an' : ''}`}
+        className={`tap-ton-schalter${an ? ' tap-ton-schalter-an' : ''}`}
         onClick={umschalten}
-        aria-pressed={zustand === 'an'}
-        aria-label={zustand === 'an' ? 'Ton aus' : 'Ton an'}
+        aria-pressed={an}
+        aria-label={an ? 'Ton aus' : 'Ton an'}
+        data-tap-hoerbar={zustand === 'an' ? 'ja' : 'nein'}
       >
-        <Lautsprecher an={zustand === 'an'} />
+        <Lautsprecher an={an} />
       </button>
     </>
   );

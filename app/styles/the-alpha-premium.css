@@ -55,6 +55,10 @@
      jeder Bühne folgt daraus (Bildschirm + Schritte), keine freie Länge. */
   --tap-schritt-wort: 48px;
   --tap-schritt-absatz: 160px;
+  /* Szenen-Fassung (A, Z10a/Z12): eine ganze Zeile je Schritt. Zwei
+     Wort-Schritte, damit der Scrollweg je Zeile bleibt, wie er war
+     (Christian: „scrolling gefällt mir … sehr gut“). */
+  --tap-schritt-zeile: 96px;
 
   --tap-nacht: #000000;
   --tap-weiss: #ffffff;
@@ -98,6 +102,7 @@
     --tap-takt: 144px;
     --tap-schritt-wort: 64px;
     --tap-schritt-absatz: 200px;
+    --tap-schritt-zeile: 128px;
     --tap-fs-hero: 5.96rem;    /* 95,37 */
     --tap-fs-zahl: 3.815rem;   /* 61,04 */
     --tap-fs-h2: 3.815rem;     /* 61,04 */
@@ -166,6 +171,11 @@ html:has(main[data-film-seite]) body {
   place-content: center;
   min-height: 100svh;
   padding: 0 var(--tap-s-3);
+}
+
+/* Szenen-Fassung: Zeilen statt Wörter (Kapitel, Schluss-Szene). */
+.tap-scrub-zeilen {
+  --tap-schritt: var(--tap-schritt-zeile);
 }
 
 /* Bühnen-Marke für den Ton: ihre Oberkante liegt bei 55 % des Bildschirms,
@@ -482,6 +492,25 @@ html:has(main[data-film-seite]) body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Schluss-Szene als Bühne (Szenen-Fassung, A, Christian Z12): Höhe aus
+   .tap-scrub, Inhalt steht still und baut sich Zeile für Zeile auf. Der
+   Knopf ist das letzte Element der Seite. */
+.tap-edition-szene {
+  display: block;
+  min-height: 0;
+  padding: 0;
+}
+
+/* Bis sein Schritt dran ist, nimmt der unsichtbare Knopf keinen Tipp an. */
+.tap-js .tap-schluss-knopf:not(.tap-an) {
+  pointer-events: none;
+}
+
+/* Der Schluss-Akkord kommt mit 111/111, dem dritten Schritt der Bühne. */
+.tap-marke-schluss {
+  top: calc(55svh + 2 * var(--tap-schritt));
+}
+
 /* Schluss-Szene in A, B und C gleich: 111/111, dann direkt der rote Knopf
    (Christian, Nachtrag 27.10.2026 ~21:40 Bangkok: kein Preis, keine
    Detailzeile dazwischen). Schlägt die Varianten-Abstände von B. */
@@ -791,6 +820,21 @@ html:has(main[data-film-seite]) body {
   .tap-ton-schalter {
     bottom: calc(env(safe-area-inset-bottom, 0px) + 26px);
   }
+}
+
+/* Ton als Standard (A, Christian 28.10., Z6): der Schalter steht rechts
+   unten, genau dort, wo sonst AI Anna sitzt (Anna ist auf dieser Seite
+   bewusst nicht da). Gleicher Rand und gleiche Höhe wie ihr Rund: 20 px vom
+   Rand, Mitte 44 px (ab 768 px 48 px) über der Unterkante. */
+.tap-seite[data-tap-ton-standard='an'] .tap-ton-schalter {
+  left: auto;
+  right: calc(env(safe-area-inset-right, 0px) + 20px);
+}
+
+/* Ein Schalter für alle Videos: das Ton-Symbol im Video entfällt, solange
+   „Ton an“ gewünscht ist (die erste Geste schaltet ohnehin alles hörbar). */
+.tap-seite[data-tap-ton-wunsch='an'] .tap-film-hat-ton .tap-film-ton {
+  display: none;
 }
 
 .tap-ton-schalter-an {
