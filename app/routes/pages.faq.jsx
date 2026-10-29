@@ -51,7 +51,7 @@ export function links() {
   ];
 }
 
-const TITEL = 'Häufige Fragen zu Qi Blanco — ehrlich beantwortet';
+const TITEL = 'Häufige Fragen zu Qi Blanco';
 const BESCHREIBUNG =
   'Größe, Wasser und Sauna, Reichweite, 20-Tage-Rückgabe, Ratenzahlung — und was ' +
   'wissenschaftlich belegt ist und was nicht. Die häufigsten Fragen an Qi Blanco, ' +
