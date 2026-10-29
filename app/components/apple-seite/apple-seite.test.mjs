@@ -70,7 +70,7 @@ test('appleSeiteAn: Standard gilt, Umgebung on/off gewinnt, sonst nichts', () =>
 
 test('appleSeiteFuerPfad: Pfad zu Seitenname, fremder Pfad null', () => {
   assert.equal(lib.appleSeiteFuerPfad('/'), 'startseite');
-  assert.equal(lib.appleSeiteFuerPfad('/pages/ueber-uns'), 'ueber-uns');
+  assert.equal(lib.appleSeiteFuerPfad('/pages/start-b'), 'start-b');
   assert.equal(lib.appleSeiteFuerPfad('/products/qione-2-pro'), null);
   assert.equal(lib.appleSeiteFuerPfad(undefined), null);
   const pfade = Object.values(lib.APPLE_SEITEN).map((e) => e.pfad);
