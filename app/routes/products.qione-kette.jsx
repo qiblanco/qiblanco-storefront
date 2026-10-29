@@ -43,6 +43,8 @@ import alphaVorlageStyles from '~/styles/alpha-vorlage.css?url';
 import alphaSlotStyles from '~/styles/alpha-vorlage-slots.css?url';
 import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
+import alphaQiOneStyles from '~/styles/alpha-qione.css?url';
+import alphaKetteStyles from '~/styles/alpha-kette.css?url';
 /**
  * Kauf zuerst: Preis, Variante und Kaufknopf im ersten Fenster, der
  * Beschreibungstext darunter (components/product-pages/pdpKaufZuerst.js).
@@ -166,6 +168,8 @@ function Konfigurator({product}) {
       <link rel="stylesheet" href={wissenStyles} />
       <link rel="stylesheet" href={faqStyles} />
       <link rel="stylesheet" href={alphaSlotStyles} />
+      <link rel="stylesheet" href={alphaQiOneStyles} />
+      <link rel="stylesheet" href={alphaKetteStyles} />
       <AlphaVorlage
         product={product}
         daten={ALPHA_DATEN}
