@@ -42,7 +42,8 @@ function AsBild({bild, sizes, sofort = false, klasse = 'as-bild'}) {
       width={breite}
       height={hoehe}
       loading={sofort ? 'eager' : 'lazy'}
-      fetchPriority={sofort ? 'high' : undefined}
+      // React 18 kennt fetchPriority nicht: klein geschrieben geht das Attribut unverändert ins HTML.
+      fetchpriority={sofort ? 'high' : undefined}
       decoding={sofort ? 'sync' : 'async'}
     />
   );
@@ -283,7 +284,7 @@ export function AppleAnna({
     <section className="as-sektion as-anna" data-apple-anna="" data-section="as-anna">
       <span className="as-anna-zeichen" aria-hidden="true" />
       <div>
-        <h2 className="as-anna-titel">{mitMarkeR(titel)}</h2>
+        <h3 className="as-anna-titel">{mitMarkeR(titel)}</h3>
         <p className="as-absatz">{mitMarkeR(text)}</p>
       </div>
     </section>

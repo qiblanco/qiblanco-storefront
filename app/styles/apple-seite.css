@@ -140,6 +140,13 @@
 .as-seite .as-knopf {
   width: auto;
   min-width: var(--as-knopf-breite);
+  /* Knopf-Schrift auf die Skala (Haus: 1,1rem bzw. 1,05rem = 17,6/16,8 px,
+     beides zwischen den Stufen). Das Haus setzt sie mit !important. */
+  font-size: var(--as-fs-3) !important;
+  text-decoration: none;
+}
+.as-cta-band .as-knoepfe {
+  justify-content: flex-start;
 }
 
 /* ---- Bild: EIN Radius ----------------------------------------------------- */
@@ -149,7 +156,8 @@
   height: auto;
   border-radius: var(--as-radius);
 }
-.as-seite figure {
+/* :where = Spezifität 0, damit .as-hero-bild & Co. ihren Abstand behalten. */
+:where(.as-seite) figure {
   margin: 0;
 }
 
@@ -377,11 +385,14 @@
 .as-cta-band {
   margin-top: var(--as-s-12);
   padding: var(--as-s-8) var(--as-s-2);
-  text-align: center;
 }
+/* EINE Ausrichtung für alle H2 (links); zentriert steht nur der Hero. */
 .as-cta-innen {
-  max-width: var(--as-text-breite);
+  max-width: var(--as-breite);
   margin: 0 auto;
+}
+.as-cta-innen .as-unter {
+  margin-left: 0;
 }
 @media (min-width: 750px) {
   .as-cta-band {

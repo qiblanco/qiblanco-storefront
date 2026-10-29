@@ -193,7 +193,7 @@ test('SSR: Marker, alle Sektionen, ein H1, Antworten im HTML, CSS-Link', async (
   assert.match(html, /"@type":"FAQPage"/);
   assert.match(html, /<link rel="stylesheet" href="\/assets\/apple-seite\.css"/);
   assert.match(html, /<sup[^>]*class="qb-marke-r"/);
-  assert.match(html, /fetchPriority="high"|fetchpriority="high"/);
+  assert.match(html, /fetchpriority="high"/);
   assert.doesNotMatch(html, /★|Ultimate Power/);
 });
 
