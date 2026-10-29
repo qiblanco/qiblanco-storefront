@@ -356,8 +356,8 @@ function Hero() {
               360-Grad-Video bleibt direkt hinter „Innere Ruhe.“. */}
           <div className="lp-a-hero__startseiten-block">
             {/* Produktname als Unterzeile der H1, kein Sektionstitel: <p> statt <h2>
-                (HTML: Untertitel einer Ueberschrift sind Absaetze). Optik unveraendert,
-                die Seite traegt damit EINE H2-Regel (zentriert, s03-r5). */}
+                (HTML: Untertitel einer Überschrift sind Absätze). Optik unverändert,
+                die Seite trägt damit EINE H2-Regel (zentriert, s03-r5). */}
             <p className="lp-a-hero__produktname">QiOne® 2 Pro</p>
             <p className="color-accent-main">
               <strong>
