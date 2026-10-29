@@ -406,6 +406,8 @@
 .lp-a3 .qb-kaufblock:not(.qb-kaufblock--im-abschnitt) { padding-block: var(--a-s8); }
 /* Fussformular (ActiveCampaign) auf dunklem Fuss: Felder im Seitengrund statt
    Reinweiss, damit Weiss keine fuenfte Flaechen-Familie bildet. */
-body:has(.lp-a3) ._form-content input { background-color: var(--a-grund); }
+/* !important: das Formular bringt zur Laufzeit eigene ID-Regeln (#_form_NN_ input)
+   mit; ohne Vorrang blieb Reinweiss (gemessen Vorschau 29.10., 2 Felder 498x57). */
+body:has(.lp-a3) ._form-content input { background-color: var(--a-grund) !important; }
 .lp-a3 .ExterneStimmen__medium,
 .lp-a3 .ExterneStimmen__yt { background-color: var(--a-dunkel); }
