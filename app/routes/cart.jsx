@@ -143,11 +143,15 @@ export async function action({request, context}) {
       throw new Error(`${action} cart action is not defined`);
   }
 
-  // Qi-Alpha-Ratenanteil (geteilte Zahlung) nur in DE/AT, höchstens eine
-  // Zeile mit Menge 1 (Großjob 20261028-qi-alpha-teilzahlung-waechter-zweite-
-  // linie-v3, s02). Ein POST mit der Variante legte in CH 9.423 CHF an, in DE
-  // mit Menge 3 30.000 € (K3-Gegenprüfung P2, B4). Liest nur nach, wenn die
-  // Aktion den Ratenanteil hinzufügt oder eine Menge über 1 setzt.
+  // Qi-Alpha-Ratenanteil (geteilte Zahlung) steht nie im Sitzungs-Warenkorb:
+  // er gehört allein in den Schritt-1-Warenkorb des Permalinks (Großjob
+  // 20261028-qi-alpha-teilzahlung-waechter-zweite-linie-v3, s02; Folgejob
+  // 20261029-qi-alpha-ratenanteil-schritt1-ueberschreibt-sitzungskorb). Ein
+  // POST mit der Variante legte in CH 9.423 CHF an, in DE mit Menge 3
+  // 30.000 € (K3-Gegenprüfung P2, B4); Ware neben dem Ratenanteil ergab eine
+  // Kasse über 27.018 € statt 17.018 €. Liest nur nach, wenn die Aktion den
+  // Ratenanteil bringen kann, eine Menge über 1 setzt oder der Warenkorb ein
+  // Schritt-1-Merkmal trägt (lib/qi-alpha-teilzahlung.js).
   result = await bindeRatenanteil({
     cart,
     action,

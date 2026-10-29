@@ -13,6 +13,7 @@ import {
   bindeRatenanteil,
   merkmaleAusQuery,
   mitRatenanteil,
+  permalinkSetztSitzungskorb,
   permalinkZeilen,
   rabattcodesAusQuery,
   TEILZAHLUNG,
@@ -148,6 +149,7 @@ export async function loader({request, context, params}) {
           inputs: {lines: linesMap},
           result: erstellt,
           land: storefront?.i18n?.country,
+          permalink: true,
         });
 
   // Qi-Master-Add-ons hängen am Qi Master — auch über den Permalink: ein
@@ -207,8 +209,17 @@ export async function loader({request, context, params}) {
     }
   }
 
-  // Update cart id in cookie
-  const headers = cart.setCartId(cartResult.id);
+  // Update cart id in cookie — nur, wenn keine Zeile der Ratenanteil sein
+  // kann. Der Schritt-1-Link der geteilten Zahlung geht ohne Cookie in die
+  // Kasse: live am 29.10.2026 machte er den Ratenanteil-Warenkorb zum
+  // Sitzungs-Warenkorb, und wer zurückging und „Direkt bezahlen“ wählte, sah
+  // an der Kasse 27.018 € statt 17.018 € (Folgejob 20261029-qi-alpha-
+  // ratenanteil-schritt1-ueberschreibt-sitzungskorb). Der Warenkorb des
+  // Kunden bleibt, wie er war; Merkmale und Tracking stehen am angelegten
+  // Warenkorb und in der Kassen-Adresse, nicht im Cookie.
+  const headers = permalinkSetztSitzungskorb(linesMap)
+    ? cart.setCartId(cartResult.id)
+    : new Headers();
 
   // Hat die Bindung alles entfernt (nur Add-ons, kein Qi Master), gibt es
   // nichts zu bezahlen: zum Warenkorb statt in eine leere Kasse.
