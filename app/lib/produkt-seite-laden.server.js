@@ -28,6 +28,8 @@ export const KONFIGURATOR_SCHALTER = Object.freeze({
   'qione-2-pro': 'KONFIGURATOR_QIONE_2_PRO',
   'qihome-air': 'KONFIGURATOR_QIHOME_AIR',
   qibracelet: 'KONFIGURATOR_QIBRACELET',
+  // s13 (Christian Zx 29.10.2026): weitere Shop-Seiten im Apple-Stil.
+  'qione-kette': 'KONFIGURATOR_QIONE_KETTE',
 });
 
 /** true nur, wenn der Schalter des Produkts genau 'on' ist (Default AUS). */
