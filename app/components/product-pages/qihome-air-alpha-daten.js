@@ -173,10 +173,11 @@ export const WISSEN = {
     {
       etikett: 'Erde',
       bild: 5,
-      titel: 'Wasserader unter dem Schlafzimmer?',
+      // s09-r2 (Christian Zy 29.10.2026, s09-r2: keine Angst-Sprache, kein Zurueckschrecken): Titel als Zustand statt als
+      // Drohfrage, der Satz über das Spüren im Schlaf ist gestrichen.
+      titel: 'Ruhig schlafen, egal was unter dem Haus liegt.',
       absaetze: [
         'Erdstrahlen, Gitternetze, Gesteinsbrüche: Geopathogene Strahlung hat viele Namen.',
-        'Sensible Menschen spüren sie, zum Beispiel im Schlaf.',
         'Sie kommt zu Handy, WLAN und 5G hinzu.',
         'Deshalb gehört das QiHome® Air ins Schlafzimmer.',
       ],

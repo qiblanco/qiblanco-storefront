@@ -228,8 +228,9 @@ export const WISSEN = {
       etikett: 'Erdstrahlung',
       titel: 'Ruhig schlafen, egal was unter dir liegt.',
       absaetze: [
+        // s09-r2 (Christian Zy 29.10.2026, s09-r2: keine Angst-Sprache, kein Zurueckschrecken): der Satz über flachen Schlaf
+        // und schweren Morgen ist gestrichen, der Block nennt nur noch den Zustand.
         'Wasseradern, Gesteinsbrüche, Gitternetze: Erdstrahlung hat viele Namen.',
-        'Sensible Menschen kennen sie aus der Nacht. Der Schlaf wird flach, der Morgen schwer.',
         'Auch Erdstrahlung ist elektromagnetische Strahlung. Sie kommt zu Handy und WLAN dazu.',
         'Der QiOne® 2 Pro hält das Wasser in deinem Körper in Ordnung, Tag und Nacht. Egal, wo dein Bett steht.',
       ],

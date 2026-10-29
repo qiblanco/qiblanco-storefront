@@ -123,7 +123,7 @@ export const KETTE_GOLD = null;
 export const FAKTEN = {
   ueberschrift: 'Einmal kaufen. An die Familie weitergeben.',
   kacheln: [
-    {icon: 'generationen', zahl: 'Jahrzehnte', satz: 'Lebensdauer. Nahezu unzerstörbar.'},
+    {icon: 'generationen', zahl: 'Jahrzehnte', satz: 'Lebensdauer. Aus Chirurgenstahl 316L.'},
     {icon: 'wellen', zahl: 'Sauna · Meer · Pool', satz: 'Es bleibt dran.'},
     {icon: 'material', zahl: '316L', satz: 'Implantatstahl aus der Orthopädie.'},
     {icon: 'handgelenk', zahl: 'Über 1.000', satz: 'QiBracelet® im Einsatz.'},
@@ -186,10 +186,12 @@ export const WISSEN = {
     },
     {
       etikett: 'Erde',
-      titel: 'Wasseradern, Erdstrahlen, Gitternetze.',
+      // s09-r2 (Christian Zy 29.10.2026, s09-r2: keine Angst-Sprache, kein Zurueckschrecken): Titel als Zustand, ohne Spür-
+      // Satz und ohne "wirkt dem entgegen" (Abwehr-Rahmen).
+      titel: 'Ruhig schlafen, egal wo du bist.',
       absaetze: [
-        'Geopathogene Strahlung hat viele Namen. Sensible Menschen spüren sie, zum Beispiel im Schlaf.',
-        'Sie kommt zu Handy, WLAN und 5G hinzu. Das QiBracelet® wirkt dem entgegen. Es ist immer an deiner Seite.',
+        'Wasseradern, Erdstrahlen, Gitternetze: Geopathogene Strahlung hat viele Namen. Sie kommt zu Handy, WLAN und 5G hinzu.',
+        'Das QiBracelet® trägst du Tag und Nacht. Es ist immer an deiner Seite.',
       ],
       bild: 5,
     },
@@ -206,6 +208,8 @@ export const WISSEN = {
  * Google-Bewertungen zum QiBracelet® im Wortlaut (s02/quellen/
  * bewertungen-auszug.txt, Google, 5 Sterne). Die Zeile zu den ersten Nächten
  * aus derselben Bewertung steht NICHT da (Fakten-Basis F-TRAGEN, s04-Flanke).
+ * Der Satz „Würde ich auf jeden Fall weiterempfehlen!“ ist ersetzt (s09-r2,
+ * Christian Zy 29.10.2026: kein Konjunktiv, homepage-bauer/bin/sprach-pruefe 0 Treffer).
  */
 export const STIMMEN_GOOGLE = {
   ueberschrift: '{bewertung} ★ auf Google. Lies selbst.',
@@ -221,8 +225,8 @@ export const STIMMEN_GOOGLE = {
       quelle: 'Google-Bewertung, Dezember 2025',
     },
     {
-      text: 'Würde ich auf jeden Fall weiterempfehlen!',
-      quelle: 'Google-Bewertung, August 2026',
+      text: 'Auch in meinem Bekanntenkreis gibt es 4 Leute, die total begeistert sind.',
+      quelle: 'Google-Bewertung, Dezember 2025',
     },
   ],
 };
@@ -246,7 +250,7 @@ export const FAQ = {
     },
     {
       f: 'Darf das QiBracelet® in die Sauna und ins Wasser?',
-      a: 'Ja. Wasser, Chlor, Salzwasser, Schweiß und Sonne machen ihm nichts. In der Sauna nimmt das Metall die Hitze der Luft auf.',
+      a: 'Ja. Wasser, Chlor, Salzwasser, Schweiß und Sonne machen ihm nichts. Auch in die Sauna darf es mit. Dort wird der Stahl so warm wie die Luft.',
     },
     {
       f: 'Ist das QiBracelet® für Allergiker geeignet?',
