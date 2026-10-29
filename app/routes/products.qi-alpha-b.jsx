@@ -126,6 +126,9 @@ const THE_ALPHA_PDP_PFAD = '/products/qi-alpha-b';
 /**
  * Route-gebundenes Stylesheet (Muster zweifel-beleg.css / qione-2-pro-shop.css):
  * die Token-Schicht der Seite, damit app.css unangetastet bleibt.
+ * qi-alpha-b.css blendet seit 29.10.2026 auch das Bewertungsband des
+ * Hauskopfs aus (Christian 28.10.: noch keine Bewertung möglich); weil nur
+ * diese Route die Datei lädt, trifft die Regel keine andere Seite.
  */
 export function links() {
   return [
