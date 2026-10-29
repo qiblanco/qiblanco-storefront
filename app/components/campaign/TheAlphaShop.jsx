@@ -334,31 +334,27 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               <div className="tas-bildpaar tas-bildpaar--einzeln">
                 <figure className="tas-gravur-bild">
                   <div className="tas-gravur-rahmen">
-                    <div
-                      className="tas-zoom"
-                      style={{'--tas-zoom-mitte': '62% 49%'}}
+                    <img
+                      className="tas-gravur-foto"
+                      src={`${NUMMER.bildGravur.url}&width=${NUMMER.bildGravur.breite}`}
+                      alt={NUMMER.bildGravur.alt}
+                      width={NUMMER.bildGravur.breite}
+                      height={NUMMER.bildGravur.hoehe}
+                      loading="lazy"
+                    />
+                    <span
+                      className="tas-gravur"
+                      data-tas-gravur=""
+                      aria-live="polite"
+                      style={{
+                        left: `${NUMMER.bildGravur.gravur.x * 100}%`,
+                        top: `${NUMMER.bildGravur.gravur.y * 100}%`,
+                      }}
                     >
-                      <img
-                        src={`${NUMMER.bildGravur.url}&width=900`}
-                        alt={NUMMER.bildGravur.alt}
-                        width="900"
-                        height="900"
-                        loading="lazy"
-                      />
-                      <span
-                        className="tas-gravur"
-                        data-tas-gravur=""
-                        aria-live="polite"
-                        style={{
-                          left: `${NUMMER.bildGravur.gravur.x * 100}%`,
-                          top: `${NUMMER.bildGravur.gravur.y * 100}%`,
-                        }}
-                      >
-                        <span key={gravur} className="tas-blende">
-                          {gravur}
-                        </span>
+                      <span key={gravur} className="tas-blende">
+                        {gravur}
                       </span>
-                    </div>
+                    </span>
                   </div>
                 </figure>
               </div>

@@ -581,9 +581,13 @@
 }
 
 /* Nummern-Schritt: nur noch die Gravur, über die volle Spalte wie die Karten
- * darüber (Christian 27.10.2026: rechtes Bild „Made in Germany“ weg). */
+ * darüber (Christian 27.10.2026: rechtes Bild „Made in Germany“ weg). Sie
+ * steht im Takt der Karten (gleicher Abstand wie zwischen zwei Karten), so
+ * gehört das Bild sichtbar zur Auswahl (Christian 29.10.2026: „näher an der
+ * auswahl“). */
 .tas-bildpaar--einzeln {
   grid-template-columns: minmax(0, 1fr);
+  margin-top: var(--tas-s-2);
 }
 
 .tas-bildpaar img,
@@ -596,27 +600,24 @@
   overflow: hidden;
 }
 
+/* Das ganze Stück im Querformat 3:1 (der Ausschnitt kommt so vom CDN), kein
+   Zoom mehr: Christian 29.10.2026 „das man eben den ganzen qioen sihet und
+   weniger von oben und unten“. */
 .tas-gravur-rahmen {
   position: relative;
   container-type: inline-size;
-  aspect-ratio: 1 / 1;
-  /* clip-path schneidet auch die skalierte Zoom-Lage rund (overflow allein
-     ließ die Ecke unten rechts eckig, Challenger s04). */
+  aspect-ratio: 3 / 1;
   clip-path: inset(0 round var(--tas-radius));
 }
 
-/* Die Bilder zeigen das ganze Gerät, die Gravur sitzt klein auf dem Band. Der
-   Zoom holt das Band ins Bild; Gravur und Bild skalieren gemeinsam, so bleibt
-   die Nummer an ihrer Stelle. */
-.tas-zoom {
-  position: absolute;
-  inset: 0;
-  transform: scale(1.8);
-  transform-origin: var(--tas-zoom-mitte, 60% 49%);
-}
-
-.tas-zoom img {
+/* Um die Hochachse gedreht: die Bohrung liegt rechts. Nur das Foto dreht sich,
+   die Gravur darüber bleibt lesbar und aufrecht. */
+.tas-gravur-rahmen .tas-gravur-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 0;
+  transform: scaleX(-1);
 }
 
 /* Die gewählte Nummer als Gravur: in den Stahl gelasert, also dunkler Grund
@@ -627,7 +628,7 @@
   position: absolute;
   transform: translate(-50%, -50%);
   white-space: nowrap;
-  font-size: 3cqw;
+  font-size: 4.5cqw;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: rgb(74 80 88 / 0.82);
