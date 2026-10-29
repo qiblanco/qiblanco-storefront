@@ -46,6 +46,14 @@ import {useEffect, useState} from 'react';
  * „Automatische Wiedergabe: Alle erlauben“), läuft er sofort. Wer ausschaltet,
  * bleibt für die Sitzung bei „aus“.
  *
+ * NACHTRAG 29.10.2026 (Christian: „sound on ist auf dem desktop immer noch
+ * nicht live und auch der sound knopf ist nicht auf der rechten seite“):
+ * Hält der Browser den Ton zurück, steht unter „Kohärentes Licht“ der Hinweis
+ * „Sound On“, das X links (Christian 28.10.). Ein Tipp darauf ist die Geste;
+ * das X heißt ohne Ton. Er geht, sobald der Ton hörbar ist oder die
+ * Titelkarte weiterläuft. A lädt die Klänge in der -14-LUFS-Fassung
+ * (QUELLE_LAUT, PEGEL_LAUT; Wunsch „lauter“).
+ *
  * Klänge: Shopify-CDN (Shopify Files, GL-PRO-0015: Medien nicht ins Repo),
  * Eigenproduktion (additive Synthese wie die Qi-Blanco-Reihe qb-ambient-* aus
  * reel-musik), Rezept und Originale im Jobordner s06 (nachher/ton/).
@@ -63,6 +71,24 @@ const QUELLE = {
   tief: `${CDN}tief.mp3?v=1793065594`,
   schluss: `${CDN}schluss.mp3?v=1793065591`,
 };
+// LAUTER, nur A (Ton als Standard; Christians Wunsch 28.10.: „lauter,
+// -14 LUFS“). Dieselben Klänge, auf ax41 linear auf -14 LUFS integriert
+// normiert (True Peak <= -1 dBTP, keine Dynamik verändert, Schleife des
+// Grundsounds bleibt periodisch). Messung und Dateien im Jobordner
+// 20261029-qi-alpha-lp-text-unter-video-abspann-zeilenweise-offene-wuensche.
+// Vorher: -19 bis -29 LUFS je Datei, mal MASTER 0,5 also hörbar um -30 LUFS.
+const QUELLE_LAUT = {
+  grundsound: `${CDN}grundsound-14lufs.mp3?v=1793272271`,
+  gong: `${CDN}gong-14lufs.mp3?v=1793272275`,
+  klang: `${CDN}klang-14lufs.mp3?v=1793272281`,
+  bam: `${CDN}bam-14lufs.mp3?v=1793272286`,
+  glanz: `${CDN}glanz-14lufs.mp3?v=1793272290`,
+  tief: `${CDN}tief-14lufs.mp3?v=1793272295`,
+  schluss: `${CDN}schluss-14lufs.mp3?v=1793272301`,
+};
+// Pegel der lauten Fassung: Master voll, der Grundsound knapp unter den
+// Akzenten (Z119 „darüber gemischt“), geduckt im selben Verhältnis wie sonst.
+const PEGEL_LAUT = {master: 1, bett: 0.8, geduckt: 0.16};
 const SPEICHER = 'tap-ton'; // 'an' | 'aus' | 'gesehen'
 // Ereignisse, die Browser als Nutzer-Aktivierung zählen (HTML: „activation
 // triggering input event“). pointerdown zählt nur mit der Maus, darum
@@ -187,6 +213,13 @@ class TonMotor {
     this.hoerer = new Set();
     this.geduckt = 0;
     this.warteAkzent = null;
+    // Laute Fassung (A): vor dem ersten Laden gesetzt, gilt für die Seite.
+    this.laut = false;
+  }
+
+  pegel(was) {
+    if (this.laut) return PEGEL_LAUT[was];
+    return {master: MASTER, bett: BETT, geduckt: BETT_GEDUCKT}[was];
   }
 
   melde() {
@@ -233,7 +266,7 @@ class TonMotor {
   hoerbar() {
     if (this.zustand === 'an') return;
     this.zustand = 'an';
-    this.blende(this.master.gain, MASTER, 1.2);
+    this.blende(this.master.gain, this.pegel('master'), 1.2);
     this.lade().then(() => this.starteBett());
     this.melde();
   }
@@ -265,7 +298,7 @@ class TonMotor {
   weiter() {
     if (!this.ctx || this.zustand !== 'an') return;
     this.ctx.resume();
-    this.blende(this.master.gain, MASTER, 0.8);
+    this.blende(this.master.gain, this.pegel('master'), 0.8);
   }
 
   blende(param, ziel, sekunden) {
@@ -278,7 +311,7 @@ class TonMotor {
   lade() {
     if (this.laden) return this.laden;
     const holen = (name) =>
-      fetch(QUELLE[name])
+      fetch((this.laut ? QUELLE_LAUT : QUELLE)[name])
         .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(r.status))))
         // Rückruf-Form: ältere Safari kennen das Promise von decodeAudioData nicht
         .then((daten) => new Promise((ok, fehler) => this.ctx.decodeAudioData(daten, ok, fehler)))
@@ -309,7 +342,7 @@ class TonMotor {
     q.connect(this.bett);
     q.start(0, SCHLEIFE[0]);
     this.bettQuelle = q;
-    this.blende(this.bett.gain, this.geduckt ? BETT_GEDUCKT : BETT, 4);
+    this.blende(this.bett.gain, this.pegel(this.geduckt ? 'geduckt' : 'bett'), 4);
   }
 
   /** Ein Akzent, einmal. Ist der Klang noch nicht geladen (erster Gong direkt
@@ -334,7 +367,11 @@ class TonMotor {
   ducken(an) {
     this.geduckt = Math.max(0, this.geduckt + (an ? 1 : -1));
     if (!this.ctx || !this.bettQuelle) return;
-    this.blende(this.bett.gain, this.geduckt ? BETT_GEDUCKT : BETT, this.geduckt ? 0.8 : 2.5);
+    this.blende(
+      this.bett.gain,
+      this.pegel(this.geduckt ? 'geduckt' : 'bett'),
+      this.geduckt ? 0.8 : 2.5,
+    );
   }
 }
 
@@ -627,6 +664,8 @@ export function TapTon({wurzel, standard = 'fenster'}) {
   // Fenster: null (nie) | 'auf' | 'zu' (schließt gerade) | 'weg'
   const [fenster, setFenster] = useState(null);
   const [oben, setOben] = useState(null);
+  // „Sound On“-Hinweis bei Ton als Standard (A): null | 'auf' | 'zu' | 'weg'.
+  const [hinweis, setHinweis] = useState(null);
 
   useEffect(() => {
     const el = wurzel.current;
@@ -635,7 +674,10 @@ export function TapTon({wurzel, standard = 'fenster'}) {
     const hoerer = (z) => {
       setZustand(z);
       el.dataset.tapTonStand = z;
+      // Hörbar: der Hinweis hat seinen Zweck erfüllt und geht.
+      if (z === 'an') setHinweis((h) => (h === 'auf' ? 'zu' : h));
     };
+    m.laut = tonStandard;
     m.hoerer.add(hoerer);
     el.dataset.tapTonStand = m.zustand;
     const weg = [binde_akzente(el, m), binde_videos(el, m)];
@@ -645,6 +687,7 @@ export function TapTon({wurzel, standard = 'fenster'}) {
     let anGeste = null;
     let gesten = [];
     let warteHinweis = () => {};
+    let hinweisWeg = () => {};
     if (tonStandard) {
       // Ton ist Standard (Z6): kein Fenster. Ausgeschaltet bleibt aus.
       const will = gemerkt !== 'aus';
@@ -652,9 +695,9 @@ export function TapTon({wurzel, standard = 'fenster'}) {
       el.dataset.tapTonWunsch = will ? 'an' : 'aus';
       if (will) {
         anGeste = (e) => {
-          // Der Schalter regelt sich selbst (sonst schaltete derselbe Tipp
-          // erst ein und dann wieder aus).
-          if (e.target?.closest?.('.tap-ton-schalter')) return;
+          // Schalter und Hinweis regeln sich selbst (sonst schaltete derselbe
+          // Tipp erst ein und dann wieder aus, und das X schaltete ein).
+          if (e.target?.closest?.('.tap-ton-schalter, .tap-ton-hinweis')) return;
           if (lies() === 'aus' || m.zustand === 'an') return;
           m.einschalten();
         };
@@ -669,6 +712,28 @@ export function TapTon({wurzel, standard = 'fenster'}) {
         m.hoerer.add(fertig);
         // Versuch ohne Geste: manche Browser erlauben Ton sofort.
         m.einschalten();
+        // Hält der Browser den Ton zurück (Desktop ohne Klick, Christian
+        // 29.10.: „sound on ist auf dem desktop immer noch nicht live“),
+        // steht unter „Kohärentes Licht“ der Hinweis „Sound On“, X links
+        // (Christian 28.10.). Erst nach der Cookie-Frage, sonst liefe er
+        // unsichtbar unter dem Hinweis ab (s13, 27.10.). Er geht, sobald der
+        // Ton hörbar ist, das X tippt oder die Titelkarte sich bewegt.
+        warteHinweis = nachEinwilligung(() => {
+          if (m.zustand === 'an' || lies() === 'aus') return;
+          const titel = el.querySelector('.tap-hero-titel');
+          const buehne = el.querySelector('.tap-titelkarte');
+          if (!titel || !buehne) return;
+          const r = titel.getBoundingClientRect();
+          setOben(Math.round(Math.min(r.bottom + 48, window.innerHeight - 112)));
+          setHinweis('auf');
+          const pruefe = () => {
+            if (buehne.getBoundingClientRect().bottom < window.innerHeight - 2) {
+              setHinweis((h) => (h === 'auf' ? 'zu' : h));
+            }
+          };
+          window.addEventListener('scroll', pruefe, {passive: true});
+          hinweisWeg = () => window.removeEventListener('scroll', pruefe);
+        });
       }
     } else if (!gemerkt) {
       warteHinweis = nachEinwilligung(() => {
@@ -705,6 +770,7 @@ export function TapTon({wurzel, standard = 'fenster'}) {
 
     return () => {
       warteHinweis();
+      hinweisWeg();
       window.clearTimeout(zuTimer);
       gesten.forEach((t) => document.removeEventListener(t, anGeste, {capture: true}));
       if (anGeste) {
@@ -751,9 +817,44 @@ export function TapTon({wurzel, standard = 'fenster'}) {
     }
   };
   const an = tonStandard ? wunsch === 'an' : zustand === 'an';
+  const hinweisAn = () => {
+    merke('an');
+    m.einschalten();
+    setHinweis('zu');
+  };
+  const hinweisOhne = () => {
+    merke('aus');
+    m.ausschalten();
+    wunschSetzen('aus');
+    setHinweis('zu');
+  };
 
   return (
     <>
+      {tonStandard && hinweis && hinweis !== 'weg' ? (
+        <div
+          className={`tap-ton-hinweis${hinweis === 'zu' ? ' tap-ton-hinweis-zu' : ''}`}
+          role="group"
+          aria-label="Sound On"
+          style={oben === null ? undefined : {top: `${oben}px`}}
+          onAnimationEnd={() => {
+            if (hinweis === 'zu') setHinweis('weg');
+          }}
+        >
+          <button
+            type="button"
+            className="tap-ton-fenster-ohne"
+            onClick={hinweisOhne}
+            aria-label="Ohne Ton weiter"
+          >
+            <Kreuz />
+          </button>
+          <button type="button" className="tap-ton-fenster-an" onClick={hinweisAn}>
+            <Lautsprecher an />
+            <span>Sound On</span>
+          </button>
+        </div>
+      ) : null}
       {fenster && fenster !== 'weg' ? (
         <div
           className={`tap-ton-fenster${fenster === 'zu' ? ' tap-ton-fenster-zu' : ''}`}
