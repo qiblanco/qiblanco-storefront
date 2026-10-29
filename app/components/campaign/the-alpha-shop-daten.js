@@ -118,11 +118,12 @@ export const NUMMER = {
    * Das ganze Stück, Bohrung rechts (Christian 29.10.2026: „den qione um 180°
    * gedreht, also das die Borung rechts ist. und das man eben den ganzen qioen
    * sihet und weniger von oben und unten, so dass er näher an der auswahl
-   * liegt“). Gedreht wird um die Hochachse (Spiegelung im CSS), so fällt das
-   * Licht weiter von oben auf den Schliff. Der Ausschnitt kommt vom CDN
-   * (crop=region, gemessen an der 2048-px-Datei: Stück x 159–1772, y 862–1146),
-   * 3:1 mit dem Stück mittig. `gravur` = Mitte der Nummer in Anteilen des
-   * AUSSCHNITTS, nach der Spiegelung gemessen: mittig auf dem Band.
+   * liegt“). Gedreht wird um die Hochachse (Spiegelung im CSS), oben und unten
+   * bleiben, wie sie sind: Licht und Schatten stehen wie im Foto. Der
+   * Ausschnitt kommt vom CDN (crop=region, gemessen an der 2048-px-Datei:
+   * Stück x 159–1772, y 862–1146), 3:1 mit dem Stück mittig. `gravur` = Mitte
+   * der Nummer in Anteilen des AUSSCHNITTS, nach der Spiegelung gemessen:
+   * mittig auf dem Band.
    */
   bildGravur: {
     url: `${CDN}/files/qi-alpha-05-seite-gravurflaeche.jpg?v=1793021845&crop=region&crop_left=102&crop_top=716&crop_width=1728&crop_height=576`,
