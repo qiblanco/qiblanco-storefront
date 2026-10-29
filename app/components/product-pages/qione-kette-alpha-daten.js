@@ -9,7 +9,7 @@
  * Grundlage der Texte: die heutige Seite (Shopify-Beschreibung: 1,6 mm,
  * Chirurgenstahl 316L, Karabinerverschluss, Made in Germany) und die A-Texte
  * der QiOne-Seite (Öse 2,5 mm, Gehäuse aus Chirurgenstahl, 20 Tage). Nichts
- * dazuerfunden. Die alte Seite bleibt als C unter /products/qione-kette-b.
+ * dazuerfunden. Die heutige Seite bleibt im Code und kommt per Schalter zurück.
  *
  * PREISE und Längen kommen aus Shopify (Seite und Kasse nennen dieselbe Zahl).
  * Die Kette kostet unter 500 €: die Vorlage zeigt dann nur „Direkt bezahlen“

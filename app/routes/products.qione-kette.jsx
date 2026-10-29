@@ -89,8 +89,7 @@ export async function loader(args) {
 
   // APPLE-STIL (s13, Christian Zx 29.10.2026): mit KONFIGURATOR_QIONE_KETTE=on
   // rendert die Seite das Gerüst der Qi-Alpha-Seite (AlphaVorlage). Default AUS
-  // = die heutige Seite, Loaderdaten wie bisher. Die alte Seite bleibt als C
-  // unter /products/qione-kette-b (noindex).
+  // = die heutige Seite, Loaderdaten wie bisher (Rueckweg: Schalter leer).
   if (konfiguratorAn(args.context.env, 'qione-kette')) {
     const daten = await ladeProduktSeite(args, {
       handle: 'qione-kette',
@@ -191,8 +190,8 @@ function Konfigurator({product}) {
   );
 }
 
-/** Die heutige Seite (Schalter aus) und die C-Fassung /products/qione-kette-b. */
-export function HeutigeSeite({product}) {
+/** Die heutige Seite (Schalter aus). */
+function HeutigeSeite({product}) {
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -459,7 +458,7 @@ const PRODUCT_FRAGMENT = `#graphql
   ${PRODUCT_VARIANT_FRAGMENT}
 `;
 
-export const PRODUCT_QUERY = `#graphql
+const PRODUCT_QUERY = `#graphql
   query Product(
     $country: CountryCode
     $handle: String!
