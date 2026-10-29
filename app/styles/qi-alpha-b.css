@@ -345,3 +345,44 @@
   font-size: var(--qa-fs-h2);
   margin: 0 0 var(--qa-s2);
 }
+
+/* ─── Shop B: Live mit Christian (s04-r1-r2) ──────────────────────────────
+   Zweiter Akt „Fläche", damit die weiße Formularkarte (the-alpha-live-
+   anmeldung.css) davor steht. Derselbe H2-Stil wie der Schluss, links. */
+.qa-shop .qa-live {
+  max-width: none;
+  background: var(--qa-flaeche);
+}
+.qa-live__inhalt {
+  max-width: var(--qa-breite);
+  margin: 0 auto;
+}
+.qa-shop .qa-live h2 {
+  font-size: var(--qa-fs-h2);
+  margin: 0 0 var(--qa-s2);
+}
+.qa-shop .qa-live__wann {
+  margin: 0 0 var(--qa-s1);
+  font-size: var(--qa-fs-md);
+  font-weight: 700;
+  color: var(--qa-dunkel);
+}
+.qa-shop .qa-live__text {
+  margin: 0 0 var(--qa-s4);
+  color: var(--qa-text);
+}
+.qa-live__karte {
+  margin: 0;
+}
+
+/* ─── Shop B: Auswahl vor dem Kaufknopf (s04-r1-r2, Shop-Regel S2) ────────
+   Die Add-ons (Wunschnummer, Goldkette) stehen im Preis-Slot der QiOneBuyBox,
+   also in der Flex-Zeile .Bestseller-Price (app.css). Dort nehmen sie die
+   ganze Breite ein, unter Preis und Wortlaut, vor dem Knopf. */
+.qa-b .Bestseller-Price {
+  width: auto;
+}
+.qa-b .Bestseller-Price > .qa-b-auswahl {
+  flex: 1 1 100%;
+  min-width: 0;
+}

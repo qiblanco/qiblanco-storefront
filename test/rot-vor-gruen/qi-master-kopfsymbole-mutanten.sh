@@ -86,15 +86,13 @@ rest=rest.replace('<path fill="currentColor"','<path fill="none" stroke="current
 open(p,'w',encoding='utf-8').write(kopf+rest)
 PY
 }
-m_sechste_vorn() { sed -i '0,/{zusatzPunkt}/{s/{zusatzPunkt}/{zusatzPunkt}PLATZ/}' app/components/product-pages/QiMaster.jsx
+m_finanzierung_zurueck() {
   python3 - <<'PY'
 p='app/components/product-pages/QiMaster.jsx'
 s=open(p,encoding='utf-8').read()
-import re
-m=re.search(r'\n(\s*)<li>\n\s*<svg[^>]*>\n\s*<path fill="currentColor" d=\{QIMASTER_SYMBOL_PFADE\[.finanzierung-null.\]\} />\n\s*</svg>\n\s*<b>0% Finanzierung</b> mit PayPal und Klarna\n\s*</li>', s)
-block=m.group(0)
-s=s.replace(block,'\n')
-s=s.replace('{zusatzPunkt}PLATZ', block.strip()+'\n        {zusatzPunkt}')
+ab=s.index('export function QiMasterBenefitList')
+i=s.index('{zusatzPunkt}',ab)+len('{zusatzPunkt}')
+s=s[:i]+'\n        <li>\n          <b>0% Finanzierung</b> mit PayPal und Klarna\n        </li>'+s[i:]
 open(p,'w',encoding='utf-8').write(s)
 PY
 }
@@ -118,7 +116,7 @@ arm_pruefen \
   "die vier Zeilen des Kopfblocks haben je ein eigenes Symbol" \
   "FAIL-SOFT: fremdes HTML bleibt unveraendert, und ein zweiter Lauf verdoppelt nichts" \
   "POSITIVKONTROLLE: der Maßstab erkennt die Symbole der Vorlage als stilkonform" \
-  "die sechste Zeile der Nutzenliste steht zuletzt und ist wie ihre Nachbarn gesetzt"
+  "die Nutzenliste trägt keine Ratenzeile, die ihr Kaufweg nicht hält"
 
 echo "ROT-VOR-GRUEN: Mutationsmatrix zu test/qi-master-kopfsymbole.test.mjs"
 mutant "strichzeichnung-statt-flaeche" "jede Symbol-Datei hält die Machart der Vorlage" m_strichzeichnung
@@ -128,7 +126,7 @@ mutant "regel-nicht-trennscharf"       "TRENNSCHAERFE: keine Regel greift die Ze
 mutant "eine-zeile-ohne-symbol"        "die vier Zeilen des Kopfblocks haben je ein eigenes Symbol" m_zeile_fehlt
 mutant "doppelschutz-entfernt"         "FAIL-SOFT: fremdes HTML bleibt unveraendert, und ein zweiter Lauf verdoppelt nichts" m_doppelt
 mutant "vorlage-wird-strichzeichnung"  "POSITIVKONTROLLE: der Maßstab erkennt die Symbole der Vorlage als stilkonform" m_vorlage_strich
-mutant "sechste-zeile-vor-gewaehrleistung" "die sechste Zeile der Nutzenliste steht zuletzt und ist wie ihre Nachbarn gesetzt" m_sechste_vorn
+mutant "finanzierungszeile-zurueck"     "die Nutzenliste trägt keine Ratenzeile, die ihr Kaufweg nicht hält" m_finanzierung_zurueck
 
 if [ "$FEHLER" -eq 0 ]; then echo "ROT-VOR-GRUEN vollstaendig: jeder Arm einzeln belegt"; else echo "ROT-VOR-GRUEN UNVOLLSTAENDIG"; fi
 exit "$FEHLER"
