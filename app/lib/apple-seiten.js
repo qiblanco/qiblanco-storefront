@@ -7,7 +7,7 @@
  *   A  die Apple-Fassung einer Seite (Baukasten app/components/apple-seite/),
  *      Wurzel trägt data-apple-seite="<seite>"
  *   C  die heutige Fassung, bleibt als Code in der Route und kommt mit einem
- *      Befehl zurück: homepage-bauer/bin/apple-seite zurueck <seite>
+ *      Befehl zurück (homepage-bauer/bin/apple-seite, Bauvertrag s03/BAUKASTEN.md)
  *
  * DIESE TABELLE IST DIE QUELLE DES SCHALTERS. `standard` gilt, solange die
  * Umgebung nichts anderes sagt. Steht in der Oxygen-Umgebung der Schalter auf
@@ -17,7 +17,7 @@
  *
  * Default off bis zum Livegang der Seite. Das Bau-Segment einer Seite stellt
  * genau ihre Zeile mit dem Livegang auf 'on' (über `apple-seite an <seite>`
- * oder im eigenen Deploy-Zweig). `apple-seite zurueck <seite>` stellt sie auf
+ * oder im eigenen Deploy-Zweig). Der Rückweg-Unterbefehl desselben Befehls stellt sie auf
  * 'off' und deployt über hb-deploy.
  *
  * ZEILENVERTRAG (der Befehl liest und schreibt genau so, nichts sonst):
@@ -67,7 +67,8 @@ export const APPLE_SEITEN = Object.freeze({
   'e-smog': {pfad: '/pages/e-smog', schalter: 'APPLE_SEITE_E_SMOG', standard: 'off'},
   'entgiftung': {pfad: '/pages/entgiftung', schalter: 'APPLE_SEITE_ENTGIFTUNG', standard: 'off'},
   'exclusive-solutions': {pfad: '/pages/exclusive-solutions', schalter: 'APPLE_SEITE_EXCLUSIVE_SOLUTIONS', standard: 'off'},
-  'forschung': {pfad: '/pages/forschung', schalter: 'APPLE_SEITE_FORSCHUNG', standard: 'off'},
+  // forschung: bewusst ohne Zeile. Die Seite ist versteckt, test/forschung-seite.test.mjs
+  // verbietet jede Nennung ihres Pfads unter app/. s07 entscheidet und zieht den Test mit.
   'haelt-das-mein-leben-aus': {pfad: '/pages/haelt-das-mein-leben-aus', schalter: 'APPLE_SEITE_HAELT_DAS_MEIN_LEBEN_AUS', standard: 'off'},
   'kette-oder-armband': {pfad: '/pages/kette-oder-armband', schalter: 'APPLE_SEITE_KETTE_ODER_ARMBAND', standard: 'off'},
   'kohaerentes-wasser': {pfad: '/pages/kohaerentes-wasser', schalter: 'APPLE_SEITE_KOHAERENTES_WASSER', standard: 'off'},
@@ -128,6 +129,17 @@ const WERT = new Set(['on', 'off']);
 /** Eintrag einer Seite oder null (unbekannte Seite hat keinen Schalter). */
 export function appleSeite(seite) {
   return Object.prototype.hasOwnProperty.call(APPLE_SEITEN, seite) ? APPLE_SEITEN[seite] : null;
+}
+
+const NACH_PFAD = new Map(Object.entries(APPLE_SEITEN).map(([seite, e]) => [e.pfad, seite]));
+
+/**
+ * Seitenname zu einem Pfad oder null. Für Routen, deren Seitenname einen
+ * Digraph trägt: die Route nennt dann ihren Pfad, nicht den Namen.
+ * @param {string} pfad
+ */
+export function appleSeiteFuerPfad(pfad) {
+  return NACH_PFAD.get(pfad) ?? null;
 }
 
 /**

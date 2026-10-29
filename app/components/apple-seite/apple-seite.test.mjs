@@ -68,6 +68,16 @@ test('appleSeiteAn: Standard gilt, Umgebung on/off gewinnt, sonst nichts', () =>
   assert.equal(lib.appleSeite('constructor'), null);
 });
 
+test('appleSeiteFuerPfad: Pfad zu Seitenname, fremder Pfad null', () => {
+  assert.equal(lib.appleSeiteFuerPfad('/'), 'startseite');
+  assert.equal(lib.appleSeiteFuerPfad('/pages/ueber-uns'), 'ueber-uns');
+  assert.equal(lib.appleSeiteFuerPfad('/products/qione-2-pro'), null);
+  assert.equal(lib.appleSeiteFuerPfad(undefined), null);
+  const pfade = Object.values(lib.APPLE_SEITEN).map((e) => e.pfad);
+  assert.equal(new Set(pfade).size, pfade.length, 'jeder Pfad nur einmal');
+  for (const [seite, e] of Object.entries(lib.APPLE_SEITEN)) assert.equal(lib.appleSeiteFuerPfad(e.pfad), seite);
+});
+
 test('appleSeiteLaden liefert {seite, an}', () => {
   const n = lib.APPLE_SEITEN.studien.schalter;
   assert.deepEqual(lib.appleSeiteLaden({env: {[n]: 'on'}}, 'studien'), {seite: 'studien', an: true});
