@@ -942,7 +942,9 @@ function FinalCTA() {
                 <span className="lp-vp-final-cta__price-value">{price}</span>
                 {compare && <sup className="lp-vp-final-cta__compare">{compare}</sup>}
               </div>
-              <span className="lp-vp-final-cta__price-meta">einmalig · inkl. MwSt.</span>
+              {/* Ohne MwSt-Hinweis: die MwSt zeigt erst der Checkout (Christian 27.10.2026,
+                  Shop-Tor S1_kein_mwst_hinweis; s03-r5). */}
+              <span className="lp-vp-final-cta__price-meta">einmalig</span>
               <div className="lp-vp-final-cta__pay">
                 <img
                   {...bildQuelle(KLARNA_IMG, LEITER_KLARNA)}
@@ -1088,6 +1090,9 @@ function StickyKaufknopf({nurMobil = false}) {
         nurMobil ? ' lp-a-nur-mobil' : ''
       }`}
       data-section="lp-b-sticky-kaufknopf"
+      // Annas Kugel rutscht über die stehende Leiste (s03-r5, Christian 26.10.:
+      // „muss das Gesicht flüssig nach oben rutschen“), kaufknopf-chat.js AUSWEICH_SELEKTOR.
+      data-qb-chat-weicht={sichtbar ? '' : undefined}
       aria-hidden={sichtbar ? undefined : 'true'}
     >
       {/* Inhalt NUR im sichtbaren Zustand im DOM: das Einhängen ist eine
