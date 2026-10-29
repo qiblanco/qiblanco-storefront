@@ -140,7 +140,7 @@ export const WISSEN = {
       titel: 'Den ganzen Tag auf der Haut.',
       absaetze: [
         'An der Kette liegt dein QiOne® dort, wo du ihn haben willst: unter dem Hemd, über dem Pullover, beim Sport.',
-        'Der Karabiner schließt mit einer Hand. Abends legst du ihn ab oder schläfst mit ihm.',
+        'Der Karabiner schließt mit einer Hand. Abends legst du ihn ab oder behältst ihn auch nachts an.',
         'Der Stahl braucht keine Pflege. Wasser und ein weiches Tuch genügen.',
       ],
       bild: 4,
