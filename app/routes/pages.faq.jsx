@@ -53,15 +53,15 @@ export function links() {
 
 const TITEL = 'Häufige Fragen zu Qi Blanco';
 const BESCHREIBUNG =
-  'Größe, Wasser und Sauna, Reichweite, 20-Tage-Rückgabe, Ratenzahlung. Dazu, was ' +
-  'wissenschaftlich belegt ist und was nicht. Die häufigsten Fragen an Qi Blanco ' +
-  'und ihre Antworten.';
+  'Größe, Wasser und Sauna, Reichweite, 20-Tage-Rückgabe, Ratenzahlung — und was ' +
+  'wissenschaftlich belegt ist und was nicht. Die häufigsten Fragen an Qi Blanco, ' +
+  'ohne Ausweichen beantwortet.';
 
 /** @type {MetaFunction} */
 export const meta = () => {
   const schema = buildFaqPageJsonLd(FAQ_ALLE, {inLanguage: 'de-DE'});
   return [
-    {title: 'Häufige Fragen | Qi Blanco'},
+    {title: `${TITEL} | Qi Blanco`},
     {name: 'description', content: BESCHREIBUNG},
     canonicalLink(PFAD),
     ...teilbildTags(PFAD),
