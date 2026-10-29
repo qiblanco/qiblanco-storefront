@@ -193,8 +193,8 @@ export const FAQ = {
       a: 'Ja. Die Kette ist 1,6 mm stark, die Öse des QiOne® 2 Pro misst 2,5 mm. Du fädelst sie durch und schließt den Karabiner.',
     },
     {
-      f: 'Darf die Kette nass werden oder in die Sauna?',
-      a: 'Ja. Chirurgenstahl 316L rostet nicht und läuft nicht an, darum bleibt die Kette im Meer, im Schwimmbad und in der Sauna dran. In der Sauna wird der Stahl warm: Trag sie dort mit Hautkontakt, dann merkst du rechtzeitig, wenn sie dir zu warm wird.',
+      f: 'Darf die Kette nass werden?',
+      a: 'Ja. Chirurgenstahl 316L rostet nicht und läuft nicht an, darum bleibt die Kette im Meer und im Schwimmbad dran.',
     },
     {
       // PR-Manager s13 (G1/P5): kein Verträglichkeitsversprechen, nur der
