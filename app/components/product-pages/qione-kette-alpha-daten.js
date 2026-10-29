@@ -141,7 +141,7 @@ export const WISSEN = {
       absaetze: [
         'An der Kette liegt dein QiOne® dort, wo du ihn haben willst: unter dem Hemd, über dem Pullover, beim Sport.',
         'Der Karabiner lässt sich mit einer Hand schließen. Die Kette kannst du jederzeit ablegen, nachts darf sie aber genauso dranbleiben.',
-        'Der Stahl braucht keine Pflege. Wasser und ein weiches Tuch genügen.',
+        'Zum Reinigen genügen Wasser und ein weiches Tuch.',
       ],
       bild: 4,
     },
@@ -191,7 +191,7 @@ export const FAQ = {
     },
     {
       f: 'Darf die Kette nass werden oder in die Sauna?',
-      a: 'Ja. Chirurgenstahl 316L rostet nicht und läuft nicht an, darum bleibt die Kette im Meer und im Schwimmbad dran. In der Sauna wird der Stahl heiß: Leg sie dort ab oder trag sie über dem Handtuch.',
+      a: 'Ins Wasser ja: Chirurgenstahl 316L rostet nicht und läuft nicht an, darum bleibt die Kette im Meer und im Schwimmbad dran. In der Sauna wird der Stahl heiß, dort legst du sie ab.',
     },
     {
       // PR-Manager s13 (G1/P5): kein Verträglichkeitsversprechen, nur der
