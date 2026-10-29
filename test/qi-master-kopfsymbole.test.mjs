@@ -273,3 +273,26 @@ test('die Nutzenliste trägt keine Ratenzeile, die ihr Kaufweg nicht hält', () 
     'die Nutzenliste verspricht eine Finanzierung, die der Kaufweg der QiOneBuyBox nicht hat',
   );
 });
+
+// Nur Qi-Alpha-Renderings als Bildliteral auf beiden Qi-Alpha-Kaufseiten
+// (Christian 25.10.2026: „für den qi alpha keine fotos verwenden vom qione 2
+// pro, weil es ein anderes logo hat“). QiMaster.jsx war seit dem 25.10.
+// umgestellt, QiAlphaShopB.jsx trug das Paar-Foto von 2023 weiter (die Frau
+// trägt einen QiOne) und ging mit #1081 auf /products/qi-alpha-b live.
+// Gemessen wird die Eigenschaft, nicht ein Dateiname: jedes Bildliteral
+// außerhalb von Kommentaren heißt qi-alpha-*. Bilder aus den Datenmodulen
+// (Diamant, Literatur, Studien-Titelseiten) kuratieren diese Module selbst.
+for (const datei of ['QiAlphaShopB.jsx', 'QiMaster.jsx']) {
+  test(`${datei}: nur Qi-Alpha-Renderings als Bildliteral`, () => {
+    const quelle = readFileSync(join(WURZEL, 'app/components/product-pages', datei), 'utf8')
+      .replace(/\{\/\*[\s\S]*?\*\/\}/g, '')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/^\s*\/\/.*$/gm, '');
+    const bilder = [
+      ...new Set(quelle.match(/[A-Za-z0-9_.%-]+\.(?:jpe?g|png|webp|avif|gif)\b/gi) || []),
+    ];
+    assert.ok(bilder.length > 0, 'kein Bildliteral gefunden: der Test misst den falschen Ort');
+    const fremd = bilder.filter((b) => !/^qi-alpha-/i.test(b));
+    assert.deepEqual(fremd, [], `Fremdbild auf der Qi-Alpha-Seite: ${fremd.join(', ')}`);
+  });
+}

@@ -82,10 +82,14 @@ export default function QiAlphaShopB() {
       <Literatur />
       <SechsG />
       <Persoenlichkeit />
+      {/* KEIN QiOne-2-Pro-Foto auf der Qi-Alpha-Seite (Christian 25.10.2026:
+          „für den qi alpha keine fotos verwenden vom qione 2 pro, weil es ein
+          anderes logo hat“). Hier stand das Paar-Foto von 2023, auf dem die
+          Frau einen QiOne trägt. Jetzt wie in QiMaster.jsx das Qi-Alpha-
+          Rendering (Gerät links), der Text rechts daneben (reverse). */}
       <HeroBannerParallax
-        backgroundImage={
-          '/2023-03-01-qiblanco-milva-martin-1020791_1.webp?v=1680003385'
-        }
+        backgroundImage={'qi-alpha-01-front.jpg?v=1792849253'}
+        reverse
         headline={<>Dein Qi Alpha® begleitet dich<br />Tag und Nacht.</>}
         subheadline={'Ein Stück, das du nicht ablegen musst.'}
         parallax={true}
