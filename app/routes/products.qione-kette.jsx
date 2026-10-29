@@ -33,7 +33,11 @@ import {konfiguratorAn, ladeProduktSeite} from '~/lib/produkt-seite-laden.server
 import {AlphaVorlage} from '~/components/product-pages/AlphaVorlage';
 import * as ALPHA_DATEN from '~/components/product-pages/qione-kette-alpha-daten';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
-import {AlphaStimmen, AlphaWissen} from '~/components/product-pages/AlphaVorlageSlots';
+import {
+  AlphaFaqMitRate,
+  AlphaStimmen,
+  AlphaWissen,
+} from '~/components/product-pages/AlphaVorlageSlots';
 import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
 import alphaVorlageStyles from '~/styles/alpha-vorlage.css?url';
 import alphaSlotStyles from '~/styles/alpha-vorlage-slots.css?url';
@@ -175,6 +179,8 @@ function Konfigurator({product}) {
             />
           ),
           stimmen: <AlphaStimmen daten={ALPHA_DATEN.STIMMEN_GOOGLE} />,
+          // Derselbe Fragen-Baustein wie QiOne® 2 Pro, QiHome® Air und QiBracelet®.
+          faq: <AlphaFaqMitRate daten={ALPHA_DATEN.FAQ} product={product} />,
         }}
       />
     </>

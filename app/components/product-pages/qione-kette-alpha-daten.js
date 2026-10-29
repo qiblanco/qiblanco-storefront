@@ -195,8 +195,10 @@ export const FAQ = {
       a: 'Ja. Chirurgenstahl 316L rostet nicht und läuft nicht an. Im Meer, im Schwimmbad und in der Sauna bleibt sie dran. In der Sauna wird der Stahl so warm wie die Luft.',
     },
     {
-      f: 'Vertrage ich die Kette, wenn ich empfindliche Haut habe?',
-      a: 'Chirurgenstahl 316L nutzt die Medizin für Implantate, weil der Körper ihn sehr gut verträgt. Aus demselben Stahl ist das Gehäuse deines QiOne®.',
+      // PR-Manager s13 (G1/P5): kein Verträglichkeitsversprechen, sondern der
+      // Vergleich mit dem Gehäuse, das der Kunde schon trägt.
+      f: 'Vertrage ich die Kette auf der Haut?',
+      a: 'Die Kette ist aus Chirurgenstahl 316L, aus demselben Stahl wie das Gehäuse deines QiOne®. Verträgst du deinen QiOne® auf der Haut, verträgst du auch die Kette. Hast du eine Nickelallergie, frag vorher deinen Hautarzt.',
     },
     {
       f: 'Kann ich die Kette zusammen mit dem QiOne® 2 Pro kaufen?',
