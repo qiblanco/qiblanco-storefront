@@ -83,6 +83,17 @@ export function ratenAngebot({brutto, waehrung = 'EUR', land}) {
 }
 
 /**
+ * Ratenangebot der ganzen Auswahl: Gerät plus gewählte Kette. Bezahlart-Karten,
+ * Hinweis und Zusammenfassung rechnen damit auf derselben Summe; bis
+ * 29.10.2026 nahmen Karten und Hinweis nur den Gerätepreis und blieben bei
+ * gewählter Kette stehen (Christian Z3).
+ */
+export function auswahlAngebot({hauptPreis, kettePreis = 0, waehrung = 'EUR', land}) {
+  const summe = (Number(hauptPreis) || 0) + (Number(kettePreis) || 0);
+  return ratenAngebot({brutto: summe, waehrung, land});
+}
+
+/**
  * Bezahl-Optionen der Daten mit eingesetztem Monatsbetrag. Platzhalter
  * `{rate}` bzw. `{rate12}` (Schreibweise der Texte aus s03/s04) werden durch
  * die Zahl ersetzt. Ohne Ratenangebot bleibt allein „direkt“.
@@ -142,6 +153,18 @@ export function zusammenfassung({
 export function boxInhalt(teile, kette = null) {
   const fest = (teile ?? []).filter((t) => typeof t === 'string' && t.trim());
   return kette?.box ? [...fest, kette.box] : fest;
+}
+
+/**
+ * Weitere Box-Teile als Bild mit Bildunterschrift (Daten BOX.kacheln:
+ * [{name, bild: {url, alt}}]). Nur Teile mit Name UND Bild; eine Zeile ohne
+ * Bild gibt es in der Box nicht mehr (Christian 29.10.2026 Z1: „nicht mehr
+ * unten drunter anzeigen … wie beim qi bracelet“).
+ */
+export function boxKacheln(kacheln) {
+  return (kacheln ?? [])
+    .filter((k) => typeof k?.name === 'string' && k.name.trim() && k?.bild?.url && k?.bild?.alt)
+    .map((k, i) => ({schluessel: `teil-${i + 1}`, name: k.name, bild: k.bild}));
 }
 
 /** Shopify-CDN-Breite anhängen, egal ob die URL schon eine Query trägt. */

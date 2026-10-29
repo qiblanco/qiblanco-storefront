@@ -33,7 +33,6 @@ export const PRODUKT = {
   name: 'QiBracelet®',
   claim: 'Entwickelt für Superhumans.',
   kurzzeile: 'Drei Größen · Chirurgenstahl 316L · Gitterchip® aus 750er Gold',
-  preisanker: {nutzer: '+ 14.000 Nutzer', banner: 'Ultimate Power'},
   punkte: [
     {zeichen: 'wachstum', text: 'Persönliches Wachstum'},
     {zeichen: 'schutz', text: 'Schutz vor E-Smog, 5G & 6G'},
@@ -113,7 +112,7 @@ export const ZUSAMMENFASSUNG = {
  */
 export const BOX = {
   titel: "What's in the Box",
-  teile: [],
+  kacheln: [],
 };
 
 /* Keine Kette: der Schritt entfällt. */
