@@ -4,7 +4,6 @@ import assert from 'node:assert/strict';
 import {pruefeSeite, texteVon} from '../apple-seite-logik.js';
 import {APPLE_SEITEN} from '../../../lib/apple-seiten.js';
 import {ALLTAG_SEKTIONEN} from './lp-alltag.js';
-import {SKEPTIKER_SEKTIONEN} from './lp-skeptiker.js';
 import {VERSPRECHEN_SEKTIONEN} from './lp-versprechen.js';
 import {TRAGEFORM_SEKTIONEN} from './lp-trageform.js';
 import {EINFACH_SEKTIONEN} from './lp-einfach.js';
@@ -12,7 +11,6 @@ import {MECHANISMUS_SEKTIONEN} from './lp-mechanismus.js';
 
 const SEITEN = {
   '/pages/haelt-das-mein-leben-aus': ALLTAG_SEKTIONEN,
-  '/pages/wir-machen-ihn-auf': SKEPTIKER_SEKTIONEN,
   '/pages/das-20-tage-versprechen': VERSPRECHEN_SEKTIONEN,
   '/pages/kette-oder-armband': TRAGEFORM_SEKTIONEN,
   '/pages/so-funktioniert-der-qione': EINFACH_SEKTIONEN,
