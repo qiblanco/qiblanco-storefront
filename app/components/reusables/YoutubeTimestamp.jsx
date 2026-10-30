@@ -292,8 +292,8 @@ const HARTE_FRIST_MS = 4000;
  */
 /*
  * ═══════════════════════════════════════════════════════════════════════════
- * ÄNDERUNG 2026-10-29 (Grossjob 20261026-homepage-ladezeiten-manager-laender-
- * adaptiv-laden-taegliche-wache, s03): DIE VORSCHAU WEICHT NUR NOCH DEM BILD,
+ * ÄNDERUNG 2026-10-29 (Grossjob 20261026-homepage-ladezeiten-manager, Segment
+ * s03): DIE VORSCHAU WEICHT NUR NOCH DEM BILD,
  * NICHT MEHR DER UHR.
  *
  * Christian: „Ladezustand wirkt hier super lang wenn man auf play klickt und es
