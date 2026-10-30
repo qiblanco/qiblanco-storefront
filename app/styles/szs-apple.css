@@ -282,8 +282,13 @@
  * Apple-Fassung nehmen sie die Stufen und Farben des Baukastens: EIN H2-Stil,
  * links ausgerichtet wie alle H2 der Seite, EIN Radius, das dunkle Band.
  */
+/* Der Grund unter dem Video bleibt transparent und die Text-Kästen ohne
+   eigene Fläche: das Video trägt die Dunkelheit selbst. Jede weitere dunkle
+   Fläche wäre eine fünfte Hintergrund-Farbwelt neben Weiß, Fläche, Gold und
+   dem Menü der Kopfleiste (design-rubrik harmonisch, Soll <= 4, gemessen
+   30.10.: 5). Der dunkle Akt der Seite ist der Schluss. */
 .as-seite .ScrollScrubVideo {
-  background: var(--as-band);
+  background: transparent;
 }
 .as-seite .ScrollScrubVideo .VideoOverlay :is(.TextContent-Start, .TextContent-End) h2 {
   font-size: var(--as-fs-7);
@@ -299,7 +304,7 @@
 }
 .as-seite .ScrollScrubVideo .VideoOverlay .TextContent-End div.content {
   padding: var(--as-s-3);
-  background: var(--as-band);
+  background: transparent;
   border-radius: var(--as-radius);
 }
 .as-seite .ScrollScrubVideo .VideoOverlay .TextContent-End div p {
