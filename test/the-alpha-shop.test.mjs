@@ -57,6 +57,28 @@ test('Wunschnummer-Bild: das ganze Stück, Bohrung rechts, Gravur aufrecht (Chri
   assert.match(shop, /className="tas-gravur-foto"[\s\S]*?\/>\s*<span\s+className="tas-gravur"/);
 });
 
+test('Gravur-Vorschau so groß und so hell wie die Gravur „Qi Alpha ®“ im Foto (Christian 30.10.2026)', () => {
+  // Gemessen an qi-alpha-05-seite.jpg (2048 px) gegen die retuschierte Fläche:
+  // Versalhöhe 45 px, Tinte 0,72/0,74/0,77 des Stahls darunter. Die Kaufseite
+  // misst probe_wirkung.py des Auftrags 20261030-update-qi-alpha-gravur-vorschau-
+  // schrift-wie-qi-alpha gerendert nach; hier steht nur die Regel.
+  const VERSAL_QUELLPX = 45;
+  const OPEN_SANS_VERSAL_EM = 0.714;
+  const w = Number(new URL(daten.NUMMER.bildGravur.url).searchParams.get('crop_width'));
+  const css = lies('app/styles/the-alpha-produkt.css');
+  const regel = css.match(/\n\.tas-gravur \{([^}]*)\}/)?.[1] ?? '';
+  const cqw = Number(regel.match(/font-size: ([\d.]+)cqw/)?.[1]);
+  const soll = (VERSAL_QUELLPX / w) * 100;
+  assert.ok(Math.abs((cqw * OPEN_SANS_VERSAL_EM) / soll - 1) < 0.03, `Versal ${cqw} cqw gegen Soll ${soll}`);
+  assert.match(regel, /font-weight: 500;/);
+  const [r, g, b] = (regel.match(/color: rgb\((\d+) (\d+) (\d+)\)/) ?? []).slice(1).map(Number);
+  for (const [ist, ziel] of [[r, 0.72], [g, 0.74], [b, 0.77]]) {
+    assert.ok(Math.abs(ist / 255 - ziel) < 0.05, `Farbe ${r} ${g} ${b} gegen Tinte/Stahl`);
+  }
+  assert.match(regel, /mix-blend-mode: multiply;/);
+  assert.doesNotMatch(regel, /text-shadow/);
+});
+
 test('Nummernstand: Shopify-Sperre und fehlende Variante sind nicht wählbar', () => {
   const v = [variante(1), variante(3, false)];
   const {nummern} = regeln.nummernStand(v);
