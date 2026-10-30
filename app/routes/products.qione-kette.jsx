@@ -19,13 +19,12 @@ import { useRef, useState } from 'react';
 import { SingleImage } from '~/components/reusables/SingleImage';
 import { CallToAction } from '~/components/index-components/CallToAction';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
-import {Preisanker} from '~/components/reusables/Preisanker';
+import {ProductPrice} from '~/components/ProductPrice';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
-import preisankerStyles from '~/styles/qb-preisanker.css?url';
 import pdpKetteStyles from '~/styles/pdp-kette.css?url';
 import medienRandStyles from '~/styles/qb-360-rand.css?url';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
@@ -55,9 +54,6 @@ export function links() {
   return [
     {rel: 'stylesheet', href: kaufZuerstStyles},
     {rel: 'stylesheet', href: kaufleisteStyles},
-    // Preisanker-Dreizeiler (Job 20261026-design-preisanker-google-
-    // bewertungen-link-einheitlich-alle-produkte). Scope `.qb-preisanker`.
-    {rel: 'stylesheet', href: preisankerStyles},
     // Ein H2-Stil, ein Akzent (Rubrik-Pflicht 95, Christian 27.10.2026).
     {rel: 'stylesheet', href: pdpKetteStyles},
     {rel: 'stylesheet', href: medienRandStyles},
@@ -253,11 +249,16 @@ function HeutigeSeite({product}) {
         </p>
         <div className="ProductDescription" dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}} />
 
-        {/* PREISANKER (Christian 26.10.2026: "das braucht es nun für qione 2
-            pro, qi bracelet und necklace auch"): der Dreizeiler statt der
-            kleinen Sterne-Zeile unter dem Titel und des Absatzes "Mehr als
-            14.000+ aktive Nutzer", ohne Banner (reusables/Preisanker.jsx). */}
-        <Preisanker preis={preis} banner={null} />
+        {/* PREIS ALLEIN (Christian 29.10.2026 Z2: der Preisanker „passt nich
+            mehr hin … dauerhaft löaschen“; Shop-Regel S6_apple_ohne_preisanker,
+            Job 20261029-apple-seiten-box-foto-band-preisanker-weg-raten-mit-kette).
+            Keine Sterne, keine Nutzerzahl am Preis; die Google-Stimmen stehen
+            weiter unten im Bewertungsbereich. */}
+        <ProductPrice
+          handle={preis.handle}
+          price={preis.price}
+          compareAtPrice={preis.compareAtPrice}
+        />
         <ProductForm
           productOptions={productOptions}
           selectedVariant={selectedVariant}
