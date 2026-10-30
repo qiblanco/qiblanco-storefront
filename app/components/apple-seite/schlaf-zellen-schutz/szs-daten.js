@@ -165,7 +165,6 @@ export const STIMMEN = Object.freeze({
       quelle: 'Google-Bewertung, November 2025',
     },
   ],
-  link: {text: 'Alle Bewertungen lesen', href: '/pages/bewertungen'},
 });
 
 /** Die drei Video-Erfahrungen aus C (content-match geprüft, Tiefschlaf-LP). */
@@ -199,7 +198,7 @@ export const GARANTIE = Object.freeze({
   ],
 });
 
-export const GERAETE = Object.freeze({
+export const MODELLE = Object.freeze({
   titel: 'Welches passt zu mir?',
   liste: [
     {handle: 'qione-2-pro', name: 'QiOne® 2 Pro', zeile: 'Am Hals. Für Tag und Nacht.'},
@@ -239,7 +238,7 @@ export function teileFuer(variante) {
     weiter2: v === 'b2',
     videos: !kurz,
     garantie: true,
-    geraete: true,
+    modelle: true,
     schluss: !kurz,
     sticky: v !== 'b2',
   });

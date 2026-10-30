@@ -9,7 +9,7 @@ import {APPLE_SEITEN} from '../../../lib/apple-seiten.js';
 const C = readFileSync(new URL('../../campaign/SchlafZellenSchutz.jsx', import.meta.url), 'utf8');
 const ALLE_TEXTE = texteVon({
   KOPF: D.KOPF, VERTRAUEN: D.VERTRAUEN, WIRKPRINZIP: D.WIRKPRINZIP, EBENEN: D.EBENEN, LABOR: D.LABOR,
-  MIKROSKOP: D.MIKROSKOP, STIMMEN: D.STIMMEN, VIDEOS: D.VIDEOS, GARANTIE: D.GARANTIE, GERAETE: D.GERAETE,
+  MIKROSKOP: D.MIKROSKOP, STIMMEN: D.STIMMEN, VIDEOS: D.VIDEOS, GARANTIE: D.GARANTIE, MODELLE: D.MODELLE,
   SCHLUSS: D.SCHLUSS,
 }).join('\n');
 
@@ -42,7 +42,7 @@ test('Arm-Regeln wie C: was K50/K25 weglassen, B2 ohne festen Knopf mit Weiter 1
   for (const t of [a, b2, k50, k25]) {
     assert.equal(t.stimmen, true);
     assert.equal(t.garantie, true);
-    assert.equal(t.geraete, true);
+    assert.equal(t.modelle, true);
   }
   assert.equal(D.teileFuer('unbekannt').variante, 'a', 'fail-closed auf A');
 });
@@ -68,6 +68,11 @@ test('kein Preisanker, kein Konjunktiv, kein Schild', () => {
   for (const v of VERBOTEN) assert.doesNotMatch(ALLE_TEXTE, v.muster, v.grund);
   assert.doesNotMatch(ALLE_TEXTE, KONJUNKTIV);
   assert.doesNotMatch(ALLE_TEXTE, /14\.000|4[.,]8|★/);
+});
+
+test('kein Weg auf /pages/bewertungen (Christian 28.09.: KEIN WEGLINK)', () => {
+  const alles = JSON.stringify(Object.values(D).filter((x) => typeof x !== 'function'));
+  assert.doesNotMatch(alles, /\/pages\/bewertungen/);
 });
 
 test('Video-Stimmen sind die drei aus C (gleiche id, gleicher Titel)', () => {

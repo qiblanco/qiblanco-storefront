@@ -61,7 +61,7 @@ export async function loader({context}) {
   // APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
   // ausser-seo-geo, s06): der Schalter steht in app/lib/apple-seiten.js.
   // An: dieselben Produktdaten, die Apple-Fassung des Arms. Aus: die Seite
-  // unverändert (C, Rückweg homepage-bauer/bin/apple-seite zurueck).
+  // unverändert (C; der Rückweg schaltet nur den Schalter, homepage-bauer/bin/apple-seite).
   const appleSeite = appleSeiteLaden(context, 'schlaf-zellen-schutz-k25');
   let data;
   try {

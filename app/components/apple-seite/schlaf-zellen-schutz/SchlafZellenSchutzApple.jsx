@@ -14,7 +14,7 @@ import {bildSrcSet, mitBreite} from '../apple-seite-logik';
 import {
   EBENEN,
   GARANTIE,
-  GERAETE,
+  MODELLE,
   KOPF,
   LABOR,
   MIKROSKOP,
@@ -82,10 +82,10 @@ function Zahlwege() {
   );
 }
 
-function Kaufzeile({preis, gross = false}) {
+function Kaufzeile({preis}) {
   return (
     <div className="szs-kauf">
-      <a className={`btn btn--primary as-knopf${gross ? ' szs-knopf-gross' : ''}`} href={QIONE_ZIEL} data-as-cta="primary">
+      <a className="btn btn--primary as-knopf" href={QIONE_ZIEL} data-as-cta="primary">
         {QIONE_CTA}
       </a>
       {preis ? <p className="as-preis">{preis}</p> : null}
@@ -175,22 +175,22 @@ function Videos() {
   );
 }
 
-function Geraete({products, preis}) {
+function Modelle({products, preis}) {
   const bildVon = (handle) =>
     (products || []).find((x) => x?.handle === handle)?.featuredImage || null;
   return (
-    <section className="as-sektion szs-geraete" data-section="lp-a-pricing" aria-labelledby="szs-geraete-titel">
-      <h2 id="szs-geraete-titel" className="as-h2">
-        {mitMarkeR(GERAETE.titel)}
+    <section className="as-sektion szs-modelle" data-section="lp-a-pricing" aria-labelledby="szs-modelle-titel">
+      <h2 id="szs-modelle-titel" className="as-h2">
+        {mitMarkeR(MODELLE.titel)}
       </h2>
-      <ul className="szs-geraete-liste">
-        {GERAETE.liste.map((g) => {
+      <ul className="szs-modelle-liste">
+        {MODELLE.liste.map((g) => {
           const bild = bildVon(g.handle);
           return (
-            <li key={g.handle} className="szs-geraet">
+            <li key={g.handle} className="szs-modell">
               {bild?.url ? (
                 <img
-                  className="as-bild szs-geraet-bild"
+                  className="as-bild szs-modell-bild"
                   src={mitBreite(bild.url, 600)}
                   srcSet={bildSrcSet(bild.url, [300, 600])}
                   sizes="(min-width: 750px) 300px, 60vw"
@@ -201,10 +201,10 @@ function Geraete({products, preis}) {
                   decoding="async"
                 />
               ) : null}
-              <h3 className="szs-geraet-name">{mitMarkeR(g.name)}</h3>
-              <p className="szs-geraet-zeile">{g.zeile}</p>
+              <h3 className="szs-modell-name">{mitMarkeR(g.name)}</h3>
+              <p className="szs-modell-zeile">{g.zeile}</p>
               {preis(g.handle) ? <p className="as-preis">{preis(g.handle)}</p> : null}
-              <div className="szs-geraet-wege">
+              <div className="szs-modell-wege">
                 <a
                   className="btn btn--primary as-knopf"
                   href={produktLink(g.handle, BLOCK_LP, 'kauf')}
@@ -220,7 +220,7 @@ function Geraete({products, preis}) {
           );
         })}
       </ul>
-      <p className="szs-geraete-zeile">{GERAETE.zeile}</p>
+      <p className="szs-modelle-zeile">{MODELLE.zeile}</p>
     </section>
   );
 }
@@ -231,7 +231,7 @@ function Schluss({preis}) {
       <div className="as-cta-innen">
         <h2 className="as-h2">{mitMarkeR(SCHLUSS.titel)}</h2>
         <p className="as-unter">{SCHLUSS.text}</p>
-        <Kaufzeile preis={preis} gross />
+        <Kaufzeile preis={preis} />
       </div>
     </section>
   );
@@ -313,7 +313,7 @@ export function SchlafZellenSchutzApple({products = [], variante = 'a'}) {
         {t.weiter2 ? <Weiter nr={2} preis={qionePreis} /> : null}
         {t.videos ? <Videos /> : null}
         <AppleFakten titel={GARANTIE.titel} kacheln={GARANTIE.kacheln} />
-        <Geraete products={products} preis={preis} />
+        <Modelle products={products} preis={preis} />
         {t.schluss ? <Schluss preis={qionePreis} /> : null}
         <AppleAnna />
         {t.sticky ? <FesterKnopf seite={seite} /> : null}

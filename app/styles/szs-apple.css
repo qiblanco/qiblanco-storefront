@@ -203,7 +203,7 @@
 }
 
 /* ---- Geräte ---------------------------------------------------------------- */
-.szs-geraete-liste {
+.szs-modelle-liste {
   list-style: none;
   margin: var(--as-s-4) 0 0;
   padding: 0;
@@ -211,48 +211,48 @@
   gap: var(--as-s-6);
 }
 @media (min-width: 750px) {
-  .szs-geraete-liste {
+  .szs-modelle-liste {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--as-s-3);
   }
 }
-.szs-geraet {
+.szs-modell {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
-.szs-geraet-bild {
+.szs-modell-bild {
   width: 100%;
   max-width: 300px;
   aspect-ratio: 1;
   object-fit: contain;
   background: var(--as-flaeche);
 }
-.szs-geraet-name {
+.szs-modell-name {
   margin: var(--as-s-3) 0 0;
   font-size: var(--as-fs-5);
   font-weight: 600;
   line-height: 1.3;
 }
-.szs-geraet-zeile {
+.szs-modell-zeile {
   margin: var(--as-s-1) 0 0;
   color: var(--as-grau);
 }
-.szs-geraet-wege {
+.szs-modell-wege {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--as-s-2);
   margin-top: var(--as-s-3);
 }
-.szs-geraet-wege .as-link {
+.szs-modell-wege .as-link {
   margin-top: 0;
   display: inline-flex;
   align-items: center;
   min-height: var(--as-tippziel);
 }
-.szs-geraete-zeile {
+.szs-modelle-zeile {
   margin: var(--as-s-6) auto 0;
   max-width: var(--as-text-breite);
   text-align: center;

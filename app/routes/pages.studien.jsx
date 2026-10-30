@@ -1,7 +1,9 @@
 import {useLoaderData} from 'react-router';
 import {STUDIEN, zahlwort, untersuchteProdukte} from '~/data/studien';
 import {appleSeiteLaden} from '~/lib/apple-seiten';
-import {StudienApple} from '~/components/apple-seite/studien/StudienApple';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna, AppleCtaBand} from '~/components/apple-seite/AppleSektionen';
+import beweisAppleStyles from '~/styles/beweis-apple.css?url';
 import {studienArten, übersichtSchema} from '~/lib/studien-schema';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {
@@ -157,4 +159,38 @@ export default function StudienPage() {
   const {appleSeite} = useLoaderData() || {};
   if (appleSeite?.an) return <StudienApple />;
   return <StudienUebersicht schutzfrage />;
+}
+
+/*
+ * APPLE-FASSUNG DIESER ROUTE (Grossjob 20261029-GROSSJOB-alle-shop-seiten-
+ * apple-niveau-ausser-seo-geo, s06). Keine neue Studienseite, sondern dieselbe
+ * Übersicht in der Bauform der Apple-Seiten: Titel, H1, Kerntext und beide
+ * ld+json kommen unverändert aus StudienUebersicht (meta() oben bleibt). Die
+ * Scope-CSS styles/beweis-apple.css biegt nur die --st-* Tokens auf --as-* um.
+ * Danach schließt der Beweis mit dem Weg zum Produkt (Beweis ist Closer,
+ * Kaufüberzeugung Kanon 2026-10-10) und Anna. Anrede wie die Seite: Sie.
+ */
+const STUDIEN_SCHLUSS = Object.freeze({
+  titel: 'Gemessen im Labor. Jetzt bei Ihnen zu Hause.',
+  text: '20 Tage testen. Passt er nicht, erhalten Sie den vollen Kaufpreis zurück.',
+  cta: {text: 'Zum QiOne® 2 Pro', href: '/products/qione-2-pro'},
+  cta2: {text: 'Zum QiBracelet®', href: '/products/qibracelet'},
+});
+
+const STUDIEN_ANNA = Object.freeze({
+  titel: 'Eine Frage zu den Studien? Fragen Sie Anna.',
+  text: 'Anna antwortet sofort im Chat. Per E-Mail antwortet unser Team persönlich, werktags.',
+});
+
+function StudienApple() {
+  return (
+    <>
+      <link rel="stylesheet" href={beweisAppleStyles} />
+      <AppleSeite seite="studien">
+        <StudienUebersicht schutzfrage />
+        <AppleCtaBand hell {...STUDIEN_SCHLUSS} />
+        <AppleAnna {...STUDIEN_ANNA} />
+      </AppleSeite>
+    </>
+  );
 }

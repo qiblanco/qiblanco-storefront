@@ -1,7 +1,7 @@
 /*
  * APPLE-FASSUNG /pages/studien (Grossjob 20261029-GROSSJOB-alle-shop-seiten-
  * apple-niveau-ausser-seo-geo, s06). Lädt nur mit der Apple-Fassung
- * (components/apple-seite/studien/StudienApple.jsx).
+ * (Funktion StudienApple in app/routes/pages.studien.jsx).
  *
  * WARUM KEIN NEUBAU: /pages/studien ist zugleich SEO-/GEO-Seite (sollseiten-
  * begriffe.yaml). Titel, H1, Kerntext und beide ld+json bleiben (Inventar s02,
