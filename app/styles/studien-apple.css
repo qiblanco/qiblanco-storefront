@@ -48,7 +48,6 @@
   --st-shadow-sm: none;
   --st-shadow-md: none;
 
-  --st-breite: var(--as-breite);
 
   font-family: inherit;
   font-size: var(--as-fs-3);
