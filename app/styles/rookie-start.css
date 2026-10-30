@@ -158,6 +158,12 @@
     padding: calc(var(--rs-s1) * 1.5) var(--rs-s2);
     text-align: center;
   }
+  /* Am Seitenende bleibt der Knopf stehen (sticky-lage.js, 30.10.2026). Der
+     Fuß bekommt seine Höhe als Polster: Impressum, Datenschutz und Widerruf
+     bleiben frei. Immer gesetzt, nicht erst beim Erscheinen: nichts springt. */
+  body:has(.qb-rs-sticky) footer {
+    padding-bottom: calc(var(--qb-ref-raster, 8px) * 8 + env(safe-area-inset-bottom));
+  }
 }
 
 /* ---- Premium-Pflicht 95 (s03-r4, Christian 27.10.: jede Seite Premium) ----

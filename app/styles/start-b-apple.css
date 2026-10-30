@@ -82,6 +82,14 @@
  * setzt dieser Block dieselben Rollen mit --as-*.
  */
 @media screen and (max-width: 749px) {
+  /* Fest am unteren Rand: apple-seite.css gibt `.as-seite > :last-child`
+     den Schlussabstand --as-s-8, und die Leiste ist das letzte Kind. Ohne
+     diese Zeile schwebte sie 64 px über dem Rand und lag am Seitenende auf
+     Impressum, Datenschutz und Widerruf (gemessen 30.10.2026, Grossjob
+     „Homepage gesamt prüfen“, s08). */
+  .as-seite > .qb-rs-sticky:last-child {
+    margin-bottom: 0;
+  }
   .as-seite .qb-rs-sticky {
     gap: var(--as-s-2);
     padding: var(--as-s-1) var(--as-s-2) max(var(--as-s-1), env(safe-area-inset-bottom));

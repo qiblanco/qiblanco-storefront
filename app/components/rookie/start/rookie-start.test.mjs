@@ -13,7 +13,7 @@ const lies = (rel) => readFileSync(join(APP, rel), 'utf8');
 const ohneKommentare = (q) =>
   q.replace(/\{\/\*[\s\S]*?\*\/\}/g, '').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
 
-const lage = (x) => ({kopfImBild: false, kopfUnterkante: -10, kaufknopfImBild: false, fussImBild: false, ...x});
+const lage = (x) => ({kopfImBild: false, kopfUnterkante: -10, kaufknopfImBild: false, ...x});
 
 test('Sticky: steht erst, wenn der Kopf nach oben aus dem Bild ist', () => {
   assert.equal(stickySichtbar(lage({kopfImBild: true, kopfUnterkante: 600})), false);
@@ -26,8 +26,8 @@ test('Sticky: weg, solange der Knopf nach den Zell-Diagrammen im Bild ist', () =
   assert.equal(stickySichtbar(lage({kaufknopfImBild: true})), false);
 });
 
-test('Sticky: weg, sobald der Fuß im Bild ist (Impressum/Widerruf frei)', () => {
-  assert.equal(stickySichtbar(lage({kopfUnterkante: -9000, fussImBild: true})), false);
+test('Sticky: bleibt am Seitenende über dem Fuß stehen (s08, 30.10.2026)', () => {
+  assert.equal(stickySichtbar(lage({kopfUnterkante: -9000, fussImBild: true})), true);
 });
 
 test('Sticky: unbekannte Lage heißt nicht zeigen', () => {
@@ -125,4 +125,11 @@ test('CSS: jede gelesene Variable ist definiert', () => {
   for (const m of css.matchAll(/var\((--[a-z0-9-]+)/g)) {
     assert.ok(new RegExp(`${m[1]}\\s*:`).test(definiert), `${m[1]} ist nirgends definiert`);
   }
+});
+
+test('Sticky: sitzt in der Apple-Fassung am Rand, nicht 64 px darüber (s08, 30.10.2026)', () => {
+  // apple-seite.css gibt `.as-seite > :last-child` den Schlussabstand; die
+  // feste Leiste ist das letzte Kind und lag sonst am Ende auf den Fuß-Links.
+  const css = lies('styles/start-b-apple.css');
+  assert.match(css, /\.as-seite > \.qb-rs-sticky:last-child\s*\{\s*margin-bottom:\s*0;/);
 });

@@ -47,9 +47,10 @@ import {
  * „Größe wählen“ heißt immer Variantenwahl.
  *
  * WANN SIE STEHT: Regel in kaufleiste-lage.js (kaufleisteSichtbar). Sichtbar,
- * solange der Kaufknopf der Kaufbox nicht im Bild ist, auch ganz oben; weg,
- * sobald er im Bild ist oder der Fuß erscheint. Die Lage misst der gemeinsame
- * Haken lib/kaufleiste-sicht.js: gegen die kleine
+ * solange der Kaufknopf der Kaufbox nicht im Bild ist, auch ganz oben und
+ * auch am Seitenende über dem Fuß (dem Fuß hält qb-kaufleiste.css darunter
+ * Platz frei); weg, sobald der Knopf der Kaufbox im Bild ist. Die Lage misst
+ * der gemeinsame Haken lib/kaufleiste-sicht.js: gegen die kleine
  * Bildschirmhöhe (100svh) mit Hysterese, damit das Ein- und Ausklappen der
  * iPhone-Browserleisten die Leiste nicht ein- und ausblendet (Christian
  * 30.10.2026: „der rote Balken unten hüpft noch“). Solange ein Dialog offen ist
@@ -134,10 +135,7 @@ export function Kaufleiste({
     () => {
       const box = kaufbox?.current;
       if (!box) return null;
-      return {
-        knopf: box.querySelector('.product-form [data-qb-kaufknopf]'),
-        fuss: document.querySelector('footer'),
-      };
+      return {knopf: box.querySelector('.product-form [data-qb-kaufknopf]')};
     },
     (lage) => {
       const medien =
@@ -149,7 +147,6 @@ export function Kaufleiste({
         geraetAn,
         gemessen: lage.knopf.da,
         kaufknopfImBild: lage.knopf.imBild,
-        fussImBild: lage.fuss.imBild,
       });
     },
     [kaufbox],

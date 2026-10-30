@@ -5,15 +5,18 @@
  *
  * Eine reine Funktion, damit die Regel ohne Browser prüfbar ist
  * (rookie-start.test.mjs). StickyKaufknopf.jsx liefert die Beobachtungen aus
- * einem IntersectionObserver.
+ * dem Haken lib/kaufleiste-sicht.js (100svh, Hysterese).
  *
  * DIE REGEL: sichtbar, sobald der Kopf (data-section="hero") nach oben aus dem
  * Bild ist. Im Kopf steht „Jetzt kaufen“ schon; der Kopf ist mobil gut einen
  * Bildschirm hoch, der Knopf erscheint also im zweiten Bildschirm.
  * Weg ist er, solange ein anderer Kaufknopf der Seite im Bild ist (der Knopf
  * nach den Zell-Diagrammen): zwei gleiche Knöpfe übereinander wären Doppelung.
- * Weg ist er auch, sobald der Fuß ins Bild kommt. Dort stehen Impressum,
- * Datenschutz und Widerruf, und ein fester Balken läge genau darauf.
+ * Am Seitenende bleibt er stehen (seit 30.10.2026, s08 des Grossjobs
+ * „Homepage gesamt prüfen“): bis dahin ging er, sobald der Fuß ins Bild kam, und die
+ * Geräteprobe fand am Ende keinen aktiven Kaufknopf. Impressum, Datenschutz
+ * und Widerruf bleiben frei, weil rookie-start.css dem Fuß mobil die Höhe des
+ * Knopfs als Polster gibt.
  *
  * Fehlende Messung heißt „nicht zeigen“: ohne Lage des Kopfs (null/undefined)
  * bleibt der Knopf weg.
@@ -24,15 +27,14 @@
  * Shopseiten-Rookie nach ihrem Urteil abgebaut wird.
  *
  * @param {{kopfImBild: boolean, kopfUnterkante: number|null|undefined,
- *   kaufknopfImBild: boolean, fussImBild: boolean}} lage
+ *   kaufknopfImBild: boolean}} lage
  * @returns {boolean}
  */
-export function stickySichtbar({kopfImBild, kopfUnterkante, kaufknopfImBild, fussImBild}) {
+export function stickySichtbar({kopfImBild, kopfUnterkante, kaufknopfImBild}) {
   if (kopfImBild) return false;
   if (typeof kopfUnterkante !== 'number' || !Number.isFinite(kopfUnterkante)) {
     return false;
   }
   if (kopfUnterkante > 0) return false;
-  if (kaufknopfImBild) return false;
-  return !fussImBild;
+  return !kaufknopfImBild;
 }

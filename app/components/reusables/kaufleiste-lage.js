@@ -6,16 +6,23 @@
  * Preis und Knopf“.)
  *
  * Eine reine Funktion, damit die Regel ohne Browser prüfbar ist
- * (kaufleiste.test.mjs). Kaufleiste.jsx liefert die Beobachtungen aus einem
- * IntersectionObserver und aus matchMedia.
+ * (kaufleiste.test.mjs). Kaufleiste.jsx liefert die Beobachtungen aus dem Haken
+ * lib/kaufleiste-sicht.js (100svh, Hysterese) und aus matchMedia.
  *
  * DIE REGEL: sichtbar, solange der Kaufknopf der Kaufbox NICHT im Bild ist,
  * und zwar in beide Richtungen: ganz oben (der Knopf liegt mobil unter dem
  * ersten Fenster, gemessen 17.10.2026 bei 390x844 zwischen y=1183 und 2069)
  * ebenso wie nach dem Weiterscrollen. Weg ist sie, sobald der Knopf der
  * Kaufbox im Bild ist: zwei gleiche Knöpfe übereinander wären Doppelung.
- * Weg ist sie auch, sobald der Fuß ins Bild kommt. Dort stehen Impressum,
- * Datenschutz und Widerruf, und ein fester Balken läge genau darauf.
+ * AM SEITENENDE BLEIBT SIE STEHEN (seit 30.10.2026, Grossjob „Homepage
+ * gesamt prüfen“, Segment s08).
+ * Bis dahin ging sie, sobald der Fuß ins Bild kam, weil dort Impressum,
+ * Datenschutz und Widerruf stehen und ein fester Balken genau darauf läge.
+ * Die Geräteprobe (echtgeraet_probe.py, Christian 30.10.: „Das müsste doch
+ * eigentlich Standard sein“) fand deshalb auf iPhone und Android am Ende der
+ * Kaufseiten keinen aktiven Kaufknopf mehr. Jetzt hält qb-kaufleiste.css
+ * unter dem Fuß mobil die Höhe der Leiste frei: der Fuß bleibt ganz lesbar,
+ * und der Knopf steht bis zum Schluss.
  *
  * Anders als die beiden Vorgänger (rookie/start/sticky-lage.js und
  * rookie/shop/sticky-lage.js) zählt hier NICHT, ob der Kopf oder die Buybox
@@ -27,15 +34,13 @@
  * (gemessen false) bleibt die Leiste weg. Eine Leiste, die erscheint, bevor
  * bekannt ist, wo der Knopf steht, kann ihn selbst verdecken.
  *
- * @param {{geraetAn: boolean, gemessen: boolean, kaufknopfImBild: boolean,
- *   fussImBild: boolean}} lage
+ * @param {{geraetAn: boolean, gemessen: boolean, kaufknopfImBild: boolean}} lage
  * @returns {boolean}
  */
-export function kaufleisteSichtbar({geraetAn, gemessen, kaufknopfImBild, fussImBild}) {
+export function kaufleisteSichtbar({geraetAn, gemessen, kaufknopfImBild}) {
   if (!geraetAn) return false;
   if (!gemessen) return false;
-  if (kaufknopfImBild) return false;
-  return !fussImBild;
+  return !kaufknopfImBild;
 }
 
 /*

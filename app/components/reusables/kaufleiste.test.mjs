@@ -12,7 +12,7 @@ import {
   variantenwahlText,
 } from './kaufleiste-lage.js';
 
-const lage = (x) => ({geraetAn: true, gemessen: true, kaufknopfImBild: false, fussImBild: false, ...x});
+const lage = (x) => ({geraetAn: true, gemessen: true, kaufknopfImBild: false, ...x});
 
 test('Kaufleiste: steht schon ganz oben, solange der Kaufknopf unter dem Fenster liegt', () => {
   assert.equal(kaufleisteSichtbar(lage({})), true);
@@ -22,8 +22,15 @@ test('Kaufleiste: weg, sobald der Kaufknopf der Kaufbox im Bild ist', () => {
   assert.equal(kaufleisteSichtbar(lage({kaufknopfImBild: true})), false);
 });
 
-test('Kaufleiste: weg, sobald der Fuß im Bild ist', () => {
-  assert.equal(kaufleisteSichtbar(lage({fussImBild: true})), false);
+test('Kaufleiste: bleibt am Seitenende über dem Fuß stehen (s08, 30.10.2026)', () => {
+  // Der Fuß zählt nicht mehr: qb-kaufleiste.css hält ihm darunter Platz frei.
+  assert.equal(kaufleisteSichtbar(lage({fussImBild: true})), true);
+});
+
+test('Kaufleiste: Fuß bekommt mobil den Platz der Leiste (qb-kaufleiste.css)', async () => {
+  const {readFileSync} = await import('node:fs');
+  const css = readFileSync(new URL('../../styles/qb-kaufleiste.css', import.meta.url), 'utf8');
+  assert.match(css, /body:has\(\.qb-kaufleiste\[data-kaufleiste-mobil='an'\]\)\s+footer\s*\{[^}]*padding-bottom/);
 });
 
 test('Kaufleiste: Schalter aus für das Gerät = keine Leiste', () => {
