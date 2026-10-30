@@ -37,3 +37,10 @@ body > main .snap-start button[class*='text-[#1565c0]'] {
   color: var(--qb-text-gedaempft, #6b665d) !important;
   text-decoration: underline;
 }
+/* (3) Preis allein unter dem Titel (seit 29.10.2026 ohne Preisanker, Shop-Regel
+   S6_apple_ohne_preisanker): derselbe Abstand, den der Preis im Preisanker
+   hatte (qb-preisanker.css --qb-pa-abstand-preis 16px), sonst klebt er mit
+   0 px am Titel (Kopf-Bewertung A1). Keine neue Abstandsstufe. */
+body > main .product-main > .product-price {
+  margin: 16px 0;
+}
