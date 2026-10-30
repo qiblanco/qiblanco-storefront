@@ -1,4 +1,7 @@
+import {useLoaderData} from 'react-router';
 import {STUDIEN, zahlwort, untersuchteProdukte} from '~/data/studien';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {StudienApple} from '~/components/apple-seite/studien/StudienApple';
 import {studienArten, übersichtSchema} from '~/lib/studien-schema';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {
@@ -135,8 +138,12 @@ const FAQ_SOLL = EVIDENZSTUFE_SOLL + 1;
  * pages.bewertungen.jsx: serverseitig, damit Server und Hydrierung denselben
  * Tag rendern. Titel, H1 und Meta dieser Seite bleiben davon unberührt.
  */
-export function loader() {
-  return {ausgeliefert: new Date().toISOString()};
+export function loader({context}) {
+  // APPLE-FASSUNG (s06): Schalter in app/lib/apple-seiten.js; aus = C unverändert.
+  return {
+    ausgeliefert: new Date().toISOString(),
+    appleSeite: appleSeiteLaden(context, 'studien'),
+  };
 }
 
 /**
@@ -147,5 +154,7 @@ export function loader() {
  * seo-manager/gewinnerschutz/bin/gewinner-version.
  */
 export default function StudienPage() {
+  const {appleSeite} = useLoaderData() || {};
+  if (appleSeite?.an) return <StudienApple />;
   return <StudienUebersicht schutzfrage />;
 }

@@ -1,0 +1,276 @@
+/*
+ * APPLE-FASSUNG /pages/schlaf-zellen-schutz und Testarme (Grossjob 20261029-
+ * GROSSJOB-alle-shop-seiten-apple-niveau-ausser-seo-geo, s06). Lädt nur mit
+ * der Apple-Fassung (components/apple-seite/schlaf-zellen-schutz/
+ * SchlafZellenSchutzApple.jsx). Nur --as-*-Tokens aus apple-seite.css, keine
+ * freien Werte (BAUKASTEN §2). Das Rezept .lp-a3 (schlaf-zellen-schutz.css)
+ * bleibt unangetastet: es trägt C und fünf weitere Routen.
+ */
+
+/*
+ * HAUS-GRUNDREGELN IM BAUKASTEN-SCOPE NEUTRALISIEREN (Befund s04, 29.10.):
+ * reset.css setzt `p, li {font-size: 1.2rem}` direkt aufs Element und
+ * Schatten auf jede Überschrift. Dazu die Seiten-CSS von C, die links() der
+ * Route weiter lädt (.lp-a3 trifft hier nichts, die Klassen sind andere).
+ */
+.as-seite :where(p, li) {
+  font-size: var(--as-fs-3);
+}
+.as-seite :where(h1, h2, h3) {
+  text-shadow: none;
+}
+.as-band-text .as-knoepfe {
+  justify-content: flex-start;
+}
+
+/* ---- Kopf: Text oben, 360-Grad-Video, Text unten (mobil in dieser Folge) -- */
+.szs-kopf {
+  display: grid;
+  gap: var(--as-s-3);
+  text-align: center;
+}
+.szs-kopf-oben,
+.szs-kopf-unten {
+  max-width: var(--as-text-breite);
+  margin-inline: auto;
+}
+.szs-dreizeiler {
+  display: flex;
+  flex-direction: column;
+  gap: var(--as-s-1);
+  margin: var(--as-s-3) 0 0;
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.szs-kopf-video {
+  margin: 0 auto;
+  width: 100%;
+  max-width: var(--as-text-breite);
+}
+.szs-kopf-video :is(video, img) {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--as-radius);
+}
+.szs-kopf .as-unter {
+  margin-top: 0;
+}
+.szs-beleg {
+  margin: var(--as-s-2) 0 0;
+  font-weight: 600;
+  color: var(--as-tinte);
+}
+.szs-aufruf {
+  margin: var(--as-s-1) 0 0;
+  color: var(--as-grau);
+}
+@media (min-width: 1024px) {
+  .szs-kopf {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'oben video'
+      'unten video';
+    align-items: center;
+    column-gap: var(--as-s-8);
+    row-gap: var(--as-s-3);
+    max-width: var(--as-breite);
+    margin-inline: auto;
+    text-align: left;
+  }
+  .szs-kopf-oben {
+    grid-area: oben;
+    align-self: end;
+    margin: 0;
+  }
+  .szs-kopf-unten {
+    grid-area: unten;
+    align-self: start;
+    margin: 0;
+  }
+  .szs-kopf-video {
+    grid-area: video;
+  }
+  .szs-kopf .szs-kauf {
+    align-items: flex-start;
+  }
+}
+
+/* ---- Kaufzeile: Knopf, Preis, Zusage, Zahlwege ------------------------------ */
+.szs-kauf {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: var(--as-s-4);
+}
+.szs-vertrauen {
+  margin: var(--as-s-2) 0 0;
+  max-width: var(--as-text-breite);
+  font-size: var(--as-fs-2);
+  color: var(--as-grau);
+}
+.szs-zahlwege {
+  display: flex;
+  gap: var(--as-s-2);
+  align-items: center;
+  margin-top: var(--as-s-2);
+}
+.szs-zahlwege img {
+  height: var(--as-s-3);
+  width: auto;
+}
+.as-seite .as-preis {
+  margin: var(--as-s-2) 0 0;
+  font-size: var(--as-fs-2);
+  color: var(--as-tinte);
+}
+.as-seite .as-dunkel .as-preis,
+.as-dunkel .szs-vertrauen {
+  color: var(--as-linie);
+}
+
+/* ---- Weiter-Knopf zwischen den Abschnitten -------------------------------- */
+.szs-weiter {
+  text-align: center;
+  background: var(--as-flaeche);
+  border-radius: var(--as-radius);
+}
+.szs-weiter-name {
+  margin: 0;
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+}
+.szs-weiter .szs-kauf {
+  margin-top: var(--as-s-2);
+}
+@media (min-width: 750px) {
+  .szs-nur-mobil {
+    display: none;
+  }
+}
+
+/* ---- Labor-Satz unter den Zahlen ------------------------------------------ */
+.szs-labor-satz {
+  padding-top: 0;
+  text-align: center;
+}
+.szs-labor-satz .as-absatz {
+  margin-inline: auto;
+}
+
+/* ---- Video-Erfahrungen ---------------------------------------------------- */
+.szs-videos-liste {
+  list-style: none;
+  margin: var(--as-s-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--as-s-4);
+}
+@media (min-width: 750px) {
+  .szs-videos-liste {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--as-s-3);
+  }
+}
+.szs-video .szs-yt {
+  border-radius: var(--as-radius);
+  overflow: hidden;
+}
+.szs-video .as-etikett {
+  margin-top: var(--as-s-2);
+}
+.szs-video-titel {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* ---- Geräte ---------------------------------------------------------------- */
+.szs-geraete-liste {
+  list-style: none;
+  margin: var(--as-s-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--as-s-6);
+}
+@media (min-width: 750px) {
+  .szs-geraete-liste {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--as-s-3);
+  }
+}
+.szs-geraet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.szs-geraet-bild {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1;
+  object-fit: contain;
+  background: var(--as-flaeche);
+}
+.szs-geraet-name {
+  margin: var(--as-s-3) 0 0;
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.szs-geraet-zeile {
+  margin: var(--as-s-1) 0 0;
+  color: var(--as-grau);
+}
+.szs-geraet-wege {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--as-s-2);
+  margin-top: var(--as-s-3);
+}
+.szs-geraet-wege .as-link {
+  margin-top: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--as-tippziel);
+}
+.szs-geraete-zeile {
+  margin: var(--as-s-6) auto 0;
+  max-width: var(--as-text-breite);
+  text-align: center;
+  font-size: var(--as-fs-2);
+  color: var(--as-grau);
+}
+
+/* ---- Fester Kaufknopf mobil ----------------------------------------------- */
+.szs-fest {
+  display: none;
+}
+@media screen and (max-width: 749px) {
+  .szs-fest {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--as-s-2);
+    padding: var(--as-s-1) var(--as-s-2) max(var(--as-s-1), env(safe-area-inset-bottom));
+    background: var(--as-weiss);
+    border-top: var(--as-strich) solid var(--as-linie);
+    visibility: hidden;
+    transform: translateY(100%);
+  }
+  .szs-fest--sichtbar {
+    visibility: visible;
+    transform: none;
+  }
+  .szs-fest-name {
+    font-size: var(--as-fs-3);
+    font-weight: 600;
+  }
+  .szs-fest .as-knopf {
+    min-height: var(--as-tippziel);
+  }
+}

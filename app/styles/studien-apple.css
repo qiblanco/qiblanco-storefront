@@ -1,0 +1,107 @@
+/*
+ * APPLE-FASSUNG /pages/studien (Grossjob 20261029-GROSSJOB-alle-shop-seiten-
+ * apple-niveau-ausser-seo-geo, s06). Lädt nur mit der Apple-Fassung
+ * (components/apple-seite/studien/StudienApple.jsx).
+ *
+ * WARUM KEIN NEUBAU: /pages/studien ist zugleich SEO-/GEO-Seite (sollseiten-
+ * begriffe.yaml). Titel, H1, Kerntext und beide ld+json bleiben (Inventar s02,
+ * Christian Z4/Z5: SEO/GEO macht er separat). Die Apple-Fassung legt deshalb
+ * die Bauform der Apple-Seiten über denselben Inhalt: das Token-System
+ * .qb-st (studien.css) nimmt im Scope [data-apple-seite='studien'] die Werte
+ * aus apple-seite.css (--as-*). Keine freien Werte.
+ */
+
+[data-apple-seite='studien'] .qb-st {
+  /* Schrift: die Stufen des Baukastens (12 · 14 · 17 · 21 · 24 · 40 · 56) */
+  --st-fs-xs: var(--as-fs-2);
+  --st-fs-base: var(--as-fs-3);
+  --st-fs-md: var(--as-fs-3);
+  --st-fs-lg: var(--as-fs-4);
+  --st-fs-xl: var(--as-fs-5);
+  --st-fs-h2: var(--as-fs-5);
+  --st-fs-h1: var(--as-fs-7);
+
+  /* Abstände: dasselbe 8-pt-Raster, Sektions-Takt des Baukastens */
+  --st-s1: var(--as-s-1);
+  --st-s2: var(--as-s-2);
+  --st-s3: var(--as-s-3);
+  --st-s4: var(--as-s-4);
+  --st-s6: var(--as-s-6);
+  --st-s8: var(--as-s-8);
+  --st-s12: var(--as-s-12);
+
+  /* Farbe: das neutrale Kontinuum der Apple-Seiten, EIN Gold */
+  --st-grund: var(--as-weiss);
+  --st-flaeche: var(--as-flaeche);
+  --st-dunkel: var(--as-tinte);
+  --st-text: var(--as-tinte);
+  --st-text-hell: var(--as-flaeche);
+  --st-muted: var(--as-grau);
+  --st-akzent: var(--as-gold);
+  --st-akzent-tief: var(--as-gold-tinte);
+  --st-akzent-tinte: var(--as-gold-tinte);
+  --st-linie: var(--as-linie);
+
+  /* Form: EIN Radius, keine Schatten (Apple: Flächen statt Kanten) */
+  --st-r1: var(--as-radius);
+  --st-r2: var(--as-radius);
+  --st-shadow-sm: none;
+  --st-shadow-md: none;
+
+  --st-breite: var(--as-breite);
+
+  font-family: inherit;
+  font-size: var(--as-fs-3);
+  line-height: 1.5;
+}
+
+/* Haus-Grundregeln (reset.css: p, li 1.2rem; Schatten auf Überschriften). */
+[data-apple-seite='studien'] :where(p, li) {
+  font-size: var(--as-fs-3);
+}
+[data-apple-seite='studien'] :where(h1, h2, h3) {
+  text-shadow: none;
+}
+
+/* EIN H1-, EIN H2-Stil wie .as-h1/.as-h2. */
+[data-apple-seite='studien'] .qb-st h1 {
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+[data-apple-seite='studien'] .qb-st h2 {
+  font-weight: 600;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+@media (min-width: 750px) {
+  [data-apple-seite='studien'] .qb-st {
+    --st-fs-h1: var(--as-fs-8);
+    --st-fs-h2: var(--as-fs-7);
+  }
+}
+
+/* Der Kicker wie die Overline der Apple-Seiten: Gold-Tinte, ohne Versalien. */
+[data-apple-seite='studien'] .qb-st-kicker {
+  text-transform: none;
+  letter-spacing: 0.04em;
+}
+
+/* Große Zahlen: die Kernzahl je Studie ist der Beweis (Closer). */
+[data-apple-seite='studien'] .qb-st-karte-zahl {
+  font-size: var(--as-fs-6);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--as-tinte);
+}
+
+/* Karten und Kacheln als Flächen statt weißer Kästen mit Schatten. */
+[data-apple-seite='studien'] :is(.qb-st-karte, .qb-st-verwandt-karte, .qb-st-eckdatum) {
+  background: var(--as-flaeche);
+  border-color: transparent;
+}
+
+/* Abschluss nach dem Beweis: der Weg zum Produkt, danach Anna. */
+[data-apple-seite='studien'] .as-cta-band {
+  margin-top: var(--as-s-8);
+}
