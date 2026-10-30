@@ -87,7 +87,7 @@ export function SalesbotWidget({origin, nonce}) {
      * LADEN ERST NACH `load` (seit 2026-10-30, Job
      * 20261030-folge-dienste-auf-eigene-domain-nach-dns). Vorher stand hier ein
      * SSR-Tag mit `defer`. Gemessen im Eltern-Auftrag
-     * 20261030-prio3-kaufweg-unabhaengig-von-sslip-io-eigene-domain: verwirft
+     * vom 30.10. (Kaufweg ohne sslip.io): verwirft
      * ein Netz den Abruf still, bleibt `document.readyState` auf 'interactive',
      * DOMContentLoaded und load kommen erst nach dem TCP-Timeout, und alles,
      * was darauf wartet (Poster-Vorladen, Banner-Beobachtung, qpx), steht.
