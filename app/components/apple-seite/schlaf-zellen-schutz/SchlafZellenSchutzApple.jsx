@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useKaufleisteSicht} from '~/lib/kaufleiste-sicht';
 import szsAppleStyles from '~/styles/szs-apple.css?url';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
@@ -242,30 +242,24 @@ function Schluss({preis}) {
  * (StickyKaufknopf): sichtbar, sobald der Kopf aus dem Bild ist, und nicht,
  * solange Geräte oder Schluss im Bild sind. Inhalt nur im sichtbaren Zustand
  * im DOM (KaufknopfChatSignal misst bei childList). Nur bis 749 px.
+ * Lage über lib/kaufleiste-sicht.js (100svh, Hysterese; seit 30.10.2026 statt
+ * IntersectionObserver an der Fensterunterkante, die auf dem iPhone mit den
+ * Browserleisten wandert: „der rote Balken unten hüpft noch“).
  */
 function FesterKnopf({seite}) {
-  const [sichtbar, setSichtbar] = useState(false);
-  useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined') return undefined;
-    const wurzel = document.querySelector(`[data-apple-seite='${seite}']`);
-    const kopf = wurzel?.querySelector('[data-section="as-hero"]');
-    if (!kopf) return undefined;
-    const enden = Array.from(
-      wurzel.querySelectorAll('[data-section="lp-a-pricing"], [data-section="lp-a-final"]'),
-    );
-    const lage = {kopfImBild: true, enden: new Set()};
-    const beobachter = new IntersectionObserver((eintraege) => {
-      for (const e of eintraege) {
-        if (e.target === kopf) lage.kopfImBild = e.isIntersecting;
-        else if (e.isIntersecting) lage.enden.add(e.target);
-        else lage.enden.delete(e.target);
-      }
-      setSichtbar(!lage.kopfImBild && lage.enden.size === 0);
-    });
-    beobachter.observe(kopf);
-    enden.forEach((el) => beobachter.observe(el));
-    return () => beobachter.disconnect();
-  }, [seite]);
+  const sichtbar = useKaufleisteSicht(
+    () => {
+      const wurzel = document.querySelector(`[data-apple-seite='${seite}']`);
+      const kopf = wurzel?.querySelector('[data-section="as-hero"]');
+      if (!kopf) return null;
+      const enden = Array.from(
+        wurzel.querySelectorAll('[data-section="lp-a-pricing"], [data-section="lp-a-final"]'),
+      );
+      return {kopf, enden};
+    },
+    (lage) => !lage.kopf.imBild && !lage.enden.imBild,
+    [seite],
+  );
   return (
     <div
       className={`szs-fest${sichtbar ? ' szs-fest--sichtbar' : ''}`}

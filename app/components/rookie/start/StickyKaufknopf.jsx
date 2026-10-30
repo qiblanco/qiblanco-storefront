@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useKaufleisteSicht} from '~/lib/kaufleiste-sicht';
 import {stickySichtbar} from './sticky-lage';
 
 /*
@@ -22,37 +22,33 @@ import {stickySichtbar} from './sticky-lage';
  * Nur mobil (bis 749 px, rookie-start.css; dieselbe Grenze, an der der Kopf
  * einspaltig wird). Auf breiten Fenstern bleibt der Kasten leer und
  * unsichtbar.
+ *
+ * RUHIG (30.10.2026, Grossjob 20261030-prio1-homepage-gesamt-pruefen-alpha-
+ * befunde-alle-seiten-geraete-maerkte, s03): die Lage von Kopf und Kaufknopf
+ * misst lib/kaufleiste-sicht.js gegen die kleine Bildschirmhöhe (100svh) mit
+ * Hysterese, nicht mehr ein IntersectionObserver an der Fensterunterkante, die
+ * auf dem iPhone mit den Browserleisten wandert („der rote Balken unten hüpft
+ * noch“). Am Seitenende bleibt der Knopf stehen; rookie-start.css hält dem
+ * Fuß darunter Platz frei.
  */
 const ZIEL = '/products/qione-2-pro';
 
 export function StickyKaufknopf({kopfSelektor, kaufknopfSelektor}) {
-  const [sichtbar, setSichtbar] = useState(false);
-
-  useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined') return undefined;
-    const kopf = document.querySelector(kopfSelektor);
-    if (!kopf) return undefined;
-    const knopf = kaufknopfSelektor ? document.querySelector(kaufknopfSelektor) : null;
-    const fuss = document.querySelector('footer');
-    const lage = {kopfImBild: true, kopfUnterkante: null, kaufknopfImBild: false, fussImBild: false};
-    const beobachter = new IntersectionObserver((eintraege) => {
-      for (const e of eintraege) {
-        if (e.target === kopf) {
-          lage.kopfImBild = e.isIntersecting;
-          lage.kopfUnterkante = e.boundingClientRect.bottom;
-        } else if (e.target === knopf) {
-          lage.kaufknopfImBild = e.isIntersecting;
-        } else if (e.target === fuss) {
-          lage.fussImBild = e.isIntersecting;
-        }
-      }
-      setSichtbar(stickySichtbar(lage));
-    });
-    beobachter.observe(kopf);
-    if (knopf) beobachter.observe(knopf);
-    if (fuss) beobachter.observe(fuss);
-    return () => beobachter.disconnect();
-  }, [kopfSelektor, kaufknopfSelektor]);
+  const sichtbar = useKaufleisteSicht(
+    () => {
+      const kopf = document.querySelector(kopfSelektor);
+      if (!kopf) return null;
+      const knopf = kaufknopfSelektor ? document.querySelector(kaufknopfSelektor) : null;
+      return {kopf, knopf};
+    },
+    (lage) =>
+      stickySichtbar({
+        kopfImBild: lage.kopf.imBild,
+        kopfUnterkante: lage.kopf.unten,
+        kaufknopfImBild: lage.knopf.imBild,
+      }),
+    [kopfSelektor, kaufknopfSelektor],
+  );
 
   return (
     <div

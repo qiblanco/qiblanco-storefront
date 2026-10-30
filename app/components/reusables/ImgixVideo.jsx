@@ -2,7 +2,13 @@ import {useEffect, useRef, useState} from 'react';
 import Hls from 'hls.js';
 import {videoQuellen} from '~/data/video-quellen';
 import {hatHoerbarenTon} from '~/lib/video-ton';
-import {Ersatzbild, bevorzugtRuhe, useErsatzbild} from '~/components/reusables/video360-ersatzbild';
+import {
+  Ersatzbild,
+  bevorzugtRuhe,
+  useErsatzbild,
+  useVideoNachholen,
+} from '~/components/reusables/video360-ersatzbild';
+import {spieleSicher} from '~/lib/video-nachholen';
 import {NAEHE_RAND} from '~/components/reusables/useNaeheLaden';
 
 /*
@@ -85,6 +91,32 @@ const HLS_STUFENDECKEL = {
  */
 const SICHTWEITE = NAEHE_RAND;
 
+/*
+ * APPLE-GERÄTE: NATIVES HLS ZUERST (30.10.2026, Grossjob 20261030-prio1-
+ * homepage-gesamt-pruefen-alpha-befunde-alle-seiten-geraete-maerkte, s03).
+ *
+ * Bis dahin galt: hls.js, sobald Hls.isSupported(), natives HLS nur sonst.
+ * Seit iOS 17.1 meldet hls.js (>= 1.5) über ManagedMediaSource auch auf dem
+ * iPhone isSupported, also lief jedes iPhone über hls.js mit blob:-Quelle.
+ * Gemessen am 30.10.2026 (WebKit, iPhone-Profil, /products/qibracelet): das
+ * Video blieb bei readyState 1 stehen, pausiert, t=0 — in Chromium lief es.
+ * Auf Apple-Geräten (navigator.vendor Apple, also Safari UND Chrome auf dem
+ * iPhone, beide WebKit) spielt deshalb der eingebaute Spieler, sobald er HLS
+ * kann (canPlayType). Android und Desktop-Chrome bleiben auf hls.js mit
+ * Vorlauf- und Stufendeckel wie bisher.
+ *
+ * RÜCKFALL MP4: bleibt das Video im hls.js-Weg RUECKFALL_MS nach dem Laden
+ * ohne Bild (readyState < 2), übernimmt die mp4-Fassung derselben Quelle
+ * (video-quellen.js). Ein Spieler, der hängt, zeigt sonst nur das Ersatzbild.
+ */
+const RUECKFALL_MS = 4000;
+
+function appleNativHls(video) {
+  if (typeof navigator === 'undefined') return false;
+  if (!/Apple/.test(navigator.vendor || '')) return false;
+  return Boolean(video.canPlayType('application/vnd.apple.mpegurl'));
+}
+
 function anfangsZustandStumm(videoPath) {
   // SSR/kein sessionStorage -> Default stumm (Policy-konform). Pro
   // videoPath geschluesselt: zwei verschiedene Videos auf einer Seite
@@ -117,6 +149,9 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
   const zuBildRef = useRef(zuBild);
   zuBildRef.current = zuBild;
   const mitErsatz = Boolean(ersatz);
+  // Abgelehntes Autoplay (iOS Stromsparmodus u. a.) bei Sicht und Berührung
+  // nachholen; Ersatzbild bleibt, bis es läuft (video360-ersatzbild.jsx).
+  useVideoNachholen(videoRef);
   // DOMAIN-WECHSEL 2026-09-18 (Vorgang EL-20260814-9a7f9a50, Elina).
   // imgix führt die Video-Auslieferung auf imgix.net zusammen; die eigene
   // Anleitung sagt wörtlich, .imgix.video-URLs hören nach dem Sunset auf
@@ -146,14 +181,29 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
 
     let hls = null;
     let beobachter = null;
+    let rueckfall = null;
 
     // Ruhe gewünscht: die Drehung gar nicht laden, das Ersatzbild bleibt
     // stehen. Spart nebenbei imgix-Kontingent. Nur mit Ersatzbild — ohne
     // bliebe sonst ein leerer Kasten.
     if (mitErsatz && bevorzugtRuhe()) return;
 
+    function aufMp4() {
+      rueckfall = null;
+      if (!mp4Url || video.readyState >= 2) return;
+      if (hls) {
+        hls.destroy();
+        hls = null;
+      }
+      video.src = mp4Url;
+      spieleSicher(video);
+    }
+
     function laden() {
-      if (Hls.isSupported()) {
+      if (appleNativHls(video)) {
+        // iPhone/iPad/Mac-Safari und Chrome auf iOS: der eingebaute Spieler.
+        video.src = hlsUrl;
+      } else if (Hls.isSupported()) {
         hls = new Hls(
           quelle === 'shopify' ? {...HLS_KONFIG, ...HLS_STUFENDECKEL} : HLS_KONFIG,
         );
@@ -166,8 +216,9 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
         }
         hls.loadSource(hlsUrl);
         hls.attachMedia(video);
+        rueckfall = setTimeout(aufMp4, RUECKFALL_MS);
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Safari: natives HLS, dieselbe URL, erst in Sichtweite gesetzt.
+        // Natives HLS ohne MSE, dieselbe URL, erst in Sichtweite gesetzt.
         video.src = hlsUrl;
       } else {
         // Rückfall mp4
@@ -192,6 +243,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
 
     return () => {
       if (beobachter) beobachter.disconnect();
+      if (rueckfall) clearTimeout(rueckfall);
       if (hls) hls.destroy();
     };
   }, [hlsUrl, mp4Url, quelle, mitErsatz]);
@@ -223,8 +275,9 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
       // wurde, hier direkt weiterspielen lassen.
       const video = videoRef.current;
       if (video && !nachher) {
-        const p = video.play();
-        if (p && typeof p.catch === 'function') p.catch(() => zuBildRef.current());
+        spieleSicher(video).then((ok) => {
+          if (!ok) zuBildRef.current();
+        });
       }
       return nachher;
     });

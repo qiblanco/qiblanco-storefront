@@ -4,6 +4,7 @@ import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {ProductPrice} from '~/components/ProductPrice';
 import {qpxTrack} from '~/lib/qpx-commerce';
+import {useKaufleisteSicht} from '~/lib/kaufleiste-sicht';
 import {
   KAUFLEISTE_AB_TEST,
   kaufleisteAnzeige,
@@ -46,8 +47,13 @@ import {
  * „Größe wählen“ heißt immer Variantenwahl.
  *
  * WANN SIE STEHT: Regel in kaufleiste-lage.js (kaufleisteSichtbar). Sichtbar,
- * solange der Kaufknopf der Kaufbox nicht im Bild ist, auch ganz oben; weg,
- * sobald er im Bild ist oder der Fuß erscheint. Solange ein Dialog offen ist
+ * solange der Kaufknopf der Kaufbox nicht im Bild ist, auch ganz oben und
+ * auch am Seitenende über dem Fuß (dem Fuß hält qb-kaufleiste.css darunter
+ * Platz frei); weg, sobald der Knopf der Kaufbox im Bild ist. Die Lage misst
+ * der gemeinsame Haken lib/kaufleiste-sicht.js: gegen die kleine
+ * Bildschirmhöhe (100svh) mit Hysterese, damit das Ein- und Ausklappen der
+ * iPhone-Browserleisten die Leiste nicht ein- und ausblendet (Christian
+ * 30.10.2026: „der rote Balken unten hüpft noch“). Solange ein Dialog offen ist
  * (Warenkorb-Schublade, Bildergalerie, ...), wird sie nicht dargestellt
  * (html[data-dialog-offen], DialogSignal.jsx; overlay_ordnung: „Solange ein
  * Dialog dargestellt ist, ist jedes schwebende Bedienelement display:none“).
@@ -117,7 +123,6 @@ export function Kaufleiste({
   ctaLabel,
   zusatzLinien = undefined,
 }) {
-  const [sichtbar, setSichtbar] = useState(false);
   const [gewählt, setGewählt] = useState(false);
   const {open} = useAside();
   const ab = useMatches()
@@ -125,6 +130,27 @@ export function Kaufleiste({
     .find((x) => x && typeof x === 'object');
   const anzeige = kaufleisteAnzeige({arm: ab?.arm, handle: preis?.handle});
   const gestempelt = useRef(false);
+
+  const sichtbar = useKaufleisteSicht(
+    () => {
+      const box = kaufbox?.current;
+      if (!box) return null;
+      return {knopf: box.querySelector('.product-form [data-qb-kaufknopf]')};
+    },
+    (lage) => {
+      const medien =
+        typeof window.matchMedia === 'function' ? window.matchMedia(MOBIL_MEDIA) : null;
+      const geraetAn =
+        medien && medien.matches ? KAUFLEISTE_AN.mobil : KAUFLEISTE_AN.desktop;
+      // Ohne Kaufbox-Knopf keine Lage: gemessen=false, die Leiste bleibt weg.
+      return kaufleisteSichtbar({
+        geraetAn,
+        gemessen: lage.knopf.da,
+        kaufknopfImBild: lage.knopf.imBild,
+      });
+    },
+    [kaufbox],
+  );
 
   // Stempel des A/B-Tests: einmal je Seitenaufruf, beim ersten Sichtbarwerden.
   useEffect(() => {
@@ -144,41 +170,14 @@ export function Kaufleiste({
 
   useEffect(() => {
     const box = kaufbox?.current;
-    if (!box || typeof IntersectionObserver === 'undefined') return undefined;
-    const knopf = box.querySelector('.product-form [data-qb-kaufknopf]');
-    const fuss = document.querySelector('footer');
-    const medien =
-      typeof window.matchMedia === 'function' ? window.matchMedia(MOBIL_MEDIA) : null;
-    const geraetAn = () =>
-      medien && medien.matches ? KAUFLEISTE_AN.mobil : KAUFLEISTE_AN.desktop;
-    const lage = {gemessen: false, kaufknopfImBild: false, fussImBild: false};
-    const urteil = () => setSichtbar(kaufleisteSichtbar({...lage, geraetAn: geraetAn()}));
-    const beobachter = new IntersectionObserver((eintraege) => {
-      for (const e of eintraege) {
-        if (e.target === knopf) {
-          lage.gemessen = true;
-          lage.kaufknopfImBild = e.isIntersecting;
-        } else if (e.target === fuss) {
-          lage.fussImBild = e.isIntersecting;
-        }
-      }
-      urteil();
-    });
-    if (knopf) beobachter.observe(knopf);
-    if (fuss) beobachter.observe(fuss);
-    medien?.addEventListener?.('change', urteil);
-
+    if (!box) return undefined;
     // Eine Größe gilt als gewählt, sobald der Kunde in der Variantenwahl der
     // Kaufbox eine antippt, auch die schon vorgewählte.
     const beiWahl = (e) => {
       if (e.target?.closest?.('.product-options-item')) setGewählt(true);
     };
     box.addEventListener('click', beiWahl);
-    return () => {
-      beobachter.disconnect();
-      medien?.removeEventListener?.('change', urteil);
-      box.removeEventListener('click', beiWahl);
-    };
+    return () => box.removeEventListener('click', beiWahl);
   }, [kaufbox]);
 
   const zurWahl = () => {

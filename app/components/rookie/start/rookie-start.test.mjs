@@ -13,7 +13,7 @@ const lies = (rel) => readFileSync(join(APP, rel), 'utf8');
 const ohneKommentare = (q) =>
   q.replace(/\{\/\*[\s\S]*?\*\/\}/g, '').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
 
-const lage = (x) => ({kopfImBild: false, kopfUnterkante: -10, kaufknopfImBild: false, fussImBild: false, ...x});
+const lage = (x) => ({kopfImBild: false, kopfUnterkante: -10, kaufknopfImBild: false, ...x});
 
 test('Sticky: steht erst, wenn der Kopf nach oben aus dem Bild ist', () => {
   assert.equal(stickySichtbar(lage({kopfImBild: true, kopfUnterkante: 600})), false);
@@ -26,8 +26,8 @@ test('Sticky: weg, solange der Knopf nach den Zell-Diagrammen im Bild ist', () =
   assert.equal(stickySichtbar(lage({kaufknopfImBild: true})), false);
 });
 
-test('Sticky: weg, sobald der Fuß im Bild ist (Impressum/Widerruf frei)', () => {
-  assert.equal(stickySichtbar(lage({kopfUnterkante: -9000, fussImBild: true})), false);
+test('Sticky: bleibt am Seitenende über dem Fuß stehen (s03, 30.10.2026)', () => {
+  assert.equal(stickySichtbar(lage({kopfUnterkante: -9000, fussImBild: true})), true);
 });
 
 test('Sticky: unbekannte Lage heißt nicht zeigen', () => {

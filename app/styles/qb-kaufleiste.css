@@ -136,3 +136,16 @@ html[data-dialog-offen] .qb-kaufleiste { display: none; }
 .ImageSeeMore .imageOverlay svg {
   display: none;
 }
+
+/* ─── Am Seitenende: Platz für die Leiste unter dem Fuß ────────────────────
+   Seit 30.10.2026 bleibt die Leiste am Seitenende stehen (kaufleiste-lage.js,
+   kaufleisteSichtbar; Geräteprobe: am Ende ein aktiver Kaufknopf). Damit sie
+   Impressum, Datenschutz und Widerruf nicht verdeckt, bekommt der Fuß mobil
+   ihre Höhe als Polster darunter: 781–844 = 63 px bei 390x844 (gemessen
+   25.10.2026, siehe oben), also ein Rasterschritt 64 px plus Home-Leiste.
+   Immer gesetzt, nicht erst beim Erscheinen: so springt nichts. */
+@media (max-width: 749px) {
+  body:has(.qb-kaufleiste[data-kaufleiste-mobil='an']) footer {
+    padding-bottom: calc(var(--qb-abstand-5) + var(--qb-abstand-2) + env(safe-area-inset-bottom));
+  }
+}

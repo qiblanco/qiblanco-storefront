@@ -1,4 +1,5 @@
-import {createContext, useContext, useEffect, useState} from 'react';
+import {createContext, useContext} from 'react';
+import {useKaufleisteSicht} from '~/lib/kaufleiste-sicht';
 import {Bewertungsblock} from '~/components/reusables/Bewertungsblock';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {GoogleReviews as LpGoogleReviews} from '~/components/index-components/GoogleReviews';
@@ -1066,28 +1067,21 @@ function WeiterCta({nr, imBlock = false}) {
    die Chat-Erkennung misst im nächsten Bild, und ein Knopf mitten in der
    Bewegung läge dann noch unter dem Rand (Chat bliebe über ihm stehen). */
 function StickyKaufknopf({nurMobil = false}) {
-  const [sichtbar, setSichtbar] = useState(false);
-  useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined') return undefined;
-    const kopf = document.querySelector('[data-section="lp-a-hero"]');
-    const enden = Array.from(
-      document.querySelectorAll('[data-section="lp-a-pricing"], [data-section="lp-a-final"]'),
-    );
-    if (!kopf) return undefined;
-    const lage = {kopfImBild: true, endeImBild: new Set()};
-    const neu = () => setSichtbar(!lage.kopfImBild && lage.endeImBild.size === 0);
-    const beobachter = new IntersectionObserver((einträge) => {
-      for (const e of einträge) {
-        if (e.target === kopf) lage.kopfImBild = e.isIntersecting;
-        else if (e.isIntersecting) lage.endeImBild.add(e.target);
-        else lage.endeImBild.delete(e.target);
-      }
-      neu();
-    });
-    beobachter.observe(kopf);
-    enden.forEach((el) => beobachter.observe(el));
-    return () => beobachter.disconnect();
-  }, []);
+  // Lage über lib/kaufleiste-sicht.js (100svh, Hysterese; seit 30.10.2026
+  // statt IntersectionObserver an der Fensterunterkante, die auf dem iPhone
+  // mit den Browserleisten wandert: „der rote Balken unten hüpft noch“).
+  const sichtbar = useKaufleisteSicht(
+    () => {
+      const kopf = document.querySelector('[data-section="lp-a-hero"]');
+      if (!kopf) return null;
+      const enden = Array.from(
+        document.querySelectorAll('[data-section="lp-a-pricing"], [data-section="lp-a-final"]'),
+      );
+      return {kopf, enden};
+    },
+    (lage) => !lage.kopf.imBild && !lage.enden.imBild,
+    [],
+  );
   return (
     <div
       className={`lp-b-sticky${sichtbar ? ' lp-b-sticky--sichtbar' : ''}${
