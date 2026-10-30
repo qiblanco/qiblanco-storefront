@@ -22,3 +22,23 @@
 .as-band-text .as-knoepfe {
   justify-content: flex-start;
 }
+
+/*
+ * PRODUKTBILDER NIE GRÖSSER ALS DIE HALBE QUELLE (Formate-Gate bild-aufloesung,
+ * gemessen am Zweig 2439d76a58: 1080 px Quelle auf 960 px × 2x Fläche = unscharf).
+ * Die Quellen sind die größten, die der Shop hat (QiOne® 2 Pro 1080, Gitterchip®
+ * 1024, Studienvorschau 957); das width-Attribut trägt die Quellbreite (AsBild).
+ */
+.as-seite img.as-bild[width='1080'] {
+  max-width: 540px;
+}
+.as-seite img.as-bild[width='1024'] {
+  max-width: 512px;
+}
+.as-seite img.as-bild[width='957'] {
+  max-width: 478px;
+}
+.as-seite img.as-bild:is([width='1080'], [width='1024'], [width='957']) {
+  display: block;
+  margin-inline: auto;
+}
