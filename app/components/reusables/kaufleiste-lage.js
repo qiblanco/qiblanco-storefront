@@ -14,8 +14,8 @@
  * ersten Fenster, gemessen 17.10.2026 bei 390x844 zwischen y=1183 und 2069)
  * ebenso wie nach dem Weiterscrollen. Weg ist sie, sobald der Knopf der
  * Kaufbox im Bild ist: zwei gleiche Knöpfe übereinander wären Doppelung.
- * AM SEITENENDE BLEIBT SIE STEHEN (seit 30.10.2026, Grossjob 20261030-prio1-
- * homepage-gesamt-pruefen-alpha-befunde-alle-seiten-geraete-maerkte, s08).
+ * AM SEITENENDE BLEIBT SIE STEHEN (seit 30.10.2026, Grossjob „Homepage
+ * gesamt prüfen“, Segment s08).
  * Bis dahin ging sie, sobald der Fuß ins Bild kam, weil dort Impressum,
  * Datenschutz und Widerruf stehen und ein fester Balken genau darauf läge.
  * Die Geräteprobe (echtgeraet_probe.py, Christian 30.10.: „Das müsste doch

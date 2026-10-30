@@ -13,8 +13,7 @@
  * Weg ist er, solange ein anderer Kaufknopf der Seite im Bild ist (der Knopf
  * nach den Zell-Diagrammen): zwei gleiche Knöpfe übereinander wären Doppelung.
  * Am Seitenende bleibt er stehen (seit 30.10.2026, s08 des Grossjobs
- * 20261030-prio1-homepage-gesamt-pruefen-alpha-befunde-alle-seiten-geraete-
- * maerkte): bis dahin ging er, sobald der Fuß ins Bild kam, und die
+ * „Homepage gesamt prüfen“): bis dahin ging er, sobald der Fuß ins Bild kam, und die
  * Geräteprobe fand am Ende keinen aktiven Kaufknopf. Impressum, Datenschutz
  * und Widerruf bleiben frei, weil rookie-start.css dem Fuß mobil die Höhe des
  * Knopfs als Polster gibt.

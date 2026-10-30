@@ -23,8 +23,7 @@ import {stickySichtbar} from './sticky-lage';
  * einspaltig wird). Auf breiten Fenstern bleibt der Kasten leer und
  * unsichtbar.
  *
- * RUHIG (30.10.2026, Grossjob 20261030-prio1-homepage-gesamt-pruefen-alpha-
- * befunde-alle-seiten-geraete-maerkte, s03): die Lage von Kopf und Kaufknopf
+ * RUHIG (30.10.2026, Grossjob „Homepage gesamt prüfen“, s03): die Lage von Kopf und Kaufknopf
  * misst lib/kaufleiste-sicht.js gegen die kleine Bildschirmhöhe (100svh) mit
  * Hysterese, nicht mehr ein IntersectionObserver an der Fensterunterkante, die
  * auf dem iPhone mit den Browserleisten wandert („der rote Balken unten hüpft
