@@ -2,7 +2,8 @@
  * APPLE-LANDINGPAGES (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-
  * niveau-ausser-seo-geo, s07). Lädt nur mit der Apple-Fassung
  * (components/apple-seite/lp/LpApple.jsx). Nur --as-*-Tokens aus
- * apple-seite.css, keine freien Werte (BAUKASTEN §2).
+ * apple-seite.css, keine freien Werte (BAUKASTEN §2) -- ausser den
+ * Bild-Obergrenzen unten, die aus der Quellbreite folgen.
  */
 
 /*
