@@ -466,7 +466,7 @@ export const FRAGEN = [
       "Nervenzellen und entzündungsvermittelnde Zellen, Neurodegenerative Diseases Current Research 2026, Band 6 Heft 1, Seite 1 bis 8"
     ],
     "offen": [
-      "Auf unseren Studienseiten ist jede Arbeit in Ruhe zusammengefasst, mit Methode, Messwerten und dem Rahmen, den die Autoren angeben.",
+      "Auf unseren Studienseiten ist jede Arbeit zusammengefasst, mit Methode, Messwerten und dem Rahmen, den die Autoren angeben.",
       "Wie wir die Messwerte erklären, stellen wir bei unseren Hypothesen im Einzelnen vor."
     ],
     "weiter": [
