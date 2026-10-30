@@ -169,7 +169,7 @@ function meldung(text) {
   return (ev) => ev.currentTarget.setCustomValidity(text);
 }
 /** Porträt aus dem Shopify-CDN (Master 1200 x 1535, dieselbe Datei wie /pages/partnerprogramm). */
-const FOTO =
+export const FOTO =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/Christian.jpg?v=1668985845';
 
 const MONATE_KURZ = [
@@ -1096,7 +1096,7 @@ function Verwalten({daten, ergebnis, zone}) {
  * ausgegeben.
  */
 const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
-const FRAGEN = [
+export const FRAGEN = [
   {
     bild: `${CDN}qb-infoslider--infoslider-erholsame-naechte-bali-06825--2f21555b63e2.webp?v=1790389248`,
     alt: 'Ein Mann schläft im Bademantel auf weißer Bettwäsche, um den Hals trägt er einen Anhänger.',
@@ -1205,8 +1205,8 @@ const auswahl = (ids) =>
   ids
     .map((id) => GOOGLE_REVIEWS_CURATED.find((r) => r.id === id))
     .filter((r) => r && !/anna/i.test(`${r.name} ${r.text}`));
-const STIMMEN = auswahl(STIMMEN_IDS);
-const STIMMEN_B = auswahl(STIMMEN_IDS_B);
+export const STIMMEN = auswahl(STIMMEN_IDS);
+export const STIMMEN_B = auswahl(STIMMEN_IDS_B);
 
 function Stimmen({b}) {
   const g = useGoogleRating();
@@ -1264,6 +1264,37 @@ function Schluss() {
  */
 export function ProduktberatungSeite({variante = 'a'} = {}) {
   const b = variante === 'b';
+  const {mitte, buchenAnsicht, naechster} = useProduktberatung(b);
+  return (
+    <div className={b ? 'pb pb--b' : 'pb'}>
+      <Kopf mitWeg={buchenAnsicht} naechster={naechster} />
+      {mitte}
+      {b ? (
+        <>
+          <Ablauf />
+          <Stimmen b />
+          <Fragen />
+        </>
+      ) : (
+        <>
+          <Fragen />
+          <Ablauf />
+          <Stimmen />
+        </>
+      )}
+      {buchenAnsicht ? <Schluss /> : null}
+    </div>
+  );
+}
+
+/**
+ * Zustand der Seite für beide Hüllen: die heutige (oben) und die Apple-Fassung
+ * (components/apple-seite/produktberatung, Grossjob 20261029 alle-shop-seiten-
+ * apple-niveau, s08). Termine, Formular, Verwalten und Bestätigung sind in
+ * beiden dieselben Komponenten; nur der Rahmen darum unterscheidet sich.
+ * @param {boolean} b  Arm B von pb-e1-gs107
+ */
+export function useProduktberatung(b) {
   const roh = useLoaderData();
   const ergebnis = useAktionsergebnisUeberRevalidierung();
   const zone = useKundenZone();
@@ -1297,24 +1328,5 @@ export function ProduktberatungSeite({variante = 'a'} = {}) {
     b && buchenAnsicht && daten.buchungMoeglich && daten.termine.length ? (
       <NaechsterTermin termine={daten.termine} zone={zone} />
     ) : null;
-  return (
-    <div className={b ? 'pb pb--b' : 'pb'}>
-      <Kopf mitWeg={buchenAnsicht} naechster={naechster} />
-      {mitte}
-      {b ? (
-        <>
-          <Ablauf />
-          <Stimmen b />
-          <Fragen />
-        </>
-      ) : (
-        <>
-          <Fragen />
-          <Ablauf />
-          <Stimmen />
-        </>
-      )}
-      {buchenAnsicht ? <Schluss /> : null}
-    </div>
-  );
+  return {mitte, buchenAnsicht, naechster};
 }

@@ -1,0 +1,316 @@
+/*
+ * APPLE-FASSUNG DER SERVICE-SEITEN (Grossjob 20261029-GROSSJOB-alle-shop-
+ * seiten-apple-niveau-ausser-seo-geo, s08): /pages/produktberatung(-b) und
+ * /pages/live. Lädt nur mit der Apple-Fassung. Nur --as-*-Tokens aus
+ * apple-seite.css, keine freien Werte (BAUKASTEN §2).
+ */
+
+/* HAUS-GRUNDREGELN IM SCOPE NEUTRALISIEREN (wie start-b-apple.css, Falle s04):
+   reset.css setzt p, li auf 1,2rem und Schatten auf jede Überschrift. */
+.as-seite :where(p, li, dt, dd) {
+  font-size: var(--as-fs-3);
+}
+.as-seite :where(h1, h2, h3) {
+  text-shadow: none;
+}
+.as-seite .as-h1,
+.as-seite .as-h2 {
+  color: inherit;
+}
+
+/* ============================================================================
+   PRODUKTBERATUNG
+   ========================================================================== */
+
+/* Die Buchungsteile (Termine, Formular, Verwalten, Bestätigung) bleiben die
+   heutigen Komponenten. Ihre pb-Tokens zeigen im Apple-Scope auf --as-*:
+   dieselbe Tinte, dasselbe Grau, dieselbe Fläche, dieselbe Skala, ein Radius. */
+[data-apple-seite^='produktberatung'] .pb {
+  --pb-font: inherit;
+  --pb-fs-xs: var(--as-fs-1);
+  --pb-fs-base: var(--as-fs-3);
+  --pb-fs-md: var(--as-fs-3);
+  --pb-fs-lg: var(--as-fs-4);
+  --pb-fs-xl: var(--as-fs-6);
+  --pb-fs-h2: var(--as-fs-5);
+  --pb-s1: var(--as-s-1);
+  --pb-s2: var(--as-s-2);
+  --pb-s3: var(--as-s-3);
+  --pb-s4: var(--as-s-4);
+  --pb-s6: var(--as-s-6);
+  --pb-s8: var(--as-s-8);
+  --pb-s12: var(--as-s-12);
+  --pb-grund: var(--as-weiss);
+  --pb-flaeche: var(--as-flaeche);
+  --pb-dunkel: var(--as-band);
+  --pb-text: var(--as-tinte);
+  --pb-muted: var(--as-grau);
+  --pb-text-hell: var(--as-weiss);
+  --pb-akzent: var(--as-gold);
+  --pb-r1: var(--as-s-1);
+  --pb-r2: var(--as-radius);
+  --pb-breite: var(--as-breite);
+  --pb-breite-schmal: var(--as-breite);
+  --pb-tipp: var(--as-tippziel);
+  font-family: inherit;
+  line-height: 1.5;
+  background: transparent;
+}
+@media (min-width: 750px) {
+  [data-apple-seite^='produktberatung'] .pb {
+    --pb-fs-h2: var(--as-fs-7);
+  }
+}
+[data-apple-seite^='produktberatung']
+  .pb
+  :where(input, select, textarea, button) {
+  font-family: inherit;
+}
+/* EIN H2-Stil: die Überschriften der Buchungsteile wie .as-h2. */
+[data-apple-seite^='produktberatung'] .pb h2 {
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+/* Die Buchung steht in der Fläche, ihre Tageskarten weiß darauf. */
+[data-apple-seite^='produktberatung'] .pba-mitte {
+  margin-top: var(--as-s-8);
+  background: var(--as-flaeche);
+}
+[data-apple-seite^='produktberatung'] .pba-mitte .pb__inhalt {
+  padding-inline: var(--as-s-2);
+}
+@media (min-width: 750px) {
+  [data-apple-seite^='produktberatung'] .pba-mitte {
+    margin-top: var(--as-s-12);
+  }
+  [data-apple-seite^='produktberatung'] .pba-mitte .pb__inhalt {
+    padding-inline: var(--as-s-4);
+  }
+}
+
+/* Kopf: zwei Zeilen in einer H1 (Christian 08.10.). */
+.pba-h1-zeile {
+  display: block;
+}
+.pba-kopf .as-unter + .as-unter {
+  margin-top: var(--as-s-1);
+}
+/* Arm B: der nächste Termin im Kopf, mittig wie der Knopf in A. */
+.pba-naechster {
+  margin-top: var(--as-s-4);
+}
+.pba-naechster .pb__naechster {
+  display: inline-block;
+  text-align: center;
+}
+
+/* Kopf: am Handy mittig, Foto unter dem Einstieg (also über seinem Text).
+   Ab 750 px zwei Spalten: Text links, Christian rechts, beide linksbündig.
+   .as-seite vorn: apple-seite.css lädt NACH dieser Datei (AppleSeite setzt
+   ihren <link> selbst), bei gleicher Spezifität gewänne .as-hero. */
+.pba-foto {
+  max-width: var(--as-text-breite);
+  margin: var(--as-s-6) auto 0;
+}
+.pba-foto-name {
+  margin-top: var(--as-s-1);
+  font-size: var(--as-fs-2);
+  color: var(--as-grau);
+}
+@media (min-width: 750px) {
+  .as-seite .pba-kopf {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: var(--as-s-8);
+    align-items: center;
+    max-width: var(--as-breite);
+    margin: 0 auto;
+    text-align: left;
+  }
+  .as-seite .pba-kopf .as-unter {
+    margin-left: 0;
+  }
+  .as-seite .pba-kopf .as-knoepfe {
+    justify-content: flex-start;
+  }
+  .as-seite .pba-kopf .pb__naechster {
+    text-align: left;
+  }
+  .as-seite .pba-foto {
+    margin: 0;
+  }
+}
+.pba-person-text {
+  max-width: var(--as-text-breite);
+}
+.pba-person-text .as-h2 {
+  margin-bottom: var(--as-s-1);
+}
+
+/* Fragen: drei Alltagsbilder, je eine Frage darunter. */
+.pba-fragen {
+  list-style: none;
+  margin: var(--as-s-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--as-s-4);
+}
+@media (min-width: 750px) {
+  .pba-fragen {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--as-s-3);
+  }
+}
+.pba-frage-text {
+  margin-top: var(--as-s-2);
+  font-size: var(--as-fs-4);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.pba-schon {
+  margin-top: var(--as-s-6);
+}
+
+/* Ablauf: der dunkle Akt, drei Schritte. */
+.pba-ablauf-innen {
+  max-width: var(--as-breite);
+  margin: 0 auto;
+}
+.pba-schritte {
+  list-style: none;
+  margin: var(--as-s-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--as-s-4);
+  counter-reset: schritt;
+}
+@media (min-width: 750px) {
+  .pba-schritte {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--as-s-6);
+  }
+}
+.pba-schritt {
+  counter-increment: schritt;
+  color: var(--as-linie);
+}
+.pba-schritt::before {
+  content: counter(schritt);
+  display: block;
+  margin-bottom: var(--as-s-2);
+  font-size: var(--as-fs-7);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--as-gold);
+}
+.pba-schritt-titel {
+  display: block;
+  margin-bottom: var(--as-s-1);
+  color: var(--as-weiss);
+}
+
+/* Stimmen im Wortlaut: Fließtext-Stufe, die Karten sind sonst Romane. */
+.pba-stimme-text p {
+  font-size: var(--as-fs-3);
+  line-height: 1.5;
+}
+.pba-stimme-text p + p {
+  margin-top: var(--as-s-1);
+}
+
+/* Schluss: links wie jede H2 (EINE Ausrichtung), der Knopf mit. */
+.pba-schluss .as-unter {
+  margin-left: 0;
+}
+.pba-schluss .as-knoepfe {
+  justify-content: flex-start;
+}
+
+/* ============================================================================
+   LIVE (Coming Home)
+   ========================================================================== */
+
+/* Termin, Anmeldung und Zusammenfassungen bleiben die heutigen Bausteine;
+   ihre lv-Tokens zeigen im Apple-Scope auf --as-*. */
+[data-apple-seite='live'] .lv {
+  --lv-font: inherit;
+  --lv-fs-xs: var(--as-fs-1);
+  --lv-fs-base: var(--as-fs-3);
+  --lv-fs-lg: var(--as-fs-4);
+  --lv-fs-xl: var(--as-fs-5);
+  --lv-fs-h2: var(--as-fs-5);
+  --lv-s1: var(--as-s-1);
+  --lv-s2: var(--as-s-2);
+  --lv-s3: var(--as-s-3);
+  --lv-s4: var(--as-s-4);
+  --lv-s6: var(--as-s-6);
+  --lv-s8: var(--as-s-8);
+  --lv-s12: var(--as-s-12);
+  --lv-grund: var(--as-weiss);
+  --lv-flaeche: var(--as-flaeche);
+  --lv-dunkel: var(--as-band);
+  --lv-text: var(--as-tinte);
+  --lv-text-hell: var(--as-weiss);
+  --lv-muted: var(--as-grau);
+  --lv-muted-hell: var(--as-linie);
+  --lv-akzent: var(--as-gold);
+  --lv-akzent-tinte: var(--as-gold-tinte);
+  --lv-linie: var(--as-linie);
+  --lv-r1: var(--as-s-1);
+  --lv-r2: var(--as-radius);
+  --lv-breite: var(--as-breite);
+  font-family: inherit;
+  line-height: 1.5;
+  background: transparent;
+}
+@media (min-width: 750px) {
+  [data-apple-seite='live'] .lv {
+    --lv-fs-h2: var(--as-fs-7);
+  }
+}
+body:has([data-apple-seite='live']) {
+  background: transparent;
+}
+[data-apple-seite='live'] .lv :where(input, select, textarea, button) {
+  font-family: inherit;
+}
+/* EINE Ausrichtung für alle H2 (links), wie im Baukasten. */
+[data-apple-seite='live'] .lv .lv-h2 {
+  text-align: left;
+}
+[data-apple-seite='live'] .lv .lv-abschnitt {
+  padding: var(--as-s-8) var(--as-s-2);
+}
+@media (min-width: 750px) {
+  [data-apple-seite='live'] .lv .lv-abschnitt {
+    padding: var(--as-s-12) var(--as-s-4);
+  }
+}
+
+/* Kopf: zentriert, das Bild als Karte (die Datei hat 1280 px). */
+.lva-h1-zusatz {
+  white-space: nowrap;
+}
+.lva-bild {
+  max-width: var(--as-text-breite);
+}
+.lva-kopftext {
+  max-width: var(--as-text-breite);
+  margin: var(--as-s-6) auto 0;
+  text-align: left;
+}
+.lva-eckdaten {
+  max-width: var(--as-breite);
+  margin: var(--as-s-6) auto 0;
+  text-align: left;
+}
+@media (min-width: 750px) {
+  .lva-eckdaten {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.lva-fluss {
+  display: inline;
+  margin-top: 0;
+}

@@ -1,5 +1,7 @@
-import {redirect} from 'react-router';
+import {redirect, useLoaderData} from 'react-router';
 import {ProduktberatungSeite} from '~/components/campaign/ProduktberatungSeite';
+import {ProduktberatungApple} from '~/components/apple-seite/produktberatung/ProduktberatungApple';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
 import produktberatungStyles from '~/styles/produktberatung.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
@@ -187,7 +189,25 @@ function zurVerwaltung(token, status, pfad = PFAD) {
   });
 }
 
-export async function loader({request, context}) {
+/**
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s08): der Schalter je Arm (APPLE_SEITE_PRODUKTBERATUNG bzw.
+ * _B in app/lib/apple-seiten.js) entscheidet nur, wie die Seite aussieht. Die
+ * Weiche von pb-e1-gs107, Termine, Formular und Action bleiben dieselben;
+ * Umleitungen gehen unverändert durch. Rückweg: Befehl zurück in
+ * homepage-bauer/bin/apple-seite, Seite produktberatung bzw. produktberatung-b.
+ */
+export async function loader(args) {
+  const d = await ladeSeite(args);
+  if (d instanceof Response) return d;
+  const seite =
+    armPfad(new URL(args.request.url)) === PFAD_B
+      ? 'produktberatung-b'
+      : 'produktberatung';
+  return {...d, appleSeite: appleSeiteLaden(args.context, seite)};
+}
+
+async function ladeSeite({request, context}) {
   const url = new URL(request.url);
   const pfad = armPfad(url);
   // SEITEN-EXPERIMENT pb-e1-gs107: nur auf dem Pfad von A, nie bei Mail-Link, Verwalten oder Bestätigung.
@@ -453,13 +473,18 @@ function serviceJsonLd() {
 }
 
 export default function ProduktberatungRoute() {
+  const {appleSeite} = useLoaderData();
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{__html: serviceJsonLd()}}
       />
-      <ProduktberatungSeite />
+      {appleSeite?.an ? (
+        <ProduktberatungApple seite="produktberatung" />
+      ) : (
+        <ProduktberatungSeite />
+      )}
     </>
   );
 }
