@@ -36,7 +36,7 @@ export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
  * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
  * ausser-seo-geo, s07): der Schalter steht in app/lib/apple-seiten.js. An:
  * die Apple-Fassung ohne Produktabfrage. Aus: die Seite unverändert (C,
- * Rückweg: homepage-bauer/bin/apple-seite zurueck <seite>).
+ * Rückweg: Befehl „zurück“ in homepage-bauer/bin/apple-seite).
  */
 export async function loader({context}) {
   const appleSeite = appleSeiteLaden(context, appleSeiteFuerPfad('/pages/wir-machen-ihn-auf'));

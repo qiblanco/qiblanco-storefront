@@ -2,9 +2,6 @@ import {useLoaderData} from 'react-router';
 import {MmZellstudienEhrlich} from '~/components/campaign/MmZellstudienEhrlich';
 import mmStyles from '~/styles/mm-lp.css?url';
 import {mmLadeProdukte} from '~/components/campaign/mmProducts';
-import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
-import {LpApple} from '~/components/apple-seite/lp/LpApple';
-import {ZELLSTUDIEN_SEKTIONEN} from '~/components/apple-seite/lp/lp-zellstudien';
 
 /**
  * Trust-Ketten-Hub „Evidenz / Studien" /pages/zellstudien-ehrlich — nüchterne
@@ -32,21 +29,12 @@ export const meta = () => [
 /** @type {HeadersFunction} */
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
-/*
- * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
- * ausser-seo-geo, s07): der Schalter steht in app/lib/apple-seiten.js. An:
- * die Apple-Fassung ohne Produktabfrage. Aus: die Seite unverändert (C,
- * Rückweg: homepage-bauer/bin/apple-seite zurueck <seite>).
- */
 export async function loader({context}) {
-  const appleSeite = appleSeiteLaden(context, appleSeiteFuerPfad('/pages/zellstudien-ehrlich'));
-  if (appleSeite.an) return {appleSeite, products: []};
-  return {...(await mmLadeProdukte(context)), appleSeite};
+  return mmLadeProdukte(context);
 }
 
 export default function ZellstudienEhrlichRoute() {
-  const {products, appleSeite} = useLoaderData();
-  if (appleSeite?.an) return <LpApple seite={appleSeite.seite} sektionen={ZELLSTUDIEN_SEKTIONEN} />;
+  const {products} = useLoaderData();
   return <MmZellstudienEhrlich products={products} />;
 }
 
