@@ -69,7 +69,7 @@ export async function loader({context, request}) {
   // ausser-seo-geo, s05): Schalter in app/lib/apple-seiten.js, Seite qihome-air.
   // An: derselbe Konfigurator wie /products/qihome-air (dazu die Ketten, fail-soft
   // wie dort). Aus: die heutige Seite (C) mit denselben Loaderdaten wie
-  // vorher. Rückweg: `homepage-bauer/bin/apple-seite zurueck qihome-air`.
+  // vorher. Rückweg: Befehl zurück in homepage-bauer/bin/apple-seite, Seite qihome-air.
   const appleSeite = appleSeiteLaden(context, 'qihome-air');
   const [{product}, vergleichsPreise, ketten] = await Promise.all([
     context.storefront.query(PRODUCT_QUERY, {

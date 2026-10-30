@@ -118,8 +118,8 @@ export const meta = () => {
 export async function loader({context}) {
   // APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
   // ausser-seo-geo, s05): Schalter APPLE_SEITE_QIONE_2_PRO_DETAILS in
-  // app/lib/apple-seiten.js. Aus: die heutige Seite (C) unverändert, Rückweg
-  // `homepage-bauer/bin/apple-seite zurueck qione-2-pro-details`. An: die
+  // app/lib/apple-seiten.js. Aus: die heutige Seite (C) unverändert, Rückweg:
+  // Befehl zurück in homepage-bauer/bin/apple-seite, Seite qione-2-pro-details. An: die
   // Apple-Fassung, dazu die Preise der Kaufseiten (fail-closed, parallel).
   const appleSeite = appleSeiteLaden(context, 'qione-2-pro-details');
   const [{page}, produkte] = await Promise.all([

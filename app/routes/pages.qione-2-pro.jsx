@@ -91,8 +91,8 @@ export async function loader({context, request}) {
   // ausser-seo-geo, s05): Schalter APPLE_SEITE_QIONE_2_PRO_SHOP in
   // app/lib/apple-seiten.js. An: derselbe Konfigurator wie /products/qione-2-pro
   // (dazu die Ketten, fail-soft wie dort). Aus: die heutige Seite (C) mit
-  // denselben Loaderdaten wie vorher. Rückweg: `homepage-bauer/bin/apple-seite
-  // zurueck qione-2-pro-shop`.
+  // denselben Loaderdaten wie vorher. Rückweg: Befehl zurück in homepage-bauer/bin/apple-seite,
+  // Seite qione-2-pro-shop.
   const appleSeite = appleSeiteLaden(context, 'qione-2-pro-shop');
   const [{product}, vergleichsPreise, ketten] = await Promise.all([
     context.storefront.query(PRODUCT_QUERY, {

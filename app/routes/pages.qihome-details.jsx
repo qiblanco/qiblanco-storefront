@@ -66,8 +66,8 @@ export const meta = ({data}) => {
 export async function loader({context}) {
   // APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
   // ausser-seo-geo, s05): Schalter in app/lib/apple-seiten.js, Seite qihome-details.
-  // Aus: die heutige Seite (C) unverändert, Rückweg `homepage-bauer/bin/
-  // apple-seite zurueck qihome-details`. An: die Apple-Fassung, dazu die Preise der
+  // Aus: die heutige Seite (C) unverändert, Rückweg Befehl zurück in
+  // homepage-bauer/bin/apple-seite, Seite qihome-details. An: die Apple-Fassung, dazu die Preise der
   // Kaufseiten (fail-closed, parallel).
   const appleSeite = appleSeiteLaden(context, 'qihome-details');
   const [{page}, produkte] = await Promise.all([
