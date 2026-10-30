@@ -15,6 +15,8 @@ export const KAUFSEITE = '/products/qibracelet';
 const BILD = Object.freeze({
   qibracelet: {
     url: `${CDN}/files/qb-video360-ersatzbild--360-qibracelet-winkel--a26b001f0816.jpg?v=1790809401`,
+    // 360-Grad-Drehung an dieser Stelle (AsBild -> Produkt360Video), das Bild bleibt Ersatzbild.
+    drehung: 'qibracelet',
     alt: 'QiBracelet® aus Chirurgenstahl mit goldenem Gitterchip®',
     breite: 1080,
     hoehe: 1080,

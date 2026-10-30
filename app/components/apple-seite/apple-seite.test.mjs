@@ -215,3 +215,97 @@ test('SSR: Weiche aus = heutige Seite byte-gleich, kein Marker, kein CSS', async
   const an = await renderSeite({__weiche: true, an: true, seite: 'start-b', sektionen: ALLE});
   assert.match(an, /data-apple-seite="start-b"/);
 });
+
+/* ---- (4) Handy-Kopf und 360-Drehung (Grossjob 20261030-prio1-homepage-gesamt-
+   pruefen-alpha-befunde-alle-seiten-geraete-maerkte, s02; Christian 30.10.2026:
+   erst das Foto, dann die Knöpfchen; die 360-Ansichten drehen sich) --------- */
+
+const CSS = readFileSync(join(APP, 'styles/apple-seite.css'), 'utf8');
+
+/** Regeln eines @media-Blocks als {selektor: {eigenschaft: wert}}. */
+function mediaRegeln(css, kopf) {
+  const start = css.indexOf(kopf);
+  assert.ok(start >= 0, `${kopf} fehlt in apple-seite.css`);
+  let tiefe = 0;
+  let i = css.indexOf('{', start);
+  const anfang = i + 1;
+  for (; i < css.length; i++) {
+    if (css[i] === '{') tiefe++;
+    else if (css[i] === '}' && --tiefe === 0) break;
+  }
+  const innen = css.slice(anfang, i).replace(/\/\*[\s\S]*?\*\//g, '');
+  const regeln = {};
+  for (const m of innen.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    const werte = Object.fromEntries(
+      m[2].split(';').map((d) => d.split(':').map((x) => x.trim())).filter((d) => d[0] && d[1]),
+    );
+    for (const sel of m[1].split(',').map((x) => x.trim())) regeln[sel] = {...regeln[sel], ...werte};
+  }
+  return regeln;
+}
+
+test('Handy-Kopf: Titel -> Bild -> Knöpfe (CSS-Ordnung unter 750 px)', () => {
+  const r = mediaRegeln(CSS, '@media (max-width: 749.98px)');
+  assert.equal(r['.as-hero'].display, 'flex');
+  assert.equal(r['.as-hero']['flex-direction'], 'column');
+  assert.equal(r['.as-hero .as-hero-text'].display, 'contents');
+  const ord = (sel) => Number(r[sel]?.order);
+  for (const t of ['.as-hero .as-overline', '.as-hero .as-h1', '.as-hero .as-unter']) {
+    assert.ok(ord(t) < ord('.as-hero .as-hero-bild'), `${t} vor dem Bild`);
+  }
+  assert.ok(ord('.as-hero .as-hero-bild') < ord('.as-hero .as-knoepfe'), 'Bild vor den Knöpfen');
+  assert.ok(ord('.as-hero .as-hero-bild') < ord('.as-hero .as-preis'), 'Bild vor dem Preis');
+  // Desktop bleibt: der Block gilt nur unter 750 px, außerhalb ordnet nichts den Kopf.
+  const aussen = CSS.replace(/@media \(max-width: 749\.98px\)\s*\{[\s\S]*?\n\}/, '');
+  assert.doesNotMatch(aussen, /\.as-hero-text\s*\{[^}]*display:\s*contents/);
+});
+
+const BILD_360 = {
+  url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-video360-ersatzbild--360-qione-front--f0024fcab5ec.jpg?v=1790809389',
+  drehung: 'qione',
+  alt: 'QiOne von vorn',
+  breite: 1080,
+  hoehe: 1080,
+};
+
+test('SSR: Kopf mit Drehung = ein Knopf, ein Preis, das Video sofort, Ersatzbild mit Alt', async () => {
+  const html = await renderSeite({
+    seite: 'startseite',
+    sektionen: [
+      {art: 'hero', titel: 'Kopf.', unter: 'Zeile.', bild: BILD_360, cta: {text: 'Jetzt kaufen', href: '/products/qione-2-pro'}, preis: '549 €'},
+      {art: 'band', titel: 'Armband.', text: ['Am Handgelenk.'], bild: {...BILD_360, drehung: 'qibracelet', alt: 'Armband'}},
+      {art: 'anna'},
+    ],
+  });
+  const kopf = html.slice(html.indexOf('data-section="as-hero"'), html.indexOf('data-section="as-band"'));
+  assert.equal((kopf.match(/data-as-cta="primary"/g) || []).length, 1, 'genau ein Kaufknopf im Kopf');
+  assert.equal((kopf.match(/class="as-preis"/g) || []).length, 1, 'genau ein Preis im Kopf');
+  assert.ok(kopf.indexOf('as-knoepfe') < kopf.indexOf('as-hero-bild'), 'DOM unverändert: Desktop-Reihenfolge');
+  assert.match(kopf, /data-qb-360="qione"/);
+  assert.match(kopf, /<video[^>]*src="https:\/\/cdn\.shopify\.com\/[^"]*qb-hero--360-qione-1x1[^"]*\.mp4/);
+  assert.match(kopf, /<video[^>]*preload="metadata"/);
+  assert.match(kopf, /<img[^>]*data-qb-ersatzbild=""[^>]*alt="QiOne von vorn"/);
+  assert.doesNotMatch(kopf, /<img[^>]*class="as-bild"/, 'kein Standbild an Stelle der Drehung');
+  const band = html.slice(html.indexOf('data-section="as-band"'));
+  assert.match(band, /data-qb-360="qibracelet"/);
+  // Außerhalb des Kopfs: Quelle erst in Sichtweite, nichts beim Seitenaufruf.
+  assert.match(band, /<video(?![^>]*\ssrc=)[^>]*preload="none"/);
+  assert.match(band, /data-video="new-360-QiBracelet-1x1\.mov"/);
+});
+
+test('SSR: Bild ohne drehung bleibt ein Bild (kein Video)', async () => {
+  const html = await renderSeite({seite: 'startseite', sektionen: [{art: 'hero', titel: 'Kopf.', bild: {url: 'https://cdn.shopify.com/h.jpg', alt: 'x'}}, {art: 'anna'}]});
+  assert.doesNotMatch(html, /<video/);
+  assert.match(html, /<img[^>]*class="as-bild"/);
+});
+
+test('Produkt360Video: drei Drehungen als mp4, abgelehntes play() wird bei Berührung nachgeholt', () => {
+  const src = readFileSync(join(APP, 'components/reusables/Produkt360Video.jsx'), 'utf8');
+  for (const d of ['qione', 'qibracelet', 'qihome']) assert.match(src, new RegExp(`\\n  ${d}: \\{src: `), d);
+  assert.match(src, /videoQuellen\('new-360-QiBracelet-1x1\.mov'\)\.mp4/);
+  assert.match(src, /videoQuellen\('360-QiHome-1x1\.mov'\)\.mp4/);
+  assert.match(src, /const GESTEN = \[[^\]]*'touchend'[^\]]*'click'/);
+  assert.match(src, /p\.catch\(abgelehnt\)/);
+  assert.match(src, /document\.addEventListener\(t, nachholen/);
+  assert.match(src, /prefers-reduced-motion: reduce/);
+});
