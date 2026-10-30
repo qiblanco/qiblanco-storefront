@@ -1,3 +1,6 @@
+import rechtsseiteAppleStyles from '~/styles/rechtsseite-apple.css?url';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+
 /**
  * RECHTSSEITE — das gemeinsame Grundlayout aller Dokument-/Reintext-Seiten.
  *
@@ -20,10 +23,18 @@
  * `titel` rendert die H1 im einheitlichen Kopf. Wer eine eigene Kopfzone
  * braucht, lässt `titel` weg und liefert sie als erstes Kind.
  *
- * @param {{titel?: string, stand?: string, children: import('react').ReactNode}} props
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s12): `apple` ist `appleSeiteLaden(context, <seite>)` aus
+ * dem Loader der Route. Mit `apple.an` legt sich die Apple-Hülle um dasselbe
+ * Dokument (Marker data-apple-seite, Token-CSS apple-seite.css) und
+ * rechtsseite-apple.css biegt die rs-Tokens auf --as-* um. NUR Typografie und
+ * Farbe: Text, Reihenfolge und Elemente bleiben Zeichen für Zeichen gleich.
+ * Ohne `apple` (oder Schalter aus) rendert C unverändert.
+ *
+ * @param {{titel?: string, stand?: string, apple?: {seite: string|null, an: boolean}|null, children: import('react').ReactNode}} props
  */
-export function Rechtsseite({titel, stand, children}) {
-  return (
+export function Rechtsseite({titel, stand, apple = null, children}) {
+  const dokument = (
     <div className="rs-doc">
       <div className="rs-doc__inner">
         {titel ? (
@@ -35,6 +46,13 @@ export function Rechtsseite({titel, stand, children}) {
         {children}
       </div>
     </div>
+  );
+  if (!apple?.an || !apple.seite) return dokument;
+  return (
+    <>
+      <link rel="stylesheet" href={rechtsseiteAppleStyles} />
+      <AppleSeite seite={apple.seite}>{dokument}</AppleSeite>
+    </>
   );
 }
 

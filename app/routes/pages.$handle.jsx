@@ -2,6 +2,7 @@
 // selbst ein Argument namens `data` und würde den Import sonst beschatten.
 import {data as mitHeadern, useLoaderData} from 'react-router';
 import {Rechtsseite} from '~/components/Rechtsseite';
+import {appleSeiteLaden, appleSeiteFuerPfad} from '~/lib/apple-seiten';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {leiteUm, zusammenlegungFuer} from '~/lib/zusammenlegungen';
 import {
@@ -186,6 +187,10 @@ async function loadCriticalData({context, request, params}) {
 
   return {
     page,
+    // Apple-Fassung nur für Seiten mit eigener Zeile in app/lib/apple-seiten.js
+    // (s12: Dokument- und Bestätigungsseiten). Jede andere Shopify-Seite, auch
+    // jede SEO-/GEO-Seite, hat keine Zeile und bleibt damit fest auf C.
+    appleSeite: appleSeiteLaden(context, appleSeiteFuerPfad(`/pages/${params.handle}`)),
   };
 }
 
@@ -201,7 +206,7 @@ function loadDeferredData({context}) {
 
 export default function Page() {
   /** @type {LoaderReturnData} */
-  const {page} = useLoaderData();
+  const {page, appleSeite} = useLoaderData();
 
   // DIESE ROUTE IST DER LETZTE UNGESTALTETE DEFAULT DES SHOPS GEWESEN.
   //
@@ -228,7 +233,7 @@ export default function Page() {
   const titel = (page.title || '').trim();
 
   return (
-    <Rechtsseite titel={titel}>
+    <Rechtsseite titel={titel} apple={appleSeite}>
       {/* Inhalt unveraendert aus dem Shopify-Admin. Gestaltet wird er
           ausschließlich über die .rs-doc-Tokens, nie durch Eingriff in den
           Text. Kein <main> mehr: PageLayout liefert bereits eines
