@@ -1,7 +1,7 @@
 /**
  * Eigene Dienste unter eigener Domain (*.dienst.qiblanco.com) statt *.sslip.io.
- * Job 20261030-folge-dienste-auf-eigene-domain-nach-dns (Eltern-Auftrag
- * 20261030-prio3-kaufweg-unabhaengig-von-sslip-io-eigene-domain, Christian Z9:
+ * Job 20261030-folge-dienste-auf-eigene-domain-nach-dns (Eltern-Auftrag vom 30.10.
+ * „Kaufweg ohne sslip.io“, Christian Z9:
  * „Die Page muss auf allen möglichen Varianten immer funktionieren, ohne dass
  * wir irgendwo gesperrt werden.“).
  *
