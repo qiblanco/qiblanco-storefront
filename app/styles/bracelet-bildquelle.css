@@ -103,3 +103,30 @@ body > main img[src*="/01_2048px.jpg_1_"] {
     max-width: min(100%, calc(var(--bild-quelle) / 1.9));
   }
 }
+
+/* ============================================================================
+   APPLE-FASSUNG: Kopfbild (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-
+   niveau-ausser-seo-geo, s13, 2026-10-30)
+   ----------------------------------------------------------------------------
+   Die Apple-Fassung (s05, PR #1104) zeigt im Kopf das 360-Grad-Ersatzbild
+   qb-video360-ersatzbild--360-qibracelet-winkel (1080 x 1080, am CDN die
+   groesste Fassung) als Karte bis 680 px breit (produkt-details-apple.css,
+   --as-text-breite). Bei 2x Pixeldichte braucht das 1360 px: Gate 12
+   bild-aufloesung=kaputt in tablet-768/820/900, desktop-1024, mobil-quer-883.
+   Die 2048er Bracelet-Fotos (QiBracelet1/3, _mit_Siegel) sind andere Motive
+   mit eingebranntem Siegel und hellem Grund; das Motiv bleibt.
+   Gleiche Hausantwort wie oben: Flaeche kappen am Dateinamen, Teiler 0.95
+   bei dpr 1 (wirkungslos, die Karte ist hoechstens 680 px), 1.9 bei dpr 2
+   (568 px). margin-inline haelt die Karte mittig unter dem Kopftext.
+   RUECKWEG: diesen Block entfernen.
+   ========================================================================== */
+.as-hero-bild img[src*="qibracelet-winkel--a26b001f0816"] {
+  --bild-quelle: 1080px; /* qb-video360-ersatzbild--360-qibracelet-winkel, am CDN 2026-10-30 */
+  margin-inline: auto;
+  max-width: min(100%, calc(var(--bild-quelle) / 0.95));
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+  .as-hero-bild img[src*="qibracelet-winkel--a26b001f0816"] {
+    max-width: min(100%, calc(var(--bild-quelle) / 1.9));
+  }
+}
