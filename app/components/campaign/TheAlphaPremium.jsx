@@ -64,6 +64,10 @@ import {
  */
 const TapFassung = createContext({szene: false});
 
+// Hysterese der Kaufleiste: weg, sobald der Abschluss die kleine
+// Bildschirmhöhe erreicht; wieder da erst RUHE_PX darunter.
+const RUHE_PX = 48;
+
 /**
  * Schaltet den Film zu (Christian 27.10., Z280–Z295).
  * - [data-tap-ein]: erscheint erst, wenn es GANZ im Bild ist, dann auf einmal
@@ -77,7 +81,12 @@ const TapFassung = createContext({szene: false});
  *   = wie viele Schritte beim Stillstehen schon da sind.
  * - Kaufleiste: sichtbar, sobald die Titelkarte [data-tap-anfang] aus dem
  *   Bild ist, und wieder weg, solange der Abschluss [data-tap-ende] zu sehen
- *   ist (dort steht der große Knopf).
+ *   ist (dort steht der große Knopf). Gemessen an Oberkanten gegen die kleine
+ *   Bildschirmhöhe (100svh), mit RUHE_PX Hysterese: die Unterkante des
+ *   Fensters wandert auf dem iPhone mit den Browserleisten. Bis 30.10. hing
+ *   die Leiste an ihr (IntersectionObserver) und blendete sich in Annas
+ *   Chrome beim Scrollen ein und aus (Christian 30.10.: „der rote Knopf wird
+ *   ein- und ausgeblendet“; Samsung stand ruhig).
  * Bei prefers-reduced-motion steht alles sofort und still da, ebenso mit
  * ?film=still (Standbild: dieselbe Fassung, die ein Kunde mit „Bewegung
  * reduzieren“ sieht; für Prüfer, die nicht scrollen, z. B. das Shop-Tor).
@@ -203,21 +212,49 @@ function useTapFilm(wurzel, szene) {
       });
     }
 
-    let anfangWeg = false;
-    let endeDa = false;
-    const kauf = new IntersectionObserver((eintraege) => {
-      for (const e of eintraege) {
-        if (e.target.hasAttribute('data-tap-anfang')) {
-          anfangWeg = !e.isIntersecting && e.boundingClientRect.top < 0;
-        } else {
-          // Abschluss im Bild oder schon vorbei: Leiste weg.
-          endeDa = e.isIntersecting || e.boundingClientRect.top < 0;
-        }
+    // Kaufleiste (Kopfkommentar): Oberkanten gegen 100svh, nie gegen die
+    // wandernde Unterkante des Fensters.
+    const anfang = el.querySelector('[data-tap-anfang]');
+    const ende = el.querySelector('[data-tap-ende]');
+    const mass = document.createElement('div');
+    mass.setAttribute('aria-hidden', 'true');
+    mass.style.cssText =
+      'position:fixed;top:0;left:0;width:0;height:100svh;visibility:hidden;pointer-events:none';
+    document.body.appendChild(mass);
+    let kleinesBild = window.innerHeight;
+    const messeBild = () => {
+      kleinesBild = mass.getBoundingClientRect().height || window.innerHeight;
+    };
+    let leisteAn = false;
+    let leisteAngefordert = false;
+    const leisteRechnen = () => {
+      leisteAngefordert = false;
+      const weg = !anfang || anfang.getBoundingClientRect().bottom <= 0;
+      const oben = ende ? ende.getBoundingClientRect().top : Infinity;
+      const an = weg && oben >= kleinesBild + (leisteAn ? 0 : RUHE_PX);
+      if (an !== leisteAn) {
+        leisteAn = an;
+        setLeiste(an);
       }
-      setLeiste(anfangWeg && !endeDa);
+    };
+    const leisteTakt = () => {
+      if (leisteAngefordert) return;
+      leisteAngefordert = true;
+      window.requestAnimationFrame(leisteRechnen);
+    };
+    const leisteNeu = () => {
+      messeBild();
+      leisteTakt();
+    };
+    messeBild();
+    leisteRechnen();
+    window.addEventListener('scroll', leisteTakt, {passive: true});
+    window.addEventListener('resize', leisteNeu);
+    aufraeumen.push(() => {
+      window.removeEventListener('scroll', leisteTakt);
+      window.removeEventListener('resize', leisteNeu);
+      mass.remove();
     });
-    el.querySelectorAll('[data-tap-anfang], [data-tap-ende]').forEach((z) => kauf.observe(z));
-    beobachter.push(kauf);
 
     el.classList.add('tap-js');
     return () => {

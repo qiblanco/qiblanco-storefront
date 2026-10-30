@@ -135,7 +135,7 @@ export const THE_ALPHA_ABSCHNITTE = [
   {
     id: 'protection',
     titel: 'Protection',
-    zeilen: ['Starker Schutz.', 'Starke Zellen.', 'Starker Willen.'],
+    zeilen: ['Starker Schutz.', 'Starke Zellen.', 'Starker Wille.'],
     bilder: [
       {
         url: `${CDN}/qi-alpha-01-front.jpg?v=1792849253`,

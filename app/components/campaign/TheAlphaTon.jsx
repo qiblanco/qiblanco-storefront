@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 /*
  * THE ALPHA TON: Ton und Video der Film-Seite (Grossjob 20261026-prio1-the-
@@ -24,8 +24,7 @@ import {useEffect, useState} from 'react';
  * - Audio lädt erst NACH „Sound on“ (kein Byte für Besucher ohne Ton).
  *   Web Audio: ein Grundsound in nahtloser Schleife, darüber je Szene einmal
  *   ein Akzent ([data-tap-ton] im Gerüst). Tab-Wechsel und Verlassen blenden
- *   aus und halten an. iOS: audioSession „ambient“, damit der Stummschalter
- *   gilt und fremde Musik nicht abbricht.
+ *   aus und halten an. iOS: audioSession „playback“ (siehe NACHTRAG 30.10.).
  * - Video ([data-tap-video]): erst steht der Titel, dann kommt das Poster
  *   (erstes Scrollen oder 3,5 s nach dem Laden), mit dem ersten Scrollen die
  *   ersten Sekunden, anderthalb Bildschirme vor der Szene der Rest. Abspielen beim
@@ -53,6 +52,25 @@ import {useEffect, useState} from 'react';
  * das X heißt ohne Ton. Er geht, sobald der Ton hörbar ist oder die
  * Titelkarte weiterläuft. A lädt die Klänge in der -14-LUFS-Fassung
  * (QUELLE_LAUT, PEGEL_LAUT; Wunsch „lauter“).
+ *
+ * NACHTRAG 30.10.2026 (Christian: „Bei Anna I Phone 18 Pro funktioniert weder
+ * der Sound noch das Video“, Chrome auf dem iPhone; Job 20261030-prio3-repair-
+ * qi-alpha-video-sound-iphone-safari-echtgeraet-standard):
+ * - TON: bis 30.10. stand die iOS-audioSession auf „ambient“, damit der
+ *   Stummschalter gilt. Annas iPhone war stumm geschaltet (Glocke
+ *   durchgestrichen auf ihrem Screenshot): der Schalter zeigte „Ton an“, zu
+ *   hören war nichts. Jetzt „playback“ wie ein Video mit Ton: wer den Ton
+ *   antippt, hört ihn, auch mit Stummschalter.
+ * - VIDEO: iOS lehnt play() ohne Geste auch für ein stummes Video ab, wenn
+ *   der Stromsparmodus an ist, „Video-Vorschauen automatisch abspielen“
+ *   (Bedienungshilfen > Bewegung) aus ist oder das Gerät drosselt (WebKit,
+ *   HTMLMediaElement.cpp / MediaElementSession.cpp:
+ *   RequireUserGestureForVideoRateChange, …DueToLowPowerMode, …Thermal). Bis
+ *   30.10. wurde diese Ablehnung still verschluckt und nie wiederholt: das
+ *   Poster blieb stehen, auch nach jedem Tippen. Jetzt startet die nächste
+ *   Berührung der Seite (auch der Ton-Schalter) das Video im Rahmen der
+ *   Geste, und es wird erneut versucht, sobald die Szene fertig
+ *   eingeblendet ist.
  *
  * Klänge: Shopify-CDN (Shopify Files, GL-PRO-0015: Medien nicht ins Repo),
  * Eigenproduktion (additive Synthese wie die Qi-Blanco-Reihe qb-ambient-* aus
@@ -235,8 +253,9 @@ class TonMotor {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     try {
-      // iOS 16.4+: Stummschalter gilt, fremde Musik läuft weiter.
-      if (navigator.audioSession) navigator.audioSession.type = 'ambient';
+      // iOS 16.4+: „playback“ = hörbar auch mit Stummschalter, wie ein Video
+      // mit Ton (NACHTRAG 30.10.; bis dahin „ambient“, Annas iPhone blieb stumm).
+      if (navigator.audioSession) navigator.audioSession.type = 'playback';
     } catch {
       /* nicht unterstützt */
     }
@@ -508,11 +527,39 @@ function binde_videos(wurzel, m) {
     const figur = v.closest('[data-tap-ein]');
     return !figur || !wurzel.classList.contains('tap-js') || figur.classList.contains('tap-sichtbar');
   };
+  // Lehnt der Browser ab (iOS: Stromsparmodus, „Video-Vorschauen
+  // automatisch abspielen“ aus; NACHTRAG 30.10.), bleibt das Poster stehen,
+  // bis eine Geste kommt: dann startet nachholen() es im Rahmen der Geste.
   const spiele = (v) => {
     if (!v.dataset.tapImBild || document.hidden || !eingeblendet(v)) return;
-    const p = v.play();
-    if (p && p.catch) p.catch(() => {});
+    let p;
+    try {
+      p = v.play();
+    } catch {
+      // Manche iOS-Fassungen werfen hier, statt abzulehnen (WebKit-Bug 216887).
+      v.dataset.tapWartetGeste = '1';
+      return;
+    }
+    if (p && p.then) {
+      p.then(
+        () => delete v.dataset.tapWartetGeste,
+        (e) => {
+          if (e && e.name === 'NotAllowedError') v.dataset.tapWartetGeste = '1';
+        },
+      );
+    }
   };
+  const nachholen = () => {
+    for (const v of videos) if (v.paused) spiele(v);
+  };
+  GESTEN.forEach((t) =>
+    document.addEventListener(t, nachholen, {capture: true, passive: true}),
+  );
+  aufraeumen.push(() =>
+    GESTEN.forEach((t) =>
+      document.removeEventListener(t, nachholen, {capture: true}),
+    ),
+  );
   const szene = new IntersectionObserver(
     (eintraege) => {
       for (const e of eintraege) {
@@ -534,8 +581,17 @@ function binde_videos(wurzel, m) {
     const figur = v.closest('[data-tap-ein]');
     if (figur) {
       const wach = () => spiele(v);
+      // Erneut, wenn die Einblendung fertig ist: beim Ereignis steht die
+      // Szene noch auf Deckkraft 0.
+      const fertig = (e) => {
+        if (e.target === figur && v.paused) spiele(v);
+      };
       figur.addEventListener('tap-sichtbar', wach);
-      aufraeumen.push(() => figur.removeEventListener('tap-sichtbar', wach));
+      figur.addEventListener('transitionend', fertig);
+      aufraeumen.push(() => {
+        figur.removeEventListener('tap-sichtbar', wach);
+        figur.removeEventListener('transitionend', fertig);
+      });
     }
   });
 
@@ -666,6 +722,10 @@ export function TapTon({wurzel, standard = 'fenster'}) {
   const [oben, setOben] = useState(null);
   // „Sound On“-Hinweis bei Ton als Standard (A): null | 'auf' | 'zu' | 'weg'.
   const [hinweis, setHinweis] = useState(null);
+  // Hörbar VOR dem Tipp auf den Schalter? (NACHTRAG 30.10.: dieselbe
+  // Berührung gibt den wartenden AudioContext frei, React rendert „an“ noch
+  // vor dem click, und der erste Tipp schaltete den Ton wieder aus.)
+  const vorGeste = useRef(null);
 
   useEffect(() => {
     const el = wurzel.current;
@@ -801,13 +861,18 @@ export function TapTon({wurzel, standard = 'fenster'}) {
     setWunsch(w);
     if (wurzel.current) wurzel.current.dataset.tapTonWunsch = w;
   };
+  const merkeVorGeste = () => {
+    vorGeste.current = m.zustand;
+  };
   const umschalten = () => {
-    if (tonStandard && wunsch === 'an' && zustand !== 'an') {
+    const war = vorGeste.current ?? zustand;
+    vorGeste.current = null;
+    if (tonStandard && wunsch === 'an' && war !== 'an') {
       // „Ton an“ steht schon, es war nur noch nicht hörbar: dieser Tipp ist
       // die Geste, die der Browser verlangt.
       merke('an');
       m.einschalten();
-    } else if (zustand === 'an' || (tonStandard && wunsch === 'an')) {
+    } else if (war === 'an' || (tonStandard && wunsch === 'an')) {
       merke('aus');
       m.ausschalten();
       if (tonStandard) wunschSetzen('aus');
@@ -882,6 +947,7 @@ export function TapTon({wurzel, standard = 'fenster'}) {
       <button
         type="button"
         className={`tap-ton-schalter${an ? ' tap-ton-schalter-an' : ''}`}
+        onPointerDown={merkeVorGeste}
         onClick={umschalten}
         aria-pressed={an}
         aria-label={an ? 'Ton aus' : 'Ton an'}
