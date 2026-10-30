@@ -59,7 +59,7 @@ export const EINFACH_SEKTIONEN = Object.freeze([
     art: 'faq',
     titel: 'Kurze Antworten.',
     fragen: [
-      {f: 'Ist das ein Medizinprodukt?', a: 'Nein. Belegt sind Effekte in Zellkulturen im Labor. Alles darüber hinaus ist ein Modell.'},
+      {f: 'Ist das ein Medizinprodukt?', a: 'Nein. Er ist Schmuck mit Gitterchip®. Belegt sind Effekte in Zellkulturen im Labor.'},
       {f: 'Muss ich etwas spüren, damit es wirkt?', a: 'Nein. Manche merken eine Veränderung, andere nicht. Beides ist normal.'},
       {f: 'Was heißt Zellstudie?', a: 'Die Studien liefen an Zellen im Labor, nicht am Menschen.'},
       {f: 'Braucht er Strom oder Pflege?', a: 'Nein. Kein Akku, keine Elektronik, keine App. Du trägst ihn, über Jahre.'},

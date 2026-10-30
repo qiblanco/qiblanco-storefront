@@ -62,15 +62,15 @@ export const APPLE_SEITEN = Object.freeze({
 
   // ---- s07 · übrige Landingpages ----
   'e-smog-schutz': {pfad: '/pages/E-Smog-Schutz', schalter: 'APPLE_SEITE_E_SMOG_SCHUTZ', standard: 'off'},
-  'das-20-tage-versprechen': {pfad: '/pages/das-20-tage-versprechen', schalter: 'APPLE_SEITE_DAS_20_TAGE_VERSPRECHEN', standard: 'on'},
+  'das-20-tage-versprechen': {pfad: '/pages/das-20-tage-versprechen', schalter: 'APPLE_SEITE_DAS_20_TAGE_VERSPRECHEN', standard: 'off'},
   'das-beispiel': {pfad: '/pages/das-beispiel', schalter: 'APPLE_SEITE_DAS_BEISPIEL', standard: 'off'},
   'e-smog': {pfad: '/pages/e-smog', schalter: 'APPLE_SEITE_E_SMOG', standard: 'off'},
   'entgiftung': {pfad: '/pages/entgiftung', schalter: 'APPLE_SEITE_ENTGIFTUNG', standard: 'off'},
   'exclusive-solutions': {pfad: '/pages/exclusive-solutions', schalter: 'APPLE_SEITE_EXCLUSIVE_SOLUTIONS', standard: 'off'},
   // forschung: bewusst ohne Zeile. Die Seite ist versteckt, test/forschung-seite.test.mjs
   // verbietet jede Nennung ihres Pfads unter app/. s07 entscheidet und zieht den Test mit.
-  'haelt-das-mein-leben-aus': {pfad: '/pages/haelt-das-mein-leben-aus', schalter: 'APPLE_SEITE_HAELT_DAS_MEIN_LEBEN_AUS', standard: 'on'},
-  'kette-oder-armband': {pfad: '/pages/kette-oder-armband', schalter: 'APPLE_SEITE_KETTE_ODER_ARMBAND', standard: 'on'},
+  'haelt-das-mein-leben-aus': {pfad: '/pages/haelt-das-mein-leben-aus', schalter: 'APPLE_SEITE_HAELT_DAS_MEIN_LEBEN_AUS', standard: 'off'},
+  'kette-oder-armband': {pfad: '/pages/kette-oder-armband', schalter: 'APPLE_SEITE_KETTE_ODER_ARMBAND', standard: 'off'},
   'kohaerentes-wasser': {pfad: '/pages/kohaerentes-wasser', schalter: 'APPLE_SEITE_KOHAERENTES_WASSER', standard: 'off'},
   'menschen-alltag': {pfad: '/pages/menschen-alltag', schalter: 'APPLE_SEITE_MENSCHEN_ALLTAG', standard: 'off'},
   'mentales-setting': {pfad: '/pages/mentales-setting', schalter: 'APPLE_SEITE_MENTALES_SETTING', standard: 'off'},
@@ -80,8 +80,8 @@ export const APPLE_SEITEN = Object.freeze({
   'pages-podcasts-seite-4': {pfad: '/pages/podcasts/seite-4', schalter: 'APPLE_SEITE_PAGES_PODCASTS_SEITE_4', standard: 'off'},
   'pages-podcasts-seite-5': {pfad: '/pages/podcasts/seite-5', schalter: 'APPLE_SEITE_PAGES_PODCASTS_SEITE_5', standard: 'off'},
   'quellen': {pfad: '/pages/quellen', schalter: 'APPLE_SEITE_QUELLEN', standard: 'off'},
-  'so-funktioniert-der-qione': {pfad: '/pages/so-funktioniert-der-qione', schalter: 'APPLE_SEITE_SO_FUNKTIONIERT_DER_QIONE', standard: 'on'},
-  'so-wirkt-kohaerentes-wasser': {pfad: '/pages/so-wirkt-kohaerentes-wasser', schalter: 'APPLE_SEITE_SO_WIRKT_KOHAERENTES_WASSER', standard: 'on'},
+  'so-funktioniert-der-qione': {pfad: '/pages/so-funktioniert-der-qione', schalter: 'APPLE_SEITE_SO_FUNKTIONIERT_DER_QIONE', standard: 'off'},
+  'so-wirkt-kohaerentes-wasser': {pfad: '/pages/so-wirkt-kohaerentes-wasser', schalter: 'APPLE_SEITE_SO_WIRKT_KOHAERENTES_WASSER', standard: 'off'},
   'superhuman': {pfad: '/pages/superhuman', schalter: 'APPLE_SEITE_SUPERHUMAN', standard: 'off'},
   'tiefer-schlaf': {pfad: '/pages/tiefer-schlaf', schalter: 'APPLE_SEITE_TIEFER_SCHLAF', standard: 'off'},
   'vitamine-mineralien': {pfad: '/pages/vitamine-mineralien', schalter: 'APPLE_SEITE_VITAMINE_MINERALIEN', standard: 'off'},
