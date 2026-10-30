@@ -70,6 +70,12 @@ export const BILD = Object.freeze({
     breite: 957,
     hoehe: 1024,
   },
+  laptop: {
+    url: `${CDN}/files/qb-themen--themen-esmog-laptop-bali-05984--f786b6fa5b29.webp`,
+    alt: 'Frau arbeitet am Laptop im hellen Wohnzimmer',
+    breite: 2400,
+    hoehe: 1471,
+  },
   saft: {
     url: `${CDN}/files/qb-themen--themen-zellen-qibracelet-gruensaft-canggu-06390--b4ab3f9b62c8.webp`,
     alt: 'Hand mit QiBracelet® hält ein Glas grünen Saft',

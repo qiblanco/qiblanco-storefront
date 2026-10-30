@@ -8,6 +8,8 @@ import {SKEPTIKER_SEKTIONEN} from './lp-skeptiker.js';
 import {VERSPRECHEN_SEKTIONEN} from './lp-versprechen.js';
 import {TRAGEFORM_SEKTIONEN} from './lp-trageform.js';
 import {ZELLSTUDIEN_SEKTIONEN} from './lp-zellstudien.js';
+import {EINFACH_SEKTIONEN} from './lp-einfach.js';
+import {MECHANISMUS_SEKTIONEN} from './lp-mechanismus.js';
 
 const SEITEN = {
   '/pages/haelt-das-mein-leben-aus': ALLTAG_SEKTIONEN,
@@ -15,6 +17,8 @@ const SEITEN = {
   '/pages/das-20-tage-versprechen': VERSPRECHEN_SEKTIONEN,
   '/pages/kette-oder-armband': TRAGEFORM_SEKTIONEN,
   '/pages/zellstudien-ehrlich': ZELLSTUDIEN_SEKTIONEN,
+  '/pages/so-funktioniert-der-qione': EINFACH_SEKTIONEN,
+  '/pages/so-wirkt-kohaerentes-wasser': MECHANISMUS_SEKTIONEN,
 };
 
 test('jede Seite besteht pruefeSeite (Hero zuerst, Anna, kein Preisanker, kein Konjunktiv)', () => {
