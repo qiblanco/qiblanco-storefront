@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {bildQuellen} from './shopifyBildQuellen';
+import {GESTEN, spieleSicher} from './video-nachholen';
 
 /*
  * Ersatzbild an jeder 360-Grad-Drehung (Christian, 01.10.2026):
@@ -176,6 +177,83 @@ export function useErsatzbild(videoRef, an = true) {
   }, [videoRef, an, zuBild]);
 
   return {zustand, zuBild};
+}
+
+/*
+ * NACHHOLEN (Grossjob vom 30.10.2026 „Homepage gesamt prüfen“, s03;
+ * Christian 30.10.2026: „auf ihrem Handy
+ * geht immer noch nicht das Video“, Anna, Chrome auf dem iPhone).
+ *
+ * iOS lehnt play() ohne Geste auch für ein stummes Video ab, wenn der
+ * Stromsparmodus an ist, „Video-Vorschauen automatisch abspielen“ aus ist oder
+ * das Gerät drosselt (WebKit MediaElementSession: RequireUserGestureFor-
+ * VideoRateChange, …DueToLowPowerMode). Das autoplay-Attribut versucht es
+ * genau einmal; danach stand die Drehung für immer, auch nach jedem Tippen.
+ * Dasselbe Muster ist auf Qi Alpha behoben (TheAlphaTon.jsx, nachholen).
+ *
+ * Hier für jedes <ImgixVideo>: steht das Video, während es im Bild ist, wird
+ * play() erneut versucht, sobald es ins Bild kommt, sobald es Daten hat, und
+ * bei jeder Berührung der Seite (im Rahmen der Geste, die iOS verlangt), bis
+ * es läuft. Ein synchroner Wurf statt einer Ablehnung (ältere iOS-Fassungen)
+ * wird abgefangen. Das Ersatzbild bleibt dabei stehen, bis das Video
+ * nachweislich läuft (useErsatzbild); steht das Video, steht ein vollwertiges
+ * Bild (Christian 01.10.2026). Unter prefers-reduced-motion wird nichts
+ * nachgeholt: dort bleibt das Standbild. Reine Teile (spieleSicher, GESTEN)
+ * in video-nachholen.js, geprüft in video-nachholen.test.mjs.
+ */
+export function useVideoNachholen(videoRef, an = true) {
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !an || bevorzugtRuhe()) return undefined;
+    let imBild = false;
+    let gesten = false;
+    const hatQuelle = () => Boolean(video.currentSrc || video.src);
+    const gestenAus = () => {
+      if (!gesten) return;
+      gesten = false;
+      GESTEN.forEach((t) => document.removeEventListener(t, beiGeste, {capture: true}));
+    };
+    const gestenAn = () => {
+      if (gesten) return;
+      gesten = true;
+      GESTEN.forEach((t) =>
+        document.addEventListener(t, beiGeste, {capture: true, passive: true}),
+      );
+    };
+    const versuch = () => {
+      if (!imBild || !video.paused || !hatQuelle()) return;
+      spieleSicher(video).then((ok) => {
+        if (!ok && video.paused) gestenAn();
+      });
+    };
+    // Synchron im Ereignis: nur so gilt der Aufruf als Teil der Geste.
+    function beiGeste() {
+      versuch();
+    }
+    const beiLaeuft = () => gestenAus();
+    const beiDaten = () => versuch();
+    video.addEventListener('playing', beiLaeuft);
+    video.addEventListener('loadeddata', beiDaten);
+    video.addEventListener('canplay', beiDaten);
+    let sicht = null;
+    if (typeof IntersectionObserver !== 'undefined') {
+      sicht = new IntersectionObserver((eintraege) => {
+        imBild = eintraege.some((e) => e.isIntersecting);
+        if (imBild) versuch();
+      });
+      sicht.observe(video);
+    } else {
+      imBild = true;
+      versuch();
+    }
+    return () => {
+      gestenAus();
+      sicht?.disconnect();
+      video.removeEventListener('playing', beiLaeuft);
+      video.removeEventListener('loadeddata', beiDaten);
+      video.removeEventListener('canplay', beiDaten);
+    };
+  }, [videoRef, an]);
 }
 
 /*
