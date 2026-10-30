@@ -1,10 +1,12 @@
 import {useEffect, useRef} from 'react';
+import {videoQuellen} from '~/data/video-quellen';
 import {
   ERSATZBILD_360,
   ERSATZBILD_KANTE,
   Ersatzbild,
   useErsatzbild,
 } from '~/components/reusables/video360-ersatzbild';
+import {useNaeheLaden} from '~/components/reusables/useNaeheLaden';
 
 /*
  * Die Adresse der 360-Grad-Produktdrehung des QiOne(R) 2 Pro steht GENAU
@@ -65,6 +67,28 @@ const QIONE_ERSATZ = ERSATZBILD_360.qione;
 const QIONE_360_KANTE = ERSATZBILD_KANTE;
 
 /*
+ * DIE ZWEI SCHWESTER-DREHUNGEN ALS MP4 (Homepage-Gesamtprüfung nach Qi Alpha,
+ * Segment s02; Christian 30.10.2026: „sollten das wahrscheinlich 360 Grad Animationen sein, die sich
+ * drehen … es muss überall auf der Homepage jetzt nochmal kontrolliert
+ * werden“). Die Apple-Seiten (Startseite, *-details, LPs) zeigten seit #1099/
+ * #1104 nur das Ersatzbild. Hier kommt die Drehung zurück, als dieselbe
+ * mp4-Fassung vom Shopify-CDN, die auch <ImgixVideo> als Rückfall nimmt
+ * (app/data/video-quellen.js, 720p, ohne hls.js): iOS spielt mp4 nativ, der
+ * hls.js-Zweig blieb im Messlauf 30.10. in WebKit bei readyState 1 stehen
+ * (Falle s03). Schalter VIDEO_QUELLE gilt mit.
+ */
+const DREHUNG_VIDEO = {
+  qione: {src: QIONE_360_VIDEO, name: '360-qione-1x1'},
+  qibracelet: {src: videoQuellen('new-360-QiBracelet-1x1.mov').mp4, name: 'new-360-QiBracelet-1x1.mov'},
+  qihome: {src: videoQuellen('360-QiHome-1x1.mov').mp4, name: '360-QiHome-1x1.mov'},
+};
+
+/* Berührungen, in deren Rahmen iOS ein abgelehntes play() erlaubt (Qi-Alpha-
+   Fix 30.10.2026, TheAlphaTon nachholen). touchstart zählt dort nicht als
+   Geste, touchend und click schon. */
+const GESTEN = ['touchend', 'pointerup', 'click', 'keydown'];
+
+/*
  * Produkt360Video — die 360-Grad-Produktdrehung an der Stelle, an der
  * vorher ein Produktfoto stand (Christian, 19.09.2026: Startseite und
  * /pages/schlaf-zellen-schutz).
@@ -119,67 +143,126 @@ const QIONE_360_KANTE = ERSATZBILD_KANTE;
  * Master 17 654 B statt 8 120 B am Desktop. Ohne `anzeige` (Zellschutz-
  * Seite) bleibt alles wie bisher, Poster eingeschlossen.
  */
-export function Produkt360Video({className, anzeige = null}) {
+/*
+ * ERWEITERUNG 30.10.2026 (s02, alle Props optional, ohne Angabe bleibt alles
+ * wie vorher):
+ *   drehung      'qione' (Vorgabe) | 'qibracelet' | 'qihome'
+ *   alt          Alt-Text des Ersatzbilds (sonst der aus ERSATZBILD_360)
+ *   sofort       true (Vorgabe): Quelle im Server-HTML, preload metadata —
+ *                für den ersten Bildschirm. false: preload none, die Quelle
+ *                kommt erst in Sichtweite (useNaeheLaden, derselbe Maßstab
+ *                wie der Videostandard), damit Bänder und Gerätereihe weiter
+ *                unten beim Seitenaufruf nichts laden.
+ *   huelleKlasse zusätzliche Klasse an der Hülle (Größe kommt vom Aufrufer)
+ * NACHHOLEN: lehnt der Browser play() ab (iOS Stromsparmodus), bleibt das
+ * Ersatzbild stehen, und die nächste Berührung irgendwo auf der Seite startet
+ * die Drehung im Rahmen dieser Geste. Unter prefers-reduced-motion nie.
+ */
+export function Produkt360Video({
+  className,
+  anzeige = null,
+  drehung = 'qione',
+  alt = null,
+  sofort = true,
+  huelleKlasse = '',
+}) {
   const ref = useRef(null);
   const {zustand, zuBild} = useErsatzbild(ref);
   const zuBildRef = useRef(zuBild);
   zuBildRef.current = zuBild;
+  const nah = useNaeheLaden(ref, {sofort});
+  const video = DREHUNG_VIDEO[drehung] ?? DREHUNG_VIDEO.qione;
+  const basis = ERSATZBILD_360[drehung] ?? QIONE_ERSATZ;
+  const ersatz = alt ? {...basis, alt} : basis;
 
   useEffect(() => {
-    const video = ref.current;
-    if (!video) return;
+    const el = ref.current;
+    if (!el || !nah) return;
     const ruhe = window.matchMedia?.('(prefers-reduced-motion: reduce)');
-    if (!ruhe) return;
+    let wartet = false;
+
+    const nachholen = () => {
+      if (!wartet) return;
+      wartet = false;
+      geste(false);
+      if (ruhe?.matches) return;
+      starte();
+    };
+    const geste = (an) =>
+      GESTEN.forEach((t) =>
+        an
+          ? document.addEventListener(t, nachholen, {capture: true, passive: true})
+          : document.removeEventListener(t, nachholen, {capture: true}),
+      );
+    const abgelehnt = () => {
+      zuBildRef.current();
+      if (wartet) return;
+      wartet = true;
+      geste(true);
+    };
+    function starte() {
+      el.autoplay = true;
+      let p;
+      try {
+        p = el.play();
+      } catch {
+        // Manche iOS-Fassungen werfen hier, statt abzulehnen (WebKit-Bug 216887).
+        abgelehnt();
+        return;
+      }
+      if (p && typeof p.catch === 'function') p.catch(abgelehnt);
+    }
 
     const anwenden = () => {
-      if (ruhe.matches) {
-        video.autoplay = false;
-        video.pause();
+      if (ruhe?.matches) {
+        el.autoplay = false;
+        el.pause();
         // Auf den ersten Frame zuruecksetzen: er ist identisch mit dem
         // Poster, der Uebergang bleibt damit unsichtbar.
         try {
-          video.currentTime = 0;
+          el.currentTime = 0;
         } catch {
           /* vor den Metadaten wirft Safari — dann steht ohnehin das Poster */
         }
       } else {
-        video.autoplay = true;
-        const p = video.play();
-        if (p && typeof p.catch === 'function') p.catch(() => zuBildRef.current());
+        starte();
       }
     };
 
     anwenden();
     // Die Einstellung kann waehrend der Sitzung umgestellt werden.
-    ruhe.addEventListener?.('change', anwenden);
-    return () => ruhe.removeEventListener?.('change', anwenden);
-  }, []);
+    ruhe?.addEventListener?.('change', anwenden);
+    return () => {
+      ruhe?.removeEventListener?.('change', anwenden);
+      geste(false);
+    };
+  }, [nah]);
 
   return (
     <div
-      className="qb-360-huelle"
-      data-qb-360={QIONE_ERSATZ.drehung}
+      className={`qb-360-huelle${huelleKlasse ? ` ${huelleKlasse}` : ''}`}
+      data-qb-360={ersatz.drehung}
       data-qb-360-zustand={zustand}
       style={{position: 'relative'}}
     >
     <video
       ref={ref}
       className={className || undefined}
-      src={QIONE_360_VIDEO}
-      poster={anzeige ? undefined : QIONE_ERSATZ.bild}
+      src={nah ? video.src : undefined}
+      poster={anzeige ? undefined : ersatz.bild}
       width={QIONE_360_KANTE}
       height={QIONE_360_KANTE}
       aria-hidden="true"
-      data-video="360-qione-1x1"
+      data-video={video.name}
       data-video-familie="shopify-cdn"
       data-video-ton="stumm"
       muted
       playsInline
       loop
       autoPlay
-      preload="metadata"
+      preload={sofort ? 'metadata' : 'none'}
     />
-    <Ersatzbild ersatz={QIONE_ERSATZ} zustand={zustand} anzeige={anzeige} />
+    <Ersatzbild ersatz={ersatz} zustand={zustand} anzeige={anzeige} />
     </div>
   );
 }

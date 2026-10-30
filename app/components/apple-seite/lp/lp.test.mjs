@@ -51,3 +51,25 @@ test('keine Sterne, keine Note in den Stimmen', () => {
     for (const t of texteVon(sektionen)) assert.ok(!/★|\d[.,]\d\s*\/\s*5/.test(t), `${pfad}: ${t}`);
   }
 });
+
+/* 360-Grad (s02, Christian 30.10.2026): kein 360-Ersatzbild ohne Drehung, und
+   die Drehung passt zum Gerät im Dateinamen. Hero zuerst, damit der Kopf dreht. */
+const DREHUNG_AUS_DATEI = {"360-qione-front": "qione", "360-qibracelet-winkel": "qibracelet", "360-qihome-front": "qihome"};
+function pruefe360(bilder, name) {
+  let n = 0;
+  for (const b of bilder) {
+    const m = /qb-video360-ersatzbild--(360-[a-z]+-[a-z]+)--/.exec(b?.url || "");
+    if (!m) continue;
+    n++;
+    assert.equal(b.drehung, DREHUNG_AUS_DATEI[m[1]], `${name}: ${m[1]} steht als Standbild`);
+  }
+  return n;
+}
+
+test('360: jede LP-Ansicht der Geräte dreht (kein Standbild)', () => {
+  let n = 0;
+  for (const [name, s] of Object.entries({ALLTAG_SEKTIONEN, VERSPRECHEN_SEKTIONEN, TRAGEFORM_SEKTIONEN, EINFACH_SEKTIONEN, MECHANISMUS_SEKTIONEN})) {
+    n += pruefe360(s.map((x) => x.bild), name);
+  }
+  assert.ok(n >= 3, `mindestens die drei bekannten 360-Stellen, gefunden ${n}`);
+});

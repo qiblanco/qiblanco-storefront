@@ -1,5 +1,6 @@
 import {useId} from 'react';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
+import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {faqPageJsonLdString} from '~/lib/faq-schema';
 import {absaetze, bandSeite, bildSrcSet, mitBreite} from './apple-seite-logik';
 
@@ -27,9 +28,34 @@ import {absaetze, bandSeite, bildSrcSet, mitBreite} from './apple-seite-logik';
  * (cookielose Zählung public/qiblanco-qpx-basis.js zählt „gesehen“ und Klicks).
  */
 
-/** Bild in fester Proportion; das LCP-Bild (Hero) lädt sofort. */
-function AsBild({bild, sizes, sofort = false, klasse = 'as-bild'}) {
+/**
+ * Bild in fester Proportion; das LCP-Bild (Hero) lädt sofort.
+ *
+ * 360-GRAD (Christian 30.10.2026, s02): trägt das Bild `drehung`
+ * ('qione'|'qibracelet'|'qihome'), steht an seiner Stelle die drehende
+ * Ansicht (<Produkt360Video>, mp4 vom Shopify-CDN). Das Bild bleibt als
+ * Ersatzbild darüber, bis das Video nachweislich läuft, und kommt bei Fehler,
+ * Ablehnung oder Stocken zurück. Außerhalb des Kopfs lädt die Drehung erst in
+ * Sichtweite (sofort=false -> preload none).
+ */
+const SIZES_360 = '(min-width: 600px) 540px, 100vw';
+
+export function AsBild({bild, sizes, sofort = false, klasse = 'as-bild', sizes360 = SIZES_360}) {
   if (!bild?.url) return null;
+  if (bild.drehung) {
+    // Die Hülle ist höchstens 540 px breit (apple-seite.css .as-360): die
+    // halbe 1080er-Quelle, scharf bei 2x (Formate-Gate bild-aufloesung).
+    return (
+      <Produkt360Video
+        drehung={bild.drehung}
+        alt={bild.alt}
+        sofort={sofort}
+        huelleKlasse="as-360"
+        className="as-360-video"
+        anzeige={{anzeigeBreite: 540, sizes: sizes360}}
+      />
+    );
+  }
   const breite = bild.breite ?? 1500;
   const hoehe = bild.hoehe ?? Math.round((breite * 2) / 3);
   return (
@@ -87,6 +113,14 @@ function AsKnoepfe({cta, cta2, preis}) {
  * @param {{overline?: string, titel: string, unter?: string, bild: {url: string,
  *   alt?: string, breite?: number, hoehe?: number}, cta?: {text: string, href: string},
  *   cta2?: {text: string, href: string}, dunkel?: boolean}} props
+ */
+/*
+ * REIHENFOLGE AUF DEM HANDY (Christian 30.10.2026, Z5: „Da dann auch erst die
+ * Knöpfchen, bevor ein Foto kommt, ist auch komisch“): Titel, dann Bild, dann
+ * Knöpfe und Preis. Das DOM bleibt, wie es war (ein Knopf, ein Preis, keine
+ * Doppelung); unter 750 px löst apple-seite.css .as-hero-text per
+ * display: contents auf und ordnet mit `order`. Am Desktop bleibt der Kopf
+ * unverändert: Text und Knöpfe, darunter das Bild.
  */
 export function AppleHero({overline, titel, unter, bild, cta, cta2, preis, dunkel = false}) {
   return (

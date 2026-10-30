@@ -194,6 +194,58 @@
     padding: var(--as-s-12) var(--as-s-4) 0;
   }
 }
+/*
+ * HANDY: Titel -> Bild -> Knöpfe und Preis (Christian 30.10.2026, Z2/Z5).
+ * .as-hero-text löst sich auf, seine Kinder werden Flex-Kinder des Kopfs und
+ * lassen sich zusammen mit der figure ordnen. Im DOM bleibt alles einmal.
+ * Ab 750 px gilt dieser Block nicht: dort steht der Kopf wie bisher.
+ * Abstände: Flex fällt keine Ränder zusammen, deshalb setzt der Block sie hier
+ * aus den Tokens neu (Unterzeile s-2 wie bisher, Bild s-4, Knöpfe s-4).
+ */
+@media (max-width: 749.98px) {
+  .as-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .as-hero .as-hero-text {
+    display: contents;
+  }
+  .as-hero .as-overline,
+  .as-hero .as-h1,
+  .as-hero .as-unter {
+    order: 1;
+  }
+  .as-hero .as-unter {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .as-hero .as-hero-bild {
+    order: 2;
+    width: 100%;
+    margin-top: var(--as-s-4);
+  }
+  .as-hero .as-knoepfe,
+  .as-hero .as-preis {
+    order: 3;
+  }
+}
+
+/* ---- 360-Grad-Drehung (AsBild mit bild.drehung) --------------------------- */
+/* Höchstens 540 px: die halbe 1080er-Quelle (scharf bei 2x). Ein Radius wie
+   jedes Bild; das Ersatzbild liegt absolut darüber (video360-ersatzbild). */
+.as-360 {
+  width: 100%;
+  max-width: 540px;
+  margin-inline: auto;
+  border-radius: var(--as-radius);
+  overflow: hidden;
+}
+.as-360 .as-360-video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 
 /* ---- Dunkel (Hero oder CTA-Band) ------------------------------------------ */
 .as-dunkel {
