@@ -60,7 +60,7 @@ export const meta = () => [
     name: 'description',
     content:
       'Qi Alpha® mit Naturdiamant und Gitterchip®, Limited 1st. Edition: 111 Stück, jedes mit eigener ' +
-      'Nummer. 10.639 €, 20 Tage ab Erhalt testen, Versand ab Mitte Januar 2027.',
+      'Nummer. 10.639 €, 20 Tage ab Erhalt testen, Versand im Januar 2027.',
   },
   {name: 'robots', content: 'noindex,nofollow'},
   {property: 'og:title', content: 'Qi Alpha®, Limited 1st. Edition 111/111'},

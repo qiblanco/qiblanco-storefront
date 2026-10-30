@@ -18,9 +18,10 @@
       "Durch seine sehr aufwendige Herstellung ist der Preis des Qi Master® fixiert. Es handelt sich hier um eine Limitierte Auflage von 111 Stück. Diese wird es nie in einem Sale geben wie Black Friday oder Sommer Sale. Jeder Qi Master® wird von Spezialisten mit jahrzehntelanger Erfahrung Stück für Stück durch die Fertigung begleitet. Die finale Politur wird per Hand von Goldschmieden mit meisterhafter Genauigkeit durchgeführt. Dadurch können wir stolz von einer Herstellqualität sprechen, die weltweit den höchsten Standard übertrifft.",
       "Designed in Germany. Made in Germany.",
       "Der Vorverkauf startet am 01.11.2026.",
-      "Inklusive zu 100 % versichertem weltweitem Versand. Versand startet ab Mitte Januar 2027."
+      "Inklusive zu 100 % versichertem weltweitem Versand. Versand startet im Januar 2027."
     ]
   },
+  "_nachtrag_20261030": "Absatz 4 von Christian am 30.10.2026 geaendert (Chat Coworker BS, Z4/Z5: \"streich mal den Versand Mitte Januar, sondern mach ueberall Versand Januar 2027\"): \"ab Mitte Januar 2027\" -> \"im Januar 2027\". Faktenquelle: ai-ceo/wissen/kanon/qi-alpha-fakten.json. Job 20261030-qi-alpha-fakten-shop-de-en-64-striche-januar-2027.",
   "_herkunft_wortlaut": "Quelle des Wortlauts ist der eingefrorene Auftragstext worker-pool/state/prompt-eingefroren/20260922-GROSSJOB-qi-master-ohne-laufenden-vorverkauf-und-ohne-rabatt.md, Zeilen 25-37. Dort steht er in ASCII-Transliteration (Server-Konvention fuer interne Dateien). Kundensichtbar verlangt das Haus echte Umlaute; zurueckgesetzt wurden deshalb genau diese Woerter, nichts sonst: Stueck->Stueck mit u-Umlaut, fuer, durchgefuehrt, koennen, Herstellqualitaet, hoechsten, uebertrifft. Kein Wort wurde hinzugefuegt, keines entfernt, keine Satzstellung geaendert. Eine Fassung MIT echten Umlauten existiert ausserhalb dieses Auftragstextes nicht (gesucht am 2026-09-22 in /srv/openclaw/Claude und im qi-brain-Korpus: 0 Treffer).",
   "offene_frage": {
     "frage": "Der Vorverkauf startet laut diesem Wortlaut 'im Oktober 2026' - ohne Tag. Welcher Tag gilt, und wird der Wortlaut zum Start auf eine laufende Fassung umgestellt (Seite UND Anna, aus dieser einen Quelle)?",

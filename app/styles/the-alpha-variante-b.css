@@ -147,7 +147,7 @@
   line-height: 1.5;
 }
 
-/* Umbruch nur zwischen den Angaben, nie mitten in „Mitte Januar“. Farbe am
+/* Umbruch nur zwischen den Angaben, nie mitten in „Januar 2027“. Farbe am
    li selbst: app.css färbt li global dunkelgrau. */
 .tap-seite[data-the-alpha-premium='b'] .tab-preis-zeile li {
   color: var(--tap-leise);

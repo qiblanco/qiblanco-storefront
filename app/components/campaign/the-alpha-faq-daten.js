@@ -19,8 +19,9 @@
  *
  * BELEGE DER FAKTEN (Stand 26.10.2026): 111 Stück und vergebene Nummern
  * the-alpha-daten-serie-vergeben.js (Christian Z7 des Grossjobs 20261025);
- * 10.639 €, Wunschnummer 2.000 €, Goldkette 4.879 €, Versand ab Mitte Januar
- * 2027 und 20 Tage: live auf /products/the-alpha gemessen; Ratenpreis 9.999 €
+ * 10.639 €, Wunschnummer 2.000 €, Goldkette 4.879 €, 20 Tage: live auf
+ * /products/the-alpha gemessen; Versand im Januar 2027 für das ganze Paket:
+ * Christian 30.10.2026 (ai-ceo/wissen/kanon/qi-alpha-fakten.json); Ratenpreis 9.999 €
  * mit Code von Anna: the-alpha-shop-daten.js RATEN; Vorverkauf 01.11.2026:
  * app/data/qi-master-wortlaut.json; Live am 8. November, 12 Uhr: Christians
  * Satz in der Anzeige A3 (pr-manager/wissen/qi-alpha-live-launch.md).
@@ -72,7 +73,7 @@ export const THE_ALPHA_FAQ = [
     id: 'unterschied',
     frage: 'Was trägt der Qi Alpha®, das mein QiOne® 2 Pro nicht hat?',
     antwort: [
-      'Im Auge des Qi Alpha® sitzt „The One Eye“: ein hochreiner Naturdiamant in einer Iris mit 108 Strichen. Der Kern ist ein zweiteiliger Gitterchip® aus unserer eigenen 750er Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen.',
+      'Im Auge des Qi Alpha® sitzt „The One Eye“: ein hochreiner Naturdiamant in einer Iris mit 64 Strichen, 32 langen und 32 kurzen. Der Kern ist ein zweiteiliger Gitterchip® aus unserer eigenen 750er Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen.',
       (vergeben) =>
         `Jeder Qi Alpha® trägt seine eigene Nummer und wird von Spezialisten mit jahrzehntelanger Erfahrung Stück für Stück durch die Fertigung begleitet. Die finale Politur wird per Hand von Goldschmieden mit meisterhafter Genauigkeit durchgeführt. Bereits vergeben sind die Nummern ${vergeben}.`,
     ],
@@ -114,7 +115,7 @@ export const THE_ALPHA_FAQ = [
     frage: 'Was ist, wenn er nicht zu mir passt?',
     antwort: [
       'Dann gibst du ihn zurück. Ab Erhalt hast du 20 Tage, um den Qi Alpha® in Ruhe zu erleben. Passt er nicht zu dir, bekommst du den vollen Kaufpreis zurück.',
-      'Wir versenden ab Mitte Januar 2027 kostenlos und voll versichert, nach der finalen Politur von Hand.',
+      'Wir versenden im Januar 2027 kostenlos und voll versichert, nach der finalen Politur von Hand.',
     ],
   },
 ];

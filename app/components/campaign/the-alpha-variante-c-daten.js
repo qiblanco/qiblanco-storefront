@@ -33,7 +33,7 @@
  *    Erhalt der Ware“.
  *  - Raten: Kaufseite /products/the-alpha (PayPal und Klarna, Ratencode von
  *    Anna, qi-salesbot/config/ratencode-anna.conf RATENCODE_ANNA=an).
- *  - Versand: Kaufseite „Versand startet ab Mitte Januar 2027“, „100 %
+ *  - Versand: Kaufseite „Versand startet im Januar 2027“, „100 %
  *    versicherter weltweiter Versand“.
  */
 
@@ -41,11 +41,11 @@ export const TAC_ABSCHLUSS = {
   // Rückfall, wenn die Storefront nicht antwortet (data-preis-quelle="fest").
   festpreis: {amount: '10639.0', currencyCode: 'EUR'},
   // Direkt unter dem roten Knopf: was das Risiko nimmt und wie man zahlt.
-  // Geschützte Leerzeichen halten „Mitte Januar 2027“ und „100 %“ zusammen
+  // Geschützte Leerzeichen halten „im Januar 2027“ und „100 %“ zusammen
   // (Challenger 26.10.: „Januar / 2027“ brach am Handy um).
   sicher: [
     '20 Tage ab Erhalt testen, voller Kaufpreis zurück',
     'Auch in Raten zahlbar',
-    'Versand ab Mitte\u00a0Januar\u00a02027, zu 100\u00a0% versichert',
+    'Versand im\u00a0Januar\u00a02027, zu 100\u00a0% versichert',
   ],
 };

@@ -22,7 +22,7 @@
  *  - Ohne Strom, ohne Akku; Wasser, Salz, Schweiß, Hitze: Christians FAQ zum
  *    Qi Master (app/data/product-faqs.js).
  *  - Ohne Elektronik, ohne Verschleiß; Politur von Hand; fester Preis;
- *    Versand ab Mitte Januar 2027; 20 Tage testen: Christians Sätze der
+ *    Versand im Januar 2027 (Christian 30.10.2026); 20 Tage testen: Christians Sätze der
  *    Kaufseite /products/qi-alpha-b.
  *  - Live 08.11.: Christian 25.10. (NACHTRAG-CHRISTIAN-entscheidungen-
  *    2026-10-25.md), Termin aus coming-home/config/themen.json.
@@ -65,7 +65,7 @@ export const TAB_SEITENBAND = {
  * (25.10.2026: „nur einen finalen preis. 10.639€ kein Rabatt, kein nichts.“). */
 export const TAB_ABSCHLUSS = {
   festpreis: {amount: '10639.0', currencyCode: 'EUR'},
-  zeilen: ['Fester Preis, kein Sale', 'Versand ab Mitte Januar 2027', '20 Tage testen'],
+  zeilen: ['Fester Preis, kein Sale', 'Versand im Januar 2027', '20 Tage testen'],
 };
 
 /** Live-Vorstellung 08.11., ruhig NACH dem Knopf. */
@@ -96,7 +96,7 @@ export const TAB_FRAGEN = {
     },
     {
       frage: 'Wann bekomme ich meinen Qi Alpha®?',
-      antwort: 'Der Versand startet ab Mitte Januar 2027, weltweit und zu 100 % versichert.',
+      antwort: 'Der Versand startet im Januar 2027, weltweit und zu 100 % versichert.',
     },
     {
       frage: 'Kann ich meine Nummer wählen?',
