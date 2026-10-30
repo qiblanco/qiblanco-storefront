@@ -57,3 +57,15 @@ test('QiOne® 2 Pro: Baumwollband als Bild in der Box', async () => {
   assert.ok(band, 'Kachel Baumwollband fehlt');
   assert.match(band.bild.url, /^https:\/\/cdn\.shopify\.com\/.*\/box-baumwollband\.webp(\?|$)/);
 });
+
+// Die Kette rendert ohne Schalter KONFIGURATOR_QIONE_KETTE noch ihre alte
+// Seite (routes/products.qione-kette.jsx); S6 gilt auch für /products/qione-kette*.
+const KETTE_ROUTE = process.env.KETTE_ROUTE_JSX ||
+  join(HIER, '..', '..', 'routes', 'products.qione-kette.jsx');
+
+test('Kette, alte Seite: Preis allein, kein Preisanker', () => {
+  const src = readFileSync(KETTE_ROUTE, 'utf-8');
+  assert.doesNotMatch(src, /<Preisanker\b/);
+  assert.doesNotMatch(src, /reusables\/Preisanker/);
+  assert.match(src, /<ProductPrice\b/, 'Preis steht allein');
+});
