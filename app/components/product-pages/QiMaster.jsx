@@ -828,8 +828,8 @@ function AlphaSerie() {
             The One Eye
           </h3>
           <p>
-            Rund um das Auge des Qi Alpha® laufen 108 Striche – die Zahl, die in
-            der Yoga-Überlieferung für Vollständigkeit steht.
+            Rund um das Auge des Qi Alpha® laufen 64 Striche: 32 lange und 32
+            kurze.
           </p>
         </div>
       </div>

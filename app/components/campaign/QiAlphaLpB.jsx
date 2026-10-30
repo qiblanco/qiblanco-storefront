@@ -60,7 +60,7 @@ export function alphaWortlaut() {
 export const QA_NEUE_FRAGEN = [
   {
     q: 'Wann wird geliefert?',
-    a: 'Der Versand startet ab Mitte Januar 2027, weltweit und zu 100 % versichert.',
+    a: 'Der Versand startet im Januar 2027, weltweit und zu 100 % versichert.',
   },
   {
     q: 'Kann ich meine Seriennummer wählen?',
@@ -197,7 +197,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
               Seriennummer.
             </h1>
             <p className="qa-lp__zeile">
-              {preise.haupt ? `${preise.haupt} · ` : ''}Versand ab Mitte Januar
+              {preise.haupt ? `${preise.haupt} · ` : ''}Versand im Januar
               2027, zu 100 % versichert
             </p>
             <a className="qa-knopf" href={QA_ZIEL} data-qb-kaufknopf="">
@@ -221,7 +221,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
             Elektronik und ohne Verschleiß.
           </p>
           <p>
-            Rund um das Auge laufen 108 Striche. Jedes Stück trägt eine eigene
+            Rund um das Auge laufen 64 Striche, 32 lange und 32 kurze. Jedes Stück trägt eine eigene
             Seriennummer, und die letzte Politur macht ein Goldschmied von Hand.
           </p>
           <QaVideoSlot />
@@ -290,7 +290,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
           </div>
         </dl>
         <ul className="qa-liste">
-          <li>Versand ab Mitte Januar 2027, weltweit und zu 100 % versichert</li>
+          <li>Versand im Januar 2027, weltweit und zu 100 % versichert</li>
           <li>0 % Finanzierung mit PayPal und Klarna</li>
         </ul>
         <a className="qa-knopf" href={QA_ZIEL} data-qb-kaufknopf="">

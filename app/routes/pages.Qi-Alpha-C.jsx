@@ -60,7 +60,7 @@ export const meta = () => [
     name: 'description',
     content:
       'Qi Alpha® mit Diamant, Limited 1st. Edition: 111 Stück mit eigener Nummer, 10.639 €, ' +
-      'Versand ab Mitte Januar 2027. Live-Vorstellung mit Christian am 8. November.',
+      'Versand im Januar 2027. Live-Vorstellung mit Christian am 8. November.',
   },
   {name: 'robots', content: 'noindex,nofollow'},
   {property: 'og:title', content: 'Qi Alpha®, Limited 1st. Edition 111/111'},
