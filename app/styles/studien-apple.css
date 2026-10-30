@@ -94,6 +94,12 @@
   color: var(--as-tinte);
 }
 
+/* Lesbare Zeilen: Fließtext höchstens ~70 Zeichen breit (design-rubrik
+   durchdacht, gemessen 30.10.: 16 % der Blöcke über 75 Zeichen). */
+[data-apple-seite='studien'] .qb-st :where(p, li) {
+  max-width: var(--as-text-breite);
+}
+
 /* Karten und Kacheln als Flächen statt weißer Kästen mit Schatten. */
 [data-apple-seite='studien'] :is(.qb-st-karte, .qb-st-verwandt-karte, .qb-st-eckdatum) {
   background: var(--as-flaeche);
