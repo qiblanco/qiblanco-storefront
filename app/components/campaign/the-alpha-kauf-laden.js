@@ -12,6 +12,7 @@
  */
 import {THE_ALPHA_SERIE, THE_ALPHA_VERGEBEN} from './the-alpha-daten-serie-vergeben.js';
 import {KETTE_STAHL, KETTE_LAENGEN} from './the-alpha-shop-daten.js';
+import {addonsImMarkt} from '../../lib/qi-master-addons.js';
 
 /**
  * Nummer aus einem Variantentitel „Alpha 19/100“, „Alpha 105/111“ bzw. seit
@@ -61,6 +62,27 @@ export function kettenOptionen(ketteProdukt) {
     return v ? {...laenge, art: 'gold', variante: v} : null;
   }).filter(Boolean);
   return [...gold, {...KETTE_STAHL, art: 'stahl', variante: null}];
+}
+
+/**
+ * Was die Seite an Kauf-Optionen zeigt: Nummernstand, ob der Nummern-Schritt
+ * erscheint, und die Kettenwahl. Entschieden wird am Markt des Qi Alpha, nicht
+ * an einer Währungsliste (addonsImMarkt): im TH-Markt in THB erscheinen
+ * Wunschnummer und Goldketten genauso wie in DE in EUR, sobald Shopify sie dort
+ * mit Preis führt (Job 20261030-repair-kaufweg-addons-fremdwaehrung-fix-live,
+ * F-2755). Ohne kaufbaren Qi Alpha bleibt nur die Stahlkette.
+ */
+export function kaufAuswahl(addons, haupt) {
+  const marktAddons = addonsImMarkt(addons, haupt);
+  const stand = marktAddons.wunschnummer
+    ? nummernStand(marktAddons.wunschnummer.variants.nodes)
+    : {nummern: [], frei: 0};
+  return {
+    marktAddons,
+    stand,
+    nummernAn: stand.frei > 0,
+    ketten: kettenOptionen(marktAddons.kette),
+  };
 }
 
 /** „69/111 - 1st. Edition“; ohne Wunsch „xx/111 - 1st. Edition“. */

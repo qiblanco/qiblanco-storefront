@@ -47,15 +47,43 @@ export function istQiAlpha(handle) {
 /** Zeilen-Merkmal einer Add-on-Zeile. Unterstrich = in der Kasse unsichtbar. */
 export const ADDON_ATTR = '_qm_addon';
 
-/**
- * In welchen Währungen die Add-ons erscheinen. Christian hat EURO-Preise
- * genannt (2.000 € / 4.879 €); der Laden rechnet sie für die DACH-Märkte
- * (DE/AT in EUR, CH in CHF) über denselben Weg um wie den Qi Master selbst.
- * US-Preise hat er offen gelassen — sie liegen als Frage bei ihm (RESULT des
- * Auftrags). Bis zur Antwort erscheinen die Add-ons im US-Markt nicht.
- * Rückweg/Freischaltung: 'USD' hier ergänzen.
+/*
+ * IN WELCHEN MÄRKTEN DIE ADD-ONS ERSCHEINEN: in jedem, in dem Shopify sie
+ * verkauft (Christian 30.10.2026: alle Kauf-Optionen „für Besucher aus allen
+ * Ländern, in denen wir verkaufen“; Job 20261030-repair-kaufweg-addons-
+ * fremdwaehrung-fix-live). Bis 30.10. stand hier ADDON_WAEHRUNGEN =
+ * ['EUR', 'CHF'] als Tor. Seit der Länder-Achse (PR #1105) bekommt fast jedes
+ * Land seinen eigenen Markt in eigener Währung, und das Tor schloss still alle
+ * Länder außer EUR/CHF aus (FEHLER-DB F-2755). Eine Währungsliste bricht bei
+ * jeder Markt-Erweiterung wieder; entschieden wird deshalb an der Variante.
  */
-export const ADDON_WAEHRUNGEN = ['EUR', 'CHF'];
+
+/**
+ * Die Add-ons, wie sie im Markt des Hauptprodukts kaufbar sind: je Produkt nur
+ * die Varianten mit einem Preis in der Währung des Qi Alpha (dieselbe Kasse,
+ * kein Mischbetrag). Ohne kaufbaren Qi Alpha gibt es keine Add-ons.
+ * Verfügbarkeit (availableForSale) prüfen die Leser je Variante selbst
+ * (nummernStand, kettenOptionen), vergebene Nummern bleiben so sichtbar.
+ * @returns {{wunschnummer: object|null, kette: object|null}}
+ */
+export function addonsImMarkt(addons, haupt) {
+  const waehrung = haupt?.price?.currencyCode;
+  if (!haupt?.availableForSale || !waehrung) {
+    return {wunschnummer: null, kette: null};
+  }
+  const imMarkt = (produkt) => {
+    const nodes = (produkt?.variants?.nodes || []).filter(
+      (v) =>
+        v?.price?.currencyCode === waehrung &&
+        Number.isFinite(Number.parseFloat(v.price.amount)),
+    );
+    return nodes.length ? {...produkt, variants: {nodes}} : null;
+  };
+  return {
+    wunschnummer: imMarkt(addons?.wunschnummer),
+    kette: imMarkt(addons?.kette),
+  };
+}
 
 /** Vorausgewählte Kettenlänge (Christian/Coworker A 2026-09-24). */
 export const KETTE_VORWAHL = '60 cm';
