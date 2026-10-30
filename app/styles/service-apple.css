@@ -200,9 +200,12 @@
   margin-top: var(--as-s-1);
 }
 
-/* Schluss: mittig wie der Kopf, die Seite endet, wo sie anfing. */
-.pba-schluss {
-  text-align: center;
+/* Schluss: links wie jede H2 (EINE Ausrichtung), der Knopf mit. */
+.pba-schluss .as-unter {
+  margin-left: 0;
+}
+.pba-schluss .as-knoepfe {
+  justify-content: flex-start;
 }
 
 /* ============================================================================
