@@ -40,10 +40,32 @@ import {
 const WORTLAUT = 'christian-wortlaut-20261008';
 const BREITEN = [480, 750, 1080, 1200];
 
+function Foto() {
+  return (
+    <figure className="pba-foto">
+      <img
+        className="as-bild"
+        src={mitBreite(FOTO, 750)}
+        srcSet={bildSrcSet(FOTO, BREITEN)}
+        sizes="(min-width: 750px) 400px, 100vw"
+        width="1200"
+        height="1535"
+        alt="Christian Bernd Bauer, Gründer von Qi Blanco"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <figcaption className="pba-foto-name" data-fremdtext={WORTLAUT}>
+        {CHRISTIAN_BLOCK.name}
+      </figcaption>
+    </figure>
+  );
+}
+
+/** Kopf: links Überschrift, Einstieg und Weg zu den Terminen, rechts Christian. */
 function Kopf({naechster}) {
   return (
     <section className="as-hero pba-kopf" data-section="pb-kopf">
-      <div className="as-hero-text">
+      <div className="as-hero-text pba-kopf-text">
         <p className="as-overline">{KOPF.overline}</p>
         <h1 className="as-h1">
           <span className="pba-h1-zeile">{KOPF.h1[0]}</span>{' '}
@@ -69,29 +91,15 @@ function Kopf({naechster}) {
           </div>
         )}
       </div>
+      <Foto />
     </section>
   );
 }
 
+/** Sein Block „Live mit mir :)“: das Foto steht darüber im Kopf (Christian 08.10.: Foto über dem Text). */
 function Person() {
   return (
     <section className="as-sektion pba-person" data-section="pb-person">
-      <figure className="pba-foto">
-        <img
-          className="as-bild"
-          src={mitBreite(FOTO, 750)}
-          srcSet={bildSrcSet(FOTO, BREITEN)}
-          sizes="(min-width: 750px) 400px, 100vw"
-          width="1200"
-          height="1535"
-          alt="Christian Bernd Bauer, Gründer von Qi Blanco"
-          fetchpriority="high"
-          decoding="async"
-        />
-        <figcaption className="pba-foto-name" data-fremdtext={WORTLAUT}>
-          {CHRISTIAN_BLOCK.name}
-        </figcaption>
-      </figure>
       <div className="pba-person-text" data-fremdtext={WORTLAUT}>
         <h2 className="as-h2">{CHRISTIAN_BLOCK.titel}</h2>
         {CHRISTIAN_BLOCK.absaetze.map((p) => (

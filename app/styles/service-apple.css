@@ -105,28 +105,45 @@
   text-align: center;
 }
 
-/* Christian: am Handy Foto über dem Text, ab 750 px nebeneinander. */
-.pba-person {
-  display: grid;
-  gap: var(--as-s-4);
-  align-items: start;
-}
+/* Kopf: am Handy mittig, Foto unter dem Einstieg (also über seinem Text).
+   Ab 750 px zwei Spalten: Text links, Christian rechts, beide linksbündig. */
 .pba-foto {
   max-width: var(--as-text-breite);
+  margin: var(--as-s-6) auto 0;
 }
 .pba-foto-name {
   margin-top: var(--as-s-1);
   font-size: var(--as-fs-2);
   color: var(--as-grau);
 }
+@media (min-width: 750px) {
+  .pba-kopf {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: var(--as-s-8);
+    align-items: center;
+    max-width: var(--as-breite);
+    margin: 0 auto;
+    text-align: left;
+  }
+  .pba-kopf .as-unter {
+    margin-left: 0;
+  }
+  .pba-kopf .as-knoepfe {
+    justify-content: flex-start;
+  }
+  .pba-kopf .pb__naechster {
+    text-align: left;
+  }
+  .pba-foto {
+    margin: 0;
+  }
+}
+.pba-person-text {
+  max-width: var(--as-text-breite);
+}
 .pba-person-text .as-h2 {
   margin-bottom: var(--as-s-1);
-}
-@media (min-width: 750px) {
-  .pba-person {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-    gap: var(--as-s-8);
-  }
 }
 
 /* Fragen: drei Alltagsbilder, je eine Frage darunter. */
