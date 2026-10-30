@@ -42,6 +42,9 @@
 
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  /* Lange Adressen und Kennungen im Shopify-Rumpf (privacy-policy) brechen um,
+     statt die Seite auf 390 px seitlich aufzuschieben. Text bleibt gleich. */
+  overflow-wrap: anywhere;
 }
 
 @media (min-width: 750px) {
