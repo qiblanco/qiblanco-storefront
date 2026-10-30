@@ -71,7 +71,9 @@ body:has(.as-seite .rs-doc) footer {
 :where(.as-seite .rs-doc) li {
   font-size: var(--rs-fs-base);
 }
-:where(.as-seite .rs-doc) :where(h1, h2, h3, h4, h5, h6) {
+/* Überschriften: hier volle Spezifität (0,2,0) - reset.css setzt den Schatten
+   mit h1…h3 (0,0,1), ein reines :where verlöre dagegen (Screens Iteration 4). */
+.as-seite .rs-doc :where(h1, h2, h3, h4, h5, h6) {
   text-shadow: none;
   color: var(--rs-text);
 }
