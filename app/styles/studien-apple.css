@@ -48,6 +48,9 @@
   --st-shadow-sm: none;
   --st-shadow-md: none;
 
+  /* Breite: dieselbe Spalte wie das Schlussband des Baukastens (1200).
+     Fließtext bleibt durch die Regel unten bei der Textbreite. */
+  --st-breite: var(--as-breite);
 
   font-family: inherit;
   font-size: var(--as-fs-3);
@@ -104,9 +107,4 @@
 [data-apple-seite='studien'] :is(.qb-st-karte, .qb-st-verwandt-karte, .qb-st-eckdatum) {
   background: var(--as-flaeche);
   border-color: transparent;
-}
-
-/* Abschluss nach dem Beweis: der Weg zum Produkt, danach Anna. */
-[data-apple-seite='studien'] .as-cta-band {
-  margin-top: var(--as-s-8);
 }
