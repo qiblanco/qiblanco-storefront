@@ -274,3 +274,57 @@
     min-height: var(--as-tippziel);
   }
 }
+
+/*
+ * SCROLL-VIDEOS IM SCOPE (Gitterchip® und Mikroskop, Christian 19./21.09.2026).
+ * Die Bausteine bringen ihre Werte aus app.css mit (2,5rem und 0,9em in den
+ * Overlays, Kasten rgba(0,0,0,.3) mit 10 px Radius, Grund rgb(8,9,24)). In der
+ * Apple-Fassung nehmen sie die Stufen und Farben des Baukastens: EIN H2-Stil,
+ * links ausgerichtet wie alle H2 der Seite, EIN Radius, das dunkle Band.
+ */
+.as-seite .ScrollScrubVideo {
+  background: var(--as-band);
+}
+.as-seite .ScrollScrubVideo .VideoOverlay :is(.TextContent-Start, .TextContent-End) h2 {
+  font-size: var(--as-fs-7);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+}
+.as-seite .ScrollScrubVideo .VideoOverlay .TextContent-Start p {
+  font-size: var(--as-fs-5);
+}
+.as-seite .ScrollScrubVideo .VideoOverlay .TextContent-End div:not(.content) {
+  text-align: left;
+}
+.as-seite .ScrollScrubVideo .VideoOverlay .TextContent-End div.content {
+  padding: var(--as-s-3);
+  background: var(--as-band);
+  border-radius: var(--as-radius);
+}
+.as-seite .ScrollScrubVideo .VideoOverlay .TextContent-End div p {
+  font-size: var(--as-fs-3);
+}
+.as-seite .ScrollScrubVideo .VideoOverlay .VideoProgressTracker {
+  background: var(--as-weiss);
+}
+.as-seite .ScrollScrubVideo-fussnote {
+  font-size: var(--as-fs-2);
+  color: var(--as-grau);
+}
+@media screen and (max-width: 749px) {
+  .as-seite .ScrollScrubVideo .VideoOverlay .TextContent-Start {
+    text-align: left;
+  }
+  .as-seite .ScrollScrubVideo .VideoOverlay :is(.TextContent-Start, .TextContent-End) h2 {
+    font-size: var(--as-fs-5);
+  }
+  .as-seite .ScrollScrubVideo .VideoOverlay .TextContent-Start p {
+    font-size: var(--as-fs-4);
+  }
+}
+
+/* EINE H2-Ausrichtung auf der ganzen Seite: links (wie die Bild-Text-Bänder). */
+[data-apple-seite^='schlaf-zellen-schutz'] .as-h2 {
+  text-align: left;
+}

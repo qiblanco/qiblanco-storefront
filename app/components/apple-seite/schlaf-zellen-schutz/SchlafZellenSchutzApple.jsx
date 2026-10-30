@@ -45,6 +45,15 @@ import {
 const QIONE_ZIEL = produktLink('qione-2-pro', BLOCK_LP, 'kauf');
 const QIONE_CTA = 'Jetzt kaufen';
 
+/*
+ * SCROLLSTRECKE DER BEIDEN VIDEOS: 200 Bildschirmhöhen statt 300/250 (Gitterchip®
+ * in C) und 500/400 (Mikroskop, Vorgabe des Bausteins). Grund: design-rubrik
+ * technisch, Sektions-Ausreisser max/median > 5 (web-soll.yaml) — gemessen
+ * 4478 px Mikroskop bei Median 407 px auf der Vorschau 30.10. Christians
+ * Anordnung (Video zuerst, dann Erklärung) bleibt.
+ */
+const SCROLL_VH = 200;
+
 function usePreise(products) {
   const {preisLabelVon} = useLpPreis();
   const preis = (handle) => {
@@ -290,14 +299,14 @@ export function SchlafZellenSchutzApple({products = [], variante = 'a'}) {
       <AppleSeite seite={seite}>
         <Kopf preis={qionePreis} />
         {t.gitterchipVideo ? (
-          <GitterchipMoleculesScrub dataSection="lp-a-gitterchip-video" heightVhDesktop={300} heightVhMobile={250} />
+          <GitterchipMoleculesScrub dataSection="lp-a-gitterchip-video" heightVhDesktop={SCROLL_VH} heightVhMobile={SCROLL_VH} />
         ) : null}
         {t.wirkprinzip ? (
           <AppleKapitel etikett={WIRKPRINZIP.etikett} titel={WIRKPRINZIP.titel} absaetze={WIRKPRINZIP.absaetze} />
         ) : null}
         {t.ebenen ? EBENEN.map((e, i) => <AppleBildBand key={e.etikett} index={i} {...e} />) : null}
         {t.weiter1 ? <Weiter nr={1} preis={qionePreis} nurMobil={t.weiter1 === 'mobil'} /> : null}
-        {t.mikroskopVideo ? <ScrollScrubVideo dataSection="lp-a-mikroskop-video" {...MIKROSKOP} /> : null}
+        {t.mikroskopVideo ? <ScrollScrubVideo dataSection="lp-a-mikroskop-video" heightVhDesktop={SCROLL_VH} heightVhMobile={SCROLL_VH} {...MIKROSKOP} /> : null}
         {t.labor ? <Labor /> : null}
         {t.weiter6 ? <Weiter nr={6} preis={qionePreis} /> : null}
         <AppleStimmen titel={STIMMEN.titel} stimmen={STIMMEN.stimmen} link={STIMMEN.link} />
