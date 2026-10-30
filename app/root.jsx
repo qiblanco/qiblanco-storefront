@@ -128,6 +128,7 @@ import {
   salesbotWidgetOrigin,
   istSalesbotDeutscherShop,
 } from '~/lib/salesbot-widget';
+import {qpxBasisEndpoint} from '~/lib/dienst-domain';
 import {SalesbotWidget} from './components/SalesbotWidget';
 import {
   preismodusStand,
@@ -281,7 +282,8 @@ export async function loader(args) {
     // Bewusst UNABHÄNGIG vom Cookiebot-Consent (setzt keine Cookies/kein
     // localStorage/keine persistente ID) — Go-live = diese env + Server
     // (PIXEL_BASIS_MODE=on + Caddy /b), beides Christian-Hand.
-    qpxBasisEndpoint: env.PUBLIC_QPX_BASIS_ENDPOINT || '',
+    // Eigene Domain statt sslip (lib/dienst-domain.js, 2026-10-30).
+    qpxBasisEndpoint: qpxBasisEndpoint(env),
     // Eigener Sales-Chat-Assistent (s05): der Origin des Bots. Default ist
     // der in s03 scharf geschaltete Edge, `PUBLIC_SALESBOT_WIDGET_ORIGIN=off`
     // schaltet ab (lib/salesbot-widget.js). Dieser Wert sagt NUR, OB der

@@ -6,6 +6,7 @@ import {salesbotWidgetCspQuellen} from '~/lib/salesbot-widget';
 import {istStillgelegteJSaleSeite} from '~/data/ten-years-deals';
 import {refAusAufruf, wendePartnercodeAn} from '~/lib/partnercode.server';
 import {einbettungsWeiche} from '~/lib/einbettungs-weiche.server';
+import {qpxBasisEndpoint} from '~/lib/dienst-domain';
 import {
   buyerIpAusRequest,
   istInternerZugriff,
@@ -28,10 +29,10 @@ import {
  */
 function qpxConnectSrc(env) {
   const origins = [];
-  for (const endpoint of [
-    env?.PUBLIC_QPX_ENDPOINT,
-    env?.PUBLIC_QPX_BASIS_ENDPOINT,
-  ]) {
+  // Basis-Endpoint über dieselbe Abbildung wie root.jsx (lib/dienst-domain.js),
+  // sonst stünde in connect-src der alte Host und der Beacon an den neuen
+  // würde still geblockt.
+  for (const endpoint of [env?.PUBLIC_QPX_ENDPOINT, qpxBasisEndpoint(env)]) {
     if (!endpoint) continue;
     try {
       origins.push(new URL(endpoint).origin);
@@ -136,7 +137,7 @@ function qpxConnectSrc(env) {
  * Er kostet genau so viel wie eine Workflow-Zeile zu ändern — auf
  * Oxygen ist beides ein Commit auf main und derselbe Deploy.
  */
-const CSP_BERICHT_ZIEL_DEFAULT = 'https://qpx.65-108-150-121.sslip.io/csp-report';
+const CSP_BERICHT_ZIEL_DEFAULT = 'https://qpx.dienst.qiblanco.com/csp-report';
 
 /**
  * Meldeziel auflösen. Leer oder 'off' = kein Report-Only-Kopf.
@@ -485,7 +486,8 @@ export default async function handleRequest(
       // erste ist ANMELDE_ENDPUNKT in app/components/reusables/Anmeldeweiche.jsx.
       // Fehlt diese Zeile, scheitert der Abruf STILL und jedes Formular bleibt
       // beim AC-Embed.
-      'https://anmelden.65-108-150-121.sslip.io',
+      // Seit 2026-10-30 eigene Domain (lib/dienst-domain.js).
+      'https://anmelden.dienst.qiblanco.com',
       'https://*.myshopify.dev',
       'https://*.vimeo.com',
       'https://*.vimeocdn.com',

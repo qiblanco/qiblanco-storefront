@@ -147,7 +147,7 @@ function armPfad(url) {
  * zurück und A bleibt A: der Eintrag (zusammen mit B in AUSSCHLUSS_SEGMENTE der
  * Ad-Weiche) ist der Einschalter, ein eigener PR.
  */
-export const ENDPUNKT = 'https://termin.65-108-150-121.sslip.io';
+export const ENDPUNKT = 'https://termin.dienst.qiblanco.com';
 
 export function basis(context) {
   const env = context?.env?.PRODUKTBERATUNG_API;

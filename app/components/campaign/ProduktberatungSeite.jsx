@@ -154,7 +154,7 @@ const PRODUKTE = [
   'Qi Alpha®',
   'anderes / weiß noch nicht',
 ];
-export const TERMIN_API = 'https://termin.65-108-150-121.sslip.io';
+export const TERMIN_API = 'https://termin.dienst.qiblanco.com';
 /** Mindestlänge für „Worum geht es?" (Christian 17.10.2026); dieselbe Zahl steht in produktberatung/src/store.py. */
 export const ANLIEGEN_MIN = 20;
 const ANLIEGEN_PLATZHALTER =
