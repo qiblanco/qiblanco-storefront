@@ -3,7 +3,10 @@ import {useEffect} from 'react';
 /** Die id, die der Loader seinem iframe gibt. */
 const RAHMEN_ID = 'qiblanco-salesbot-widget-frame';
 
-/** Loader-Attribute an EINER Stelle — SSR-Tag und Nachzug dürfen nicht driften. */
+/** Selektor des echten, nach `load` eingefügten Loaders. */
+const LADE_MARKE = 'data-qiblanco-salesbot-loader="nach-load"';
+
+/** Loader-Attribute an EINER Stelle — SSR-Merkmal und Lader dürfen nicht driften. */
 const LOADER_DATEN = {
   tenantId: 'tenant_qiblanco',
   projectId: 'project_qiblanco_sales',
@@ -16,9 +19,8 @@ const LOADER_DATEN = {
  * Loader-Einbindung des eigenen Sales-Chat-Assistenten.
  * Grossjob 20260728-leon-chatbot-live-pages-chatbot, Segment s05.
  *
- * Gerendert wird genau EIN <script>-Tag — nach demselben Muster wie die
- * Gorgias-Loader eine Ebene höher (nonce, defer, suppressHydrationWarning).
- * Das Skript erzeugt clientseitig ein iframe auf `<origin>/widget/embed` und
+ * Gerendert wird genau EIN inertes <script type="text/plain">-Merkmal; der
+ * echte Loader kommt nach `load` (Begründung im Effekt). Das Skript erzeugt clientseitig ein iframe auf `<origin>/widget/embed` und
  * gibt window.location.href als `pageUrl` mit; daraus löst der Bot seinen
  * Rechtsraum auf (bekannter Host → dessen Region, fremder Host →
  * fail-closed).
@@ -82,52 +84,44 @@ export function SalesbotWidget({origin, nonce}) {
     waechter.observe(document.body, {childList: true});
 
     /**
-     * NACHZUG — behebt einen GEMESSENEN Wackler, keinen theoretischen:
-     * in 1 von 3 Läufen gegen den Produktionsbau war der Loader im DOM, das
-     * iframe aber NICHT. Ursache ist ein Rennen, das der Loader selbst nicht
-     * übersteht: er läuft als defer-Skript VOR dem React-Entry, hängt sein
-     * iframe an `document.body` und setzt `window.__QiBlancoWidgetLoaded`.
-     * Ersetzt React danach den Body (auf dieser Bank scheitert die Hydration
-     * auch auf der unangetasteten Bestands-LP), ist das iframe weg — und das
-     * erneut eingefügte Loader-Skript steigt wegen des schon gesetzten Flags
-     * sofort wieder aus. Loader da, Widget weg, keine Fehlermeldung.
+     * LADEN ERST NACH `load` (seit 2026-10-30, Job
+     * 20261030-folge-dienste-auf-eigene-domain-nach-dns). Vorher stand hier ein
+     * SSR-Tag mit `defer`. Gemessen im Eltern-Auftrag
+     * 20261030-prio3-kaufweg-unabhaengig-von-sslip-io-eigene-domain: verwirft
+     * ein Netz den Abruf still, bleibt `document.readyState` auf 'interactive',
+     * DOMContentLoaded und load kommen erst nach dem TCP-Timeout, und alles,
+     * was darauf wartet (Poster-Vorladen, Banner-Beobachtung, qpx), steht.
+     * `async` allein hilft nicht: ein async-Skript hält `load` genauso auf,
+     * und im <head> bricht es den Loader (er liest `document.body.dataset`
+     * sofort). Ein Skript, das NACH `load` eingefügt wird, hält nichts mehr auf.
      *
-     * DIE BEDINGUNG IST BEWUSST ZWEITEILIG — hier hat die erste, naive Fassung
-     * einen zweiten Fehler gebaut (gemessen: nach einer SPA-Navigation auf die
-     * Testseite hingen ZWEI iframes übereinander, also genau der Doppel-Starter,
-     * den die Gorgias-Unterdrückung verhindern soll):
-     *
-     *   `__QiBlancoWidgetLoaded` gesetzt  = der Loader ist nachweislich schon
-     *                                       DURCHGELAUFEN. Fehlt das iframe
-     *                                       trotzdem, hat die Hydration es
-     *                                       weggeräumt → nachziehen ist richtig.
-     *   Flag NICHT gesetzt                = es lädt noch ein Loader-Tag (so ist
-     *                                       es bei Client-Navigation: React
-     *                                       fügt ein frisches <script> ein, das
-     *                                       asynchron lädt). Dann NICHTS tun —
-     *                                       dieses Tag erzeugt das iframe
-     *                                       selbst. Die alte Fassung löschte
-     *                                       hier das Flag und zog nach, worauf
-     *                                       BEIDE Skripte ein iframe bauten.
-     *
-     * So braucht der Nachzug keinen Timer und kein Zeitfenster: er hängt an
-     * einem Signal, das genau das bedeutet, was er wissen muss.
+     * Dieser Weg ersetzt auch den früheren NACHZUG (Loader lief vor der
+     * Hydration, React räumte sein iframe weg, das Flag blockte den zweiten
+     * Lauf): nach `load` ist die Hydration durch oder der Rahmen wird vom
+     * Entdoppler gehalten, und ein Flag ohne Rahmen wird hier verworfen.
      */
-    const loaderLiefSchon = Boolean(window.__QiBlancoWidgetLoaded);
-    if (loaderLiefSchon && !document.getElementById(RAHMEN_ID)) {
+    const laden = () => {
+      if (document.getElementById(RAHMEN_ID)) return;
+      if (document.querySelector(`script[${LADE_MARKE}]`)) return;
       delete window.__QiBlancoWidgetLoaded;
-      const nachzug = document.createElement('script');
-      nachzug.src = `${origin}/embed/qiblanco-widget.js`;
-      // Eigener Marker-Wert: so bleibt im SSR-HTML genau EIN Loader zählbar
-      // (das ist die Prüfgrösse der Weiche) und der Nachzug ist unterscheidbar.
-      nachzug.dataset.qiblancoSalesbotLoader = 'nachzug';
-      Object.assign(nachzug.dataset, LOADER_DATEN);
-      // Unter 'strict-dynamic' wäre der Nachzug schon deshalb erlaubt, weil ihn
+      const tag = document.createElement('script');
+      tag.src = `${origin}/embed/qiblanco-widget.js`;
+      tag.async = true;
+      // Eigener Marker-Wert: im SSR-HTML bleibt genau EIN Loader-Merkmal
+      // zählbar (Prüfgrösse der Auslieferungs-Wache), der echte Lader ist
+      // unterscheidbar.
+      tag.dataset.qiblancoSalesbotLoader = 'nach-load';
+      Object.assign(tag.dataset, LOADER_DATEN);
+      // Unter 'strict-dynamic' wäre das Skript schon deshalb erlaubt, weil es
       // ein vertrauenswürdiges Skript erzeugt; die nonce deckt zusätzlich
-      // Browser ab, die 'strict-dynamic' nicht kennen und nur die Allowlist
-      // auswerten.
-      if (nonce) nachzug.nonce = nonce;
-      document.head.appendChild(nachzug);
+      // Browser ab, die 'strict-dynamic' nicht kennen.
+      if (nonce) tag.nonce = nonce;
+      document.body.appendChild(tag);
+    };
+    if (document.readyState === 'complete') {
+      laden();
+    } else {
+      window.addEventListener('load', laden, {once: true});
     }
 
     /**
@@ -142,6 +136,7 @@ export function SalesbotWidget({origin, nonce}) {
      * Testseite den Assistenten wieder aufbaut statt stumm zu bleiben.
      */
     return () => {
+      window.removeEventListener('load', laden);
       waechter.disconnect();
       // ALLE Rahmen, nicht nur den ersten: sollte doch einmal ein Duplikat
       // entstehen, darf es die Seite nicht überleben.
@@ -149,14 +144,20 @@ export function SalesbotWidget({origin, nonce}) {
         .querySelectorAll(`#${RAHMEN_ID}`)
         .forEach((rahmen) => rahmen.remove());
       document
-        .querySelectorAll('script[data-qiblanco-salesbot-loader="nachzug"]')
+        .querySelectorAll(`script[${LADE_MARKE}]`)
         .forEach((tag) => tag.remove());
       delete window.__QiBlancoWidgetLoaded;
     };
   }, [origin, nonce]);
 
+  // TRÄGT NICHTS AUS, LÄDT NICHTS: type="text/plain" — der Browser holt ein
+  // Skript mit fremdem Typ nicht. Das Tag bleibt als Merkmal im HTML, weil die
+  // Auslieferungs-Wache (qi-salesbot/data/widget-auslieferungs-vertrag.json,
+  // an_muster/traeger_muster) und die Pixelmaske genau dieses Tag lesen.
+  // Geladen wird oben im Effekt, nach `load`.
   return (
     <script
+      type="text/plain"
       src={`${origin}/embed/qiblanco-widget.js`}
       data-qiblanco-salesbot-loader=""
       data-tenant-id="tenant_qiblanco"
@@ -165,7 +166,6 @@ export function SalesbotWidget({origin, nonce}) {
       data-placement="right"
       data-initial-open="false"
       nonce={nonce}
-      defer
       suppressHydrationWarning
     />
   );
