@@ -108,3 +108,16 @@
   background: var(--as-flaeche);
   border-color: transparent;
 }
+
+/* Schlussband in derselben Spalte wie .qb-st-wrap (1200 breit, innen
+   --st-s3 = --as-s-3 Rand): gemessen 30.10. stand es 24 px links daneben.
+   Kein eigener Abstand nach oben, der Rand unter der letzten Sektion trägt. */
+[data-apple-seite='studien'] .as-cta-band {
+  margin-top: 0;
+  padding-inline: 0;
+}
+[data-apple-seite='studien'] .as-cta-innen {
+  box-sizing: border-box;
+  max-width: var(--as-breite);
+  padding-inline: var(--as-s-3);
+}
