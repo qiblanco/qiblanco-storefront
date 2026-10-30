@@ -126,3 +126,10 @@ test('CSS: jede gelesene Variable ist definiert', () => {
     assert.ok(new RegExp(`${m[1]}\\s*:`).test(definiert), `${m[1]} ist nirgends definiert`);
   }
 });
+
+test('Sticky: sitzt in der Apple-Fassung am Rand, nicht 64 px darüber (s08, 30.10.2026)', () => {
+  // apple-seite.css gibt `.as-seite > :last-child` den Schlussabstand; die
+  // feste Leiste ist das letzte Kind und lag sonst am Ende auf den Fuß-Links.
+  const css = lies('styles/start-b-apple.css');
+  assert.match(css, /\.as-seite > \.qb-rs-sticky:last-child\s*\{\s*margin-bottom:\s*0;/);
+});
