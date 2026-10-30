@@ -19,6 +19,8 @@ export const KAUFSEITE = '/products/qione-2-pro';
 const BILD = Object.freeze({
   qione: {
     url: `${CDN}/files/qb-video360-ersatzbild--360-qione-front--f0024fcab5ec.jpg?v=1790809389`,
+    // 360-Grad-Drehung an dieser Stelle (AsBild -> Produkt360Video), das Bild bleibt Ersatzbild.
+    drehung: 'qione',
     alt: 'QiOne® 2 Pro von vorn, Gehäuse aus Chirurgenstahl mit goldenem Gitterchip®',
     breite: 1080,
     hoehe: 1080,
