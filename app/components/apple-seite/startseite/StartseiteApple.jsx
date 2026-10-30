@@ -2,7 +2,7 @@ import startseiteAppleStyles from '~/styles/start-b-apple.css?url';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {StickyKaufknopf} from '~/components/rookie/start/StickyKaufknopf';
 import {AppleSeite} from '../AppleSeite';
-import {Sektion} from '../AppleSektionen';
+import {AsBild, Sektion} from '../AppleSektionen';
 import {bildSrcSet, mitBreite} from '../apple-seite-logik';
 import {MODELLE, startseiteSektionen} from './startseite-daten';
 import {useStartseitePreise} from './startseite-preise';
@@ -27,17 +27,22 @@ function Modelle({preise}) {
       <ul className="sa-modelle-liste">
         {MODELLE.liste.map((g) => (
           <li key={g.name} className="sa-modell">
-            <img
-              className="as-bild sa-modell-bild"
-              src={mitBreite(g.bild.url, 750)}
-              srcSet={bildSrcSet(g.bild.url, [480, 750, 1080])}
-              sizes="(min-width: 750px) 33vw, 100vw"
-              alt={g.bild.alt}
-              width={g.bild.breite}
-              height={g.bild.hoehe}
-              loading="lazy"
-              decoding="async"
-            />
+            {g.bild.drehung ? (
+              // Die drei Geräte drehen sich (Christian 30.10.2026), Laden erst in Sichtweite.
+              <AsBild bild={g.bild} sizes360="(min-width: 750px) 33vw, 100vw" />
+            ) : (
+              <img
+                className="as-bild sa-modell-bild"
+                src={mitBreite(g.bild.url, 750)}
+                srcSet={bildSrcSet(g.bild.url, [480, 750, 1080])}
+                sizes="(min-width: 750px) 33vw, 100vw"
+                alt={g.bild.alt}
+                width={g.bild.breite}
+                height={g.bild.hoehe}
+                loading="lazy"
+                decoding="async"
+              />
+            )}
             <h3 className="sa-modell-name">{mitMarkeR(g.name)}</h3>
             <p className="sa-modell-zeile">{g.zeile}</p>
             {preise[g.kaufen] ? <p className="as-preis">{preise[g.kaufen]}</p> : null}
