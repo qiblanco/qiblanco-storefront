@@ -67,9 +67,8 @@ const QIONE_ERSATZ = ERSATZBILD_360.qione;
 const QIONE_360_KANTE = ERSATZBILD_KANTE;
 
 /*
- * DIE ZWEI SCHWESTER-DREHUNGEN ALS MP4 (Grossjob 20261030-prio1-homepage-
- * gesamt-pruefen-alpha-befunde-alle-seiten-geraete-maerkte, s02; Christian
- * 30.10.2026: „sollten das wahrscheinlich 360 Grad Animationen sein, die sich
+ * DIE ZWEI SCHWESTER-DREHUNGEN ALS MP4 (Homepage-Gesamtprüfung nach Qi Alpha,
+ * Segment s02; Christian 30.10.2026: „sollten das wahrscheinlich 360 Grad Animationen sein, die sich
  * drehen … es muss überall auf der Homepage jetzt nochmal kontrolliert
  * werden“). Die Apple-Seiten (Startseite, *-details, LPs) zeigten seit #1099/
  * #1104 nur das Ersatzbild. Hier kommt die Drehung zurück, als dieselbe

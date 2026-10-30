@@ -216,8 +216,8 @@ test('SSR: Weiche aus = heutige Seite byte-gleich, kein Marker, kein CSS', async
   assert.match(an, /data-apple-seite="start-b"/);
 });
 
-/* ---- (4) Handy-Kopf und 360-Drehung (Grossjob 20261030-prio1-homepage-gesamt-
-   pruefen-alpha-befunde-alle-seiten-geraete-maerkte, s02; Christian 30.10.2026:
+/* ---- (4) Handy-Kopf und 360-Drehung (Homepage-Gesamtprüfung nach Qi Alpha,
+   Segment s02; Christian 30.10.2026:
    erst das Foto, dann die Knöpfchen; die 360-Ansichten drehen sich) --------- */
 
 const CSS = readFileSync(join(APP, 'styles/apple-seite.css'), 'utf8');
