@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {bildQuellen} from './shopifyBildQuellen';
-import {GESTEN, spieleSicher} from '~/lib/video-nachholen';
+import {GESTEN, spieleSicher} from './video-nachholen';
 
 /*
  * Ersatzbild an jeder 360-Grad-Drehung (Christian, 01.10.2026):
@@ -180,8 +180,8 @@ export function useErsatzbild(videoRef, an = true) {
 }
 
 /*
- * NACHHOLEN (Grossjob 20261030-prio1-homepage-gesamt-pruefen-alpha-befunde-
- * alle-seiten-geraete-maerkte, s03; Christian 30.10.2026: „auf ihrem Handy
+ * NACHHOLEN (Grossjob vom 30.10.2026 „Homepage gesamt prüfen“, s03;
+ * Christian 30.10.2026: „auf ihrem Handy
  * geht immer noch nicht das Video“, Anna, Chrome auf dem iPhone).
  *
  * iOS lehnt play() ohne Geste auch für ein stummes Video ab, wenn der
@@ -199,7 +199,7 @@ export function useErsatzbild(videoRef, an = true) {
  * nachweislich läuft (useErsatzbild); steht das Video, steht ein vollwertiges
  * Bild (Christian 01.10.2026). Unter prefers-reduced-motion wird nichts
  * nachgeholt: dort bleibt das Standbild. Reine Teile (spieleSicher, GESTEN)
- * in lib/video-nachholen.js, geprüft in video-nachholen.test.mjs.
+ * in video-nachholen.js, geprüft in video-nachholen.test.mjs.
  */
 export function useVideoNachholen(videoRef, an = true) {
   useEffect(() => {

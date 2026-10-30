@@ -2,8 +2,8 @@ import {useEffect, useState} from 'react';
 
 /*
  * IST EIN FESTER KAUFKNOPF GERADE SICHTBAR? Der EINE Haken für alle festen
- * Kaufknöpfe am unteren Rand (Grossjob 20261030-prio1-homepage-gesamt-pruefen-
- * alpha-befunde-alle-seiten-geraete-maerkte, s03).
+ * Kaufknöpfe am unteren Rand (Grossjob vom 30.10.2026 „Homepage gesamt
+ * prüfen“, s03).
  *
  * ANLASS (Christian 30.10.2026): „auf ihrem Handy geht immer noch nicht das
  * Video und der rote Balken unten hüpft noch“ (Anna, Chrome auf dem iPhone)
@@ -16,14 +16,14 @@ import {useEffect, useState} from 'react';
  * ein Bezugspunkt (Kaufbox-Knopf, Preisblock, Schluss) genau in diesem
  * Streifen, klappt der Zustand mit jedem Ein- und Ausklappen um, ohne dass der
  * Kunde etwas tut. Der Knopf blendet sich ein und aus. Auf der Qi-Alpha-Seite
- * gemessen: Chrome iOS 8 Wackelstellen, Safari 4, Android 3 (Job
- * 20261030-prio3-repair-qi-alpha-video-sound-iphone-safari-echtgeraet-standard).
+ * gemessen: Chrome iOS 8 Wackelstellen, Safari 4, Android 3 (Reparatur
+ * Qi Alpha vom 30.10.2026, TheAlphaPremium.jsx).
  *
  * DIE REGEL (dieselbe wie TheAlphaPremium.jsx, dort für Qi Alpha):
  *  - Gemessen wird gegen die KLEINE Bildschirmhöhe (100svh, Leisten ein). Sie
  *    ändert sich beim Ein- und Ausklappen nicht. Gemessen über ein
  *    unsichtbares Element mit height:100svh, gesetzt per style.cssText (so
- *    rechnet es auch die Geräteprobe echtgeraet_probe.py um).
+ *    rechnet es auch die Geräteprobe der Job-Einspeisung um).
  *  - Hysterese RUHE_PX: ein Bezugspunkt kommt ins Bild, sobald seine Oberkante
  *    über die kleine Bildschirmhöhe steigt; er gilt erst wieder als draußen,
  *    wenn er RUHE_PX darunter (oder darüber) steht. Ein Ruck von ein paar
@@ -32,9 +32,9 @@ import {useEffect, useState} from 'react';
  *    in einem Bild.
  *
  * WER IHN BENUTZT: reusables/Kaufleiste.jsx (Kaufseiten), rookie/start/
- * StickyKaufknopf.jsx (/pages/start-b), apple-seite/schlaf-zellen-schutz/
- * SchlafZellenSchutzApple.jsx (FesterKnopf), campaign/SchlafZellenSchutz.jsx
- * (StickyKaufknopf). Jede Leiste behält ihre eigene Regel (wann sie steht),
+ * StickyKaufknopf.jsx (/pages/start-b), campaign/SchlafZellenSchutz.jsx
+ * (StickyKaufknopf). Die Apple-Fassung (apple-seite/schlaf-zellen-schutz,
+ * FesterKnopf, Schalter aus) zieht nach, wenn sie live geht. Jede Leiste behält ihre eigene Regel (wann sie steht),
  * der Haken liefert nur die ruhige Lage ihrer Bezugspunkte.
  *
  * Reine Teile (imBildRuhig, lageRuhig, lageZusammen) ohne Browser prüfbar:

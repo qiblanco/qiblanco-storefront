@@ -8,7 +8,7 @@ import {
   useErsatzbild,
   useVideoNachholen,
 } from '~/components/reusables/video360-ersatzbild';
-import {spieleSicher} from '~/lib/video-nachholen';
+import {spieleSicher} from '~/components/reusables/video-nachholen';
 import {NAEHE_RAND} from '~/components/reusables/useNaeheLaden';
 
 /*
@@ -92,8 +92,8 @@ const HLS_STUFENDECKEL = {
 const SICHTWEITE = NAEHE_RAND;
 
 /*
- * APPLE-GERÄTE: NATIVES HLS ZUERST (30.10.2026, Grossjob 20261030-prio1-
- * homepage-gesamt-pruefen-alpha-befunde-alle-seiten-geraete-maerkte, s03).
+ * APPLE-GERÄTE: NATIVES HLS ZUERST (Grossjob vom 30.10.2026 „Homepage gesamt
+ * prüfen“, s03).
  *
  * Bis dahin galt: hls.js, sobald Hls.isSupported(), natives HLS nur sonst.
  * Seit iOS 17.1 meldet hls.js (>= 1.5) über ManagedMediaSource auch auf dem

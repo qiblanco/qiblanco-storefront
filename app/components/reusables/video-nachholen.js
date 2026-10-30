@@ -1,6 +1,6 @@
 /*
  * Abgelehntes Video-Autoplay nachholen: die reinen Teile zu useVideoNachholen
- * (components/reusables/video360-ersatzbild.jsx). Ohne JSX, damit
+ * (video360-ersatzbild.jsx). Ohne JSX, damit
  * `node --test` sie prüft (video-nachholen.test.mjs).
  */
 

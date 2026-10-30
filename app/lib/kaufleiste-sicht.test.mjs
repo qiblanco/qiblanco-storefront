@@ -1,5 +1,5 @@
 // Der gemeinsame Haken „fester Kaufknopf sichtbar?“ (lib/kaufleiste-sicht.js)
-// und seine vier Nutzer. Lauf: node --test (findet *.test.mjs im ganzen Baum).
+// und seine Nutzer. Lauf: node --test (findet *.test.mjs im ganzen Baum).
 //
 // Die iPhone-Lage nachgestellt: dieselbe Scrollposition einmal mit
 // Browserleisten (Fenster 690 px hoch, iPhone-Chrome-Profil der Geräteprobe)
@@ -57,7 +57,8 @@ function welt() {
   });
   w.knopf = rect(1800, 1870);
   w.kopf = rect(0, 900);
-  w.ende = rect(4200, 4900);
+  w.ende = rect(4000, 4700);
+  w.fuss = rect(5000, 5600);
   globalThis.window = {
     get innerHeight() { return w.innerHeight; },
     addEventListener: (t, f) => { w.hoerer[t] = f; },
@@ -120,13 +121,14 @@ test('ROT VOR GRÜN: die alte Messung an der Fensterunterkante wackelt mit den L
   assert.ok(stellen.length > 0, 'die alte Regel muss im 110-px-Streifen umklappen');
 });
 
-test('Kaufleiste über den Haken: Leisten ein/aus ändern nichts, am Seitenende aktiv', () => {
+test('Kaufleiste über den Haken: Leisten ein/aus ändern nichts, Fuß-Regel bleibt', () => {
   const {stellen, w, zustand, weg} = wackelstellen((w, z) =>
-    beobachteLage({knopf: w.knopf}, (lage) => {
+    beobachteLage({knopf: w.knopf, fuss: w.fuss}, (lage) => {
       z.sichtbar = kaufleisteSichtbar({
         geraetAn: true,
         gemessen: lage.knopf.da,
         kaufknopfImBild: lage.knopf.imBild,
+        fussImBild: lage.fuss.imBild,
       });
     }),
   );
@@ -137,33 +139,39 @@ test('Kaufleiste über den Haken: Leisten ein/aus ändern nichts, am Seitenende 
   // Knopf der Kaufbox im Bild -> weg
   w.scrolle(1500);
   assert.equal(zustand.sichtbar, false);
-  // Seitenende, Leisten ein und aus -> steht
+  // zwischen Kaufbox und Fuß -> steht
+  w.scrolle(3000);
+  assert.equal(zustand.sichtbar, true);
+  // Seitenende: der Fuß ist im Bild -> weg (Impressum frei), Leisten ein und aus
   w.scrolle(5600 - SVH);
-  assert.equal(zustand.sichtbar, true);
+  assert.equal(zustand.sichtbar, false);
   w.leisten(false);
-  assert.equal(zustand.sichtbar, true);
+  assert.equal(zustand.sichtbar, false);
   weg();
 });
 
-test('Start-B-Knopf über den Haken: ruhig, ab dem zweiten Bildschirm, am Ende aktiv', () => {
+test('Start-B-Knopf über den Haken: ruhig, ab dem zweiten Bildschirm, am Fuß weg', () => {
   const {stellen, w, zustand, weg} = wackelstellen((w, z) =>
-    beobachteLage({kopf: w.kopf, knopf: w.knopf}, (lage) => {
+    beobachteLage({kopf: w.kopf, knopf: w.knopf, fuss: w.fuss}, (lage) => {
       z.sichtbar = stickySichtbar({
         kopfImBild: lage.kopf.imBild,
         kopfUnterkante: lage.kopf.unten,
         kaufknopfImBild: lage.knopf.imBild,
+        fussImBild: lage.fuss.imBild,
       });
     }),
   );
   assert.deepEqual(stellen, []);
   w.scrolle(0);
   assert.equal(zustand.sichtbar, false);
-  w.scrolle(5600 - SVH);
+  w.scrolle(3000);
   assert.equal(zustand.sichtbar, true);
+  w.scrolle(5600 - SVH);
+  assert.equal(zustand.sichtbar, false);
   weg();
 });
 
-test('Schlaf-Zellen-Schutz-Knopf über den Haken: weg am Preisblock, ruhig', () => {
+test('Schlaf-Zellen-Schutz-Knopf über den Haken: weg am Preisblock, ruhig, am Ende aktiv', () => {
   const {stellen, w, zustand, weg} = wackelstellen((w, z) =>
     beobachteLage({kopf: w.kopf, enden: [w.ende]}, (lage) => {
       z.sichtbar = !lage.kopf.imBild && !lage.enden.imBild;
@@ -174,19 +182,20 @@ test('Schlaf-Zellen-Schutz-Knopf über den Haken: weg am Preisblock, ruhig', () 
   assert.equal(zustand.sichtbar, true);
   w.scrolle(4000);
   assert.equal(zustand.sichtbar, false);
+  w.scrolle(5600 - SVH);
+  assert.equal(zustand.sichtbar, true);
   weg();
 });
 
 // ---------------------------------------------------------------------------
-// Die vier Leisten hängen am Haken, keine misst mehr selbst an der Fensterkante.
+// Die Leisten hängen am Haken, keine misst mehr selbst an der Fensterkante.
 const ohneKommentare = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
 const lies = (rel) => readFileSync(new URL(rel, import.meta.url), 'utf8');
 
-test('alle vier festen Kaufknöpfe benutzen useKaufleisteSicht, keiner IntersectionObserver', () => {
+test('die festen Kaufknöpfe benutzen useKaufleisteSicht, keiner IntersectionObserver', () => {
   const dateien = [
     '../components/reusables/Kaufleiste.jsx',
     '../components/rookie/start/StickyKaufknopf.jsx',
-    '../components/apple-seite/schlaf-zellen-schutz/SchlafZellenSchutzApple.jsx',
   ];
   for (const d of dateien) {
     const code = ohneKommentare(lies(d));

@@ -1,5 +1,5 @@
-// Abgelehntes Autoplay nachholen (lib/video-nachholen.js, useVideoNachholen in
-// components/reusables/video360-ersatzbild.jsx, ImgixVideo.jsx).
+// Abgelehntes Autoplay nachholen (video-nachholen.js, useVideoNachholen in
+// video360-ersatzbild.jsx, ImgixVideo.jsx).
 // Lauf: node --test.
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -11,7 +11,7 @@ test('spieleSicher: läuft an -> true', async () => {
 });
 
 test('spieleSicher: iOS lehnt ab (NotAllowedError) -> false, kein Wurf', async () => {
-  const fehler = Object.assign(new Error('Geste noetig'), {name: 'NotAllowedError'});
+  const fehler = Object.assign(new Error('Geste nötig'), {name: 'NotAllowedError'});
   assert.equal(await spieleSicher({paused: true, play: () => Promise.reject(fehler)}), false);
 });
 
@@ -33,7 +33,7 @@ const ohneKommentare = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/
 const lies = (rel) => ohneKommentare(readFileSync(new URL(rel, import.meta.url), 'utf8'));
 
 test('ImgixVideo holt nach und spielt auf Apple-Geräten natives HLS, mit mp4-Rückfall', () => {
-  const c = lies('../components/reusables/ImgixVideo.jsx');
+  const c = lies('./ImgixVideo.jsx');
   assert.match(c, /useVideoNachholen\(videoRef\)/);
   // natives HLS VOR hls.js, sobald Apple + canPlayType
   assert.ok(c.indexOf('appleNativHls(video)') < c.indexOf('Hls.isSupported()'));
@@ -43,7 +43,7 @@ test('ImgixVideo holt nach und spielt auf Apple-Geräten natives HLS, mit mp4-R�
 });
 
 test('useVideoNachholen: Sicht, Daten und Geste; reduce-motion bleibt Standbild', () => {
-  const c = lies('../components/reusables/video360-ersatzbild.jsx');
+  const c = lies('./video360-ersatzbild.jsx');
   const h = c.slice(c.indexOf('export function useVideoNachholen'));
   assert.match(h, /bevorzugtRuhe\(\)\) return undefined/);
   assert.match(h, /new IntersectionObserver/);

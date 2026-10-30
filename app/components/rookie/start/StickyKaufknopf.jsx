@@ -23,13 +23,11 @@ import {stickySichtbar} from './sticky-lage';
  * einspaltig wird). Auf breiten Fenstern bleibt der Kasten leer und
  * unsichtbar.
  *
- * RUHIG (30.10.2026, Grossjob 20261030-prio1-homepage-gesamt-pruefen-alpha-
- * befunde-alle-seiten-geraete-maerkte, s03): die Lage von Kopf und Kaufknopf
- * misst lib/kaufleiste-sicht.js gegen die kleine Bildschirmhöhe (100svh) mit
- * Hysterese, nicht mehr ein IntersectionObserver an der Fensterunterkante, die
- * auf dem iPhone mit den Browserleisten wandert („der rote Balken unten hüpft
- * noch“). Am Seitenende bleibt der Knopf stehen; rookie-start.css hält dem
- * Fuß darunter Platz frei.
+ * RUHIG (Grossjob vom 30.10.2026 „Homepage gesamt prüfen“, s03): die Lage von
+ * Kopf, Kaufknopf und Fuß misst lib/kaufleiste-sicht.js gegen die kleine
+ * Bildschirmhöhe (100svh) mit Hysterese, nicht mehr ein IntersectionObserver
+ * an der Fensterunterkante, die auf dem iPhone mit den Browserleisten wandert
+ * („der rote Balken unten hüpft noch“).
  */
 const ZIEL = '/products/qione-2-pro';
 
@@ -39,13 +37,14 @@ export function StickyKaufknopf({kopfSelektor, kaufknopfSelektor}) {
       const kopf = document.querySelector(kopfSelektor);
       if (!kopf) return null;
       const knopf = kaufknopfSelektor ? document.querySelector(kaufknopfSelektor) : null;
-      return {kopf, knopf};
+      return {kopf, knopf, fuss: document.querySelector('footer')};
     },
     (lage) =>
       stickySichtbar({
         kopfImBild: lage.kopf.imBild,
         kopfUnterkante: lage.kopf.unten,
         kaufknopfImBild: lage.knopf.imBild,
+        fussImBild: lage.fuss.imBild,
       }),
     [kopfSelektor, kaufknopfSelektor],
   );
