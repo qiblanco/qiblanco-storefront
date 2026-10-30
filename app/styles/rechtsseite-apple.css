@@ -12,7 +12,10 @@
  * Lädt nur mit Schalter an (Rechtsseite.jsx).
  */
 .as-seite .rs-doc {
-  /* Skala aus --as-fs-*: 14 · 17 · 21 · 24 · 28 (H1 mobil) / 40 (H1 Desktop) */
+  /* Skala aus --as-fs-*: 14 · 17 · 21 · 24 · 28 (H1 mobil) / 40 (H1 Desktop).
+     EIN H2-Stil auf jeder Breite (24): mit 28 auf dem Desktop stand zwischen
+     Fließtext 17 und H2 der Sprung 1,65, die Rubrik liest das als wilde Skala
+     (cookie-erklaerung, s12 Iteration 1). */
   --rs-fs-sm: var(--as-fs-2);
   --rs-fs-base: var(--as-fs-3);
   --rs-fs-md: var(--as-fs-4);
@@ -43,9 +46,18 @@
 
 @media (min-width: 750px) {
   .as-seite .rs-doc {
-    --rs-fs-h2: var(--as-fs-6);
     --rs-fs-h1: var(--as-fs-7);
   }
+}
+
+/* FUSS IM 8-PT-TAKT (Hausweg body:has(<scope>) footer wie erfahrungen.css,
+   studien.css, crystal-cacao.css): app.css setzt `footer {padding: 50px 0 0}`.
+   Auf Dokumentseiten ohne eigene <section> sind MAIN und Fuss die einzigen
+   Sektions-Abstände, der Fuss allein hält sie dann bei 50 % auf dem Raster
+   (teilnahmebedingungen 97, s12 Iteration 1). 48 px = --as-s-6; der Fuss steht
+   außerhalb des .as-seite-Scopes, die Variable gilt dort nicht. */
+body:has(.as-seite .rs-doc) footer {
+  padding-top: 48px;
 }
 
 /* HAUS-GRUNDREGELN IM SCOPE NEUTRALISIEREN (Falle s04, wie service-apple.css):
