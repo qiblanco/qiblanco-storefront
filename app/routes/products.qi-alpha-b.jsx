@@ -26,7 +26,7 @@ import {fremdHtmlMitKopfsymbolen} from '~/lib/qi-master-kopfsymbole';
 import {QiMasterAddons} from '~/components/product-pages/QiMasterAddons';
 import {
   QM_ADDONS_QUERY,
-  ADDON_WAEHRUNGEN,
+  addonsImMarkt,
   KETTE_VORWAHL,
   addonLinien,
   QM_HANDLES,
@@ -288,13 +288,12 @@ export default function Product() {
   const {descriptionHtml} = product;
   const qmVariante = product.selectedOrFirstAvailableVariant;
   // Add-ons nur neben einem KAUFBAREN Qi Master: ist er nicht bestellbar,
-  // sind es die Add-ons auch nicht (Auftrag 2026-09-24, Grenzen). Und nur in
-  // den Märkten, für die Christian einen Preis genannt hat (ADDON_WAEHRUNGEN).
+  // sind es die Add-ons auch nicht (Auftrag 2026-09-24, Grenzen). Sonst in
+  // jedem Markt, in dem Shopify sie mit Preis in der Marktwährung führt
+  // (addonsImMarkt; bis 30.10.2026 nur EUR/CHF, F-2755).
+  const imMarkt = addonsImMarkt(addons, qmVariante);
   const addonsSichtbar =
-    qmVariante?.availableForSale &&
-    ADDON_WAEHRUNGEN.includes(qmVariante?.price?.currencyCode)
-      ? addons
-      : null;
+    imMarkt.wunschnummer || imMarkt.kette ? imMarkt : null;
   const [auswahl, setAuswahl] = useState(() => ({
     wunschnummer: null,
     ketteAn: false,

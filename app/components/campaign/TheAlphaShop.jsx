@@ -6,7 +6,7 @@ import {useAside} from '~/components/Aside';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
-import {addonLinien, ADDON_WAEHRUNGEN, QM_ADDON} from '~/lib/qi-master-addons';
+import {addonLinien, addonsImMarkt, QM_ADDON} from '~/lib/qi-master-addons';
 import {vorbestellungFürHandle} from '~/lib/vorbestellung';
 import {
   aufteilung,
@@ -17,12 +17,7 @@ import {
 } from '~/lib/qi-alpha-teilzahlung';
 import {TeilzahlungFenster} from './TeilzahlungFenster';
 import {TheAlphaNummernwahl} from './TheAlphaNummernwahl';
-import {
-  betragText,
-  gravurText,
-  kettenOptionen,
-  nummernStand,
-} from './the-alpha-kauf-laden';
+import {betragText, gravurText, kaufAuswahl} from './the-alpha-kauf-laden';
 import {
   BEZAHLUNG,
   BOX,
@@ -80,17 +75,10 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   const {open} = useAside();
   const haupt = product.selectedOrFirstAvailableVariant;
   const waehrung = haupt?.price?.currencyCode || 'EUR';
-  // Add-ons nur neben einem kaufbaren Qi Alpha und nur in den Märkten mit
-  // Christians Preis (dieselbe Regel wie die bisherige Kaufseite).
-  const addonsAn =
-    Boolean(haupt?.availableForSale) && ADDON_WAEHRUNGEN.includes(waehrung);
-  const stand = addonsAn
-    ? nummernStand(addons?.wunschnummer?.variants?.nodes)
-    : {nummern: [], frei: 0};
-  const nummernAn = addonsAn && stand.frei > 0;
-  const ketten = addonsAn
-    ? kettenOptionen(addons?.kette)
-    : kettenOptionen(null);
+  // Add-ons nur neben einem kaufbaren Qi Alpha, sonst in jedem Markt, in
+  // dem Shopify sie mit Preis in der Marktwährung führt (addonsImMarkt; bis
+  // 30.10.2026 nur EUR/CHF, F-2755). Dieselbe Regel wie die Kaufseite B.
+  const {stand, nummernAn, ketten, marktAddons} = kaufAuswahl(addons, haupt);
 
   const [nummer, setNummer] = useState(null);
   const [freiOffen, setFreiOffen] = useState(false);
@@ -112,7 +100,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   const brutto = (money, handle) =>
     money ? bruttoAnzeige(money.amount, handle, money.currencyCode, land) : 0;
   const hauptPreis = brutto(haupt?.price, product.handle);
-  const nummerPreisBasis = addons?.wunschnummer?.variants?.nodes?.find(
+  const nummerPreisBasis = marktAddons.wunschnummer?.variants?.nodes?.find(
     (v) => v.price,
   )?.price;
   const nummerPreis = brutto(nummerPreisBasis, QM_ADDON.wunschnummer);
@@ -290,7 +278,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                   onClick={() => wahlNummer(null)}
                   titel={NUMMER.ohneTitel}
                   text={NUMMER.ohneHinweis}
-                  preis="+ 0 €"
+                  preis={`+ ${betragText(0, waehrung)}`}
                   data={{'data-tas-nummer': 'ohne'}}
                 />
                 {NUMMER.vorschlaege.map((n) =>
@@ -387,7 +375,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                   preis={
                     k.art === 'gold'
                       ? betragText(kettePreis(k), waehrung)
-                      : '0 €'
+                      : betragText(0, waehrung)
                   }
                   data={{'data-tas-kette': k.titel}}
                 />
@@ -506,7 +494,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
             <div>
               <dt>{mitMarkeR(kette?.name)}</dt>
               <dd>
-                {ketteGold ? betragText(kettePreis(kette), waehrung) : '0 €'}
+                {betragText(ketteGold ? kettePreis(kette) : 0, waehrung)}
               </dd>
             </div>
             <div className="tas-posten-summe">
