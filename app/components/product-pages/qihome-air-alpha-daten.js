@@ -33,9 +33,6 @@ export const PRODUKT = {
   name: 'QiHome® Air',
   claim: 'Ultimate Home.',
   kurzzeile: 'Ein Gerät · bis 160 m Radius · ohne Strom',
-  // Preisanker-Dreizeiler (Christian 25.10.): 4,8 ★ Google-Bewertungen mit
-  // Link / Nutzer / Preis, Banner am Preis.
-  preisanker: {nutzer: '+ 14.000 Nutzer', banner: 'Ultimate Power'},
   punkte: [
     {zeichen: 'zuhause', text: 'Wohlfühlatmosphäre'},
     {zeichen: 'schutz', text: 'Schutz vor E-Smog, 5G & 6G'},
@@ -78,12 +75,15 @@ export const ZUSAMMENFASSUNG = {
 };
 
 /*
- * What's in the Box entfällt (s04 R2b, PR + Sales): der Lieferumfang des
- * QiHome® Air ist im Bestand nicht belegt, erfunden wird nichts. Holzkappe
- * und Holzstecker sind Teile des Geräts (Shopify-Medien-Alt), kein
- * Lieferumfang.
+ * What's in the Box wie beim QiBracelet® (Christian 29.10.2026 Z1, angeglichen):
+ * nur das Gerät, Bild und Name, keine Liste. Weitere Teile sind im Bestand
+ * nicht als Lieferumfang belegt (s04 R2b), erfunden wird nichts. Holzkappe und
+ * Holzstecker sind Teile des Geräts (Shopify-Medien-Alt).
  */
-export const BOX = null;
+export const BOX = {
+  titel: "What's in the Box",
+  kacheln: [],
+};
 
 /* Keine Kette: der Schritt entfällt. */
 export const KETTE = null;

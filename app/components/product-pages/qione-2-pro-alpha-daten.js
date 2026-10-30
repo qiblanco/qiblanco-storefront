@@ -46,7 +46,6 @@ export const PRODUKT = {
   // Kundenfrage Nr. 1 „Welches passt zu mir?“ (s02, Anna 24 von 106): Weg
   // zum Vergleich weiter unten (id in der Route). Ein Textlink, kein Knopf.
   vergleichLink: {text: 'Welches passt zu mir? Modelle vergleichen', href: '#geraetevergleich'},
-  preisanker: {nutzer: '+ 14.000 Nutzer', banner: 'Ultimate Power'},
   herkunft: ['Designed in Germany.', 'Made in Germany.'],
 };
 
@@ -129,13 +128,25 @@ export const ZUSAMMENFASSUNG = {
 };
 
 /*
- * What's in the Box: feste Teile. Die gewählte Kette setzt die Vorlage selbst
- * dazu (boxInhalt), deshalb steht s03 „Deine Kette, wenn du sie gewählt hast“
- * nicht als feste Zeile da.
+ * What's in the Box: nur Bilder mit Bildunterschrift, keine Liste darunter
+ * (Christian 29.10.2026 Z1 „ein foto erstellen des baumwollbandes und es dann
+ * nicht mehr unten drunter anzeigen … wie beim qi braclet“). Das Gerät zeigt
+ * die Vorlage selbst (erstes Shopify-Bild), die gewählte Kette ebenso. Das
+ * Bandbild ist nach den Bestandsfotos gebaut (Job 20261029-apple-seiten-box-
+ * foto-band-preisanker-weg-raten-mit-kette, Abgleich im RESULT).
  */
 export const BOX = {
   titel: "What's in the Box",
-  teile: ['QiOne® 2 Pro mit Gitterchip® 2.0', 'Baumwollband, damit du ihn sofort trägst'],
+  kacheln: [
+    {
+      name: 'Baumwollband',
+      bild: {
+        // Shopify-Files Global Deutsch-Shop (GL-PRO-0015: Medien aufs CDN), gid://shopify/MediaImage/77521064132876
+        url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/box-baumwollband.webp?v=1793303086',
+        alt: 'Schwarzes Baumwollband für den QiOne® 2 Pro, aufgerollt und geknotet',
+      },
+    },
+  ],
 };
 
 /* Faktenkacheln (s03 kacheln: groß, Titel, Satz). */

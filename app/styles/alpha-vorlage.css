@@ -41,13 +41,14 @@
   margin-bottom: var(--tas-s-1);
 }
 
-/* Preisanker-Dreizeiler: Banner im Hausgold statt Qi-Alpha-Rot, Schrift in
-   Tinte (Weiß auf diesem Gold reißt den Kontrast). */
-.av-seite .qb-preisanker {
-  --qb-pa-alpha-rot: var(--av-gold);
-}
-.av-seite .qb-preisanker__banner {
-  color: var(--tas-tinte);
+/* Preis allein im Kopf (Apple-Muster, seit 29.10.2026 ohne Preisanker): die
+   Preiszeile der Qi-Alpha-Seite (.tas-preiszeile), ein Streichpreis nur, wenn
+   Shopify einen Vergleichspreis führt, klein und gedämpft daneben. */
+.av-streichpreis {
+  margin-left: var(--tas-s-1);
+  font-size: var(--tas-fs-3);
+  font-weight: 400;
+  color: var(--tas-grau);
 }
 
 /* Bühne im Band: die 360-Drehung füllt die Mitte, Poster bzw. Ersatzbild
@@ -83,23 +84,19 @@
   color: var(--tas-grau);
 }
 
-/* What's in the Box: Liste der Teile unter den Bildern. */
-.av-box-liste {
-  list-style: none;
-  margin: var(--tas-s-3) 0 0;
-  padding: 0;
-  display: grid;
-  gap: var(--tas-s-1);
+/* What's in the Box: nur Bilder mit Bildunterschrift, keine Liste (Christian
+   29.10.2026 Z1). Mit Kette sind es drei Teile: am Handy zwei je Zeile. */
+.av-box .tas-box-flaeche {
+  flex-wrap: wrap;
 }
-.av-box-liste li::before {
-  content: '';
-  display: inline-block;
-  width: var(--tas-s-1);
-  height: var(--tas-s-1);
-  margin-right: var(--tas-s-1);
-  border-radius: 50%;
-  background: var(--av-gold);
-  vertical-align: middle;
+.av-box .tas-box-teil {
+  flex-basis: calc(50% - var(--tas-s-3));
+  max-width: 300px;
+}
+@media (min-width: 750px) {
+  .av-box .tas-box-teil {
+    flex-basis: 300px;
+  }
 }
 
 /* Slots unter der Box (Fakten, 20 Tage, Vergleich, Wissen, Stimmen, FAQ). */
@@ -177,8 +174,8 @@
   color: var(--av-gold);
 }
 
-/* Sterne + Nutzerzahl stehen seit s05 im Preisanker-Dreizeiler
-   (reusables/Preisanker.jsx, qb-preisanker.css), nicht mehr als eigene Zeile. */
+/* Keine Sterne und keine Nutzerzahl im Kopf (Christian 29.10.2026 Z2,
+   Shop-Regel S6_apple_ohne_preisanker). Stimmen stehen im Slot weiter unten. */
 
 /* 6: Kettenbilder ruhen auf der Fläche wie bei der Alpha. */
 .av-kette-bild {

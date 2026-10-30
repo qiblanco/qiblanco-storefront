@@ -38,7 +38,6 @@ export const PRODUKT = {
   // Bewachter SEO-Link der heutigen Seite (Grossjob 20261006-...-seo-strategie,
   // s02): die Kette verweist mit dem Produktnamen auf die Kaufseite des Geräts.
   vergleichLink: {text: 'Zubehör für den QiOne® 2 Pro', href: '/products/qione-2-pro'},
-  preisanker: {nutzer: '+ 14.000 Nutzer', banner: null},
   herkunft: ['Designed in Germany.', 'Made in Germany.'],
 };
 
@@ -96,7 +95,7 @@ export const ZUSAMMENFASSUNG = {
 
 export const BOX = {
   titel: "What's in the Box",
-  teile: ['Kette aus Chirurgenstahl 316L, 1,6 mm stark', 'Karabinerverschluss'],
+  kacheln: [],
 };
 
 export const FAKTEN = {

@@ -7,18 +7,17 @@ import {useMarktLand} from '~/lib/markt-land';
 import {betragText} from '~/lib/betrag-text';
 // ® klein hochgestellt wie auf /products/qi-alpha (EIN Maß im Haus, reusables/MarkeR.jsx)
 import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
-import {Preisanker} from '~/components/reusables/Preisanker';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {PRODUCT_VARIANT_FRAGMENT} from '~/lib/qioneProductQuery';
 import {
+  auswahlAngebot,
   bezahlOptionen,
-  boxInhalt,
+  boxKacheln,
   kettenKacheln,
   mitBreite,
   mitRate,
-  ratenAngebot,
   schrittAbschnitt,
   startWahl,
   variantenOptionen,
@@ -46,12 +45,14 @@ export {kettenKacheln};
  * AUFBAU wie /products/qi-alpha, Schritt für Schritt untereinander:
  *   1 schwarzes Band mit dem 360-Grad-Loop (Poster zuerst, nie Schwarz)
  *   2 Produktkopf: Overline, Modus, Name®, Claim, Kurzzeile, drei Kernpunkte
- *     mit ruhig bewegten Zeichen in Gold, Preisanker-Dreizeiler, Herkunft
+ *     mit ruhig bewegten Zeichen in Gold, Preis allein (Apple-Muster, kein
+ *     Preisanker), Herkunft
  *   3 Variante (nur wenn Shopify eine echte Wahl führt, z. B. Größe)
  *   4 Kette (nur wenn die Daten sie verlangen)
- *   5 Bezahlart: direkt oder in Raten, Monatsbetrag live aus dem Preis
+ *   5 Bezahlart: direkt oder in Raten, Monatsbetrag live aus der Auswahl
+ *     (Gerät + Kette, Christian 29.10.2026 Z3)
  *   6 Zusammenfassung mit EINEM Kaufknopf
- *   7 What's in the Box
+ *   7 What's in the Box: nur Bilder mit Bildunterschrift, keine Liste
  *   8 Slots: Faktenkacheln, 20-Tage-Element, Vergleich, Wissen, Stimmen, FAQ
  * Keine Seriennummer-Auswahl (Christian Z5). Akzent ist das Hausgold aus
  * qb-tokens.css (--qb-akzent), kein zweiter Goldton.
@@ -168,7 +169,15 @@ export function AlphaVorlage({
   const kettenPreis = (k) =>
     preis(k.variante.price, k.art === 'gold' ? KETTE_GOLD.handle : KETTE.handle);
 
-  const angebot = ratenAngebot({brutto: hauptPreis, waehrung, land});
+  // Raten aus der ganzen Auswahl, nicht nur aus dem Gerät: mit Kette stand
+  // die Zeile „12 × … € im Monat“ still beim Gerätepreis (Christian
+  // 29.10.2026 Z3: „bleibt … stehen“). Dieselbe Summe wie die Zusammenfassung.
+  const angebot = auswahlAngebot({
+    hauptPreis,
+    kettePreis: kette ? kettenPreis(kette) : 0,
+    waehrung,
+    land,
+  });
   const zahlOptionen = bezahlOptionen(BEZAHLART?.optionen, angebot);
   const [zahlart, setZahlart] = useState('direkt');
   const art = zahlOptionen.some((o) => o.id === zahlart) ? zahlart : 'direkt';
@@ -187,7 +196,7 @@ export function AlphaVorlage({
   const kaufbar = linien.length > 0;
   const kettenBilder =
     kette?.art === 'gold' && KETTE_GOLD?.bilder ? KETTE_GOLD.bilder : KETTE?.bilder ?? [];
-  const boxTeile = boxInhalt(BOX?.teile, kette);
+  const boxBilder = boxKacheln(BOX?.kacheln);
   const erster = optionen.length ? 'variante' : kacheln.length ? 'kette' : 'bezahlart';
 
   return (
@@ -303,19 +312,21 @@ export function AlphaVorlage({
                 </a>
               </p>
             ) : null}
+            {/* PREIS ALLEIN, wie Apple und die Qi-Alpha-Kaufseite (.tas-preiszeile):
+                kein Preisanker, keine Sterne, keine Nutzerzahl, kein Schild.
+                Christian 29.10.2026 Z2: „das passt nich mehr hin … dauerhaft
+                löaschen“; Shop-Regel S6_apple_ohne_preisanker hält es fest. */}
             {variante?.price ? (
-              <div className="av-preisanker" data-tas-preis="">
-                <Preisanker
-                  preis={{
-                    handle,
-                    price: variante.price,
-                    compareAtPrice: variante.compareAtPrice,
-                  }}
-                  nutzer={PRODUKT.preisanker?.nutzer}
-                  banner={PRODUKT.preisanker?.banner ?? null}
-                  quelle={PRODUKT.preisanker?.quelle}
-                />
-              </div>
+              <p className="tas-preiszeile av-preiszeile">
+                <span className="tas-preis" data-tas-preis="" data-av-preis="">
+                  {betragText(hauptPreis, waehrung)}
+                </span>
+                {streichPreis(variante, hauptPreis, preis, handle) ? (
+                  <s className="av-streichpreis" data-av-streichpreis="">
+                    {betragText(streichPreis(variante, hauptPreis, preis, handle), waehrung)}
+                  </s>
+                ) : null}
+              </p>
             ) : null}
             <p className="tas-herkunft">
               {PRODUKT.herkunft.map((z) => (
@@ -545,6 +556,23 @@ export function AlphaVorlage({
                 </figcaption>
               </figure>
             ) : null}
+            {/* Weitere Teile als Bild mit Bildunterschrift (QiOne® 2 Pro: das
+                Baumwollband). Keine Liste darunter, wie beim QiBracelet®
+                (Christian 29.10.2026 Z1). */}
+            {boxBilder.map((t) => (
+              <figure key={t.name} className="tas-box-teil" data-av-box-teil={t.schluessel}>
+                <img
+                  src={mitBreite(t.bild.url, 600)}
+                  alt={t.bild.alt}
+                  width="300"
+                  height="300"
+                  loading="lazy"
+                />
+                <figcaption>
+                  <MarkeR text={t.name} />
+                </figcaption>
+              </figure>
+            ))}
             {kette && kettenBilder[0] ? (
               <figure className="tas-box-teil">
                 <img
@@ -558,15 +586,6 @@ export function AlphaVorlage({
               </figure>
             ) : null}
           </div>
-          {boxTeile.length ? (
-            <ul className="av-box-liste" data-av-box-liste="">
-              {boxTeile.map((t) => (
-                <li key={t}>
-                  <MarkeR text={t} />
-                </li>
-              ))}
-            </ul>
-          ) : null}
         </section>
       ) : null}
 
@@ -943,3 +962,12 @@ function Zeichen({art}) {
 }
 
 export default AlphaVorlage;
+
+/**
+ * Streichpreis nur, wenn Shopify einen höheren Vergleichspreis führt
+ * (compareAtPrice); sonst null. Dieselbe Umrechnung wie der Preis.
+ */
+function streichPreis(variante, hauptPreis, preis, handle) {
+  const alt = variante?.compareAtPrice ? preis(variante.compareAtPrice, handle) : 0;
+  return alt > hauptPreis ? alt : null;
+}

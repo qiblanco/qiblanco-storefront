@@ -191,3 +191,25 @@ test('faqSichtbar: Rate live einsetzen, ohne Angebot die Raten-Frage weglassen',
   assert.deepEqual(ohne.map((x) => x.f), ['Welche Größe?']);
   assert.ok(!JSON.stringify(ohne).includes('{rate'));
 });
+
+test('auswahlAngebot: Rate aus Gerät + Kette, nicht nur aus dem Gerät (Z3 29.10.)', () => {
+  // QiOne® 2 Pro 1.087 € allein -> 91 €; mit 60-cm-Kette 94 € -> 1.181 € -> 99 €.
+  assert.equal(L.auswahlAngebot({hauptPreis: 1087, land: 'DE'}).rate, 91);
+  assert.equal(L.auswahlAngebot({hauptPreis: 1087, kettePreis: 94, land: 'DE'}).rate, 99);
+  assert.equal(
+    L.auswahlAngebot({hauptPreis: 1087, kettePreis: 94, land: 'DE'}).rate,
+    L.zusammenfassung({name: 'Q', hauptPreis: 1087, kette: {name: 'K'}, kettePreis: 94, zahlart: 'paypal', land: 'DE'}).rate.rate,
+  );
+  // Unter 500 € allein, mit Kette darüber: erst dann ein Angebot.
+  assert.equal(L.auswahlAngebot({hauptPreis: 450, land: 'DE'}), null);
+  assert.equal(L.auswahlAngebot({hauptPreis: 450, kettePreis: 94, land: 'DE'}).rate, 46);
+  assert.equal(L.auswahlAngebot({hauptPreis: 1087, kettePreis: 94, land: 'AT'}), null);
+});
+
+test('boxKacheln: nur Teile mit Name und Bild, nie eine Textzeile', () => {
+  const band = {name: 'Baumwollband', bild: {url: '/b.webp', alt: 'Baumwollband'}};
+  assert.deepEqual(L.boxKacheln([band]), [{schluessel: 'teil-1', ...band}]);
+  assert.deepEqual(L.boxKacheln(['Baumwollband, damit du ihn sofort trägst']), []);
+  assert.deepEqual(L.boxKacheln([{name: 'Ohne Bild'}]), []);
+  assert.deepEqual(L.boxKacheln(null), []);
+});
