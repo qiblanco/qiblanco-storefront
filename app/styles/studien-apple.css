@@ -121,3 +121,9 @@
   max-width: var(--as-breite);
   padding-inline: var(--as-s-3);
 }
+/* Bis 640 px hat .qb-st-wrap nur --st-s2 Rand (studien.css). */
+@media (max-width: 640px) {
+  [data-apple-seite='studien'] .as-cta-innen {
+    padding-inline: var(--as-s-2);
+  }
+}
