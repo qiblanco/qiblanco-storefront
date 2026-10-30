@@ -30,6 +30,10 @@ import {
   ueberschriftenTiefer,
 } from '~/lib/coming-home-live.server';
 import liveStyles from '~/styles/live.css?url';
+import serviceAppleStyles from '~/styles/service-apple.css?url';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
 
 /**
  * /pages/live — COMING HOME LIVE: nächster Termin, Anmeldung, Rückblick.
@@ -321,7 +325,13 @@ export async function loader({request, context}) {
     return {...r, html: SEITE_NEU_AN ? ueberschriftenTiefer(html) : html};
   });
   return data(
-    {...seite, rueckblicke, ladeFehler, schritt},
+    {
+      ...seite,
+      rueckblicke,
+      ladeFehler,
+      schritt,
+      appleSeite: appleSeiteLaden(context, 'live'),
+    },
     schritt ? {headers: KOPF_PRIVAT} : undefined,
   );
 }
@@ -405,6 +415,7 @@ export async function action({request, context}) {
 
 export default function Live() {
   const d = useLoaderData();
+  if (d.appleSeite?.an) return <LiveApple d={d} />;
   if (SEITE_NEU_AN) return <LiveNeu d={d} />;
   const spezial = spezialDaten(d);
   return (
@@ -463,6 +474,120 @@ function LiveNeu({d}) {
         ladeFehler={d.ladeFehler}
       />
     </div>
+  );
+}
+
+/**
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s08): dieselben Texte, Termine, dieselbe Anmeldung und
+ * dieselben Zusammenfassungen wie LiveNeu, nur im Apple-Rahmen. Der Kopf
+ * steht zentriert mit großem Bild, die Eckdaten als Kacheln, Anna am Ende.
+ * Die Messmarker data-ch-live=kopf|bild|termin|anmeldung|rueckblick und
+ * data-ch-live-fassung bleiben, die Proben in coming-home/pruefungen lesen
+ * sie weiter. Schalter APPLE_SEITE_LIVE (app/lib/apple-seiten.js), Rückweg
+ * homepage-bauer/bin/apple-seite zurueck live: dann rendert wieder LiveNeu.
+ * Stil: styles/service-apple.css, nur --as-*.
+ */
+function LiveApple({d}) {
+  const spezial = spezialDaten(d);
+  return (
+    <>
+      <link rel="stylesheet" href={serviceAppleStyles} />
+      <AppleSeite seite="live">
+        <div className="lv lva" data-ch-live-fassung="neu-20261020">
+          <KopfApple />
+          <Termin naechster={d.naechster} weitere={d.weitere} />
+          <section
+            className="lv-abschnitt lv-dunkel"
+            id="anmelden"
+            data-ch-live="anmeldung"
+          >
+            <div className="lv-innen lv-innen-schmal">
+              {d.schritt ? (
+                <Schritt schritt={d.schritt} spezial={spezial} />
+              ) : (
+                <AnmeldeKopf spezial={spezial}>
+                  <Anmeldung spezial={spezial} />
+                </AnmeldeKopf>
+              )}
+            </div>
+          </section>
+          <Zusammenfassungen
+            rueckblicke={d.rueckblicke}
+            gesamt={d.rueckblickeGesamt}
+            ladeFehler={d.ladeFehler}
+          />
+        </div>
+        <AppleAnna />
+      </AppleSeite>
+    </>
+  );
+}
+
+function KopfApple() {
+  return (
+    <section className="as-hero lva-kopf" data-ch-live="kopf">
+      <div className="as-hero-text">
+        <p className="as-overline">Live auf Zoom</p>
+        <h1 className="as-h1">
+          {REIHE_NAME} –{' '}
+          <span className="lva-h1-zusatz">{REIHE_ZUSATZ}</span>
+        </h1>
+        <p className="as-unter">{KOPF_LEDE}</p>
+        <div className="as-knoepfe">
+          <a
+            className="btn btn--primary as-knopf"
+            href="#anmelden"
+            data-as-cta="primary"
+          >
+            Kostenlos anmelden
+          </a>
+        </div>
+      </div>
+      <figure className="as-hero-bild lva-bild" data-ch-live="bild">
+        <img
+          className="as-bild"
+          src={bildQuelle(960)}
+          srcSet={BILD_BREITEN.map((b) => `${bildQuelle(b)} ${b}w`).join(', ')}
+          sizes="(min-width: 750px) 640px, calc(100vw - 32px)"
+          width="1280"
+          height="640"
+          alt={BILD_ALT}
+          fetchpriority="high"
+          decoding="async"
+        />
+      </figure>
+      <div className="lva-kopftext">
+        {KOPF_TEXT.map((absatz) => (
+          <p className="as-absatz" key={absatz.slice(0, 24)}>
+            {absatz}
+          </p>
+        ))}
+      </div>
+      <ul className="as-kacheln lva-eckdaten">
+        {ECKDATEN_NEU.map((e) => (
+          <li className="as-kachel" key={e.begriff}>
+            <span className="as-kachel-satz">{e.begriff}</span>
+            <span className="as-kachel-titel">{e.wert}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="lva-kopftext">
+        <p className="as-absatz">{TEILNAHME_TEXT}</p>
+        <p className="as-absatz">{AUFNAHME_TEXT}</p>
+        <p className="as-absatz">
+          Ein Gespräch allein mit Christian gibt es in der{' '}
+          <Link
+            className="as-link lva-fluss"
+            to="/pages/sprechstunde"
+            prefetch="intent"
+          >
+            Sprechstunde
+          </Link>
+          .
+        </p>
+      </div>
+    </section>
   );
 }
 

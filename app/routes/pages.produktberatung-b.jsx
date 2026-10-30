@@ -1,4 +1,6 @@
+import {useLoaderData} from 'react-router';
 import {ProduktberatungSeite} from '~/components/campaign/ProduktberatungSeite';
+import {ProduktberatungApple} from '~/components/apple-seite/produktberatung/ProduktberatungApple';
 import produktberatungStyles from '~/styles/produktberatung.css?url';
 import {action as aktionA, loader as ladeA} from './pages.produktberatung';
 
@@ -49,8 +51,14 @@ export async function action(args) {
   return aktionA(args);
 }
 
+/** Apple-Fassung des Arms (s08): Schalter APPLE_SEITE_PRODUKTBERATUNG_B, gelesen im Loader von A. */
 export default function ProduktberatungB() {
-  return <ProduktberatungSeite variante="b" />;
+  const {appleSeite} = useLoaderData();
+  return appleSeite?.an ? (
+    <ProduktberatungApple seite="produktberatung-b" />
+  ) : (
+    <ProduktberatungSeite variante="b" />
+  );
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
