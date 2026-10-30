@@ -2,6 +2,12 @@ import {useLoaderData} from 'react-router';
 import {QiBracelet} from '~/components/index-components/detailseiten/QiBracelet';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {ProduktDetailsApple} from '~/components/apple-seite/produkt-details/ProduktDetailsApple';
+import {
+  QIBRACELET_DETAILS,
+} from '~/components/apple-seite/produkt-details/qibracelet-details-daten';
+import {startseiteProdukte} from '~/components/apple-seite/startseite/startseite-preise';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import pdpLandingStyles from '~/styles/pdp-landing-qi.css?url';
 import bildquelleStyles from '~/styles/bracelet-bildquelle.css?url';
@@ -92,20 +98,38 @@ export const meta = ({data}) => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader({context}) {
-  const {page} = await context.storefront.query(PAGE_QUERY, {
-    variables: {handle: 'qibracelet'},
-  });
+  // APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+  // ausser-seo-geo, s05): Schalter in app/lib/apple-seiten.js, Seite qibracelet-details.
+  // Aus: die heutige Seite (C) unverändert, Rückweg Befehl zurück in
+  // homepage-bauer/bin/apple-seite, Seite qibracelet-details. An: die Apple-Fassung, dazu die Preise der
+  // Kaufseiten (fail-closed, parallel).
+  const appleSeite = appleSeiteLaden(context, 'qibracelet-details');
+  const [{page}, produkte] = await Promise.all([
+    context.storefront.query(PAGE_QUERY, {
+      variables: {handle: 'qibracelet'},
+    }),
+    appleSeite?.an ? startseiteProdukte(context) : [],
+  ]);
 
   if (!page) {
     throw new Response('Not Found', {status: 404});
   }
 
-  return {page};
+  return {page, appleSeite, produkte};
 }
 
 export default function QiBraceletDetailsPage() {
-  useLoaderData();
+  const {appleSeite, produkte} = useLoaderData();
 
+  if (appleSeite?.an) {
+    return (
+      <ProduktDetailsApple
+        seite="qibracelet-details"
+        sektionen={QIBRACELET_DETAILS}
+        produkte={produkte}
+      />
+    );
+  }
   return (
     <>
       <QiBracelet />

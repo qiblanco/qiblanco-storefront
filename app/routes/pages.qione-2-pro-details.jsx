@@ -3,6 +3,13 @@ import {QiOne} from '~/components/index-components/detailseiten/QiOne';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
 import pdpLandingStyles from '~/styles/pdp-landing-qi.css?url';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {ProduktDetailsApple} from '~/components/apple-seite/produkt-details/ProduktDetailsApple';
+import {
+  QIONE_2_PRO_DETAILS,
+  VIDEO,
+} from '~/components/apple-seite/produkt-details/qione-2-pro-details-daten';
+import {startseiteProdukte} from '~/components/apple-seite/startseite/startseite-preise';
 
 /*
  * EIN route-gebundenes Stylesheet: pdp-landing-qi.css.
@@ -109,20 +116,39 @@ export const meta = () => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader({context}) {
-  const {page} = await context.storefront.query(PAGE_QUERY, {
-    variables: {handle: 'qione'},
-  });
+  // APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+  // ausser-seo-geo, s05): Schalter APPLE_SEITE_QIONE_2_PRO_DETAILS in
+  // app/lib/apple-seiten.js. Aus: die heutige Seite (C) unverändert, Rückweg:
+  // Befehl zurück in homepage-bauer/bin/apple-seite, Seite qione-2-pro-details. An: die
+  // Apple-Fassung, dazu die Preise der Kaufseiten (fail-closed, parallel).
+  const appleSeite = appleSeiteLaden(context, 'qione-2-pro-details');
+  const [{page}, produkte] = await Promise.all([
+    context.storefront.query(PAGE_QUERY, {
+      variables: {handle: 'qione'},
+    }),
+    appleSeite?.an ? startseiteProdukte(context) : [],
+  ]);
 
   if (!page) {
     throw new Response('Not Found', {status: 404});
   }
 
-  return {page};
+  return {page, appleSeite, produkte};
 }
 
 export default function QiOne2ProDetailsPage() {
-  useLoaderData();
+  const {appleSeite, produkte} = useLoaderData();
 
+  if (appleSeite?.an) {
+    return (
+      <ProduktDetailsApple
+        seite="qione-2-pro-details"
+        sektionen={QIONE_2_PRO_DETAILS}
+        video={VIDEO}
+        produkte={produkte}
+      />
+    );
+  }
   return (
     <>
       <QiOne />
