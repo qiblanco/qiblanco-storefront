@@ -106,7 +106,9 @@
 }
 
 /* Kopf: am Handy mittig, Foto unter dem Einstieg (also über seinem Text).
-   Ab 750 px zwei Spalten: Text links, Christian rechts, beide linksbündig. */
+   Ab 750 px zwei Spalten: Text links, Christian rechts, beide linksbündig.
+   .as-seite vorn: apple-seite.css lädt NACH dieser Datei (AppleSeite setzt
+   ihren <link> selbst), bei gleicher Spezifität gewänne .as-hero. */
 .pba-foto {
   max-width: var(--as-text-breite);
   margin: var(--as-s-6) auto 0;
@@ -117,7 +119,7 @@
   color: var(--as-grau);
 }
 @media (min-width: 750px) {
-  .pba-kopf {
+  .as-seite .pba-kopf {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
     gap: var(--as-s-8);
@@ -126,16 +128,16 @@
     margin: 0 auto;
     text-align: left;
   }
-  .pba-kopf .as-unter {
+  .as-seite .pba-kopf .as-unter {
     margin-left: 0;
   }
-  .pba-kopf .as-knoepfe {
+  .as-seite .pba-kopf .as-knoepfe {
     justify-content: flex-start;
   }
-  .pba-kopf .pb__naechster {
+  .as-seite .pba-kopf .pb__naechster {
     text-align: left;
   }
-  .pba-foto {
+  .as-seite .pba-foto {
     margin: 0;
   }
 }
