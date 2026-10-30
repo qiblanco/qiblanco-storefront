@@ -194,8 +194,8 @@ function zurVerwaltung(token, status, pfad = PFAD) {
  * ausser-seo-geo, s08): der Schalter je Arm (APPLE_SEITE_PRODUKTBERATUNG bzw.
  * _B in app/lib/apple-seiten.js) entscheidet nur, wie die Seite aussieht. Die
  * Weiche von pb-e1-gs107, Termine, Formular und Action bleiben dieselben;
- * Umleitungen gehen unverändert durch. Rückweg: homepage-bauer/bin/apple-seite
- * zurueck produktberatung|produktberatung-b.
+ * Umleitungen gehen unverändert durch. Rückweg: Befehl zurück in
+ * homepage-bauer/bin/apple-seite, Seite produktberatung bzw. produktberatung-b.
  */
 export async function loader(args) {
   const d = await ladeSeite(args);

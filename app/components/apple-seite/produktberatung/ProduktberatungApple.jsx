@@ -13,9 +13,6 @@ import {AppleAnna} from '../AppleSektionen';
 import {bildSrcSet, mitBreite} from '../apple-seite-logik';
 import {
   ABLAUF,
-  CHRISTIAN_BLOCK,
-  CHRISTIAN_EINSTIEG,
-  CHRISTIAN_SCHON,
   FRAGEN_TITEL,
   KOPF,
   SCHLUSS,
@@ -34,10 +31,12 @@ import {
  * Messpunkte bleiben die der heutigen Seite (data-section pb-kopf, pb-person,
  * pb-termine, pb-angaben, pb-gebucht, pb-fragen, pb-ablauf, pb-stimmen,
  * pb-schluss), damit die Auswertung von pb-e1-gs107 weiterzählt.
- * Christians Wortlaut trägt weiter data-fremdtext.
+ * Christians Wortlaut steht hier als JSX unter data-fremdtext (Zeichen für
+ * Zeichen wie in ProduktberatungSeite.jsx, der Test prüft das): nur das
+ * Attribut, nicht ein Kommentar am String, nimmt fremde Rede aus Stil-Tor und
+ * Seiten-Freigabe aus. Das Attribut steht darum als fester String da.
  */
 
-const WORTLAUT = 'christian-wortlaut-20261008';
 const BREITEN = [480, 750, 1080, 1200];
 
 function Foto() {
@@ -54,8 +53,11 @@ function Foto() {
         fetchpriority="high"
         decoding="async"
       />
-      <figcaption className="pba-foto-name" data-fremdtext={WORTLAUT}>
-        {CHRISTIAN_BLOCK.name}
+      <figcaption
+        className="pba-foto-name"
+        data-fremdtext="christian-wortlaut-20261008"
+      >
+        Dipl.-Ing. (FH) Christian Bernd Bauer
       </figcaption>
     </figure>
   );
@@ -71,11 +73,15 @@ function Kopf({naechster}) {
           <span className="pba-h1-zeile">{KOPF.h1[0]}</span>{' '}
           <span className="pba-h1-zeile">{KOPF.h1[1]}</span>
         </h1>
-        {CHRISTIAN_EINSTIEG.map((p) => (
-          <p key={p} className="as-unter" data-fremdtext={WORTLAUT}>
-            {mitMarkeR(p)}
-          </p>
-        ))}
+        <p className="as-unter" data-fremdtext="christian-wortlaut-20261008">
+          Du hast Fragen zu unseren Produkten? Ich nehme mir persönlich Zeit für
+          dich!
+        </p>
+        <p className="as-unter" data-fremdtext="christian-wortlaut-20261008">
+          {mitMarkeR(
+            'Wir können über deine aktuelle Situation sprechen und darüber, warum du einen QiOne® kaufen möchtest. Oder wir klären einfach die Fragen, die noch offen sind.',
+          )}
+        </p>
         {naechster ? (
           <div className="pb pba-naechster">{naechster}</div>
         ) : (
@@ -100,13 +106,32 @@ function Kopf({naechster}) {
 function Person() {
   return (
     <section className="as-sektion pba-person" data-section="pb-person">
-      <div className="pba-person-text" data-fremdtext={WORTLAUT}>
-        <h2 className="as-h2">{CHRISTIAN_BLOCK.titel}</h2>
-        {CHRISTIAN_BLOCK.absaetze.map((p) => (
-          <p key={p.slice(0, 32)} className="as-absatz">
-            {mitMarkeR(p)}
-          </p>
-        ))}
+      <div
+        className="pba-person-text"
+        data-fremdtext="christian-wortlaut-20261008"
+      >
+        <h2 className="as-h2">Live mit mir :)</h2>
+        <p className="as-absatz">
+          Vor mehr als 10 Jahren habe ich Qi Blanco gegründet, aus meiner
+          eigenen Leidensgeschichte heraus. Damals leitete ich eine
+          Entwicklungsabteilung für Automotive und Aerospace, und unser Büro
+          wurde gerade modernisiert. Das Spannende: Ab da wurde ich immer müder,
+          war ständig genervt und ging nicht mehr so glücklich durchs Leben wie
+          früher. Die ersten Tage schob ich es auf meinen beruflichen Stress,
+          dann auf meine Ernährung, dann auf meine Beziehung … Ich habe vieles
+          getestet, bis ich mit allem ziemlich durch war. Und dann fiel es mir
+          wie Schuppen von den Augen: Seit dem Umbau hing ein riesiger
+          WLAN-Router direkt rechts neben mir an der Wand, 60 cm über meinem
+          Kopf. Heureka! Es lag nicht an mir, sondern am E-Smog, der direkt mein
+          Nervensystem angriff! Als Ingenieur war mir klar: Ich brauche eine
+          einfache und elegante Lösung. Einfach umhängen, und das Problem ist
+          erledigt.
+        </p>
+        <p className="as-absatz">
+          {mitMarkeR(
+            'Gesagt, getan: Noch in derselben Nacht entstand die Blaupause für den QiOne®.',
+          )}
+        </p>
       </div>
     </section>
   );
@@ -138,10 +163,15 @@ function Fragen() {
           </li>
         ))}
       </ul>
-      <p className="as-absatz pba-schon" data-fremdtext={WORTLAUT}>
-        {mitMarkeR(CHRISTIAN_SCHON[0])}
+      <p
+        className="as-absatz pba-schon"
+        data-fremdtext="christian-wortlaut-20261008"
+      >
+        {mitMarkeR('Du hast schon einen QiOne®? Dann komm erst recht :)')}
         <br />
-        {mitMarkeR(CHRISTIAN_SCHON[1])}
+        {mitMarkeR(
+          'Wir können gerne über die Nutzung reden und über deine persönlichen Erfahrungen. Oder wir klären Fragen, die erst bei der Nutzung entstanden sind. Vielleicht auch, welchen Vorteil dir ein QiHome® Air bringen könnte?',
+        )}
       </p>
     </section>
   );

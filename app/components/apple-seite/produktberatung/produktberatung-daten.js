@@ -4,10 +4,11 @@
  * s08). Rein, ohne React: der Test liest sie direkt.
  *
  * CHRISTIANS WORTLAUT (seit 08.10.2026, siehe Kopfkommentar von
- * components/campaign/ProduktberatungSeite.jsx) steht hier Zeichen für Zeichen
- * wie in der heutigen Fassung. Der Test produktberatung.test.mjs prüft das
- * gegen den Quelltext der heutigen Komponente: ändert sich dort ein Satz,
- * wird er hier rot, statt still auseinanderzulaufen.
+ * components/campaign/ProduktberatungSeite.jsx) steht NICHT hier, sondern als
+ * JSX unter data-fremdtext in ProduktberatungApple.jsx: nur dort nehmen
+ * Stil-Tor und Seiten-Freigabe fremde Rede aus. Der Test
+ * produktberatung.test.mjs prüft ihn Zeichen für Zeichen gegen die heutige
+ * Komponente.
  *
  * Weggelassen gegenüber heute (Christian 29.10.: kein Preisanker): die
  * Google-Note mit Sternen im Kopf und an jeder Stimme. Die Stimmen selbst
@@ -20,28 +21,6 @@ export const KOPF = Object.freeze({
   h1: ['Produktberatung:', '20 Minuten mit Christian'],
   knopf: {text: 'Termin aussuchen', href: '#termine'},
 });
-
-/** Christians Einstieg, sein Wortlaut (data-fremdtext christian-wortlaut-20261008). */
-export const CHRISTIAN_EINSTIEG = Object.freeze([
-  'Du hast Fragen zu unseren Produkten? Ich nehme mir persönlich Zeit für dich!' /*@fremdtext:christian-wortlaut-20261008*/,
-  'Wir können über deine aktuelle Situation sprechen und darüber, warum du einen QiOne® kaufen möchtest. Oder wir klären einfach die Fragen, die noch offen sind.' /*@fremdtext:christian-wortlaut-20261008*/,
-]);
-
-/** Sein Block „Live mit mir :)“, Fassung 2 seiner Gründungsgeschichte. */
-export const CHRISTIAN_BLOCK = Object.freeze({
-  titel: 'Live mit mir :)',
-  name: 'Dipl.-Ing. (FH) Christian Bernd Bauer' /*@fremdtext:christian-wortlaut-20261008*/,
-  absaetze: Object.freeze([
-    'Vor mehr als 10 Jahren habe ich Qi Blanco gegründet, aus meiner eigenen Leidensgeschichte heraus. Damals leitete ich eine Entwicklungsabteilung für Automotive und Aerospace, und unser Büro wurde gerade modernisiert. Das Spannende: Ab da wurde ich immer müder, war ständig genervt und ging nicht mehr so glücklich durchs Leben wie früher. Die ersten Tage schob ich es auf meinen beruflichen Stress, dann auf meine Ernährung, dann auf meine Beziehung … Ich habe vieles getestet, bis ich mit allem ziemlich durch war. Und dann fiel es mir wie Schuppen von den Augen: Seit dem Umbau hing ein riesiger WLAN-Router direkt rechts neben mir an der Wand, 60 cm über meinem Kopf. Heureka! Es lag nicht an mir, sondern am E-Smog, der direkt mein Nervensystem angriff! Als Ingenieur war mir klar: Ich brauche eine einfache und elegante Lösung. Einfach umhängen, und das Problem ist erledigt.' /*@fremdtext:christian-wortlaut-20261008*/,
-    'Gesagt, getan: Noch in derselben Nacht entstand die Blaupause für den QiOne®.' /*@fremdtext:christian-wortlaut-20261008*/,
-  ]),
-});
-
-/** „Du hast schon einen QiOne®?“, sein Wortlaut; der Umbruch nach „:)“ ist von ihm. */
-export const CHRISTIAN_SCHON = Object.freeze([
-  'Du hast schon einen QiOne®? Dann komm erst recht :)' /*@fremdtext:christian-wortlaut-20261008*/,
-  'Wir können gerne über die Nutzung reden und über deine persönlichen Erfahrungen. Oder wir klären Fragen, die erst bei der Nutzung entstanden sind. Vielleicht auch, welchen Vorteil dir ein QiHome® Air bringen könnte?' /*@fremdtext:christian-wortlaut-20261008*/,
-]);
 
 export const FRAGEN_TITEL = 'Diese Fragen kannst du mir stellen';
 

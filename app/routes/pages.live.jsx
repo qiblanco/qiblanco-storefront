@@ -484,8 +484,9 @@ function LiveNeu({d}) {
  * steht zentriert mit großem Bild, die Eckdaten als Kacheln, Anna am Ende.
  * Die Messmarker data-ch-live=kopf|bild|termin|anmeldung|rueckblick und
  * data-ch-live-fassung bleiben, die Proben in coming-home/pruefungen lesen
- * sie weiter. Schalter APPLE_SEITE_LIVE (app/lib/apple-seiten.js), Rückweg
- * homepage-bauer/bin/apple-seite zurueck live: dann rendert wieder LiveNeu.
+ * sie weiter. Schalter APPLE_SEITE_LIVE (app/lib/apple-seiten.js), Rückweg:
+ * Befehl zurück in homepage-bauer/bin/apple-seite, Seite live; dann rendert
+ * wieder LiveNeu.
  * Stil: styles/service-apple.css, nur --as-*.
  */
 function LiveApple({d}) {
