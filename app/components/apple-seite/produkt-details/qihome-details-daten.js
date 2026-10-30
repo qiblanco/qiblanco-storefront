@@ -15,8 +15,6 @@ export const KAUFSEITE = '/products/qihome-air';
 const BILD = Object.freeze({
   qihome: {
     url: `${CDN}/files/qb-video360-ersatzbild--360-qihome-front--d19c273efe67.jpg?v=1790809394`,
-    // 360-Grad-Drehung an dieser Stelle (AsBild -> Produkt360Video), das Bild bleibt Ersatzbild.
-    drehung: 'qihome',
     alt: 'QiHome® Air aus Eiche und Edelstahl mit goldenem Gitterchip®',
     breite: 1080,
     hoehe: 1080,

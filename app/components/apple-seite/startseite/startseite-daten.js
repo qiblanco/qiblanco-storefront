@@ -26,24 +26,18 @@ export const KAUFSEITE = '/products/qione-2-pro';
 const BILD = Object.freeze({
   qione: {
     url: `${CDN}/files/qb-video360-ersatzbild--360-qione-front--f0024fcab5ec.jpg?v=1790809389`,
-    // 360-Grad-Drehung an dieser Stelle (AsBild -> Produkt360Video), das Bild bleibt Ersatzbild.
-    drehung: 'qione',
     alt: 'QiOne® 2 Pro von vorn, Gehäuse aus Chirurgenstahl mit goldenem Gitterchip®',
     breite: 1080,
     hoehe: 1080,
   },
   qibracelet: {
     url: `${CDN}/files/qb-video360-ersatzbild--360-qibracelet-winkel--a26b001f0816.jpg?v=1790809401`,
-    // 360-Grad-Drehung an dieser Stelle (AsBild -> Produkt360Video), das Bild bleibt Ersatzbild.
-    drehung: 'qibracelet',
     alt: 'QiBracelet® aus Chirurgenstahl mit goldenem Gitterchip®',
     breite: 1080,
     hoehe: 1080,
   },
   qihome: {
     url: `${CDN}/files/qb-video360-ersatzbild--360-qihome-front--d19c273efe67.jpg?v=1790809394`,
-    // 360-Grad-Drehung an dieser Stelle (AsBild -> Produkt360Video), das Bild bleibt Ersatzbild.
-    drehung: 'qihome',
     alt: 'QiHome® Air aus Eiche und Edelstahl mit goldenem Gitterchip®',
     breite: 1080,
     hoehe: 1080,
