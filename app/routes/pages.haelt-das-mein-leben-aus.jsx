@@ -2,6 +2,9 @@ import {useLoaderData} from 'react-router';
 import {MmHaeltDasAus} from '~/components/campaign/MmHaeltDasAus';
 import mmStyles from '~/styles/mm-lp.css?url';
 import {mmLadeProdukte} from '~/components/campaign/mmProducts';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {LpApple} from '~/components/apple-seite/lp/LpApple';
+import {ALLTAG_SEKTIONEN} from '~/components/apple-seite/lp/lp-alltag';
 
 /**
  * Message-Match-Landingpage /pages/haelt-das-mein-leben-aus — Cluster „Alltags-
@@ -30,12 +33,21 @@ export const meta = () => [
 /** @type {HeadersFunction} */
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
+/*
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s07): der Schalter steht in app/lib/apple-seiten.js. An:
+ * die Apple-Fassung ohne Produktabfrage. Aus: die Seite unverändert (C,
+ * Rückweg: Befehl „zurück“ in homepage-bauer/bin/apple-seite).
+ */
 export async function loader({context}) {
-  return mmLadeProdukte(context);
+  const appleSeite = appleSeiteLaden(context, appleSeiteFuerPfad('/pages/haelt-das-mein-leben-aus'));
+  if (appleSeite.an) return {appleSeite, products: []};
+  return {...(await mmLadeProdukte(context)), appleSeite};
 }
 
 export default function HaeltDasMeinLebenAusRoute() {
-  const {products} = useLoaderData();
+  const {products, appleSeite} = useLoaderData();
+  if (appleSeite?.an) return <LpApple seite={appleSeite.seite} sektionen={ALLTAG_SEKTIONEN} />;
   return <MmHaeltDasAus products={products} />;
 }
 

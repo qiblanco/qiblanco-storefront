@@ -2,6 +2,9 @@ import {useLoaderData} from 'react-router';
 import {MmSoWirktWasser} from '~/components/campaign/MmSoWirktWasser';
 import mmStyles from '~/styles/mm-lp.css?url';
 import {mmLadeProdukte} from '~/components/campaign/mmProducts';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {LpApple} from '~/components/apple-seite/lp/LpApple';
+import {MECHANISMUS_SEKTIONEN} from '~/components/apple-seite/lp/lp-mechanismus';
 
 /**
  * Trust-Ketten-Hub „Mechanismus / Wie funktioniert es" — verlinkt von den
@@ -38,12 +41,21 @@ export const meta = () => [
 /** @type {HeadersFunction} */
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
+/*
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s07): der Schalter steht in app/lib/apple-seiten.js. An:
+ * die Apple-Fassung ohne Produktabfrage. Aus: die Seite unverändert (C,
+ * Rückweg: Befehl „zurück“ in homepage-bauer/bin/apple-seite).
+ */
 export async function loader({context}) {
-  return mmLadeProdukte(context);
+  const appleSeite = appleSeiteLaden(context, appleSeiteFuerPfad('/pages/so-wirkt-kohaerentes-wasser'));
+  if (appleSeite.an) return {appleSeite, products: []};
+  return {...(await mmLadeProdukte(context)), appleSeite};
 }
 
 export default function SoWirktWasserRoute() {
-  const {products} = useLoaderData();
+  const {products, appleSeite} = useLoaderData();
+  if (appleSeite?.an) return <LpApple seite={appleSeite.seite} sektionen={MECHANISMUS_SEKTIONEN} />;
   return <MmSoWirktWasser products={products} />;
 }
 
