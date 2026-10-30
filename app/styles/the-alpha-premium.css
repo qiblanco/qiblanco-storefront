@@ -501,6 +501,18 @@ html:has(main[data-film-seite]) body {
   padding: 0;
 }
 
+/* Die letzte Bühne misst mit der GROSSEN Bildschirmhöhe (100lvh): sonst ist
+   ihr letzter Schritt, der rote Knopf, auf dem iPhone bei eingeklappten
+   Browserleisten nicht mehr erreichbar und blendet sich mit jedem Ein- und
+   Ausklappen ein und aus (Christian 30.10.: „der rote Knopf wird ein- und
+   ausgeblendet“). Auf Desktop und Android ist 100lvh = 100svh. Ohne
+   Bewegung und im Standbild (.tap-still, weiter unten) bleibt height: auto. */
+@media (prefers-reduced-motion: no-preference) {
+  .tap-edition-szene.tap-scrub {
+    height: calc(100lvh + (var(--tap-schritte, 0) + 1) * var(--tap-schritt));
+  }
+}
+
 /* Bis sein Schritt dran ist, nimmt der unsichtbare Knopf keinen Tipp an. */
 .tap-js .tap-schluss-knopf:not(.tap-an) {
   pointer-events: none;
