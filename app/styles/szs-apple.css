@@ -67,6 +67,11 @@
   color: var(--as-grau);
 }
 @media (min-width: 1024px) {
+  /* .as-hero zentriert (apple-seite.css lädt nach dieser Datei): neben dem
+     Video steht der Text EINER Kante entlang, links wie die Kaufzeile. */
+  .as-hero.szs-kopf {
+    text-align: left;
+  }
   .szs-kopf {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-areas:
@@ -128,6 +133,18 @@
 .as-seite .as-dunkel .as-preis,
 .as-dunkel .szs-vertrauen {
   color: var(--as-linie);
+}
+/* reset.css färbt jede h2 mit der Haus-Tinte. Im dunklen Band stand der
+   Schluss-Titel deshalb dunkel auf dunkel (gemessen 30.10.: rgb(74,71,65) auf
+   rgb(30,30,30)); er erbt hier das Weiß des Bands. */
+.as-seite .as-dunkel :is(.as-h1, .as-h2) {
+  color: inherit;
+}
+/* Die Zahlweg-Marken (PayPal blau) auf dem dunklen Band auf heller Fläche. */
+.as-dunkel .szs-zahlwege img {
+  padding: 0 var(--as-s-1);
+  background: var(--as-weiss);
+  border-radius: var(--as-radius);
 }
 
 /* ---- Weiter-Knopf zwischen den Abschnitten -------------------------------- */
