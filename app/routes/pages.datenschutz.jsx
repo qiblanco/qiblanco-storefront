@@ -1,7 +1,5 @@
 import {canonicalLink} from '~/lib/seo';
 import {Rechtsseite} from '~/components/Rechtsseite';
-import {useLoaderData} from 'react-router';
-import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {seitenSignale} from '~/lib/seiten-seo';
 
 export const meta = () => {
@@ -17,14 +15,13 @@ export const meta = () => {
   ];
 };
 
-export function loader({context}) {
-  return {appleSeite: appleSeiteLaden(context, 'datenschutz')};
+export function loader() {
+  return {};
 }
 
 export default function DatenschutzPage() {
-  const {appleSeite} = useLoaderData();
   return (
-    <Rechtsseite apple={appleSeite}>
+    <Rechtsseite>
       <h1>Datenschutzerklärung</h1>
 
       <p>
