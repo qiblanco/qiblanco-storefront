@@ -1,5 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {SchlafZellenSchutz} from '~/components/campaign/SchlafZellenSchutz';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {SchlafZellenSchutzApple} from '~/components/apple-seite/schlaf-zellen-schutz/SchlafZellenSchutzApple';
 import {HydrationsRettung} from '~/components/reusables/HydrationsRettung';
 import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import lpASeiteStyles from '~/styles/schlaf-zellen-schutz-seite.css?url';
@@ -56,6 +58,11 @@ export const headers = () => ({
 });
 
 export async function loader({context}) {
+  // APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+  // ausser-seo-geo, s06): der Schalter steht in app/lib/apple-seiten.js.
+  // An: dieselben Produktdaten, die Apple-Fassung des Arms. Aus: die Seite
+  // unverändert (C; der Rückweg schaltet nur den Schalter, homepage-bauer/bin/apple-seite).
+  const appleSeite = appleSeiteLaden(context, 'schlaf-zellen-schutz-b2');
   let data;
   try {
     data = await context.storefront.query(CAMPAIGN_PRODUCTS_QUERY, {
@@ -67,10 +74,11 @@ export async function loader({context}) {
       '[preis-fallback] Campaign-Query (Variante B2) fehlgeschlagen:',
       fehler?.message || fehler,
     );
-    return {products: []};
+    return {products: [], appleSeite};
   }
 
   return {
+    appleSeite,
     products: [data.qione, data.bracelet, data.qihome]
       .filter(Boolean)
       .map((product) => ({
@@ -81,7 +89,8 @@ export async function loader({context}) {
 }
 
 export default function SchlafZellenSchutzVarianteB2Route() {
-  const {products} = useLoaderData();
+  const {products, appleSeite} = useLoaderData();
+  if (appleSeite?.an) return <SchlafZellenSchutzApple products={products} variante="b2" />;
   return (
     <>
       {/* Dieselbe Hydrations-Rettung wie A (Begründung in der Komponente). */}
