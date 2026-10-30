@@ -227,3 +227,91 @@
   letter-spacing: 0;
   text-align: left;
 }
+
+/*
+ * SCHLUSSLEISTE (reusables/Schlussleiste.jsx, Regel schlussleiste-lage.js):
+ * mobil fest am unteren Rand, sobald der Kaufknopf der Zusammenfassung nach
+ * oben weggescrollt ist. Steht in .tas-seite und nimmt deren Tokens; dieselbe
+ * Datei laden /products/qi-alpha und alle Seiten der Alpha-Vorlage.
+ * Höhe: 8 + 44 (Tippziel) + 8 + 1 Linie = 61 px, das Fuß-Polster darunter
+ * hält 64 px plus Home-Leiste frei. Versteckt = Inhalt nicht im DOM, ohne
+ * Gleiten (wie reusables/Kaufleiste.jsx).
+ */
+.tas-schlussleiste {
+  display: none;
+}
+
+.tas-schlussleiste--sichtbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-schwebend);
+  align-items: center;
+  gap: var(--tas-s-2);
+  padding: var(--tas-s-1) var(--tas-s-2) max(var(--tas-s-1), env(safe-area-inset-bottom));
+  background: var(--tas-weiss);
+  border-top: 1px solid var(--tas-linie);
+}
+
+.tas-schlussleiste-auswahl {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.tas-schlussleiste-name {
+  font-size: var(--tas-fs-1);
+  color: var(--tas-grau);
+  white-space: nowrap;
+}
+
+.tas-schlussleiste-betrag {
+  font-size: var(--tas-fs-3);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tas-schlussleiste-knopf {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.tas-schlussleiste-knopf form,
+.tas-schlussleiste-knopf .btn--primary {
+  width: 100%;
+  max-width: none;
+}
+
+.tas-schlussleiste-knopf .btn--primary {
+  min-height: var(--qb-treffer-min);
+  padding: var(--tas-s-1) var(--tas-s-2);
+}
+
+@media (max-width: 749px) {
+  .tas-schlussleiste--sichtbar[data-schlussleiste-mobil='an'] {
+    display: flex;
+  }
+
+  /* Fuß-Polster: immer gesetzt, nicht erst beim Erscheinen, damit nichts
+     springt; Impressum, Datenschutz und Widerruf bleiben über der Leiste.
+     Der Fuß steht außerhalb von .tas-seite, daher die Hausraster-Tokens. */
+  body:has(.tas-schlussleiste[data-schlussleiste-mobil='an']) footer {
+    padding-bottom: calc(var(--qb-abstand-6) + env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 750px) {
+  .tas-schlussleiste--sichtbar[data-schlussleiste-desktop='an'] {
+    display: flex;
+  }
+}
+
+/* Solange ein Dialog offen ist (Warenkorb, Ratenfenster, ...), nicht
+   dargestellt (overlay_ordnung, DialogSignal.jsx). */
+html[data-dialog-offen] .tas-schlussleiste {
+  display: none;
+}

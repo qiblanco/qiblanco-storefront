@@ -31,6 +31,7 @@ import {
 } from './the-alpha-shop-daten';
 import {THE_ALPHA_SERIE} from './the-alpha-daten-serie-vergeben';
 import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
+import {Schlussleiste} from '~/components/reusables/Schlussleiste';
 
 /*
  * SHOPSEITE /products/the-alpha — Apple-nahe Kaufseite (Christian 25.10.2026
@@ -44,7 +45,10 @@ import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
  * Ketten“): oben der eigene Abschnitt „Kohärentes Licht“ mit der 360-Grad-
  * Rotation (Christian 28.10. Z16), dann Produkt (Galerie links, fest beim
  * Scrollen am Desktop), Seriennummer mit Live-Gravur, Kette mit Gold-Ansicht,
- * Bezahlart, Zusammenfassung mit Kaufknopf, „What's in the Box“.
+ * Bezahlart, Zusammenfassung mit Kaufknopf, „What's in the Box“. Mobil
+ * wiederholt die Schlussleiste den Kaufknopf, sobald er nach oben
+ * weggescrollt ist (reusables/Schlussleiste.jsx, 30.10.2026: am Seitenende
+ * ein aktiver Kaufknopf).
  *
  * MARKENZEICHEN: jedes „®“ zeichnet MarkeR klein hochgestellt (Christian
  * 28.10. Z1); die Daten tragen es als normales Zeichen.
@@ -159,9 +163,34 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   const freiGewaehlt =
     nummerEintrag && !NUMMER.vorschlaege.includes(nummerEintrag.n);
   const grossesBild = GALERIE.bilder[bild] ?? GALERIE.bilder[0];
+  const seite = useRef(null);
+  // Der eine Kaufknopf: in der Zusammenfassung und, mobil nach ihr, in der
+  // Schlussleiste (dieselben Zeilen, dieselbe Beschriftung, derselbe Weg).
+  const kaufknopf =
+    geteilt && haupt?.availableForSale ? (
+      // Ratenzahlung über 10.000 €: nicht in den Warenkorb (die Kasse
+      // nähme den ganzen Betrag), sondern ins Fenster mit Schritt 1.
+      <button
+        type="button"
+        className="btn--primary"
+        data-qb-kaufknopf=""
+        data-tas-raten-weiter=""
+        onClick={oeffneFenster}
+      >
+        {TEILZAHLUNG_TEXT.weiter}
+      </button>
+    ) : (
+      <AddToCartButton
+        disabled={!haupt?.availableForSale}
+        onClick={() => open('cart')}
+        lines={linien}
+      >
+        {haupt?.availableForSale ? ZUSAMMENFASSUNG.knopf : 'Ausverkauft'}
+      </AddToCartButton>
+    );
 
   return (
-    <div className="tas-seite" data-the-alpha-shop="">
+    <div ref={seite} className="tas-seite" data-the-alpha-shop="">
       {/* KOHÄRENTES LICHT OBEN, EIGENER ABSCHNITT (Christian 28.10.2026 Z16:
           „dass dieses kohärente Licht oben in der 360-Grad-Rotation steht …
           Und dann geht es runter zu den Bildern und zu der Shop-Beschreibung“).
@@ -524,29 +553,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               <li key={z}>{z}</li>
             ))}
           </ul>
-          <div className="tas-kaufknopf">
-            {geteilt && haupt?.availableForSale ? (
-              // Ratenzahlung über 10.000 €: nicht in den Warenkorb (die Kasse
-              // nähme den ganzen Betrag), sondern ins Fenster mit Schritt 1.
-              <button
-                type="button"
-                className="btn--primary"
-                data-qb-kaufknopf=""
-                data-tas-raten-weiter=""
-                onClick={oeffneFenster}
-              >
-                {TEILZAHLUNG_TEXT.weiter}
-              </button>
-            ) : (
-              <AddToCartButton
-                disabled={!haupt?.availableForSale}
-                onClick={() => open('cart')}
-                lines={linien}
-              >
-                {haupt?.availableForSale ? ZUSAMMENFASSUNG.knopf : 'Ausverkauft'}
-              </AddToCartButton>
-            )}
-          </div>
+          <div className="tas-kaufknopf">{kaufknopf}</div>
           <EuGewaehrleistungsHinweis />
           <p className="tas-klein">{ZUSAMMENFASSUNG.frist}</p>
         </div>
@@ -585,6 +592,15 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         </div>
       </section>
       {nachDerBox}
+
+      <Schlussleiste
+        wurzel={seite}
+        name={<MarkeR text={PRODUKT.name} />}
+        betrag={betragText(summe, waehrung)}
+        abschnitt="tas-schlussleiste"
+      >
+        {kaufknopf}
+      </Schlussleiste>
 
       {fenster && teilung ? (
         <TeilzahlungFenster

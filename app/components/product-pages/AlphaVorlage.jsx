@@ -9,6 +9,7 @@ import {betragText} from '~/lib/betrag-text';
 import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
+import {Schlussleiste} from '~/components/reusables/Schlussleiste';
 import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {PRODUCT_VARIANT_FRAGMENT} from '~/lib/qioneProductQuery';
 import {
@@ -51,7 +52,9 @@ export {kettenKacheln};
  *   4 Kette (nur wenn die Daten sie verlangen)
  *   5 Bezahlart: direkt oder in Raten, Monatsbetrag live aus der Auswahl
  *     (Gerät + Kette, Christian 29.10.2026 Z3)
- *   6 Zusammenfassung mit EINEM Kaufknopf
+ *   6 Zusammenfassung mit EINEM Kaufknopf; mobil wiederholt ihn die
+ *     Schlussleiste, sobald er nach oben weggescrollt ist (reusables/
+ *     Schlussleiste.jsx, 30.10.2026: am Seitenende ein aktiver Kaufknopf)
  *   7 What's in the Box: nur Bilder mit Bildunterschrift, keine Liste
  *   8 Slots: Faktenkacheln, 20-Tage-Element, Vergleich, Wissen, Stimmen, FAQ
  * Keine Seriennummer-Auswahl (Christian Z5). Akzent ist das Hausgold aus
@@ -198,9 +201,18 @@ export function AlphaVorlage({
     kette?.art === 'gold' && KETTE_GOLD?.bilder ? KETTE_GOLD.bilder : KETTE?.bilder ?? [];
   const boxBilder = boxKacheln(BOX?.kacheln);
   const erster = optionen.length ? 'variante' : kacheln.length ? 'kette' : 'bezahlart';
+  const seite = useRef(null);
+  // Der eine Kaufknopf: in der Zusammenfassung und, mobil nach ihr, in der
+  // Schlussleiste (dieselben Zeilen, dieselbe Beschriftung).
+  const kaufknopf = (
+    <AddToCartButton disabled={!kaufbar} onClick={() => open('cart')} lines={linien}>
+      {kaufbar ? ZUSAMMENFASSUNG.knopf : 'Ausverkauft'}
+    </AddToCartButton>
+  );
 
   return (
     <div
+      ref={seite}
       className="tas-seite av-seite"
       data-konfigurator={handle}
       data-alpha-vorlage={handle}
@@ -514,15 +526,7 @@ export function AlphaVorlage({
               <li key={z}>{mitMarkeR(z)}</li>
             ))}
           </ul>
-          <div className="tas-kaufknopf av-kaufknopf">
-            <AddToCartButton
-              disabled={!kaufbar}
-              onClick={() => open('cart')}
-              lines={linien}
-            >
-              {kaufbar ? ZUSAMMENFASSUNG.knopf : 'Ausverkauft'}
-            </AddToCartButton>
-          </div>
+          <div className="tas-kaufknopf av-kaufknopf">{kaufknopf}</div>
           {ZUSAMMENFASSUNG.ruecknahme ? (
             <p className="tas-klein">{mitMarkeR(ZUSAMMENFASSUNG.ruecknahme)}</p>
           ) : null}
@@ -590,6 +594,15 @@ export function AlphaVorlage({
       ) : null}
 
       <Slots daten={daten} slots={slots} />
+
+      <Schlussleiste
+        wurzel={seite}
+        name={<MarkeR text={PRODUKT.name} />}
+        betrag={betragText(summe.summe, waehrung)}
+        abschnitt={schrittAbschnitt('schlussleiste')}
+      >
+        {kaufknopf}
+      </Schlussleiste>
 
       <Analytics.ProductView
         data={{
