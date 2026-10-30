@@ -82,4 +82,5 @@ test('Bilder tragen gemessene Breite und Höhe', () => {
     assert.ok(e.bild.breite > 0 && e.bild.hoehe > 0, e.etikett);
     assert.ok(e.bild.url.startsWith('https://cdn.shopify.com/'), e.etikett);
   }
+  for (const z of D.ZAHLWEGE) assert.ok(z.breite > 0 && z.hoehe > 0, z.alt);
 });
