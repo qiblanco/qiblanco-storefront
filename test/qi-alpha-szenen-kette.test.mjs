@@ -63,7 +63,8 @@ test('Karten und Seitenband sind in der Szenen-Fassung eigene Bühnen', () => {
   assert.match(karten, /top: `calc\(55svh \+ \$\{i\} \* var\(--tap-schritt\)\)`/);
   const marke = P.slice(P.indexOf('export function TapMarke'), P.indexOf('export function TapEdition'));
   assert.match(marke, /className="tap-marke-buehne tap-scrub tap-scrub-bilder"/);
-  assert.match(CSS, /\.tap-scrub-bilder \{\s*--tap-schritt: var\(--tap-schritt-absatz\);/);
+  assert.match(CSS, /\.tap-scrub-bilder \{\s*--tap-schritt: var\(--tap-schritt-bild\);/);
+  assert.match(CSS, /--tap-schritt-bild: 200px;/);
 });
 
 test('Kaufleiste: die Schluss-Bühne zählt erst ab ihrem Stillstand', () => {

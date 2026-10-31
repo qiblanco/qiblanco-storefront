@@ -739,9 +739,9 @@ function Karte({bild, sizes, folge = 0, format = 'quadrat', schritt = false}) {
 /** Zwei Karten: am Handy untereinander, ab 768 px nebeneinander; die zweite
  * kommt nach der ersten (RAW → DIAMANT, ENDLESS → POSSIBILITY).
  * Szenen-Fassung (Kette, 31.10.2026): die Karten sind eine eigene Bühne, die
- * erste steht mit dem Stillstand da, die zweite einen Schritt später, dann
- * ein Schritt Ruhe; der Glanz-Ton hängt an einer Marke auf Höhe ihres
- * Schritts. */
+ * erste steht mit dem Stillstand da, die zweite einen Schritt später, einen
+ * Schritt danach weicht die Bühne; der Glanz-Ton hängt an einer Marke auf
+ * Höhe ihres Schritts. */
 export function TapKarten({bilder}) {
   const {szene} = useContext(TapFassung);
   if (szene) {
@@ -751,7 +751,7 @@ export function TapKarten({bilder}) {
         data-tap-szene=""
         data-tap-scrub=""
         data-tap-scrub-start="1"
-        style={{'--tap-schritte': bilder.length}}
+        style={{'--tap-schritte': bilder.length - 1}}
       >
         <div className="tap-scrub-bild">
           <div className="tap-karten">
@@ -791,7 +791,7 @@ export function TapKarten({bilder}) {
 export function TapMarke({bild, marke = THE_ALPHA_MARKE, etikett = marke}) {
   const {szene} = useContext(TapFassung);
   if (szene) {
-    // Kette (31.10.2026): das Band ist eine kurze Bühne, ein Schritt Ruhe.
+    // Kette (31.10.2026): das Band ist eine kurze Bühne, einen Schritt lang.
     return (
       <section className="tap-marke" aria-label={etikett}>
         <div
@@ -799,7 +799,7 @@ export function TapMarke({bild, marke = THE_ALPHA_MARKE, etikett = marke}) {
           data-tap-szene=""
           data-tap-scrub=""
           data-tap-scrub-start="1"
-          style={{'--tap-schritte': 1}}
+          style={{'--tap-schritte': 0}}
         >
           <div className="tap-scrub-bild">
             <div className="tap-band">

@@ -59,6 +59,10 @@
      Wort-Schritte, damit der Scrollweg je Zeile bleibt, wie er war
      (Christian: „scrolling gefällt mir … sehr gut“). */
   --tap-schritt-zeile: 96px;
+  /* Bild-Bühnen der Szenen-Kette (Karten, Seitenband; 31.10.2026): ein Bild
+     bleibt einen Schritt, dann weicht es; zwei Schritte bis zum nächsten
+     Neuen bleiben unter einem halben Bildschirm (Kleinbild: 160 px). */
+  --tap-schritt-bild: 200px;
 
   --tap-nacht: #000000;
   --tap-weiss: #ffffff;
@@ -185,9 +189,15 @@ html:has(main[data-film-seite]) {
   --tap-schritt: var(--tap-schritt-zeile);
 }
 
-/* Bild-Bühnen (Karten, Seitenband) gehen im Absatz-Takt. */
+/* Bild-Bühnen (Karten, Seitenband) gehen im Bild-Takt. */
 .tap-scrub-bilder {
-  --tap-schritt: var(--tap-schritt-absatz);
+  --tap-schritt: var(--tap-schritt-bild);
+}
+
+@media (max-height: 799px) {
+  .tap-seite {
+    --tap-schritt-bild: 160px;
+  }
 }
 
 /* ---------- Szenen-Kette (A, Christian 31.10.2026) ---------- */
