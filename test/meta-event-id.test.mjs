@@ -1,6 +1,6 @@
 // Hermetische Tests der gemeinsamen Meta-eventID (Job 20261031-meta-capi-
 // luecken-dach-bau-ai-server-prio10). node:test/node:assert, kein Netz.
-// Ausfuehren: node --test test/meta-event-id.test.mjs
+// Ausführen: node --test test/meta-event-id.test.mjs
 //
 // Belegt wird:
 //  1. eventIdFuer: dasselbe Payload-Objekt + derselbe Name -> dieselbe Id,
@@ -56,7 +56,7 @@ test('eventIdFuer: ohne Objekt oder Name -> undefined (kein Wurf)', () => {
   assert.equal(eventIdFuer({}, ''), undefined);
 });
 
-test('uuid: Rueckfall ohne crypto liefert dieselbe Form', () => {
+test('uuid: Rückfall ohne crypto liefert dieselbe Form', () => {
   const alt = globalThis.crypto;
   Object.defineProperty(globalThis, 'crypto', {value: undefined, configurable: true});
   try {
@@ -68,7 +68,7 @@ test('uuid: Rueckfall ohne crypto liefert dieselbe Form', () => {
 
 // ── 2. Hydrogen gibt beiden Subscribern dasselbe Objekt ──
 // subscribe/publish aus dem INSTALLIERTEN @shopify/hydrogen herausgeschnitten
-// und ausgefuehrt: misst den Code, der im Bundle steht, nicht eine Annahme.
+// und ausgeführt: misst den Code, der im Bundle steht, nicht eine Annahme.
 function hydrogenBus() {
   const pfad = join(ROOT, 'node_modules', '@shopify', 'hydrogen', 'dist', 'development', 'index.js');
   const src = readFileSync(pfad, 'utf8');
@@ -86,8 +86,8 @@ function hydrogenBus() {
 test('Hydrogen publish: beide Subscriber bekommen DASSELBE Payload-Objekt', () => {
   const bus = hydrogenBus();
   const gesehen = [];
-  // Verschiedener Funktionstext: Hydrogen schluesselt Subscriber nach
-  // callback.toString(), zwei textgleiche Callbacks ueberschrieben sich.
+  // Verschiedener Funktionstext: Hydrogen schlüsselt Subscriber nach
+  // callback.toString(), zwei textgleiche Callbacks überschrieben sich.
   bus.subscribe('product_added_to_cart', (data) => gesehen.push(['meta', data]));
   bus.subscribe('product_added_to_cart', (d) => gesehen.push(['qpx', d]));
   const payload = {currentLine: {merchandise: {}}};
@@ -115,7 +115,7 @@ test('QpxCommerce.jsx: view_content/add_to_cart tragen event_id aus eventIdFuer'
   assert.match(src, /event_id: eventIdFuer\(data, META_EVENT_ADD_TO_CART\)/);
 });
 
-test('Subscriber-Texte von MetaPixel und QpxCommerce sind verschieden (toString-Schluessel)', () => {
+test('Subscriber-Texte von MetaPixel und QpxCommerce sind verschieden (toString-Schlüssel)', () => {
   const mp = readFileSync(join(APP, 'components', 'MetaPixel.jsx'), 'utf8');
   const qc = readFileSync(join(APP, 'components', 'QpxCommerce.jsx'), 'utf8');
   const cb = (s, ev) => {
@@ -175,6 +175,6 @@ test('CartSummary: Submit-Handler feuert ohne Schalter kein fbq-IC, aber qpx', a
   assert.equal(qpx[0][0], 'initiate_checkout');
   ctx.STOREFRONT_IC_FBQ = true;
   vm.runInNewContext('{' + rumpf + '\ntrackInitiateCheckout();}', ctx);
-  assert.equal(fbq.length, 1, 'Rueckweg true feuert fbq-IC nicht');
+  assert.equal(fbq.length, 1, 'Rückweg true feuert fbq-IC nicht');
   assert.equal(fbq[0][1], 'InitiateCheckout');
 });

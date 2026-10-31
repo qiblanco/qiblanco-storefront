@@ -1,8 +1,8 @@
-// Hermetische Tests: AddToCart traegt `contents` wie ViewContent (Job
+// Hermetische Tests: AddToCart trägt `contents` wie ViewContent (Job
 // 20261019-addtocart-contents-wie-viewcontent-prio50-r2, aufgegangen in
 // 20261031-meta-capi-luecken-dach-bau-ai-server-prio10). Vorbild
 // meta-pixel-viewcontent-contents.test.mjs. Kein Netz.
-// Ausfuehren: node --test test/meta-pixel-addtocart-contents.test.mjs
+// Ausführen: node --test test/meta-pixel-addtocart-contents.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -35,7 +35,7 @@ test('addToCartPayload: Erstkauf -> contents [{id, quantity 1, item_price}]', ()
   });
 });
 
-test('addToCartPayload: Mengen-Erhoehung 1->3 zaehlt das Delta (2) in contents und value', () => {
+test('addToCartPayload: Mengen-Erhöhung 1->3 zählt das Delta (2) in contents und value', () => {
   const p = addToCartPayload({currentLine: zeile(3), prevLine: {quantity: 1}});
   assert.equal(p.num_items, 2);
   assert.equal(p.contents[0].quantity, 2);
@@ -55,7 +55,7 @@ test('addToCartPayload: ohne Produkt-ID -> contents leer, content_ids leer', () 
   assert.deepEqual(p.content_ids, []);
 });
 
-test('addToCartPayload: Paritaet content_ids[0] == contents[0].id', () => {
+test('addToCartPayload: Parität content_ids[0] == contents[0].id', () => {
   const p = addToCartPayload({currentLine: zeile(2, '1087.00', 'gid://shopify/Product/42')});
   assert.equal(p.content_ids[0], p.contents[0].id);
 });
