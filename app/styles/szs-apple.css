@@ -350,16 +350,3 @@
 [data-apple-seite^='schlaf-zellen-schutz'] .as-h2 {
   text-align: left;
 }
-
-/*
- * QUERUEBERSTAND (Sicht-Tor-Veto s06-schalter, 31.10.): der Full-Bleed-
- * Ausbruch .ScrollScrubVideoBlock (app.css) ist 100vw breit, 100vw zaehlt
- * die Scrollleiste mit. Bei 1425 px Inhalt ragt das Scroll-Video 8 px
- * seitlich ueber (-7..1433), nur A und B2 (K50/K25 tragen kein Scroll-Video).
- * `clip` statt `hidden`: kein Scroll-Container, position: sticky im
- * Scroll-Video bleibt intakt. Geschnitten werden genau die 15 px, die heute
- * die Scrollleiste verdeckt. Hausmuster pdp-qi.css Abschnitt 9.
- */
-.as-seite[data-apple-seite^='schlaf-zellen-schutz'] {
-  overflow-x: clip;
-}

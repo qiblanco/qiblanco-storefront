@@ -60,15 +60,9 @@
      (Christian: „scrolling gefällt mir … sehr gut“). */
   --tap-schritt-zeile: 96px;
   /* Bild-Bühnen der Szenen-Kette (Karten, Seitenband; 31.10.2026): ein Bild
-     bleibt einen Schritt, dann weicht es und das Nächste steht (nahtlos,
-     Christian 31.10.: „wenn das Alte weg ist, dann kommt direkt das Neue“).
-     Ein Schritt bleibt am Handy unter einem Viertel Bildschirm, auch in
-     Chrome auf dem iPhone mit Leisten (690 px hoch: 0,23). EIN Wert für alle
-     Bildhöhen: eine Weiche nach der Fensterhöhe schaltete beim Ein- und
-     Ausklappen der Browserleisten den Takt um, die Bühnen verschoben sich und
-     die Kaufleiste blinkte (Echtgeräte-Probe iPhone Chrome: live 12 Stellen,
-     ohne Weiche 0). */
-  --tap-schritt-bild: 160px;
+     bleibt einen Schritt, dann weicht es; anderthalb Schritte bis zum nächsten
+     Neuen bleiben unter einem halben Bildschirm (Kleinbild: 160 px). */
+  --tap-schritt-bild: 200px;
 
   --tap-nacht: #000000;
   --tap-weiss: #ffffff;
@@ -200,19 +194,22 @@ html:has(main[data-film-seite]) {
   --tap-schritt: var(--tap-schritt-bild);
 }
 
+@media (max-height: 799px) {
+  .tap-seite {
+    --tap-schritt-bild: 160px;
+  }
+}
+
 /* ---------- Szenen-Kette (A, Christian 31.10.2026) ---------- */
 /* „Die Scrollbewegungen sind noch deutlich zu lang, damit was Neues kommt“.
    Das Alte weicht, statt weggeschoben zu werden: eine Bühne ist einen
-   Bildschirm plus ihre Schritte plus einen Schritt hoch; einen Schritt nach
-   dem letzten blendet sie aus (tap-aus), und im selben Moment steht die
-   nächste still, weil sie einen Bildschirm hoch unter ihr liegt
-   (tap-nachruecken). NAHTLOS (Christian 31.10.: „wenn das Alte weg ist, dann
-   kommt direkt das Neue“): kein halber Schritt Schwarz mehr dazwischen. Das
-   Video steht ganz im Bild, wenn die Bühne davor ausblendet
-   (tap-nach-buehne). Die Bühne nach dem Video steht, sobald es oben weicht
-   (tap-nach-video, Weich-Linie 10 % in useTapFilm). Das Alte blendet in
-   200 ms aus, der erste Schritt des Neuen setzt nach 180 ms ein
-   (tap-eintritt): erst weg, dann direkt neu, nie übereinander. Klassen und
+   Bildschirm plus ihre Schritte plus anderthalb Schritte hoch; einen Schritt
+   nach dem letzten blendet sie aus (tap-aus), einen halben Schritt später
+   steht die nächste still (kurzes Schwarz, Christian 30.10.), weil sie einen Bildschirm hoch unter ihr liegt
+   (tap-nachruecken). Das Video steht ganz im Bild, wenn die Bühne davor
+   ausblendet (tap-nach-buehne). Die Bühne
+   nach dem Video steht einen halben Schritt, nachdem es oben weicht
+   (tap-nach-video, Weich-Linie 10 % in useTapFilm). Klassen und
    --tap-video-hoehe setzt useTapFilm; ohne Bewegung gibt es keine Kette. */
 .tap-js.tap-kette .tap-kapitel,
 .tap-js.tap-kette .tap-marke {
@@ -220,7 +217,7 @@ html:has(main[data-film-seite]) {
 }
 
 .tap-js.tap-kette .tap-scrub:not([data-tap-ende]) {
-  height: calc(100svh + (var(--tap-schritte, 0) + 1) * var(--tap-schritt));
+  height: calc(100svh + (var(--tap-schritte, 0) + 1.5) * var(--tap-schritt));
 }
 
 .tap-js.tap-kette .tap-nachruecken {
@@ -230,16 +227,15 @@ html:has(main[data-film-seite]) {
 .tap-js.tap-kette .tap-nach-buehne {
   /* Das Video erscheint, wenn die Bühne davor ausblendet, an DERSELBEN Stelle
      wie vor der Kette (Unterkante ~5 % über dem Bildrand, Mitte ~0,53; der
-     Start bleibt, wie er war, Christian 30.10. Z7). Es blendet ein, sobald
-     die Bühne davor weg ist (--tap-folge 1,5 = 180 ms, wie tap-eintritt),
-     damit nichts übereinander liegt. */
-  --tap-folge: 1.5;
-  margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - 5svh);
+     Start bleibt, wie er war, Christian 30.10. Z7). Es blendet erst nach der
+     Bühne ein (--tap-folge 3 = 360 ms), damit nichts übereinander liegt. */
+  --tap-folge: 3;
+  margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - var(--tap-schritt-absatz) / 2 - 5svh);
   margin-bottom: 0;
 }
 
 .tap-js.tap-kette .tap-nach-video {
-  margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - 10svh);
+  margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - 10svh + var(--tap-schritt) / 2);
 }
 
 /* Bühnen liegen übereinander: nur was gerade zu sehen ist, nimmt Tipps an
@@ -255,13 +251,8 @@ html:has(main[data-film-seite]) {
 .tap-js.tap-kette .tap-scrub.tap-aus > .tap-scrub-bild,
 .tap-js.tap-kette .tap-film.tap-aus {
   opacity: 0;
-  transition: opacity 200ms ease;
+  transition: opacity 300ms ease;
   pointer-events: none;
-}
-
-/* Nahtlos: der erste Schritt der nächsten Bühne kommt, wenn das Alte weg ist. */
-.tap-js.tap-kette .tap-eintritt[data-tap-schritt].tap-an {
-  transition-delay: 180ms;
 }
 
 .tap-js.tap-kette .tap-scrub.tap-aus [data-tap-schritt] {

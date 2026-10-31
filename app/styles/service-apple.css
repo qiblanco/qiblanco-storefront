@@ -292,10 +292,7 @@ body:has([data-apple-seite='live']) {
 .lva-h1-zusatz {
   white-space: nowrap;
 }
-/* .as-seite voran: ohne sie gewann .as-hero-bild (apple-seite.css, gleiche
-   Spezifitaet, spaeter geladen) mit --as-breite, die Karte wurde 1200 px breit
-   und die 1280-px-Quelle hochskaliert (Gate 12 bild-aufloesung, s13). */
-.as-seite .lva-bild {
+.lva-bild {
   max-width: var(--as-text-breite);
 }
 .lva-kopftext {
