@@ -41,9 +41,29 @@
  * Relativ importierbar, kein '~'-Alias: `node --test` lädt das ohne Build.
  */
 
-export const KAKAO_LADEN_HOST = 'https://crystal-cacao.com';
+import {kakaoZielPfad, KAKAO_LADEN_URSPRUNG} from './kakao-adressen.js';
+
+export const KAKAO_LADEN_HOST = KAKAO_LADEN_URSPRUNG;
 export const KAKAO_WEICHE_MARKER = ['qb_weg', 'qiblanco-kakao'];
 export const KAKAO_WEICHE_EIN = 'eigene-kanaele';
+
+/*
+ * STUFE 2 — SCHALTERWERT 'alle' (Elina, Grundsatzentscheidung 30.10.2026,
+ * EL-20261030-0adb59f3): „Es soll KEINE parallelen Kakao-Produktseiten auf
+ * qiblanco.com mehr geben. Crystal Cacao lebt nur noch auf crystal-cacao.com.“
+ * Dann gilt NICHTS von der Herkunfts-Auswahl unten: jede Kakao-Adresse aus
+ * kakao-adressen.js (Übersicht, Sorten, Sets, alte Handles, Collection) geht
+ * für JEDEN Besucher, Crawler und Datenrequest per 301 auf die gleichwertige
+ * Seite von crystal-cacao.com. Der Query fährt UNVERÄNDERT mit (sca_ref,
+ * utm_*, Art=420g, gclid …), ohne Zählmarker: ein dauerhafter Redirect trägt
+ * keinen eigenen Parameter ins Ziel. Gleiche Seite für Crawler und Besucher,
+ * also kein verdeckter Redirect.
+ * Live erst nach Elinas GO: Metafeld qb_routing.kakao_laden = 'alle'.
+ * Rückweg ohne Deploy: Metafeld zurück auf 'eigene-kanaele' oder 'aus'
+ * (30-s-Cache); der 301 trägt max-age=3600, damit Browser ihn nicht ewig halten.
+ */
+export const KAKAO_WEICHE_ALLE = 'alle';
+export const KAKAO_WEICHE_ALLE_CACHE = 'public, max-age=3600';
 
 /** Kakao-Seite auf qiblanco.com -> gleichwertige Seite im eigenen Laden. */
 export const KAKAO_ZIELE = {
@@ -147,7 +167,9 @@ export function herkunftsKlasse(sp, host) {
  * @returns {{ziel: string|null, grund: string}}
  */
 export function entscheideKakaoWeiche({url, referer, schalter}) {
-  if (String(schalter ?? '').trim().toLowerCase() !== KAKAO_WEICHE_EIN) {
+  const wert = String(schalter ?? '').trim().toLowerCase();
+  if (wert === KAKAO_WEICHE_ALLE) return entscheideAlle(url);
+  if (wert !== KAKAO_WEICHE_EIN) {
     return {ziel: null, grund: 'schalter_aus'};
   }
   let u;
@@ -173,6 +195,86 @@ export function entscheideKakaoWeiche({url, referer, schalter}) {
   const sp = new URLSearchParams(u.searchParams);
   sp.append(mk, mw);
   return {ziel: `${KAKAO_LADEN_HOST}${zielPfad}?${sp.toString()}`, grund: klasse};
+}
+
+/**
+ * Stufe 2 ('alle'): jede Kakao-Adresse, jede Herkunft, Query unverändert.
+ * Datenrequests (/x.data, ?_data=) zeigen auf die Dokument-Adresse des Ziels.
+ * @param {string} url
+ * @returns {{ziel: string|null, grund: string, status?: number}}
+ */
+export function entscheideAlle(url) {
+  let u;
+  try {
+    u = new URL(url);
+  } catch {
+    return {ziel: null, grund: 'url_unlesbar'};
+  }
+  let pfad = u.pathname;
+  const sp = new URLSearchParams(u.searchParams);
+  if (pfad.endsWith('.data')) pfad = pfad.slice(0, -'.data'.length) || '/';
+  if (pfad === '/_root') pfad = '/';
+  sp.delete('_data');
+  sp.delete('_routes');
+  // Partner-Rabattlinks (/discount/<code>?redirect=<kakao>&sca_ref=…): der
+  // Code muss im Warenkorb von crystal-cacao.com landen, nicht in dem von
+  // qiblanco.com (eigene Domain, eigenes cart-Cookie). Also geht schon der
+  // Rabattlink selbst auf die /discount-Route des Kakao-Ladens (dieselbe
+  // Bauform, gemessen 303 mit sca_ref am 2026-10-31).
+  const rabatt = /^\/discount\/([^/]+)\/?$/.exec(pfad);
+  if (rabatt) {
+    const weiter = sp.get('redirect');
+    if (!weiter) return {ziel: null, grund: 'rabatt_ohne_kakao_ziel'};
+    let w;
+    try {
+      w = new URL(weiter, 'https://qiblanco.com');
+    } catch {
+      return {ziel: null, grund: 'rabatt_ohne_kakao_ziel'};
+    }
+    if (w.hostname !== 'qiblanco.com' && w.hostname !== 'www.qiblanco.com') {
+      return {ziel: null, grund: 'rabatt_ohne_kakao_ziel'};
+    }
+    const kakaoPfad = kakaoZielPfad(w.pathname);
+    if (!kakaoPfad) return {ziel: null, grund: 'rabatt_ohne_kakao_ziel'};
+    sp.set('redirect', `${kakaoPfad}${w.search}`);
+    return {
+      ziel: `${KAKAO_LADEN_HOST}/discount/${rabatt[1]}?${sp.toString()}`,
+      grund: 'alle_rabatt',
+      status: 301,
+    };
+  }
+  const zielPfad = kakaoZielPfad(pfad);
+  if (!zielPfad) return {ziel: null, grund: 'keine_kakao_seite'};
+  const q = sp.toString();
+  return {
+    ziel: `${KAKAO_LADEN_HOST}${zielPfad}${q ? `?${q}` : ''}`,
+    grund: 'alle',
+    status: 301,
+  };
+}
+
+/**
+ * Für den Rand (server.js): Dokument-Request auf eine Kakao-Adresse bei
+ * Schalter 'alle' -> fertige 301-Antwort, sonst null. Liest den Schalter nur
+ * für Kakao-Adressen (alle anderen Seiten kostet das nichts). Wirft nie.
+ * @param {Request} request
+ * @param {any} storefront
+ * @returns {Promise<Response|null>}
+ */
+export async function kakaoAlleAntwort(request, storefront) {
+  try {
+    if (request.method !== 'GET' && request.method !== 'HEAD') return null;
+    const vorab = entscheideAlle(request.url);
+    if (!vorab.ziel) return null;
+    const schalter = await ladeKakaoWeicheSchalter(storefront);
+    if (String(schalter).trim().toLowerCase() !== KAKAO_WEICHE_ALLE) return null;
+    return new Response(null, {
+      status: 301,
+      headers: {Location: vorab.ziel, 'Cache-Control': KAKAO_WEICHE_ALLE_CACHE},
+    });
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -206,7 +308,8 @@ export async function kakaoLadenZiel({request, context}) {
     if (request.method !== 'GET') return null;
     const referer = request.headers.get('Referer');
     const vorab = entscheideKakaoWeiche({url: request.url, referer, schalter: KAKAO_WEICHE_EIN});
-    if (!vorab.ziel) return null;
+    const vorabAlle = entscheideAlle(request.url);
+    if (!vorab.ziel && !vorabAlle.ziel) return null;
     const schalter = await ladeKakaoWeicheSchalter(context?.storefront);
     return entscheideKakaoWeiche({url: request.url, referer, schalter}).ziel;
   } catch {

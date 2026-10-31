@@ -13,6 +13,7 @@ import {
 } from '../app/lib/kakao-laden-weiche.server.js';
 
 const Q = 'https://qiblanco.com';
+const C_ALT = 'https://crystal-cacao.com';
 const EIN = KAKAO_WEICHE_EIN;
 
 function ent(pfad, referer, schalter = EIN) {
@@ -144,11 +145,98 @@ test('kakaoLadenZiel: Schalter an -> Ziel; Metafeld fehlt oder Lesefehler -> nul
   assert.equal(await kakaoLadenZiel({request: req(u, 'https://l.instagram.com/'), context: {}}), null);
 });
 
-test('kakaoLadenZiel: Suche fragt den Schalter gar nicht erst; POST nie', async () => {
+// Seit Stufe 2 ('alle', EL-20261030-0adb59f3) fragt auch ein Suchbesuch auf
+// einer Kakao-Adresse den Schalter (genau einmal, 30-s-Cache): bei 'alle'
+// wird auch er weitergeleitet. Bei 'eigene-kanaele' bleibt er auf der Seite.
+// Nicht-Kakao-Seiten fragen weiterhin nie.
+test('kakaoLadenZiel: Suche bleibt bei eigene-kanaele; Nicht-Kakao fragt nie; POST nie', async () => {
   const z = {n: 0};
   const u = `${Q}/pages/crystal-cacao`;
   assert.equal(await kakaoLadenZiel({request: req(u, 'https://www.google.com/'), context: {storefront: sf(EIN, {zaehler: z})}}), null);
+  assert.equal(z.n, 1);
+  assert.equal(await kakaoLadenZiel({request: req(u, 'https://www.google.com/'), context: {storefront: sf('alle')}}), `${C_ALT}/`);
+  z.n = 0;
+  assert.equal(await kakaoLadenZiel({request: req(`${Q}/products/qione-2-pro`, 'https://www.google.com/'), context: {storefront: sf(EIN, {zaehler: z})}}), null);
   assert.equal(z.n, 0);
   assert.equal(await kakaoLadenZiel({request: req(u, 'https://l.instagram.com/', 'POST'), context: {storefront: sf(EIN, {zaehler: z})}}), null);
   assert.equal(z.n, 0);
+});
+
+// --- Stufe 2: Schalterwert 'alle' (Elina 30.10.2026, EL-20261030-0adb59f3) --
+
+import {entscheideAlle, kakaoAlleAntwort, KAKAO_WEICHE_ALLE} from '../app/lib/kakao-laden-weiche.server.js';
+import {kakaoHref, kakaoZielUrl} from '../app/lib/kakao-adressen.js';
+
+const C = 'https://crystal-cacao.com';
+
+test("'alle': Sorten, Uebersicht, Sets, alte Handles -> 301, Query unveraendert", () => {
+  const faelle = [
+    ['/products/crystal-cacao-awake?sca_ref=12345.abc&Art=420g&utm_source=x', `${C}/products/crystal-cacao-awake?sca_ref=12345.abc&Art=420g&utm_source=x`],
+    ['/products/crystal-cacao-create', `${C}/products/crystal-cacao-create`],
+    ['/pages/crystal-cacao?utm_medium=cpc&gclid=G', `${C}/?utm_medium=cpc&gclid=G`],
+    ['/pages/kristall-kakao', `${C}/`],
+    ['/products/zeremonie-kakao?variant=1', `${C}/products/crystal-cacao-create?variant=1`],
+    ['/products/bundle-2x-awake-1x-create?sca_ref=9', `${C}/products/bundle-2x-awake-1x-create?sca_ref=9`],
+    ['/products/bundle-7x-create', `${C}/products/bundle-7x-create`],
+    ['/products/mengenrabatt-3x-create', `${C}/products/mengenrabatt-3x-create`],
+    ['/products/aw783hfn', `${C}/products/bundle-2x-awake`],
+    ['/collections/zeremonie-kakao', `${C}/collections/zeremonie-kakao`],
+    ['/en/products/crystal-cacao-awake/', `${C}/products/crystal-cacao-awake`],
+  ];
+  for (const [von, nach] of faelle) {
+    const r = entscheideKakaoWeiche({url: `${Q}${von}`, referer: 'https://www.google.com/', schalter: KAKAO_WEICHE_ALLE});
+    assert.equal(r.ziel, nach, von);
+    assert.equal(entscheideAlle(`${Q}${von}`).status, 301, von);
+  }
+});
+
+test("'alle': Nicht-Kakao, Kurs-Lektionen und QiOne bleiben", () => {
+  for (const p of ['/', '/products/qione-2-pro', '/pages/zeremonie-kakao-kurs', '/pages/kakao-anwendung',
+    '/products/bundle-9x-awake', '/collections/all', '/cart']) {
+    assert.equal(entscheideAlle(`${Q}${p}`).ziel, null, p);
+  }
+});
+
+test("'alle': Partner-Rabattlink mit Kakao-Ziel geht auf die /discount-Route des Kakao-Ladens", () => {
+  const r = entscheideAlle(`${Q}/discount/JULIE10?redirect=/products/crystal-cacao-awake&sca_ref=777.x`);
+  assert.equal(r.ziel, `${C}/discount/JULIE10?redirect=%2Fproducts%2Fcrystal-cacao-awake&sca_ref=777.x`);
+  const z = new URL(r.ziel);
+  assert.equal(z.searchParams.get('redirect'), '/products/crystal-cacao-awake');
+  assert.equal(z.searchParams.get('sca_ref'), '777.x');
+  // Rabattlink auf ein Geraet bleibt auf qiblanco.com
+  assert.equal(entscheideAlle(`${Q}/discount/JULIE10?redirect=/products/qione-2-pro&sca_ref=1`).ziel, null);
+  assert.equal(entscheideAlle(`${Q}/discount/JULIE10`).ziel, null);
+});
+
+test("'alle': Datenrequest zeigt auf die Dokument-Adresse", () => {
+  assert.equal(entscheideAlle(`${Q}/products/crystal-cacao-awake.data?sca_ref=1&_routes=x`).ziel,
+    `${C}/products/crystal-cacao-awake?sca_ref=1`);
+});
+
+test("Schalter 'eigene-kanaele' verhaelt sich wie vorher (Suche bleibt auf qiblanco.com)", () => {
+  const r = entscheideKakaoWeiche({url: `${Q}/products/crystal-cacao-awake`, referer: 'https://www.google.com/', schalter: EIN});
+  assert.equal(r.ziel, null);
+  assert.equal(r.grund, 'suche');
+});
+
+test("kakaoAlleAntwort: 301 nur bei Schalter 'alle', sonst null; wirft nie", async () => {
+  const sf = (wert) => ({query: async () => ({shop: {metafield: {value: wert}}})});
+  const req = new Request(`${Q}/products/crystal-cacao-create?sca_ref=5`);
+  const an = await kakaoAlleAntwort(req, sf('alle'));
+  assert.equal(an.status, 301);
+  assert.equal(an.headers.get('Location'), `${C}/products/crystal-cacao-create?sca_ref=5`);
+  assert.equal(an.headers.get('Cache-Control'), 'public, max-age=3600');
+  assert.equal(await kakaoAlleAntwort(req, sf('eigene-kanaele')), null);
+  assert.equal(await kakaoAlleAntwort(req, sf('aus')), null);
+  assert.equal(await kakaoAlleAntwort(req, {query: async () => { throw new Error('netz'); }}), null);
+  assert.equal(await kakaoAlleAntwort(new Request(`${Q}/products/qione-2-pro`), sf('alle')), null);
+  assert.equal(await kakaoAlleAntwort(new Request(req.url, {method: 'POST'}), sf('alle')), null);
+});
+
+test('kakaoHref: Ladenverweise zeigen direkt auf crystal-cacao.com, Rest unveraendert', () => {
+  assert.equal(kakaoHref('/pages/crystal-cacao'), `${C}/`);
+  assert.equal(kakaoHref('/products/crystal-cacao-awake#kauf'), `${C}/products/crystal-cacao-awake#kauf`);
+  assert.equal(kakaoHref('https://qiblanco.com/products/crystal-cacao-create?Art=420g'), `${C}/products/crystal-cacao-create?Art=420g`);
+  assert.equal(kakaoHref('/products/qione-2-pro'), '/products/qione-2-pro');
+  assert.equal(kakaoZielUrl('https://qi-blanco.com/products/crystal-cacao-awake'), null);
 });

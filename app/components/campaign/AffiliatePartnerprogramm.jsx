@@ -279,7 +279,7 @@ const PRODUKT_GRUPPEN = [
           'Mit dem höchsten L-Tryptophan-Gehalt aller Kristall Kakao® Sorten.',
         ],
         zahl: 'Bio, 420 g',
-        pfad: '/products/crystal-cacao-awake',
+        pfad: 'https://crystal-cacao.com/products/crystal-cacao-awake',
         bild: {
           src: `${CDN}7.png?v=1765893911`,
           alt: 'Crystal Cacao® Awake, Bio-Zeremonie-Kakao im Beutel',
@@ -296,7 +296,7 @@ const PRODUKT_GRUPPEN = [
           'Das stärkste aktivierende Profil aller Kristall Kakao® Sorten.',
         ],
         zahl: 'Bio, 420 g',
-        pfad: '/products/crystal-cacao-create',
+        pfad: 'https://crystal-cacao.com/products/crystal-cacao-create',
         bild: {
           src: `${CDN}Doypack_Mockup__v3-min.png?v=1765893937`,
           alt: 'Crystal Cacao® Create, Bio-Zeremonie-Kakao im Beutel',
@@ -781,7 +781,7 @@ function Produkte() {
               Beide Sorten: {KAKAO_HERKUNFT} Dein Code gibt deiner Community
               auch auf den Kakao 5&nbsp;%, in jeder Menge und auch gemischt.
               Mehr über die Sorten steht bei{' '}
-              <a href="/pages/crystal-cacao">Crystal Cacao®</a>.
+              <a href="https://crystal-cacao.com/">Crystal Cacao®</a>.
             </p>
           )}
         </div>

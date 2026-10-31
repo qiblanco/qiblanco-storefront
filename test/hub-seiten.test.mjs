@@ -43,7 +43,10 @@ const FOOTER = readFileSync(
 );
 
 // Die zwei Ziele des Knopfdruck-Pakets L8 (SEO/AI-Master-Konzept DACH).
-const L8_ZIELE = ['/pages/crystal-cacao', '/pages/technologie'];
+// /pages/crystal-cacao ist seit Elinas Entscheidung vom 30.10.2026
+// (EL-20261030-0adb59f3, Kakao nur auf crystal-cacao.com) kein qiblanco-Ziel
+// mehr; es leitet per 301 weiter und gehoert nicht in eine interne Hub-Liste.
+const L8_ZIELE = ['/pages/technologie'];
 
 test('die L8-Ziele sind enthalten — sie sind der Ausgangsbefund', () => {
   for (const ziel of L8_ZIELE) {

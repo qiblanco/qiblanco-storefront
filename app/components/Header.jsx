@@ -8,7 +8,7 @@ import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
 import {useGoogleRating} from '~/lib/googleRating';
-import {menueZiel} from '~/crystal-spiegel-rahmen/pfade';
+import {kakaoHref, kakaoZielUrl} from '~/lib/kakao-adressen';
 import {MenueSymbol, alphabetisch, hatSymbolSpalte, istMehr} from '~/components/reusables/menue-symbole';
 import {
   istKakaoPfad,
@@ -162,10 +162,18 @@ function resolveMenuLink(rawUrl) {
 
   try {
     const url = new URL(rawUrl, 'https://qiblanco.com');
-    // Crystal-Spiegel (Christian 17.10.2026): ein Menüpunkt auf crystal-cacao.com
-    // führt in den Spiegel innerhalb von qiblanco.com (Begründung: menueZiel).
-    const spiegelZiel = menueZiel(rawUrl);
-    if (spiegelZiel) return {to: spiegelZiel, isExternal: false};
+    // Kakao nur auf crystal-cacao.com (Elina, Grundsatzentscheidung
+    // 30.10.2026, EL-20261030-0adb59f3; löst den Crystal-Spiegel innerhalb
+    // von qiblanco.com vom 17.10.2026 ab): ein Menüpunkt auf crystal-cacao.com
+    // bleibt dort, ein Menüpunkt auf eine Kakao-Adresse von qiblanco.com geht
+    // direkt zur gleichwertigen Seite des Kakao-Ladens. Beides im selben Tab
+    // (NavLink erkennt den fremden Ursprung und navigiert als Dokument).
+    const host = url.hostname.toLowerCase();
+    if (host === 'crystal-cacao.com' || host === 'www.crystal-cacao.com') {
+      return {to: `https://crystal-cacao.com${url.pathname}${url.search}${url.hash}`, isExternal: false};
+    }
+    const kakaoZiel = kakaoZielUrl(rawUrl.startsWith('/') ? rawUrl : url.href);
+    if (kakaoZiel) return {to: kakaoZiel, isExternal: false};
     const isInternalHost =
       rawUrl.startsWith('/') ||
       url.hostname === 'qiblanco.com' ||
@@ -399,7 +407,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         }
         link={
           isCacaoPage
-            ? '/pages/crystal-cacao'
+            ? kakaoHref('/pages/crystal-cacao')
             : `/products/qione-2-pro#${GOOGLE_REZENSIONEN_ANKER_ID}`
         }
         onAnnouncementClick={isCacaoPage ? undefined : onRezensionenKlick}
@@ -692,13 +700,13 @@ function MenuItem({item, url, isExternal, hasChildren, viewport, close}) {
                   {expandedKakaoMobile && (
                     <ul style={{paddingLeft: '1rem', borderLeft: '1px solid #ccc', marginTop: '0.25rem'}}>
                       <li style={{padding: '0.2rem 0', listStyle: 'none'}}>
-                        <NavLink className="header-submenu-item" onClick={close} prefetch="intent" style={activeLinkStyle} to="/pages/crystal-cacao">Übersicht</NavLink>
+                        <NavLink className="header-submenu-item" onClick={close} prefetch="intent" style={activeLinkStyle} to={kakaoHref('/pages/crystal-cacao')}>Übersicht</NavLink>
                       </li>
                       <li style={{padding: '0.2rem 0', listStyle: 'none'}}>
-                        <NavLink className="header-submenu-item" onClick={close} prefetch="intent" style={activeLinkStyle} to="/products/crystal-cacao-create">Create</NavLink>
+                        <NavLink className="header-submenu-item" onClick={close} prefetch="intent" style={activeLinkStyle} to={kakaoHref('/products/crystal-cacao-create')}>Create</NavLink>
                       </li>
                       <li style={{padding: '0.2rem 0', listStyle: 'none'}}>
-                        <NavLink className="header-submenu-item" onClick={close} prefetch="intent" style={activeLinkStyle} to="/products/crystal-cacao-awake">Awake</NavLink>
+                        <NavLink className="header-submenu-item" onClick={close} prefetch="intent" style={activeLinkStyle} to={kakaoHref('/products/crystal-cacao-awake')}>Awake</NavLink>
                       </li>
                     </ul>
                   )}
@@ -963,13 +971,13 @@ function SubmenuPortal({item, hover, setHover, close, triggerRef, hoverTimeout})
                 {expandedKakao && (
                   <ul className="kakao-children">
                     <li>
-                      <NavLink className="header-submenu-item kakao-child" onClick={close} prefetch="intent" style={activeLinkStyle} to="/pages/crystal-cacao">Übersicht</NavLink>
+                      <NavLink className="header-submenu-item kakao-child" onClick={close} prefetch="intent" style={activeLinkStyle} to={kakaoHref('/pages/crystal-cacao')}>Übersicht</NavLink>
                     </li>
                     <li>
-                      <NavLink className="header-submenu-item kakao-child" onClick={close} prefetch="intent" style={activeLinkStyle} to="/products/crystal-cacao-create">Create</NavLink>
+                      <NavLink className="header-submenu-item kakao-child" onClick={close} prefetch="intent" style={activeLinkStyle} to={kakaoHref('/products/crystal-cacao-create')}>Create</NavLink>
                     </li>
                     <li>
-                      <NavLink className="header-submenu-item kakao-child" onClick={close} prefetch="intent" style={activeLinkStyle} to="/products/crystal-cacao-awake">Awake</NavLink>
+                      <NavLink className="header-submenu-item kakao-child" onClick={close} prefetch="intent" style={activeLinkStyle} to={kakaoHref('/products/crystal-cacao-awake')}>Awake</NavLink>
                     </li>
                   </ul>
                 )}

@@ -37,6 +37,7 @@
  * stehen sie in der Komponente, die nur diese Seite lädt.
  */
 import {useEffect, useMemo, useState} from 'react';
+import {kakaoZielUrl} from '~/lib/kakao-adressen';
 
 /* ══════════════════════════════════════════════════════════════════════════
    INHALTE JE KANAL
@@ -1093,9 +1094,16 @@ export function baueRabattlink(code, referenzEingabe, pfad) {
   if (!c) return {link: '', hinweis: 'Trag deinen Gutscheincode ein.'};
   const ref = referenzAus(referenzEingabe);
   const ziel = ZIELE.some((z) => z.pfad === pfad) ? pfad : '/';
+  // Kakao lebt nur auf crystal-cacao.com (Elina 30.10.2026,
+  // EL-20261030-0adb59f3): Code und Zuordnung müssen im Warenkorb des
+  // Kakao-Ladens landen, also geht der Rabattlink direkt auf dessen
+  // /discount-Route (dieselbe Bauform wie auf qiblanco.com).
+  const kakao = kakaoZielUrl(ziel);
+  const laden = kakao ? 'https://crystal-cacao.com' : 'https://qiblanco.com';
+  const weiter = kakao ? new URL(kakao).pathname : ziel;
   let link =
-    `https://qiblanco.com/discount/${encodeURIComponent(c)}` +
-    `?redirect=${ziel}`;
+    `${laden}/discount/${encodeURIComponent(c)}` +
+    `?redirect=${weiter}`;
   if (ref) link += `&sca_ref=${ref}`;
   const hinweis = ref
     ? 'Fertig: Rabatt und Zuordnung stecken im Link.'
@@ -1891,7 +1899,9 @@ function Ziele({pfad, waehle}) {
               </p>
             ) : null}
             <code className="lp-pd-beispiel">
-              {z.pfad === '/' ? 'qiblanco.com' : z.pfad}
+              {z.pfad === '/'
+                ? 'qiblanco.com'
+                : kakaoZielUrl(z.pfad)?.replace('https://', '') ?? z.pfad}
             </code>
             {z.kurz ? (
               <span className="lp-pd-ziel__material">

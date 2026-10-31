@@ -107,7 +107,7 @@ function Hero() {
           ✅ Wissenschaftlich geprüft - direkt spürbar!{' '}
         </p>
         <div className="flex gap-3 mt-2">
-          <a href="/products/crystal-cacao-create" className="btn--primary">
+          <a href="https://crystal-cacao.com/products/crystal-cacao-create" className="btn--primary">
             Jetzt kaufen
           </a>
           <a target='_blank'

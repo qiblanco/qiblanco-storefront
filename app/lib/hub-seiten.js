@@ -83,7 +83,10 @@
 export const HUB_LINKS = [
   {to: '/pages/technologie', label: 'Technologie', titel_ok: true},
   {to: '/pages/studien', label: 'Wissenschaftliche Studien', titel_ok: true},
-  {to: '/pages/crystal-cacao', label: 'Crystal Cacao®', titel_ok: true},
+  // Crystal Cacao® steht seit Elinas Entscheidung vom 30.10.2026
+  // (EL-20261030-0adb59f3) nicht mehr in der Hub-Liste: es ist keine
+  // qiblanco.com-Seite mehr. Der Fußbereich verweist über INHALT_LINKS
+  // direkt auf crystal-cacao.com.
   // Ankertext am 2026-09-26 nachgezogen: die Seite heißt seit PR #657
   // live "Superhuman: der kostenlose Videokurs in fünf Stufen | Qi Blanco".
   // "Superhuman Videokurs" war darin nicht mehr enthalten, die Naht-Probe

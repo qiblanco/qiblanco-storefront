@@ -4,15 +4,17 @@ import {Await, NavLink, Link} from 'react-router';
 // Hub-Seiten-Liste + Begründung: app/lib/hub-seiten.js (SEO-Stufe S5).
 import {themenLinks, wvFussLinks, WV_TITEL} from '~/lib/hub-seiten';
 import {AnmeldeWeiche} from './reusables/Anmeldeweiche';
+// Kakao nur auf crystal-cacao.com (Elina 30.10.2026, EL-20261030-0adb59f3).
+import {kakaoHref} from '~/lib/kakao-adressen';
 
 const PRODUCT_LINKS = [
   {to: '/products/qione-2-pro', label: 'QiOne® 2 Pro'},
   {to: '/products/qibracelet', label: 'QiBracelet®'},
   {to: '/products/qihome-air', label: 'QiHome® Air'},
   {to: '/products/qione-kette', label: 'Necklace für QiOne®'},
-  {to: '/products/zeremonie-kakao', label: 'Zeremonie Kakao'},
-  {to: '/products/crystal-cacao-awake', label: 'Crystal Cacao Awake'},
-  {to: '/products/crystal-cacao-create', label: 'Crystal Cacao Create'},
+  {to: kakaoHref('/pages/crystal-cacao'), label: 'Zeremonie Kakao'},
+  {to: kakaoHref('/products/crystal-cacao-awake'), label: 'Crystal Cacao Awake'},
+  {to: kakaoHref('/products/crystal-cacao-create'), label: 'Crystal Cacao Create'},
 ];
 
 const STUDIES = [
@@ -480,7 +482,7 @@ function PaymentIcons() {
  */
 const INHALT_LINKS = [
   {to: '/pages/technologie', label: 'Die Technologie dahinter'},
-  {to: '/pages/crystal-cacao', label: 'Crystal Cacao®'},
+  {to: kakaoHref('/pages/crystal-cacao'), label: 'Crystal Cacao®'},
   {to: '/blogs/wissen', label: 'Wissens-Magazin'},
 ];
 

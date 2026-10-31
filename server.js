@@ -12,6 +12,7 @@ import * as serverBuild from 'virtual:react-router/server-build';
 import {createRequestHandler, storefrontRedirect} from '@shopify/hydrogen';
 import {createAppLoadContext} from '~/lib/context';
 import {mitAbwehr} from '~/lib/abwehr/abwehr';
+import {kakaoAlleAntwort} from '~/lib/kakao-laden-weiche.server';
 
 /**
  * Export a fetch handler in module format.
@@ -38,6 +39,21 @@ export default {
           env,
           executionContext,
         );
+
+        // KAKAO NUR AUF crystal-cacao.com (Elina 30.10.2026, EL-20261030-
+        // 0adb59f3): bei Schalter qb_routing.kakao_laden = 'alle' gehen
+        // Dokument-Requests auf Kakao-Adressen per 301 dorthin, für JEDE
+        // Route (auch Sets über products.$handle und die Collection).
+        // Datenrequests bleiben bei den Loadern (ein Cross-Origin-301 auf
+        // einen fetch der Client-Navigation liefe in CORS). Wirft nie.
+        const pfadRoh = new URL(request.url).pathname;
+        if (!pfadRoh.endsWith('.data')) {
+          const kakao301 = await kakaoAlleAntwort(
+            request,
+            appLoadContext.storefront,
+          );
+          if (kakao301) return kakao301;
+        }
 
         /**
          * Create a Remix request handler and pass
