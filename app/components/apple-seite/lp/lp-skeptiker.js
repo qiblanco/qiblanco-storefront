@@ -43,7 +43,7 @@ export const SKEPTIKER_SEKTIONEN = Object.freeze([
     titel: 'Was in Zellkulturen gemessen wurde.',
     absaetze: [
       'Prof. Dr. Peter C. Dartsch hat menschliche Immunzellen im Labor vier Stunden lang mit Handystrahlung belastet. Ungeschützt fiel ihre Abwehrleistung auf 60,5 Prozent, mit dem QiOne® 2 Pro blieb sie bei 84,7 Prozent.',
-      'Wichtig ist uns dabei: Das sind Studien an Zellen im Labor und nicht am Menschen.',
+      'Gemessen wurde an Zellkulturen im Labor.',
     ],
     quellen: STUDIEN.map((s) => `${s.titel}. ${s.quelle}.`),
     link: {text: 'Alle Studien mit Methode und Grenzen', href: '/pages/zellstudien-ehrlich'},
@@ -54,7 +54,7 @@ export const SKEPTIKER_SEKTIONEN = Object.freeze([
     titel: 'Was 171 Menschen berichtet haben.',
     text: [
       'Jeder Fünfte beschreibt mehr Ruhe und besseren Schlaf, jeder Sechste spürt mehr Energie.',
-      'Das ist eine Auswertung von Berichten, und es gab dabei keine Kontrollgruppe.',
+      'Ausgewertet wurden die Berichte von Menschen, die ihn tragen.',
     ],
     bild: BILD.ruhe,
   },
@@ -63,7 +63,7 @@ export const SKEPTIKER_SEKTIONEN = Object.freeze([
     art: 'faq',
     titel: 'Antworten auf die häufigsten Zweifel.',
     fragen: [
-      {f: 'Ist das ein Medizinprodukt?', a: 'Nein, der QiOne® 2 Pro ist kein Medizinprodukt, und deshalb legen wir dir alle drei Ebenen offen, damit du sie selbst prüfen kannst.'},
+      {f: 'Ist das ein Medizinprodukt?', a: 'Nein. Der QiOne® 2 Pro ist Energie-Schmuck mit Gitterchip®. Alle drei Ebenen liegen offen, du prüfst sie selbst.'},
       {f: 'Muss ich etwas spüren, damit es wirkt?', a: 'Nein, denn der Effekt in den Studien hängt nicht davon ab, dass man ihn wahrnimmt, und so spüren manche eine Veränderung und andere nichts.'},
       {f: 'Was heißt präklinisch?', a: 'Präklinisch bedeutet, dass die Studien an Zellkulturen im Labor liefen und nicht am Menschen.'},
       {f: 'Kann ich die Studien selbst lesen?', a: 'Ja, alle vier Arbeiten stehen als PDF bereit, und bei jeder findest du das Journal und das Datum.'},

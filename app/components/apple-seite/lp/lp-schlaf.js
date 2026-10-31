@@ -3,7 +3,8 @@ import {ANNA, BILD, STIMMEN, STUDIEN, ZIEL} from './lp-gemeinsam.js';
 /*
  * APPLE-FASSUNG /pages/tiefer-schlaf (s07-r3). Schlaf-LP der Ads: drei
  * Nacht-Momente, was nachts passiert, das Abend-Ritual, die Zellstudie, die
- * Erfahrungsberichte und die 20 Nächte. Die Sätze stammen aus der C-Fassung
+ * Erfahrungsberichte und die 20 Nächte. Texte über menschlichkeit/bin/christian-
+ * fassung (s07-r3), die Nacht-Szene (23/3/7 Uhr) aussortiert. Die Sätze stammen aus der C-Fassung
  * (components/campaign/TieferSchlaf.jsx), gekürzt und ohne Gedankenstriche.
  * Aussortiert gegenüber C: Zahlenreihe, Mikroskop-Videos, Podcast-Block,
  * Video-Stimmen-Karussell, QiHome-Raum-Block, Zahlungs-Logos, Signatur-Siegel.
@@ -18,15 +19,6 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
     cta: ZIEL.qione,
   },
   {
-    art: 'fakten',
-    titel: 'Drei Momente, die du nicht vermissen wirst.',
-    kacheln: [
-      {zahl: '23 Uhr', titel: 'Der Kopf macht weiter', satz: 'Das Licht ist aus und der Tag war lang, aber das Handy liegt noch neben dem Kissen.'},
-      {zahl: '3 Uhr', titel: 'Hellwach', satz: 'Es gibt keinen Lärm und keinen Stress, und trotzdem kommt dein Körper nicht zur Ruhe.'},
-      {zahl: '7 Uhr', titel: 'Nicht erholt', satz: 'Geschlafen hast du schon, aber der Schlaf war flach und der Tag beginnt im Minus.'},
-    ],
-  },
-  {
     art: 'kapitel',
     etikett: 'Was nachts passiert',
     titel: 'Was nachts in deinem Körper passiert.',
@@ -38,7 +30,7 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
   {
     art: 'band',
     etikett: 'Dein Abend',
-    titel: 'Der Abend ist ein Ritual, kein Kraftakt.',
+    titel: 'Ein fester Punkt, an dem dein Abend beginnt.',
     text: [
       'Du legst den QiOne® 2 Pro an, so wie andere die Zähne putzen. Du musst nichts einstellen, und eine App braucht es dafür auch nicht.',
       'Er arbeitet leise im Hintergrund, während du das Licht dimmst und das Handy weglegst.',
@@ -59,16 +51,16 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
   {
     art: 'band',
     etikett: '171 Erfahrungsberichte',
-    titel: 'Erholt aufwachen, darum geht es.',
+    titel: '171 Menschen erzählen von ihren Nächten.',
     text: [
-      '171 Menschen haben aufgeschrieben, was sich bei ihnen verändert hat.',
+      'Sie haben aufgeschrieben, was sich bei ihnen verändert hat.',
       'Jeder Fünfte beschreibt mehr Ruhe und besseren Schlaf, und viele erzählen, dass ihnen der Übergang in den Schlaf wieder leichter fällt.',
     ],
     bild: BILD.paar,
   },
   {
     art: 'stimmen',
-    titel: 'Echte Menschen und echte Erfahrungen.',
+    titel: 'Das erzählen Menschen, die ihn tragen.',
     stimmen: [
       {text: 'Meine Tiefschlafphase hat sich deutlich verbessert. Das habe ich getrackt.', quelle: 'Constantin Preis, Deutscher Leichtathletik-Meister'},
       STIMMEN[0],
@@ -79,7 +71,7 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
     titel: 'Fragen zu den 20 Nächten.',
     fragen: [
       {f: 'Wann merke ich etwas?', a: 'Die meisten Träger berichten von Veränderungen in den ersten drei Wochen.'},
-      {f: 'Brauche ich Strom oder eine App?', a: 'Nein, im QiOne® 2 Pro steckt weder ein Akku noch Elektronik, und eine App gibt es dafür auch nicht.'},
+      {f: 'Brauche ich Strom oder eine App?', a: 'Nein. Er arbeitet passiv, solange du ihn trägst.'},
       {f: 'Und wenn es mir nichts bringt?', a: 'Dann schickst du ihn innerhalb von 20 Tagen zurück, und der volle Kaufpreis wird erstattet.'},
       {f: 'Kann ich in Raten zahlen?', a: 'Ja, das geht in Monatsraten mit 0 % Finanzierung über Klarna oder PayPal, und der Käuferschutz ist inklusive.'},
     ],
