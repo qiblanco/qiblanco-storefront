@@ -33,6 +33,19 @@
  * (persist-credentials). Scheitert das, liefert die Funktion `null`
  * (FAIL-OPEN): die Sitemap bleibt so, wie Shopify sie liefert, und die Probe
  * wird rot.
+ *
+ * EIN git-AUFRUF FÜR ALLE ROUTEN (2026-10-31, Grossjob
+ * 20261031-GROSSJOB-prio1-ax41-ai-server-final-verschmelzen-wache-selbstreparatur, s05):
+ * bis dahin lief je Routendatei ein eigenes `git log` (121 Aufrufe). Auf
+ * ax41 läuft git über den Gehirn-Dienst, je Aufruf 1,2-3,2 s, also 3-7 min
+ * je Laden der Vite-Konfiguration; ein Build lädt sie mehrfach. Jetzt holt
+ * EIN `git log -- app/routes` die Historie, und jede Route nimmt den jüngsten
+ * Commit mit inhaltlicher Änderung an genau ihrer Datei. `--no-renames`, weil
+ * der Einzelaufruf eine umbenannte Datei als neu angelegt sah (die alte
+ * Pfadseite lag außerhalb seines Pfads); mit Umbenennungs-Erkennung über das
+ * ganze Verzeichnis zählte eine reine Umbenennung 0 Zeilen. Gleichheit der
+ * Tabelle mit dem Einzelweg ist gemessen (Job-Ordner s05, vergleich-*.json).
+ * Schalter zurück: ROUTEN_LASTMOD_EINZELN=1 (Verhalten vorher, je Datei).
  */
 import {execFileSync} from 'node:child_process';
 import {readdirSync} from 'node:fs';
@@ -88,6 +101,65 @@ function letzteInhaltlicheAenderung(wurzel, pfad) {
   return null;
 }
 
+/**
+ * Pfade, die git auch mit core.quotePath=false in Anführung setzt
+ * (Anführungszeichen, Backslash, Steuerzeichen). Sie laufen einzeln.
+ */
+const NICHT_IM_GESAMTLOG = /["\\\x00-\x1f\x7f]/;
+const DIFF_KOPF = 'diff --git a/';
+
+/**
+ * Wie letzteInhaltlicheAenderung, für alle `pfade` mit EINEM git-Aufruf über
+ * app/routes: Pfad -> UTC-ISO des jüngsten Commits mit inhaltlicher Änderung.
+ *
+ * @param {string} wurzel
+ * @param {string[]} pfade
+ * @returns {Map<string, string>}
+ */
+function alleInhaltlichenAenderungen(wurzel, pfade) {
+  const offen = new Set(pfade);
+  const datum = new Map();
+  const log = git(wurzel, [
+    '-c',
+    'core.quotePath=false',
+    'log',
+    '--no-renames',
+    `--format=${MARKE}%cI`,
+    '-p',
+    '-U0',
+    '--',
+    'app/routes',
+  ]);
+  for (const block of log.split(MARKE).slice(1)) {
+    if (offen.size === 0) break;
+    const [kopf, ...rest] = block.split('\n');
+    /** @type {Map<string, string[]>} */
+    const jeDatei = new Map();
+    let aktuell = null;
+    for (const zeile of rest) {
+      if (zeile.startsWith(DIFF_KOPF)) {
+        // `diff --git a/<p> b/<p>`: ohne Umbenennung beide Seiten gleich lang
+        const beide = zeile.slice(DIFF_KOPF.length);
+        const pfad = beide.slice(0, (beide.length - ' b/'.length) / 2);
+        aktuell = offen.has(pfad) ? pfad : null;
+        if (aktuell && !jeDatei.has(aktuell)) jeDatei.set(aktuell, []);
+        continue;
+      }
+      if (aktuell) jeDatei.get(aktuell).push(zeile);
+    }
+    for (const [pfad, zeilen] of jeDatei) {
+      if (inhaltlicheZeilen(zeilen) > 0) {
+        datum.set(
+          pfad,
+          new Date(kopf.trim()).toISOString().replace('.000Z', 'Z'),
+        );
+        offen.delete(pfad);
+      }
+    }
+  }
+  return datum;
+}
+
 /** @param {string} wurzel */
 function istVoll(wurzel) {
   return git(wurzel, ['rev-parse', '--is-shallow-repository']).trim() === 'false';
@@ -114,13 +186,32 @@ export function routenLastmod(wurzel, {vertiefen = false} = {}) {
   }
   const tabelle = {};
   const routen = readdirSync(join(wurzel, 'app', 'routes'));
+  /** @type {[string, string][]} Handle, Pfad */
+  const seiten = [];
   for (const name of routen) {
     if (!name.startsWith('pages.') || !name.endsWith('.jsx')) continue;
     const handle = name.slice('pages.'.length, -'.jsx'.length);
     // Dynamische Routen ($handle, podcasts_.$seite) sind keine Seiten-Handles.
     if (handle.includes('$') || handle.includes('.')) continue;
+    seiten.push([handle, `app/routes/${name}`]);
+  }
+  let gesamt = null;
+  if (!process.env.ROUTEN_LASTMOD_EINZELN) {
     try {
-      const datum = letzteInhaltlicheAenderung(wurzel, `app/routes/${name}`);
+      gesamt = alleInhaltlichenAenderungen(
+        wurzel,
+        seiten.map(([, pfad]) => pfad),
+      );
+    } catch {
+      gesamt = null; // dann je Datei, wie vorher
+    }
+  }
+  for (const [handle, pfad] of seiten) {
+    try {
+      const datum =
+        gesamt && !NICHT_IM_GESAMTLOG.test(pfad)
+          ? gesamt.get(pfad)
+          : letzteInhaltlicheAenderung(wurzel, pfad);
       if (datum) tabelle[handle] = datum;
     } catch {
       // eine unlesbare Route bekommt kein Datum, die anderen schon

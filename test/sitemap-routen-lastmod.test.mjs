@@ -183,4 +183,41 @@ await pruefe('Generator: letzter INHALTLICHER Commit zählt; eine FLACHE Kopie l
   }
 });
 
+await pruefe('Generator: EIN git-Aufruf liefert dieselbe Tabelle wie der Einzelweg, auch bei Umbenennung', async () => {
+  // Der Gesamtweg (ein `git log -- app/routes`) muss je Route dasselbe Datum
+  // finden wie ein `git log -- <datei>` je Route (ROUTEN_LASTMOD_EINZELN=1).
+  // Die Falle: mit Umbenennungs-Erkennung über das Verzeichnis zählte eine
+  // reine Umbenennung 0 Zeilen, der Einzelweg sah die Datei als neu angelegt.
+  const repo = mkdtempSync(join(tmpdir(), 'routen-lastmod-gesamt-'));
+  const g = (args, datum) =>
+    execFileSync('git', ['-C', repo, '-c', 'user.name=t', '-c', 'user.email=t@t', ...args], {
+      stdio: 'ignore',
+      env: {...process.env, GIT_COMMITTER_DATE: datum, GIT_AUTHOR_DATE: datum},
+    });
+  const vorher = process.env.ROUTEN_LASTMOD_EINZELN;
+  try {
+    g(['init', '-q'], '2026-01-01T00:00:00Z');
+    mkdirSync(join(repo, 'app', 'routes'), {recursive: true});
+    writeFileSync(join(repo, 'app', 'routes', 'pages.alt.jsx'), 'export const a = 1;\n');
+    writeFileSync(join(repo, 'app', 'routes', 'pages.b.jsx'), 'export const b = 1;\n');
+    g(['add', '-A'], '2026-01-01T00:00:00Z');
+    g(['commit', '-q', '-m', 'inhalt'], '2026-01-01T00:00:00Z');
+    g(['mv', 'app/routes/pages.alt.jsx', 'app/routes/pages.neu.jsx'], '2026-02-01T00:00:00Z');
+    g(['commit', '-q', '-m', 'umbenannt'], '2026-02-01T00:00:00Z');
+    writeFileSync(join(repo, 'app', 'routes', 'pages.b.jsx'), 'export const b = 2;\n');
+    g(['commit', '-q', '-am', 'b'], '2026-03-01T00:00:00Z');
+
+    delete process.env.ROUTEN_LASTMOD_EINZELN;
+    const gesamt = routenLastmod(repo);
+    process.env.ROUTEN_LASTMOD_EINZELN = '1';
+    const einzeln = routenLastmod(repo);
+    assert.deepEqual(einzeln, {b: '2026-03-01T00:00:00Z', neu: '2026-02-01T00:00:00Z'});
+    assert.equal(JSON.stringify(gesamt, null, 2), JSON.stringify(einzeln, null, 2));
+  } finally {
+    if (vorher === undefined) delete process.env.ROUTEN_LASTMOD_EINZELN;
+    else process.env.ROUTEN_LASTMOD_EINZELN = vorher;
+    rmSync(repo, {recursive: true, force: true});
+  }
+});
+
 console.log(`sitemap-routen-lastmod: ${grün} Arme grün`);
