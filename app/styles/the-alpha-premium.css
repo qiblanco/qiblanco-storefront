@@ -207,7 +207,7 @@ html:has(main[data-film-seite]) {
    nach dem letzten blendet sie aus (tap-aus), einen halben Schritt später
    steht die nächste still (kurzes Schwarz, Christian 30.10.), weil sie einen Bildschirm hoch unter ihr liegt
    (tap-nachruecken). Das Video steht ganz im Bild, wenn die Bühne davor
-   fertig ist (tap-nach-buehne: seine Unterkante liegt auf ihrer). Die Bühne
+   ausblendet (tap-nach-buehne). Die Bühne
    nach dem Video steht einen halben Schritt, nachdem es oben weicht
    (tap-nach-video, Weich-Linie 10 % in useTapFilm). Klassen und
    --tap-video-hoehe setzt useTapFilm; ohne Bewegung gibt es keine Kette. */
@@ -225,7 +225,12 @@ html:has(main[data-film-seite]) {
 }
 
 .tap-js.tap-kette .tap-nach-buehne {
-  margin-top: calc(-1 * var(--tap-video-hoehe, 0px));
+  /* Das Video erscheint, wenn die Bühne davor ausblendet, an DERSELBEN Stelle
+     wie vor der Kette (Unterkante ~5 % über dem Bildrand, Mitte ~0,53; der
+     Start bleibt, wie er war, Christian 30.10. Z7). Es blendet erst nach der
+     Bühne ein (--tap-folge 3 = 360 ms), damit nichts übereinander liegt. */
+  --tap-folge: 3;
+  margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - var(--tap-schritt-absatz) / 2 - 5svh);
   margin-bottom: 0;
 }
 

@@ -40,7 +40,7 @@ test('Bühne weicht einen Schritt nach ihrem letzten, die Schluss-Bühne nie', (
 test('Geometrie: Bildschirm + Schritte + 1,5, Nachrücken um einen Bildschirm', () => {
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-scrub:not\(\[data-tap-ende\]\) \{\s*height: calc\(100svh \+ \(var\(--tap-schritte, 0\) \+ 1\.5\) \* var\(--tap-schritt\)\);/);
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-nachruecken \{\s*margin-top: -100svh;/);
-  assert.match(CSS, /\.tap-js\.tap-kette \.tap-nach-buehne \{\s*margin-top: calc\(-1 \* var\(--tap-video-hoehe, 0px\)\);/);
+  assert.match(CSS, /margin-top: calc\(-1 \* var\(--tap-video-hoehe, 0px\) - var\(--tap-schritt-absatz\) \/ 2 - 5svh\);/);
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-nach-video \{\s*margin-top: calc\(-1 \* var\(--tap-video-hoehe, 0px\) - 10svh \+ var\(--tap-schritt\) \/ 2\);/);
   // Übereinander liegende Bühnen fangen keine Tipps ab (Ton-Knopf am Video).
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-scrub \{\s*pointer-events: none;/);
