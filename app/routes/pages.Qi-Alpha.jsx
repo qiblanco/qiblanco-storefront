@@ -2,6 +2,8 @@ import {redirect} from 'react-router';
 import TheAlpha from '~/components/campaign/TheAlpha';
 import {canonicalLink} from '~/lib/seo';
 import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
+import rechtszeileStyles from '~/styles/qi-alpha-rechtszeile.css?url';
+import {QiAlphaRechtsZeile} from '~/components/campaign/QiAlphaRechtsZeile';
 
 /*
  * /pages/The-Alpha — Variante A (Grossjob 20261025-prio1-the-alpha-landingpage-
@@ -39,7 +41,10 @@ export const handle = {filmSeite: true};
 const KANON_PFAD = '/pages/Qi-Alpha';
 
 export function links() {
-  return [{rel: 'stylesheet', href: theAlphaPremiumStyles}];
+  return [
+    {rel: 'stylesheet', href: theAlphaPremiumStyles},
+    {rel: 'stylesheet', href: rechtszeileStyles},
+  ];
 }
 
 /** @type {MetaFunction} */
@@ -70,7 +75,14 @@ export async function loader({request}) {
 }
 
 export default function TheAlphaRoute() {
-  return <TheAlpha />;
+  // Rechtszeile unter dem Film (Elina 30.10.2026, EL-20261030-ae569366):
+  // die Film-Seite hat keinen Hausfuß, das Impressum muss trotzdem da sein.
+  return (
+    <>
+      <TheAlpha />
+      <QiAlphaRechtsZeile seite="lp" />
+    </>
+  );
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */

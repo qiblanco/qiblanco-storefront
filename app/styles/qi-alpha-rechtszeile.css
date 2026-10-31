@@ -1,0 +1,70 @@
+/*
+ * Rechtszeile der Qi-Alpha-Seiten (components/campaign/QiAlphaRechtsZeile.jsx,
+ * Elina 30.10.2026, EL-20261030-ae569366): eine schlichte schwarze Zeile im
+ * Alpha-Stil, Schrift klein und hell, Abstand ruhig. Auf der Kaufseite hält
+ * sie mobil die Höhe der festen Schlussleiste frei (61 px, the-alpha-shop.css),
+ * damit kein Verweis unter dem Kaufknopf liegt.
+ */
+.qar {
+  background: #000;
+  color: rgba(255, 255, 255, 0.72);
+  padding: 28px 20px 32px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.qar-liste {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.qar-liste li {
+  margin: 0;
+}
+
+.qar-liste a,
+.qar .eu-gwl__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.qar-liste a:hover,
+.qar-liste a:focus-visible,
+.qar .eu-gwl__link:hover,
+.qar .eu-gwl__link:focus-visible {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* EuGewaehrleistungsLink setzt einen Absatz um den Knopf. */
+.qar-gwl p {
+  display: inline;
+  margin: 0;
+}
+
+.qar-marke {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 749px) {
+  .qar--kauf {
+    padding-bottom: calc(32px + 64px + env(safe-area-inset-bottom));
+  }
+}
