@@ -202,11 +202,15 @@ export function kettenKacheln(produkt, art, texte) {
 
 /**
  * Warenkorbzeilen: Gerät zuerst, die Kette als eigene Zeile derselben
- * LinesAdd-Aktion. Ohne kaufbares Gerät keine Zeile.
+ * LinesAdd-Aktion. Ohne kaufbares Gerät keine Zeile. `attribute` (optional)
+ * hängt an der Gerätezeile, z. B. die Kettenlänge eines Sets, dessen Kette
+ * Shopify nicht als Variante führt (s13-r3).
  */
-export function warenkorbZeilen(variante, kette = null) {
+export function warenkorbZeilen(variante, kette = null, attribute = null) {
   if (!variante?.id || !variante.availableForSale) return [];
-  const zeilen = [{merchandiseId: variante.id, quantity: 1, selectedVariant: variante}];
+  const haupt = {merchandiseId: variante.id, quantity: 1, selectedVariant: variante};
+  if (attribute?.length) haupt.attributes = attribute;
+  const zeilen = [haupt];
   if (kette?.variante?.id) {
     zeilen.push({merchandiseId: kette.variante.id, quantity: 1, selectedVariant: kette.variante});
   }
@@ -230,4 +234,38 @@ export function faqSichtbar(fragen, angebot) {
     .filter((x) => x?.f && x?.a)
     .filter((x) => angebot || !rate.test(`${x.f} ${x.a}`))
     .map((x) => ({f: mitRate(x.f, angebot), a: mitRate(x.a, angebot)}));
+}
+
+/*
+ * KETTE IM SET (s13-r3, Angebot /products/pjdz538hgs0 „QiOne® 2 Pro +
+ * Necklace“): Shopify führt das Set mit EINER Variante, die Kette liegt bei.
+ * Ihre Länge geht als Zeilenattribut an die Bestellung (KETTENLAENGE_ATTR,
+ * ohne Unterstrich, damit Kasse und Bestellung sie zeigen). Bis 31.10.2026
+ * kam sie nur an, wenn jemand sie selbst in die Notiz schrieb (3 von 12
+ * Bestellungen, s13/mess/r3/angebot-bestellungen.json).
+ */
+export const KETTENLAENGE_ATTR = 'Kettenlänge';
+
+/**
+ * Längen-Kacheln der beiliegenden Kette aus den Varianten des Kettenprodukts:
+ * ALLE Längen, kurz nach lang, mit Lieferbarkeit (ausverkauft = sichtbar,
+ * nicht wählbar). Keine Variante wird gekauft, nur die Länge gemerkt.
+ */
+export function laengenKacheln(produkt) {
+  return (produkt?.variants?.nodes ?? [])
+    .map((v) => ({cm: laengeCm(v?.title), verfuegbar: Boolean(v?.availableForSale)}))
+    .filter((x) => x.cm)
+    .sort((a, b) => a.cm - b.cm)
+    .map((x) => ({schluessel: `laenge-${x.cm}`, ...x}));
+}
+
+/** Vorwahl: die gewünschte Länge, wenn lieferbar, sonst die erste lieferbare. */
+export function startLaenge(kacheln, vorwahl = null) {
+  const lieferbar = (kacheln ?? []).filter((k) => k.verfuegbar);
+  return (lieferbar.find((k) => k.cm === vorwahl) ?? lieferbar[0] ?? null)?.cm ?? null;
+}
+
+/** Zeilenattribut der gewählten Länge; ohne Länge keins. */
+export function laengenAttribut(cm) {
+  return cm ? [{key: KETTENLAENGE_ATTR, value: `${cm} cm`}] : null;
 }
