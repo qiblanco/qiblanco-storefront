@@ -80,14 +80,14 @@ import {
  *   Szene erst ganz aus dem Bild geschoben werden musste, bevor die nächste
  *   kam. Jetzt WEICHT das Alte, statt weggeschoben zu werden: eine Bühne
  *   blendet einen Schritt nach ihrem letzten Schritt aus (tap-aus), einen
- *   Schritt später steht die nächste Bühne still (tap-nachruecken: sie liegt
+ *   halben Schritt später steht die nächste Bühne still (tap-nachruecken: sie liegt
  *   einen Bildschirm hoch unter der vorigen). Karten und Seitenband sind
  *   eigene kurze Bühnen (TapKarten, TapMarke). Das Video bleibt, wie es war
  *   (Start, Scrollstopper): es steht genau dann ganz im Bild, wenn die Bühne
  *   davor fertig ist (tap-nach-buehne), und weicht, sobald es oben an den
  *   Rand kommt und der Stopper es nicht hält; einen halben Schritt später
  *   steht die nächste Bühne (tap-nach-video). Abstand zwischen zwei Neuen
- *   damit höchstens zwei Schritte (Handy 2 x 160 px). Ohne Bewegung und im
+ *   damit höchstens anderthalb Bild-Schritte (Handy 300 px). Ohne Bewegung und im
  *   Standbild (tap-still) gibt es keine Kette.
  */
 const TapFassung = createContext({szene: false});

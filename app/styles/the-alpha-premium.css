@@ -60,7 +60,7 @@
      (Christian: „scrolling gefällt mir … sehr gut“). */
   --tap-schritt-zeile: 96px;
   /* Bild-Bühnen der Szenen-Kette (Karten, Seitenband; 31.10.2026): ein Bild
-     bleibt einen Schritt, dann weicht es; zwei Schritte bis zum nächsten
+     bleibt einen Schritt, dann weicht es; anderthalb Schritte bis zum nächsten
      Neuen bleiben unter einem halben Bildschirm (Kleinbild: 160 px). */
   --tap-schritt-bild: 200px;
 
@@ -203,9 +203,9 @@ html:has(main[data-film-seite]) {
 /* ---------- Szenen-Kette (A, Christian 31.10.2026) ---------- */
 /* „Die Scrollbewegungen sind noch deutlich zu lang, damit was Neues kommt“.
    Das Alte weicht, statt weggeschoben zu werden: eine Bühne ist einen
-   Bildschirm plus ihre Schritte plus zwei Schritte hoch; einen Schritt nach
-   dem letzten blendet sie aus (tap-aus), einen Schritt später steht die
-   nächste still, weil sie einen Bildschirm hoch unter ihr liegt
+   Bildschirm plus ihre Schritte plus anderthalb Schritte hoch; einen Schritt
+   nach dem letzten blendet sie aus (tap-aus), einen halben Schritt später
+   steht die nächste still (kurzes Schwarz, Christian 30.10.), weil sie einen Bildschirm hoch unter ihr liegt
    (tap-nachruecken). Das Video steht ganz im Bild, wenn die Bühne davor
    fertig ist (tap-nach-buehne: seine Unterkante liegt auf ihrer). Die Bühne
    nach dem Video steht einen halben Schritt, nachdem es oben weicht
@@ -217,7 +217,7 @@ html:has(main[data-film-seite]) {
 }
 
 .tap-js.tap-kette .tap-scrub:not([data-tap-ende]) {
-  height: calc(100svh + (var(--tap-schritte, 0) + 2) * var(--tap-schritt));
+  height: calc(100svh + (var(--tap-schritte, 0) + 1.5) * var(--tap-schritt));
 }
 
 .tap-js.tap-kette .tap-nachruecken {
