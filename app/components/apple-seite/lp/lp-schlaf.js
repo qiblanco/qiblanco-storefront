@@ -13,7 +13,7 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
     art: 'hero',
     overline: 'Tiefer Schlaf',
     titel: 'Endlich wieder tief schlafen.',
-    unter: 'Gib deinem Schlaf 20 Nächte. Den Rest entscheidest du.',
+    unter: 'Gib deinem Schlaf 20 Nächte, über den Rest entscheidest du danach.',
     bild: BILD.ruhe,
     cta: ZIEL.qione,
   },
@@ -21,9 +21,9 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
     art: 'fakten',
     titel: 'Drei Momente, die du nicht vermissen wirst.',
     kacheln: [
-      {zahl: '23 Uhr', titel: 'Der Kopf macht weiter', satz: 'Das Licht ist aus, der Tag war lang. Das Handy liegt neben dem Kissen.'},
-      {zahl: '3 Uhr', titel: 'Hellwach', satz: 'Kein Lärm, kein Stress. Und doch kommst du nicht zur Ruhe.'},
-      {zahl: '7 Uhr', titel: 'Erholt? Nein.', satz: 'Der Schlaf war da, aber flach. Der Tag beginnt im Minus.'},
+      {zahl: '23 Uhr', titel: 'Der Kopf macht weiter', satz: 'Das Licht ist aus und der Tag war lang, aber das Handy liegt noch neben dem Kissen.'},
+      {zahl: '3 Uhr', titel: 'Hellwach', satz: 'Es gibt keinen Lärm und keinen Stress, und trotzdem kommt dein Körper nicht zur Ruhe.'},
+      {zahl: '7 Uhr', titel: 'Nicht erholt', satz: 'Geschlafen hast du schon, aber der Schlaf war flach und der Tag beginnt im Minus.'},
     ],
   },
   {
@@ -31,17 +31,16 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
     etikett: 'Was nachts passiert',
     titel: 'Was nachts in deinem Körper passiert.',
     absaetze: [
-      'Der Gitterchip® im QiOne® 2 Pro erzeugt ein statisches Feld, ohne Batterie und ohne Magnet. Es ordnet das Wasser an deinen Zellen.',
-      'In Zellstudien puffert diese geordnete Grenzschicht E-Smog ab und senkt oxidativen Stress. Ein Körper, der weniger im Abwehrmodus ist, fährt nachts leichter herunter.',
-      'In rund 20 Nächten stellt sich ein neues Gleichgewicht ein. Die meisten Träger berichten von Veränderungen in den ersten drei Wochen.',
+      'Der Gitterchip® im QiOne® 2 Pro erzeugt ein statisches Feld und braucht dafür weder Batterie noch Magnet. Dieses Feld ordnet das Wasser an deinen Zellen. In Zellstudien puffert diese geordnete Grenzschicht E-Smog ab und senkt oxidativen Stress.',
+      'Ein Körper, der weniger im Abwehrmodus ist, fährt nachts leichter herunter. In rund 20 Nächten stellt sich ein neues Gleichgewicht ein, und die meisten Träger berichten von Veränderungen in den ersten drei Wochen.',
     ],
   },
   {
     art: 'band',
     etikett: 'Dein Abend',
-    titel: 'Ein Ritual, kein Kraftakt.',
+    titel: 'Der Abend ist ein Ritual, kein Kraftakt.',
     text: [
-      'Du legst den QiOne® 2 Pro an, so wie andere die Zähne putzen. Kein Knopf, keine App, keine Einstellung.',
+      'Du legst den QiOne® 2 Pro an, so wie andere die Zähne putzen. Du musst nichts einstellen, und eine App braucht es dafür auch nicht.',
       'Er arbeitet leise im Hintergrund, während du das Licht dimmst und das Handy weglegst.',
     ],
     bild: BILD.hand,
@@ -49,9 +48,9 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
   {
     art: 'kapitel',
     etikett: 'An Zellen gemessen',
-    titel: 'Nicht nur gefühlt. An Zellen gemessen.',
+    titel: 'Was an Zellen gemessen wurde.',
     absaetze: [
-      'Prof. Dr. Peter C. Dartsch hat menschliche Immunzellen im Labor vier Stunden lang mit Handystrahlung belastet. Ungeschützt fiel ihre Abwehrleistung auf 60,5 Prozent. Mit dem QiOne® 2 Pro hielt sie 84,7 Prozent.',
+      'Prof. Dr. Peter C. Dartsch hat menschliche Immunzellen im Labor vier Stunden lang mit Handystrahlung belastet. Ohne Schutz fiel ihre Abwehrleistung auf 60,5 Prozent, mit dem QiOne® 2 Pro hielt sie 84,7 Prozent.',
       'Gemessen an Zellkulturen im Labor, veröffentlicht im Japan Journal of Medicine.',
     ],
     quellen: [`${STUDIEN[0].titel}. ${STUDIEN[0].quelle}.`],
@@ -60,16 +59,16 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
   {
     art: 'band',
     etikett: '171 Erfahrungsberichte',
-    titel: 'Erholt aufwachen. Darum geht es.',
+    titel: 'Erholt aufwachen, darum geht es.',
     text: [
-      '171 Menschen haben aufgeschrieben, was sich bei ihnen verändert hat. Jeder Fünfte beschreibt mehr Ruhe und besseren Schlaf.',
-      'Viele erzählen, dass der Übergang in den Schlaf wieder leichter fällt.',
+      '171 Menschen haben aufgeschrieben, was sich bei ihnen verändert hat.',
+      'Jeder Fünfte beschreibt mehr Ruhe und besseren Schlaf, und viele erzählen, dass ihnen der Übergang in den Schlaf wieder leichter fällt.',
     ],
     bild: BILD.paar,
   },
   {
     art: 'stimmen',
-    titel: 'Echte Menschen. Echte Erfahrungen.',
+    titel: 'Echte Menschen und echte Erfahrungen.',
     stimmen: [
       {text: 'Meine Tiefschlafphase hat sich deutlich verbessert. Das habe ich getrackt.', quelle: 'Constantin Preis, Deutscher Leichtathletik-Meister'},
       STIMMEN[0],
@@ -80,15 +79,15 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
     titel: 'Fragen zu den 20 Nächten.',
     fragen: [
       {f: 'Wann merke ich etwas?', a: 'Die meisten Träger berichten von Veränderungen in den ersten drei Wochen.'},
-      {f: 'Brauche ich Strom oder eine App?', a: 'Nein. Kein Akku, keine Elektronik, keine App. Du legst ihn an, fertig.'},
-      {f: 'Und wenn es mir nichts bringt?', a: 'Dann schickst du ihn innerhalb von 20 Tagen zurück und bekommst den vollen Kaufpreis erstattet.'},
-      {f: 'Kann ich in Raten zahlen?', a: 'Ja. Über Klarna oder PayPal in Monatsraten mit 0 % Finanzierung, inklusive Käuferschutz.'},
+      {f: 'Brauche ich Strom oder eine App?', a: 'Nein, im QiOne® 2 Pro steckt weder ein Akku noch Elektronik, und eine App gibt es dafür auch nicht.'},
+      {f: 'Und wenn es mir nichts bringt?', a: 'Dann schickst du ihn innerhalb von 20 Tagen zurück, und der volle Kaufpreis wird erstattet.'},
+      {f: 'Kann ich in Raten zahlen?', a: 'Ja, das geht in Monatsraten mit 0 % Finanzierung über Klarna oder PayPal, und der Käuferschutz ist inklusive.'},
     ],
   },
   {
     art: 'cta',
     titel: 'Bereit für ruhigere Nächte?',
-    text: 'Teste ihn 20 Nächte in deinem Alltag. Überzeugt er dich nicht, bekommst du dein Geld zurück.',
+    text: 'Teste ihn 20 Nächte in deinem Alltag, und wenn er dich nicht überzeugt, bekommst du dein Geld zurück.',
     cta: ZIEL.qione,
     cta2: {text: 'So läuft die Rückgabe', href: '/pages/das-20-tage-versprechen'},
   },
