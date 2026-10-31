@@ -10,8 +10,9 @@
  * im Code und kommt per Schalter zurück (KONFIGURATOR_8KENDIW34HD, Default aus).
  *
  * PREISE kommen aus Shopify, der Streichpreis aus compareAtPrice. Kein
- * Ketten-Schritt: eine Kette für zwei Geräte wäre eine halbe Wahl; wer Ketten
- * will, findet sie auf /products/qione-kette (FAQ). Kein Baumwollband in der
+ * Ketten-Schritt: eine Kette für zwei Geräte ist eine halbe Wahl; die FAQ sagt,
+ * dass die Kette einzeln im Shop steht (Necklace für QiOne®, ohne Link: die
+ * FAQ-Antworten tragen nur Text). Kein Baumwollband in der
  * Box: ob es im Paket liegt, ist nicht belegt.
  */
 
@@ -159,11 +160,11 @@ export const FAQ = {
     },
     {
       f: 'Wie trage ich den QiOne® 2 Pro?',
-      a: 'Du trägst ihn, wo du willst: an der Kette um den Hals oder in der Hosentasche, nah am Körper. So ist er den ganzen Tag bei dir.',
+      a: 'Du trägst ihn, wo du willst: an einer Kette um den Hals oder in der Hosentasche, nah am Körper. So ist er den ganzen Tag bei dir.',
     },
     {
       f: 'Gibt es eine Kette dazu?',
-      a: 'Die Kette gibt es einzeln, als Necklace für QiOne®: Chirurgenstahl, 1,6 mm stark, passend für die 2,5-mm-Öse. Du wählst sie in deiner Länge, je Gerät eine.',
+      a: 'Die Kette liegt nicht im Paket. Du findest sie im Shop einzeln, als Necklace für QiOne®: Chirurgenstahl, 1,6 mm stark, passend für die 2,5-mm-Öse, in fünf Längen.',
     },
     {
       f: 'Kann ich das Paket zurückgeben, wenn es nicht zu mir passt?',

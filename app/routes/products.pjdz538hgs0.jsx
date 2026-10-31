@@ -1,6 +1,5 @@
 import {useLoaderData} from 'react-router';
 import {MARKE} from '~/lib/produkt-seo';
-import {noindexMeta} from '~/lib/seo';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {konfiguratorAn, ladeProduktSeite} from '~/lib/produkt-seite-laden.server';
@@ -28,7 +27,9 @@ export function links() {
 /** @type {MetaFunction<typeof loader>} */
 export const meta = ({data}) => [
   {title: `${data?.product?.title ?? ''} | ${MARKE}`},
-  noindexMeta(),
+  // Statisches Literal (gleicher Wert wie lib/seo.js): die Gates lesen es
+  // (design-zufahrt, Link-Ziel-Ausnahme in test/produkt-seo.test.mjs).
+  {name: 'robots', content: 'noindex,nofollow'},
 ];
 
 /**

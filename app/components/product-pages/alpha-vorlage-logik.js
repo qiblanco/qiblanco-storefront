@@ -251,9 +251,16 @@ export const KETTENLAENGE_ATTR = 'Kettenlänge';
  * ALLE Längen, kurz nach lang, mit Lieferbarkeit (ausverkauft = sichtbar,
  * nicht wählbar). Keine Variante wird gekauft, nur die Länge gemerkt.
  */
-export function laengenKacheln(produkt) {
-  return (produkt?.variants?.nodes ?? [])
+export function laengenKacheln(produkt, ersatzCm = []) {
+  const live = (produkt?.variants?.nodes ?? [])
     .map((v) => ({cm: laengeCm(v?.title), verfuegbar: Boolean(v?.availableForSale)}))
+    .filter((x) => x.cm);
+  // Kettendaten nicht geladen (Abfrage gescheitert, Kette im Markt nicht
+  // veröffentlicht): die Längen aus der Datenstelle, alle wählbar. Sonst wäre
+  // das Set ohne Längenwahl kaufbar und die Länge fehlte wieder an der
+  // Bestellung (Prüfer s13-r3).
+  const basis = live.length ? live : ersatzCm.map((cm) => ({cm: Number(cm), verfuegbar: true}));
+  return basis
     .filter((x) => x.cm)
     .sort((a, b) => a.cm - b.cm)
     .map((x) => ({schluessel: `laenge-${x.cm}`, ...x}));

@@ -184,7 +184,9 @@ export function AlphaVorlage({
   const [ketteWahl, setKetteWahl] = useState(null);
   const kette = kacheln.find((k) => k.schluessel === ketteWahl) ?? null;
 
-  const laengen = KETTE_IM_SET ? laengenKacheln(ketten?.stahl) : [];
+  const laengen = KETTE_IM_SET
+    ? laengenKacheln(ketten?.stahl, Object.keys(KETTE_IM_SET.zeilen ?? {}))
+    : [];
   const [laengeWahl, setLaengeWahl] = useState(() =>
     startLaenge(laengen, KETTE_IM_SET?.vorwahl ?? null),
   );
