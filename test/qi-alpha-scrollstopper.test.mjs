@@ -60,7 +60,10 @@ test('Gesperrt ist nur vorwärts, zurück geht immer', () => {
   assert.equal(v({type: 'keydown', key: ' ', shiftKey: true, target: {}}), false, 'Umschalt+Leer = zurück');
   assert.equal(v({type: 'keydown', key: ' ', target: {tagName: 'INPUT'}}), false, 'Eingabefeld');
   // Gesperrt nur an der Halte-Stelle: wer zurück ist, darf wieder bis zu ihr vor.
-  assert.match(lies('app/components/campaign/the-alpha-stopper.js'), /istVorwaerts\(e, touchY0\) && f\.scrollY >= haltY - 1 && e\.cancelable/);
+  const src = lies('app/components/campaign/the-alpha-stopper.js');
+  assert.match(src, /if \(!istVorwaerts\(e, touchY0\) \|\| !e\.cancelable\) return;\s*const y = f\.scrollY;\s*if \(y >= haltY - 1\) \{\s*e\.preventDefault\(\);/);
+  // Rad/Tasten knapp darüber: der Schritt endet AN der Halte-Stelle, nie erst dahinter.
+  assert.match(src, /e\.type !== 'touchmove' && y \+ schrittWeite\(e, f\.innerHeight\) > haltY \+ 1\) \{\s*e\.preventDefault\(\);\s*f\.scrollTo\(0, haltY\);/);
 });
 
 test('Einmal je Besuch, nie ohne Bewegung, Videostart nicht angefasst', () => {

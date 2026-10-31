@@ -228,7 +228,18 @@ export function tapStopper(figur, video, f = window) {
     if (stand !== 'hält') return;
     // Vorwärts gesperrt nur AN der Halte-Stelle; wer zurück ist, darf bis
     // zu ihr wieder vor (darüber hinaus fängt klemme ab).
-    if (istVorwaerts(e, touchY0) && f.scrollY >= haltY - 1 && e.cancelable) e.preventDefault();
+    if (!istVorwaerts(e, touchY0) || !e.cancelable) return;
+    const y = f.scrollY;
+    if (y >= haltY - 1) {
+      e.preventDefault();
+      return;
+    }
+    // Rad und Tasten knapp darüber: ein Schritt über die Halte-Stelle endet
+    // an ihr, statt erst dahinter und dann zurück (Probe-Lauf ruck WebKit).
+    if (e.type !== 'touchmove' && y + schrittWeite(e, f.innerHeight) > haltY + 1) {
+      e.preventDefault();
+      f.scrollTo(0, haltY);
+    }
   };
   // Was trotzdem nach unten durchrutscht (Schwung nach dem Loslassen,
   // Bildlaufleiste, ein nicht abbrechbarer Touch, ein Sprung): sofort zurück
