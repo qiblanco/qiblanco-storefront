@@ -36,7 +36,8 @@
  *    hin in derselben Sitzung hält nichts mehr.
  *  - Ohne Bewegung (prefers-reduced-motion, ?film=still) kein Stopper.
  * Der Stand steht für Prüfer an der Figur: data-tap-stopper-stand =
- * wartet | hält | frei.
+ * wartet | hält | frei, und warum frei: data-tap-stopper-grund =
+ * video (3 s gelaufen) | stockt (STILL_MS ohne Fortschritt) | deckel.
  */
 
 export const STOPPER_SEKUNDEN = 3;
@@ -158,10 +159,11 @@ export function tapStopper(figur, video, f = window) {
     vorigY = Math.min(y, f.scrollY);
   };
 
-  const loesen = () => {
+  const loesen = (grund) => {
     if (stand !== 'hält') return;
     stand = 'frei';
     figur.dataset.tapStopperStand = stand;
+    figur.dataset.tapStopperGrund = grund;
     merkeSpeicher(f, schluessel);
     f.cancelAnimationFrame(takt);
     abbauen();
@@ -177,12 +179,16 @@ export function tapStopper(figur, video, f = window) {
     figur.dataset.tapStopperGespielt = gespielt.toFixed(2);
     // Ein pausiertes Video (man ist zurückgescrollt) zählt nicht als Hänger.
     if (video.paused) seitFortschritt = jetzt;
-    if (
-      gespielt >= STOPPER_SEKUNDEN ||
-      jetzt - seitFortschritt > STILL_MS ||
-      jetzt - beginn > DECKEL_MS
-    ) {
-      loesen();
+    const grund =
+      gespielt >= STOPPER_SEKUNDEN
+        ? 'video'
+        : jetzt - seitFortschritt > STILL_MS
+          ? 'stockt'
+          : jetzt - beginn > DECKEL_MS
+            ? 'deckel'
+            : '';
+    if (grund) {
+      loesen(grund);
       return;
     }
     takt = f.requestAnimationFrame(zählen);

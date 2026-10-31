@@ -61,6 +61,9 @@ test('Einmal je Besuch, nie ohne Bewegung, Videostart nicht angefasst', () => {
   assert.match(src, /prefers-reduced-motion: reduce/);
   assert.match(src, /'film'\) === 'still'/);
   assert.doesNotMatch(src, /\.play\(/, 'Der Stopper startet kein Video (Z7)');
+  // Prüfer sehen, warum frei: nach 3 s Video oder über einen Notausgang.
+  assert.match(src, /figur\.dataset\.tapStopperGrund = grund;/);
+  assert.match(src, /\? 'video'/);
   // Die Start-Regel in TheAlphaTon.jsx steht wie auf main (Z7).
   const ton = lies('app/components/campaign/TheAlphaTon.jsx');
   assert.match(ton, /if \(e\.intersectionRatio >= 0\.35 && !document\.hidden\) \{/);
