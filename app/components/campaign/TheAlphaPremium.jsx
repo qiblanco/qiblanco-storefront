@@ -3,6 +3,7 @@ import {Link} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
 import {TapTon, TapFilmTon, videoQuellen} from '~/components/campaign/TheAlphaTon';
+import {tapStopper} from '~/components/campaign/the-alpha-stopper';
 import {
   THE_ALPHA_KOPF,
   THE_ALPHA_SCHLUSS,
@@ -61,6 +62,17 @@ import {
  *   Wort für Wort.
  * - Die Schluss-Szene ist eine Scroll-Bühne wie oben: „Qi Alpha®“, Limited
  *   1st. Edition, 111/111, Reservierungsknopf, je ein Schritt (Z12).
+ * - KEIN SCHWARZ ZWISCHEN DEN BÜHNEN (Christian 30.10.2026, Z3: „die Bereiche,
+ *   wo dann komplett schwarz sind, die könnte man noch mal verkürzen … wenn
+ *   oben das Letzte, was man sieht, weg ist, dass man dann maximal noch
+ *   einmal den Daumen so hoch schiebt“; Job 20261030-update-qi-alpha-seite-
+ *   scrollstopper-video-schwarzraum-kuerzen-r2): die Anfangs-Schritte einer
+ *   Bühne (data-tap-scrub-start) kommen, sobald die Szene davor aus dem Bild
+ *   ist und sie selbst ganz im Bild stehen, nicht erst, wenn die Bühne oben
+ *   anstößt. Vorher lag dazwischen ein halber Bildschirm Schwarz (gemessen
+ *   390 x 844: 384 px nach dem Titel, 192 px vor „Manifestation“). Der Ton der
+ *   Bühne kommt mit dem Bild (Ereignis tap-akzent, TheAlphaTon.jsx). Die
+ *   Regel „Neues erst, wenn das Alte weg ist“ bleibt.
  */
 const TapFassung = createContext({szene: false});
 
@@ -161,13 +173,29 @@ function useTapFilm(wurzel, szene) {
       beobachter.push(ein);
     }
 
-    const buehnen = [...el.querySelectorAll('[data-tap-scrub]')].map((b) => ({
-      b,
-      schritte: [...b.querySelectorAll('[data-tap-schritt]')],
-      start: Number(b.dataset.tapScrubStart || 0),
-      px: 48,
-      an: -1,
-    }));
+    const buehnen = [...el.querySelectorAll('[data-tap-scrub]')].map((b) => {
+      const eigene = szenen.indexOf(b);
+      return {
+        b,
+        schritte: [...b.querySelectorAll('[data-tap-schritt]')],
+        start: Number(b.dataset.tapScrubStart || 0),
+        px: 48,
+        an: -1,
+        vor: eigene > 0 ? szenen[eigene - 1] : null,
+        ton: b.querySelector(':scope > .tap-buehne-marke[data-tap-ton]'),
+      };
+    });
+    // Szenen-Fassung: die Anfangs-Schritte stehen schon vor dem Stillstand,
+    // sobald die Szene davor weg ist und sie ganz im Bild sind (Kopfkommentar
+    // „Kein Schwarz zwischen den Bühnen“).
+    const frueh = (s) => {
+      if (!szene || !s.start || !s.vor || unterkante(s.vor) > 0) return false;
+      const bild = window.innerHeight;
+      return s.schritte.slice(0, s.start).every((w) => {
+        const r = w.getBoundingClientRect();
+        return r.height > 0 && r.top >= 0 && r.bottom <= bild;
+      });
+    };
     const masse = () => {
       for (const s of buehnen) {
         s.px = parseFloat(getComputedStyle(s.b).getPropertyValue('--tap-schritt')) || 48;
@@ -176,13 +204,17 @@ function useTapFilm(wurzel, szene) {
     const zeichnen = () => {
       for (const s of buehnen) {
         const oben = s.b.getBoundingClientRect().top;
+        const vorab = !still && oben > 1 && oben < window.innerHeight && frueh(s);
         const n = still
           ? s.schritte.length
           : oben > 1
-            ? 0
+            ? vorab
+              ? s.start
+              : 0
             : Math.min(s.schritte.length, s.start + Math.floor(-oben / s.px));
         if (n === s.an) continue;
         s.schritte.forEach((w, i) => w.classList.toggle('tap-an', i < n));
+        if (vorab && s.an <= 0 && s.ton) s.ton.dispatchEvent(new Event('tap-akzent'));
         s.an = n;
       }
     };
@@ -462,10 +494,20 @@ export function TapVollbild({bild, format = 'hoch', loading = 'lazy'}) {
  * höchstens ein Satz da; der nächste kommt erst, wenn der vorige weg ist.
  * Alle Sätze liegen übereinander in einer Zelle, so springt nichts. Ohne
  * Bewegung (prefers-reduced-motion, ?film=still) und ohne JavaScript stehen
- * alle untereinander. */
-export function TapFilm({film}) {
+ * alle untereinander.
+ *
+ * `stopper`: einmal je Besuch hält die Seite an, wenn das laufende Video
+ * mittig steht, bis 3 s Video gelaufen sind (the-alpha-stopper.js). */
+export function TapFilm({film, stopper = false}) {
   const {video, videoStandbild, texte} = film;
   const filmRef = useRef(null);
+  const figurRef = useRef(null);
+  // Scrollstopper (nur wo bestellt, A: Christian 30.10., Z4/Z5):
+  // the-alpha-stopper.js.
+  useEffect(() => {
+    if (!stopper) return undefined;
+    return tapStopper(figurRef.current, filmRef.current, window);
+  }, [stopper]);
   const [aktiv, setAktiv] = useState(-1);
   const mitTexten = Boolean(video?.src && texte?.length);
   useEffect(() => {
@@ -484,10 +526,12 @@ export function TapFilm({film}) {
     const tonFeld = video.ton === true ? 'ja' : video.ton === false ? 'nein' : undefined;
     return (
       <figure
+        ref={figurRef}
         className={`tap-vollbild tap-format-hoch tap-film${mitTexten ? ' tap-film-mit-text' : ''}`}
         data-tap-ein=""
         data-tap-film=""
         data-tap-szene=""
+        data-tap-stopper={stopper ? '' : undefined}
       >
         <div className="tap-film-bild">
           <video
