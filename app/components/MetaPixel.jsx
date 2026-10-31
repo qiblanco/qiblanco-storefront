@@ -1,6 +1,11 @@
 import {useEffect, useRef} from 'react';
-import {useAnalytics, parseGid} from '@shopify/hydrogen';
-import {viewContentPayload} from '~/lib/pixel-content';
+import {useAnalytics} from '@shopify/hydrogen';
+import {viewContentPayload, addToCartPayload} from '~/lib/pixel-content';
+import {
+  eventIdFuer,
+  META_EVENT_VIEW_CONTENT,
+  META_EVENT_ADD_TO_CART,
+} from '~/lib/meta-event-id';
 
 /**
  * Meta-Pixel (Browser) für qiblanco.com — Pixel „Qi Blanco Germany Pixel 2023".
@@ -9,7 +14,14 @@ import {viewContentPayload} from '~/lib/pixel-content';
  * Zustimmung wird weder fbevents.js geladen noch ein Event gefeuert.
  *
  * Events: PageView (jede Route, auch SPA-Navigation), ViewContent (Produktseite),
- * AddToCart. InitiateCheckout kommt aus CartSummary (Checkout-Submit).
+ * AddToCart. ViewContent und AddToCart tragen seit 2026-10-31 eine eventID aus
+ * app/lib/meta-event-id.js; dieselbe Id geht über QpxCommerce.jsx an den eigenen
+ * Receiver, und capi-rueckspeisung meldet das Ereignis damit server-seitig
+ * (Meta bereinigt Browser und Server über event_name + eventID).
+ * InitiateCheckout kommt NICHT vom Storefront, sondern von der Shopify-Meta-App
+ * an der Kasse (Browser + Server, gemeinsame Id); CartSummary.jsx feuert es
+ * nicht mehr (Konstante STOREFRONT_IC_FBQ, Job 20261031-meta-capi-luecken-dach-
+ * bau-ai-server-prio10).
  * KEIN Browser-Purchase: der Purchase kommt server-seitig per Conversions API
  * mit event_id = Shopify-Order-ID; ein Browser-Purchase würde ohne dieselbe
  * eventID doppelt zählen.
@@ -133,11 +145,15 @@ function bootMetaPixel() {
   window._qiblancoMetaPixelLastUrl = window.location.href;
 }
 
-function fbqTrack(eventName, params) {
+function fbqTrack(eventName, params, eventId) {
   if (!window._qiblancoMetaPixelBooted) return;
   if (typeof window.fbq !== 'function') return;
   try {
-    window.fbq('track', eventName, params);
+    if (eventId) {
+      window.fbq('track', eventName, params, {eventID: eventId});
+    } else {
+      window.fbq('track', eventName, params);
+    }
   } catch {
     // Ein Tracking-Fehler darf nie den Shop brechen.
   }
@@ -148,14 +164,6 @@ function trackPageView(url) {
   if (url && url === window._qiblancoMetaPixelLastUrl) return;
   window._qiblancoMetaPixelLastUrl = url || window.location.href;
   fbqTrack('PageView');
-}
-
-function numericProductId(gid) {
-  try {
-    return parseGid(gid).id || undefined;
-  } catch {
-    return undefined;
-  }
 }
 
 export function MetaPixel() {
@@ -176,30 +184,22 @@ export function MetaPixel() {
       // Payload inkl. `contents` aus app/lib/pixel-content.js (s05, da_checks).
       const payload = viewContentPayload(data);
       if (!payload) return;
-      fbqTrack('ViewContent', payload);
+      fbqTrack(
+        'ViewContent',
+        payload,
+        eventIdFuer(data, META_EVENT_VIEW_CONTENT),
+      );
     });
 
     subscribe('product_added_to_cart', (data) => {
-      const line = data?.currentLine;
-      const merchandise = line?.merchandise;
-      if (!merchandise) return;
-      const unitPrice = parseFloat(merchandise.price?.amount) || 0;
-      // Hydrogen feuert das Event auch bei Mengen-Erhöhung — nur das Delta zählen.
-      const quantity = Math.max(
-        (line.quantity || 1) - (data?.prevLine?.quantity || 0),
-        1,
+      // Payload inkl. `contents` und Mengen-Delta aus app/lib/pixel-content.js.
+      const payload = addToCartPayload(data);
+      if (!payload) return;
+      fbqTrack(
+        'AddToCart',
+        payload,
+        eventIdFuer(data, META_EVENT_ADD_TO_CART),
       );
-      fbqTrack('AddToCart', {
-        content_ids: [numericProductId(merchandise.product?.id)].filter(
-          Boolean,
-        ),
-        content_name: merchandise.product?.title,
-        content_type: 'product',
-        value: unitPrice * quantity,
-        currency:
-          merchandise.price?.currencyCode || data?.shop?.currency || 'EUR',
-        num_items: quantity,
-      });
     });
   }, [subscribe]);
 

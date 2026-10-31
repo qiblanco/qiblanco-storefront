@@ -84,6 +84,16 @@ export function CartSummary({cart, layout}) {
 /**
  * @param {{checkoutUrl?: string, subtotal?: {amount: string, currencyCode: string}, numItems?: number, contentIds?: string[]}}
  */
+/**
+ * Rückweg-Schalter (Job 20261031-meta-capi-luecken-dach-bau-ai-server-prio10):
+ * false = InitiateCheckout kommt im Global Deutsch-Shop nur von der Shopify-
+ * Meta-App an der Kasse (eine Quelle, gemeinsame Id Browser/Server). true =
+ * der Storefront feuert wieder sein eigenes fbq-InitiateCheckout (Stand vor dem
+ * 2026-10-31, Meta zählt dann doppelt). Das qpx-initiate_checkout darunter
+ * läuft in beiden Stellungen unverändert: es ist der eigene Mess-Zeuge.
+ */
+export const STOREFRONT_IC_FBQ = false;
+
 function CartCheckoutActions({
   checkoutUrl,
   subtotal,
@@ -105,14 +115,18 @@ function CartCheckoutActions({
   // die Aufrufreihenfolge zwischen zwei Renders (eslint react-hooks/rules-of-hooks).
   if (!checkoutUrl) return null;
 
-  // Meta-Pixel InitiateCheckout: feuert nur, wenn das Pixel (consent-gated)
-  // geladen ist. Die Form submittet normal weiter — Tracking darf den
-  // Checkout nie blockieren.
-  // content_ids/content_type spiegeln ViewContent/AddToCart (MetaPixel.jsx),
-  // damit die Event-Kette dieselben Produkt-IDs trägt (Meta-Match-Qualitaet).
+  // Meta-Pixel InitiateCheckout vom Storefront: STILLGELEGT (STOREFRONT_IC_FBQ,
+  // oben). Die Shopify-Meta-App an der Kasse meldet InitiateCheckout als
+  // Browser- und Server-Ereignis mit gemeinsamer Id; ein zweites Browser-
+  // Ereignis von hier mit anderer Id zählte Meta doppelt. Die Form submittet
+  // normal weiter — Tracking darf den Checkout nie blockieren.
   const trackInitiateCheckout = () => {
     try {
-      if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+      if (
+        STOREFRONT_IC_FBQ &&
+        typeof window !== 'undefined' &&
+        typeof window.fbq === 'function'
+      ) {
         window.fbq('track', 'InitiateCheckout', {
           content_ids: contentIds || [],
           content_type: 'product',

@@ -247,8 +247,11 @@ test('CartSummary.jsx: initiate_checkout via qpxTrack im Checkout-Submit', () =>
     /qpxTrack\(\s*[\n\s]*'initiate_checkout'/,
     'feuert initiate_checkout nicht',
   );
-  // Das Meta-Pixel-IC darf nicht regressieren (bleibt daneben bestehen):
-  assert.match(src, /'InitiateCheckout'/, 'Meta-IC regressiert');
+  // Das Meta-Pixel-IC des Storefronts ist seit 2026-10-31 stillgelegt (eine
+  // Quelle: die Shopify-Meta-App an der Kasse), der Aufruf bleibt hinter dem
+  // Rückweg-Schalter STOREFRONT_IC_FBQ stehen:
+  assert.match(src, /'InitiateCheckout'/, 'Meta-IC-Rueckweg fehlt');
+  assert.match(src, /export const STOREFRONT_IC_FBQ = false;/, 'Storefront-IC nicht stillgelegt');
 });
 
 // ── Verdrahtung: Standard-PDP trägt die 3 data-section-Anker ───────────────
@@ -278,15 +281,16 @@ test('products.$handle.jsx: pdp-Sektionen sind DISJUNKT (nicht verschachtelt)', 
 test('MetaPixel.jsx: ViewContent & AddToCart tragen weiterhin content_ids (fbq)', () => {
   const src = readFileSync(join(APP, 'components', 'MetaPixel.jsx'), 'utf8');
   assert.doesNotMatch(src, /window\.qpx/, 'MetaPixel darf qpx nicht anfassen');
-  // AddToCart baut seinen Payload inline, ViewContent seit 2026-10-11 über
-  // viewContentPayload(data) aus app/lib/pixel-content.js (Verhalten geprüft in
-  // test/meta-pixel-viewcontent-contents.test.mjs).
-  const seg = src.slice(src.indexOf("'AddToCart'"));
-  const block = seg.slice(0, seg.indexOf('});'));
-  assert.match(block, /content_ids:/, 'AddToCart verlor content_ids');
-  assert.match(src, /fbqTrack\('ViewContent', payload\)/, 'ViewContent-Aufruf fehlt');
+  // ViewContent (seit 2026-10-11) und AddToCart (seit 2026-10-31) bauen ihren
+  // Payload in app/lib/pixel-content.js (Verhalten: meta-pixel-viewcontent-
+  // contents / meta-pixel-addtocart-contents) und tragen eine eventID.
+  assert.match(src, /fbqTrack\(\s*'ViewContent',\s*payload,/, 'ViewContent-Aufruf fehlt');
+  assert.match(src, /fbqTrack\(\s*'AddToCart',\s*payload,/, 'AddToCart-Aufruf fehlt');
   assert.match(src, /const payload = viewContentPayload\(data\)/, 'ViewContent ohne geteilten Payload');
+  assert.match(src, /const payload = addToCartPayload\(data\)/, 'AddToCart ohne geteilten Payload');
   const lib = readFileSync(join(APP, 'lib', 'pixel-content.js'), 'utf8');
   const vc = lib.slice(lib.indexOf('export function viewContentPayload'));
   assert.match(vc, /content_ids:/, 'ViewContent verlor content_ids');
+  const atc = lib.slice(lib.indexOf('export function addToCartPayload'));
+  assert.match(atc, /content_ids:/, 'AddToCart verlor content_ids');
 });

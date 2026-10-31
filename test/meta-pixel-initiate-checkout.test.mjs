@@ -88,13 +88,13 @@ test('CartSummary.jsx: InitiateCheckout-fbq trägt content_ids + content_type', 
 // ── Regressionsschutz: ViewContent/AddToCart bleiben unangetastet ──
 // ViewContent baut seinen Payload seit s05 (2026-10-11) in pixel-content.js
 // viewContentPayload(); dessen Felder prüft meta-pixel-viewcontent-contents.test.mjs
-// am Verhalten. Hier bleibt der Quelltext-Schutz für AddToCart.
+// am Verhalten. AddToCart seit 2026-10-31 ebenso in addToCartPayload()
+// (Verhalten: meta-pixel-addtocart-contents.test.mjs); hier der Quelltext-Schutz.
 test('MetaPixel.jsx: AddToCart trägt weiterhin content_ids', () => {
   const src = readFileSync(join(APP, 'components', 'MetaPixel.jsx'), 'utf8');
-  for (const ev of ['AddToCart']) {
-    const seg = src.slice(src.indexOf(`'${ev}'`));
-    const block = seg.slice(0, seg.indexOf('});'));
-    assert.match(block, /content_ids:/, `${ev} verlor content_ids`);
-    assert.match(block, /content_type:\s*'product'/, `${ev} verlor content_type`);
-  }
+  assert.match(src, /const payload = addToCartPayload\(data\)/, 'AddToCart ohne geteilten Payload');
+  const lib = readFileSync(join(APP, 'lib', 'pixel-content.js'), 'utf8');
+  const block = lib.slice(lib.indexOf('export function addToCartPayload'));
+  assert.match(block, /content_ids:/, 'AddToCart verlor content_ids');
+  assert.match(block, /content_type:\s*'product'/, 'AddToCart verlor content_type');
 });
