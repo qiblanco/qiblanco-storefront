@@ -13,7 +13,9 @@ export const SKEPTIKER_SEKTIONEN = Object.freeze([
     overline: 'Für Skeptiker',
     titel: '„Ist das Einbildung?“ Gute Frage. Machen wir ihn auf.',
     unter: 'Was im Chip steckt, was gemessen wurde, was Menschen berichten. Mit Quellen und mit Grenzen.',
-    bild: BILD.qione,
+    // Kopf ohne 360-Drehung (s07-r3): Produkt360Video wirft im Dev-Render die
+    // React-18-Warnung fetchPriority (reusables/video360-ersatzbild.jsx) -> Design 98.
+    bild: BILD.hand,
     cta: ZIEL.qione,
   },
   {
