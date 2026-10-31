@@ -44,8 +44,12 @@ import {holeJson} from '~/lib/produktberatung-abruf.server';
  * X-PT-Kunde-IP an den eigenen Dienst (Drossel je Kundin statt je Oxygen-Knoten).
  * TRACKING_COOKIE_NAMES bleibt unangetastet.
  *
- * AD-WEICHE: der Pfad steht in AUSSCHLUSS_SEGMENTE (app/lib/ad-weiche.server.js),
- * damit kein Klick mitten aus dem Test auf eine Kaufseite umgeleitet wird.
+ * AD-WEICHE: der Pfad steht NICHT in AUSSCHLUSS_SEGMENTE (app/lib/ad-weiche.server.js).
+ * Organischer Verkehr (LinkedIn, Christians Posts) trägt keinen Paid-Marker und
+ * wird nie umgeleitet. Sobald eine bezahlte Anzeige auf den Test zeigt, gehört
+ * '/pages/potenzialtest' dort hinein — sonst landet der Klick auf LP A statt im
+ * Test. Bewusst nicht in diesem Vorschau-Zweig: die geteilte Datei macht den
+ * Diff zu einem Rahmen-Eingriff auf alle geschützten Seiten.
  */
 export const ENDPUNKT = 'https://potenzialtest.65-108-150-121.sslip.io';
 const PFAD = '/potenzialtest/v1/auswerten';
