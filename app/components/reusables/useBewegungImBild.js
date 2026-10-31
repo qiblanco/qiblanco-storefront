@@ -14,10 +14,15 @@ import {useEffect} from 'react';
  * an), und sobald es zu SCHWELLE im Bild ist, data-bewegung="spielt".
  * Laufende Animationen beginnen ab dann (einmalige spielen also einmal vor
  * den Augen des Lesers, Schleifen laufen weiter wie bisher).
+ * Das untere Viertel des Bildschirms zählt nicht mit (RAND): eine Grafik,
+ * die gerade erst unten hereinlugt, startet noch nicht. Gemessen 31.10.2026
+ * (iPhone Chrome, 690 px hoch): mit 30 % am unteren Rand lief die Skala ab,
+ * während der Leser noch die Grafik darüber ansah.
  * Rückfall: ohne JavaScript und ohne IntersectionObserver gibt es kein
  * Attribut, alles läuft wie vorher und endet im gezeichneten Endbild.
  */
 const SCHWELLE = 0.3;
+const RAND = '0px 0px -25% 0px';
 
 export function useBewegungImBild(wurzelRef, auswahl) {
   useEffect(() => {
@@ -45,7 +50,7 @@ export function useBewegungImBild(wurzelRef, auswahl) {
           }
         });
       },
-      {threshold: SCHWELLE},
+      {threshold: SCHWELLE, rootMargin: RAND},
     );
     elemente.forEach((el) => {
       el.setAttribute('data-bewegung', 'wartet');
