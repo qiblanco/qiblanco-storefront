@@ -1,4 +1,4 @@
-import {Fragment} from 'react';
+import {Fragment, useRef} from 'react';
 import {Link} from 'react-router';
 import {
   BildWinkel,
@@ -7,6 +7,7 @@ import {
 } from '~/components/reusables/WasserstrukturBilder';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {FaqListe} from '~/components/reusables/FaqListe';
+import {useBewegungImBild} from '~/components/reusables/useBewegungImBild';
 import {eintragFuer, quellenFuer} from '~/data/lexikon';
 import {WasserStufentafel} from '~/components/campaign/WasserStufentafel';
 import {
@@ -372,10 +373,15 @@ function BegriffPhysik() {
   );
 }
 
+const BEWEGT = '.kw-figur, .kw-karte';
+
 export function KohaerentesWasserSeite() {
   const winkel = BILD.winkel;
+  const seite = useRef(null);
+  // Jede Grafik beginnt, wenn der Leser sie erreicht (Apple-Befund 31.10.2026).
+  useBewegungImBild(seite, BEWEGT);
   return (
-    <article className="kw" data-kw-seite="" lang="de">
+    <article className="kw" data-kw-seite="" lang="de" ref={seite}>
       <header className="kw-kopf" data-section="kw-kopf">
         <div className="kw-kopf__text">
           <p className="kw-kopf__marke">{SEITE.marke}</p>

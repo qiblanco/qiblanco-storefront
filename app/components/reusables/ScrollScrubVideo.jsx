@@ -20,11 +20,37 @@ import {NAEHE_RAND, NAEHE_RAND_BISHER, useNaeheLaden} from './useNaeheLaden';
  *    eine einzelne Seite den alten Rand zurück (Schalter je Seite).
  *  - CLS = 0 per Konstruktion: die vh-Hoehe steht unabhaengig vom Ladezustand
  *
+ * Apple-Geräte (31.10.2026, Christian: „die hälfte der animaitonen
+ * funktioniert weider bei anna meiner frau auf apple produkten nicht“):
+ *  - iOS lädt die Daten eines pausierten Videos erst nach `play()` (WebKit
+ *    MediaElementSession, RequireUserGestureForLoad). Ein Video, das nur
+ *    gescrubbt und nie gespielt wird, bleibt dort SCHWARZ. Deshalb: sobald die
+ *    Quelle hängt, ein stummes play() und sofort pause() (stummes Inline-Play
+ *    erlaubt iOS ohne Geste); lehnt iOS ab (Stromsparmodus, „Video-Vorschauen
+ *    automatisch abspielen“ aus), wiederholt die erste Berührung es.
+ *  - `posterDesktop`/`posterMobile` stehen, bis das erste Bild dekodiert ist.
+ *  - `endbildDesktop`/`endbildMobile` sind der Rückfall: kann das Gerät das
+ *    Video nicht abspielen (error, oder STANDBILD_NACH_MS im Bild ohne
+ *    Daten) und bei reduzierter Bewegung steht das Endbild als <img> mit
+ *    dem End-Text, nie ein schwarzes Feld (data-ssv-zustand="standbild").
+ *  Ohne diese Props verhält sich der Baustein wie bisher.
+ *
  * Encoding-Vertrag (homepage-bauer SKILL-SCROLL-ANIMATIONEN.md): Quellen
  * muessen H.264 8-bit yuv420p ALL-INTRA ohne Audio-Track sein — pruefbar via
  * `codemeister scroll-video probe`. Andere Encodings ruckeln beim Scrubbing
  * (GOP-Seeks) oder spielen nicht ueberall (HEVC/10-bit).
  */
+const STANDBILD_NACH_MS = 4000;
+// Über dem Video, unter den Texten (z-index 1), wie das Video selbst auf
+// Fläche geschnitten. Inline, damit der Rückfall keine globale CSS braucht.
+const STANDBILD_STIL = {
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+};
+
 export function ScrollScrubVideo({
   srcDesktop,
   srcMobile,
@@ -36,6 +62,10 @@ export function ScrollScrubVideo({
   fussnote = null,
   dataSection,
   laden = 'naehe',
+  posterDesktop,
+  posterMobile,
+  endbildDesktop,
+  endbildMobile,
 }) {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
@@ -43,6 +73,10 @@ export function ScrollScrubVideo({
   const [progress, setProgress] = useState(0);
   const [videoSrc, setVideoSrc] = useState('');
   const [wenigerBewegung, setWenigerBewegung] = useState(false);
+  const [mobil, setMobil] = useState(false);
+  // 'wartet' bis Daten da sind, 'spielt' sobald ein Bild dekodiert ist,
+  // 'standbild' wenn das Gerät das Video nicht abspielen kann.
+  const [abspiel, setAbspiel] = useState('wartet');
   const metadataLoadedRef = useRef(false);
   // Der Scroll-Handler wird EINMAL registriert; ein Ref trägt die aktuelle
   // Präferenz hinein, ohne den Listener neu aufzuhaengen.
@@ -90,7 +124,9 @@ export function ScrollScrubVideo({
   // Quelle nach Viewport-Breite (Muster ScrollMikroskopVideo)
   useEffect(() => {
     const handleResize = () => {
-      setVideoSrc(window.innerWidth <= breakpointPx ? srcMobile : srcDesktop);
+      const istMobil = window.innerWidth <= breakpointPx;
+      setMobil(istMobil);
+      setVideoSrc(istMobil ? srcMobile : srcDesktop);
     };
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -115,16 +151,22 @@ export function ScrollScrubVideo({
     };
 
     const onLoadedData = () => {
+      setAbspiel('spielt');
       window.requestAnimationFrame(() => {
         handleScrollRef.current?.();
       });
     };
 
+    // Kein abspielbares Format, Netzfehler, Datei fehlt: Endbild statt Schwarz.
+    const onError = () => setAbspiel('standbild');
+
     video.addEventListener('loadedmetadata', onLoadedMetadata);
     video.addEventListener('loadeddata', onLoadedData);
+    video.addEventListener('error', onError);
     return () => {
       video.removeEventListener('loadedmetadata', onLoadedMetadata);
       video.removeEventListener('loadeddata', onLoadedData);
+      video.removeEventListener('error', onError);
     };
   }, []);
 
@@ -134,26 +176,69 @@ export function ScrollScrubVideo({
     if (!video || !videoSrc || !nahDran) return;
     metadataLoadedRef.current = false;
     video.load();
+    // iOS lädt erst nach play(): stumm anspielen und sofort anhalten. Lehnt
+    // das Gerät ab, übernimmt die erste Berührung (Gesten-Prime unten).
+    const p = video.play();
+    if (p && typeof p.then === 'function') {
+      p.then(() => {
+        gesturePrimedRef.current = true;
+        video.pause();
+        handleScrollRef.current?.();
+      }).catch(() => {/* iOS ohne Geste: Prime bei der ersten Berührung */});
+    }
   }, [videoSrc, nahDran]);
+
+  // Rückfall: steht der Block im Bild und hat das Gerät nach
+  // STANDBILD_NACH_MS noch kein Bild dekodiert, bleibt das Endbild stehen.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !nahDran || abspiel !== 'wartet' || !(endbildDesktop || endbildMobile)) {
+      return undefined;
+    }
+    if (typeof IntersectionObserver === 'undefined') return undefined;
+    let uhr = null;
+    const io = new IntersectionObserver((eintraege) => {
+      if (eintraege.some((e) => e.isIntersecting)) {
+        if (!uhr) {
+          uhr = window.setTimeout(() => {
+            const v = videoRef.current;
+            if (!v || v.readyState < 2) setAbspiel('standbild');
+          }, STANDBILD_NACH_MS);
+        }
+      }
+    });
+    io.observe(container);
+    return () => {
+      io.disconnect();
+      if (uhr) window.clearTimeout(uhr);
+    };
+  }, [nahDran, abspiel, endbildDesktop, endbildMobile]);
 
   // Einmaliger Gesten-Prime fuer strengere Safari-Builds
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
+    // iOS zählt ein touchend am Ende eines Wischs nicht als Geste; ein Tipp
+    // (click/pointerup) schon. Deshalb alle drei, bis einer trägt.
+    const GESTEN = ['touchend', 'pointerup', 'click'];
     const primeOnTouch = () => {
       if (gesturePrimedRef.current) return;
-      gesturePrimedRef.current = true;
       const p = video.play();
-      if (p && typeof p.catch === 'function') {
-        p.then(() => video.pause()).catch(() => {/* ignore */});
+      if (p && typeof p.then === 'function') {
+        p.then(() => {
+          gesturePrimedRef.current = true;
+          video.pause();
+          handleScrollRef.current?.();
+          GESTEN.forEach((g) => window.removeEventListener(g, primeOnTouch));
+        }).catch(() => {/* nächste Geste versucht es erneut */});
       } else {
-        try { video.play(); video.pause(); } catch { /* aeltere Browser */ }
+        try { video.play(); video.pause(); gesturePrimedRef.current = true; } catch { /* aeltere Browser */ }
       }
     };
 
-    window.addEventListener('touchend', primeOnTouch, {once: true, passive: true});
-    return () => window.removeEventListener('touchend', primeOnTouch);
+    GESTEN.forEach((g) => window.addEventListener(g, primeOnTouch, {passive: true}));
+    return () => GESTEN.forEach((g) => window.removeEventListener(g, primeOnTouch));
   }, []);
 
   // Scroll-Scrub, solange der lange sticky Container den Viewport schneidet
@@ -239,27 +324,34 @@ export function ScrollScrubVideo({
   }, [wenigerBewegung]);
 
   const anhaengen = Boolean(nahDran && videoSrc);
+  const poster = (mobil ? posterMobile : posterDesktop) || undefined;
+  const endbild = (mobil ? endbildMobile : endbildDesktop) || '';
+  const standbild = Boolean(endbild) && (abspiel === 'standbild' || wenigerBewegung);
+  // Im Standbild gilt die Strecke wie bei reduzierter Bewegung: ein Bildschirm,
+  // End-Text sichtbar, keine Scroll-Aufforderung ins Leere.
+  const kurz = wenigerBewegung || standbild;
 
   return (
     <div className="ScrollScrubVideoBlock" data-section={dataSection}>
       <div
         ref={containerRef}
         className="ScrollScrubVideo"
+        data-ssv-zustand={standbild ? 'standbild' : abspiel}
         style={{
-          '--ssv-hoehe-desktop': wenigerBewegung ? '100vh' : `${heightVhDesktop}vh`,
-          '--ssv-hoehe-mobil': wenigerBewegung ? '100vh' : `${heightVhMobile}vh`,
+          '--ssv-hoehe-desktop': kurz ? '100vh' : `${heightVhDesktop}vh`,
+          '--ssv-hoehe-mobil': kurz ? '100vh' : `${heightVhMobile}vh`,
         }}
       >
         <div className="VideoOverlay">
           {overlayStart && (
-            <div className="TextContent-Start" style={{opacity: progress < 25 ? 1 : 0}}>
+            <div className="TextContent-Start" style={{opacity: !standbild && progress < 25 ? 1 : 0}}>
               <h2>{overlayStart.titel}</h2>
               {overlayStart.text && <p>{overlayStart.text}</p>}
             </div>
           )}
 
           {Array.isArray(overlayEnd) && overlayEnd.length > 0 && (
-            <div className="TextContent-End" style={{opacity: progress > 30 ? 1 : 0}}>
+            <div className="TextContent-End" style={{opacity: standbild || progress > 30 ? 1 : 0}}>
               {overlayEnd.map((eintrag) => (
                 <div key={eintrag.titel}>
                   <div className="content">
@@ -276,8 +368,19 @@ export function ScrollScrubVideo({
             src={anhaengen ? videoSrc : undefined}
             playsInline
             muted
+            poster={poster}
             preload={anhaengen ? 'auto' : 'none'}
           />
+
+          {standbild ? (
+            <img
+              className="ScrollScrubVideo-standbild"
+              src={endbild}
+              alt=""
+              decoding="async"
+              style={STANDBILD_STIL}
+            />
+          ) : null}
 
           <div className="VideoProgressTrackerWrapper">
             <div className="VideoProgressTracker" style={{width: `${progress}%`}} />
