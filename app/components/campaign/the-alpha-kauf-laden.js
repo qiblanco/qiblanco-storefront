@@ -11,7 +11,11 @@
  * QM_ADDONS_QUERY gesetzt.
  */
 import {THE_ALPHA_SERIE, THE_ALPHA_VERGEBEN} from './the-alpha-daten-serie-vergeben.js';
-import {KETTE_STAHL, KETTE_LAENGEN} from './the-alpha-shop-daten.js';
+import {
+  KETTE_STAHL,
+  KETTE_STAHL_LAENGEN,
+  KETTE_LAENGEN,
+} from './the-alpha-shop-daten.js';
 import {addonsImMarkt} from '../../lib/qi-master-addons.js';
 
 /**
@@ -55,13 +59,29 @@ export function nummernStand(varianten, opt = {}) {
  * Variante fällt weg (nichts anbieten, was die Kasse nicht nimmt). 40 und
  * 75 cm gibt es in Shopify auch; Christians Vorlage nennt sie nicht.
  */
-export function kettenOptionen(ketteProdukt) {
+export function kettenOptionen(ketteProdukt, stahlProdukt = null) {
   const varianten = ketteProdukt?.variants?.nodes || [];
   const gold = KETTE_LAENGEN.map((laenge) => {
     const v = varianten.find((x) => x.title === laenge.titel && x.availableForSale);
     return v ? {...laenge, art: 'gold', variante: v} : null;
   }).filter(Boolean);
-  return [...gold, {...KETTE_STAHL, art: 'stahl', variante: null}];
+  return [...gold, ...stahlOptionen(stahlProdukt)];
+}
+
+/**
+ * Die Stahlkette in allen Längen, die Shopify als kaufbare 0-€-Variante führt
+ * (Elina 30.10.2026, EL-20261030-ae569366): jede Länge geht als eigene
+ * Warenkorbzeile mit. RÜCKFALL: fehlt das Produkt (Abfrage gescheitert, nicht
+ * veröffentlicht) oder ist keine Länge kaufbar, bleibt die bisherige
+ * 60-cm-Karte ohne Variante stehen; der Qi Alpha geht dann ohne Kettenzeile.
+ */
+function stahlOptionen(stahlProdukt) {
+  const varianten = stahlProdukt?.variants?.nodes || [];
+  const stahl = KETTE_STAHL_LAENGEN.map(({laenge, ...rest}) => {
+    const v = varianten.find((x) => x.title === laenge && x.availableForSale);
+    return v ? {...rest, art: 'stahl', variante: v} : null;
+  }).filter(Boolean);
+  return stahl.length ? stahl : [{...KETTE_STAHL, art: 'stahl', variante: null}];
 }
 
 /**
@@ -74,6 +94,11 @@ export function kettenOptionen(ketteProdukt) {
  */
 export function kaufAuswahl(addons, haupt) {
   const marktAddons = addonsImMarkt(addons, haupt);
+  // Stahlkette: dieselbe Marktregel wie die Goldkette (Preis in der Währung
+  // des Qi Alpha), über addonsImMarkt in der Kettenrolle geprüft.
+  const stahlImMarkt = addons?.stahlkette
+    ? addonsImMarkt({kette: addons.stahlkette}, haupt).kette
+    : null;
   const stand = marktAddons.wunschnummer
     ? nummernStand(marktAddons.wunschnummer.variants.nodes)
     : {nummern: [], frei: 0};
@@ -81,7 +106,7 @@ export function kaufAuswahl(addons, haupt) {
     marktAddons,
     stand,
     nummernAn: stand.frei > 0,
-    ketten: kettenOptionen(marktAddons.kette),
+    ketten: kettenOptionen(marktAddons.kette, stahlImMarkt),
   };
 }
 

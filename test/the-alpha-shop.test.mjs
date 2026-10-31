@@ -457,3 +457,32 @@ test('Funnel-Kopf-Stil: eigene Datei, Token, hängt am Layout', () => {
   assert.match(css, /main\[data-qa-funnel\]/);
   assert.match(lies('app/root.jsx'), /qi-alpha-funnel-kopf\.css\?url/);
 });
+
+test('Stahlkette (EL-20261030-ae569366): alle Längen zu 0 € als eigene Zeile, 60 cm heißt weiter „stahl“', () => {
+  const stahl = {
+    variants: {
+      nodes: ['40 cm', '45 cm', '50 cm', '60 cm'].map((t) => ({
+        id: `gid://shopify/ProductVariant/${t.slice(0, 2)}`, title: t, availableForSale: true,
+        price: {amount: '0.0', currencyCode: 'EUR'},
+      })),
+    },
+  };
+  const o = regeln.kettenOptionen(null, stahl);
+  assert.deepEqual(o.map((x) => x.titel), ['stahl', 'stahl-50 cm', 'stahl-45 cm', 'stahl-40 cm']);
+  assert.deepEqual(o.map((x) => x.name), [
+    '60 cm Kette aus Chirurgenstahl',
+    '50 cm Kette aus Chirurgenstahl',
+    '45 cm Kette aus Chirurgenstahl',
+    '40 cm Kette aus Chirurgenstahl',
+  ]);
+  assert.equal(o[0].box, '60 cm - Kette aus Chirurgenstahl');
+  assert.ok(o.every((x) => x.art === 'stahl' && x.variante?.id));
+  // Rückfall: Produkt fehlt oder keine Länge kaufbar -> alte 60-cm-Karte ohne Zeile
+  const leer = {variants: {nodes: stahl.variants.nodes.map((v) => ({...v, availableForSale: false}))}};
+  for (const p of [null, leer]) {
+    const r = regeln.kettenOptionen(null, p);
+    assert.equal(r.length, 1);
+    assert.equal(r[0].titel, 'stahl');
+    assert.equal(r[0].variante, null);
+  }
+});

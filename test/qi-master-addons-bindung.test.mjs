@@ -234,3 +234,18 @@ test('TOLERANT neue Add-on-Handles ohne Hauptprodukt fallen weg', () => {
   ]);
   assert.deepEqual(r.entfernen.sort(), ['k', 'w']);
 });
+
+// ---- Inklusive Stahlkette als eigene 0-€-Zeile (Elina 30.10.2026, EL-20261030-ae569366) ----
+const S60 = V('qi-alpha-stahlkette', 60);
+test('S1 Stahlkette OHNE Qi Alpha -> fällt weg (kein 0-€-Artikel allein)', async () => {
+  const c = fakeCart();
+  await aktion(c, 'LinesAdd', {lines: [{merchandiseId: S60, quantity: 2}]});
+  assert.deepEqual(korb(c), []);
+});
+test('S2 Qi Alpha + Stahlkette x2 -> eine Kette, Merkmal gesetzt; Gold dazu -> weiter höchstens eine Kette', async () => {
+  const c = fakeCart();
+  await aktion(c, 'LinesAdd', {lines: [{merchandiseId: QM, quantity: 1}, {merchandiseId: S60, quantity: 2}]});
+  assert.deepEqual(korb(c), ['qi-alpha-stahlkette:60x1+', 'qi-master:1x1']);
+  await aktion(c, 'LinesAdd', {lines: [{merchandiseId: K60, quantity: 1, attributes: ATTRK}]});
+  assert.equal(korb(c).filter((z) => /kette/.test(z)).length, 1);
+});
