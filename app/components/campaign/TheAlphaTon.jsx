@@ -639,8 +639,12 @@ function binde_akzente(wurzel, m) {
     threshold: 0.15,
   });
   const marke = new IntersectionObserver(rueckruf, {rootMargin: '0px 0px -45% 0px'});
+  // Eine Bühne, deren erste Zeile schon vor dem Stillstand kommt (Szenen-
+  // Fassung, useTapFilm), meldet das mit tap-akzent: Ton mit dem Bild.
+  const vorab = (e) => feuer(e.currentTarget);
   wurzel.querySelectorAll('[data-tap-ton]').forEach((el) => {
     (el.hasAttribute('data-tap-marke') ? marke : ein).observe(el);
+    if (el.hasAttribute('data-tap-marke')) el.addEventListener('tap-akzent', vorab);
   });
   // Ton geht an, während eine Szene im Bild ist (der Titel beim Tipp auf
   // „Sound on“): ihr Akzent kommt jetzt, nur der oberste, nie ein Stapel.
@@ -652,6 +656,9 @@ function binde_akzente(wurzel, m) {
   };
   m.hoerer.add(zustand);
   return () => {
+    wurzel
+      .querySelectorAll('[data-tap-marke][data-tap-ton]')
+      .forEach((el) => el.removeEventListener('tap-akzent', vorab));
     ein.disconnect();
     marke.disconnect();
     m.hoerer.delete(zustand);

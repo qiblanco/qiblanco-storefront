@@ -28,7 +28,7 @@ test('A zeigt Lucas Reveal ohne Text im Bild, B behält das alte Video', () => {
     'Adresse der hochgeladenen Fassung ohne Text fehlt (cdn-publish)',
   );
   assert.notEqual(film.video.src, daten.THE_ALPHA_VIDEO.video.src, 'noch das Video mit eingebrannten Sätzen');
-  assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm film=\{THE_ALPHA_FILM_OHNE_TEXT\} \/>/);
+  assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm film=\{THE_ALPHA_FILM_OHNE_TEXT\}( stopper)? \/>/);
   assert.match(lies('app/components/campaign/TheAlphaVarianteB.jsx'), /<TapFilm film=\{THE_ALPHA_VIDEO\} \/>/);
 });
 

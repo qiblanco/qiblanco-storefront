@@ -44,6 +44,11 @@ import {
  * Bild, die Sätze groß darunter im Takt des Films (THE_ALPHA_FILM_OHNE_TEXT),
  * die Unterzeile der Titelkarte als ganze Zeile, „Sound On“ unter
  * „Kohärentes Licht“ solange der Browser den Ton noch zurückhält.
+ *
+ * 30.10.2026 (Christian, Job 20261030-update-qi-alpha-seite-scrollstopper-
+ * video-schwarzraum-kuerzen-r2): Scrollstopper am Diamant-Video (`stopper`,
+ * einmal je Besuch 3 s Video, Start des Videos unverändert) und kein langes
+ * Schwarz mehr zwischen den Bühnen (useTapFilm, Szenen-Fassung).
  */
 
 const [MANIFESTATION, PROTECTION, LONGEVITY] = THE_ALPHA_ABSCHNITTE;
@@ -64,7 +69,7 @@ export default function TheAlpha() {
     <TapSeite variante="a" film="szene" ton="an">
       <TapTitelkarte />
       <TapWoerterbuch />
-      <TapFilm film={THE_ALPHA_FILM_OHNE_TEXT} />
+      <TapFilm film={THE_ALPHA_FILM_OHNE_TEXT} stopper />
       <TapKapitel abschnitt={MANIFESTATION}>
         <TapKarten bilder={MANIFESTATION.bilder} />
       </TapKapitel>
