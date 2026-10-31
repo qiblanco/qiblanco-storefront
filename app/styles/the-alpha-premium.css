@@ -185,6 +185,93 @@ html:has(main[data-film-seite]) {
   --tap-schritt: var(--tap-schritt-zeile);
 }
 
+/* Bild-Bühnen (Karten, Seitenband) gehen im Absatz-Takt. */
+.tap-scrub-bilder {
+  --tap-schritt: var(--tap-schritt-absatz);
+}
+
+/* ---------- Szenen-Kette (A, Christian 31.10.2026) ---------- */
+/* „Die Scrollbewegungen sind noch deutlich zu lang, damit was Neues kommt“.
+   Das Alte weicht, statt weggeschoben zu werden: eine Bühne ist einen
+   Bildschirm plus ihre Schritte plus zwei Schritte hoch; einen Schritt nach
+   dem letzten blendet sie aus (tap-aus), einen Schritt später steht die
+   nächste still, weil sie einen Bildschirm hoch unter ihr liegt
+   (tap-nachruecken). Das Video steht ganz im Bild, wenn die Bühne davor
+   fertig ist (tap-nach-buehne: seine Unterkante liegt auf ihrer). Die Bühne
+   nach dem Video steht einen halben Schritt, nachdem es oben weicht
+   (tap-nach-video, Weich-Linie 10 % in useTapFilm). Klassen und
+   --tap-video-hoehe setzt useTapFilm; ohne Bewegung gibt es keine Kette. */
+.tap-js.tap-kette .tap-kapitel,
+.tap-js.tap-kette .tap-marke {
+  padding-bottom: 0;
+}
+
+.tap-js.tap-kette .tap-scrub:not([data-tap-ende]) {
+  height: calc(100svh + (var(--tap-schritte, 0) + 2) * var(--tap-schritt));
+}
+
+.tap-js.tap-kette .tap-nachruecken {
+  margin-top: -100svh;
+}
+
+.tap-js.tap-kette .tap-nach-buehne {
+  margin-top: calc(-1 * var(--tap-video-hoehe, 0px));
+  margin-bottom: 0;
+}
+
+.tap-js.tap-kette .tap-nach-video {
+  margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - 10svh + var(--tap-schritt) / 2);
+}
+
+/* Bühnen liegen übereinander: nur was gerade zu sehen ist, nimmt Tipps an
+   (sonst finge die nächste Bühne den Ton-Knopf am Video ab). */
+.tap-js.tap-kette .tap-scrub {
+  pointer-events: none;
+}
+
+.tap-js.tap-kette .tap-scrub [data-tap-schritt].tap-an {
+  pointer-events: auto;
+}
+
+.tap-js.tap-kette .tap-scrub.tap-aus > .tap-scrub-bild,
+.tap-js.tap-kette .tap-film.tap-aus {
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.tap-js.tap-kette .tap-scrub.tap-aus [data-tap-schritt] {
+  pointer-events: none;
+}
+
+.tap-js.tap-kette .tap-scrub-bild {
+  transition: opacity 300ms ease;
+}
+
+/* Karten-Bühne: beide Karten passen in einen Bildschirm (am Handy
+   untereinander, ab 768 px nebeneinander). */
+.tap-karten-buehne {
+  margin: 0 calc(-1 * var(--tap-s-3));
+}
+
+.tap-karten-buehne .tap-karten {
+  width: min(560px, 100%, calc((100svh - 3 * var(--tap-s-3)) / 2));
+}
+
+@media (min-width: 768px) {
+  .tap-karten-buehne .tap-karten {
+    width: min(1152px, 100%, calc((100svh - 2 * var(--tap-s-6)) * 2 + var(--tap-s-4)));
+  }
+}
+
+.tap-marke-buehne .tap-scrub-bild {
+  padding-inline: 0;
+}
+
+.tap-marke-buehne .tap-band {
+  width: min(1200px, 100%);
+}
+
 /* Bühnen-Marke für den Ton: ihre Oberkante liegt bei 55 % des Bildschirms,
    so löst der Akzent (Beobachter mit -45 % unten in TheAlphaTon.jsx) genau in
    dem Moment aus, in dem die Bühne stillsteht. */

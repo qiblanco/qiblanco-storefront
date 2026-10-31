@@ -85,7 +85,8 @@ test('Stopper nur an A (Diamant-Video), nicht an B und C', () => {
 
 test('Szenen-Fassung: erste Zeile einer Bühne, sobald das Alte weg und sie ganz im Bild ist', () => {
   const p = lies('app/components/campaign/TheAlphaPremium.jsx');
-  assert.match(p, /if \(!szene \|\| !s\.start \|\| !s\.vor \|\| unterkante\(s\.vor\) > 0\) return false;/);
+  // Seit der Szenen-Kette (31.10.2026) gilt frueh() nur außerhalb der Kette.
+  assert.match(p, /if \(kette \|\| !szene \|\| !s\.start \|\| !s\.vor \|\| unterkante\(s\.vor\) > 0\) return false;/);
   assert.match(p, /r\.top >= 0 && r\.bottom <= bild/);
   assert.match(p, /const vorab = !still && oben > 1 && oben < window\.innerHeight && frueh\(s\);/);
   // Der Ton der Bühne kommt mit dem Bild.

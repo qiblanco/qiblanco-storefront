@@ -73,6 +73,22 @@ import {
  *   390 x 844: 384 px nach dem Titel, 192 px vor „Manifestation“). Der Ton der
  *   Bühne kommt mit dem Bild (Ereignis tap-akzent, TheAlphaTon.jsx). Die
  *   Regel „Neues erst, wenn das Alte weg ist“ bleibt.
+ * - SZENEN-KETTE (Christian 31.10.2026: „die Scrollbewegungen sind noch
+ *   deutlich zu lang, damit was Neues kommt“; Job 20261031-prio1-qi-alpha-lp-
+ *   scrollstrecken-deutlich-kuerzen). Gemessen 390 x 844 vor dem Umbau: 10
+ *   Strecken über einen halben Bildschirm ohne Neues (bis 848 px), weil jede
+ *   Szene erst ganz aus dem Bild geschoben werden musste, bevor die nächste
+ *   kam. Jetzt WEICHT das Alte, statt weggeschoben zu werden: eine Bühne
+ *   blendet einen Schritt nach ihrem letzten Schritt aus (tap-aus), einen
+ *   Schritt später steht die nächste Bühne still (tap-nachruecken: sie liegt
+ *   einen Bildschirm hoch unter der vorigen). Karten und Seitenband sind
+ *   eigene kurze Bühnen (TapKarten, TapMarke). Das Video bleibt, wie es war
+ *   (Start, Scrollstopper): es steht genau dann ganz im Bild, wenn die Bühne
+ *   davor fertig ist (tap-nach-buehne), und weicht, sobald es oben an den
+ *   Rand kommt und der Stopper es nicht hält; einen halben Schritt später
+ *   steht die nächste Bühne (tap-nach-video). Abstand zwischen zwei Neuen
+ *   damit höchstens zwei Schritte (Handy 2 x 160 px). Ohne Bewegung und im
+ *   Standbild (tap-still) gibt es keine Kette.
  */
 const TapFassung = createContext({szene: false});
 
@@ -139,6 +155,28 @@ function useTapFilm(wurzel, szene) {
           return {z, vor: eigene > 0 ? szenen[eigene - 1] : null};
         })
       : [];
+    // Szenen-Kette (Kopfkommentar): wer an wen anschließt.
+    const kette = szene && !still;
+    const stufe = (x) => x.matches('[data-tap-scrub]');
+    const filmNachBuehne = [];
+    if (kette) {
+      el.classList.add('tap-kette');
+      szenen.forEach((s, i) => {
+        const vor = szenen[i - 1];
+        if (!vor) return;
+        if (stufe(s) && stufe(vor)) s.classList.add('tap-nachruecken');
+        else if (!stufe(s) && stufe(vor)) {
+          s.classList.add('tap-nach-buehne');
+          filmNachBuehne.push(s);
+        } else if (stufe(s) && !stufe(vor)) s.classList.add('tap-nach-video');
+      });
+      aufraeumen.push(() => {
+        el.classList.remove('tap-kette');
+        szenen.forEach((s) =>
+          s.classList.remove('tap-nachruecken', 'tap-nach-buehne', 'tap-nach-video', 'tap-aus'),
+        );
+      });
+    }
     const pruefeEin = () => {
       if (!offen.length) return;
       const bild = window.innerHeight;
@@ -146,7 +184,7 @@ function useTapFilm(wurzel, szene) {
         const r = z.getBoundingClientRect();
         const drin = Math.min(r.bottom, bild) - Math.max(r.top, 0);
         const ganz = drin >= r.height * 0.98 || drin >= bild * 0.92;
-        const frei = !vor || unterkante(vor) <= 0;
+        const frei = !vor || vor.classList.contains('tap-aus') || unterkante(vor) <= 0;
         if (still || (frei && (ganz || r.top < 0))) {
           zeige(z);
           return false;
@@ -181,6 +219,10 @@ function useTapFilm(wurzel, szene) {
         start: Number(b.dataset.tapScrubStart || 0),
         px: 48,
         an: -1,
+        // Schritte nach den Anfangs-Schritten (inkl. Ruhe), wie --tap-schritte.
+        zahl: Number(b.style.getPropertyValue('--tap-schritte')) || 0,
+        aus: false,
+        ende: b.hasAttribute('data-tap-ende'),
         vor: eigene > 0 ? szenen[eigene - 1] : null,
         ton: b.querySelector(':scope > .tap-buehne-marke[data-tap-ton]'),
       };
@@ -189,7 +231,8 @@ function useTapFilm(wurzel, szene) {
     // sobald die Szene davor weg ist und sie ganz im Bild sind (Kopfkommentar
     // „Kein Schwarz zwischen den Bühnen“).
     const frueh = (s) => {
-      if (!szene || !s.start || !s.vor || unterkante(s.vor) > 0) return false;
+      // In der Kette steht die Bühne von selbst still, wenn die vorige weicht.
+      if (kette || !szene || !s.start || !s.vor || unterkante(s.vor) > 0) return false;
       const bild = window.innerHeight;
       return s.schritte.slice(0, s.start).every((w) => {
         const r = w.getBoundingClientRect();
@@ -200,8 +243,21 @@ function useTapFilm(wurzel, szene) {
       for (const s of buehnen) {
         s.px = parseFloat(getComputedStyle(s.b).getPropertyValue('--tap-schritt')) || 48;
       }
+      // Höhe des Videos für tap-nach-buehne / tap-nach-video (CSS).
+      if (filmNachBuehne[0]) {
+        el.style.setProperty('--tap-video-hoehe', `${filmNachBuehne[0].offsetHeight}px`);
+      }
     };
     const zeichnen = () => {
+      // Kette: das Video weicht, sobald es oben an den Rand kommt (10 % der
+      // Bildhöhe) und der Scrollstopper es nicht gerade hält.
+      for (const f of filmNachBuehne) {
+        const aus =
+          f.classList.contains('tap-sichtbar') &&
+          f.getBoundingClientRect().top < window.innerHeight * 0.1 &&
+          f.dataset.tapStopperStand !== 'hält';
+        f.classList.toggle('tap-aus', aus);
+      }
       for (const s of buehnen) {
         const oben = s.b.getBoundingClientRect().top;
         const vorab = !still && oben > 1 && oben < window.innerHeight && frueh(s);
@@ -212,6 +268,15 @@ function useTapFilm(wurzel, szene) {
               ? s.start
               : 0
             : Math.min(s.schritte.length, s.start + Math.floor(-oben / s.px));
+        // Kette: einen Schritt nach dem letzten (Ruhe eingerechnet) weicht die
+        // Bühne; die letzte Bühne (Schluss mit Knopf) bleibt.
+        if (kette && !s.ende) {
+          const aus = oben <= 1 && Math.floor(-oben / s.px) >= s.zahl + 1;
+          if (aus !== s.aus) {
+            s.b.classList.toggle('tap-aus', aus);
+            s.aus = aus;
+          }
+        }
         if (n === s.an) continue;
         s.schritte.forEach((w, i) => w.classList.toggle('tap-an', i < n));
         if (vorab && s.an <= 0 && s.ton) s.ton.dispatchEvent(new Event('tap-akzent'));
@@ -262,7 +327,10 @@ function useTapFilm(wurzel, szene) {
     const leisteRechnen = () => {
       leisteAngefordert = false;
       const weg = !anfang || anfang.getBoundingClientRect().bottom <= 0;
-      const oben = ende ? ende.getBoundingClientRect().top : Infinity;
+      // In der Kette liegt die Schluss-Bühne einen Bildschirm hoch unter dem
+      // Band; ihr Bild beginnt erst, wenn sie oben anstößt.
+      const versatz = ende?.classList.contains('tap-nachruecken') ? kleinesBild : 0;
+      const oben = ende ? ende.getBoundingClientRect().top + versatz : Infinity;
       const an = weg && oben >= kleinesBild + (leisteAn ? 0 : RUHE_PX);
       if (an !== leisteAn) {
         leisteAn = an;
@@ -642,13 +710,18 @@ export function TapKapitel({abschnitt, akzent = null, children}) {
 }
 
 /** Bildkarte mit schwarzem Etikett unten mittig (Figma-Stil). Die
- * DIAMANT-Karte klingt beim Erscheinen (Glanz-Ton, RAW → DIAMANT). */
-function Karte({bild, sizes, folge = 0, format = 'quadrat'}) {
-  const glanz = /diamant/i.test(bild.etikett || '');
+ * DIAMANT-Karte klingt beim Erscheinen (Glanz-Ton, RAW → DIAMANT).
+ * `schritt`: Karte ist ein Schritt einer Bühne (Szenen-Kette); ihren Ton
+ * trägt dann eine Bühnen-Marke (TapKarten). */
+const istGlanz = (bild) => /diamant/i.test(bild.etikett || '');
+
+function Karte({bild, sizes, folge = 0, format = 'quadrat', schritt = false}) {
+  const glanz = !schritt && istGlanz(bild);
   return (
     <figure
       className={`tap-karte tap-karte-${format}`}
-      data-tap-ein=""
+      data-tap-ein={schritt ? undefined : ''}
+      data-tap-schritt={schritt ? '' : undefined}
       data-tap-ton={glanz ? 'glanz' : undefined}
       data-tap-ton-verzug={glanz ? folge * 180 : undefined}
       style={{'--tap-folge': folge}}
@@ -664,8 +737,44 @@ function Karte({bild, sizes, folge = 0, format = 'quadrat'}) {
 }
 
 /** Zwei Karten: am Handy untereinander, ab 768 px nebeneinander; die zweite
- * kommt nach der ersten (RAW → DIAMANT, ENDLESS → POSSIBILITY). */
+ * kommt nach der ersten (RAW → DIAMANT, ENDLESS → POSSIBILITY).
+ * Szenen-Fassung (Kette, 31.10.2026): die Karten sind eine eigene Bühne, die
+ * erste steht mit dem Stillstand da, die zweite einen Schritt später, dann
+ * ein Schritt Ruhe; der Glanz-Ton hängt an einer Marke auf Höhe ihres
+ * Schritts. */
 export function TapKarten({bilder}) {
+  const {szene} = useContext(TapFassung);
+  if (szene) {
+    return (
+      <div
+        className="tap-karten-buehne tap-scrub tap-scrub-bilder"
+        data-tap-szene=""
+        data-tap-scrub=""
+        data-tap-scrub-start="1"
+        style={{'--tap-schritte': bilder.length}}
+      >
+        <div className="tap-scrub-bild">
+          <div className="tap-karten">
+            {bilder.map((b) => (
+              <Karte key={b.url} bild={b} schritt sizes="(min-width: 768px) 560px, 90vw" />
+            ))}
+          </div>
+        </div>
+        {bilder.map((b, i) =>
+          istGlanz(b) ? (
+            <span
+              key={`ton-${b.url}`}
+              className="tap-buehne-marke"
+              data-tap-marke=""
+              data-tap-ton="glanz"
+              aria-hidden="true"
+              style={{top: `calc(55svh + ${i} * var(--tap-schritt))`}}
+            />
+          ) : null,
+        )}
+      </div>
+    );
+  }
   return (
     <div className="tap-karten" data-tap-szene="">
       {bilder.map((b, i) => (
@@ -680,6 +789,32 @@ export function TapKarten({bilder}) {
  * Bildschirm (Z270–Z272). `etikett`: Text im schwarzen Kästchen, sonst der
  * Name (A trägt seit 28.10. „THE ALPHA“, Christian Z11). */
 export function TapMarke({bild, marke = THE_ALPHA_MARKE, etikett = marke}) {
+  const {szene} = useContext(TapFassung);
+  if (szene) {
+    // Kette (31.10.2026): das Band ist eine kurze Bühne, ein Schritt Ruhe.
+    return (
+      <section className="tap-marke" aria-label={etikett}>
+        <div
+          className="tap-marke-buehne tap-scrub tap-scrub-bilder"
+          data-tap-szene=""
+          data-tap-scrub=""
+          data-tap-scrub-start="1"
+          style={{'--tap-schritte': 1}}
+        >
+          <div className="tap-scrub-bild">
+            <div className="tap-band">
+              <Karte
+                bild={{...bild, etikett}}
+                format="band"
+                schritt
+                sizes="(min-width: 1200px) 1152px, 100vw"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="tap-marke" aria-label={etikett} data-tap-szene="">
       <div className="tap-band">
