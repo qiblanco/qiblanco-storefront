@@ -29,6 +29,7 @@ import {setzePreismodus} from '../app/lib/preismodus.js';
 setzePreismodus('netto');
 import {readFileSync, readdirSync} from 'node:fs';
 import {VORSCHAU_NOINDEX} from '../app/lib/vorschau-noindex.js';
+import {NICHT_INDEXIERBARE_PRODUKTE} from '../app/lib/seo.js';
 import {
   MARKE,
   PRODUKT_BESCHREIBUNGEN,
@@ -274,6 +275,17 @@ function istVorschauRoute(slug, inhalt) {
   );
 }
 
+// Eigene Route eines reinen Link-Ziel-Handles (NICHT_INDEXIERBARE_PRODUKTE,
+// z. B. die Angebote pjdz538hgs0 / 8kendiw34hd seit s13-r3): kein Suchkopf,
+// solange die Route selbst noindex setzt und kein canonical trägt.
+function istLinkZielRoute(slug, inhalt) {
+  return (
+    NICHT_INDEXIERBARE_PRODUKTE.includes(slug) &&
+    /name:\s*'robots',\s*content:\s*'noindex/.test(inhalt) &&
+    !/rel:\s*'canonical'|canonicalLink\(/.test(inhalt)
+  );
+}
+
 test('JEDE ausgelieferte Produktroute ist an produktMeta verdrahtet', () => {
   // Der Ausgangsbefund war eine Drift zwischen den Routen. Dieser Test
   // findet die vergessene Route, nicht nur die gepflegte.
@@ -288,6 +300,7 @@ test('JEDE ausgelieferte Produktroute ist an produktMeta verdrahtet', () => {
     if (istReineWeiterleitung(inhalt)) continue; // rendert nichts, kein Kopf
     if (istSpiegelHuelle(inhalt)) continue; // Kopf kommt 1:1 von crystal-cacao.com
     if (istVorschauRoute(slug, inhalt)) continue; // noindex-Vorschau, kein Suchkopf
+    if (istLinkZielRoute(slug, inhalt)) continue; // Link-Ziel-Handle, noindex
     if (!inhalt.includes('produktMeta')) fehlend.push(f);
   }
   assert.deepEqual(fehlend, [], `Routen ohne produktMeta: ${fehlend.join(', ')}`);
@@ -321,6 +334,16 @@ test('ROT: die Vorschau-Ausnahme greift nur bei Liste + noindex + ohne canonical
   assert.equal(istVorschauRoute('qi-alpha-b', b.replace(/name: 'robots'/g, "name: 'x'")), false, 'noindex');
   // Nicht in der Liste -> KEINE Ausnahme.
   assert.equal(istVorschauRoute('qione-2-pro', b), false, 'Liste');
+});
+
+test('ROT: die Link-Ziel-Ausnahme greift nur bei Liste + noindex + ohne canonical', () => {
+  const r = readFileSync('app/routes/products.pjdz538hgs0.jsx', 'utf8');
+  assert.equal(istLinkZielRoute('pjdz538hgs0', r), true, 'Angebot ist ein Link-Ziel');
+  // Nicht in NICHT_INDEXIERBARE_PRODUKTE -> KEINE Ausnahme.
+  assert.equal(istLinkZielRoute('qione-2-pro', r), false, 'Liste');
+  // Mit canonical oder ohne eigenes noindex -> KEINE Ausnahme.
+  assert.equal(istLinkZielRoute('pjdz538hgs0', `${r}\nconst c = canonicalLink('/');`), false, 'canonical');
+  assert.equal(istLinkZielRoute('pjdz538hgs0', r.replace(/name: 'robots'/g, "name: 'x'")), false, 'noindex');
 });
 
 test('ROT: die Weiterleitungs-Ausnahme verschluckt keine rendernde Route', () => {
