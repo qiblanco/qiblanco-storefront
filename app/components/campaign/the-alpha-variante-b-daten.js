@@ -74,7 +74,7 @@ export const TAB_LIVE = {
   titel: 'Erst live kennenlernen?',
   wann: 'Sonntag, 8. November 2026, 12 Uhr (Berlin), auf Zoom',
   text:
-    'Christian stellt den Qi Alpha® zum ersten Mal live vor. Du siehst ihn aus nächster Nähe ' +
+    'Christian stellt den Qi Alpha® zum ersten Mal live vor. Du erfährst alle Details ' +
     'und kannst Christian alles fragen.',
 };
 

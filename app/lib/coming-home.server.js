@@ -29,8 +29,14 @@
  * RÜCKWEG OHNE REVERT: LINK_AN = false. Die Seite nimmt weiter Anmeldungen
  * an, zeigt nach dem Absenden aber keinen Link, sondern verweist auf die
  * Einladung per E-Mail.
+ *
+ * GESCHLOSSENE VERANSTALTUNG (Christian 31.10.2026: „bitte als geschlossenes
+ * meeting aufbauen, also dass das weiterleiten des links nicht aussricht“,
+ * Job 20261031-update-qi-alpha-text-details-und-geschlossenes-meeting-
+ * gaesteliste-r3): kein gemeinsamer Link mehr auf irgendeiner Seite. Den
+ * Zugang schickt allein der Anmeldedienst per Mail an die bestätigte Adresse.
  */
-export const LINK_AN = true;
+export const LINK_AN = false;
 
 export const TEILNAHME_LINK = 'https://us02web.zoom.us/j/82933450465';
 

@@ -237,8 +237,8 @@ const ECKDATEN_NEU = [
 ];
 
 const TEILNAHME_TEXT =
-  'So bist du dabei: Melde dich mit Name und E-Mail-Adresse an. Den ' +
-  'Zoom-Link schicken wir dir per Mail.';
+  'So bist du dabei: Melde dich mit Name und E-Mail-Adresse an. Deinen ' +
+  'persönlichen Zoom-Link schicken wir dir per Mail.';
 
 /**
  * Aufnahme-Satz. Der Entwurf „Aus der Runde nennen wir keine Namen …“ fiel
@@ -368,7 +368,9 @@ export async function action({request, context}) {
     }
     const antwort = {intent, zustand};
     if (intent === 'bestaetigen' && zustand === 'bestaetigt') {
-      antwort.link = r.body?.zoom_link || teilnahmeLink();
+      // Geschlossene Veranstaltung: auch den Link des Dienstes nur, solange
+      // die Seite überhaupt Links zeigen darf (LINK_AN).
+      antwort.link = teilnahmeLink() ? r.body?.zoom_link || teilnahmeLink() : null;
     }
     if (intent === 'bestaetigen' && zustand === 'direkt') {
       antwort.link = teilnahmeLink();
@@ -902,7 +904,7 @@ function AnmeldeKopf({spezial, children}) {
   if (!spezial) {
     return (
       <>
-        <h2 className="lv-h2">Melde dich an, der Link kommt per Mail</h2>
+        <h2 className="lv-h2">Melde dich an, dein persönlicher Zugang kommt per Mail</h2>
         {children}
       </>
     );
@@ -1131,7 +1133,7 @@ function Anmeldung({spezial = null}) {
       ) : null}
       <p className="lv-hinweis">
         Du bekommst eine Mail mit einem Knopf zum Bestätigen. Danach schicken
-        wir dir den Zoom-Link.{' '}
+        wir dir deinen persönlichen Zoom-Link. Er gilt nur für dich.{' '}
         <Link className="lv-verweis" to="/pages/datenschutz" prefetch="intent">
           Datenschutz
         </Link>
@@ -1144,27 +1146,23 @@ const ERFOLG_TITEL = {
   doi_gesendet: 'Schau in dein Postfach',
   schon_bestaetigt: 'Du bist schon angemeldet',
   gedrosselt: 'Du hast dich gerade schon angemeldet',
-  direkt: 'Hier ist dein Zoom-Link',
+  direkt: 'Das hat gerade nicht geklappt',
 };
 
 /** schon_bestaetigt in der Spezial-Woche: der Link gilt nicht für den Sonntag. */
 const ERFOLG_TEXT_SPEZIAL =
-  'Vor jedem Termin bekommst du eine Erinnerung per Mail. Hier ist dein ' +
-  'Link für Coming Home.';
+  'Vor jedem Termin bekommst du eine Erinnerung per Mail, mit deinem ' +
+  'persönlichen Link für Coming Home.';
 
 const ERFOLG_TEXT = {
   doi_gesendet:
     'Wir haben dir eine Mail geschickt. Klick dort auf den Knopf, dann ' +
-    'bekommst du den Zoom-Link. Schau auch im Spam-Ordner nach.',
+    'bekommst du deinen persönlichen Zoom-Link. Schau auch im Spam-Ordner nach.',
   schon_bestaetigt:
-    'Vor jedem Termin bekommst du eine Erinnerung per Mail. Hier ist der ' +
-    'Link für Sonntag.',
-  gedrosselt:
-    'Die Mail ist schon unterwegs. Bis sie da ist, kommst du mit diesem Link ' +
-    'ins Meeting.',
-  direkt:
-    'Die Mail kommt gerade nicht durch. Mit diesem Link kommst du trotzdem ' +
-    'ins Meeting.',
+    'Vor jedem Termin bekommst du eine Erinnerung per Mail, mit deinem ' +
+    'persönlichen Link.',
+  gedrosselt: 'Die Mail ist schon unterwegs. Schau auch im Spam-Ordner nach.',
+  direkt: 'Bitte versuch es in ein paar Minuten noch einmal.',
 };
 
 /** Ansicht der Mail-Links: ein Knopf, erst der Klick schickt den POST. */
@@ -1186,14 +1184,30 @@ function Schritt({schritt, spezial = null}) {
       </>
     );
   }
+  // Dienst beim Bestätigen nicht erreichbar: früher kam hier der gemeinsame
+  // Link. Bei der geschlossenen Veranstaltung (LINK_AN aus) gibt es ihn nicht;
+  // der Token bleibt im Cookie, ein zweiter Klick auf den Mail-Knopf genügt.
+  if (antwort?.intent === 'bestaetigen' && zustand === 'direkt' && !antwort?.link) {
+    return (
+      <>
+        <h2 className="lv-h2">Das hat gerade nicht geklappt</h2>
+        <div className="lv-karte" data-ch-live-zustand={zustand}>
+          <p className="lv-text">
+            Klick in ein paar Minuten noch einmal auf den Knopf in deiner Mail.
+          </p>
+        </div>
+      </>
+    );
+  }
   if (zustand === 'bestaetigt' || (antwort?.intent === 'bestaetigen' && zustand === 'direkt')) {
     return (
       <>
         <h2 className="lv-h2">Du bist dabei</h2>
         <div className="lv-karte" data-ch-live-zustand={zustand}>
           <p className="lv-text">
-            Vor jedem Termin erinnern wir dich per Mail. Hier kommst du ins
-            Meeting:
+            {antwort?.link
+              ? 'Vor jedem Termin erinnern wir dich per Mail. Hier kommst du ins Meeting:'
+              : 'Deinen persönlichen Zoom-Link schicken wir dir per Mail. Vor jedem Termin erinnern wir dich noch einmal.'}
           </p>
           {antwort?.link ? <ZoomZugang link={antwort.link} id={id} /> : null}
           <SpezialHinweis spezial={spezial} />
