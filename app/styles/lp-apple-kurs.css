@@ -1,0 +1,124 @@
+/*
+ * KURS (s07-r3): Apple-Satzspiegel um components/kurse/CourseLesson.jsx
+ * (lp/KursApple.jsx). Der Text kommt aus Shopify und bleibt unverändert;
+ * hier stehen nur Lesebreite, Stufen der Typo-Skala, Abstände im 8er-Raster
+ * und der eine Bild-Radius.
+ */
+.as-kurs .course-lesson {
+  max-width: var(--as-text-breite);
+  margin: 0 auto;
+  padding: var(--as-s-8) var(--as-s-2) 0;
+}
+.as-kurs .course-lesson__breadcrumb {
+  margin: 0 0 var(--as-s-2);
+  font-size: var(--as-fs-2);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+.as-kurs .course-lesson__breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--as-s-1);
+  color: var(--as-gold-tinte);
+  text-decoration: none;
+}
+.as-kurs .course-lesson h1 {
+  margin: 0;
+  font-size: var(--as-fs-7);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-align: center;
+  text-wrap: balance;
+}
+.as-kurs .course-lesson__video {
+  margin: var(--as-s-6) 0 0;
+}
+.as-kurs .course-lesson__video iframe {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: var(--as-radius);
+}
+.as-kurs .course-lesson-body {
+  margin-top: var(--as-s-6);
+  color: var(--as-tinte);
+}
+.as-kurs .course-lesson-body :where(p, li) {
+  line-height: 1.6;
+}
+.as-kurs .course-lesson-body :where(p) {
+  margin: 0 0 var(--as-s-2);
+}
+/* Zwischentitel bleiben auf allen Breiten fs-5: Lesetext mit vielen
+   Zwischentiteln, Skala 17 -> 21 -> 24 ohne Sprung (design-rubrik Skalen-Fit). */
+.as-kurs .course-lesson-body :where(h2) {
+  margin: var(--as-s-6) 0 var(--as-s-2);
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.as-kurs .course-lesson-body :where(h3, h4) {
+  margin: var(--as-s-4) 0 var(--as-s-1);
+  font-size: var(--as-fs-4);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.as-kurs .course-lesson-body :where(strong, b) {
+  font-weight: 600;
+}
+.as-kurs .course-lesson-body :where(ul, ol) {
+  margin: 0 0 var(--as-s-2);
+  padding-left: var(--as-s-3);
+}
+.as-kurs .course-lesson-body :where(a) {
+  color: var(--as-tinte);
+  text-decoration: underline;
+  text-decoration-color: var(--as-gold);
+  text-underline-offset: 0.25em;
+}
+.as-kurs .course-lesson-body :where(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--as-radius);
+}
+.as-kurs .course-lesson-body :where(hr) {
+  margin: var(--as-s-6) 0;
+  border: 0;
+  border-top: var(--as-strich) solid var(--as-linie);
+}
+.as-kurs .course-lesson-body :where(iframe) {
+  max-width: 100%;
+  border: 0;
+  border-radius: var(--as-radius);
+}
+.as-kurs .course-lesson__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--as-s-2);
+  justify-content: center;
+  margin-top: var(--as-s-8);
+}
+.as-kurs .course-lesson__nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--as-s-1);
+  min-width: var(--as-knopf-breite);
+  min-height: var(--as-tippziel);
+  font-size: var(--as-fs-3) !important;
+  text-decoration: none;
+}
+@media (min-width: 750px) {
+  .as-kurs .course-lesson {
+    padding: var(--as-s-12) var(--as-s-4) 0;
+  }
+  .as-kurs .course-lesson h1 {
+    font-size: var(--as-fs-8);
+  }
+}
