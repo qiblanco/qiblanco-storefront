@@ -89,6 +89,20 @@ import {
  *   steht die nächste Bühne (tap-nach-video). Abstand zwischen zwei Neuen
  *   damit höchstens anderthalb Bild-Schritte (Handy 300 px). Ohne Bewegung und im
  *   Standbild (tap-still) gibt es keine Kette.
+ * - NAHTLOS (Christian 31.10.2026: „so gefühlt, wenn das Alte weg ist, dann
+ *   kommt direkt das Neue. Das ist das Angenehmste.“; Job 20261031-prio1-qi-
+ *   alpha-lp-alt-weg-neu-sofort-nahtlos). Gemessen 390 x 844 nach der Kette:
+ *   zwischen „Altes weg“ und „Neues da“ lag an jedem Szenenwechsel noch ein
+ *   halber Schritt Schwarz (bis 104 px), und vom letzten Neuen einer Szene bis
+ *   zum ersten der nächsten anderthalb Schritte (bis 304 px). Jetzt steht die
+ *   nächste Bühne in DEMSELBEN Moment still, in dem die vorige weicht (Bühne
+ *   = Bildschirm + Schritte + 1, kein halber Schritt mehr; ebenso nach dem
+ *   Video). Ihre Schritte kommen erst, wenn die vorige wirklich weicht
+ *   (tap-aus): so liegt nie Neues über dem Alten, auch nicht, solange der
+ *   Scrollstopper das Video hält (Desktop). Das Alte blendet kurz aus, der
+ *   erste Schritt des Neuen setzt knapp danach ein (tap-eintritt). Bild-Takt
+ *   176 px (Kleinbild 144 px): jede Strecke bis zum nächsten Neuen bleibt am
+ *   Handy unter einem Viertel Bildschirm.
  */
 const TapFassung = createContext({szene: false});
 
@@ -170,11 +184,20 @@ function useTapFilm(wurzel, szene) {
           filmNachBuehne.push(s);
         } else if (stufe(s) && !stufe(vor)) s.classList.add('tap-nach-video');
       });
+      // Nahtlos: der erste Schritt einer nachrückenden Bühne setzt knapp
+      // nach dem Ausblenden des Alten ein (CSS tap-eintritt).
+      const eintritt = szenen.flatMap((s) =>
+        s.matches('.tap-nachruecken, .tap-nach-video')
+          ? [...s.querySelectorAll('[data-tap-schritt]')].slice(0, Number(s.dataset.tapScrubStart || 0))
+          : [],
+      );
+      eintritt.forEach((w) => w.classList.add('tap-eintritt'));
       aufraeumen.push(() => {
         el.classList.remove('tap-kette');
         szenen.forEach((s) =>
           s.classList.remove('tap-nachruecken', 'tap-nach-buehne', 'tap-nach-video', 'tap-aus'),
         );
+        eintritt.forEach((w) => w.classList.remove('tap-eintritt'));
       });
     }
     const pruefeEin = () => {
@@ -261,17 +284,23 @@ function useTapFilm(wurzel, szene) {
       for (const s of buehnen) {
         const oben = s.b.getBoundingClientRect().top;
         const vorab = !still && oben > 1 && oben < window.innerHeight && frueh(s);
-        const n = still
+        let n = still
           ? s.schritte.length
           : oben > 1
             ? vorab
               ? s.start
               : 0
             : Math.min(s.schritte.length, s.start + Math.floor(-oben / s.px));
+        // Kette, nahtlos: Neues erst, wenn das Alte weicht (tap-aus) oder aus
+        // dem Bild ist; hält der Stopper das Video, wartet die Bühne.
+        if (kette && n > 0 && s.vor && !s.vor.classList.contains('tap-aus') && unterkante(s.vor) > 0) {
+          n = 0;
+        }
         // Kette: einen Schritt nach dem letzten (Ruhe eingerechnet) weicht die
-        // Bühne; die letzte Bühne (Schluss mit Knopf) bleibt.
+        // Bühne, im selben Moment steht die nächste; die letzte Bühne (Schluss
+        // mit Knopf) bleibt. Toleranz 1 px wie beim Stillstand (oben <= 1).
         if (kette && !s.ende) {
-          const aus = oben <= 1 && Math.floor(-oben / s.px) >= s.zahl + 1;
+          const aus = oben <= 1 && Math.floor((1 - oben) / s.px) >= s.zahl + 1;
           if (aus !== s.aus) {
             s.b.classList.toggle('tap-aus', aus);
             s.aus = aus;
