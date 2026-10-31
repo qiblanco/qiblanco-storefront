@@ -620,22 +620,26 @@
   transform: scaleX(-1);
 }
 
-/* Die gewählte Nummer als Gravur: in den Stahl gelasert, also dunkler Grund
-   der Vertiefung (multipliziert mit dem Schliff des Bandes, so bleibt die
-   Struktur sichtbar), oben eine Schattenkante, unten eine Lichtkante. Größe
-   folgt der Bildbreite. */
+/* Die gewählte Nummer als Gravur, so groß und so hell wie die echte Gravur
+   „Qi Alpha ®“ auf dem Galeriefoto (Christian 30.10.2026: „Gleiche Größe wie
+   bei Qi Alpha und gleiche Frabe“). Gemessen an qi-alpha-05-seite.jpg gegen
+   die retuschierte Fläche: Versalhöhe 45 px der 2048-px-Datei, der Ausschnitt
+   hier ist 1728 px breit, also Versalhöhe 2,6 % der Bildbreite = 3,62 cqw
+   Open Sans (Versal 0,714 em). Strichstärke 500 wie im Foto. Farbe: die
+   Tinte ist im Foto rgb(123 127 130), 0,72/0,74/0,77 des Stahls darunter
+   (blaugrau, flach, ohne Kanten). Multipliziert mit dem Schliff des Bandes
+   trifft rgb(174 181 188) beides: das Verhältnis (±0,03) und, weil die
+   Nummer auf dem helleren Teil des Bandes steht, auch den Farbton selbst.
+   Größe folgt der Bildbreite. */
 .tas-gravur {
   position: absolute;
   transform: translate(-50%, -50%);
   white-space: nowrap;
-  font-size: 4.5cqw;
-  font-weight: 600;
+  font-size: 3.62cqw;
+  font-weight: 500;
   letter-spacing: 0.02em;
-  color: rgb(74 80 88 / 0.82);
+  color: rgb(174 181 188);
   mix-blend-mode: multiply;
-  text-shadow:
-    0 0.08em 0 rgb(255 255 255 / 0.5),
-    0 -0.06em 0 rgb(0 0 0 / 0.35);
   pointer-events: none;
 }
 
