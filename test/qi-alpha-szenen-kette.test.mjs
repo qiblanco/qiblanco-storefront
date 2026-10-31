@@ -86,6 +86,8 @@ test('Nahtlos: Neues erst, wenn das Alte weicht; erst weg, dann direkt neu', () 
   assert.match(P, /eintritt\.forEach\(\(w\) => w\.classList\.remove\('tap-eintritt'\)\)/);
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-scrub\.tap-aus > \.tap-scrub-bild,\s*\.tap-js\.tap-kette \.tap-film\.tap-aus \{\s*opacity: 0;\s*transition: opacity 200ms ease;/);
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-eintritt\[data-tap-schritt\]\.tap-an \{\s*transition-delay: 180ms;/);
+  // Wörterbuch-Tafel: kleiner Rand oben/unten, sonst liegt die Quelle auf kurzen Handys unter dem Rand.
+  assert.match(CSS, /\.tap-wb-bild \{\s*padding: var\(--tap-s-2\) var\(--tap-s-3\);/);
 });
 
 test('Kaufleiste: die Schluss-Bühne zählt erst ab ihrem Stillstand', () => {
