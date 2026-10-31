@@ -303,8 +303,11 @@ test('jede Sticky-Kaufleiste trägt data-qb-chat-weicht (s03-r2, Christian 26.10
     }
   };
   lauf(wurzel);
+  // Zweites Merkmal (s03-r5, 31.10.): data-section="…sticky-kaufknopf" am
+  // eigenen Element. Die Apple-Fassung von LP B blendet ihren festen Knopf per
+  // `szs-fest--sichtbar` ein und fiel durch den Klassennamen-Zaun.
   const leisten = dateien.filter((p) =>
-    /(-sticky|qb-kaufleiste)--sichtbar/.test(readFileSync(p, 'utf8')));
+    /(-sticky|qb-kaufleiste)--sichtbar|data-section="[^"]*sticky-kaufknopf"/.test(readFileSync(p, 'utf8')));
   assert.ok(leisten.length >= 4, `zu wenige Leisten gefunden: ${leisten.length}`);
   const ohne = leisten.filter((p) => !readFileSync(p, 'utf8').includes("data-qb-chat-weicht={sichtbar ? '' : undefined}"));
   assert.deepEqual(ohne, []);
