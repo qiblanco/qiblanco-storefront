@@ -1,0 +1,370 @@
+/*
+ * SO WIRKT ER: Technik in vier Schritten mit „Mehr“ (Auftrag 20261030-update-
+ * shop-startseite-detailseite-technologie-wissen-mehr-knopf). Lädt nur mit
+ * der Komponente (components/apple-seite/produkt-details/TechnikKette.jsx).
+ * Nur --as-*-Tokens aus apple-seite.css, keine freien Werte (BAUKASTEN §2):
+ * keine neue Schriftstufe, kein zweites Gold, EIN Radius (--as-radius).
+ * Eigenes Blatt statt produkt-details-apple.css, damit qihome-details und
+ * qibracelet-details von dieser Änderung unberührt bleiben.
+ */
+
+/* ---- Kopf und Kette ------------------------------------------------------- */
+.tk-kopf > .as-etikett,
+.tk-kopf > .as-h2 {
+  max-width: var(--as-text-breite);
+}
+.tk-kette {
+  list-style: none;
+  margin: var(--as-s-4) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--as-s-1);
+}
+.tk-kette-glied {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--as-s-1);
+  min-height: var(--as-tippziel);
+  padding: var(--as-s-2) var(--as-s-1);
+  border-radius: var(--as-radius);
+  background: var(--as-flaeche);
+  font-size: var(--as-fs-2);
+  font-weight: 600;
+  color: var(--as-tinte);
+  text-decoration: none;
+  transition: background var(--as-dauer) ease;
+}
+.tk-kette-glied:hover,
+.tk-kette-glied:focus-visible {
+  background: var(--as-linie);
+}
+.tk-kette-nr {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--as-s-4);
+  height: var(--as-s-4);
+  border-radius: 50%;
+  border: var(--as-strich-stark) solid var(--as-gold);
+  font-size: var(--as-fs-2);
+  color: var(--as-tinte);
+}
+@media (min-width: 750px) {
+  .tk-kette {
+    gap: var(--as-s-2);
+  }
+  .tk-kette-glied {
+    flex-direction: row;
+    font-size: var(--as-fs-3);
+  }
+}
+
+/* ---- Schritte: Kopf, Medium, Rumpf --------------------------------------- */
+.tk-schritte {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tk-schritt {
+  display: grid;
+  grid-template-areas:
+    'kopf'
+    'medium'
+    'rumpf';
+  gap: var(--as-s-3);
+  padding-top: var(--as-s-8);
+  scroll-margin-top: var(--as-s-12);
+}
+.tk-schritt-kopf {
+  grid-area: kopf;
+}
+.tk-medium {
+  grid-area: medium;
+}
+.tk-schritt-rumpf {
+  grid-area: rumpf;
+}
+@media (min-width: 1024px) {
+  .tk-schritt {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'kopf medium'
+      'rumpf medium';
+    column-gap: var(--as-s-8);
+    row-gap: 0;
+    padding-top: var(--as-s-12);
+    align-items: start;
+  }
+  .tk-schritt--rechts {
+    grid-template-areas:
+      'medium kopf'
+      'medium rumpf';
+  }
+}
+.tk-h3 {
+  margin: 0;
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+@media (min-width: 750px) {
+  .tk-h3 {
+    font-size: var(--as-fs-6);
+  }
+}
+.tk-schritt-rumpf > .tk-kurz:first-child {
+  margin-top: 0;
+}
+@media (min-width: 1024px) {
+  .tk-schritt-rumpf {
+    padding-top: var(--as-s-2);
+  }
+}
+/* Quellen kleiner als der Fließtext (die Haus-Grundregel setzt li auf
+   --as-fs-3). --as-fs-2 statt --as-fs-1: die Seite trägt sonst eine zehnte
+   Schriftgröße (design-gate, Soll <= 9). */
+.tk .as-quellen li {
+  font-size: var(--as-fs-2);
+}
+
+/* ---- Medium: EIN Radius, ruhiger Grund ----------------------------------- */
+/* Alle Rahmen auf --as-flaeche: ein dunkler Rahmen neben dem dunklen CTA-Band
+   wäre eine fünfte Hintergrundwelt (design-gate, Soll <= 4). */
+.tk-rahmen {
+  overflow: hidden;
+  border-radius: var(--as-radius);
+  background: var(--as-flaeche);
+}
+.tk-film,
+.tk-bild,
+.tk-animation {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* Das Gitterchip-Foto gibt es nur mit 1024 px. Breiter als 560 px wäre es
+   bei doppelter Pixeldichte unscharf (hb-formate bild-aufloesung: Quelle
+   >= 0,9 x Anzeige x 2). Im Querformat und auf dem Tablet steht es deshalb
+   mittig auf der ruhigen Fläche, statt hochgerechnet zu werden. */
+.tk-rahmen--bild .tk-bild {
+  max-inline-size: 560px;
+  margin-inline: auto;
+}
+.tk-legende {
+  margin: var(--as-s-1) 0 0;
+  font-size: var(--as-fs-2);
+  line-height: 1.5;
+  color: var(--as-grau);
+}
+
+/* ---- Animation: Wasserschicht an der Zelle ------------------------------- */
+.tk-zelle {
+  fill: var(--as-grau);
+}
+.tk-wabe {
+  fill: var(--as-gold);
+  fill-opacity: 0.12;
+  stroke: var(--as-gold);
+  stroke-width: var(--as-strich-stark);
+}
+.tk-minus rect,
+.tk-minus {
+  fill: var(--as-tinte);
+}
+.tk-plus rect {
+  fill: var(--as-grau);
+}
+.tk-teilchen circle {
+  fill: var(--as-grau);
+  fill-opacity: 0.5;
+}
+.tk-zone {
+  transform-box: view-box;
+  transform-origin: 48px 180px;
+  animation: tk-zone-waechst 7s ease-in-out infinite;
+}
+.tk-teilchen {
+  animation: tk-teilchen-weichen 7s ease-in-out infinite;
+}
+.tk-plus {
+  animation: tk-plus-weichen 7s ease-in-out infinite;
+}
+@keyframes tk-zone-waechst {
+  0% {
+    transform: scaleX(0.15);
+    opacity: 0.4;
+  }
+  45%,
+  85% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(0.15);
+    opacity: 0.4;
+  }
+}
+@keyframes tk-teilchen-weichen {
+  0% {
+    transform: translateX(-120px);
+  }
+  45%,
+  85% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-120px);
+  }
+}
+@keyframes tk-plus-weichen {
+  0% {
+    transform: translateX(-112px);
+  }
+  45%,
+  85% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-112px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tk-zone,
+  .tk-teilchen,
+  .tk-plus {
+    animation: none;
+  }
+}
+
+/* ---- Zahlen: ohne und mit, als Balken ------------------------------------ */
+.tk-zahlen {
+  list-style: none;
+  margin: var(--as-s-3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--as-s-2);
+}
+.tk-zahl {
+  padding: var(--as-s-3);
+  border-radius: var(--as-radius);
+  background: var(--as-flaeche);
+}
+.tk-zahl-titel {
+  margin: 0;
+  font-weight: 600;
+  color: var(--as-tinte);
+}
+.tk-zahl-werte {
+  margin: var(--as-s-2) 0 0;
+  display: grid;
+  gap: var(--as-s-1);
+}
+.tk-zahl-zeile {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  column-gap: var(--as-s-2);
+  row-gap: var(--as-s-1);
+}
+.tk-zahl-zeile dt {
+  font-size: var(--as-fs-2);
+  color: var(--as-grau);
+}
+.tk-zahl-zeile dd {
+  margin: 0;
+  font-size: var(--as-fs-4);
+  font-weight: 600;
+  color: var(--as-grau);
+}
+.tk-zahl-zeile--mit dt,
+.tk-zahl-zeile--mit dd {
+  color: var(--as-tinte);
+}
+.tk-balken {
+  grid-column: 1 / -1;
+  display: block;
+  height: var(--as-s-1);
+  border-radius: var(--as-s-1);
+  background: linear-gradient(
+    to right,
+    var(--as-linie) var(--tk-wert),
+    transparent var(--tk-wert)
+  );
+}
+.tk-zahl-zeile--mit .tk-balken {
+  background: linear-gradient(
+    to right,
+    var(--as-gold) var(--tk-wert),
+    transparent var(--tk-wert)
+  );
+}
+.tk-zahl-quelle {
+  margin: var(--as-s-2) 0 0;
+  font-size: var(--as-fs-2);
+  color: var(--as-grau);
+}
+.tk-quelle-link {
+  color: var(--as-grau);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---- Mehr: Klappe wie die Fragen, Text im Server-HTML -------------------- */
+.tk-mehr {
+  margin-top: var(--as-s-3);
+  border-top: var(--as-strich) solid var(--as-linie);
+  border-bottom: var(--as-strich) solid var(--as-linie);
+}
+.tk-mehr-knopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--as-s-2);
+  min-height: var(--as-tippziel);
+  padding: var(--as-s-2) 0;
+  font-weight: 600;
+  color: var(--as-tinte);
+  cursor: pointer;
+  list-style: none;
+}
+.tk-mehr-knopf::-webkit-details-marker {
+  display: none;
+}
+.tk-mehr[open] .as-faq-zeichen::after {
+  transform: rotate(0deg);
+}
+.tk-mehr-inhalt {
+  padding-bottom: var(--as-s-3);
+}
+.tk-mehr-inhalt > .as-absatz:first-child {
+  margin-top: 0;
+}
+.tk-liste-titel {
+  margin: var(--as-s-3) 0 0;
+  font-weight: 600;
+  color: var(--as-tinte);
+}
+.tk-liste {
+  margin: var(--as-s-1) 0 0;
+}
+.tk-liste-punkt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--as-s-2);
+  padding: var(--as-s-1) 0;
+  border-bottom: var(--as-strich) solid var(--as-linie);
+}
+.tk-liste-punkt dt {
+  font-weight: 600;
+  color: var(--as-tinte);
+}
+.tk-liste-punkt dd {
+  margin: 0;
+  color: var(--as-grau);
+}
