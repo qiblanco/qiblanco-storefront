@@ -7,6 +7,7 @@ import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {ProduktDetailsApple} from '~/components/apple-seite/produkt-details/ProduktDetailsApple';
 import {
   QIONE_2_PRO_DETAILS,
+  TECHNIK,
   VIDEO,
 } from '~/components/apple-seite/produkt-details/qione-2-pro-details-daten';
 import {startseiteProdukte} from '~/components/apple-seite/startseite/startseite-preise';
@@ -95,8 +96,8 @@ export const meta = () => {
   // k\u00FCnftig etwas \u00E4ndert, braucht also einen frischen Design-Beleg --
   // das ist kein Hindernis mehr, sondern der Normalfall.
   const BESCHREIBUNG =
-    'QiOne\u00AE 2 Pro im Detail: Gitterchip®, Zelluntersuchungen und ' +
-    'Expertenmeinungen zum Nachlesen. Bestellen kannst du ihn auf der Produktseite.';
+    'QiOne\u00AE 2 Pro im Detail: wie der Gitterchip® aus 750er Gold Wasser ' +
+    'ordnet, was kohärentes Wasser im Körper macht und was fünf Studien zeigen.';
   const titel = 'QiOne\u00AE 2 Pro im Detail | Qi Blanco';
   return [
     {title: titel},
@@ -145,6 +146,7 @@ export default function QiOne2ProDetailsPage() {
         seite="qione-2-pro-details"
         sektionen={QIONE_2_PRO_DETAILS}
         video={VIDEO}
+        technik={TECHNIK}
         produkte={produkte}
       />
     );

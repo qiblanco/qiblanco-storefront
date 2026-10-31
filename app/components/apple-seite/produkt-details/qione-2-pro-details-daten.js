@@ -12,6 +12,9 @@
  * keine Nutzerzahl (Christian 29.10.2026).
  */
 
+import {PRODUKT_VIDEOS, WIE_FUNKTIONIERT_PFAD} from '../../../data/produkt-videos.js';
+import {wasserstruktur} from '../../../data/kohaerente-wasserstruktur.js';
+
 const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750';
 
 export const KAUFSEITE = '/products/qione-2-pro';
@@ -50,6 +53,178 @@ export const VIDEO = Object.freeze({
 export const VIDEO_PLATZ = Object.freeze({art: 'video'});
 export const MIKROSKOP_PLATZ = Object.freeze({art: 'mikroskop'});
 
+/*
+ * SO WIRKT ER: die Technik in vier Schritten, je kurz und mit „Mehr erfahren“
+ * (Auftrag 20261030-update-shop-startseite-detailseite-technologie-wissen-
+ * mehr-knopf). Anna 30.10.2026: „Es ist zu wenig Detailwissen für die
+ * Technologien … Da muss ein Button kommen für mehr.“ Christian, selber Abend:
+ * „von statisches Feld erzeugt kohärentes Wasser und dann unten drunter, was
+ * macht kohärentes Wasser im Körper?“ Die Reihenfolge der Schritte ist seine.
+ *
+ * TEXTE: Christians Wortlaut, wo es ihn gibt, wortgleich (Gitterchip,
+ * 16.09.2026 Qi-Master-Spalte; Superzustand und rote Blutkörperchen,
+ * 20.09.2026 Wirkprinzip; „Fünf publizierte Studien …“, 20.09.2026
+ * Kopfabsatz). „GitterChip™“ steht dort als Gitterchip® (Christian
+ * 28.10.2026). Alles andere aus dem Bestand mit Fundstelle: Gitterchip-
+ * Seite, Info-Seite kohärentes Wasser, die fünf Dartsch-Studien
+ * (app/data/studien/e000*.json). Geprüft mit stimme check, stil-pruefe,
+ * Sprach- und Menschlichkeits-Prüfung und dem PR-Chef (RESULT des Jobs).
+ *
+ * „Mehr“ ist ein <details>: der ausführliche Text steht im Server-HTML (GEO
+ * R2), ohne JavaScript bedienbar. Jeder Schritt trägt ein Bild, ein Video
+ * oder eine Animation (`medium`). Die Probe am Kundenrand liest
+ * [data-tk-schritt], [data-tk-mehr] und [data-tk-medium].
+ */
+const VIDEO_GITTERCHIP = PRODUKT_VIDEOS['qione-2-pro'].videos.find((v) => v.id === 'gitterchip-in-aktion');
+const VIDEO_ZELLEN = PRODUKT_VIDEOS['qione-2-pro'].videos.find((v) => v.id === 'zellen-qione-2-pro');
+
+/** Platzhalter in der Sektionsliste (eigenes Kind, kein Baukasten-Typ). */
+export const TECHNIK_PLATZ = Object.freeze({art: 'technik'});
+
+export const TECHNIK = Object.freeze({
+  etikett: 'So wirkt er',
+  titel: 'Vom Gitterchip® bis in deine Zellen.',
+  schritte: [
+    {
+      id: 'feld',
+      kurzname: 'Feld',
+      etikett: 'Schritt 1 · Das statische Feld',
+      titel: 'Ein Gitter aus Gold, das ohne Strom arbeitet.',
+      kurz: [
+        'Im Kern sitzt der Gitterchip® 2.0: eine Goldlegierung, deren Atome in einer einmalig definierten Ordnung stehen. Kohärent wirkend und ihre Umgebung aktiv prägend.',
+        // Christian 30.10.2026 wortgleich (Gespräch mit Anna, Auftrag dieses Umbaus).
+        'Das statische Feld erzeugt kohärentes Wasser.',
+      ],
+      medium: {art: 'bild', bild: BILD.gitterchip},
+      mehr: {
+        knopf: 'Mehr zum Gitterchip®',
+        absaetze: ['Der Gitterchip® braucht weder Akku noch Strom.'],
+        // Grundlage des statischen Felds: Materialbeschreibung in e0001 (Methodenteil).
+        quellen: [
+          'Dartsch, P. C. (2021): QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation. Japan Journal of Medicine. Darin beschrieben: ein Gitterchip® aus einer Goldlegierung, der ein statisches Feld erzeugt.',
+        ],
+        liste: {
+          titel: 'Was in ihm steckt',
+          punkte: [
+            {titel: 'Gitterchip® 2.0', text: '750er Goldlegierung, von Hand fertiggestellt.'},
+            {titel: 'Gehäuse', text: 'Chirurgenstahl, wasserfest in Sauna, Meer und Chlor.'},
+            {titel: 'Herkunft', text: 'Entwickelt und gefertigt in Deutschland.'},
+          ],
+        },
+        link: {text: 'Wie funktioniert der Gitterchip® im QiOne?', href: WIE_FUNKTIONIERT_PFAD},
+      },
+    },
+    {
+      id: 'wasser',
+      kurzname: 'Wasser',
+      etikett: 'Schritt 2 · Kohärentes Wasser',
+      titel: 'Aus normalem Wasser wird geordnetes Wasser.',
+      kurz: [
+        'Der Gitterchip® ermöglicht es den umliegenden Wassermolekülen, in den kohärenten Zustand überzugehen – den Superzustand des Wassers. Aus normalem Wasser wird energetisch hoch aufgeladenes Wasser, mit deutlich mehr Elektronenvolt.',
+      ],
+      medium: {
+        art: 'video',
+        mp4: VIDEO_GITTERCHIP.mp4,
+        poster: VIDEO_GITTERCHIP.poster,
+        breite: 1920,
+        hoehe: 1080,
+        dauer_s: VIDEO_GITTERCHIP.dauer_s,
+        legende: 'Über dem Gitterchip® ordnen sich Wassermoleküle zu Sechsecken.',
+      },
+      mehr: {
+        knopf: 'Was ist kohärentes Wasser?',
+        absaetze: [
+          'Kohärent heißt: im Gleichtakt. Das beschreibt ein Modell von Prof. Giuliano Preparata und Prof. Emilio Del Giudice. Darin schwingen rund sechs Millionen Wassermoleküle zusammen, wie ein Chor im selben Takt.',
+          'Dr. Ulrich Warnke beschreibt in seinem Buch „Bionisches Wasser“, wie Wasser Energie aufnimmt und sich dabei zu Sechsecken ordnet.',
+        ],
+        quellen: wasserstruktur.quelle.filter((q) => !q.startsWith('Pollack')),
+        link: {text: 'Im Video erklärt Christian die kohärente Struktur, 8 Minuten.', href: 'https://www.youtube.com/watch?v=6rNuQoIrdZQ', extern: true},
+      },
+    },
+    {
+      id: 'zelle',
+      kurzname: 'Körper',
+      etikett: 'Schritt 3 · Im Körper',
+      titel: 'Was macht kohärentes Wasser im Körper?',
+      kurz: [
+        'Der QiOne® 2 Pro strukturiert dort Wasser, wo es darauf ankommt. In deinen Zellen. Das ist die Grundlage für Zellprozesse im Körper: Sie verfügen über mehr Energie, etwa für die Verformung der roten Blutkörperchen, die sich falten müssen, um die engen Kapillaren zu passieren.',
+      ],
+      medium: {
+        art: 'animation',
+        legende: 'An der Zelle wächst eine geordnete Wasserschicht und schiebt gelöste Teilchen hinaus. Nach Prof. Dr. Pollack.',
+      },
+      mehr: {
+        knopf: 'Was passiert an der Zelle?',
+        absaetze: [
+          'Jede Zelle ist von Wasser umgeben und besteht selbst zum größten Teil daraus. Prof. Dr. Gerald Pollack erforscht an der University of Washington, was Wasser an solchen Oberflächen tut.',
+          'Er hat gemessen: An wasserliebenden Oberflächen bildet sich eine Schicht, die gelöste Teilchen hinausschiebt. Er beschreibt sie als sechseckige Schichten und nennt sie Ausschlusszone, kurz EZ. Prof. Dr. Pollack nennt sie die vierte Phase des Wassers, neben fest, flüssig und gasförmig.',
+          'Er vergleicht sie mit einer Batterie: innen negativ geladen, davor positiv, und Licht lädt sie auf.',
+        ],
+        quellen: wasserstruktur.quelle.filter((q) => q.startsWith('Pollack')),
+        link: {text: 'Was ist kohärentes Wasser?', href: '/pages/was-ist-kohaerentes-wasser'},
+      },
+    },
+    {
+      id: 'forschung',
+      kurzname: 'Forschung',
+      etikett: 'Schritt 4 · Was die Forschung zeigt',
+      titel: 'Was Zellen im Labor unter Strahlung zeigen.',
+      kurz: [
+        'Prof. Dr. Peter C. Dartsch hat den QiOne® 2 Pro an menschlichen Zellen getestet, unter E-Smog, also der unsichtbaren Strahlung von Handy und WLAN. Im Labor zeigten die Zellen mit dem QiOne® 2 Pro deutlich bessere Werte.',
+      ],
+      // Werte wie die Gitterchip-Seite (app/data/gitterchip-seite.js, je mit
+      // Fundstelle): e0001 laienSummary 60,5/84,7 % der unbestrahlten
+      // Kontrolle; e0002 Abb. 5 TEER relativ zur Kontrolle 6,0/72,6 %;
+      // e0002 Abb. 3 geschlossene Fläche 56,3/85,5 %.
+      zahlen: [
+        {
+          titel: 'Abwehrleistung von Immunzellen unter Handystrahlung',
+          einheit: 'im Vergleich zu Zellen ohne Strahlung',
+          ohne: '60,5 %',
+          mit: '84,7 %',
+          quelle: {text: 'Dartsch, Japan Journal of Medicine 2021', href: '/pages/studie-immunzellen'},
+        },
+        {
+          titel: 'Wie dicht die Zellschicht unter E-Smog hält',
+          einheit: 'im Vergleich zu Zellen ohne Strahlung',
+          ohne: '6,0 %',
+          mit: '72,6 %',
+          quelle: {text: 'Dartsch, Applied Cell Biology 2021', href: '/pages/studie-darmbarriere'},
+        },
+        {
+          titel: 'Wie weit Zellen eine künstlich gesetzte Lücke unter E-Smog wieder schließen',
+          einheit: 'geschlossene Fläche',
+          ohne: '56,3 %',
+          mit: '85,5 %',
+          quelle: {text: 'Dartsch, Applied Cell Biology 2021', href: '/pages/studie-darmbarriere'},
+        },
+      ],
+      medium: {
+        art: 'video',
+        mp4: VIDEO_ZELLEN.mp4,
+        poster: VIDEO_ZELLEN.poster,
+        breite: 1080,
+        hoehe: 1080,
+        dauer_s: VIDEO_ZELLEN.dauer_s,
+        legende: 'Darmzellen unter E-Smog im Mikroskop: oben ohne, unten mit der Gitterchip®-Technik.',
+      },
+      mehr: {
+        knopf: 'Mehr zu den fünf Studien',
+        absaetze: [
+          'Fünf publizierte Studien – so gut untersucht ist in diesem Bereich sonst kein Produkt. Mit der Gitterchip®-Technik hat Prof. Dr. Dartsch auch Leberzellen unter oxidativem Stress gemessen, einer Art Rost in der Zelle, und Nervenzellen neben dem QiHome® Air.',
+          'Die fünfte Publikation wertet 171 Erfahrungsberichte von Menschen aus, die den QiOne® 2 Pro oder das QiBracelet® tragen. Am häufigsten erzählten sie von mehr Ruhe und Gelassenheit, von tieferem Schlaf und von mehr Energie.',
+        ],
+        quellen: [
+          'Dartsch, P. C. (2024): Protective Effect of the QiBracelet® Against Oxidative Stress. Applied Cell Biology.',
+          'Dartsch, P. C. (2026): Beneficial Effect of the QiHome® Air on Cultured Neuronal and Inflammation-Mediating Cells. Neurodegenerative Diseases: Current Research.',
+          'Dartsch, P. C. (2024): QTA Gitterchip Technology: Relationship Between Individual User Observations and Experimental Preclinical Data. Advances in Bioengineering & Biomedical Science Research.',
+        ],
+        link: {text: 'Alle fünf Studien', href: '/pages/studien'},
+      },
+    },
+  ],
+});
+
 export const QIONE_2_PRO_DETAILS = Object.freeze([
   {
     art: 'hero',
@@ -59,6 +234,7 @@ export const QIONE_2_PRO_DETAILS = Object.freeze([
     bild: BILD.qione,
     cta: {text: 'Jetzt kaufen', href: KAUFSEITE},
   },
+  TECHNIK_PLATZ,
   {
     art: 'fakten',
     titel: 'Gebaut für ein ganzes Leben.',
@@ -69,28 +245,6 @@ export const QIONE_2_PRO_DETAILS = Object.freeze([
     ],
   },
   VIDEO_PLATZ,
-  {
-    art: 'kapitel',
-    etikett: 'Technologie',
-    titel: 'Das Herz: der Gitterchip® 2.0.',
-    absaetze: [
-      'Im Kern sitzt der Gitterchip® 2.0 aus einer eigenen 750er Goldlegierung. Seine Atome stehen in fester Ordnung.',
-      'Diese Ordnung erzeugt ein statisches Feld. In ihm bilden Wassermoleküle mehr Wasserstoffbrücken. So entsteht kohärentes Wasser, in der Forschung EZ-Wasser genannt.',
-      'Das geschieht in deinem Körper, solange du ihn trägst. Ohne Akku und ohne Elektronik.',
-    ],
-    bild: BILD.gitterchip,
-  },
-  {
-    art: 'band',
-    etikett: 'Wissenschaft',
-    titel: 'Im Labor bleiben Immunzellen stark.',
-    text: [
-      'Prof. Dr. Peter C. Dartsch hat menschliche Immunzellen im Labor vier Stunden lang mit Handystrahlung belastet.',
-      'Ungeschützt fiel ihre Abwehrleistung auf 60,5 Prozent. Mit dem QiOne® 2 Pro hielt sie 84,7 Prozent.',
-    ],
-    bild: BILD.hand,
-    cta: {text: 'Zur Studie', href: '/pages/studie-immunzellen'},
-  },
   {
     art: 'stimmen',
     titel: 'Was Menschen sagen, die damit arbeiten.',
