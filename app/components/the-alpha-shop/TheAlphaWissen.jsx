@@ -168,7 +168,7 @@ function WissensBild({id, bild}) {
     <figure className="taw-bild taw-anim">
       <img
         src={`${src}&width=1024`}
-        srcSet={`${src}&width=512 512w, ${src}&width=1024 1024w`}
+        srcSet={`${src}&width=512 512w, ${src}&width=1024 1024w, ${src}&width=1536 1536w, ${src}&width=2048 2048w`}
         sizes="(min-width: 1024px) 512px, calc(100vw - 32px)"
         alt={poster?.alt || bild.alt}
         width={1024}

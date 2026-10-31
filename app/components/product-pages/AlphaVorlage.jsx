@@ -31,9 +31,13 @@ export {kettenKacheln};
 
 /* Galerie-Hauptbild: Breitenstufen bis zum CDN-Master (2048/2056 px), damit
    Tablets mit dpr 2 nicht hochskalieren (Gate 12 bild-aufloesung). sizes folgt
-   der im Testserver gemessenen Flaeche je Format, nicht der Vermutung. */
+   der im Testserver gemessenen Flaeche je Format (31.10.2026: 328…868 px =
+   100vw - 32 unter 1024, 551 px bei 1024, 653 px ab 1232 = (1200 - 32 - 48)
+   * 7/12, Raster in the-alpha-produkt.css). Dieselbe Rechnung gilt fuer
+   AlphaVorlage.jsx und TheAlphaShop.jsx, beide stehen auf .tas-raster-seite. */
 const GALERIE_BREITEN = [600, 900, 1200, 1600, 2048];
-const GALERIE_SIZES = '(min-width: 1024px) 58vw, calc(100vw - 32px)';
+const GALERIE_SIZES =
+  '(min-width: 1232px) 654px, (min-width: 1024px) calc((100vw - 80px) * 0.584), calc(100vw - 32px)';
 
 /*
  * PRODUKT-KONFIGURATOR NACH DER QI-ALPHA-KAUFSEITE (Christian 27.10.2026, Z2:
