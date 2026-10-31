@@ -2,6 +2,9 @@ import {useLoaderData} from 'react-router';
 import {TieferSchlaf} from '~/components/campaign/TieferSchlaf';
 import lpVpStyles from '~/styles/qione-zellschutz.css?url';
 import tieferSchlafStyles from '~/styles/tiefer-schlaf.css?url';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {LpApple} from '~/components/apple-seite/lp/LpApple';
+import {SCHLAF_SEKTIONEN} from '~/components/apple-seite/lp/lp-schlaf';
 
 /**
  * Verkaufspsychologisch optimierte Ad-Landingpage /pages/tiefer-schlaf.
@@ -38,7 +41,15 @@ export const meta = () => [
  */
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
+/*
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s07-r3): der Schalter steht in app/lib/apple-seiten.js. An:
+ * die Apple-Fassung ohne Produktabfrage. Aus: die Seite unverändert (C,
+ * Rückweg: Befehl „zurück“ in homepage-bauer/bin/apple-seite).
+ */
 export async function loader({context}) {
+  const appleSeite = appleSeiteLaden(context, appleSeiteFuerPfad('/pages/tiefer-schlaf'));
+  if (appleSeite.an) return {appleSeite, products: []};
   let data;
   try {
     data = await context.storefront.query(CAMPAIGN_PRODUCTS_QUERY, {
@@ -53,10 +64,11 @@ export async function loader({context}) {
       '[preis-fallback] Campaign-Query fehlgeschlagen:',
       fehler?.message || fehler,
     );
-    return {products: []};
+    return {products: [], appleSeite};
   }
 
   return {
+    appleSeite,
     products: [data.qione, data.bracelet, data.qihome]
       .filter(Boolean)
       .map((product) => ({
@@ -67,7 +79,8 @@ export async function loader({context}) {
 }
 
 export default function TieferSchlafRoute() {
-  const {products} = useLoaderData();
+  const {products, appleSeite} = useLoaderData();
+  if (appleSeite?.an) return <LpApple seite={appleSeite.seite} sektionen={SCHLAF_SEKTIONEN} />;
   return <TieferSchlaf products={products} />;
 }
 
