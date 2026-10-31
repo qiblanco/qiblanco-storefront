@@ -407,6 +407,10 @@ export const AUSSCHLUSS_SEGMENTE = [
   '/assets',
   '/build',
   '/cdn',
+  // Potenzialtest (Grossjob 20261030-…-potenzialtest-ohne-werbebudget, s03):
+  // ein Mehrschritt-Formular. Eine Umleitung mitten im Test verlöre die
+  // Antworten; der Einstieg kommt aus LinkedIn und Christians Posts.
+  '/pages/potenzialtest',
   '/.well-known',
 ];
 

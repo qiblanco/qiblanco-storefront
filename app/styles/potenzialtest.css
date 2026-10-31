@@ -1,0 +1,530 @@
+/* ============================================================================
+   /pages/potenzialtest — „Wie viel Potenzial nutzt du wirklich?"
+   Grossjob 20261030-GROSSJOB-linkedin-christian-account-outreach-potenzialtest-
+   ohne-werbebudget, Segment s03 (VORSCHAU, nicht live).
+
+   Token-System nach design-meister web-soll.yaml v2 und dem .lp-a3-Rezept
+   (app/styles/schlaf-zellen-schutz.css): ruhige Papierfläche, warmes Neutral,
+   EIN Gold (das Haus-Gold --qb-akzent) NUR auf Handlung, 8-pt-Raster, EIN
+   Radius-Paar, EIN H2-Stil.
+
+   REGEL DIESER DATEI: alle Größen, Farben, Radien und Abstände kommen aus den
+   Tokens im .pt-Block. Außerhalb davon erfindet keine Regel freie Werte.
+   Scope .pt: nichts hier wirkt außerhalb der Testseite.
+   ========================================================================== */
+
+.pt {
+  /* Typo-Skala (Ratio 1.25, 7 Stufen) */
+  --pt-fs-1: 0.8125rem; /* 13 */
+  --pt-fs-2: 1rem; /* 16 Fließtext */
+  --pt-fs-3: 1.25rem; /* 20 Frage, Lead */
+  --pt-fs-4: 1.5625rem; /* 25 */
+  --pt-fs-h2: clamp(1.5625rem, 1.3rem + 1vw, 1.953rem); /* 25 -> 31, EIN H2-Stil */
+  --pt-fs-h1: clamp(1.953rem, 1.4rem + 2.4vw, 3.052rem); /* 31 -> 49 */
+  --pt-fs-zahl: clamp(3.052rem, 2.2rem + 3.6vw, 4.768rem); /* 49 -> 76 Index */
+
+  /* Abstand: 8-pt-Raster */
+  --pt-s1: 8px;
+  --pt-s2: 16px;
+  --pt-s3: 24px;
+  --pt-s4: 32px;
+  --pt-s6: 48px;
+  --pt-s8: 64px;
+  --pt-s12: 96px;
+
+  /* Farbe: warmes Neutral + EIN Akzent */
+  --pt-grund: #faf9f5;
+  --pt-flaeche: #f4f0e9;
+  --pt-weiss: #fff;
+  --pt-text: #2c2a26;
+  --pt-dunkel: #1a1a1a;
+  --pt-muted: #6b665d;
+  --pt-linie: rgba(44, 42, 38, 0.16);
+  --pt-akzent: var(--qb-akzent, #f2bf72); /* NUR Handlung */
+  --pt-akzent-tinte: var(--qb-akzent-tinte, #856828); /* Fokus, Link-Linie */
+  --pt-fehler: #a0281e;
+
+  /* Radien + Schatten: je zwei */
+  --pt-r1: 8px;
+  --pt-r2: 16px;
+  --pt-schatten: 0 1px 3px rgba(25, 23, 20, 0.07);
+
+  /* Layout */
+  --pt-breite: 40rem;
+
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+  font-size: var(--pt-fs-2);
+  line-height: 1.6;
+  color: var(--pt-text);
+  background: var(--pt-grund);
+  padding: var(--pt-s8) var(--pt-s3) var(--pt-s12);
+  min-height: 70vh;
+  /* Feste Shop-Kopfleiste: beim Schrittwechsel bleibt der Fortschritt sichtbar. */
+  scroll-margin-top: var(--pt-s12);
+}
+.pt * {
+  box-sizing: border-box;
+}
+.pt p,
+.pt li,
+.pt dd,
+.pt dt {
+  color: inherit;
+}
+
+.pt-test,
+.pt-ergebnis {
+  max-width: var(--pt-breite);
+  margin: 0 auto;
+}
+
+/* ─── Typografie ─────────────────────────────────────────────────────────── */
+.pt-kicker {
+  margin: 0 0 var(--pt-s2);
+  font-size: var(--pt-fs-1);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pt-muted);
+}
+.pt-h1 {
+  margin: 0 0 var(--pt-s3);
+  /* !important nur gegen reset.css (max-width 749px: h1 1.75rem !important),
+     sonst stuende mobil eine Stufe ausserhalb der Skala (28 statt 31). */
+  font-size: var(--pt-fs-h1) !important;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--pt-dunkel);
+}
+.pt-h2 {
+  margin: 0 0 var(--pt-s3);
+  font-size: var(--pt-fs-h2);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--pt-dunkel);
+}
+.pt-lead {
+  margin: 0 0 var(--pt-s4);
+  font-size: var(--pt-fs-3);
+  line-height: 1.5;
+}
+.pt-text {
+  margin: 0 0 var(--pt-s3);
+}
+.pt-hinweis {
+  margin: var(--pt-s4) 0 0;
+  font-size: var(--pt-fs-2);
+  color: var(--pt-muted);
+}
+.pt h1:focus,
+.pt h2:focus,
+.pt legend:focus {
+  outline: none;
+}
+.pt h1:focus-visible,
+.pt h2:focus-visible,
+.pt legend:focus-visible {
+  outline: 2px solid var(--pt-akzent-tinte);
+  outline-offset: var(--pt-s1);
+}
+
+/* ─── Einstieg ───────────────────────────────────────────────────────────── */
+.pt-eckdaten {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pt-s1) var(--pt-s3);
+  margin: 0 0 var(--pt-s4);
+  padding: 0;
+  list-style: none;
+  color: var(--pt-muted);
+}
+.pt-eckdaten li {
+  position: relative;
+  font-size: var(--pt-fs-3);
+  padding-left: var(--pt-s2);
+}
+.pt-eckdaten li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pt-muted);
+}
+
+/* ─── Fortschritt ────────────────────────────────────────────────────────── */
+.pt-stand {
+  margin: 0 0 var(--pt-s6);
+}
+.pt-stand__text {
+  margin: 0 0 var(--pt-s1);
+  font-size: var(--pt-fs-1);
+  font-weight: 600;
+  color: var(--pt-muted);
+}
+.pt-stand__bahn {
+  height: 4px;
+  border-radius: var(--pt-r1);
+  background: var(--pt-linie);
+  overflow: hidden;
+}
+.pt-stand__bahn span {
+  display: block;
+  height: 100%;
+  background: var(--pt-dunkel);
+  transition: width 0.3s ease;
+}
+
+/* ─── Frage + Antworten ──────────────────────────────────────────────────── */
+.pt-frage {
+  margin: 0 0 var(--pt-s4);
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.pt-frage__text {
+  display: block;
+  margin: 0 0 var(--pt-s3);
+  padding: 0;
+  font-size: var(--pt-fs-4);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--pt-dunkel);
+}
+.pt-frage__nr {
+  color: var(--pt-muted);
+  font-weight: 600;
+}
+.pt-optionen {
+  display: grid;
+  gap: var(--pt-s1);
+}
+.pt-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--pt-s2);
+  min-height: 56px;
+  padding: var(--pt-s2) var(--pt-s3);
+  border: 1px solid var(--pt-linie);
+  border-radius: var(--pt-r1);
+  background: var(--pt-weiss);
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.pt-option:hover {
+  border-color: var(--pt-muted);
+}
+.pt-option input {
+  appearance: none;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border: 2px solid var(--pt-muted);
+  border-radius: 50%;
+  background: var(--pt-weiss);
+  cursor: pointer;
+}
+.pt-option input:checked {
+  border-color: var(--pt-dunkel);
+  box-shadow: inset 0 0 0 5px var(--pt-weiss);
+  background: var(--pt-dunkel);
+}
+.pt-option:has(input:checked) {
+  border-color: var(--pt-dunkel);
+  box-shadow: inset 0 0 0 1px var(--pt-dunkel);
+  background: var(--pt-flaeche);
+}
+.pt-option input:focus-visible {
+  outline: 2px solid var(--pt-akzent-tinte);
+  outline-offset: 2px;
+}
+.pt-option__text {
+  font-size: var(--pt-fs-2);
+}
+@media (min-width: 640px) {
+  .pt-optionen--zwei {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ─── Navigation + Knöpfe ────────────────────────────────────────────────── */
+.pt-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pt-s2);
+  margin-top: var(--pt-s4);
+}
+.pt-aktion {
+  margin: 0 0 var(--pt-s3);
+}
+.pt-knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 var(--pt-s4);
+  border: 0;
+  border-radius: var(--pt-r1);
+  background: var(--pt-akzent);
+  color: var(--pt-dunkel);
+  font: inherit;
+  font-size: var(--pt-fs-2);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--pt-schatten);
+}
+.pt-knopf:hover {
+  filter: brightness(0.96);
+}
+.pt-knopf:focus-visible,
+.pt-zurueck:focus-visible,
+.pt-link:focus-visible {
+  outline: 2px solid var(--pt-akzent-tinte);
+  outline-offset: 2px;
+}
+.pt-knopf[disabled] {
+  cursor: progress;
+  opacity: 0.7;
+}
+.pt-knopf--leise {
+  margin-left: auto;
+  background: var(--pt-dunkel);
+  color: var(--pt-weiss);
+}
+.pt-zurueck {
+  min-height: 52px;
+  padding: 0 var(--pt-s1);
+  border: 0;
+  background: none;
+  color: var(--pt-text);
+  font: inherit;
+  font-size: var(--pt-fs-2);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.pt-link {
+  color: var(--pt-dunkel);
+  text-decoration: underline;
+  text-decoration-color: var(--pt-akzent-tinte);
+  text-underline-offset: 4px;
+}
+
+/* ─── Kontakt ────────────────────────────────────────────────────────────── */
+.pt-feld {
+  margin: 0 0 var(--pt-s3);
+}
+.pt-feld label {
+  display: block;
+  margin: 0 0 var(--pt-s1);
+  font-weight: 600;
+}
+.pt-feld__frei {
+  font-weight: 400;
+  color: var(--pt-muted);
+}
+.pt-feld input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 var(--pt-s2);
+  border: 1px solid var(--pt-muted);
+  border-radius: var(--pt-r1);
+  background: var(--pt-weiss);
+  color: var(--pt-text);
+  font: inherit;
+  font-size: var(--pt-fs-2);
+}
+.pt-feld input:focus-visible {
+  outline: 2px solid var(--pt-akzent-tinte);
+  outline-offset: 1px;
+}
+.pt-feld input[aria-invalid='true'] {
+  border-color: var(--pt-fehler);
+}
+.pt-einwilligung {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--pt-s2);
+  margin: 0 0 var(--pt-s2);
+  cursor: pointer;
+}
+.pt-einwilligung input {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--pt-dunkel);
+}
+.pt-fehler {
+  margin: var(--pt-s1) 0 0;
+  font-size: var(--pt-fs-2);
+  font-weight: 600;
+  color: var(--pt-fehler);
+}
+.pt-fehler--block {
+  margin-top: var(--pt-s3);
+  padding: var(--pt-s2);
+  border-left: 4px solid var(--pt-fehler);
+  border-radius: var(--pt-r1);
+  background: var(--pt-weiss);
+}
+.pt-honig {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ─── Ergebnis ───────────────────────────────────────────────────────────── */
+.pt-ergebnis__kopf {
+  padding-bottom: var(--pt-s6);
+  border-bottom: 1px solid var(--pt-linie);
+}
+.pt-ergebnis__teil {
+  padding: var(--pt-s6) 0;
+  border-bottom: 1px solid var(--pt-linie);
+}
+.pt-ergebnis__fuss {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.pt-index {
+  display: flex;
+  align-items: baseline;
+  gap: var(--pt-s2);
+  margin: 0 0 var(--pt-s3);
+}
+.pt-index__zahl {
+  font-size: var(--pt-fs-zahl);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--pt-dunkel);
+  font-variant-numeric: tabular-nums;
+}
+.pt-index__text {
+  font-size: var(--pt-fs-2);
+  color: var(--pt-muted);
+}
+.pt-balken {
+  display: grid;
+  gap: var(--pt-s3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pt-balken__zeile {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--pt-s1) var(--pt-s2);
+}
+.pt-balken__name {
+  font-weight: 600;
+}
+.pt-balken__wert {
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-muted);
+}
+.pt-balken__bahn {
+  grid-column: 1 / -1;
+  height: 8px;
+  border-radius: var(--pt-r1);
+  background: var(--pt-linie);
+  overflow: hidden;
+}
+.pt-balken__bahn span {
+  display: block;
+  height: 100%;
+  border-radius: var(--pt-r1);
+  background: var(--pt-dunkel);
+}
+.pt-hebel {
+  display: grid;
+  gap: var(--pt-s3);
+  margin: 0 0 var(--pt-s4);
+  padding: 0;
+  list-style: none;
+  counter-reset: hebel;
+}
+.pt-hebel li {
+  position: relative;
+  padding-left: var(--pt-s6);
+  counter-increment: hebel;
+  font-size: var(--pt-fs-2);
+}
+.pt-hebel li::before {
+  content: counter(hebel);
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pt-s4);
+  height: var(--pt-s4);
+  border: 1px solid var(--pt-dunkel);
+  border-radius: 50%;
+  font-size: var(--pt-fs-1);
+  font-weight: 700;
+  line-height: 1;
+}
+.pt-mail {
+  margin: 0;
+  padding: var(--pt-s2) var(--pt-s3);
+  border-radius: var(--pt-r1);
+  background: var(--pt-flaeche);
+}
+.pt-termin {
+  margin: var(--pt-s6) 0 0;
+  padding: var(--pt-s6) var(--pt-s4);
+  border: 0;
+  border-radius: var(--pt-r2);
+  background: var(--pt-flaeche);
+}
+.pt-grundlagen {
+  margin: 0 0 var(--pt-s3);
+}
+.pt-grundlagen summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.pt-grundlagen summary:focus-visible {
+  outline: 2px solid var(--pt-akzent-tinte);
+  outline-offset: 2px;
+}
+.pt-grundlagen dl {
+  display: grid;
+  gap: var(--pt-s2);
+  margin: var(--pt-s2) 0 0;
+}
+.pt-grundlagen dt {
+  font-weight: 600;
+}
+.pt-grundlagen dd {
+  margin: 0;
+  font-size: var(--pt-fs-1);
+  color: var(--pt-muted);
+}
+
+/* ─── Mobil zuerst: Desktop bekommt nur mehr Luft ────────────────────────── */
+@media (min-width: 768px) {
+  .pt {
+    padding: var(--pt-s12) var(--pt-s4);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pt-stand__bahn span,
+  .pt-option {
+    transition: none;
+  }
+}
