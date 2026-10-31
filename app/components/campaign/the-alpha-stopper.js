@@ -27,7 +27,8 @@
  *    hat, gleitet die Seite sanft zurück, bis die Mitte bei MITTE_ZURUECK
  *    steht.
  *  - Gesperrt ist nur VORWÄRTS (Mausrad nach unten, Finger nach oben,
- *    Bild-ab/Leertaste/Pfeil-ab/Ende). Zurück geht immer.
+ *    Bild-ab/Leertaste/Pfeil-ab/Ende) und nur an der Halte-Stelle. Zurück
+ *    geht immer, und von dort wieder vor bis zur Halte-Stelle.
  *  - Frei, sobald das Video SEKUNDEN Laufzeit hinter sich hat (gezählt wird
  *    abgespielte Videozeit, nicht die Wanduhr). Notausgänge: läuft das Video
  *    STILL_MS lang nicht weiter, obwohl es spielen sollte, oder ist DECKEL_MS
@@ -146,7 +147,9 @@ export function tapStopper(figur, video, f = window) {
       touchY0 = e.touches?.[0]?.clientY ?? null;
       return;
     }
-    if (istVorwaerts(e, touchY0) && e.cancelable) e.preventDefault();
+    // Vorwärts gesperrt nur AN der Halte-Stelle; wer zurück ist, darf bis
+    // zu ihr wieder vor (darüber hinaus fängt klemme ab).
+    if (istVorwaerts(e, touchY0) && f.scrollY >= haltY - 1 && e.cancelable) e.preventDefault();
   };
   // Was trotzdem nach unten durchrutscht (Schwung nach dem Loslassen,
   // Bildlaufleiste, ein nicht abbrechbarer Touch): zurück auf die
