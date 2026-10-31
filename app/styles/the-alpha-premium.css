@@ -351,10 +351,15 @@ html:has(main[data-film-seite]) {
   --tap-schritt: var(--tap-schritt-absatz);
 }
 
-/* Oben und unten nur ein kleiner Rand: die Tafel steht ohnehin mittig. Mit
-   48 px war sie in Chrome auf dem iPhone (690 px mit Leisten) höher als der
-   Bildschirm, und die Quelle „Google AI“ lag unter dem Rand (31.10.2026). */
 .tap-wb-bild {
+  padding: var(--tap-s-6) var(--tap-s-3);
+}
+
+/* Szenen-Fassung (A): oben und unten nur ein kleiner Rand, die Tafel steht
+   ohnehin mittig. Mit 48 px war sie in Chrome auf dem iPhone (690 px mit
+   Leisten) höher als der Bildschirm, und die Quelle „Google AI“ lag unter dem
+   Rand (31.10.2026). B und C bleiben unverändert. */
+.tap-seite[data-tap-fassung='szene'] .tap-wb-bild {
   padding: var(--tap-s-2) var(--tap-s-3);
 }
 
