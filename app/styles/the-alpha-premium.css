@@ -62,9 +62,13 @@
   /* Bild-Bühnen der Szenen-Kette (Karten, Seitenband; 31.10.2026): ein Bild
      bleibt einen Schritt, dann weicht es und das Nächste steht (nahtlos,
      Christian 31.10.: „wenn das Alte weg ist, dann kommt direkt das Neue“).
-     Ein Schritt bleibt am Handy unter einem Viertel Bildschirm (Kleinbild:
-     144 px). */
-  --tap-schritt-bild: 176px;
+     Ein Schritt bleibt am Handy unter einem Viertel Bildschirm, auch in
+     Chrome auf dem iPhone mit Leisten (690 px hoch: 0,23). EIN Wert für alle
+     Bildhöhen: eine Weiche nach der Fensterhöhe schaltete beim Ein- und
+     Ausklappen der Browserleisten den Takt um, die Bühnen verschoben sich und
+     die Kaufleiste blinkte (Echtgeräte-Probe iPhone Chrome: live 12 Stellen,
+     ohne Weiche 0). */
+  --tap-schritt-bild: 160px;
 
   --tap-nacht: #000000;
   --tap-weiss: #ffffff;
@@ -194,12 +198,6 @@ html:has(main[data-film-seite]) {
 /* Bild-Bühnen (Karten, Seitenband) gehen im Bild-Takt. */
 .tap-scrub-bilder {
   --tap-schritt: var(--tap-schritt-bild);
-}
-
-@media (max-height: 799px) {
-  .tap-seite {
-    --tap-schritt-bild: 144px;
-  }
 }
 
 /* ---------- Szenen-Kette (A, Christian 31.10.2026) ---------- */

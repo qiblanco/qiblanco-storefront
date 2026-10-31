@@ -71,9 +71,10 @@ test('Karten und Seitenband sind in der Szenen-Fassung eigene Bühnen', () => {
   const marke = P.slice(P.indexOf('export function TapMarke'), P.indexOf('export function TapEdition'));
   assert.match(marke, /className="tap-marke-buehne tap-scrub tap-scrub-bilder"/);
   assert.match(CSS, /\.tap-scrub-bilder \{\s*--tap-schritt: var\(--tap-schritt-bild\);/);
-  // Ein Bild-Schritt bleibt am Handy unter einem Viertel Bildschirm (844: 0,21; Kleinbild 144 px).
-  assert.match(CSS, /--tap-schritt-bild: 176px;/);
-  assert.match(CSS, /@media \(max-height: 799px\) \{\s*\.tap-seite \{\s*--tap-schritt-bild: 144px;/);
+  // Ein Bild-Schritt bleibt am Handy unter einem Viertel Bildschirm (844: 0,19; iPhone Chrome 690: 0,23).
+  assert.match(CSS, /--tap-schritt-bild: 160px;/);
+  // Keine Weiche nach der Fensterhöhe: sie schaltete mit den Browserleisten um (Kaufleiste blinkte).
+  assert.doesNotMatch(CSS, /@media \([a-z-]*height[^)]*\)/);
 });
 
 test('Nahtlos: Neues erst, wenn das Alte weicht; erst weg, dann direkt neu', () => {

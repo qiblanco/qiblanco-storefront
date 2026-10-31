@@ -101,8 +101,9 @@ import {
  *   (tap-aus): so liegt nie Neues über dem Alten, auch nicht, solange der
  *   Scrollstopper das Video hält (Desktop). Das Alte blendet kurz aus, der
  *   erste Schritt des Neuen setzt knapp danach ein (tap-eintritt). Bild-Takt
- *   176 px (Kleinbild 144 px): jede Strecke bis zum nächsten Neuen bleibt am
- *   Handy unter einem Viertel Bildschirm.
+ *   160 px für jede Bildhöhe (keine Weiche nach der Fensterhöhe: die schaltete
+ *   mit den Browserleisten um, und die Kaufleiste blinkte): jede Strecke bis
+ *   zum nächsten Neuen bleibt am Handy unter einem Viertel Bildschirm.
  */
 const TapFassung = createContext({szene: false});
 
