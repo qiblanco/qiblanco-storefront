@@ -126,7 +126,8 @@ test('Rad, Trackpad und Tasten: der Schritt über den Fensteranfang wird abgefan
 });
 
 test('Gehalten auch, wenn das Video noch lädt; startet es nicht, wird freigegeben', () => {
-  assert.equal(st.START_MS, 4000);
+  assert.equal(st.START_MS, 6000, 'Handy-Netz: Video kam nach 2,5 bis über 4 s voran');
+  assert.ok(st.START_MS < st.DECKEL_MS, 'Startfenster unter dem Deckel: keine Sackgasse');
   assert.equal(st.ABGELEHNT_MS, 1200);
   assert.ok(st.DECKEL_MS >= 8000);
   const src = lies('app/components/campaign/the-alpha-stopper.js');

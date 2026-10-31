@@ -67,7 +67,10 @@ export const MITTE_ZURUECK = 0.42;
 export const STILL_MS = 2000;
 // Gehalten, aber das Video läuft noch nicht: so lange darf es laden bzw.
 // (vom Browser abgelehnt, etwa iOS-Stromsparmodus) auf einen Tipp warten.
-export const START_MS = 4000;
+// 6 s statt 4 s (31.10.2026): im Handy-Netz (10 Mbit/s) kam das Video nach
+// einem Wisch von ganz oben 2,5 bis über 4 s nach dem Halt erst voran. Die
+// harte Grenze bleibt DECKEL_MS (Zeit am Halt), keine Sackgasse.
+export const START_MS = 6000;
 export const ABGELEHNT_MS = 1200;
 export const DECKEL_MS = 10000;
 const SPEICHER = 'tap-stopper:';
