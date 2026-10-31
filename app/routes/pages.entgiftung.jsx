@@ -1,5 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {CourseLesson} from '~/components/kurse/CourseLesson';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {KursApple} from '~/components/apple-seite/lp/KursApple';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
@@ -37,7 +39,9 @@ export const meta = ({data}) => {
 export async function loader(args) {
   const deferredData = loadDeferredData(args);
   const criticalData = await loadCriticalData(args, 'entgiftung');
-  return {...deferredData, ...criticalData};
+  // APPLE-FASSUNG (s07-r3): Schalter in app/lib/apple-seiten.js, aus = C unverändert.
+  const appleSeite = appleSeiteLaden(args.context, appleSeiteFuerPfad('/pages/entgiftung'));
+  return {...deferredData, ...criticalData, appleSeite};
 }
 
 async function loadCriticalData({context, request}, handle) {
@@ -54,8 +58,8 @@ function loadDeferredData() {
 }
 
 export default function EntgiftungPage() {
-  const {page} = useLoaderData();
-  return (
+  const {page, appleSeite} = useLoaderData();
+  const lektion = (
     <CourseLesson
       title={page.title}
       body={page.body}
@@ -65,6 +69,7 @@ export default function EntgiftungPage() {
       nextLesson={{label: 'Nächste Lektion', to: '/pages/mentales-setting'}}
     />
   );
+  return appleSeite?.an ? <KursApple seite={appleSeite.seite}>{lektion}</KursApple> : lektion;
 }
 
 const PAGE_QUERY = `#graphql

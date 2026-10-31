@@ -1,5 +1,7 @@
 import {Link, useLoaderData} from 'react-router';
 import {CourseLesson} from '~/components/kurse/CourseLesson';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {KursApple} from '~/components/apple-seite/lp/KursApple';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
@@ -32,7 +34,9 @@ export const meta = ({data}) => {
 export async function loader(args) {
   const deferredData = loadDeferredData(args);
   const criticalData = await loadCriticalData(args, 'kohaerentes-wasser');
-  return {...deferredData, ...criticalData};
+  // APPLE-FASSUNG (s07-r3): Schalter in app/lib/apple-seiten.js, aus = C unverändert.
+  const appleSeite = appleSeiteLaden(args.context, appleSeiteFuerPfad('/pages/kohaerentes-wasser'));
+  return {...deferredData, ...criticalData, appleSeite};
 }
 
 async function loadCriticalData({context, request}, handle) {
@@ -49,8 +53,8 @@ function loadDeferredData() {
 }
 
 export default function KohaerentesWasserPage() {
-  const {page} = useLoaderData();
-  return (
+  const {page, appleSeite} = useLoaderData();
+  const lektion = (
     <>
       {/* Christian, 23.09.2026: Tag 5 bleibt, wie er ist, und bekommt oben
           einen Hinweis auf die Info-Seite zum Begriff. Die Info-Seite trägt
@@ -86,6 +90,7 @@ export default function KohaerentesWasserPage() {
       />
     </>
   );
+  return appleSeite?.an ? <KursApple seite={appleSeite.seite}>{lektion}</KursApple> : lektion;
 }
 
 const PAGE_QUERY = `#graphql
