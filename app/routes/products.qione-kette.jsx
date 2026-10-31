@@ -311,7 +311,7 @@ function HeutigeSeite({product}) {
     <GoogleRezensionenBereich />
     {/* Foto läuft oben weich in die Leinwand aus (qb-360-rand.css, Medien-Auslauf):
         sein Grund oben ist ein Grauverlauf 185–248, die Fläche darüber weiß. */}
-    <SingleImage size={"fullscreen"} auslauf="oben" link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_White.webp?v=1675209654"} alt="QiOne® 2 Pro an einer silbernen Kette auf hellem Stoff" />
+    <SingleImage size={"fullscreen"} auslauf="oben" link={"https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_White_2880.webp?v=1793406068"} alt="QiOne® 2 Pro an einer silbernen Kette auf hellem Stoff" />
     </>
   );
 }
