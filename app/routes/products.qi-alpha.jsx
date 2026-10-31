@@ -9,6 +9,8 @@ import faqStyles from '~/styles/the-alpha-faq.css?url';
 // Fenster der geteilten Zahlung (Grossjob 20261027-qi-alpha-geteilte-
 // zahlung-10000-raten-rest-sofort, s03): eigene Datei, Portal an <body>.
 import teilzahlungStyles from '~/styles/qi-alpha-teilzahlung.css?url';
+import rechtszeileStyles from '~/styles/qi-alpha-rechtszeile.css?url';
+import {QiAlphaRechtsZeile} from '~/components/campaign/QiAlphaRechtsZeile';
 import {TheAlphaWissen} from '~/components/the-alpha-shop/TheAlphaWissen';
 import {TheAlphaFaq} from '~/components/campaign/TheAlphaFaq';
 import {
@@ -117,6 +119,7 @@ export function links() {
     {rel: 'stylesheet', href: wissenStyles},
     {rel: 'stylesheet', href: faqStyles},
     {rel: 'stylesheet', href: teilzahlungStyles},
+    {rel: 'stylesheet', href: rechtszeileStyles},
     {rel: 'stylesheet', href: THE_ALPHA_LIVE_ANMELDUNG_STIL},
   ];
 }
@@ -261,18 +264,24 @@ export default function Product() {
   // das Live mit Christian“). Sie steht VOR den Fragen, weil die Seite nach
   // dem Anna-Hinweis endet (Christian 28.10.2026 Z17) und von hier kein Link
   // wegführt (Z13); das Formular sendet per fetcher an /pages/live.
+  // Rechtszeile am Seitenende (Elina 30.10.2026, EL-20261030-ae569366): die
+  // Funnel-Seite hat keinen Hausfuß (Christian 28.10. Z17), das Impressum
+  // muss trotzdem erreichbar sein.
   return (
-    <TheAlphaShop
-      product={product}
-      addons={addons}
-      nachDerBox={
-        <>
-          <TheAlphaWissen />
-          <LiveVorstellung />
-          <TheAlphaFaq ton="hell" />
-        </>
-      }
-    />
+    <>
+      <TheAlphaShop
+        product={product}
+        addons={addons}
+        nachDerBox={
+          <>
+            <TheAlphaWissen />
+            <LiveVorstellung />
+            <TheAlphaFaq ton="hell" />
+          </>
+        }
+      />
+      <QiAlphaRechtsZeile seite="kauf" />
+    </>
   );
 }
 
