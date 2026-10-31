@@ -11,6 +11,13 @@
  * Bühne steht im selben Moment, in dem die vorige weicht. ROT VOR GRÜN: auf
  * origin/main ebe8daa6 Bühne + 1,5 Schritte, halber Schritt Schwarz, Bild-Takt
  * 200 px, keine Sperre gegen Neues über dem gehaltenen Video.
+ * NIE ÜBEREINANDER (Job 20261031-prio2-qi-alpha-lp-ueberlappung-beheben-
+ * scrollstopper-robust, Christian 31.10.2026: „wenn man etwas hin und her
+ * scollt kann man überlappende zustände erzeugen“): jede Szene wartet,
+ * solange die davor zu sehen ist (reine Funktion der Lage), Ausblenden vor
+ * Einblenden; das Video steht am Desktop einen Bild-Schritt allein im Bild.
+ * ROT VOR GRÜN: auf origin/main 7bc58b3b kein tap-wartet, Video bleibt nach
+ * dem ersten Einblenden sichtbar, Übergänge gleichzeitig.
  */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -36,7 +43,9 @@ test('Kette nur in der Szenen-Fassung mit Bewegung, Klassen werden wieder entfer
 
 test('Bühne weicht einen Schritt nach ihrem letzten, die Schluss-Bühne nie', () => {
   assert.match(P, /if \(kette && !s\.ende\) \{/);
-  assert.match(P, /const aus = oben <= 1 && Math\.floor\(\(1 - oben\) \/ s\.px\) >= s\.zahl \+ 1;/);
+  assert.match(P, /const aus = s\.oben <= 1 && Math\.floor\(\(1 - s\.oben\) \/ s\.px\) >= s\.zahl \+ 1;/);
+  // Gleiche 1-px-Toleranz für den ersten Schritt der stehenden Bühne.
+  assert.match(P, /s\.start \+ Math\.floor\(\(1 - oben\) \/ s\.px\)/);
   assert.match(P, /ende: b\.hasAttribute\('data-tap-ende'\)/);
   // Eine ausgeblendete Szene gilt als weg (Neues erst, wenn das Alte weg ist).
   assert.match(P, /const frei = !vor \|\| vor\.classList\.contains\('tap-aus'\) \|\| unterkante\(vor\) <= 0;/);
@@ -45,9 +54,12 @@ test('Bühne weicht einen Schritt nach ihrem letzten, die Schluss-Bühne nie', (
 test('Geometrie nahtlos: Bildschirm + Schritte + 1, Nachrücken um einen Bildschirm, kein halber Schritt', () => {
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-scrub:not\(\[data-tap-ende\]\) \{\s*height: calc\(100svh \+ \(var\(--tap-schritte, 0\) \+ 1\) \* var\(--tap-schritt\)\);/);
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-nachruecken \{\s*margin-top: -100svh;/);
-  // Video: Unterkante 5 % über dem Bildrand, wenn die Bühne davor weicht (Start unverändert).
-  assert.match(CSS, /margin-top: calc\(-1 \* var\(--tap-video-hoehe, 0px\) - 5svh\);/);
-  assert.match(CSS, /\.tap-js\.tap-kette \.tap-nach-video \{\s*margin-top: calc\(-1 \* var\(--tap-video-hoehe, 0px\) - 10svh\);/);
+  // Video: Unterkante 5 % über dem Bildrand, wenn die Bühne davor weicht (Start am
+  // Handy unverändert); ist es samt Text höher als 90 % (Desktop), mittig.
+  assert.match(CSS, /--tap-video-luft: max\(0px, min\(5svh, \(100svh - var\(--tap-video-hoehe, 0px\)\) \/ 2\)\);/);
+  assert.match(CSS, /margin-top: calc\(-1 \* var\(--tap-video-hoehe, 0px\) - var\(--tap-video-luft\)\);/);
+  // Die Bühne danach steht einen Bild-Schritt nach dem Erscheinen des Videos, jede Bildhöhe.
+  assert.match(CSS, /\.tap-js\.tap-kette \.tap-nach-video \{[^}]*margin-top: calc\(-100svh \+ var\(--tap-video-luft\) \+ var\(--tap-schritt-bild\)\);/);
   assert.doesNotMatch(CSS, /\+ 1\.5\) \* var\(--tap-schritt\)|--tap-schritt-absatz\) \/ 2|10svh \+ var\(--tap-schritt\) \/ 2/);
   // Übereinander liegende Bühnen fangen keine Tipps ab (Ton-Knopf am Video).
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-scrub \{\s*pointer-events: none;/);
@@ -55,7 +67,8 @@ test('Geometrie nahtlos: Bildschirm + Schritte + 1, Nachrücken um einen Bildsch
 });
 
 test('Video: Start und Stopper unverändert, es weicht nur, wenn der Stopper nicht hält', () => {
-  assert.match(P, /f\.getBoundingClientRect\(\)\.top < window\.innerHeight \* 0\.1 &&/);
+  // Das Video weicht, sobald die Bühne danach steht, nie solange der Stopper hält.
+  assert.match(P, /\? nach\.getBoundingClientRect\(\)\.top <= 1/);
   assert.match(P, /f\.dataset\.tapStopperStand !== 'hält'/);
   assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm film=\{THE_ALPHA_FILM_OHNE_TEXT\} stopper \/>/);
 });
@@ -77,15 +90,18 @@ test('Karten und Seitenband sind in der Szenen-Fassung eigene Bühnen', () => {
   assert.doesNotMatch(CSS, /@media \([a-z-]*height[^)]*\)/);
 });
 
-test('Nahtlos: Neues erst, wenn das Alte weicht; erst weg, dann direkt neu', () => {
-  // Hält der Stopper das Video (Desktop), zeigt die Bühne danach noch nichts.
-  assert.match(P, /if \(kette && n > 0 && s\.vor && !s\.vor\.classList\.contains\('tap-aus'\) && unterkante\(s\.vor\) > 0\) \{\s*n = 0;/);
-  // Erster Schritt der nachrückenden Bühne: kurz nach dem Ausblenden des Alten.
-  assert.match(P, /s\.matches\('\.tap-nachruecken, \.tap-nach-video'\)/);
-  assert.match(P, /eintritt\.forEach\(\(w\) => w\.classList\.add\('tap-eintritt'\)\)/);
-  assert.match(P, /eintritt\.forEach\(\(w\) => w\.classList\.remove\('tap-eintritt'\)\)/);
-  assert.match(CSS, /\.tap-js\.tap-kette \.tap-scrub\.tap-aus > \.tap-scrub-bild,\s*\.tap-js\.tap-kette \.tap-film\.tap-aus \{\s*opacity: 0;\s*transition: opacity 200ms ease;/);
-  assert.match(CSS, /\.tap-js\.tap-kette \.tap-eintritt\[data-tap-schritt\]\.tap-an \{\s*transition-delay: 180ms;/);
+test('Nie übereinander: jede Szene wartet, solange die davor zu sehen ist; erst weg, dann neu', () => {
+  // Reine Funktion der Lage, jedes Bild neu, in beide Richtungen.
+  assert.match(P, /'tap-wartet',\s*!vor\.classList\.contains\('tap-aus'\) && unterkante\(vor\) > 0,/);
+  assert.match(P, /if \(kette && n > 0 && s\.b\.classList\.contains\('tap-wartet'\)\) n = 0;/);
+  // Das wartende Video pausiert und wird danach wieder geweckt.
+  assert.match(P, /if \(video && !video\.paused\) video\.pause\(\);/);
+  assert.match(P, /f\.dispatchEvent\(new Event\('tap-sichtbar'\)\)/);
+  assert.match(lies('app/components/campaign/TheAlphaTon.jsx'), /figur\.classList\.contains\('tap-sichtbar'\) && !figur\.classList\.contains\('tap-wartet'\)/);
+  // Ausblenden sofort (160 ms), Einblenden erst danach (180 ms Verzug).
+  assert.match(CSS, /\.tap-js\.tap-kette \.tap-scrub-bild,\s*\.tap-js\.tap-kette \.tap-film\.tap-sichtbar \{\s*opacity: 1;\s*transition: opacity 240ms ease 180ms;/);
+  assert.match(CSS, /\.tap-js\.tap-kette \.tap-scrub:is\(\.tap-aus, \.tap-wartet\) > \.tap-scrub-bild,\s*\.tap-js\.tap-kette \.tap-film:is\(\.tap-aus, \.tap-wartet\) \{\s*opacity: 0;\s*transition: opacity 160ms ease;/);
+  assert.doesNotMatch(P + CSS, /tap-eintritt/);
 });
 
 test('Kaufleiste: die Schluss-Bühne zählt erst ab ihrem Stillstand', () => {
