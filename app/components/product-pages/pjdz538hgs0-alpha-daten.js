@@ -25,8 +25,10 @@
  * liegt, ist nicht belegt (Bestellung #6810 fragte danach).
  */
 
+// Band: Kundenwort zuerst (Kanon Kaufüberzeugung: „kohärentes Wasser“ nicht als
+// Einstieg), gebaut wie das Band des QiBracelet® („Zellschutz für unterwegs“).
 export const BAND = {
-  titel: 'Kohärentes Wasser',
+  titel: 'Zellschutz am Körper',
   unter: '- Always On Mode -',
   drehung: 'qione',
 };
@@ -150,10 +152,10 @@ export const WISSEN = {
   kapitel: [
     {
       etikett: 'Wissenschaft',
-      titel: 'Im Labor bleiben Immunzellen stark.',
+      titel: '84,7 statt 60,5 Prozent.',
       absaetze: [
         'Prof. Dr. Peter C. Dartsch hat menschliche Immunzellen im Labor vier Stunden lang mit Handystrahlung belastet.',
-        'Ungeschützt fiel ihre Abwehrleistung auf 60,5 Prozent. Mit dem QiOne® 2 Pro hielt sie 84,7 Prozent.',
+        'Ohne QiOne® 2 Pro behielten sie 60,5 Prozent ihrer Abwehrleistung, mit ihm 84,7 Prozent.',
       ],
       bild: 6,
     },
@@ -208,7 +210,7 @@ export const FAQ = {
     },
     {
       f: 'Wie trage ich den QiOne® 2 Pro?',
-      a: 'An der Kette um den Hals, unter oder über der Kleidung. Manche erleben die ersten Tage als intensiv. Dann trag ihn über der Kleidung oder leg ihn nachts ab, bis du dich an ihn gewöhnt hast.',
+      a: 'An der Kette um den Hals, unter oder über der Kleidung. So ist er den ganzen Tag bei dir, beim Arbeiten, beim Sport, im Schlaf.',
     },
     {
       f: 'Kann ich das Set zurückgeben, wenn es nicht zu mir passt?',
@@ -220,7 +222,7 @@ export const FAQ = {
     },
     {
       f: 'Wie funktioniert der QiOne®?',
-      a: 'Über ein statisches Feld. Die Goldatome im Gitterchip® stehen in fester Ordnung und erzeugen dieses Feld. In ihm bilden Wassermoleküle mehr Wasserstoffbrücken. So entsteht kohärentes Wasser, in der Forschung EZ-Wasser genannt. Das geschieht in deinem Körper, solange du ihn trägst.',
+      a: 'Im Kern sitzt der Gitterchip® aus einer eigenen 750er Goldlegierung. Seine Atome stehen in fester Ordnung. Diese Ordnung gibt er an das Wasser in deinem Körper weiter.',
     },
   ],
 };
