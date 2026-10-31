@@ -210,7 +210,7 @@ export const FAQ = {
     },
     {
       f: 'Wie trage ich den QiOne® 2 Pro?',
-      a: 'An der Kette um den Hals, unter oder über der Kleidung. So ist er den ganzen Tag bei dir, beim Arbeiten, beim Sport, im Schlaf.',
+      a: 'An der Kette um den Hals, unter oder über der Kleidung. So ist er den ganzen Tag bei dir.',
     },
     {
       f: 'Kann ich das Set zurückgeben, wenn es nicht zu mir passt?',
