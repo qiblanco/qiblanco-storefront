@@ -154,6 +154,13 @@ html:has(main[data-film-seite]) body {
   background: #000;
 }
 
+/* Die Seite endet mit dem letzten Bild und dem roten Knopf (Christian
+   31.10.2026: „dass das Bild aufhört, wenn der rote Knopf kommt … dann soll
+   das ja stehen bleiben“). Am Ende schwingt sie nicht ins Leere nach. */
+html:has(main[data-film-seite]) {
+  overscroll-behavior-y: none;
+}
+
 /* ---------- Scroll-Bühnen (Z286/Z287, Z294) ---------- */
 /* Die Bühne ist einen Bildschirm plus ihre Schritte hoch; ihr Inhalt steht
    still (sticky) und baut sich mit dem Scrollen auf (useTapFilm). Nach dem

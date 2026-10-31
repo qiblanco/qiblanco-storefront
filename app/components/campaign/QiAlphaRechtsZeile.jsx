@@ -13,6 +13,11 @@ import {EuGewaehrleistungsLink} from '~/components/EuGewaehrleistungsLabel';
  * Menü, keine Werbung, also kein Weg aus dem Funnel außer den Pflichtseiten.
  * Pfade wie im Hausfuß (Footer.jsx LEGAL_LINKS); Gewährleistung öffnet
  * denselben EU-Hinweis wie dort. Stil: styles/qi-alpha-rechtszeile.css.
+ *
+ * SEIT 31.10.2026 nur noch auf der Kaufseite: die Landingpage endet mit dem
+ * letzten Bild und dem roten Knopf (Christian: Links-Leiste „muss weg auf der
+ * LP“, „Nur die Links-Leiste“; Job 20261031-update-qi-alpha-lp-links-leiste-
+ * seitenende-entfernen-r2). `seite="lp"` hat damit keinen Aufrufer mehr.
  */
 const VERWEISE = [
   {to: '/pages/impressum', label: 'Impressum'},
