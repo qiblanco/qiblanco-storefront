@@ -258,3 +258,13 @@ test('Partner-Bruecke: gemerkte sca_ref geht mit auf crystal-cacao.com, sonst ni
   assert.equal(mitPartnerRef(`${C}/`, partnerParameterAus('')), `${C}/`);
   assert.equal(mitPartnerRef(`${C}/`, partnerParameterAus('{kaputt')), `${C}/`);
 });
+
+import {kakaoHandles} from '../app/lib/kakao-adressen.js';
+
+test('kakaoHandles: Sitemap-Ausschluss je Art', () => {
+  assert.ok(kakaoHandles('products').includes('crystal-cacao-create'));
+  assert.ok(kakaoHandles('products').includes('crystal-cacao-awake'));
+  assert.deepEqual(kakaoHandles('collections'), ['zeremonie-kakao']);
+  assert.deepEqual(kakaoHandles('pages').sort(), ['crystal-cacao', 'kristall-kakao']);
+  assert.ok(!kakaoHandles('products').includes('qione-2-pro'));
+});

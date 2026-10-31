@@ -22,6 +22,7 @@ import {
 } from '~/lib/sitemap-bestand';
 import {vorlagenOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
 import {gespiegelteHandles} from '~/crystal-spiegel-rahmen/suchmaschine';
+import {kakaoHandles} from '~/lib/kakao-adressen';
 import {
   istVorschauNoindex,
   vorschauSitemapHandles,
@@ -84,6 +85,9 @@ const NICHT_IN_PAGES_SITEMAP = [
   ...AUS_SITEMAP_ENTFERNTE_SEITEN,
   ...WEITERGELEITETE_PAGES_HANDLES,
   ...gespiegelteHandles('pages'),
+  // Kakao nur auf crystal-cacao.com (Elina 30.10.2026, EL-20261030-0adb59f3):
+  // diese Adressen antworten mit 301 dorthin (~/lib/kakao-adressen).
+  ...kakaoHandles('pages'),
 ];
 
 /**
@@ -98,6 +102,7 @@ const NICHT_IN_PRODUCTS_SITEMAP = [
   ...IM_CRAWLER_MARKT_NICHT_ABRUFBARE_PRODUKTE,
   ...vorlagenOhneIndexwert('products'),
   ...gespiegelteHandles('products'), // Crystal-Spiegel, wie oben bei pages
+  ...kakaoHandles('products'), // Kakao nur auf crystal-cacao.com, wie oben
   // Vorschau-Seiten (live, nicht auffindbar, ~/lib/vorschau-noindex).
   ...vorschauSitemapHandles('products'),
 ];
@@ -111,6 +116,7 @@ const NICHT_IN_PRODUCTS_SITEMAP = [
 const NICHT_IN_COLLECTIONS_SITEMAP = [
   ...ausSitemapEntfernteKollektionen(),
   ...vorlagenOhneIndexwert('collections'),
+  ...kakaoHandles('collections'), // Kakao nur auf crystal-cacao.com
 ];
 
 const VERSTECKTE_HANDLES = {

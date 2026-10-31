@@ -190,10 +190,14 @@ test('NAHT: die Sitemap-Route liest DIESELBE Quelle, statt eine zweite zu fuehre
   // NACHGEZOGEN AM 2026-10-17, NICHT AUFGEWEICHT: dritte abgeleitete Quelle
   // sind die Seiten des Crystal-Spiegels (canonical auf crystal-cacao.com),
   // erzeugt aus SEITEN= des Spiegel-Erzeugers. Weiter kein Literal.
+  // NACHGEZOGEN AM 2026-10-31, NICHT AUFGEWEICHT: vierte abgeleitete Quelle
+  // sind die Kakao-Adressen, die auf crystal-cacao.com weiterleiten (Elina,
+  // EL-20261030-0adb59f3), erzeugt aus der Karte ~/lib/kakao-adressen.
+  // Weiter kein Literal (ein Kommentar zwischen den Quellen ist erlaubt).
   assert.match(
     quelle,
-    /const NICHT_IN_PAGES_SITEMAP = \[\s*\.\.\.AUS_SITEMAP_ENTFERNTE_SEITEN,\s*\.\.\.WEITERGELEITETE_PAGES_HANDLES,\s*\.\.\.gespiegelteHandles\('pages'\),\s*\]/,
-    'die Vereinigung muss aus genau den drei abgeleiteten Quellen gebildet sein',
+    /const NICHT_IN_PAGES_SITEMAP = \[\s*\.\.\.AUS_SITEMAP_ENTFERNTE_SEITEN,\s*\.\.\.WEITERGELEITETE_PAGES_HANDLES,\s*\.\.\.gespiegelteHandles\('pages'\),(?:\s*\/\/[^\n]*)*\s*\.\.\.kakaoHandles\('pages'\),\s*\]/,
+    'die Vereinigung muss aus genau den vier abgeleiteten Quellen gebildet sein',
   );
   assert.match(quelle, /from\s+'~\/lib\/seo'/, 'Import muss aus ~/lib/seo kommen');
   for (const handle of NICHT_INDEXIERBARE_SEITEN) {

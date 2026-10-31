@@ -157,3 +157,18 @@ export function mitPartnerRef(href, partner) {
   }
   return u.toString();
 }
+
+/**
+ * Handles einer Shopify-Art ('products' | 'pages' | 'collections'), deren
+ * qiblanco-Adresse auf crystal-cacao.com weiterleitet. Für die Sitemap: eine
+ * Adresse, die per 301 antwortet, gehört nicht hinein (die Sets fallen dort
+ * schon über istNichtIndexierbaresProdukt heraus).
+ * @param {'products'|'pages'|'collections'} typ
+ * @returns {string[]}
+ */
+export function kakaoHandles(typ) {
+  const praefix = `/${typ}/`;
+  return Object.keys(KAKAO_ADRESSEN)
+    .filter((p) => p.startsWith(praefix))
+    .map((p) => p.slice(praefix.length));
+}

@@ -53,9 +53,13 @@ const SOLL = {
 // 2026-10-23; seitdem ist es Vorschau-Shop A (Christian: nicht indiziert,
 // ~/lib/vorschau-noindex) und fliegt ebenfalls aus der Sitemap. qibracelet
 // vertritt es.
+// crystal-cacao-create und die Collection zeremonie-kakao waren hier bis
+// 2026-10-31 Nachbarn; seit Elinas Entscheidung (EL-20261030-0adb59f3, Kakao
+// nur auf crystal-cacao.com) fliegen sie absichtlich aus der Sitemap. Ersetzt
+// durch Nachbarn, die bleiben muessen.
 const NACHBARN = {
-  products: ['qibracelet', 'crystal-cacao-create', 'qione-2-pro', 'bundle-2x-awake-neu'],
-  collections: ['zeremonie-kakao', 'all'],
+  products: ['qibracelet', 'qihome-air', 'qione-2-pro', 'bundle-2x-awake-neu'],
+  collections: ['geraete', 'all'],
 };
 
 let grün = 0;
@@ -200,6 +204,21 @@ await pruefe('C robots-Meta und Header lesen die Liste im noindex-Zweig', async 
 await pruefe('D die alten Listen bleiben unberührt (Aufnahme-Kriterium bleibt wahr)', async () => {
   for (const h of SOLL.products) assert.ok(!NICHT_INDEXIERBARE_PRODUKTE.includes(h), h);
   for (const h of SOLL.collections) assert.ok(!NICHT_INDEXIERBARE_KOLLEKTIONEN.includes(h), h);
+});
+
+// ------------------------------------------------------------------ K
+// Kakao nur auf crystal-cacao.com (Elina 30.10.2026, EL-20261030-0adb59f3):
+// Adressen, die per 301 dorthin antworten, fehlen in der Kind-Sitemap; die
+// Geraete-Nachbarn bleiben.
+await pruefe('K Kakao-Adressen fehlen in sitemap/products und sitemap/collections', async () => {
+  const p = await kindXml('products', ['crystal-cacao-create', 'crystal-cacao-awake', 'qione-2-pro']);
+  for (const h of ['crystal-cacao-create', 'crystal-cacao-awake']) {
+    assert.ok(!hat(p, 'products', h), `${h} steht noch in sitemap/products`);
+  }
+  assert.ok(hat(p, 'products', 'qione-2-pro'), 'Kontrolle: qione-2-pro fehlt in sitemap/products');
+  const c = await kindXml('collections', ['zeremonie-kakao', 'all']);
+  assert.ok(!hat(c, 'collections', 'zeremonie-kakao'), 'zeremonie-kakao steht noch in sitemap/collections');
+  assert.ok(hat(c, 'collections', 'all'), 'Kontrolle: all fehlt in sitemap/collections');
 });
 
 console.log(`vorlagen-ohne-indexwert: ${grün} Arme grün`);
