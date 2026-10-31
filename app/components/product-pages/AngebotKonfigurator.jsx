@@ -14,6 +14,7 @@ import alphaSlotStyles from '~/styles/alpha-vorlage-slots.css?url';
 import alphaQiOneStyles from '~/styles/alpha-qione.css?url';
 import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
+import alphaAngebotStyles from '~/styles/alpha-angebot.css?url';
 
 /*
  * ANGEBOTSSEITEN IM APPLE-STIL (s13-r3, Christian Zx 29.10.2026): die zwei
@@ -41,6 +42,7 @@ export function AngebotKonfigurator({product, ketten, daten}) {
       <link rel="stylesheet" href={faqStyles} />
       <link rel="stylesheet" href={alphaSlotStyles} />
       <link rel="stylesheet" href={alphaQiOneStyles} />
+      <link rel="stylesheet" href={alphaAngebotStyles} />
       <AlphaVorlage
         product={product}
         daten={daten}
