@@ -33,10 +33,10 @@ export const BILD = Object.freeze({
     hoehe: 1080,
   },
   gitter: {
-    url: `${CDN}/files/QiOne_Gitterchip-1440.webp?v=1793410347`,
+    url: `${CDN}/files/QiOne_Gitterchip-1680.webp?v=1793415850`,
     alt: 'Der Gitterchip® aus 750er Gold in Nahaufnahme',
-    breite: 1440,
-    hoehe: 1440,
+    breite: 1680,
+    hoehe: 1680,
   },
   hand: {
     url: `${CDN}/products/2021-04-qiblanco-bali-16_e66b45ce-857c-4bd8-a123-05e0b2d4229e.jpg?v=1698259307`,

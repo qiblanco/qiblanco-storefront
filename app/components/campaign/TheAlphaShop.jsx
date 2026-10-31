@@ -42,6 +42,11 @@ import {Schlussleiste} from '~/components/reusables/Schlussleiste';
 const GALERIE_BREITEN = [600, 900, 1200, 1600, 2048];
 const GALERIE_SIZES =
   '(min-width: 1232px) 654px, (min-width: 1024px) calc((100vw - 80px) * 0.584), calc(100vw - 32px)';
+/* Gravurbild in der rechten Spalte (5fr): 1728 ist die Breite des Ausschnitts,
+   groesser liefert das CDN nicht. Unter 1024 volle Breite wie die Galerie. */
+const GRAVUR_BREITEN = [600, 1200, 1728];
+const GRAVUR_SIZES =
+  '(min-width: 1232px) 467px, (min-width: 1024px) calc((100vw - 80px) * 0.417), calc(100vw - 32px)';
 
 /*
  * SHOPSEITE /products/the-alpha — Apple-nahe Kaufseite (Christian 25.10.2026
@@ -371,6 +376,8 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                     <img
                       className="tas-gravur-foto"
                       src={`${NUMMER.bildGravur.url}&width=${NUMMER.bildGravur.breite}`}
+                      srcSet={GRAVUR_BREITEN.map((w) => `${NUMMER.bildGravur.url}&width=${w} ${w}w`).join(', ')}
+                      sizes={GRAVUR_SIZES}
                       alt={NUMMER.bildGravur.alt}
                       width={NUMMER.bildGravur.breite}
                       height={NUMMER.bildGravur.hoehe}
