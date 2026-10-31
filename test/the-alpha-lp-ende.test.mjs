@@ -166,7 +166,8 @@ test('Schluss-Szene der Szenen-Fassung: Bühne, Zeile für Zeile, Knopf zuletzt'
 
 test('Einblenden erst, wenn die Szene davor aus dem Bild ist (bottom <= 0)', () => {
   const p = lies(PREMIUM);
-  assert.match(p, /const frei = !vor \|\| unterkante\(vor\) <= 0;/);
+  // Szenen-Kette (31.10.2026): eine ausgeblendete Szene (tap-aus) ist weg.
+  assert.match(p, /const frei = !vor \|\| vor\.classList\.contains\('tap-aus'\) \|\| unterkante\(vor\) <= 0;/);
   assert.match(p, /if \(still \|\| \(frei && \(ganz \|\| r\.top < 0\)\)\)/);
   // Jede Szene trägt die Marke, in Dokument-Reihenfolge gelesen.
   for (const k of ['tap-titelkarte', 'tap-woerterbuch', 'tap-film', 'tap-kapitel-buehne', 'tap-karten', 'tap-marke', 'tap-edition-szene']) {
