@@ -17,6 +17,8 @@
  */
 import {canonicalLink} from '~/lib/seo';
 import {Rechtsseite} from '~/components/Rechtsseite';
+import {useLoaderData} from 'react-router';
+import {appleSeiteLaden, appleSeiteFuerPfad} from '~/lib/apple-seiten';
 import {seitenSignale} from '~/lib/seiten-seo';
 import register from '~/data/cookie-register.json';
 import cookieErklaerungStyles from '~/styles/cookie-erklaerung.css?url';
@@ -44,8 +46,8 @@ export function links() {
   return [{rel: 'stylesheet', href: cookieErklaerungStyles}];
 }
 
-export function loader() {
-  return {};
+export function loader({context}) {
+  return {appleSeite: appleSeiteLaden(context, appleSeiteFuerPfad('/pages/cookie-erklaerung'))};
 }
 
 const MONATE = [
@@ -109,9 +111,10 @@ function KategorieTabelle({kategorie}) {
 }
 
 export default function CookieErklaerungPage() {
+  const {appleSeite} = useLoaderData();
   const anzahl = register.kategorien.reduce((n, k) => n + k.cookies.length, 0);
   return (
-    <Rechtsseite>
+    <Rechtsseite apple={appleSeite}>
       <header className="rs-doc__kopf">
         <h1>Cookie-Erklärung</h1>
         <p className="rs-doc__meta">

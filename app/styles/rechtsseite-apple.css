@@ -1,0 +1,90 @@
+/*
+ * APPLE-FASSUNG DER DOKUMENTSEITEN (Grossjob 20261029-GROSSJOB-alle-shop-
+ * seiten-apple-niveau-ausser-seo-geo, s12): AGB, Datenschutz,
+ * Teilnahmebedingungen, Cookie-Erklärung, Widerrufsbelehrung, die
+ * Bestätigungsseiten aus dem Shopify-Admin und /policies/*.
+ *
+ * NUR TYPOGRAFIE UND FARBE. Text, Reihenfolge und Elemente bleiben wie in C
+ * (components/Rechtsseite.jsx legt nur die Hülle um dasselbe Dokument). Die
+ * rs-Tokens aus rechtstext.css zeigen im Apple-Scope auf --as-* aus
+ * apple-seite.css: dieselbe Tinte, dasselbe Grau, dieselbe Fläche, dieselbe
+ * Skala und derselbe Radius wie auf den Apple-Kaufseiten. Keine freien Werte.
+ * Lädt nur mit Schalter an (Rechtsseite.jsx).
+ */
+.as-seite .rs-doc {
+  /* Skala aus --as-fs-*: 14 · 17 · 21 · 24 · 28 (H1 mobil) / 40 (H1 Desktop).
+     EIN H2-Stil auf jeder Breite (24): mit 28 auf dem Desktop stand zwischen
+     Fließtext 17 und H2 der Sprung 1,65, die Rubrik liest das als wilde Skala
+     (cookie-erklaerung, s12 Iteration 1). */
+  --rs-fs-sm: var(--as-fs-2);
+  --rs-fs-base: var(--as-fs-3);
+  --rs-fs-md: var(--as-fs-4);
+  --rs-fs-h3: var(--as-fs-4);
+  --rs-fs-h2: var(--as-fs-5);
+  --rs-fs-h1: var(--as-fs-6);
+
+  --rs-s1: var(--as-s-1);
+  --rs-s2: var(--as-s-2);
+  --rs-s3: var(--as-s-3);
+  --rs-s4: var(--as-s-4);
+  --rs-s6: var(--as-s-6);
+  --rs-s8: var(--as-s-8);
+  --rs-s12: var(--as-s-12);
+
+  --rs-grund: var(--as-weiss);
+  --rs-flaeche: var(--as-flaeche);
+  --rs-text: var(--as-tinte);
+  --rs-muted: var(--as-grau);
+  --rs-linie: var(--as-linie);
+  --rs-akzent: var(--as-gold-tinte);
+  --rs-akzent-flaeche: var(--as-gold);
+  --rs-radius: var(--as-radius);
+
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  /* Lange Adressen und Kennungen im Shopify-Rumpf (privacy-policy) brechen um,
+     statt die Seite auf 390 px seitlich aufzuschieben. Text bleibt gleich. */
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 750px) {
+  .as-seite .rs-doc {
+    --rs-fs-h1: var(--as-fs-7);
+  }
+}
+
+/* FUSS IM 8-PT-TAKT (Hausweg body:has(<scope>) footer wie erfahrungen.css,
+   studien.css, crystal-cacao.css): app.css setzt `footer {padding: 50px 0 0}`.
+   Auf Dokumentseiten ohne eigene <section> sind MAIN und Fuss die einzigen
+   Sektions-Abstände, der Fuss allein hält sie dann bei 50 % auf dem Raster
+   (teilnahmebedingungen 97, s12 Iteration 1). 48 px = --as-s-6; der Fuss steht
+   außerhalb des .as-seite-Scopes, die Variable gilt dort nicht. */
+body:has(.as-seite .rs-doc) footer {
+  padding-top: 48px;
+}
+
+/* HAUS-GRUNDREGELN IM SCOPE NEUTRALISIEREN (Falle s04, wie service-apple.css):
+   reset.css setzt p auf 1,2rem und Schatten auf jede Überschrift. Spezifität
+   0,0,1 mit :where, damit die Klassen des Dokuments (.rs-doc__meta,
+   .rs-doc__lead) ihre Stufe behalten. */
+:where(.as-seite .rs-doc) p,
+:where(.as-seite .rs-doc) li {
+  font-size: var(--rs-fs-base);
+}
+/* Überschriften: hier volle Spezifität (0,2,0) - reset.css setzt den Schatten
+   mit h1…h3 (0,0,1), ein reines :where verlöre dagegen (Screens Iteration 4). */
+.as-seite .rs-doc :where(h1, h2, h3, h4, h5, h6) {
+  text-shadow: none;
+  color: var(--rs-text);
+}
+
+/* Überschriften im Ton der Apple-Seiten: etwas enger gesetzt, ruhige Linie. */
+.as-seite .rs-doc h1 {
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.as-seite .rs-doc h2,
+.as-seite .rs-doc h3 {
+  letter-spacing: -0.01em;
+}

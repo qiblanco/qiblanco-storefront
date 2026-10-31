@@ -1,5 +1,6 @@
-import {Outlet} from 'react-router';
+import {Outlet, useLoaderData} from 'react-router';
 import {Rechtsseite} from '~/components/Rechtsseite';
+import {appleSeiteLaden, appleSeiteFuerPfad} from '~/lib/apple-seiten';
 
 /**
  * SEGMENT-LAYOUT für /policies/*  (flatRoutes-Konvention).
@@ -20,9 +21,27 @@ import {Rechtsseite} from '~/components/Rechtsseite';
  * (Die Gegenrichtung ist im Repo belegt: widerruf_.bestaetigen.jsx nutzt den
  * Unterstrich-Suffix, um sich BEWUSST aus einem Eltern-Layout auszuhaengen.)
  */
+/**
+ * Apple-Fassung (Grossjob 20261029 alle-shop-seiten-apple-niveau, s12): der
+ * Schalter hängt an der KIND-Seite (/policies, /policies/refund-policy, …),
+ * das Layout kennt sie nur über den Pfad. Ohne Zeile in app/lib/apple-seiten.js
+ * bleibt die Seite C.
+ */
+export function loader({request, context}) {
+  const pfad = new URL(request.url).pathname.replace(/\/+$/, '') || '/';
+  return {appleSeite: appleSeiteLaden(context, appleSeiteFuerPfad(pfad))};
+}
+
+/** Das Layout bleibt beim Wechsel zwischen zwei Policies stehen; sein Loader
+ * muss trotzdem neu laufen, weil jede Policy ihren eigenen Schalter hat. */
+export function shouldRevalidate({currentUrl, nextUrl, defaultShouldRevalidate}) {
+  return currentUrl.pathname !== nextUrl.pathname || defaultShouldRevalidate;
+}
+
 export default function PoliciesLayout() {
+  const {appleSeite} = useLoaderData();
   return (
-    <Rechtsseite>
+    <Rechtsseite apple={appleSeite}>
       <Outlet />
     </Rechtsseite>
   );
