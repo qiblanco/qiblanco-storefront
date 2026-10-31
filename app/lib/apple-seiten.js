@@ -52,10 +52,10 @@ export const APPLE_SEITEN = Object.freeze({
   'products-qione-kette': {pfad: '/products/qione-kette', schalter: 'APPLE_SEITE_PRODUCTS_QIONE_KETTE', standard: 'off'},
 
   // ---- s06 · genannte LPs schlaf-zellen-schutz-Familie, studien ----
-  'schlaf-zellen-schutz': {pfad: '/pages/schlaf-zellen-schutz', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ', standard: 'off'},
-  'schlaf-zellen-schutz-b2': {pfad: '/pages/schlaf-zellen-schutz-b2', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_B2', standard: 'off'},
-  'schlaf-zellen-schutz-k25': {pfad: '/pages/schlaf-zellen-schutz-k25', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_K25', standard: 'off'},
-  'schlaf-zellen-schutz-k50': {pfad: '/pages/schlaf-zellen-schutz-k50', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_K50', standard: 'off'},
+  'schlaf-zellen-schutz': {pfad: '/pages/schlaf-zellen-schutz', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ', standard: 'on'},
+  'schlaf-zellen-schutz-b2': {pfad: '/pages/schlaf-zellen-schutz-b2', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_B2', standard: 'on'},
+  'schlaf-zellen-schutz-k25': {pfad: '/pages/schlaf-zellen-schutz-k25', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_K25', standard: 'on'},
+  'schlaf-zellen-schutz-k50': {pfad: '/pages/schlaf-zellen-schutz-k50', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_K50', standard: 'on'},
   'schlaf-zellen-schutz-v2-18ef': {pfad: '/pages/schlaf-zellen-schutz-v2-18ef', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_V2_18EF', standard: 'off'},
   'studien': {pfad: '/pages/studien', schalter: 'APPLE_SEITE_STUDIEN', standard: 'off'},
   'zell-schutz': {pfad: '/pages/zell-schutz', schalter: 'APPLE_SEITE_ZELL_SCHUTZ', standard: 'off'},
