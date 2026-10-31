@@ -25,10 +25,10 @@
  * liegt, ist nicht belegt (Bestellung #6810 fragte danach).
  */
 
-// Band: Kundenwort zuerst (Kanon Kaufüberzeugung: „kohärentes Wasser“ nicht als
-// Einstieg), gebaut wie das Band des QiBracelet® („Zellschutz für unterwegs“).
+// Band: ein Satz über den Kunden, kein Fachbegriff (Kanon Kaufüberzeugung:
+// „kohärentes Wasser“ nicht als Einstieg; PR-Manager s13-r3 Durchgang 2).
 export const BAND = {
-  titel: 'Zellschutz am Körper',
+  titel: 'Immer bei dir.',
   unter: '- Always On Mode -',
   drehung: 'qione',
 };
@@ -161,7 +161,7 @@ export const WISSEN = {
     },
     {
       etikett: 'Tragen',
-      titel: 'Den ganzen Tag auf der Haut.',
+      titel: 'Den ganzen Tag bei dir.',
       absaetze: [
         'An der Kette liegt dein QiOne® dort, wo du ihn haben willst: unter dem Hemd, über dem Pullover, beim Sport.',
         'Die Kette ist 1,6 mm stark und passt durch seine 2,5-mm-Öse. Der Karabiner schließt mit einer Hand.',
