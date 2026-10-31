@@ -23,6 +23,7 @@ import {
   BOX,
   GALERIE,
   KETTE,
+  KETTE_STAHL_PREIS,
   KOPF,
   NUMMER,
   PRODUKT,
@@ -428,7 +429,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                   preis={
                     k.art === 'gold'
                       ? betragText(kettePreis(k), waehrung)
-                      : betragText(0, waehrung)
+                      : KETTE_STAHL_PREIS
                   }
                   data={{'data-tas-kette': k.titel}}
                 />
@@ -547,7 +548,9 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
             <div>
               <dt>{mitMarkeR(kette?.name)}</dt>
               <dd>
-                {betragText(ketteGold ? kettePreis(kette) : 0, waehrung)}
+                {ketteGold
+                  ? betragText(kettePreis(kette), waehrung)
+                  : KETTE_STAHL_PREIS}
               </dd>
             </div>
             <div className="tas-posten-summe">

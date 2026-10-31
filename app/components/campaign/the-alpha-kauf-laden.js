@@ -69,9 +69,10 @@ export function kettenOptionen(ketteProdukt, stahlProdukt = null) {
 }
 
 /**
- * Die Stahlkette in allen Längen, die Shopify als kaufbare 0-€-Variante führt
- * (Elina 30.10.2026, EL-20261030-ae569366): jede Länge geht als eigene
- * Warenkorbzeile mit. RÜCKFALL: fehlt das Produkt (Abfrage gescheitert, nicht
+ * Die Stahlkette als kaufbare 0-€-Variante (Elina 30.10.2026,
+ * EL-20261030-ae569366: eigene Warenkorbzeile), nur in 60 cm (Christian
+ * 31.10.2026: „es gibt immer standardmäßig die 60iger kette. anosnsten nur in
+ * gold auswählbar.“). Weitere Stahl-Varianten in Shopify zeigt die Seite nie. RÜCKFALL: fehlt das Produkt (Abfrage gescheitert, nicht
  * veröffentlicht) oder ist keine Länge kaufbar, bleibt die bisherige
  * 60-cm-Karte ohne Variante stehen; der Qi Alpha geht dann ohne Kettenzeile.
  */

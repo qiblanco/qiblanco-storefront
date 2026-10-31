@@ -198,23 +198,24 @@ export const KETTE_STAHL = {
  * EL-20261030-ae569366, Punkt 1+2): bis dahin stand die inklusive Kette nur
  * auf der Seite, im Warenkorb kam allein der Qi Alpha an und Monta bekam keine
  * Kette. Seit 31.10. ist sie ein eigenes Shopify-Produkt zu 0 € (nur im
- * Hydrogen-Kanal) mit den Längen 40/45/50/60 cm und den SKUs der QiOne-Kette
- * (5555..5558), damit Monta denselben Artikel zieht. Alle Längen ohne
- * Aufpreis, 60 cm vorausgewählt („alle verfügbaren Längen als inklusive 0 EUR
- * anbieten, vorausgewählt 60 cm“; vier Längen wie im US-Laden). 60 cm behält
- * den Titel 'stahl' (Vorwahl, und die Kombinations-Probe wählt
- * `data-tas-kette="stahl"`). Im Warenkorb bindet sie
- * lib/qi-master-addons.server.js wie eine Goldkette an den Qi Alpha.
+ * Hydrogen-Kanal) mit der SKU der QiOne-Kette, damit Monta denselben Artikel
+ * zieht. Im Warenkorb bindet sie lib/qi-master-addons.server.js wie eine
+ * Goldkette an den Qi Alpha.
+ *
+ * NUR 60 CM (Christian 31.10.2026: „es gibt immer standardmäßig die 60iger
+ * kette. anosnsten nur in gold auswählbar.“). Die Stahllängen 50/45/40 cm vom
+ * Vormittag waren faktisch falsch; andere Längen gibt es nur als Goldkette.
+ * Shopify führt die Varianten 40/45/50 noch, aber nicht mehr kaufbar.
+ * 60 cm behält den Titel 'stahl' (Vorwahl, und die Kombinations-Probe wählt
+ * `data-tas-kette="stahl"`).
  */
 export const QM_STAHLKETTE = 'qi-alpha-stahlkette';
-export const KETTE_STAHL_LAENGEN = ['60 cm', '50 cm', '45 cm', '40 cm'].map(
-  (laenge) => ({
-    laenge,
-    titel: laenge === '60 cm' ? 'stahl' : `stahl-${laenge}`,
-    name: `${laenge} Kette aus Chirurgenstahl`,
-    box: `${laenge} - Kette aus Chirurgenstahl`,
-  }),
-);
+export const KETTE_STAHL_LAENGEN = [
+  {laenge: '60 cm', ...KETTE_STAHL},
+];
+
+/** Preisfeld der inklusive Stahlkette auf der Karte (statt „0 €“). */
+export const KETTE_STAHL_PREIS = 'inklusive';
 
 /** Eigene Abfrage der Kaufseite für die Stahlkette (fail-soft im Loader). */
 export const STAHLKETTE_QUERY = `#graphql

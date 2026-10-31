@@ -480,7 +480,7 @@ test('Funnel-Kopf-Stil: eigene Datei, Token, hängt am Layout', () => {
   assert.match(lies('app/root.jsx'), /qi-alpha-funnel-kopf\.css\?url/);
 });
 
-test('Stahlkette (EL-20261030-ae569366): alle Längen zu 0 € als eigene Zeile, 60 cm heißt weiter „stahl“', () => {
+test('Stahlkette (Christian 31.10.2026): nur 60 cm aus Chirurgenstahl, inklusive, als eigene Zeile; weitere Längen nur in Gold', () => {
   const stahl = {
     variants: {
       nodes: ['40 cm', '45 cm', '50 cm', '60 cm'].map((t) => ({
@@ -489,18 +489,32 @@ test('Stahlkette (EL-20261030-ae569366): alle Längen zu 0 € als eigene Zeile,
       })),
     },
   };
+  // Auch wenn Shopify weitere Stahllängen kaufbar führte: die Seite zeigt nur 60 cm.
   const o = regeln.kettenOptionen(null, stahl);
-  assert.deepEqual(o.map((x) => x.titel), ['stahl', 'stahl-50 cm', 'stahl-45 cm', 'stahl-40 cm']);
-  assert.deepEqual(o.map((x) => x.name), [
-    '60 cm Kette aus Chirurgenstahl',
-    '50 cm Kette aus Chirurgenstahl',
-    '45 cm Kette aus Chirurgenstahl',
-    '40 cm Kette aus Chirurgenstahl',
-  ]);
+  assert.deepEqual(o.map((x) => x.titel), ['stahl']);
+  assert.deepEqual(o.map((x) => x.name), ['60 cm Kette aus Chirurgenstahl']);
   assert.equal(o[0].box, '60 cm - Kette aus Chirurgenstahl');
-  assert.ok(o.every((x) => x.art === 'stahl' && x.variante?.id));
-  // Rückfall: Produkt fehlt oder keine Länge kaufbar -> alte 60-cm-Karte ohne Zeile
-  const leer = {variants: {nodes: stahl.variants.nodes.map((v) => ({...v, availableForSale: false}))}};
+  assert.equal(o[0].variante.id, 'gid://shopify/ProductVariant/60');
+  assert.ok(o.every((x) => x.art === 'stahl'));
+  assert.equal(daten.KETTE_STAHL_PREIS, 'inklusive');
+  // Gold in weiteren Längen bleibt wählbar.
+  const gold = {
+    variants: {
+      nodes: ['60 cm', '50 cm', '45 cm'].map((t) => ({
+        id: `g-${t}`, title: t, availableForSale: true,
+        price: {amount: '1500.0', currencyCode: 'EUR'},
+      })),
+    },
+  };
+  const g = regeln.kettenOptionen(gold, stahl);
+  assert.deepEqual(g.map((x) => `${x.art}:${x.name}`), [
+    'gold:60 cm - 750er ethisches Vollgold',
+    'gold:50 cm - 750er ethisches Vollgold',
+    'gold:45 cm - 750er ethisches Vollgold',
+    'stahl:60 cm Kette aus Chirurgenstahl',
+  ]);
+  // Rückfall: Produkt fehlt oder 60 cm nicht kaufbar -> alte 60-cm-Karte ohne Zeile
+  const leer = {variants: {nodes: stahl.variants.nodes.map((v) => ({...v, availableForSale: v.title !== '60 cm'}))}};
   for (const p of [null, leer]) {
     const r = regeln.kettenOptionen(null, p);
     assert.equal(r.length, 1);
