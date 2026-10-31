@@ -36,7 +36,7 @@
  *    hin in derselben Sitzung hält nichts mehr.
  *  - Ohne Bewegung (prefers-reduced-motion, ?film=still) kein Stopper.
  * Der Stand steht für Prüfer an der Figur: data-tap-stopper-stand =
- * wartet | haelt | frei.
+ * wartet | hält | frei.
  */
 
 export const STOPPER_SEKUNDEN = 3;
@@ -140,7 +140,7 @@ export function tapStopper(figur, video, f = window) {
   const spielt = () => !video.paused && !video.ended && video.readyState >= 2;
 
   const sperre = (e) => {
-    if (stand !== 'haelt') return;
+    if (stand !== 'hält') return;
     if (e.type === 'touchstart') {
       touchY0 = e.touches?.[0]?.clientY ?? null;
       return;
@@ -154,12 +154,12 @@ export function tapStopper(figur, video, f = window) {
   let vorigY = 0;
   const klemme = () => {
     const y = f.scrollY;
-    if (stand === 'haelt' && y > haltY + 1 && y > vorigY) f.scrollTo(0, haltY);
+    if (stand === 'hält' && y > haltY + 1 && y > vorigY) f.scrollTo(0, haltY);
     vorigY = Math.min(y, f.scrollY);
   };
 
   const loesen = () => {
-    if (stand !== 'haelt') return;
+    if (stand !== 'hält') return;
     stand = 'frei';
     figur.dataset.tapStopperStand = stand;
     merkeSpeicher(f, schluessel);
@@ -167,8 +167,8 @@ export function tapStopper(figur, video, f = window) {
     abbauen();
   };
 
-  const zaehlen = (jetzt) => {
-    if (stand !== 'haelt') return;
+  const zählen = (jetzt) => {
+    if (stand !== 'hält') return;
     const t = video.currentTime;
     const neu = weiterGezaehlt(gespielt, letzteZeit, t);
     if (neu > gespielt) seitFortschritt = jetzt;
@@ -185,12 +185,12 @@ export function tapStopper(figur, video, f = window) {
       loesen();
       return;
     }
-    takt = f.requestAnimationFrame(zaehlen);
+    takt = f.requestAnimationFrame(zählen);
   };
 
   const halten = () => {
     const l = lage();
-    stand = 'haelt';
+    stand = 'hält';
     figur.dataset.tapStopperStand = stand;
     haltY = haltePunkt({y: f.scrollY, ...l});
     gespielt = 0;
@@ -212,7 +212,7 @@ export function tapStopper(figur, video, f = window) {
       const weit = f.scrollY - haltY > 80;
       f.scrollTo({top: haltY, behavior: weit ? 'smooth' : 'auto'});
     }
-    takt = f.requestAnimationFrame(zaehlen);
+    takt = f.requestAnimationFrame(zählen);
   };
 
   const pruefe = () => {
