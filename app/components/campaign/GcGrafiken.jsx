@@ -13,8 +13,9 @@ import {useEffect, useLayoutEffect, useRef, useState} from 'react';
  *   fertig  im Server-HTML und ohne JavaScript: das Endbild, nichts bewegt sich.
  *   bereit  nach dem Mount: das Startbild, die Animation steht angehalten.
  *   aktiv   sobald die Szene zu 30 % im Bild ist: die Animation läuft EINMAL.
- * Wer reduzierte Bewegung wünscht oder keinen IntersectionObserver hat, bleibt
- * auf „fertig“. Ohne JavaScript ist die Grafik nie leer.
+ * Wer keinen IntersectionObserver hat, bleibt auf „fertig“; wer reduzierte
+ * Bewegung wünscht, bekommt nur das Einblenden (Seiten-CSS). Ohne
+ * JavaScript ist die Grafik nie leer.
  *
  * Die Bewegung selbst steht im Seiten-Stylesheet unter dem Zustand, nur
  * transform, opacity und stroke-dashoffset. Keine Zahl steht in dieser Datei;
@@ -31,9 +32,9 @@ export function Szene({name, legende, className = '', children}) {
   useFruehEffekt(() => {
     const el = wurzel.current;
     if (!el || typeof window.IntersectionObserver !== 'function') return undefined;
-    const ruhig =
-      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (ruhig && ruhig.matches) return undefined;
+    // Auch bei reduzierter Bewegung spielt die Szene: die Seiten-CSS lässt
+    // dort nur Einblenden zu (Apple HIG, Befund 31.10.2026), nie Drehen oder
+    // Gleiten. Bis 31.10. blieb die Szene dann auf „fertig“ stehen.
     setZustand('bereit');
     const beobachter = new IntersectionObserver(
       (eintraege) => {

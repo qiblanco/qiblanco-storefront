@@ -783,6 +783,13 @@
   }
 }
 
+/* Angehalten, bis der Leser die Grafik erreicht (useBewegungImBild, Apple-
+   Befund 31.10.2026: einmalige Animationen waren fertig, bevor jemand
+   hinscrollte). Ohne JavaScript fehlt das Attribut, alles läuft wie vorher. */
+.kw [data-bewegung='wartet'] * {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .kw-leit__arm,
   .kw-leit__nachbar,
@@ -809,6 +816,56 @@
 
   .kw-kurve--zone {
     stroke-dasharray: none;
+  }
+}
+
+/* Reduzierte Bewegung heißt bei Apple „Überblenden statt Bewegung“ (HIG,
+   Accessibility › Motion). Statt alles anzuhalten, bleibt ein ruhiger Rest:
+   nur Opazität, keine Drehung, kein Gleiten, kein Wachsen. So ist die Grafik
+   auch auf einem iPhone mit „Bewegung reduzieren“ lebendig und zeigt ihr
+   Endbild. */
+@media (prefers-reduced-motion: reduce) {
+  .kw-leit__nachbar,
+  .kw-leit__ringkante,
+  .kw-marke {
+    animation: kw-ruhig-ein 1.6s ease-out both;
+  }
+
+  .kw-bruecke--wechselt {
+    animation: kw-ruhig-atmet 4s ease-in-out infinite;
+  }
+
+  .kw-domaene__puls {
+    animation: kw-ruhig-puls 3s ease-in-out infinite;
+  }
+}
+
+@keyframes kw-ruhig-puls {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes kw-ruhig-ein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes kw-ruhig-atmet {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
   }
 }
 

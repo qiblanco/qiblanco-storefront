@@ -558,8 +558,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .qb-mol__arme--weitet,
-  .qb-schwarm--verband > g {
+  .qb-mol__arme--weitet {
     animation: none;
     transform: none;
   }

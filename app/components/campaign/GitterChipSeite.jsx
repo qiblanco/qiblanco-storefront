@@ -1,4 +1,4 @@
-import {Fragment} from 'react';
+import {Fragment, useRef} from 'react';
 import {Link} from 'react-router';
 import {
   GrafikLeit,
@@ -9,6 +9,7 @@ import {Szene, GrafikGitterChip, GrafikKette} from '~/components/campaign/GcGraf
 import {BalkenDiagramm} from '~/components/reusables/BalkenDiagramm';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
+import {useBewegungImBild} from '~/components/reusables/useBewegungImBild';
 import {STUDIEN_NACH_SLUG, studienPfad} from '~/data/studien';
 import {SEITE, KETTE, STUFEN, QUELLEN} from '~/data/gitterchip-seite';
 
@@ -223,9 +224,15 @@ function Quellen() {
   );
 }
 
+// Der Chip im Kopf liegt auf dem Handy unter der Falz: sein einmaliger Puls
+// spielt erst, wenn der Leser ihn erreicht (Apple-Befund 31.10.2026).
+const BEWEGT = '.gc-figur--kopf';
+
 export function GitterChipSeite() {
+  const seite = useRef(null);
+  useBewegungImBild(seite, BEWEGT);
   return (
-    <article className="gc">
+    <article className="gc" ref={seite}>
       <header className="gc-kopf" data-section="gc-kopf">
         <div className="gc-kopf__text">
           <p className="gc-dachzeile">{SEITE.dachzeile}</p>

@@ -4,6 +4,15 @@ const GITTERCHIP_VIDEO_DESKTOP =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/gitterchip-molecules-desktop-16x9.mp4?v=1784313940';
 const GITTERCHIP_VIDEO_MOBILE =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/gitterchip-molecules-mobile-9x16.mp4?v=1784313946';
+// Start- und Endbild der beiden Videos (WebP, aus dem ersten und letzten Bild
+// gezogen, 31.10.2026): Poster bis zum ersten dekodierten Bild, Endbild als
+// Rückfall auf Geräten, die das Video nicht abspielen (iOS ohne Geste,
+// Stromsparmodus), und bei reduzierter Bewegung.
+const GITTERCHIP_BILD = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/gitterchip-molecules-';
+const GITTERCHIP_POSTER_DESKTOP = `${GITTERCHIP_BILD}desktop-16x9-start.webp?v=1793445786`;
+const GITTERCHIP_POSTER_MOBILE = `${GITTERCHIP_BILD}mobile-9x16-start.webp?v=1793445778`;
+const GITTERCHIP_ENDBILD_DESKTOP = `${GITTERCHIP_BILD}desktop-16x9-ende.webp?v=1793445799`;
+const GITTERCHIP_ENDBILD_MOBILE = `${GITTERCHIP_BILD}mobile-9x16-ende.webp?v=1793445782`;
 
 /*
  * GitterchipMoleculesScrub -- die EINE Definition der GitterChip-Molecules-
@@ -39,6 +48,10 @@ export function GitterchipMoleculesScrub({
       {...(heightVhMobile ? {heightVhMobile} : {})}
       srcDesktop={GITTERCHIP_VIDEO_DESKTOP}
       srcMobile={GITTERCHIP_VIDEO_MOBILE}
+      posterDesktop={GITTERCHIP_POSTER_DESKTOP}
+      posterMobile={GITTERCHIP_POSTER_MOBILE}
+      endbildDesktop={GITTERCHIP_ENDBILD_DESKTOP}
+      endbildMobile={GITTERCHIP_ENDBILD_MOBILE}
       overlayStart={{
         titel: 'Der Gitterchip® in Aktion',
         text: 'Scrolle: der Blick ins Innere des QiOne\u00ae 2 Pro.',
