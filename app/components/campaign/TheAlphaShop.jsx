@@ -99,7 +99,9 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
     (x) => x.n === nummer && x.status === 'frei',
   );
   const kette =
-    ketten.find((k) => k.titel === ketteTitel) ?? ketten[ketten.length - 1];
+    ketten.find((k) => k.titel === ketteTitel) ??
+    ketten.find((k) => k.titel === 'stahl') ??
+    ketten[ketten.length - 1];
 
   const brutto = (money, handle) =>
     money ? bruttoAnzeige(money.amount, handle, money.currencyCode, land) : 0;
@@ -142,11 +144,14 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   // Shopify legt die Zeilen eines cartLinesAdd umgekehrt in den Warenkorb
   // (gemessen 28.10.2026). Übergeben wird Kette, Nummer, Qi Alpha®, damit
   // Warenkorb und Kasse Qi Alpha®, Nummer, Kette zeigen (Christian 27.10. Z3).
+  // Die Kette geht als Zeile mit, ob Gold oder die inklusive Stahlkette zu
+  // 0 € (Elina 30.10.2026, EL-20261030-ae569366: „damit Monta beide Artikel
+  // bekommt“). Stahl ohne Variante (Rückfall, s. kettenOptionen) = keine Zeile.
   const linien = haupt?.id
     ? [
         ...addonLinien({
           wunschnummer: nummerEintrag?.variante ?? null,
-          kette: kette?.art === 'gold' ? kette.variante : null,
+          kette: kette?.variante ?? null,
         }).reverse(),
         {merchandiseId: haupt.id, quantity: 1, selectedVariant: haupt},
       ]
@@ -611,7 +616,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
             konfig: konfigText({
               qiAlpha: haupt?.id,
               nummer: nummerEintrag?.variante?.id ?? null,
-              kette: ketteGold ? kette.variante?.id : null,
+              kette: kette?.variante?.id ?? null,
             }),
           })}
           onClose={schliesseFenster}

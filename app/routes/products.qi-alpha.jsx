@@ -2,7 +2,10 @@ import {redirect, useLoaderData} from 'react-router';
 import {getSelectedProductOptions} from '@shopify/hydrogen';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
 import {TheAlphaShop} from '~/components/campaign/TheAlphaShop';
-import {KOPF} from '~/components/campaign/the-alpha-shop-daten';
+import {
+  KOPF,
+  STAHLKETTE_QUERY,
+} from '~/components/campaign/the-alpha-shop-daten';
 import shopStyles from '~/styles/the-alpha-produkt.css?url';
 import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
@@ -199,13 +202,16 @@ async function ladeQiAlpha(storefront, request) {
 async function loadCriticalData({context, request}) {
   const {storefront} = context;
 
-  const [{product}, addonDaten] = await Promise.all([
+  const [{product}, addonDaten, stahlDaten] = await Promise.all([
     ladeQiAlpha(storefront, request),
     // DIE ADD-ONS UNTER DEM KAUFKNOPF (Christian 2026-09-24): Wunschnummer
     // und Goldkette sind eigene Shopify-Produkte (lib/qi-master-addons.js).
     // FAIL-SOFT: fehlt eines (noch nicht veröffentlicht) oder scheitert die
     // Abfrage, entfällt nur der Bereich — die Kaufseite selbst bleibt heil.
     storefront.query(QM_ADDONS_QUERY).catch(() => null),
+    // Inklusive Stahlkette als eigene 0-€-Zeile (EL-20261030-ae569366),
+    // fail-soft wie die Add-ons: fehlt sie, bleibt die alte 60-cm-Karte.
+    storefront.query(STAHLKETTE_QUERY).catch(() => null),
   ]);
 
   if (!product?.id) {
@@ -246,6 +252,7 @@ async function loadCriticalData({context, request}) {
       // Neuer Handle zuerst, alter als Rückfall (s09 wechselt ihn).
       wunschnummer: addonDaten?.wunschnummerNeu ?? addonDaten?.wunschnummer ?? null,
       kette: addonDaten?.ketteNeu ?? addonDaten?.kette ?? null,
+      stahlkette: stahlDaten?.stahlkette ?? null,
     },
   };
 }

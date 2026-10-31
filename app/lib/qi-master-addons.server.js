@@ -1,5 +1,15 @@
 import {CartForm} from '@shopify/hydrogen';
-import {bindungsKorrektur} from '~/lib/qi-master-addons';
+import {bindungsKorrektur, QM_ADDON} from '~/lib/qi-master-addons';
+import {QM_STAHLKETTE} from '~/components/campaign/the-alpha-shop-daten';
+
+/*
+ * Die inklusive Stahlkette (0 €, EL-20261030-ae569366) zählt in der
+ * Bindungsregel als Kette: ohne Qi Alpha keine Kette, je Qi Alpha höchstens
+ * eine (Gold ODER Stahl). Abgebildet über den Handle, damit die geteilte
+ * Regel in lib/qi-master-addons.js unverändert bleibt.
+ */
+const alsBindungsHandle = (handle) =>
+  handle === QM_STAHLKETTE ? QM_ADDON.kette : handle;
 
 /*
  * Bindung der Qi-Master-Add-ons an den Qi Master — in der Warenkorb-Action
@@ -53,7 +63,7 @@ export async function bindeQiMasterAddons({cart, action, result}) {
   const zeilen = (voll?.lines?.nodes || []).map((z) => ({
     id: z.id,
     quantity: z.quantity,
-    handle: z.merchandise?.product?.handle,
+    handle: alsBindungsHandle(z.merchandise?.product?.handle),
     variantId: z.merchandise?.id,
     attributes: z.attributes,
   }));
