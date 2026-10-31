@@ -6,7 +6,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {pruefeSeite} from '../apple-seite-logik.js';
 import {APPLE_SEITEN} from '../../../lib/apple-seiten.js';
-import {QIONE_2_PRO_DETAILS} from './qione-2-pro-details-daten.js';
+import {QIONE_2_PRO_DETAILS, TECHNIK} from './qione-2-pro-details-daten.js';
+import {KONJUNKTIV, texteVon} from '../apple-seite-logik.js';
 import {QIHOME_DETAILS} from './qihome-details-daten.js';
 import {QIBRACELET_DETAILS} from './qibracelet-details-daten.js';
 
@@ -16,7 +17,7 @@ const DETAILS = {
   'qibracelet-details': [QIBRACELET_DETAILS, '/products/qibracelet'],
 };
 
-const nurBaukasten = (liste) => liste.filter((s) => !['video', 'mikroskop'].includes(s.art));
+const nurBaukasten = (liste) => liste.filter((s) => !['video', 'mikroskop', 'technik'].includes(s.art));
 
 test('Detailseiten: Baukasten-Regeln ohne Mangel (Hero zuerst, Anna, kein Preisanker, kein Konjunktiv)', () => {
   for (const [seite, [daten]] of Object.entries(DETAILS)) {
@@ -82,5 +83,30 @@ test('360: der Kopf jeder Detailseite dreht (kein Standbild)', () => {
     assert.equal(s[0].art, 'hero', name);
     assert.equal(s[0].bild.drehung, d, `${name}: der Kopf dreht`);
     pruefe360(s.map((x) => x.bild), name);
+  }
+});
+
+// „So wirkt er“ (Auftrag 20261030-update-shop-startseite-detailseite-technologie-
+// wissen-mehr-knopf): Christians Reihenfolge Feld -> Wasser -> Körper ->
+// Forschung, je Schritt ein kurzer Text, ein Medium und ein „Mehr“.
+test('QiOne-Detailseite: So wirkt er in Christians Reihenfolge, jeder Schritt mit Medium und Mehr', () => {
+  assert.ok(QIONE_2_PRO_DETAILS.some((s) => s.art === 'technik'), 'Platz in der Sektionsliste');
+  assert.deepEqual(TECHNIK.schritte.map((s) => s.id), ['feld', 'wasser', 'zelle', 'forschung']);
+  for (const s of TECHNIK.schritte) {
+    assert.ok(s.kurz?.length >= 1, `${s.id}: kurzer Text`);
+    assert.ok(['bild', 'video', 'animation'].includes(s.medium?.art), `${s.id}: Medium`);
+    if (s.medium.art === 'video') {
+      assert.match(s.medium.mp4, /^https:\/\/cdn\.shopify\.com\//, `${s.id}: Video vom Shopify-CDN`);
+      assert.ok(s.medium.poster, `${s.id}: Vorschaubild`);
+    }
+    const mehr = [...(s.mehr?.absaetze || []), ...(s.mehr?.liste?.punkte || []).map((x) => x.text)];
+    assert.ok(s.mehr?.knopf && mehr.length >= 1, `${s.id}: Mehr mit Text`);
+  }
+  for (const t of texteVon(TECHNIK)) {
+    assert.ok(!KONJUNKTIV.test(t), `Konjunktiv: ${t}`);
+    assert.ok(!/™/.test(t), `Gitterchip mit ®: ${t}`);
+  }
+  for (const z of TECHNIK.schritte.find((s) => s.id === 'forschung').zahlen) {
+    assert.match(z.quelle.href, /^\/pages\/studie-/, `${z.titel}: Fundstelle`);
   }
 });
