@@ -29,6 +29,16 @@ import {
 
 export {kettenKacheln};
 
+/* Galerie-Hauptbild: Breitenstufen bis zum CDN-Master (2048/2056 px), damit
+   Tablets mit dpr 2 nicht hochskalieren (Gate 12 bild-aufloesung). sizes folgt
+   der im Testserver gemessenen Fläche je Format (31.10.2026: 328…868 px =
+   100vw - 32 unter 1024, 551 px bei 1024, 653 px ab 1232 = (1200 - 32 - 48)
+   * 7/12, Raster in the-alpha-produkt.css). Dieselbe Rechnung gilt für
+   AlphaVorlage.jsx und TheAlphaShop.jsx, beide stehen auf .tas-raster-seite. */
+const GALERIE_BREITEN = [600, 900, 1200, 1600, 2048];
+const GALERIE_SIZES =
+  '(min-width: 1232px) 654px, (min-width: 1024px) calc((100vw - 80px) * 0.584), calc(100vw - 32px)';
+
 /*
  * PRODUKT-KONFIGURATOR NACH DER QI-ALPHA-KAUFSEITE (Christian 27.10.2026, Z2:
  * „dieses shopdesing auf die Verkaufseiten von qione 2 pro, qihome udn
@@ -259,6 +269,8 @@ export function AlphaVorlage({
                   key={grossesBild.url}
                   className="tas-bild tas-blende"
                   src={mitBreite(grossesBild.url, 1200)}
+                  srcSet={GALERIE_BREITEN.map((w) => `${mitBreite(grossesBild.url, w)} ${w}w`).join(', ')}
+                  sizes={GALERIE_SIZES}
                   alt={grossesBild.altText || product.title}
                   width="1200"
                   height="1200"

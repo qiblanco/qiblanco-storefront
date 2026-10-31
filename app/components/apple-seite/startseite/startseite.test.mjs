@@ -44,7 +44,7 @@ const DREHUNG_AUS_DATEI = {"360-qione-front": "qione", "360-qibracelet-winkel": 
 function pruefe360(bilder, name) {
   let n = 0;
   for (const b of bilder) {
-    const m = /qb-video360-ersatzbild--(360-[a-z]+-[a-z]+)--/.exec(b?.url || "");
+    const m = /qb-video360-ersatzbild--(360-[a-z]+-[a-z]+)(?:-\d+)?--/.exec(b?.url || "");
     if (!m) continue;
     n++;
     assert.equal(b.drehung, DREHUNG_AUS_DATEI[m[1]], `${name}: ${m[1]} steht als Standbild`);

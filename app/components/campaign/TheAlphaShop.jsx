@@ -33,6 +33,21 @@ import {THE_ALPHA_SERIE} from './the-alpha-daten-serie-vergeben';
 import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
 import {Schlussleiste} from '~/components/reusables/Schlussleiste';
 
+/* Galerie-Hauptbild: Breitenstufen bis zum CDN-Master (2048/2056 px), damit
+   Tablets mit dpr 2 nicht hochskalieren (Gate 12 bild-aufloesung). sizes folgt
+   der im Testserver gemessenen Fläche je Format (31.10.2026: 328…868 px =
+   100vw - 32 unter 1024, 551 px bei 1024, 653 px ab 1232 = (1200 - 32 - 48)
+   * 7/12, Raster in the-alpha-produkt.css). Dieselbe Rechnung gilt für
+   AlphaVorlage.jsx und TheAlphaShop.jsx, beide stehen auf .tas-raster-seite. */
+const GALERIE_BREITEN = [600, 900, 1200, 1600, 2048];
+const GALERIE_SIZES =
+  '(min-width: 1232px) 654px, (min-width: 1024px) calc((100vw - 80px) * 0.584), calc(100vw - 32px)';
+/* Gravurbild in der rechten Spalte (5fr): 1728 ist die Breite des Ausschnitts,
+   größer liefert das CDN nicht. Unter 1024 volle Breite wie die Galerie. */
+const GRAVUR_BREITEN = [600, 1200, 1728];
+const GRAVUR_SIZES =
+  '(min-width: 1232px) 467px, (min-width: 1024px) calc((100vw - 80px) * 0.417), calc(100vw - 32px)';
+
 /*
  * SHOPSEITE /products/the-alpha — Apple-nahe Kaufseite (Christian 25.10.2026
  * Z9/Z14–Z41, 26.10.2026 Z56–Z85; Grossjob 20261025-prio1-the-alpha-
@@ -230,6 +245,8 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                 key={grossesBild.url}
                 className="tas-bild tas-blende"
                 src={`${grossesBild.url}&width=1200`}
+                srcSet={GALERIE_BREITEN.map((w) => `${grossesBild.url}&width=${w} ${w}w`).join(', ')}
+                sizes={GALERIE_SIZES}
                 alt={grossesBild.alt}
                 width="1200"
                 height="1200"
@@ -359,6 +376,8 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                     <img
                       className="tas-gravur-foto"
                       src={`${NUMMER.bildGravur.url}&width=${NUMMER.bildGravur.breite}`}
+                      srcSet={GRAVUR_BREITEN.map((w) => `${NUMMER.bildGravur.url}&width=${w} ${w}w`).join(', ')}
+                      sizes={GRAVUR_SIZES}
                       alt={NUMMER.bildGravur.alt}
                       width={NUMMER.bildGravur.breite}
                       height={NUMMER.bildGravur.hoehe}

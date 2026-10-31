@@ -25,22 +25,28 @@ const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
 export const ERSATZBILD_360 = {
   qione: {
     drehung: 'qione',
-    bild: CDN + 'qb-video360-ersatzbild--360-qione-front--f0024fcab5ec.jpg?v=1790809389',
+    bild: CDN + 'qb-video360-ersatzbild--360-qione-front-1440--f0024fcab5ec.jpg?v=1793414659',
+    kante: 1440,
     alt: 'QiOne® 2 Pro von vorn, gebürsteter Edelstahl mit goldenem Chip',
   },
   qihome: {
     drehung: 'qihome',
-    bild: CDN + 'qb-video360-ersatzbild--360-qihome-front--d19c273efe67.jpg?v=1790809394',
+    bild: CDN + 'qb-video360-ersatzbild--360-qihome-front-1440--d19c273efe67.jpg?v=1793414663',
+    kante: 1440,
     alt: 'QiHome® Air von vorn, Holz und gebürsteter Edelstahl mit goldenem Chip',
   },
   qibracelet: {
     drehung: 'qibracelet',
     bild: CDN + 'qb-video360-ersatzbild--360-qibracelet-winkel--a26b001f0816.jpg?v=1790809401',
+    kante: 1080,
     alt: 'QiBracelet® schräg von vorn, offener Reif mit goldenem Chip',
   },
 };
 
-/* Native Kantenlänge aller drei Bilder und Videos (1:1). */
+/* Native Kantenlänge der drei Videos (1:1) und Rückfall für ein Bild ohne
+   eigene `kante`. Die Standbilder von QiOne und QiHome sind seit 31.10.2026
+   1440 px (Lanczos aus dem 1080er Frame, Frame-Hash im Namen bleibt), damit
+   Tablets mit dpr 2 nicht hochskalieren (Gate 12 bild-aufloesung, Soll 1224). */
 export const ERSATZBILD_KANTE = 1080;
 
 /* Das Video gilt erst als laufend, wenn currentTime nach `playing` um
@@ -283,7 +289,7 @@ export function useVideoNachholen(videoRef, an = true) {
  */
 export function Ersatzbild({ersatz, zustand, objectFit = 'contain', anzeige = null}) {
   const leiter = anzeige
-    ? bildQuellen(ersatz.bild, {...anzeige, masterBreite: ERSATZBILD_KANTE})
+    ? bildQuellen(ersatz.bild, {...anzeige, masterBreite: ersatz.kante ?? ERSATZBILD_KANTE})
     : {srcSet: undefined, sizes: undefined};
   return (
     <img
@@ -292,8 +298,8 @@ export function Ersatzbild({ersatz, zustand, objectFit = 'contain', anzeige = nu
       srcSet={leiter.srcSet}
       sizes={leiter.sizes}
       alt={ersatz.alt}
-      width={ERSATZBILD_KANTE}
-      height={ERSATZBILD_KANTE}
+      width={ersatz.kante ?? ERSATZBILD_KANTE}
+      height={ersatz.kante ?? ERSATZBILD_KANTE}
       decoding="async"
       fetchPriority="high"
       style={{

@@ -18,18 +18,18 @@ export const KAUFSEITE = '/products/qione-2-pro';
 
 const BILD = Object.freeze({
   qione: {
-    url: `${CDN}/files/qb-video360-ersatzbild--360-qione-front--f0024fcab5ec.jpg?v=1790809389`,
+    url: `${CDN}/files/qb-video360-ersatzbild--360-qione-front-1440--f0024fcab5ec.jpg?v=1793414659`,
     // 360-Grad-Drehung an dieser Stelle (AsBild -> Produkt360Video), das Bild bleibt Ersatzbild.
     drehung: 'qione',
     alt: 'QiOne® 2 Pro von vorn, Gehäuse aus Chirurgenstahl mit goldenem Gitterchip®',
-    breite: 1080,
-    hoehe: 1080,
+    breite: 1440,
+    hoehe: 1440,
   },
   gitterchip: {
-    url: `${CDN}/files/QiOne_Gitterchip-1-1024x1024.jpg_1.webp?v=1670947861`,
+    url: `${CDN}/files/QiOne_Gitterchip-1680.webp?v=1793415850`,
     alt: 'Gitterchip® des QiOne® 2 Pro: goldfarbene Scheibe mit gleichmäßigem, wabenartigem Gittermuster',
-    breite: 1024,
-    hoehe: 1024,
+    breite: 1680,
+    hoehe: 1680,
   },
   hand: {
     url: `${CDN}/products/2021-04-qiblanco-bali-16_e66b45ce-857c-4bd8-a123-05e0b2d4229e.jpg?v=1698259307`,

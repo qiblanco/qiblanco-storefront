@@ -195,7 +195,7 @@ export function AlphaWissen({kapitel, bilder = [], studien = null}) {
                 <figure className="taw-bild">
                   <img
                     src={mitBreite(bild.url, 1024)}
-                    srcSet={`${mitBreite(bild.url, 512)} 512w, ${mitBreite(bild.url, 1024)} 1024w`}
+                    srcSet={`${mitBreite(bild.url, 512)} 512w, ${mitBreite(bild.url, 1024)} 1024w, ${mitBreite(bild.url, 1536)} 1536w, ${mitBreite(bild.url, 2048)} 2048w`}
                     sizes="(min-width: 1024px) 512px, calc(100vw - 32px)"
                     alt={bild.altText || ''}
                     width={1024}
