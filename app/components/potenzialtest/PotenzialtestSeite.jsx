@@ -123,7 +123,7 @@ export function PotenzialtestSeite({quelle, testLauf, antwort}) {
     }
   }
 
-  function pruefen(ereignis) {
+  function beimAbsenden(ereignis) {
     const ergebnis = anfrageAusFormular(new FormData(ereignis.currentTarget));
     if (ergebnis.fehler) {
       ereignis.preventDefault();
@@ -174,7 +174,7 @@ export function PotenzialtestSeite({quelle, testLauf, antwort}) {
       <Form
         method="post"
         noValidate
-        onSubmit={pruefen}
+        onSubmit={beimAbsenden}
         onKeyDown={taste}
         className="pt-test"
         aria-label="Potenzialtest"
@@ -271,7 +271,7 @@ export function PotenzialtestSeite({quelle, testLauf, antwort}) {
                 ) : null}
               </fieldset>
               <div className="pt-nav pt-nur-js">
-                <button type="button" className="pt-zurueck" onClick={() => gehe(nr - 1)}>
+                <button type="button" className="pt-vorher" onClick={() => gehe(nr - 1)}>
                   Zurück
                 </button>
                 <button type="button" className="pt-knopf pt-knopf--leise" onClick={weiter}>
@@ -342,7 +342,7 @@ export function PotenzialtestSeite({quelle, testLauf, antwort}) {
             ) : null}
           </fieldset>
           <div className="pt-nav pt-nur-js">
-            <button type="button" className="pt-zurueck" onClick={() => gehe(SCHRITT_QUALI - 1)}>
+            <button type="button" className="pt-vorher" onClick={() => gehe(SCHRITT_QUALI - 1)}>
               Zurück
             </button>
             <button type="button" className="pt-knopf pt-knopf--leise" onClick={weiter}>
@@ -418,7 +418,7 @@ export function PotenzialtestSeite({quelle, testLauf, antwort}) {
           <div className="pt-nav">
             <button
               type="button"
-              className="pt-zurueck pt-nur-js"
+              className="pt-vorher pt-nur-js"
               onClick={() => gehe(SCHRITT_KONTAKT - 1)}
             >
               Zurück

@@ -1,4 +1,5 @@
-import {useActionData, useLoaderData} from 'react-router';
+import {useLoaderData} from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {PotenzialtestSeite} from '~/components/potenzialtest/PotenzialtestSeite';
 import {
   anfrageAusFormular,
@@ -139,7 +140,9 @@ export const meta = () => [
 
 export default function PotenzialtestRoute() {
   const {quelle, testLauf} = useLoaderData();
-  const antwort = useActionData();
+  // Haus-Hook (app/lib/aktionsergebnis.js): das Ergebnis überlebt eine Revalidierung
+  // (etwa nach der Cookie-Wahl), sonst wäre es nach einem Klick im Banner weg.
+  const antwort = useAktionsergebnisUeberRevalidierung();
   return (
     <PotenzialtestSeite quelle={quelle} testLauf={testLauf} antwort={antwort} />
   );
