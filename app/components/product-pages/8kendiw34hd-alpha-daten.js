@@ -15,10 +15,10 @@
  * Box: ob es im Paket liegt, ist nicht belegt.
  */
 
-// Band: Kundenwort zuerst (Kanon Kaufüberzeugung: „kohärentes Wasser“ nicht als
-// Einstieg), gebaut wie das Band des QiBracelet® („Zellschutz für unterwegs“).
+// Band: ein Satz über den Kunden, kein Fachbegriff (Kanon Kaufüberzeugung:
+// „kohärentes Wasser“ nicht als Einstieg; PR-Manager s13-r3 Durchgang 2).
 export const BAND = {
-  titel: 'Zellschutz am Körper',
+  titel: 'Zu zweit.',
   unter: '- Always On Mode -',
   drehung: 'qione',
 };
@@ -90,9 +90,9 @@ export const FAKTEN = {
     },
     {
       icon: 'kraft',
-      zahl: '8×',
-      titel: 'Der größere Gegenwert',
-      satz: 'Achtmal so viel Leistungsvolumen wie der QiOne® 1.',
+      zahl: '2×',
+      titel: 'Ein Paket',
+      satz: 'Zwei Geräte, ein Versand, ein Preis.',
     },
   ],
 };
@@ -163,7 +163,7 @@ export const FAQ = {
     },
     {
       f: 'Gibt es eine Kette dazu?',
-      a: 'Ja, als Necklace für QiOne®. Sie ist aus Chirurgenstahl, 1,6 mm stark, und passt durch die 2,5-mm-Öse. Du wählst sie in deiner Länge, je Gerät eine.',
+      a: 'Die Kette gibt es einzeln, als Necklace für QiOne®: Chirurgenstahl, 1,6 mm stark, passend für die 2,5-mm-Öse. Du wählst sie in deiner Länge, je Gerät eine.',
     },
     {
       f: 'Kann ich das Paket zurückgeben, wenn es nicht zu mir passt?',
