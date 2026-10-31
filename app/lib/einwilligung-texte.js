@@ -140,7 +140,9 @@ export function hinweisHtml(sprache, {entschieden = false} = {}) {
     `</div></div>` +
     `<div id="qb-einwilligung-dialog" data-qb-einwilligung="dialog" role="dialog" aria-modal="false" aria-labelledby="qb-ew-titel" hidden>` +
     `<button type="button" class="qb-ew-zu" data-qb-wahl="zu" aria-label="${esc(t.zu)}">×</button>` +
-    `<h2 id="qb-ew-titel" class="qb-ew-titel">${esc(t.dialogTitel)}</h2>` +
+    // Kein <h2>: der Hinweis steht als erstes body-Kind im Server-HTML JEDER Seite; ein h2 dort änderte die
+    // Abschnittsüberschriften aller Gewinnerseiten (Gewinnerschutz-Tor, s06-r6). role=heading trägt die Semantik.
+    `<div id="qb-ew-titel" class="qb-ew-titel" role="heading" aria-level="2">${esc(t.dialogTitel)}</div>` +
     `<p class="qb-ew-text">${esc(t.dialogText)}</p>` +
     `<label class="qb-ew-kat"><span class="qb-ew-kat__kopf"><input type="checkbox" checked disabled>` +
     `<strong>${esc(t.kategorien.necessary[0])}</strong></span><span class="qb-ew-kat__text">${esc(t.kategorien.necessary[1])}</span></label>` +
