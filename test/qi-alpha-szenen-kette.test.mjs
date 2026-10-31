@@ -71,3 +71,13 @@ test('Kaufleiste: die Schluss-Bühne zählt erst ab ihrem Stillstand', () => {
   assert.match(P, /const versatz = ende\?\.classList\.contains\('tap-nachruecken'\) \? kleinesBild : 0;/);
   assert.match(P, /const oben = ende \? ende\.getBoundingClientRect\(\)\.top \+ versatz : Infinity;/);
 });
+
+test('Video puffert in der Kette nie vor dem ersten Scrollen (probe_video_a.py D1)', () => {
+  // Live nach #1138: das Video liegt nah am Titel, Stufe 2 lud es schon beim Laden.
+  const T = lies('app/components/campaign/TheAlphaTon.jsx');
+  assert.match(T, /else if \(ersteStufe\) puffern\(e\.target\);\s*else nahDa\.add\(e\.target\);/);
+  assert.match(T, /const nachgeholt = \(\) => \[\.\.\.nahDa\]\.forEach\(puffern\);/);
+  assert.match(T, /window\.addEventListener\('scroll', nachgeholt, \{passive: true, once: true\}\);/);
+  // Die Hörer laufen in Reihenfolge: erst gescrollt() (ersteStufe = true), dann nachgeholt.
+  assert.ok(T.indexOf("addEventListener('scroll', gescrollt") < T.indexOf("addEventListener('scroll', nachgeholt"));
+});

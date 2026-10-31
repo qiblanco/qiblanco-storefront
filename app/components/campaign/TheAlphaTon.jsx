@@ -507,18 +507,29 @@ function binde_videos(wurzel, m) {
     window.removeEventListener('load', geladen);
   });
 
-  // Stufe 2: anderthalb Bildschirme vor der Szene den Rest puffern.
+  // Stufe 2: anderthalb Bildschirme vor der Szene den Rest puffern, aber nie
+  // vor dem ersten Scrollen. In der Szenen-Kette (Qi Alpha A, 31.10.) liegt das
+  // Video im Dokument nah am Titel und war sonst schon beim Laden „nah“
+  // (probe_video_a.py D1: 2 Video-Anfragen ohne Scrollen).
+  const nahDa = new Set();
+  const puffern = (v) => {
+    vorladen('auto')(v);
+    nah.unobserve(v);
+    nahDa.delete(v);
+  };
   const nah = new IntersectionObserver(
     (eintraege) => {
       for (const e of eintraege) {
-        if (e.isIntersecting) {
-          vorladen('auto')(e.target);
-          nah.unobserve(e.target);
-        }
+        if (!e.isIntersecting) nahDa.delete(e.target);
+        else if (ersteStufe) puffern(e.target);
+        else nahDa.add(e.target);
       }
     },
     {rootMargin: '150% 0px 150% 0px'},
   );
+  const nachgeholt = () => [...nahDa].forEach(puffern);
+  window.addEventListener('scroll', nachgeholt, {passive: true, once: true});
+  aufraeumen.push(() => window.removeEventListener('scroll', nachgeholt));
   // Abspielen ab gut einem Drittel im Bild, Pause, wenn es fast weg ist.
   // Ein Video in einer Einblendung ([data-tap-ein]) startet erst, wenn es
   // eingeblendet ist; vorher liefe sein Anfang unsichtbar ab (bis 28.10.
