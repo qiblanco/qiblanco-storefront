@@ -5,6 +5,7 @@ import {ScrollMikroskopVideo} from '~/components/index-components/ScrollMikrosko
 import {AppleSeite} from '../AppleSeite';
 import {Sektion} from '../AppleSektionen';
 import {useStartseitePreise} from '../startseite/startseite-preise';
+import {TechnikKette} from './TechnikKette';
 
 /*
  * APPLE-FASSUNG DER PRODUKT-DETAILSEITEN (Grossjob 20261029-GROSSJOB-alle-
@@ -38,10 +39,11 @@ function MikroskopSektion() {
 }
 
 /**
- * @param {{seite: string, sektionen: Array<any>, video?: any, produkte?: Array<any>}} props
+ * @param {{seite: string, sektionen: Array<any>, video?: any, technik?: any, produkte?: Array<any>}} props
  *   produkte: aus startseiteProdukte() im Loader (Preise der Kaufseiten).
+ *   technik: „So wirkt er“ (TechnikKette), nur wo die Daten sie tragen.
  */
-export function ProduktDetailsApple({seite, sektionen, video = null, produkte = []}) {
+export function ProduktDetailsApple({seite, sektionen, video = null, technik = null, produkte = []}) {
   const preise = useStartseitePreise(produkte);
   return (
     <>
@@ -50,6 +52,7 @@ export function ProduktDetailsApple({seite, sektionen, video = null, produkte = 
         {sektionen.map((s, i) => {
           if (s.art === 'video') return video ? <VideoSektion key="video" video={video} /> : null;
           if (s.art === 'mikroskop') return <MikroskopSektion key="mikroskop" />;
+          if (s.art === 'technik') return technik ? <TechnikKette key="technik" {...technik} /> : null;
           const preis = s.cta?.href ? preise[s.cta.href] : null;
           return <Sektion key={`${s.art}-${i}`} index={i} {...s} {...(preis ? {preis} : {})} />;
         })}
