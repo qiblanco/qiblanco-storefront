@@ -49,16 +49,18 @@ const ERFOLG_TITEL = {
   doi_gesendet: 'Schau in dein Postfach',
   schon_bestaetigt: 'Du bist schon angemeldet',
   gedrosselt: 'Die Mail ist schon unterwegs',
-  direkt: 'Hier ist dein Zoom-Link',
+  direkt: 'Das hat gerade nicht geklappt',
 };
 
 const ERFOLG_TEXT = {
   doi_gesendet:
     'Wir haben dir eine Mail geschickt. Klick dort auf den Knopf, dann bekommst du ' +
-    'den Zoom-Link. Schau auch im Spam-Ordner nach.',
-  schon_bestaetigt: 'Vor jedem Termin bekommst du eine Erinnerung per Mail, auch vor dem 8. November.',
-  gedrosselt: 'Bis sie da ist, kommst du mit diesem Link ins Meeting.',
-  direkt: 'Die Mail kommt gerade nicht durch. Mit diesem Link kommst du trotzdem ins Meeting.',
+    'deinen persönlichen Zoom-Link. Schau auch im Spam-Ordner nach.',
+  schon_bestaetigt:
+    'Vor jedem Termin bekommst du eine Erinnerung per Mail, mit deinem persönlichen Link, ' +
+    'auch vor dem 8. November.',
+  gedrosselt: 'Schau auch im Spam-Ordner nach.',
+  direkt: 'Bitte versuch es in ein paar Minuten noch einmal.',
 };
 
 /**
@@ -67,7 +69,7 @@ const ERFOLG_TEXT = {
 export function TheAlphaLiveAnmeldung({
   quelle = 'the-alpha',
   variante = '',
-  titel = 'Melde dich an, der Link kommt per Mail',
+  titel = 'Melde dich an, dein persönlicher Zugang kommt per Mail',
   knopf = 'Kostenlos anmelden',
   className = '',
 }) {
@@ -177,7 +179,8 @@ export function TheAlphaLiveAnmeldung({
         </p>
       ) : null}
       <p className="tal-hinweis">
-        Du bekommst eine Mail mit einem Knopf zum Bestätigen. Danach schicken wir dir den Zoom-Link.{' '}
+        Du bekommst eine Mail mit einem Knopf zum Bestätigen. Danach schicken wir dir deinen
+        persönlichen Zoom-Link. Er gilt nur für dich.{' '}
         <Link className="tal-verweis" to="/pages/datenschutz" prefetch="intent">
           Datenschutz
         </Link>
