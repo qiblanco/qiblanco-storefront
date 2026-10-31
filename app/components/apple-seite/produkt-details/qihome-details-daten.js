@@ -14,12 +14,12 @@ export const KAUFSEITE = '/products/qihome-air';
 
 const BILD = Object.freeze({
   qihome: {
-    url: `${CDN}/files/qb-video360-ersatzbild--360-qihome-front--d19c273efe67.jpg?v=1790809394`,
+    url: `${CDN}/files/qb-video360-ersatzbild--360-qihome-front-1440--d19c273efe67.jpg?v=1793414663`,
     // 360-Grad-Drehung an dieser Stelle (AsBild -> Produkt360Video), das Bild bleibt Ersatzbild.
     drehung: 'qihome',
     alt: 'QiHome® Air aus Eiche und Edelstahl mit goldenem Gitterchip®',
-    breite: 1080,
-    hoehe: 1080,
+    breite: 1440,
+    hoehe: 1440,
   },
   tablett: {
     url: `${CDN}/files/2023-03-01-qiblanco-milva-martin-1020566_40c1ab65-8437-4303-841a-e2741fcaa3c7.png?v=1762975086`,

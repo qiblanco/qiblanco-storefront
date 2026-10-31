@@ -29,6 +29,12 @@ import {
 
 export {kettenKacheln};
 
+/* Galerie-Hauptbild: Breitenstufen bis zum CDN-Master (2048/2056 px), damit
+   Tablets mit dpr 2 nicht hochskalieren (Gate 12 bild-aufloesung). sizes folgt
+   der im Testserver gemessenen Flaeche je Format, nicht der Vermutung. */
+const GALERIE_BREITEN = [600, 900, 1200, 1600, 2048];
+const GALERIE_SIZES = '(min-width: 1024px) 58vw, calc(100vw - 32px)';
+
 /*
  * PRODUKT-KONFIGURATOR NACH DER QI-ALPHA-KAUFSEITE (Christian 27.10.2026, Z2:
  * „dieses shopdesing auf die Verkaufseiten von qione 2 pro, qihome udn
@@ -259,6 +265,8 @@ export function AlphaVorlage({
                   key={grossesBild.url}
                   className="tas-bild tas-blende"
                   src={mitBreite(grossesBild.url, 1200)}
+                  srcSet={GALERIE_BREITEN.map((w) => `${mitBreite(grossesBild.url, w)} ${w}w`).join(', ')}
+                  sizes={GALERIE_SIZES}
                   alt={grossesBild.altText || product.title}
                   width="1200"
                   height="1200"

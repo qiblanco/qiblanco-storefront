@@ -261,11 +261,11 @@ test('Handy-Kopf: Titel -> Bild -> Knöpfe (CSS-Ordnung unter 750 px)', () => {
 });
 
 const BILD_360 = {
-  url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-video360-ersatzbild--360-qione-front--f0024fcab5ec.jpg?v=1790809389',
+  url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-video360-ersatzbild--360-qione-front-1440--f0024fcab5ec.jpg?v=1793414659',
   drehung: 'qione',
   alt: 'QiOne von vorn',
-  breite: 1080,
-  hoehe: 1080,
+  breite: 1440,
+  hoehe: 1440,
 };
 
 test('SSR: Kopf mit Drehung = ein Knopf, ein Preis, das Video sofort, Ersatzbild mit Alt', async () => {
