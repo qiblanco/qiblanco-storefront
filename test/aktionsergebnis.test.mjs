@@ -64,6 +64,7 @@ const AUFRUFER = [
   'routes/account.profile.jsx',
   'routes/account.addresses.jsx',
   'routes/widerruf_.bestaetigen.jsx',
+  'routes/pages.potenzialtest.jsx',
 ];
 
 test('A3: useActionData nur im gemeinsamen Hook, jeder Aufrufer nutzt ihn', () => {
