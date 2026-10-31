@@ -209,11 +209,24 @@ html:has(main[data-film-seite]) {
    (tap-nachruecken). NAHTLOS (Christian 31.10.: „wenn das Alte weg ist, dann
    kommt direkt das Neue“): kein halber Schritt Schwarz mehr dazwischen. Das
    Video steht ganz im Bild, wenn die Bühne davor ausblendet
-   (tap-nach-buehne). Die Bühne nach dem Video steht, sobald es oben weicht
-   (tap-nach-video, Weich-Linie 10 % in useTapFilm). Das Alte blendet in
-   200 ms aus, der erste Schritt des Neuen setzt nach 180 ms ein
-   (tap-eintritt): erst weg, dann direkt neu, nie übereinander. Klassen und
-   --tap-video-hoehe setzt useTapFilm; ohne Bewegung gibt es keine Kette. */
+   (tap-nach-buehne); die Bühne danach steht einen Bild-Schritt später
+   (tap-nach-video), dann weicht das Video (useTapFilm).
+   NIE ÜBEREINANDER (Christian 31.10.: „wenn man etwas hin und her scollt kann
+   man überlappende zustände erzeugen“): jede Szene wartet (tap-wartet),
+   solange die davor zu sehen ist, und das ist eine reine Funktion der
+   Scrolllage, in beide Richtungen. Ausblenden dauert 160 ms ohne Verzug,
+   Einblenden beginnt erst nach 180 ms: erst weg, dann direkt neu, nie zwei
+   Szenen halb zugleich. Klassen und --tap-video-hoehe setzt useTapFilm; ohne
+   Bewegung gibt es keine Kette. */
+.tap-js.tap-kette {
+  /* Luft unter dem Video beim Erscheinen: 5 % des Bildes (Handy, Start wie
+     gehabt, Christian 30.10. Z7). Ist das Video samt Text höher als 90 %
+     (Desktop 1440 x 900: 843 px), steht es mittig. Vorher lag seine
+     Oberkante am Desktop schon über der Weich-Linie: es war nur 8 px Scroll
+     lang allein zu sehen, und der Stopper hielt über dem Wörterbuch. */
+  --tap-video-luft: max(0px, min(5svh, (100svh - var(--tap-video-hoehe, 0px)) / 2));
+}
+
 .tap-js.tap-kette .tap-kapitel,
 .tap-js.tap-kette .tap-marke {
   padding-bottom: 0;
@@ -228,18 +241,16 @@ html:has(main[data-film-seite]) {
 }
 
 .tap-js.tap-kette .tap-nach-buehne {
-  /* Das Video erscheint, wenn die Bühne davor ausblendet, an DERSELBEN Stelle
-     wie vor der Kette (Unterkante ~5 % über dem Bildrand, Mitte ~0,53; der
-     Start bleibt, wie er war, Christian 30.10. Z7). Es blendet ein, sobald
-     die Bühne davor weg ist (--tap-folge 1,5 = 180 ms, wie tap-eintritt),
-     damit nichts übereinander liegt. */
-  --tap-folge: 1.5;
-  margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - 5svh);
+  /* Das Video erscheint, wenn die Bühne davor ausblendet, ganz im Bild:
+     Unterkante (samt Text) --tap-video-luft über dem Bildrand. */
+  margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - var(--tap-video-luft));
   margin-bottom: 0;
 }
 
 .tap-js.tap-kette .tap-nach-video {
-  margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - 10svh);
+  /* Die Bühne danach steht einen Bild-Schritt nach dem Erscheinen des
+     Videos, auf jeder Bildhöhe gleich (vorher am Desktop: kein Schritt). */
+  margin-top: calc(-100svh + var(--tap-video-luft) + var(--tap-schritt-bild));
 }
 
 /* Bühnen liegen übereinander: nur was gerade zu sehen ist, nimmt Tipps an
@@ -252,24 +263,23 @@ html:has(main[data-film-seite]) {
   pointer-events: auto;
 }
 
-.tap-js.tap-kette .tap-scrub.tap-aus > .tap-scrub-bild,
-.tap-js.tap-kette .tap-film.tap-aus {
+/* Einblenden: erst, wenn das Alte weg ist (180 ms nach seinem Ausblenden). */
+.tap-js.tap-kette .tap-scrub-bild,
+.tap-js.tap-kette .tap-film.tap-sichtbar {
+  opacity: 1;
+  transition: opacity 240ms ease 180ms;
+}
+
+/* Ausblenden: sofort, 160 ms. */
+.tap-js.tap-kette .tap-scrub:is(.tap-aus, .tap-wartet) > .tap-scrub-bild,
+.tap-js.tap-kette .tap-film:is(.tap-aus, .tap-wartet) {
   opacity: 0;
-  transition: opacity 200ms ease;
+  transition: opacity 160ms ease;
   pointer-events: none;
 }
 
-/* Nahtlos: der erste Schritt der nächsten Bühne kommt, wenn das Alte weg ist. */
-.tap-js.tap-kette .tap-eintritt[data-tap-schritt].tap-an {
-  transition-delay: 180ms;
-}
-
-.tap-js.tap-kette .tap-scrub.tap-aus [data-tap-schritt] {
+.tap-js.tap-kette .tap-scrub:is(.tap-aus, .tap-wartet) [data-tap-schritt] {
   pointer-events: none;
-}
-
-.tap-js.tap-kette .tap-scrub-bild {
-  transition: opacity 300ms ease;
 }
 
 /* Karten-Bühne: beide Karten passen in einen Bildschirm (am Handy

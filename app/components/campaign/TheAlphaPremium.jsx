@@ -99,11 +99,22 @@ import {
  *   = Bildschirm + Schritte + 1, kein halber Schritt mehr; ebenso nach dem
  *   Video). Ihre Schritte kommen erst, wenn die vorige wirklich weicht
  *   (tap-aus): so liegt nie Neues über dem Alten, auch nicht, solange der
- *   Scrollstopper das Video hält (Desktop). Das Alte blendet kurz aus, der
- *   erste Schritt des Neuen setzt knapp danach ein (tap-eintritt). Bild-Takt
- *   160 px für jede Bildhöhe (keine Weiche nach der Fensterhöhe: die schaltete
- *   mit den Browserleisten um, und die Kaufleiste blinkte): jede Strecke bis
- *   zum nächsten Neuen bleibt am Handy unter einem Viertel Bildschirm.
+ *   Scrollstopper das Video hält (Desktop). Bild-Takt 160 px für jede
+ *   Bildhöhe (keine Weiche nach der Fensterhöhe: die schaltete mit den
+ *   Browserleisten um, und die Kaufleiste blinkte): jede Strecke bis zum
+ *   nächsten Neuen bleibt am Handy unter einem Viertel Bildschirm.
+ * - NIE ÜBEREINANDER (Christian 31.10.2026: „wenn man etwas hin und her scollt
+ *   kann man überlappende zustände erzeugen … kürzungen waren gut“; Job
+ *   20261031-prio2-qi-alpha-lp-ueberlappung-beheben-scrollstopper-robust).
+ *   Gemessen live vorher: das Video blieb nach dem ersten Einblenden stehen,
+ *   zurück ins Wörterbuch lagen beide übereinander; Alt und Neu blendeten
+ *   gleichzeitig über- und durcheinander; am Desktop stand das Video nur 8 px
+ *   allein im Bild und der Stopper hielt über dem Wörterbuch. Jetzt wartet
+ *   jede Szene (tap-wartet), solange die davor zu sehen ist, als reine
+ *   Funktion der Scrolllage in beide Richtungen; das Alte blendet aus, bevor
+ *   das Neue einblendet (CSS); das Video steht auf jeder Bildhöhe einen
+ *   Bild-Schritt allein, und der Stopper hält in genau diesem Fenster
+ *   (figur.tapFenster, the-alpha-stopper.js). Die Kürzungen bleiben.
  */
 const TapFassung = createContext({szene: false});
 
@@ -174,6 +185,8 @@ function useTapFilm(wurzel, szene) {
     const kette = szene && !still;
     const stufe = (x) => x.matches('[data-tap-scrub]');
     const filmNachBuehne = [];
+    // Video in der Kette: Bühne davor, Bühne danach (Fenster des Stoppers).
+    const filme = [];
     if (kette) {
       el.classList.add('tap-kette');
       szenen.forEach((s, i) => {
@@ -183,22 +196,16 @@ function useTapFilm(wurzel, szene) {
         else if (!stufe(s) && stufe(vor)) {
           s.classList.add('tap-nach-buehne');
           filmNachBuehne.push(s);
+          const nach = szenen[i + 1] && stufe(szenen[i + 1]) ? szenen[i + 1] : null;
+          filme.push({f: s, vor, nach, video: s.querySelector('video')});
         } else if (stufe(s) && !stufe(vor)) s.classList.add('tap-nach-video');
       });
-      // Nahtlos: der erste Schritt einer nachrückenden Bühne setzt knapp
-      // nach dem Ausblenden des Alten ein (CSS tap-eintritt).
-      const eintritt = szenen.flatMap((s) =>
-        s.matches('.tap-nachruecken, .tap-nach-video')
-          ? [...s.querySelectorAll('[data-tap-schritt]')].slice(0, Number(s.dataset.tapScrubStart || 0))
-          : [],
-      );
-      eintritt.forEach((w) => w.classList.add('tap-eintritt'));
       aufraeumen.push(() => {
         el.classList.remove('tap-kette');
         szenen.forEach((s) =>
-          s.classList.remove('tap-nachruecken', 'tap-nach-buehne', 'tap-nach-video', 'tap-aus'),
+          s.classList.remove('tap-nachruecken', 'tap-nach-buehne', 'tap-nach-video', 'tap-aus', 'tap-wartet'),
         );
-        eintritt.forEach((w) => w.classList.remove('tap-eintritt'));
+        filme.forEach(({f}) => delete f.tapFenster);
       });
     }
     const pruefeEin = () => {
@@ -273,46 +280,89 @@ function useTapFilm(wurzel, szene) {
       }
     };
     const zeichnen = () => {
-      // Kette: das Video weicht, sobald es oben an den Rand kommt (10 % der
-      // Bildhöhe) und der Scrollstopper es nicht gerade hält.
-      for (const f of filmNachBuehne) {
-        const aus =
-          f.classList.contains('tap-sichtbar') &&
-          f.getBoundingClientRect().top < window.innerHeight * 0.1 &&
-          f.dataset.tapStopperStand !== 'hält';
-        f.classList.toggle('tap-aus', aus);
-      }
+      const bild = window.innerHeight;
+      // 1. Bühnen weichen nach ihrer Lage: einen Schritt nach dem letzten
+      // (Ruhe eingerechnet); die letzte Bühne (Schluss mit Knopf) bleibt.
+      // Toleranz 1 px wie beim Stillstand (oben <= 1).
       for (const s of buehnen) {
-        const oben = s.b.getBoundingClientRect().top;
-        const vorab = !still && oben > 1 && oben < window.innerHeight && frueh(s);
+        s.oben = s.b.getBoundingClientRect().top;
+        if (kette && !s.ende) {
+          const aus = s.oben <= 1 && Math.floor((1 - s.oben) / s.px) >= s.zahl + 1;
+          if (aus !== s.aus) {
+            s.b.classList.toggle('tap-aus', aus);
+            s.aus = aus;
+          }
+        }
+      }
+      // 2. Das Video weicht, sobald die Bühne danach steht (CSS legt sie einen
+      // Bild-Schritt hinter sein Erscheinen) und der Stopper es nicht hält.
+      for (const {f, nach} of filme) {
+        const steht = nach
+          ? nach.getBoundingClientRect().top <= 1
+          : f.getBoundingClientRect().top < bild * 0.1;
+        f.classList.toggle(
+          'tap-aus',
+          f.classList.contains('tap-sichtbar') && steht && f.dataset.tapStopperStand !== 'hält',
+        );
+      }
+      // 3. Jede Szene wartet, solange die davor noch zu sehen ist. Eine reine
+      // Funktion der Lage: auch nach Hin und Her bleibt nichts übereinander.
+      if (kette) {
+        for (let i = 1; i < szenen.length; i += 1) {
+          const vor = szenen[i - 1];
+          szenen[i].classList.toggle(
+            'tap-wartet',
+            !vor.classList.contains('tap-aus') && unterkante(vor) > 0,
+          );
+        }
+        for (const {f, video} of filme) {
+          const wartet = f.classList.contains('tap-wartet');
+          if (wartet === Boolean(f.dataset.tapWartete)) continue;
+          if (wartet) {
+            f.dataset.tapWartete = '1';
+            if (video && !video.paused) video.pause();
+          } else {
+            delete f.dataset.tapWartete;
+            // weckt das Video wieder (TheAlphaTon.jsx binde_videos)
+            if (f.classList.contains('tap-sichtbar')) f.dispatchEvent(new Event('tap-sichtbar'));
+          }
+        }
+      }
+      // 4. Schritte der Bühnen.
+      for (const s of buehnen) {
+        const oben = s.oben;
+        const vorab = !still && oben > 1 && oben < bild && frueh(s);
+        // Gleiche 1-px-Toleranz wie beim Weichen: steht die Bühne, steht auch
+        // ihr erster Schritt (sonst ein Pixel Schwarz zwischen Alt und Neu).
         let n = still
           ? s.schritte.length
           : oben > 1
             ? vorab
               ? s.start
               : 0
-            : Math.min(s.schritte.length, s.start + Math.floor(-oben / s.px));
-        // Kette, nahtlos: Neues erst, wenn das Alte weicht (tap-aus) oder aus
-        // dem Bild ist; hält der Stopper das Video, wartet die Bühne.
-        if (kette && n > 0 && s.vor && !s.vor.classList.contains('tap-aus') && unterkante(s.vor) > 0) {
-          n = 0;
-        }
-        // Kette: einen Schritt nach dem letzten (Ruhe eingerechnet) weicht die
-        // Bühne, im selben Moment steht die nächste; die letzte Bühne (Schluss
-        // mit Knopf) bleibt. Toleranz 1 px wie beim Stillstand (oben <= 1).
-        if (kette && !s.ende) {
-          const aus = oben <= 1 && Math.floor((1 - oben) / s.px) >= s.zahl + 1;
-          if (aus !== s.aus) {
-            s.b.classList.toggle('tap-aus', aus);
-            s.aus = aus;
-          }
-        }
+            : Math.min(s.schritte.length, s.start + Math.floor((1 - oben) / s.px));
+        // Kette: Neues erst, wenn das Alte weicht oder aus dem Bild ist; hält
+        // der Stopper das Video, wartet die Bühne.
+        if (kette && n > 0 && s.b.classList.contains('tap-wartet')) n = 0;
         if (n === s.an) continue;
         s.schritte.forEach((w, i) => w.classList.toggle('tap-an', i < n));
         if (vorab && s.an <= 0 && s.ton) s.ton.dispatchEvent(new Event('tap-akzent'));
         s.an = n;
       }
     };
+    // Fenster des Videos für den Scrollstopper (the-alpha-stopper.js), in
+    // Scroll-Pixeln: von = die Bühne davor weicht, bis = die Bühne danach steht.
+    for (const film of filme) {
+      const vor = buehnen.find((s) => s.b === film.vor);
+      const nach = film.nach;
+      if (!vor || !nach) continue;
+      film.f.tapFenster = () => {
+        const y = window.scrollY;
+        const von = Math.ceil(y + vor.b.getBoundingClientRect().top - 1 + (vor.zahl + 1) * vor.px);
+        const bis = Math.floor(y + nach.getBoundingClientRect().top - 1);
+        return {von, bis};
+      };
+    }
     let angefordert = false;
     const anfordern = () => {
       if (angefordert) return;
@@ -337,6 +387,12 @@ function useTapFilm(wurzel, szene) {
         window.removeEventListener('scroll', anfordern);
         window.removeEventListener('resize', neu);
       });
+    }
+    // Die Höhe des Videos samt Text steht erst, wenn Schrift und Bild da sind.
+    if (filmNachBuehne[0] && typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(neu);
+      ro.observe(filmNachBuehne[0]);
+      beobachter.push(ro);
     }
 
     // Kaufleiste (Kopfkommentar): Oberkanten gegen 100svh, nie gegen die

@@ -534,9 +534,15 @@ function binde_videos(wurzel, m) {
   // Ein Video in einer Einblendung ([data-tap-ein]) startet erst, wenn es
   // eingeblendet ist; vorher liefe sein Anfang unsichtbar ab (bis 28.10.
   // ab 35 % im Bild, eingeblendet wird erst ganz im Bild).
+  // In der Szenen-Kette (Qi Alpha A, 31.10.) wartet das Video, solange die
+  // Szene davor zu sehen ist (tap-wartet): dann läuft es nicht unsichtbar.
   const eingeblendet = (v) => {
     const figur = v.closest('[data-tap-ein]');
-    return !figur || !wurzel.classList.contains('tap-js') || figur.classList.contains('tap-sichtbar');
+    return (
+      !figur ||
+      !wurzel.classList.contains('tap-js') ||
+      (figur.classList.contains('tap-sichtbar') && !figur.classList.contains('tap-wartet'))
+    );
   };
   // Lehnt der Browser ab (iOS: Stromsparmodus, „Video-Vorschauen
   // automatisch abspielen“ aus; NACHTRAG 30.10.), bleibt das Poster stehen,

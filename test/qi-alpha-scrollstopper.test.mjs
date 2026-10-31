@@ -7,6 +7,12 @@
  * starten“ (Z7), „die Bereiche, wo dann komplett schwarz sind … verkürzen“ (Z3).
  * ROT VOR GRÜN: auf origin/main bd72454a fehlt the-alpha-stopper.js (Import
  * scheitert), TapFilm kennt kein `stopper`, Bühnen zeigen erst beim Anstoßen.
+ * NICHT ÜBERSPRINGBAR (Job 20261031-prio2-qi-alpha-lp-ueberlappung-beheben-
+ * scrollstopper-robust, Christian 31.10.2026: „im video sieht man, dass man
+ * das video sehr einfach übersprigen kann“): in der Szenen-Kette hält der
+ * erste Durchlauf im Fenster des Videos, nach der Lage, auch bei Schwung
+ * und solange das Video lädt. ROT VOR GRÜN: auf origin/main 7bc58b3b fehlen
+ * fensterHalt, schrittWeite, START_MS, figur.tapFenster.
  */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -88,8 +94,51 @@ test('Szenen-Fassung: erste Zeile einer Bühne, sobald das Alte weg und sie ganz
   // Seit der Szenen-Kette (31.10.2026) gilt frueh() nur außerhalb der Kette.
   assert.match(p, /if \(kette \|\| !szene \|\| !s\.start \|\| !s\.vor \|\| unterkante\(s\.vor\) > 0\) return false;/);
   assert.match(p, /r\.top >= 0 && r\.bottom <= bild/);
-  assert.match(p, /const vorab = !still && oben > 1 && oben < window\.innerHeight && frueh\(s\);/);
+  assert.match(p, /const vorab = !still && oben > 1 && oben < bild && frueh\(s\);/);
   // Der Ton der Bühne kommt mit dem Bild.
   assert.match(p, /s\.ton\.dispatchEvent\(new Event\('tap-akzent'\)\)/);
   assert.match(lies('app/components/campaign/TheAlphaTon.jsx'), /el\.addEventListener\('tap-akzent', vorab\)/);
+});
+
+test('Fenster-Halt: wer von oben kommt, hält im Fenster; Schwung darüber hinaus springt in die Mitte', () => {
+  const fe = {von: 1056, bis: 1216};
+  assert.equal(st.fensterHalt({y: 1000, ...fe, vorher: 0}), null, 'noch vor dem Fenster');
+  assert.equal(st.fensterHalt({y: 1060, ...fe, vorher: 0}), 1060, 'im Fenster: wo man ist');
+  assert.equal(st.fensterHalt({y: 1200, ...fe, vorher: 0}), 1136, 'hinter der Mitte: zurück zur Mitte');
+  assert.equal(st.fensterHalt({y: 3800, ...fe, vorher: 900}), 1136, 'Schwung bis ans Ende: zurück ins Fenster');
+  assert.equal(st.fensterHalt({y: 3800, ...fe, vorher: 3800}), null, 'neu geladen weiter unten: kein Halt');
+  assert.equal(st.fensterHalt({y: 1100, von: 1100, bis: 1100, vorher: 0}), null, 'kein Fenster');
+});
+
+test('Rad, Trackpad und Tasten: der Schritt über den Fensteranfang wird abgefangen', () => {
+  assert.equal(st.schrittWeite({type: 'wheel', deltaY: 120, deltaMode: 0}, 900), 120);
+  assert.equal(st.schrittWeite({type: 'wheel', deltaY: 3, deltaMode: 1}, 900), 48, 'Zeilen-Modus (Firefox)');
+  assert.equal(st.schrittWeite({type: 'keydown', key: 'End'}, 900), Infinity);
+  assert.equal(st.schrittWeite({type: 'keydown', key: 'PageDown'}, 900), 810);
+  const src = lies('app/components/campaign/the-alpha-stopper.js');
+  assert.match(src, /if \(!fe \|\| y >= fe\.von \|\| y \+ schrittWeite\(e, f\.innerHeight\) < fe\.von\) return;\s*e\.preventDefault\(\);\s*halten\(fe\.von\);/);
+  // Was durchrutscht (Daumen-Schwung, Bildlaufleiste, Sprung), springt sofort zurück.
+  assert.match(src, /const ziel = fe \? fensterHalt\(\{y, \.\.\.fe, vorher\}\) : null;/);
+  assert.match(src, /if \(Math\.abs\(f\.scrollY - haltY\) > 1\) f\.scrollTo\(0, haltY\);/);
+});
+
+test('Gehalten auch, wenn das Video noch lädt; startet es nicht, wird freigegeben', () => {
+  assert.equal(st.START_MS, 4000);
+  assert.equal(st.ABGELEHNT_MS, 1200);
+  assert.ok(st.DECKEL_MS >= 8000);
+  const src = lies('app/components/campaign/the-alpha-stopper.js');
+  assert.match(src, /video\.dataset\.tapWartetGeste\s*\? ABGELEHNT_MS/);
+  // Wer zurückgescrollt ist, lässt das Video nicht hängen.
+  assert.match(src, /const amHalt = f\.scrollY >= haltY - 2 && gezeigt\(\);\s*if \(!amHalt\) seitFortschritt = jetzt;/);
+  // Der Deckel zählt nur Zeit am Halt: Hin-und-Her wartet das Video nicht weg.
+  assert.match(src, /if \(amHalt\) amHaltMs \+= jetzt - vorigJetzt;/);
+  assert.match(src, /: amHaltMs > DECKEL_MS/);
+  assert.doesNotMatch(src, /jetzt - beginn > DECKEL_MS/);
+});
+
+test('Fenster kommt aus der Szenen-Kette: Bühne davor weicht bis Bühne danach steht', () => {
+  const p = lies('app/components/campaign/TheAlphaPremium.jsx');
+  assert.match(p, /film\.f\.tapFenster = \(\) => \{/);
+  assert.match(p, /const von = Math\.ceil\(y \+ vor\.b\.getBoundingClientRect\(\)\.top - 1 \+ \(vor\.zahl \+ 1\) \* vor\.px\);/);
+  assert.match(p, /const bis = Math\.floor\(y \+ nach\.getBoundingClientRect\(\)\.top - 1\);/);
 });

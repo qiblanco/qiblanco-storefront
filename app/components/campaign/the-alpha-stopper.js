@@ -36,9 +36,27 @@
  *  - Einmal je Video und Besuch (sessionStorage). Auch zurück und wieder
  *    hin in derselben Sitzung hält nichts mehr.
  *  - Ohne Bewegung (prefers-reduced-motion, ?film=still) kein Stopper.
+ * NICHT ÜBERSPRINGBAR (Christian 31.10.2026: „im video sieht man, dass man
+ * das video sehr einfach übersprigen kann“; Job 20261031-prio2-qi-alpha-lp-
+ * ueberlappung-beheben-scrollstopper-robust). Gemessen live: am Desktop stand
+ * das Video nur 8 px Scrollweg allein im Bild, und gehalten wurde nur, wenn
+ * es in genau diesem Moment schon lief. In der Szenen-Kette trägt die Figur
+ * jetzt ihr FENSTER (figur.tapFenster aus useTapFilm, Scroll-Pixel): von =
+ * die Bühne davor weicht, bis = die Bühne danach steht. Erreicht oder
+ * überquert der erste Durchlauf das Fenster von oben, hält die Seite darin,
+ * nach der Lage, nicht nach der Zeit:
+ *  - Mausrad, Trackpad und Tasten, die über den Anfang des Fensters gingen,
+ *    werden abgefangen und enden im Fenster (kein Bild dahinter blitzt auf).
+ *  - Was trotzdem darüber hinausschießt (Daumen-Schwung, Bildlaufleiste,
+ *    Sprung), springt sofort zurück in die Mitte des Fensters.
+ *  - Gehalten wird auch, wenn das Video gerade erst lädt; es startet wie
+ *    immer, sobald es erscheint (TheAlphaTon.jsx, hier nicht angefasst).
+ *    Startet es nicht (Browser lehnt ab: ABGELEHNT_MS, lädt zu lange:
+ *    START_MS), wird freigegeben.
+ * Ohne Fenster (Fassung ohne Kette) gilt die Mitte-Regel wie bisher.
  * Der Stand steht für Prüfer an der Figur: data-tap-stopper-stand =
  * wartet | hält | frei, und warum frei: data-tap-stopper-grund =
- * video (3 s gelaufen) | stockt (STILL_MS ohne Fortschritt) | deckel.
+ * video (3 s gelaufen) | stockt (Video kommt nicht weiter) | deckel.
  */
 
 export const STOPPER_SEKUNDEN = 3;
@@ -46,7 +64,11 @@ export const MITTE_MAX = 0.55;
 export const MITTE_MIN = 0.3;
 export const MITTE_ZURUECK = 0.42;
 export const STILL_MS = 2000;
-export const DECKEL_MS = 8000;
+// Gehalten, aber das Video läuft noch nicht: so lange darf es laden bzw.
+// (vom Browser abgelehnt, etwa iOS-Stromsparmodus) auf einen Tipp warten.
+export const START_MS = 4000;
+export const ABGELEHNT_MS = 1200;
+export const DECKEL_MS = 10000;
 const SPEICHER = 'tap-stopper:';
 const TASTEN_VOR = new Set(['ArrowDown', 'PageDown', 'End', ' ', 'Spacebar']);
 
@@ -65,6 +87,28 @@ export function sollHalten({mitte, hoehe, bild, spielt, verbraucht}) {
 export function haltePunkt({y, mitte, bild}) {
   if (mitte >= bild * MITTE_MIN) return Math.round(y);
   return Math.max(0, Math.round(y - (bild * MITTE_ZURUECK - mitte)));
+}
+
+/** Szenen-Kette: wo die Seite hält, wenn der erste Durchlauf das Fenster
+ * [von, bis] des Videos erreicht. `vorher` = kleinste Lage dieses Durchlaufs
+ * (nur wer von oben kommt, wird gehalten; nach einem Neuladen weiter unten
+ * nicht). Im Fenster: wo man ist, höchstens bis zur Mitte; darüber hinaus:
+ * zurück in die Mitte. null = nicht halten. */
+export function fensterHalt({y, von, bis, vorher}) {
+  if (!(bis > von) || vorher === null || !(vorher < von) || y < von) return null;
+  const mitte = Math.round((von + bis) / 2);
+  return Math.min(Math.round(y), mitte);
+}
+
+/** Wie weit trägt ein Rad- oder Tastenschritt die Seite nach unten (px)? */
+export function schrittWeite(e, bild) {
+  if (e.type === 'wheel') return e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? bild : 1);
+  if (e.type === 'keydown') {
+    if (e.key === 'End') return Infinity;
+    if (e.key === 'ArrowDown') return 40;
+    return bild * 0.9;
+  }
+  return 0;
 }
 
 /** Abgespielte Videozeit fortschreiben: nur kleine Vorwärtsschritte zählen
@@ -131,34 +175,76 @@ export function tapStopper(figur, video, f = window) {
   let letzteZeit = 0;
   let seitFortschritt = 0;
   let beginn = 0;
+  let vorigJetzt = 0;
+  let amHaltMs = 0;
   let takt = 0;
   let touchY0 = null;
+  // Kleinste Lage dieses Durchlaufs (fensterHalt: nur wer von oben kommt).
+  let vorher = f.scrollY;
   const html = d.documentElement;
+  const grob = () => Boolean(f.matchMedia?.('(pointer: coarse)').matches);
 
   const lage = () => {
     const r = video.getBoundingClientRect();
     return {mitte: (r.top + r.bottom) / 2, hoehe: r.height, bild: f.innerHeight};
   };
+  const fenster = () => (typeof figur.tapFenster === 'function' ? figur.tapFenster() : null);
   const spielt = () => !video.paused && !video.ended && video.readyState >= 2;
+  // Zu sehen (nicht wartend hinter der Szene davor, schon eingeblendet).
+  const gezeigt = () =>
+    !figur.classList.contains('tap-wartet') &&
+    (!figur.hasAttribute('data-tap-ein') || figur.classList.contains('tap-sichtbar'));
+
+  // Laufenden Schwung anhalten (nur Touch, iOS/Android): einen Augenblick
+  // kein Überlauf, dann wieder frei für den Weg zurück. Am Desktop nicht,
+  // dort fiele die Bildlaufleiste kurz weg und die Seite zuckte.
+  let schwungAus = 0;
+  const schwungStopp = () => {
+    if (!grob() || schwungAus) return;
+    const vor = html.style.overflow;
+    html.style.overflow = 'hidden';
+    schwungAus = f.setTimeout(() => {
+      html.style.overflow = vor;
+      schwungAus = 0;
+    }, 120);
+  };
 
   const sperre = (e) => {
-    if (stand !== 'hält') return;
     if (e.type === 'touchstart') {
       touchY0 = e.touches?.[0]?.clientY ?? null;
       return;
     }
+    if (stand === 'wartet') {
+      // Rad, Trackpad, Tasten: ein Schritt über den Anfang des Fensters
+      // endet im Fenster, statt dahinter.
+      if (e.type === 'touchmove' || !istVorwaerts(e, touchY0) || !e.cancelable) return;
+      const fe = fenster();
+      const y = f.scrollY;
+      if (!fe || y >= fe.von || y + schrittWeite(e, f.innerHeight) < fe.von) return;
+      e.preventDefault();
+      halten(fe.von);
+      return;
+    }
+    if (stand !== 'hält') return;
     // Vorwärts gesperrt nur AN der Halte-Stelle; wer zurück ist, darf bis
     // zu ihr wieder vor (darüber hinaus fängt klemme ab).
     if (istVorwaerts(e, touchY0) && f.scrollY >= haltY - 1 && e.cancelable) e.preventDefault();
   };
   // Was trotzdem nach unten durchrutscht (Schwung nach dem Loslassen,
-  // Bildlaufleiste, ein nicht abbrechbarer Touch): zurück auf die
-  // Halte-Stelle. Nur gegen eine Bewegung nach unten, das sanfte Zurück-
-  // gleiten (haltePunkt) läuft ungestört.
-  let vorigY = 0;
+  // Bildlaufleiste, ein nicht abbrechbarer Touch, ein Sprung): sofort zurück
+  // auf die Halte-Stelle. Nur gegen eine Bewegung nach unten.
+  let vorigY = f.scrollY;
   const klemme = () => {
     const y = f.scrollY;
-    if (stand === 'hält' && y > haltY + 1 && y > vorigY) f.scrollTo(0, haltY);
+    if (stand === 'wartet') {
+      const fe = fenster();
+      const ziel = fe ? fensterHalt({y, ...fe, vorher}) : null;
+      vorher = Math.min(vorher, y);
+      if (ziel !== null) halten(ziel);
+    } else if (stand === 'hält' && y > haltY + 1 && y > vorigY) {
+      schwungStopp();
+      f.scrollTo(0, haltY);
+    }
     vorigY = Math.min(y, f.scrollY);
   };
 
@@ -180,14 +266,27 @@ export function tapStopper(figur, video, f = window) {
     gespielt = neu;
     letzteZeit = t;
     figur.dataset.tapStopperGespielt = gespielt.toFixed(2);
-    // Ein pausiertes Video (man ist zurückgescrollt) zählt nicht als Hänger.
-    if (video.paused) seitFortschritt = jetzt;
+    // Wer zurückgescrollt ist (Video pausiert oder wartet hinter der Szene
+    // davor), lässt es nicht hängen.
+    const amHalt = f.scrollY >= haltY - 2 && gezeigt();
+    if (!amHalt) seitFortschritt = jetzt;
+    // Der Deckel zählt nur Zeit AM Halt: wer hin und her scrollt, wartet
+    // nicht das Video weg (Probe-Lauf ruck: frei nach 1,7 s Video).
+    if (amHalt) amHaltMs += jetzt - vorigJetzt;
+    vorigJetzt = jetzt;
+    const frist = spielt()
+      ? STILL_MS
+      : video.dataset.tapWartetGeste
+        ? ABGELEHNT_MS
+        : gespielt > 0
+          ? STILL_MS
+          : START_MS;
     const grund =
       gespielt >= STOPPER_SEKUNDEN
         ? 'video'
-        : jetzt - seitFortschritt > STILL_MS
+        : jetzt - seitFortschritt > frist
           ? 'stockt'
-          : jetzt - beginn > DECKEL_MS
+          : amHaltMs > DECKEL_MS
             ? 'deckel'
             : '';
     if (grund) {
@@ -197,37 +296,33 @@ export function tapStopper(figur, video, f = window) {
     takt = f.requestAnimationFrame(zählen);
   };
 
-  const halten = () => {
-    const l = lage();
+  function halten(ziel) {
     stand = 'hält';
     figur.dataset.tapStopperStand = stand;
-    haltY = haltePunkt({y: f.scrollY, ...l});
+    haltY = ziel;
     gespielt = 0;
     letzteZeit = video.currentTime;
     beginn = f.performance.now();
     seitFortschritt = beginn;
+    vorigJetzt = beginn;
+    amHaltMs = 0;
+    schwungStopp();
+    if (Math.abs(f.scrollY - haltY) > 1) f.scrollTo(0, haltY);
     vorigY = f.scrollY;
-    // Laufenden Schwung anhalten (nur Touch, iOS/Android): einen Augenblick
-    // kein Überlauf, dann wieder frei für den Weg zurück. Am Desktop nicht,
-    // dort fiele die Bildlaufleiste kurz weg und die Seite zuckte.
-    if (f.matchMedia?.('(pointer: coarse)').matches) {
-      const vorher = html.style.overflow;
-      html.style.overflow = 'hidden';
-      f.setTimeout(() => {
-        html.style.overflow = vorher;
-      }, 120);
-    }
-    if (f.scrollY > haltY + 1) {
-      const weit = f.scrollY - haltY > 80;
-      f.scrollTo({top: haltY, behavior: weit ? 'smooth' : 'auto'});
-    }
     takt = f.requestAnimationFrame(zählen);
-  };
+  }
 
+  // Ohne Fenster (Fassung ohne Kette): halten, wenn das laufende Video mittig
+  // steht; nach einem schnellen Wisch sanft zurück zur Mitte.
   const pruefe = () => {
-    if (stand !== 'wartet') return;
+    if (stand !== 'wartet' || fenster()) return;
     const l = lage();
-    if (sollHalten({...l, spielt: spielt(), verbraucht: false})) halten();
+    if (!sollHalten({...l, spielt: spielt(), verbraucht: false})) return;
+    const ziel = haltePunkt({y: f.scrollY, ...l});
+    const weit = f.scrollY - ziel > 80;
+    halten(f.scrollY);
+    haltY = ziel;
+    if (f.scrollY > haltY + 1) f.scrollTo({top: haltY, behavior: weit ? 'smooth' : 'auto'});
   };
 
   const ereignisse = [
@@ -246,6 +341,7 @@ export function tapStopper(figur, video, f = window) {
   }
   return () => {
     f.cancelAnimationFrame(takt);
+    f.clearTimeout(schwungAus);
     abbauen();
   };
 }
