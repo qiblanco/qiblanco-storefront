@@ -17,9 +17,12 @@ import {
   bezahlOptionen,
   boxKacheln,
   kettenKacheln,
+  laengenAttribut,
+  laengenKacheln,
   mitBreite,
   mitRate,
   schrittAbschnitt,
+  startLaenge,
   startWahl,
   variantenOptionen,
   varianteZurWahl,
@@ -112,15 +115,18 @@ export function kettenQuery({gold}) {
  * (dann entfällt nur der Schritt, der Kauf des Geräts bleibt heil).
  */
 export async function ladeAlphaKetten(storefront, daten) {
-  if (!daten?.KETTE?.handle) return null;
-  const gold = Boolean(daten.KETTE_GOLD?.sichtbar);
+  // KETTE: Kette als Zusatz (Geräteseiten); KETTE_IM_SET: die Kette liegt
+  // bei, gefragt ist nur ihre Länge (s13-r3, Angebot QiOne® 2 Pro + Necklace).
+  const stahl = daten?.KETTE?.handle ?? daten?.KETTE_IM_SET?.handle;
+  if (!stahl) return null;
+  const gold = Boolean(daten.KETTE?.handle && daten.KETTE_GOLD?.sichtbar);
   try {
     return await storefront.query(kettenQuery({gold}), {
       // PREIS FRISCH (Kettenpreis im Konfigurator): ohne `cache` CacheDefault =
       // SWR 24 h. Grossjob 20261004-GROSSJOB-preisanzeige-netto-brutto-rundung-alle-shops-waehrungen s12-r2.
       cache: storefront.CacheShort(),
       variables: {
-        stahl: daten.KETTE.handle,
+        stahl,
         ...(gold ? {gold: daten.KETTE_GOLD.handle} : {}),
       },
     });
@@ -150,6 +156,8 @@ export function AlphaVorlage({
 }) {
   const {PRODUKT, BAND, VARIANTE, KETTE, KETTE_GOLD, BEZAHLART, ZUSAMMENFASSUNG, BOX} =
     daten;
+  // Optional (s13-r3): Kette liegt im Set bei, der Kunde wählt nur die Länge.
+  const KETTE_IM_SET = daten.KETTE_IM_SET ?? null;
   const land = useMarktLand();
   const {open} = useAside();
   const handle = product.handle;
@@ -176,6 +184,12 @@ export function AlphaVorlage({
   const [ketteWahl, setKetteWahl] = useState(null);
   const kette = kacheln.find((k) => k.schluessel === ketteWahl) ?? null;
 
+  const laengen = KETTE_IM_SET ? laengenKacheln(ketten?.stahl) : [];
+  const [laengeWahl, setLaengeWahl] = useState(() =>
+    startLaenge(laengen, KETTE_IM_SET?.vorwahl ?? null),
+  );
+  const laenge = laengen.find((l) => l.cm === laengeWahl && l.verfuegbar) ?? null;
+
   const preis = (money, h) =>
     money ? bruttoAnzeige(money.amount, h, money.currencyCode, land) : 0;
   const hauptPreis = preis(variante?.price, handle);
@@ -195,7 +209,7 @@ export function AlphaVorlage({
   const [zahlart, setZahlart] = useState('direkt');
   const art = zahlOptionen.some((o) => o.id === zahlart) ? zahlart : 'direkt';
   const summe = zusammenfassung({
-    name: PRODUKT.name,
+    name: laenge ? `${PRODUKT.name} · ${KETTE_IM_SET.name(laenge.cm)}` : PRODUKT.name,
     variante,
     varianteName: anzeigeName(VARIANTE, variante?.title),
     hauptPreis,
@@ -205,12 +219,21 @@ export function AlphaVorlage({
     waehrung,
     land,
   });
-  const linien = warenkorbZeilen(variante, kette);
-  const kaufbar = linien.length > 0;
+  const linien = warenkorbZeilen(variante, kette, laengenAttribut(laenge?.cm));
+  // Kette im Set: ohne lieferbare Länge kein Kauf (nie eine Länge versprechen,
+  // die nicht da ist).
+  const kaufbar = linien.length > 0 && (!laengen.length || Boolean(laenge));
   const kettenBilder =
     kette?.art === 'gold' && KETTE_GOLD?.bilder ? KETTE_GOLD.bilder : KETTE?.bilder ?? [];
+  const setBilder = KETTE_IM_SET?.bilder ?? [];
   const boxBilder = boxKacheln(BOX?.kacheln);
-  const erster = optionen.length ? 'variante' : kacheln.length ? 'kette' : 'bezahlart';
+  const erster = optionen.length
+    ? 'variante'
+    : laengen.length
+      ? 'laenge'
+      : kacheln.length
+        ? 'kette'
+        : 'bezahlart';
   const seite = useRef(null);
   // Der eine Kaufknopf: in der Zusammenfassung und, mobil nach ihr, in der
   // Schlussleiste (dieselben Zeilen, dieselbe Beschriftung).
@@ -400,6 +423,45 @@ export function AlphaVorlage({
             </Schritt>
           ) : null}
 
+          {laengen.length ? (
+            <Schritt
+              name="laenge"
+              erster={erster === 'laenge'}
+              auszeichnung={KETTE_IM_SET.auszeichnung}
+              titel={KETTE_IM_SET.titel}
+            >
+              {KETTE_IM_SET.anleitung ? (
+                <p className="av-anleitung">{mitMarkeR(KETTE_IM_SET.anleitung)}</p>
+              ) : null}
+              <div
+                className="tas-karten av-karten--drei"
+                role="radiogroup"
+                aria-label={KETTE_IM_SET.auszeichnung}
+              >
+                {laengen.map((l) => (
+                  <Karte
+                    key={l.schluessel}
+                    an={laenge?.cm === l.cm}
+                    aus={!l.verfuegbar}
+                    onClick={() => setLaengeWahl(l.cm)}
+                    titel={`${l.cm} cm`}
+                    text={
+                      l.verfuegbar
+                        ? KETTE_IM_SET.zeilen?.[l.cm] ?? null
+                        : [KETTE_IM_SET.zeilen?.[l.cm], 'Ausverkauft'].filter(Boolean).join(' · ')
+                    }
+                    data={{'data-av-laenge': String(l.cm)}}
+                  />
+                ))}
+              </div>
+              {KETTE_IM_SET.grenzregel ? (
+                <p className="av-grenzregel" data-av-grenzregel="">
+                  {KETTE_IM_SET.grenzregel}
+                </p>
+              ) : null}
+            </Schritt>
+          ) : null}
+
           {kacheln.length ? (
             <Schritt
               name="kette"
@@ -568,7 +630,7 @@ export function AlphaVorlage({
                   loading="lazy"
                 />
                 <figcaption data-av-box-haupt="">
-                  <MarkeR text={PRODUKT.name} />
+                  <MarkeR text={BOX.haupt ?? PRODUKT.name} />
                 </figcaption>
               </figure>
             ) : null}
@@ -589,6 +651,18 @@ export function AlphaVorlage({
                 </figcaption>
               </figure>
             ))}
+            {laenge && setBilder[0] ? (
+              <figure className="tas-box-teil">
+                <img
+                  src={mitBreite(setBilder[0].url, 600)}
+                  alt={setBilder[0].alt}
+                  width="300"
+                  height="300"
+                  loading="lazy"
+                />
+                <figcaption data-av-box-kette="">{KETTE_IM_SET.box(laenge.cm)}</figcaption>
+              </figure>
+            ) : null}
             {kette && kettenBilder[0] ? (
               <figure className="tas-box-teil">
                 <img
