@@ -44,7 +44,7 @@ export const APPLE_SEITEN = Object.freeze({
   'qibracelet-details': {pfad: '/pages/qibracelet-details', schalter: 'APPLE_SEITE_QIBRACELET_DETAILS', standard: 'on'},
   'qihome-air': {pfad: '/pages/qihome-air', schalter: 'APPLE_SEITE_QIHOME_AIR', standard: 'on'},
   'qihome-details': {pfad: '/pages/qihome-details', schalter: 'APPLE_SEITE_QIHOME_DETAILS', standard: 'on'},
-  'qione-2-pro-shop': {pfad: '/pages/qione-2-pro', schalter: 'APPLE_SEITE_QIONE_2_PRO_SHOP', standard: 'on'},
+  'qione-2-pro-shop': {pfad: '/pages/qione-2-pro', schalter: 'APPLE_SEITE_QIONE_2_PRO_SHOP', standard: 'off'},
   'qione-2-pro-details': {pfad: '/pages/qione-2-pro-details', schalter: 'APPLE_SEITE_QIONE_2_PRO_DETAILS', standard: 'on'},
   'products-8kendiw34hd': {pfad: '/products/8kendiw34hd', schalter: 'APPLE_SEITE_PRODUCTS_8KENDIW34HD', standard: 'off'},
   'products-broschure': {pfad: '/products/broschure', schalter: 'APPLE_SEITE_PRODUCTS_BROSCHURE', standard: 'off'},
