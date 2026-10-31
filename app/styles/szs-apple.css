@@ -268,7 +268,11 @@
   .szs-fest {
     position: fixed;
     inset: auto 0 0 0;
-    z-index: 20;
+    /* Kopf-Ebene der Leiter (overlay-ordnung.css): über dem Inhalts-Deckel
+       --z-inhalt-max, den das Scroll-Video trägt. Mit 20 lag es auf A
+       darüber, und der Knopf war nicht treffbar (s03-r5, 31.10.).
+       Annas Rahmen (--z-schwebend) bleibt darüber. */
+    z-index: var(--z-kopf);
     display: flex;
     align-items: center;
     justify-content: space-between;

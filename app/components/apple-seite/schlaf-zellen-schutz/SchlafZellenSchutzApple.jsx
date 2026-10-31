@@ -242,6 +242,9 @@ function Schluss({preis}) {
  * (StickyKaufknopf): sichtbar, sobald der Kopf aus dem Bild ist, und nicht,
  * solange Geräte oder Schluss im Bild sind. Inhalt nur im sichtbaren Zustand
  * im DOM (KaufknopfChatSignal misst bei childList). Nur bis 749 px.
+ * Im sichtbaren Zustand trägt der Knopf data-qb-chat-weicht: Annas Kugel
+ * rutscht dann über ihn, statt zu verschwinden (lib/kaufknopf-chat.js,
+ * chatHub; Christian 26.10.: „muss das Gesicht flüssig nach oben rutschen“).
  */
 function FesterKnopf({seite}) {
   const [sichtbar, setSichtbar] = useState(false);
@@ -270,6 +273,7 @@ function FesterKnopf({seite}) {
     <div
       className={`szs-fest${sichtbar ? ' szs-fest--sichtbar' : ''}`}
       data-section="lp-b-sticky-kaufknopf"
+      data-qb-chat-weicht={sichtbar ? '' : undefined}
       aria-hidden={sichtbar ? undefined : 'true'}
     >
       {sichtbar ? (

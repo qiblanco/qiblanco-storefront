@@ -303,19 +303,12 @@ test('jede Sticky-Kaufleiste trägt data-qb-chat-weicht (s03-r2, Christian 26.10
     }
   };
   lauf(wurzel);
+  // Zweites Merkmal (s03-r5, 31.10.): data-section="…sticky-kaufknopf" am
+  // eigenen Element. Die Apple-Fassung von LP B blendet ihren festen Knopf per
+  // `szs-fest--sichtbar` ein und fiel durch den Klassennamen-Zaun.
   const leisten = dateien.filter((p) =>
-    /(-sticky|qb-kaufleiste)--sichtbar/.test(readFileSync(p, 'utf8')));
+    /(-sticky|qb-kaufleiste)--sichtbar|data-section="[^"]*sticky-kaufknopf"/.test(readFileSync(p, 'utf8')));
   assert.ok(leisten.length >= 4, `zu wenige Leisten gefunden: ${leisten.length}`);
-  // AUSSTEHEND (s03-r3, Teil 1a): LP B und die beiden Rookie-Leisten (start-b, Rookie-Shop) kommen mit
-  // dem Folgelauf s03-r4 (Zweig feat/kaufleiste-ab-z4-r3-20261027). hb-deploy Gate 9 verlangt seit 27.10.
-  // Premium >= 95 je beruehrter Seite; start-b 92, qione-2-pro-b 93, schlaf-zellen-schutz 84 sind Bestand.
-  // Der Folgelauf leert die Liste.
-  const AUSSTEHEND = [
-    'campaign/SchlafZellenSchutz.jsx',
-    'rookie/start/StickyKaufknopf.jsx',
-    'rookie/shop/StickyWarenkorb.jsx',
-  ];
-  const ohne = leisten.filter((p) => !readFileSync(p, 'utf8').includes("data-qb-chat-weicht={sichtbar ? '' : undefined}"))
-    .filter((p) => !AUSSTEHEND.some((a) => p.endsWith(a)));
+  const ohne = leisten.filter((p) => !readFileSync(p, 'utf8').includes("data-qb-chat-weicht={sichtbar ? '' : undefined}"));
   assert.deepEqual(ohne, []);
 });

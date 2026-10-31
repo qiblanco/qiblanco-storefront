@@ -132,8 +132,17 @@ export const LABOR = Object.freeze({
 });
 
 export const MIKROSKOP = Object.freeze({
-  srcDesktop: 'https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov',
-  srcMobile: 'https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov',
+  // Beide Quellen: dieselben Dateien wie 940d16da….mov (Desktop) und d9d52d90….mov (Mobil), ohne
+  // Neukodierung mit Faststart umgepackt ('moov' vorn), damit Safari nicht bis zum Ende laden muss
+  // (WebKit-Tor, s03-r5).
+  srcDesktop: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/mikroskop-desktop-faststart.mp4?v=1793465730',
+  srcMobile: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/mikroskop-mobil-faststart.mp4?v=1793465597',
+  // Vorschaubild = Bild 0 der jeweiligen Datei (wie ScrollMikroskopVideo.jsx): iPhone ohne Geste
+  // und im Stromsparmodus zeigt es statt eines schwarzen Felds.
+  posterDesktop:
+    'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/preview_images/940d16da99a2452d9aadd57b9711b037.thumbnail.0000000000.jpg?v=1747048923',
+  posterMobile:
+    'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/preview_images/d9d52d90d536415bbb6342ebadb2fe97.thumbnail.0000000000.jpg?v=1744579045',
   overlayStart: {titel: 'Zellbiologisch geprüft', text: 'So sehen die Effekte auf Zellebene aus.'},
   overlayEnd: [
     {
