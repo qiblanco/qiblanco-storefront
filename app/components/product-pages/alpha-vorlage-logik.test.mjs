@@ -240,3 +240,18 @@ test('Kette im Set (s13-r3): alle Längen mit Lieferbarkeit, Vorwahl, Zeilenattr
   // ohne Attribut: Zeile wie bisher, kein leeres Feld
   assert.equal('attributes' in L.warenkorbZeilen(EINS)[0], false);
 });
+
+test('Kette im Set (s13-r3): ohne Kettendaten die Längen der Datenstelle, alle wählbar', () => {
+  // Abfrage gescheitert oder Kette im Markt nicht veröffentlicht: das Set
+  // darf nicht ohne Längenwahl in den Warenkorb.
+  for (const leer of [null, {variants: {nodes: []}}]) {
+    const k = L.laengenKacheln(leer, ['75', '40', '60']);
+    assert.deepEqual(k.map((x) => x.cm), [40, 60, 75]);
+    assert.ok(k.every((x) => x.verfuegbar));
+    assert.equal(L.startLaenge(k, 60), 60);
+  }
+  // Live-Daten gewinnen, die Ersatzliste greift dann nicht.
+  const live = {variants: {nodes: [v('k45', 'S - 45cm', [], false)]}};
+  assert.deepEqual(L.laengenKacheln(live, ['60']).map((x) => [x.cm, x.verfuegbar]), [[45, false]]);
+  assert.deepEqual(L.laengenKacheln(null), []);
+});
