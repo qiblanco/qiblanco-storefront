@@ -99,6 +99,8 @@
 .as-kurs .course-lesson-body :where(p) {
   margin: 0 0 var(--as-s-2);
 }
+/* Zwischentitel bleiben auf allen Breiten fs-5: Lesetext mit vielen
+   Zwischentiteln, Skala 17 -> 21 -> 24 ohne Sprung (design-rubrik Skalen-Fit). */
 .as-kurs .course-lesson-body :where(h2) {
   margin: var(--as-s-6) 0 var(--as-s-2);
   font-size: var(--as-fs-5);
@@ -164,10 +166,5 @@
   }
   .as-kurs .course-lesson h1 {
     font-size: var(--as-fs-8);
-  }
-  /* Eine Stufe unter dem H1 der Lektion: Lesetext mit vielen
-     Zwischentiteln, die Skala 21 -> 28 -> 56 bleibt modular. */
-  .as-kurs .course-lesson-body :where(h2) {
-    font-size: var(--as-fs-6);
   }
 }
