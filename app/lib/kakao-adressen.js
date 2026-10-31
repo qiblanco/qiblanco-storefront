@@ -102,3 +102,58 @@ export function kakaoZielUrl(ziel) {
 export function kakaoHref(ziel) {
   return kakaoZielUrl(ziel) ?? ziel;
 }
+
+/*
+ * PARTNER-BRÜCKE (gemessen 2026-10-31, Kanalprüfung zu EL-20261030-0adb59f3):
+ * alle rund 700 Partner-Standardlinks zeigen auf die qiblanco.com-Startseite;
+ * 2 der 9 Partnerbestellungen seit 01.09. waren Kakao, gekauft nach einem
+ * Klick INNERHALB von qiblanco.com. Geht dieser Klick künftig auf
+ * crystal-cacao.com, fehlt dort sca_ref, und der Code im qiblanco-Warenkorb
+ * wandert nicht mit. Darum trägt ein Kakao-Verweis die Partner-Referenz mit,
+ * die der Tracker beim Eintreffen gemerkt hat (sessionStorage/Cookie
+ * 'qiblanco_checkout_attribution', public/qiblanco-tracker.js). crystal-cacao.com
+ * legt den Code aus demselben Datenmodul selbst in seinen Warenkorb.
+ */
+export const PARTNER_PARAMETER = ['sca_ref', 'sca_source'];
+export const ATTRIBUTION_SCHLUESSEL = 'qiblanco_checkout_attribution';
+
+/**
+ * Partner-Parameter aus dem gespeicherten Tracker-Datensatz (JSON-Text).
+ * @param {string} roh
+ * @returns {Array<[string, string]>}
+ */
+export function partnerParameterAus(roh) {
+  try {
+    const d = JSON.parse(String(roh || ''));
+    const params = Array.isArray(d?.params) ? d.params : [];
+    return params.filter(
+      (p) => Array.isArray(p) && PARTNER_PARAMETER.includes(p[0]) && typeof p[1] === 'string' && p[1],
+    );
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Hängt gemerkte Partner-Parameter an einen crystal-cacao.com-Verweis, wenn
+ * er noch keine sca_ref trägt. Alles andere bleibt unverändert.
+ * @param {string} href
+ * @param {Array<[string, string]>} partner
+ * @returns {string}
+ */
+export function mitPartnerRef(href, partner) {
+  if (!partner?.length) return href;
+  let u;
+  try {
+    u = new URL(href);
+  } catch {
+    return href;
+  }
+  const host = u.hostname.toLowerCase();
+  if (host !== 'crystal-cacao.com' && host !== 'www.crystal-cacao.com') return href;
+  if (u.searchParams.has('sca_ref')) return href;
+  for (const [name, wert] of partner) {
+    if (!u.searchParams.has(name)) u.searchParams.set(name, wert);
+  }
+  return u.toString();
+}

@@ -9,6 +9,7 @@ import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
 import {useGoogleRating} from '~/lib/googleRating';
 import {kakaoHref, kakaoZielUrl} from '~/lib/kakao-adressen';
+import {KakaoPartnerBruecke} from '~/components/KakaoPartnerBruecke';
 import {MenueSymbol, alphabetisch, hatSymbolSpalte, istMehr} from '~/components/reusables/menue-symbole';
 import {
   istKakaoPfad,
@@ -377,6 +378,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
       className={`header-wrapper KopfHaftet ${hidden ? 'header--hidden' : ''}`}
       data-scroll-dir={richtung}
     >
+      <KakaoPartnerBruecke />
       <AnnouncementBanner
         announcement={
           isCacaoPage ? (

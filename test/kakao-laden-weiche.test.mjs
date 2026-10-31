@@ -240,3 +240,21 @@ test('kakaoHref: Ladenverweise zeigen direkt auf crystal-cacao.com, Rest unverae
   assert.equal(kakaoHref('/products/qione-2-pro'), '/products/qione-2-pro');
   assert.equal(kakaoZielUrl('https://qi-blanco.com/products/crystal-cacao-awake'), null);
 });
+
+import {mitPartnerRef, partnerParameterAus} from '../app/lib/kakao-adressen.js';
+
+test('Partner-Bruecke: gemerkte sca_ref geht mit auf crystal-cacao.com, sonst nichts', () => {
+  const roh = JSON.stringify({params: [['sca_ref', '777.AbCd'], ['utm_source', 'x'], ['sca_source', 'ig']], href: 'https://qiblanco.com/?sca_ref=777.AbCd'});
+  const p = partnerParameterAus(roh);
+  assert.deepEqual(p, [['sca_ref', '777.AbCd'], ['sca_source', 'ig']]);
+  assert.equal(mitPartnerRef(`${C}/products/crystal-cacao-awake`, p), `${C}/products/crystal-cacao-awake?sca_ref=777.AbCd&sca_source=ig`);
+  assert.equal(mitPartnerRef(`${C}/?Art=420g#k`, p), `${C}/?Art=420g&sca_ref=777.AbCd&sca_source=ig#k`);
+  // eigene sca_ref im Verweis gewinnt
+  assert.equal(mitPartnerRef(`${C}/?sca_ref=1.zzzz`, p), `${C}/?sca_ref=1.zzzz`);
+  // fremde Hosts und qiblanco bleiben unberuehrt
+  assert.equal(mitPartnerRef('https://qiblanco.com/products/qione-2-pro', p), 'https://qiblanco.com/products/qione-2-pro');
+  assert.equal(mitPartnerRef('https://instagram.com/x', p), 'https://instagram.com/x');
+  // nichts gemerkt / kaputter Datensatz -> unveraendert
+  assert.equal(mitPartnerRef(`${C}/`, partnerParameterAus('')), `${C}/`);
+  assert.equal(mitPartnerRef(`${C}/`, partnerParameterAus('{kaputt')), `${C}/`);
+});
