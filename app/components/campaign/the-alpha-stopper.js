@@ -52,7 +52,8 @@
  *  - Gehalten wird auch, wenn das Video gerade erst lädt; es startet wie
  *    immer, sobald es erscheint (TheAlphaTon.jsx, hier nicht angefasst).
  *    Startet es nicht (Browser lehnt ab: ABGELEHNT_MS, lädt zu lange:
- *    START_MS), wird freigegeben.
+ *    START_MS), wird freigegeben. „Lädt“ heißt: noch nie vorangekommen,
+ *    auch wenn der Browser es schon spielend meldet (freiFrist).
  * Ohne Fenster (Fassung ohne Kette) gilt die Mitte-Regel wie bisher.
  * Der Stand steht für Prüfer an der Figur: data-tap-stopper-stand =
  * wartet | hält | frei, und warum frei: data-tap-stopper-grund =
@@ -98,6 +99,22 @@ export function fensterHalt({y, von, bis, vorher}) {
   if (!(bis > von) || vorher === null || !(vorher < von) || y < von) return null;
   const mitte = Math.round((von + bis) / 2);
   return Math.min(Math.round(y), mitte);
+}
+
+/** Wie lange darf das Video am Halt ohne Fortschritt bleiben, bevor die Seite
+ * freigibt (ms)? STILL_MS nur, wenn es schon gelaufen ist und dann hängt.
+ * Ist es noch NIE vorangekommen, lädt es noch: dann gilt START_MS, auch wenn
+ * der Browser es schon „spielend“ meldet (paused=false, erstes Bild da).
+ * Gemessen 31.10.2026 live, Handy-Netz 10 Mbit/s: ein Wisch von ganz oben
+ * hält am Video, das Video kommt erst 2,5–2,8 s später voran, und die alte
+ * Regel (spielt → STILL_MS) gab nach 2,0 s mit 0 s Video frei (Christian:
+ * „nicht mehr gespürt, dass das Video … 3 Sekunden anhält“; Job 20261031-
+ * prio1-qi-alpha-lp-video-nicht-ueberscrollbar-3s-halt-feste-reihenfolge).
+ * Vom Browser abgelehnt (wartet auf eine Geste): ABGELEHNT_MS. */
+export function freiFrist({spielt, gespielt, wartetGeste}) {
+  if (gespielt > 0) return STILL_MS;
+  if (wartetGeste && !spielt) return ABGELEHNT_MS;
+  return START_MS;
 }
 
 /** Wie weit trägt ein Rad- oder Tastenschritt die Seite nach unten (px)? */
@@ -285,13 +302,11 @@ export function tapStopper(figur, video, f = window) {
     // nicht das Video weg (Probe-Lauf ruck: frei nach 1,7 s Video).
     if (amHalt) amHaltMs += jetzt - vorigJetzt;
     vorigJetzt = jetzt;
-    const frist = spielt()
-      ? STILL_MS
-      : video.dataset.tapWartetGeste
-        ? ABGELEHNT_MS
-        : gespielt > 0
-          ? STILL_MS
-          : START_MS;
+    const frist = freiFrist({
+      spielt: spielt(),
+      gespielt,
+      wartetGeste: Boolean(video.dataset.tapWartetGeste),
+    });
     const grund =
       gespielt >= STOPPER_SEKUNDEN
         ? 'video'
