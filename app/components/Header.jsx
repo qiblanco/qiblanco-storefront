@@ -533,11 +533,13 @@ const QI_ALPHA_FUNNEL_PFAD = '/products/qi-alpha';
  * Nur die Kaufseite selbst, auch mit Schrägstrich am Ende, anderer
  * Schreibweise (der Loader leitet sie per 301 um) oder /en davor. Die
  * B-Fassung und die Zusatzprodukte (Wunschnummer, Kette) behalten den
- * Hauskopf.
+ * Hauskopf. Dazu ihr Spiegel für reservierte Nummern
+ * /products/qi-alpha-reserviert/<schlüssel> (Christian 01.11.2026: „1:1 wie
+ * der andere auch“, lib/qi-alpha-reservierung.js).
  * @param {string} pathname
  */
 export function istQiAlphaFunnelPfad(pathname) {
-  return /^(\/en)?\/products\/qi-alpha\/?$/i.test(String(pathname || ''));
+  return /^(\/en)?\/products\/qi-alpha(-reserviert\/[A-Za-z0-9]{16,40})?\/?$/i.test(String(pathname || ''));
 }
 
 /**

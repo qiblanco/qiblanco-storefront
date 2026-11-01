@@ -444,6 +444,20 @@
   color: var(--tas-grau);
 }
 
+/* Premium-Bereich für reservierte Nummern (/products/qi-alpha-reserviert/…):
+   ab zwei Geräten je Gerät eine Kettenwahl, darüber eine Zeile in der Schrift
+   der Kartentitel. */
+.tas-geraet-titel {
+  margin-top: var(--tas-s-3);
+  font-size: var(--tas-fs-2);
+  font-weight: 600;
+  color: var(--tas-tinte);
+}
+
+.tas-geraet-titel + .tas-karten {
+  margin-top: var(--tas-s-1);
+}
+
 /* Schritte */
 .tas-schritt {
   margin-top: var(--tas-s-8);
