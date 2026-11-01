@@ -39,7 +39,7 @@ import {THE_ALPHA_SERIE} from './the-alpha-daten-serie-vergeben';
 import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
 import {Schlussleiste} from '~/components/reusables/Schlussleiste';
 import {GESTEN, spieleSicher} from '~/components/reusables/video-nachholen';
-import {filmAufLeinwand} from '~/lib/film-dekoder';
+import {filmAufLeinwand} from '~/components/reusables/film-dekoder';
 
 /* Galerie-Hauptbild: Breitenstufen bis zum CDN-Master (2048/2056 px), damit
    Tablets mit dpr 2 nicht hochskalieren (Gate 12 bild-aufloesung). sizes folgt
@@ -934,7 +934,7 @@ function BandLoop({loop}) {
       if (dekoder || !leinwand || typeof window.VideoDecoder !== 'function') {
         return;
       }
-      leinwand.setAttribute('data-tas-dekoder', 'laedt');
+      leinwand.setAttribute('data-tas-dekoder', 'holt');
       dekoder = filmAufLeinwand(leinwand, loop.src, {
         beiErstemBild: () => {
           if (!v.paused) {
@@ -944,7 +944,7 @@ function BandLoop({loop}) {
           dekoderZeigt = true;
           gestenAus();
           leinwand.style.display = '';
-          leinwand.setAttribute('data-tas-dekoder', 'laeuft');
+          leinwand.setAttribute('data-tas-dekoder', 'spielt');
           v.style.display = 'none';
         },
         beiFehler: () => {

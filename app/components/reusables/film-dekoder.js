@@ -107,9 +107,9 @@ export function mp4Lesen(puffer) {
   const stsz = box('stsz');
   const festeGroesse = d.getUint32(stsz.inhalt + 4);
   const anzahl = d.getUint32(stsz.inhalt + 8);
-  const groessen = new Array(anzahl);
+  const umfang = new Array(anzahl);
   for (let i = 0; i < anzahl; i++) {
-    groessen[i] = festeGroesse || d.getUint32(stsz.inhalt + 12 + 4 * i);
+    umfang[i] = festeGroesse || d.getUint32(stsz.inhalt + 12 + 4 * i);
   }
   // Chunk-Lagen
   const stco = box('stco');
@@ -135,15 +135,15 @@ export function mp4Lesen(puffer) {
   for (let e = 0; e < nStsc; e++) {
     const erster = d.getUint32(stsc.inhalt + 8 + 12 * e) - 1;
     const jeChunk = d.getUint32(stsc.inhalt + 12 + 12 * e);
-    const naechster =
+    const folgeChunk =
       e + 1 < nStsc
         ? d.getUint32(stsc.inhalt + 8 + 12 * (e + 1)) - 1
         : chunks.length;
-    for (let c = erster; c < naechster && probe < anzahl; c++) {
+    for (let c = erster; c < folgeChunk && probe < anzahl; c++) {
       let o = chunks[c];
       for (let k = 0; k < jeChunk && probe < anzahl; k++) {
         lagen[probe] = o;
-        o += groessen[probe];
+        o += umfang[probe];
         probe++;
       }
     }
@@ -197,7 +197,7 @@ export function mp4Lesen(puffer) {
   for (let i = 0; i < anzahl; i++) {
     proben[i] = {
       lage: lagen[i],
-      groesse: groessen[i],
+      groesse: umfang[i],
       zeit: us(dts[i] + versatz[i] - pts0),
       dauer: us(dauer[i]),
       schluessel: schluessel[i],
@@ -224,7 +224,7 @@ export function filmAufLeinwand(leinwand, src, opt = {}) {
   let dek = null;
   let film = null;
   let bytes = null;
-  let naechste = 0;
+  let zeiger = 0;
   let runde = 0;
   let leert = false;
   let anker = null;
@@ -263,18 +263,18 @@ export function filmAufLeinwand(leinwand, src, opt = {}) {
       dek.decodeQueueSize < 2 &&
       schlange.length + dek.decodeQueueSize < VORRAT
     ) {
-      if (naechste >= film.proben.length) {
+      if (zeiger >= film.proben.length) {
         // Schleife: Rest ausgeben (B-Bilder), dann von vorn ab dem Schlüsselbild.
         leert = true;
         dek.flush().then(() => {
           leert = false;
-          naechste = 0;
+          zeiger = 0;
           runde++;
           fuettern();
         }, fehler);
         return;
       }
-      const p = film.proben[naechste++];
+      const p = film.proben[zeiger++];
       dek.decode(
         new EncodedVideoChunk({
           type: p.schluessel ? 'key' : 'delta',
