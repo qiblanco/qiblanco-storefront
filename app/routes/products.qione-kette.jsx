@@ -240,7 +240,7 @@ function HeutigeSeite({product}) {
             Der Link mit dem Produktnamen als Linktext, oben in der Textspalte,
             zeigt Google und dem Kunden, wo das Gerät steht. Kein Preis, kein
             Kaufknopf: Linkstil `withdrawal-text-link` aus app.css (Bestand,
-            wie in InhaltswegNeuOderGebraucht.jsx), Schriftgröße geerbt. */}
+            wie bei den Rückgabe-Links der Kaufseiten), Schriftgröße geerbt. */}
         <p className="mt-2">
           Zubehör für den{' '}
           <Link className="withdrawal-text-link" to="/products/qione-2-pro">

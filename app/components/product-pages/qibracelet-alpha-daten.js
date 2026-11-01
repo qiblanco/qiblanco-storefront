@@ -141,11 +141,8 @@ export const RISIKOFREI = {
     'Einen Grund brauchst du nicht.',
     'Die Rücksendung ist für dich kostenlos.',
   ],
-  // Bewachter Inhaltslink (probe_neue_seiten_inhaltslinks__20260925.py, s02-Falle).
-  link: {
-    text: 'Alles zu Rückgabe und Gewährleistung: Neu oder gebraucht',
-    href: '/pages/neu-oder-gebraucht#ruecknahme',
-  },
+  // Kein Link auf /pages/neu-oder-gebraucht (Christian 28.09.2026, kein
+  // Weglink von Kaufseiten; Grossjob 20260928-…-licht s14, weglink-sperre Gate 23).
 };
 
 /* Slot „Modelle vergleichen“ (Gewinner Gerätevergleich, s02 Z40). */
