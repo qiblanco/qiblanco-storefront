@@ -69,12 +69,12 @@ export function regionPolitik(doc) {
  */
 export function shopifyTorStand(win) {
   const cb = win && win.Cookiebot;
-  const gewaehlt = Boolean(cb && cb.hasResponse && cb.consent);
-  const statistik = gewaehlt && cb.consent.statistics === true;
+  const entschieden = Boolean(cb && cb.hasResponse && cb.consent);
+  const statistik = entschieden && cb.consent.statistics === true;
   if (regionPolitik(win && win.document) === 'optout') {
-    return {montieren: true, tracken: !gewaehlt || statistik};
+    return {montieren: true, tracken: !entschieden || statistik};
   }
-  return {montieren: gewaehlt, tracken: statistik};
+  return {montieren: entschieden, tracken: statistik};
 }
 
 /** `canTrack` für Analytics.Provider. Am Server und im Fehlerfall: false. */
