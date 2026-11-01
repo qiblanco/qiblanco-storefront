@@ -580,6 +580,14 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* Ungerade Zahl Diagramme (seit 01.11.2026 fünf): das letzte steht in
+     halber Breite mittig statt allein links. */
+  .gc-studien__diagramm:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc((100% - var(--gc-s4)) / 2);
+  }
+
   /* Eine einzelne Kennzahl (seit 01.11.2026 ist QiHome® Air ein Diagramm)
      steht über die volle Breite statt in einer halben Spalte. */
   .gc-studien__kennzahlen:has(> :only-child) {
