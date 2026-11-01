@@ -249,7 +249,7 @@ html:has(main[data-film-seite]) {
 
 .tap-js.tap-kette .tap-nach-video {
   /* Die Bühne danach steht, wenn das Video seine Bühne (.tap-film-buehne,
-     zwei Video-Schritte) durchlaufen hat; im selben Moment weicht es. */
+     --tap-video-schritte Video-Schritte) durchlaufen hat; im selben Moment weicht es. */
   margin-top: calc(-100svh + var(--tap-video-luft));
 }
 
@@ -266,11 +266,15 @@ html:has(main[data-film-seite]) {
    100svh 14 von 22 Wischen genau ein Neues (6x zwei), 130svh 25 von 29 (1x
    zwei, nichts übersprungen). DE und US tragen denselben Wert.
    Desktop (Maus, Trackpad) behält seinen Takt. Prüfschalter ?schritt=NN
-   (NN svh, useTapFilm). Das Video (Punkt 4) steht zwei Video-Schritte lang
-   und läuft am Scrollweg (the-alpha-video-lauf.js); kein Stopper mehr. */
+   (NN svh, useTapFilm). Das Video steht --tap-video-schritte Video-Schritte
+   lang (am Touch-Gerät drei, Elina EL-20261101-ce2055f2: „MEHRERE lange Wische
+   (ca. 3), um am Video vorbeizukommen“) und läuft dabei in normaler
+   Geschwindigkeit, ohne Kopplung ans Scrollen (the-alpha-video-lauf.js);
+   kein Stopper, kein Einrasten. */
 .tap-js.tap-kette {
   --tap-schritt-lang: 130svh;
   --tap-schritt-video: 50svh;
+  --tap-video-schritte: 2;
 }
 
 @media (hover: none) and (pointer: coarse) {
@@ -280,15 +284,16 @@ html:has(main[data-film-seite]) {
     --tap-schritt-absatz: var(--tap-schritt-lang);
     --tap-schritt-bild: var(--tap-schritt-lang);
     --tap-schritt-video: var(--tap-schritt-lang);
+    --tap-video-schritte: 3;
   }
 }
 
 .tap-js.tap-kette .tap-film-buehne {
   /* Das Video erscheint, wenn die Bühne davor ausblendet, ganz im Bild
      (Unterkante --tap-video-luft über dem Bildrand, wie bisher), und steht
-     dort zwei Video-Schritte lang. */
+     dort --tap-video-schritte Video-Schritte lang (Handy: drei lange Wische). */
   margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - var(--tap-video-luft));
-  height: calc(var(--tap-video-hoehe, 0px) + 2 * var(--tap-schritt-video));
+  height: calc(var(--tap-video-hoehe, 0px) + var(--tap-video-schritte) * var(--tap-schritt-video));
 }
 
 .tap-js.tap-kette .tap-film-buehne > .tap-film {

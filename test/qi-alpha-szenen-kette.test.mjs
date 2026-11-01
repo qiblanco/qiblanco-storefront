@@ -58,7 +58,7 @@ test('Geometrie nahtlos: Bildschirm + Schritte + 1, Nachrücken um einen Bildsch
   // Handy unverändert); ist es samt Text höher als 90 % (Desktop), mittig.
   assert.match(CSS, /--tap-video-luft: max\(0px, min\(5svh, \(100svh - var\(--tap-video-hoehe, 0px\)\) \/ 2\)\);/);
   assert.match(CSS, /margin-top: calc\(-1 \* var\(--tap-video-hoehe, 0px\) - var\(--tap-video-luft\)\);/);
-  // Die Bühne danach steht, wenn das Video seine Bühne (zwei Video-Schritte) durchlaufen
+  // Die Bühne danach steht, wenn das Video seine Bühne (am Handy drei Video-Schritte) durchlaufen
   // hat (gestreckt, Elina 01.11.2026; vorher ein Bild-Schritt nach dem Erscheinen).
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-nach-video \{[^}]*margin-top: calc\(-100svh \+ var\(--tap-video-luft\)\);/);
   assert.doesNotMatch(CSS, /\+ 1\.5\) \* var\(--tap-schritt\)|--tap-schritt-absatz\) \/ 2|10svh \+ var\(--tap-schritt\) \/ 2/);

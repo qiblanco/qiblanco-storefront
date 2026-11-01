@@ -5,6 +5,10 @@
  * hartes Einrasten oder Anhalten“; „Video: kein Einrasten und kein Stopp. Das
  * Video läuft durch das Wischen weiter (an das Scrollen gekoppelt), und man
  * braucht etwa zwei lange Wische, um am Video vorbeizukommen.“)
+ * Video NEU (Elina 01.11.2026, EL-20261101-ce2055f2): „MEHRERE lange Wische
+ * (ca. 3), um am Video vorbeizukommen … Während man scrollt, läuft das Video
+ * FLÜSSIG in normaler Geschwindigkeit weiter – kein Stocken, kein Anhalten,
+ * kein Springen, keine Bild-für-Bild-Kopplung.“
  * Nur die Landingpage /pages/Qi-Alpha (Variante A, Szenen-Kette); B, C und die
  * Kaufseite /products/qi-alpha bleiben, wie sie sind (Präzisierung
  * EL-20261101-c3dfba9a).
@@ -24,7 +28,7 @@ const P = lies('app/components/campaign/TheAlphaPremium.jsx');
 const lauf = await import(join(WURZEL, 'app/components/campaign/the-alpha-video-lauf.js'));
 
 test('Touch-Gerät: jeder Schritt der Kette 130svh (ein langer Wisch), Desktop behält seinen Takt', () => {
-  assert.match(CSS, /\.tap-js\.tap-kette \{\s*--tap-schritt-lang: 130svh;\s*--tap-schritt-video: 50svh;/);
+  assert.match(CSS, /\.tap-js\.tap-kette \{\s*--tap-schritt-lang: 130svh;\s*--tap-schritt-video: 50svh;\s*--tap-video-schritte: 2;/);
   const touch = CSS.slice(CSS.indexOf('@media (hover: none) and (pointer: coarse)'));
   for (const art of ['wort', 'zeile', 'absatz', 'bild', 'video']) {
     assert.match(touch, new RegExp(`--tap-schritt-${art}: var\\(--tap-schritt-lang\\);`), art);
@@ -43,8 +47,10 @@ test('Schrittmaß wird gemessen (svh), nicht als Text gelesen', () => {
   assert.match(P, /el\.style\.setProperty\('--tap-schritt-lang', `\$\{wunsch\}svh`\)/);
 });
 
-test('Video: eigene Bühne zwei Video-Schritte lang, sticky, kein Stopper an A', () => {
-  assert.match(CSS, /\.tap-js\.tap-kette \.tap-film-buehne \{[^}]*height: calc\(var\(--tap-video-hoehe, 0px\) \+ 2 \* var\(--tap-schritt-video\)\);/);
+test('Video: eigene Bühne, am Handy drei lange Schritte (ca. 3 Wische), sticky, kein Stopper an A', () => {
+  assert.match(CSS, /\.tap-js\.tap-kette \.tap-film-buehne \{[^}]*height: calc\(var\(--tap-video-hoehe, 0px\) \+ var\(--tap-video-schritte\) \* var\(--tap-schritt-video\)\);/);
+  const touch = CSS.slice(CSS.indexOf('@media (hover: none) and (pointer: coarse)'));
+  assert.match(touch, /^[^}]*--tap-schritt-video: var\(--tap-schritt-lang\);\s*--tap-video-schritte: 3;/);
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-film-buehne > \.tap-film \{\s*position: sticky;\s*top: calc\(100svh - var\(--tap-video-hoehe, 0px\) - var\(--tap-video-luft\)\);/);
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-nach-video \{[^}]*margin-top: calc\(-100svh \+ var\(--tap-video-luft\)\);/);
   const film = P.slice(P.indexOf('export function TapFilm'), P.indexOf('function MarkeImText'));
@@ -76,13 +82,12 @@ test('anteil(): Weg durch die Bühne aus zwei Rechtecken', () => {
   assert.equal(lauf.anteil({top: 0, height: 300}, {top: 0, height: 400}), 0);
 });
 
-test('tempo(): Ruhe = normal, Vorsprung = schneller, gedeckelt, in halben Stufen', () => {
-  assert.equal(lauf.tempo(0), 1);
-  assert.equal(lauf.tempo(-3), 1);
-  assert.equal(lauf.tempo(0.2), 1);
-  assert.equal(lauf.tempo(2), 3.5);
-  assert.equal(lauf.tempo(50), lauf.MAX_RATE);
-  assert.ok(lauf.MAX_RATE <= 8);
+test('Kopplung entfernt: kein Tempo, kein Rückwärts-Sprung im Modul', () => {
+  assert.equal(lauf.tempo, undefined);
+  assert.equal(lauf.MAX_RATE, undefined);
+  const q = lies('app/components/campaign/the-alpha-video-lauf.js');
+  const code = q.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  assert.doesNotMatch(code, /playbackRate/);
 });
 
 function attrappe({spulen = false} = {}) {
@@ -140,54 +145,48 @@ function attrappe({spulen = false} = {}) {
   return {win, video, figur, buehne, klassen};
 }
 
-test('Lauf: Wischen treibt das Video schneller voran, ohne zu spulen; Ruhe = normal', () => {
+test('Lauf: Wischen steuert das Video nicht (normales Tempo, kein Spulen, kein Anhalten)', () => {
   const {win, video, figur, buehne} = attrappe();
   const weg = lauf.tapVideoLauf(buehne, figur, video, win);
   assert.equal(video.loop, false);
   win.takt();
-  assert.equal(video.playbackRate, 1);
-  // Ein langer Wisch: halber Weg durch die Bühne, Video erst bei 1 s.
-  video.currentTime = 1;
-  buehne.lage = {top: -350, height: 1700};
+  // Drei lange Wische durch die Bühne, Video läuft dabei von selbst weiter.
+  for (const [top, zeit] of [[-350, 1.2], [-900, 2.4], [-1300, 3.6]]) {
+    video.currentTime = zeit;
+    buehne.lage = {top, height: 1700};
+    win.feuer('scroll');
+    win.takt();
+    assert.equal(video.playbackRate, 1);
+    assert.equal(video.currentTime, zeit, 'nie gespult');
+    assert.equal(video.paused, false, 'nie angehalten');
+  }
+  // Zurückwischen springt auch nicht.
+  buehne.lage = {top: 250, height: 1700};
   win.feuer('scroll');
   win.takt();
-  assert.ok(video.playbackRate > 1, `Tempo ${video.playbackRate}`);
-  assert.equal(video.currentTime, 1, 'vorwärts wird nie gespult');
-  // Aufgeholt: wieder Normaltempo, ohne neuen Scroll (Nachsehen läuft weiter).
-  video.currentTime = 9.6;
-  win.takt();
-  assert.equal(video.playbackRate, 1);
+  assert.equal(video.currentTime, 3.6);
   weg();
   assert.equal(video.loop, true);
 });
 
-test('Lauf: am Ende hält das Logo; zurück springt einmal und läuft weiter', () => {
-  const {win, video, figur, buehne} = attrappe();
+test('Lauf: am Ende hält das Logo; erst wieder vor dem Video unsichtbar an den Anfang', () => {
+  const {win, video, figur, buehne, klassen} = attrappe();
   lauf.tapVideoLauf(buehne, figur, video, win);
-  buehne.lage = {top: -1000, height: 1700};
   video.currentTime = 19.2;
   video.feuer('timeupdate');
   assert.equal(video.paused, true);
   assert.equal(video.dataset.tapLaufEnde, '1');
-  // Zurück an den Anfang der Bühne.
+  // Im Bild zurückwischen: Logo bleibt stehen, kein Sprung.
   buehne.lage = {top: 250, height: 1700};
   win.feuer('scroll');
   win.takt();
-  assert.ok(video.currentTime < 1, `Zeit ${video.currentTime}`);
-  assert.equal(video.paused, false);
-  assert.equal(video.dataset.tapLaufEnde, undefined);
-});
-
-test('Lauf: unsichtbar (weicht/wartet) = Normaltempo, nichts gespult', () => {
-  const {win, video, figur, buehne, klassen} = attrappe();
-  lauf.tapVideoLauf(buehne, figur, video, win);
-  video.playbackRate = 4;
-  klassen.add('tap-aus');
-  buehne.lage = {top: -1000, height: 1700};
+  assert.equal(video.currentTime, 19.2);
+  // Wieder vor dem Video (Szene davor zu sehen): an den Anfang, unsichtbar.
+  klassen.add('tap-wartet');
   win.feuer('scroll');
   win.takt();
-  assert.equal(video.playbackRate, 1);
   assert.equal(video.currentTime, 0);
+  assert.equal(video.dataset.tapLaufEnde, undefined);
 });
 
 test('Prüfschalter ?video=spulen: Bild am Daumen, Video steht', () => {

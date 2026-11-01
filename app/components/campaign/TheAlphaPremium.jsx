@@ -120,9 +120,11 @@ import {
  *   langer Daumenwisch bringt genau EINEN neuen Abschnitt bzw. ein neues
  *   Detail … ohne hartes Einrasten oder Anhalten“): am Touch-Gerät ist jeder
  *   Schritt der Kette einen Bildschirm lang (--tap-schritt-lang, CSS), die
- *   Mechanik oben bleibt. Das Video steht in einer eigenen Bühne zwei Schritte
- *   lang und läuft am Scrollweg (the-alpha-video-lauf.js), statt vom Stopper
- *   gehalten zu werden. Prüfschalter ?schritt=NN setzt den Schritt auf NN svh.
+ *   Mechanik oben bleibt. Das Video steht in einer eigenen Bühne, am Handy
+ *   drei lange Schritte (Elina EL-20261101-ce2055f2: „MEHRERE lange Wische
+ *   (ca. 3)“), und läuft dabei in normaler Geschwindigkeit, ohne Kopplung ans
+ *   Scrollen (the-alpha-video-lauf.js), statt vom Stopper gehalten zu werden.
+ *   Prüfschalter ?schritt=NN setzt den Schritt auf NN svh.
  */
 const TapFassung = createContext({szene: false});
 
