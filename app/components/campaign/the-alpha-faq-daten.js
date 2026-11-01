@@ -6,7 +6,12 @@
  * eine Antwort ändert, ändert sie auf allen vier Seiten.
  *
  * DIE ACHT THEMEN SIND CHRISTIANS FOLGE (Z176–Z184): Stärke, für wen,
- * Unterschied, Gitterchip, Diamant, 6G, Sauna/Wasser, Rückgabe. Die Fragen
+ * Unterschied, Gitterchip, Diamant, 6G, Sauna/Wasser, Rückgabe. Die neunte,
+ * Größe, steht seit 01.11.2026 vor der Rückgabe (Christian: „Wie groß ist der
+ * Qi Alpha?“ => identische Größe zum QiOne 2 Pro, Abmessungen und Gewicht
+ * „9,9g“; Job 20261101-prio1-qi-alpha-faq-wie-gross-9-9-gramm). Zahlen aus
+ * ai-ceo/wissen/kanon/qi-alpha-fakten.json fakten.groesse; die Höhe des
+ * QiOne® 2 Pro ist nirgends hinterlegt und steht deshalb nicht da. Die Fragen
  * sind premium neu gestellt (Z188–Z193). Die erste steht wörtlich so, wie
  * Christian sie bestätigt hat (Z194: „wow, thats it“), und ist der Maßstab für
  * Ton und Niveau der übrigen sieben.
@@ -108,6 +113,13 @@ export const THE_ALPHA_FAQ = [
     antwort: [
       'Der Qi Alpha® begleitet dich überallhin. Der Gitterchip® ist unempfindlich gegen Wasser, Chlor und Salzwasser sowie gegen Schweiß und Hitze.',
       'Die Goldkette nehme ich selbst bei langen Stunden im Chlorwasser ab, wie jeden Goldschmuck.',
+    ],
+  },
+  {
+    id: 'groesse',
+    frage: 'Wie groß ist der Qi Alpha®?',
+    antwort: [
+      'Genauso groß wie der QiOne® 2 Pro: rund 20 × 15 mm. Er wiegt 9,9 g.',
     ],
   },
   {
