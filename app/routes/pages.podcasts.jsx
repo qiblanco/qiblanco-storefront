@@ -1,5 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {Podcasts} from '~/components/campaign/Podcasts';
+import {PodcastsApple} from '~/components/apple-seite/lp/PodcastsApple';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {ladeSeite} from '~/lib/podcast-daten.server';
 import {CANONICAL_ORIGIN, canonicalLink, absoluteCanonical} from '~/lib/seo';
 import lpTokenStyles from '~/styles/schlaf-zellen-schutz.css?url';
@@ -74,11 +76,31 @@ export const meta = ({data}) => {
   return eintraege;
 };
 
-export async function loader() {
-  return ladeSeite(1, CANONICAL_ORIGIN);
+/*
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s07-r5): der Schalter steht in app/lib/apple-seiten.js. An:
+ * PodcastsApple mit denselben Daten und demselben Text. Aus: die Seite
+ * unverändert (C, Rückweg: Befehl „zurück“ in homepage-bauer/bin/apple-seite).
+ * Meta und JSON-LD bleiben für beide Fassungen dieselben.
+ */
+export async function loader({context}) {
+  return {
+    ...ladeSeite(1, CANONICAL_ORIGIN),
+    appleSeite: appleSeiteLaden(context, 'podcasts'),
+  };
 }
 
 export default function PodcastSeite() {
-  const {daten, pfade, gaeste} = useLoaderData();
+  const {daten, pfade, gaeste, appleSeite} = useLoaderData();
+  if (appleSeite?.an) {
+    return (
+      <PodcastsApple
+        seite={appleSeite.seite}
+        daten={daten}
+        pfade={pfade}
+        gaeste={gaeste}
+      />
+    );
+  }
   return <Podcasts daten={daten} pfade={pfade} gaeste={gaeste} />;
 }

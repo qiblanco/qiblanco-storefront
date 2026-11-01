@@ -122,3 +122,258 @@
     font-size: var(--as-fs-8);
   }
 }
+
+/*
+ * PODCASTS (s07-r5): Apple-Satzspiegel für /pages/podcasts und seite-2..N
+ * (lp/PodcastsApple.jsx). Daten und Text wie C; hier nur Typo-Stufen,
+ * 8er-Raster, der eine Bild-Radius und Gold allein am Abspielknopf (der
+ * einzigen Handlung auf dem Poster). Handy zuerst: eine Spalte; ab 990 px
+ * Poster und Text nebeneinander.
+ */
+.as-kurs .as-pod {
+  max-width: var(--as-breite);
+  margin: 0 auto;
+  padding: var(--as-s-8) var(--as-s-2) 0;
+  color: var(--as-tinte);
+}
+.as-kurs .as-pod__kopf {
+  max-width: var(--as-text-breite);
+  margin: 0 auto var(--as-s-8);
+  text-align: center;
+}
+.as-kurs .as-pod__kopf h1 {
+  margin: 0;
+  font-size: var(--as-fs-7);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.as-kurs .as-pod__intro {
+  margin: var(--as-s-3) 0 0;
+  font-size: var(--as-fs-4);
+  line-height: 1.4;
+  color: var(--as-grau);
+  text-wrap: pretty;
+}
+.as-kurs .as-pod__zaehler {
+  margin: var(--as-s-2) 0 0;
+  font-size: var(--as-fs-2);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--as-grau);
+}
+.as-kurs .as-pod__liste {
+  display: grid;
+  gap: var(--as-s-8);
+}
+.as-kurs .as-pod__folge {
+  display: grid;
+  gap: var(--as-s-3);
+  align-items: start;
+  scroll-margin-top: var(--as-s-8);
+}
+/* Poster: höchstens 600 px breit, weil YouTube höchstens 1280 px liefert
+   (2x-Dichte, Bildschärfe; dieselbe Regel wie C, podcasts.css). */
+.as-kurs .as-pod__buehne {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  margin-inline: auto;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--as-radius);
+  background: var(--as-flaeche);
+  cursor: pointer;
+}
+.as-kurs .as-pod__knopf {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: var(--as-s-8);
+  height: var(--as-s-8);
+  border-radius: 50%;
+  background: var(--as-gold);
+  transition: transform var(--as-dauer) ease;
+}
+.as-kurs .as-pod__knopf::after {
+  content: '';
+  position: absolute;
+  inset: 50% auto auto 54%;
+  transform: translate(-50%, -50%);
+  border-style: solid;
+  border-width: 10px 0 10px 17px;
+  border-color: transparent transparent transparent var(--as-tinte);
+}
+.as-kurs .as-pod__buehne:hover .as-pod__knopf,
+.as-kurs .as-pod__buehne:focus-visible .as-pod__knopf {
+  transform: translate(-50%, -50%) scale(1.06);
+}
+.as-kurs .as-pod__inhalt {
+  max-width: var(--as-text-breite);
+}
+.as-kurs .as-pod__titel {
+  margin: 0;
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.as-kurs .as-pod__meta {
+  margin: var(--as-s-1) 0 0;
+  font-size: var(--as-fs-2);
+  color: var(--as-grau);
+}
+.as-kurs .as-pod__text {
+  margin-top: var(--as-s-2);
+}
+.as-kurs .as-pod__text p {
+  margin: 0 0 var(--as-s-2);
+  font-size: var(--as-fs-3);
+  line-height: 1.6;
+}
+.as-kurs .as-pod__klein {
+  margin: 0 0 var(--as-s-1);
+  font-size: var(--as-fs-2);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--as-grau);
+}
+.as-kurs .as-pod__kapitel ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: var(--as-strich) solid var(--as-linie);
+}
+.as-kurs .as-pod__kapitel li {
+  border-bottom: var(--as-strich) solid var(--as-linie);
+}
+.as-kurs .as-pod__kapitel a {
+  display: flex;
+  gap: var(--as-s-2);
+  min-height: var(--as-tippziel);
+  align-items: center;
+  font-size: var(--as-fs-2);
+  color: var(--as-tinte);
+  text-decoration: none;
+}
+.as-kurs .as-pod__zeit {
+  min-width: var(--as-s-8);
+  font-variant-numeric: tabular-nums;
+  color: var(--as-grau);
+}
+.as-kurs .as-pod__produkte {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--as-s-1) var(--as-s-2);
+  align-items: center;
+  margin: var(--as-s-3) 0 0;
+}
+.as-kurs .as-pod__produkte .as-pod__klein {
+  margin: 0;
+}
+.as-kurs .as-pod__produkt {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--as-tippziel);
+  font-size: var(--as-fs-3);
+  color: var(--as-tinte);
+  text-decoration: underline;
+  text-decoration-color: var(--as-gold);
+  text-underline-offset: 0.25em;
+}
+.as-kurs .as-pod__blaettern {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--as-s-2);
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--as-text-breite);
+  margin: var(--as-s-8) auto 0;
+  font-size: var(--as-fs-3);
+}
+.as-kurs .as-pod__blaettern a {
+  color: var(--as-tinte);
+}
+.as-kurs .as-pod__weiter {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--as-tippziel);
+}
+.as-kurs .as-pod__seiten {
+  display: flex;
+  gap: var(--as-s-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.as-kurs .as-pod__seiten :where(a, span) {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--as-tippziel);
+  min-height: var(--as-tippziel);
+}
+.as-kurs .as-pod__seiten [aria-current='page'] {
+  font-weight: 600;
+  border-bottom: var(--as-strich-stark) solid var(--as-tinte);
+}
+.as-kurs .as-pod__gaeste {
+  margin-top: var(--as-s-12);
+  padding-top: var(--as-s-8);
+  border-top: var(--as-strich) solid var(--as-linie);
+}
+.as-kurs .as-pod__gaeste > .as-pod__titel {
+  margin-bottom: var(--as-s-6);
+  text-align: center;
+}
+.as-kurs .as-pod__gastliste {
+  display: grid;
+  gap: var(--as-s-6);
+}
+.as-kurs .as-pod__gast {
+  display: grid;
+  gap: var(--as-s-2);
+  align-content: start;
+}
+.as-kurs .as-pod__gasttitel {
+  margin: 0;
+  font-size: var(--as-fs-4);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.as-kurs .as-pod__gast .as-pod__text p {
+  font-size: var(--as-fs-3);
+  color: var(--as-grau);
+}
+.as-kurs .as-pod__zitat {
+  margin: 0;
+  padding: var(--as-s-3);
+  border-radius: var(--as-radius);
+  background: var(--as-flaeche);
+}
+.as-kurs .as-pod__zitat p {
+  margin: 0;
+  font-size: var(--as-fs-3);
+  line-height: 1.6;
+}
+@media (min-width: 750px) {
+  .as-kurs .as-pod {
+    padding: var(--as-s-12) var(--as-s-4) 0;
+  }
+  .as-kurs .as-pod__kopf h1 {
+    font-size: var(--as-fs-8);
+  }
+  .as-kurs .as-pod__gastliste {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 990px) {
+  .as-kurs .as-pod__folge {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--as-s-6);
+  }
+}
