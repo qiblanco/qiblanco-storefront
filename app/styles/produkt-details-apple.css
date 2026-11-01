@@ -58,3 +58,79 @@
 .pd-mikroskop {
   margin: var(--as-s-8) 0;
 }
+
+/* ---- Kaufleiste mobil bis zum Seitenende (DetailKaufleiste.jsx) -----------
+   Anlass: am Seitenende stand kein Kaufknopf im Bild (Fuß mobil 3.269 px,
+   Geräteprobe 31.10./01.11.2026). Bauform wie die feste Leiste von start-b und
+   der Apple-LP Schlaf: weiß, eine Linie oben, Name und Preis links, der Knopf
+   des Hauses rechts. Versteckt heißt: leer, visibility hidden, unter dem Rand,
+   ohne Gleiten (KaufknopfChatSignal misst im nächsten Bild). */
+.pd-kaufleiste {
+  display: none;
+}
+/* Die Leiste ist das letzte Kind von .as-seite. Der Schlussabstand
+   (apple-seite.css `.as-seite > :last-child`) bleibt beim Abschnitt davor,
+   die Leiste selbst steht ohne Abstand am Rand (Lehre s08: sonst schwebt sie
+   64 px hoch und liegt auf den Fuß-Links). */
+.as-seite > :nth-last-child(2):has(+ .pd-kaufleiste) {
+  margin-bottom: var(--as-s-8);
+}
+.as-seite > .pd-kaufleiste:last-child {
+  margin-bottom: 0;
+}
+@media screen and (max-width: 749px) {
+  .pd-kaufleiste {
+    position: fixed;
+    inset: auto 0 0 0;
+    /* Kopf-Ebene der Leiter (overlay-ordnung.css), wie .szs-fest:
+       über dem Inhalt, Annas Rahmen (--z-schwebend) bleibt darüber. */
+    z-index: var(--z-kopf);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--as-s-2);
+    padding: var(--as-s-1) var(--as-s-2) max(var(--as-s-1), env(safe-area-inset-bottom));
+    background: var(--as-weiss);
+    border-top: var(--as-strich) solid var(--as-linie);
+    visibility: hidden;
+    transform: translateY(100%);
+  }
+  .pd-kaufleiste--sichtbar {
+    visibility: visible;
+    transform: none;
+  }
+  .as-seite .pd-kaufleiste-auswahl {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-width: 0;
+  }
+  .pd-kaufleiste-name {
+    font-size: var(--as-fs-3);
+    font-weight: 600;
+    color: var(--as-tinte);
+    white-space: nowrap;
+  }
+  .pd-kaufleiste-preis {
+    font-size: var(--as-fs-2);
+    color: var(--as-grau);
+  }
+  .as-seite .pd-kaufleiste .as-knopf {
+    flex: 0 0 auto;
+    min-width: 0;
+    min-height: var(--as-tippziel);
+    margin: 0;
+    /* Kompakt wie die Leisten bei Apple: das Haus setzt den Knopf 70 px hoch,
+       hier genügt die Trefferfläche (48 px). Leiste 65 px, Fuß-Polster 72 px. */
+    padding: calc(var(--as-s-1) * 1.5) var(--as-s-4);
+  }
+  /* Am Seitenende bleibt die Leiste stehen. Der Fuß bekommt ihre Höhe als
+     Polster: Impressum, Datenschutz und Widerruf bleiben frei. Immer gesetzt,
+     nicht erst beim Erscheinen: nichts springt. Nur mit Schalter an
+     (detail-kaufleiste-lage.js). Der Fuß liegt außerhalb von .as-seite, die
+     --as-*-Tokens gelten dort nicht: das 8pt-Raster der Wurzel, 9 Stufen =
+     72 px über der Leiste (48 Knopf + 2 × 8 Rand + Linie = 65 px). */
+  body:has(.pd-kaufleiste[data-kaufleiste-mobil='an']) footer {
+    padding-bottom: calc(var(--qb-ref-raster, 8px) * 9 + env(safe-area-inset-bottom));
+  }
+}
