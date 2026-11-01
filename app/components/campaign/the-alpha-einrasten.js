@@ -149,7 +149,11 @@ export function tapEinrasten(stellen, f = window) {
     geste.zuletzt = f.performance.now();
     bremse(e);
   };
-  // Rad und Tasten: ein Schritt über die Raststelle endet an ihr.
+  // Rad und Tasten: ein Schritt über die Raststelle endet an ihr. Ein so
+  // angehaltenes Ereignis ist verbraucht: der Video-Stopper (später an window
+  // gebunden) sähe sonst den nächsten Schritt desselben Zugs als „über den
+  // Anfang des Fensters“ und spränge ins Video (Vorschau desktop-rad 01.11.:
+  // Halt an der Definition, dann Sprung ans Video).
   function bremse(e) {
     if (e.defaultPrevented || !e.cancelable || geste.rast === null || videoHaelt()) return;
     const w = schritt(e, f.innerHeight);
@@ -157,11 +161,13 @@ export function tapEinrasten(stellen, f = window) {
     const y = f.scrollY;
     if (y >= geste.rast - 1) {
       e.preventDefault();
+      e.stopImmediatePropagation();
       if (y > geste.rast + 1) f.scrollTo(0, geste.rast);
       return;
     }
     if (y + w > geste.rast + 1) {
       e.preventDefault();
+      e.stopImmediatePropagation();
       anhalten();
     }
   }
