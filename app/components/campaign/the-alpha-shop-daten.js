@@ -286,6 +286,9 @@ export const TEILZAHLUNG_TEXT = {
   raten: 'Bequem in Raten',
   ablauf: 'So läuft die Ratenzahlung',
   weiter: 'Weiter zur Ratenzahlung',
+  // Premium-Bereich mit mehreren Geräten: ein Ratenvorgang je Gerät.
+  jeGeraet:
+    'Ratenzahlung geht je Gerät. Wähle dafür eine Nummer. Das nächste Gerät bestellst du danach über deinen Link.',
   fenster: {
     titel: 'In zwei Schritten zu deinem Qi Alpha®.',
     gesamt: 'Gesamt',
