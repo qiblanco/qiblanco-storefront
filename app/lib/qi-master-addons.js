@@ -163,6 +163,14 @@ export function nummerAnzeige(titel) {
  */
 export const QI_ALPHA_NAME = 'Qi Alpha®';
 
+/*
+ * DIE NUMMER IST NICHT DAS GERÄT (Christian 01.11.2026, Screenshot Warenkorb
+ * „Qi Alpha® 69/111 · 2.000 €“): „muss noch „- Wunschnummer“ im Namen
+ * hinzugefügt werden, damit klar ist, dass es kein Qi Alpha ist, sondern nur
+ * die Wunschnummer die 2000€ kostet“. Zeile: „Qi Alpha® 69/111 – Wunschnummer“.
+ */
+export const WUNSCHNUMMER_ZUSATZ = 'Wunschnummer';
+
 /** „Alpha 19/100“, „Alpha 19/111“, „19/111“ -> „19/111“; sonst null. */
 export function nummerKurz(titel) {
   const m = /^(?:Alpha\s*)?(\d{1,3})\s*\/\s*(100|111)$/.exec(
@@ -185,7 +193,7 @@ export function addonZeile(line) {
     const nummer = nummerKurz(merchandise?.title);
     return {
       titel: nummer
-        ? `${QI_ALPHA_NAME} ${nummer}`
+        ? `${QI_ALPHA_NAME} ${nummer} – ${WUNSCHNUMMER_ZUSATZ}`
         : merchandise?.product?.title || QI_ALPHA_NAME,
       unterzeilen: [],
     };
@@ -204,6 +212,25 @@ export function addonArt(handle) {
     return 'wunschnummer';
   if (handle === QM_ADDON.kette || handle === QM_ADDON_ALT.kette) return 'kette';
   return null;
+}
+
+/*
+ * Handle der inklusive Stahlkette (0 €, an den Qi Alpha gebunden wie eine
+ * Goldkette). Derselbe Wert wie QM_STAHLKETTE in campaign/the-alpha-shop-
+ * daten.js; hier eigens, damit der Warenkorb (auf jeder Seite geladen) die
+ * Datenstelle der Kaufseite nicht mitzieht. Ein Test hält beide gleich.
+ */
+export const QM_STAHLKETTE_HANDLE = 'qi-alpha-stahlkette';
+
+/*
+ * MENGE FEST (Christian 01.11.2026: „die menge darf nicht veränderbar sein,
+ * genau wie bei der Wunschnummer“): Wunschnummer, Goldkette und Stahlkette
+ * hängen am Qi Alpha, je Gerät eine. Der Warenkorb zeigt bei ihnen keine
+ * Mengen-Knöpfe, nur Entfernen. Durchgesetzt wird die Menge im Server
+ * (bindungsKorrektur über qi-master-addons.server.js), nicht im Knopf.
+ */
+export function mengeFest(handle) {
+  return Boolean(addonArt(handle)) || handle === QM_STAHLKETTE_HANDLE;
 }
 
 /**

@@ -19,6 +19,9 @@ const PFAD_HANDLE_JE_SHOPIFY_HANDLE = {
   'qi-alpha-wunschnummer': 'qi-alpha',
   'qi-master-goldkette': 'qi-alpha',
   'qi-alpha-goldkette': 'qi-alpha',
+  // Inklusive Stahlkette (seit 31.10.2026, Job 20261101-prio1-qi-alpha-warenkorb-kette-...-r2):
+  // es gibt sie nur mit dem Qi Alpha, ihr Tipp im Warenkorb führt deshalb dorthin.
+  'qi-alpha-stahlkette': 'qi-alpha',
 };
 
 /**

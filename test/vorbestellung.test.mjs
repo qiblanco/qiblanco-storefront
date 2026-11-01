@@ -124,12 +124,12 @@ test('Nummer in allen drei Schreibweisen wird „N/111“', () => {
   assert.equal(addons.nummerKurz('60 cm'), null);
 });
 
-test('Nummern-Zeile heißt „Qi Alpha® 19/111“, ohne Unterzeile', () => {
+test('Nummern-Zeile heißt „Qi Alpha® 19/111 – Wunschnummer“, ohne Unterzeile', () => {
   for (const t of ['Alpha 19/111', '19/111']) {
     const z = addons.addonZeile(
       addonLinie('qi-alpha-wunschnummer', t, [{name: 'Nummer', value: t}], 'Qi Alpha®'),
     );
-    assert.deepEqual(z, {titel: 'Qi Alpha® 19/111', unterzeilen: []});
+    assert.deepEqual(z, {titel: 'Qi Alpha® 19/111 – Wunschnummer', unterzeilen: []});
   }
 });
 

@@ -7,7 +7,7 @@ import {useAside} from './Aside';
 import {getCartLinePriceDisplayExact} from '~/lib/cart-display-pricing';
 import {warenkorbTitel, warenkorbUnterzeile} from '~/lib/vorbestellung';
 import {useMarktLand} from '~/lib/markt-land';
-import {addonArt, addonZeile} from '~/lib/qi-master-addons';
+import {addonZeile, mengeFest} from '~/lib/qi-master-addons';
 import {kakaoSetArt} from '~/lib/kakao-set-zeile';
 /**
  * A single line item in the cart. It displays the product image, title, price.
@@ -124,6 +124,16 @@ function CartLineQuantity({line}) {
   // zeigt und zählt dort PACKUNGEN; der Server legt die Zeile danach selbst
   // wieder auf Set oder Einzelpackung (lib/kakao-set-zeile.server.js).
   const handle = line.merchandise?.product?.handle;
+  // Wunschnummer und Kette (Gold oder inklusive Stahl) gehören zum Qi Alpha,
+  // je Gerät eine (Christian 01.11.2026). Keine Mengen-Knöpfe, nur Entfernen;
+  // die Menge hält die Warenkorb-Action (lib/qi-master-addons.server.js).
+  if (mengeFest(handle)) {
+    return (
+      <div className="cart-line-quantity">
+        <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} />
+      </div>
+    );
+  }
   const set = kakaoSetArt(handle);
   const menge = set ? set.packungen * quantity : quantity;
   const prevQuantity = Number(Math.max(0, menge - 1).toFixed(0));
@@ -135,12 +145,6 @@ function CartLineQuantity({line}) {
           kakaoPackungen: {lineId, handle, packungen: neu},
         }
       : {lines: [{id: lineId, quantity: neu}]};
-  // Eine Wunschnummer gibt es genau einmal: die Warenkorb-Action setzt jede
-  // höhere Menge auf 1 zurück (lib/qi-master-addons.server.js). Ein aktiver
-  // Plus-Knopf wäre ein Knopf, der nichts tut.
-  const einzelstueck =
-    addonArt(line.merchandise?.product?.handle) === 'wunschnummer';
-
   return (
     <div className="cart-line-quantity">
       <div className="quantity-wrapper">
@@ -160,7 +164,7 @@ function CartLineQuantity({line}) {
           aria-label="Menge erhöhen"
           name="increase-quantity"
           value={nextQuantity}
-          disabled={!!isOptimistic || einzelstueck}
+          disabled={!!isOptimistic}
         >
           <span>&#43;</span>
         </button>
