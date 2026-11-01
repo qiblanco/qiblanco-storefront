@@ -108,7 +108,7 @@ export const APPLE_SEITEN = Object.freeze({
   'sprechstunde': {pfad: '/pages/sprechstunde', schalter: 'APPLE_SEITE_SPRECHSTUNDE', standard: 'off'},
   'superhuman-anmeldung-erfolgreich': {pfad: '/pages/superhuman-anmeldung-erfolgreich', schalter: 'APPLE_SEITE_SUPERHUMAN_ANMELDUNG_ERFOLGREICH', standard: 'off'},
   'superhuman-kurs-bestatigung': {pfad: '/pages/superhuman-kurs-bestatigung', schalter: 'APPLE_SEITE_SUPERHUMAN_KURS_BESTATIGUNG', standard: 'off'},
-  'teilnahmebedingungen': {pfad: '/pages/teilnahmebedingungen', schalter: 'APPLE_SEITE_TEILNAHMEBEDINGUNGEN', standard: 'off'},
+  'teilnahmebedingungen': {pfad: '/pages/teilnahmebedingungen', schalter: 'APPLE_SEITE_TEILNAHMEBEDINGUNGEN', standard: 'on'},
   'ueber-uns': {pfad: '/pages/ueber-uns', schalter: 'APPLE_SEITE_UEBER_UNS', standard: 'off'},
   'uebersicht': {pfad: '/pages/uebersicht', schalter: 'APPLE_SEITE_UEBERSICHT', standard: 'off'},
   'widerrufsbelehrung': {pfad: '/pages/widerrufsbelehrung', schalter: 'APPLE_SEITE_WIDERRUFSBELEHRUNG', standard: 'on'},
