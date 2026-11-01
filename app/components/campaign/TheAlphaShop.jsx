@@ -39,6 +39,7 @@ import {THE_ALPHA_SERIE} from './the-alpha-daten-serie-vergeben';
 import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
 import {Schlussleiste} from '~/components/reusables/Schlussleiste';
 import {GESTEN, spieleSicher} from '~/components/reusables/video-nachholen';
+import {filmAufLeinwand} from '~/components/reusables/film-dekoder';
 
 /* Galerie-Hauptbild: Breitenstufen bis zum CDN-Master (2048/2056 px), damit
    Tablets mit dpr 2 nicht hochskalieren (Gate 12 bild-aufloesung). sizes folgt
@@ -875,11 +876,21 @@ export function TheAlphaShop({
  * synchron im Ereignis, bis der Film läuft. Kein Knopf, kein Ersatzbild.
  * Android und Desktop starten wie bisher über autoplay; der Aufruf dort ist
  * ein No-op auf einem laufenden Film.
+ *
+ * OHNE TIPPEN (Christian 01.11.2026: „… dass eine 3D-Animation bei Apple
+ * immer automatisch startet, ohne dass man irgendwas tippen oder sich
+ * bewegen muss“): lehnt iOS ab, dekodiert die Seite DENSELBEN Film über
+ * WebCodecs (iOS 16.4+) und zeichnet ihn in ein Canvas an seiner Stelle
+ * (film-dekoder.js). Die Stromspar-Regel gilt nur dem <video>. Erst wenn das
+ * erste Bild steht, tritt das Canvas an die Stelle des Films; bis dahin
+ * bleibt das Poster, und ein früher Tipp startet weiter den Film selbst.
  */
 function BandLoop({loop}) {
   const ref = useRef(null);
+  const leinwandRef = useRef(null);
   useEffect(() => {
     const v = ref.current;
+    const leinwand = leinwandRef.current;
     if (!v) return undefined;
     if (
       typeof window.matchMedia === 'function' &&
@@ -906,12 +917,57 @@ function BandLoop({loop}) {
         document.addEventListener(t, beiGeste, {capture: true, passive: true}),
       );
     };
+    // Dekodierter Film statt <video>, nur nach Ablehnung (null = aus).
+    let dekoder = null;
+    let dekoderZeigt = false;
+    const dekoderAus = () => {
+      if (dekoder) dekoder.stopp();
+      dekoder = null;
+      dekoderZeigt = false;
+      if (leinwand) {
+        leinwand.style.display = 'none';
+        leinwand.setAttribute('data-tas-dekoder', 'aus');
+      }
+      v.style.display = '';
+    };
+    const dekoderAn = () => {
+      if (dekoder || !leinwand || typeof window.VideoDecoder !== 'function') {
+        return;
+      }
+      leinwand.setAttribute('data-tas-dekoder', 'holt');
+      dekoder = filmAufLeinwand(leinwand, loop.src, {
+        beiErstemBild: () => {
+          if (!v.paused) {
+            dekoderAus();
+            return;
+          }
+          dekoderZeigt = true;
+          gestenAus();
+          leinwand.style.display = '';
+          leinwand.setAttribute('data-tas-dekoder', 'spielt');
+          v.style.display = 'none';
+        },
+        beiFehler: () => {
+          dekoderAus();
+          if (v.paused) gestenAn();
+        },
+      });
+    };
     const versuch = () => {
-      if (!v.paused) return;
+      if (!v.paused || dekoderZeigt) return;
       v.muted = true;
       spieleSicher(v).then((ok) => {
-        if (!ok && v.paused) gestenAn();
+        if (!ok && v.paused) {
+          gestenAn();
+          dekoderAn();
+        }
       });
+    };
+    // Startet ein Tipp den Film, bevor der Dekoder sein erstes Bild hat,
+    // bleibt es beim Film.
+    const beiFilm = () => {
+      gestenAus();
+      if (dekoder && !dekoderZeigt) dekoderAus();
     };
     // Synchron im Ereignis: nur so gilt play() für iOS als Teil der Geste.
     function beiGeste() {
@@ -920,12 +976,12 @@ function BandLoop({loop}) {
     // Hält iOS den Film später an (zurück aus dem Hintergrund im
     // Stromsparmodus), holt die nächste Berührung ihn wieder.
     const beiPause = () => {
-      if (!document.hidden) gestenAn();
+      if (!document.hidden && !dekoderZeigt) gestenAn();
     };
     const beiSicht = () => {
       if (!document.hidden) versuch();
     };
-    v.addEventListener('playing', gestenAus);
+    v.addEventListener('playing', beiFilm);
     v.addEventListener('pause', beiPause);
     v.addEventListener('loadeddata', versuch);
     v.addEventListener('canplay', versuch);
@@ -934,30 +990,43 @@ function BandLoop({loop}) {
     versuch();
     return () => {
       gestenAus();
-      v.removeEventListener('playing', gestenAus);
+      dekoderAus();
+      v.removeEventListener('playing', beiFilm);
       v.removeEventListener('pause', beiPause);
       v.removeEventListener('loadeddata', versuch);
       v.removeEventListener('canplay', versuch);
       document.removeEventListener('visibilitychange', beiSicht);
     };
-  }, []);
+  }, [loop.src]);
   return (
-    <video
-      ref={ref}
-      className="tas-band-loop"
-      src={loop.src}
-      poster={loop.poster}
-      width="720"
-      height="720"
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="auto"
-      disablePictureInPicture
-      aria-label={loop.alt}
-      data-tas-loop=""
-    />
+    <>
+      <video
+        ref={ref}
+        className="tas-band-loop"
+        src={loop.src}
+        poster={loop.poster}
+        width="720"
+        height="720"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        disablePictureInPicture
+        aria-label={loop.alt}
+        data-tas-loop=""
+      />
+      <canvas
+        ref={leinwandRef}
+        className="tas-band-loop"
+        width="720"
+        height="720"
+        role="img"
+        aria-label={loop.alt}
+        data-tas-dekoder="aus"
+        style={{display: 'none'}}
+      />
+    </>
   );
 }
 
