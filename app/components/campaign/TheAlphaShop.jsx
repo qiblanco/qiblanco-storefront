@@ -9,7 +9,7 @@ import {useMarktLand} from '~/lib/markt-land';
 import {addonLinien, addonsImMarkt, QM_ADDON} from '~/lib/qi-master-addons';
 import {vorbestellungFürHandle} from '~/lib/vorbestellung';
 import {
-  geraeteLinien,
+  einheitenLinien,
   reservierungsMerkmale,
   reserviertStand,
 } from '~/lib/qi-alpha-reservierung';
@@ -153,7 +153,7 @@ export function TheAlphaShop({
     ketten[ketten.length - 1];
   // Die Geräte im Premium-Bereich: angewählte reservierte Nummern, dann die
   // frei gewählte. Ab zwei Geräten wählt jedes seine Kette selbst.
-  const geraete = premium
+  const einheiten = premium
     ? [
         ...reserviert
           .filter((x) => x.variante && reserviertAn.includes(x.n))
@@ -163,11 +163,11 @@ export function TheAlphaShop({
           : []),
       ]
     : [];
-  const mehrere = geraete.length > 1;
+  const mehrere = einheiten.length > 1;
   const ketteFuer = (n) =>
     (mehrere && ketten.find((k) => k.titel === kettenJe[n])) || kette;
   const fokusNummer =
-    geraete.find((g) => g.n === fokus)?.n ?? geraete[0]?.n ?? null;
+    einheiten.find((g) => g.n === fokus)?.n ?? einheiten[0]?.n ?? null;
 
   const brutto = (money, handle) =>
     money ? bruttoAnzeige(money.amount, handle, money.currencyCode, land) : 0;
@@ -180,7 +180,7 @@ export function TheAlphaShop({
     k?.variante ? brutto(k.variante.price, QM_ADDON.kette) : 0;
   const kettenBetrag = (k) => (k?.art === 'gold' ? kettePreis(k) : 0);
   const summe = premium
-    ? geraete.reduce(
+    ? einheiten.reduce(
         (s, g) => s + hauptPreis + nummerPreis + kettenBetrag(ketteFuer(g.n)),
         0,
       )
@@ -224,10 +224,10 @@ export function TheAlphaShop({
   // Premium: je Gerät Nummer (reserviert mit Schlüssel und Name als
   // Zeilen-Merkmal, lib/qi-alpha-reservierung.js) und Kette, dazu der
   // Qi Alpha® in der Menge der Geräte.
-  const premiumLinien = geraeteLinien({
+  const premiumLinien = einheitenLinien({
     haupt,
     linie: addonLinien,
-    geraete: geraete.map((g) => ({
+    einheiten: einheiten.map((g) => ({
       nummer: g.variante,
       merkmale: g.name
         ? reservierungsMerkmale(reservierung.schluessel, g.name)
@@ -253,7 +253,7 @@ export function TheAlphaShop({
     THE_ALPHA_SERIE,
   );
   const ketteAnsicht =
-    premium && geraete.length ? ketteFuer(fokusNummer) : kette;
+    premium && einheiten.length ? ketteFuer(fokusNummer) : kette;
   const ketteGold = ketteAnsicht?.art === 'gold';
   const wahlNummer = (n) => {
     setNummer(n);
@@ -298,7 +298,7 @@ export function TheAlphaShop({
       </button>
     ) : (
       <AddToCartButton
-        disabled={!haupt?.availableForSale || (premium && !geraete.length)}
+        disabled={!haupt?.availableForSale || (premium && !einheiten.length)}
         onClick={() => open('cart')}
         lines={premium ? premiumLinien : linien}
       >
@@ -543,12 +543,12 @@ export function TheAlphaShop({
             {/* Premium mit zwei oder mehr Geräten: je Gerät eine Kettenwahl
                 („Ketten je Gerät frei“), sonst die eine wie bisher. */}
             {mehrere ? (
-              geraete.map((g) => (
+              einheiten.map((g) => (
                 <Fragment key={g.n}>
                   <p
                     id={`tas-kette-${g.n}`}
-                    className="tas-geraet-titel"
-                    data-tas-geraet={g.n}
+                    className="tas-einheit-titel"
+                    data-tas-einheit={g.n}
                   >
                     {mitMarkeR(`Kette zu Qi Alpha® ${g.n}/${THE_ALPHA_SERIE}`)}
                   </p>
@@ -556,7 +556,7 @@ export function TheAlphaShop({
                     className="tas-karten"
                     role="radiogroup"
                     aria-labelledby={`tas-kette-${g.n}`}
-                    data-tas-geraet-ketten={g.n}
+                    data-tas-einheit-ketten={g.n}
                   >
                     {ketten.map((k) => (
                       <Karte
@@ -703,11 +703,11 @@ export function TheAlphaShop({
               // Je Gerät Qi Alpha® mit Gravur und seine Kette (Christian:
               // „was im Paket steht, dann zweimal G-Master und einmal
               // Goldkette und einmal Stahlkette“).
-              geraete.map((g) => {
+              einheiten.map((g) => {
                 const k = ketteFuer(g.n);
                 return (
                   <Fragment key={g.n}>
-                    <div data-tas-posten-geraet={g.n}>
+                    <div data-tas-posten-einheit={g.n}>
                       <dt>
                         <MarkeR text={PRODUKT.name} /> ·{' '}
                         {gravurText(g.n, THE_ALPHA_SERIE)}

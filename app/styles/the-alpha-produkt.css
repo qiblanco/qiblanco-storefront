@@ -447,14 +447,14 @@
 /* Premium-Bereich für reservierte Nummern (/products/qi-alpha-reserviert/…):
    ab zwei Geräten je Gerät eine Kettenwahl, darüber eine Zeile in der Schrift
    der Kartentitel. */
-.tas-seite .tas-geraet-titel {
+.tas-seite .tas-einheit-titel {
   margin-top: var(--tas-s-4);
   font-size: var(--tas-fs-2);
   font-weight: 600;
   color: var(--tas-tinte);
 }
 
-.tas-seite .tas-geraet-titel + .tas-karten {
+.tas-seite .tas-einheit-titel + .tas-karten {
   margin-top: var(--tas-s-2);
 }
 

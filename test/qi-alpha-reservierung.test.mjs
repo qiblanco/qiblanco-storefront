@@ -134,17 +134,17 @@ test('reserviertStand: kaufbar = reserviert, gekauft (Shopify gesperrt) = vergeb
   );
 });
 
-test('geraeteLinien: zwei Geräte = Qi Alpha® Menge 2, zwei Nummern mit Name, zwei Ketten', () => {
+test('einheitenLinien: zwei Geräte = Qi Alpha® Menge 2, zwei Nummern mit Name, zwei Ketten', () => {
   const haupt = {id: 'qa'};
   const n2 = {id: 'n2'};
   const n99 = {id: 'n99'};
   const gold = {id: 'gold60'};
   const stahl = {id: 'stahl60'};
   const s = RESERVIERUNGEN[2].schluessel;
-  const linien = r.geraeteLinien({
+  const linien = r.einheitenLinien({
     haupt,
     linie: addonLinien,
-    geraete: [
+    einheiten: [
       {
         nummer: n2,
         merkmale: r.reservierungsMerkmale(s, 'Daniela'),
@@ -174,17 +174,17 @@ test('geraeteLinien: zwei Geräte = Qi Alpha® Menge 2, zwei Nummern mit Name, z
   assert.equal(linien.filter((l) => l.merchandiseId === 'stahl60').length, 1);
   assert.equal(linien.length, 5);
   // zwei Goldketten = zwei Zeilen derselben Variante (Shopify fasst sie zu Menge 2)
-  const zweiGold = r.geraeteLinien({
+  const zweiGold = r.einheitenLinien({
     haupt,
     linie: addonLinien,
-    geraete: [
+    einheiten: [
       {nummer: n2, kette: gold},
       {nummer: n99, kette: gold},
     ],
   });
   assert.equal(zweiGold.filter((l) => l.merchandiseId === 'gold60').length, 2);
   assert.deepEqual(
-    r.geraeteLinien({haupt, linie: addonLinien, geraete: []}),
+    r.einheitenLinien({haupt, linie: addonLinien, einheiten: []}),
     [],
   );
 });
