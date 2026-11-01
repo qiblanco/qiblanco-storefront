@@ -35,7 +35,8 @@ test('Fragen: acht Themen in Christians Folge, Größe (01.11.) vor der Rückgab
 test('Größe: gleiche Größe wie der QiOne® 2 Pro, mm und 9,9 g (Christian 01.11.2026)', () => {
   const g = faq.THE_ALPHA_FAQ.find((f) => f.id === 'groesse');
   assert.equal(g.frage, 'Wie groß ist der Qi Alpha®?');
-  const a = g.antwort.join(' ');
+  const a = g.antwort.join(' ').replace(/\u00a0/g, ' ');
+  assert.match(g.antwort.join(' '), /20\u00a0×\u00a015\u00a0mm/);
   assert.match(a, /QiOne® 2 Pro/);
   assert.match(a, /20 × 15 mm/);
   assert.match(a, /9,9 g/);

@@ -119,7 +119,8 @@ export const THE_ALPHA_FAQ = [
     id: 'groesse',
     frage: 'Wie groß ist der Qi Alpha®?',
     antwort: [
-      'Genauso groß wie der QiOne® 2 Pro: rund 20 × 15 mm. Er wiegt 9,9 g.',
+      // \u00a0: Maß und Gewicht brechen nie um (iPhone 390 px brach „20 / × 15 mm“).
+      'Genauso groß wie der QiOne® 2 Pro: rund 20\u00a0×\u00a015\u00a0mm. Er wiegt 9,9\u00a0g.',
     ],
   },
   {
