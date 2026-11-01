@@ -71,7 +71,7 @@ export function iosZweigAn(v, nav, suche) {
 }
 
 /** Die MP4 der großen Stufe (die <source> mit video/mp4). */
-export function grosseQuelle(v) {
+export function hoheQuelle(v) {
   for (const s of v.querySelectorAll('source')) {
     if (/mp4/.test(s.getAttribute('type') || '')) return s.getAttribute('src');
   }
@@ -83,13 +83,13 @@ export function grosseQuelle(v) {
  * Aufräumen zurück. */
 export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}) {
   const klein = v.dataset.tapKlein;
-  const gross = grosseQuelle(v);
+  const hoch = hoheQuelle(v);
   const notbildUrl = v.dataset.tapPoster;
   const figurBild = v.parentElement;
   const st = {
-    phase: 'leer', // leer | laedt | blob | netz
+    phase: 'leer', // leer | holt | blob | netz
     blobKlein: null,
-    blobGross: null,
+    blobHoch: null,
     url: null,
     erstesBild: false,
     lief: false,
@@ -165,7 +165,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     }
     // Erst, wenn der Speicher-Lauf auch nach dem ersten Bild fehlerfrei
     // bleibt (ein Gerät, das blob: nicht dekodiert, meldet es kurz danach).
-    fenster.setTimeout(holeGross, 800);
+    fenster.setTimeout(holeHoch, 800);
   };
 
   // Notfallplan: Standbild ÜBER dem Video, bis das erste Bild läuft.
@@ -247,14 +247,14 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     if (st.erstesBild || st.weg) return;
     if (!st.sichtbarSeit) st.sichtbarSeit = fenster.performance.now();
     if (st.phase === 'leer') insNetz();
-    else if (st.phase === 'laedt') {
+    else if (st.phase === 'holt') {
       const rest = restMs();
       if (rest !== Infinity && rest > NOTFALL_MS) insNetz();
       else if (rest === Infinity) {
         // Noch kein Fortschritt messbar: kurz auf den Speicher warten.
         fenster.clearTimeout(st.wartTimer);
         st.wartTimer = fenster.setTimeout(() => {
-          if (st.phase === 'laedt' && !st.weg) {
+          if (st.phase === 'holt' && !st.weg) {
             insNetz();
             spiele(v);
           }
@@ -273,8 +273,8 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   const fehler = () => {
     if (st.weg) return;
     st.waermt = false;
-    if (st.phase === 'blob' || st.phase === 'gross') {
-      st.blobGross = null;
+    if (st.phase === 'blob' || st.phase === 'hoch') {
+      st.blobHoch = null;
       st.blobDefekt = true;
       setzeQuelle(klein, 'netz');
       if (st.sichtbarSeit) spiele(v);
@@ -306,10 +306,10 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   };
 
   const wechsle = (amAnfang = false) => {
-    if (!st.blobGross || st.phase === 'gross') return;
+    if (!st.blobHoch || st.phase === 'hoch') return;
     if (!amAnfang && !v.paused) return;
     const lief = !v.paused;
-    setzeQuelle(st.blobGross, 'gross');
+    setzeQuelle(st.blobHoch, 'hoch');
     if (lief) spiele(v);
   };
 
@@ -317,15 +317,15 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   // Seitenaufbau geht vor.
   // Große Stufe erst, wenn die kleine aus dem Speicher nachweislich läuft
   // (angewärmt) und schnell kam.
-  function holeGross() {
-    if (st.grossGeholt || !gross || st.phase !== 'blob' || st.blobDefekt || v.error || st.weg) return;
+  function holeHoch() {
+    if (st.hochGeholt || !hoch || st.phase !== 'blob' || st.blobDefekt || v.error || st.weg) return;
     if (!(st.bps >= HOCH_AB_BPS)) return;
-    st.grossGeholt = true;
-    holen(gross)
+    st.hochGeholt = true;
+    holen(hoch)
       .then(({url: g}) => {
         if (st.weg) return fenster.URL.revokeObjectURL(g);
-        st.blobGross = g;
-        if (!st.lief) setzeQuelle(g, 'gross');
+        st.blobHoch = g;
+        if (!st.lief) setzeQuelle(g, 'hoch');
         else wechsle();
         return undefined;
       })
@@ -356,7 +356,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
           teile.push(value);
           st.geholt += value.byteLength;
           // Sichtbar geworden, und der Rest dauert zu lange: ab ins Netz.
-          if (st.sichtbarSeit && st.phase === 'laedt' && restMs() > NOTFALL_MS) insNetz();
+          if (st.sichtbarSeit && st.phase === 'holt' && restMs() > NOTFALL_MS) insNetz();
         }
         return teile;
       })
@@ -367,7 +367,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
 
   const vorladen = () => {
     if (st.phase !== 'leer' || st.weg) return;
-    merke('laedt');
+    merke('holt');
     const t0 = fenster.performance.now();
     st.holStart = t0;
     holen(klein, true).then(
@@ -375,7 +375,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
         if (st.weg) return fenster.URL.revokeObjectURL(url);
         st.blobKlein = url;
         // Noch nicht angefangen (oder läuft noch nicht): aus dem Speicher.
-        if (st.phase === 'laedt' || (st.phase === 'netz' && !st.lief)) {
+        if (st.phase === 'holt' || (st.phase === 'netz' && !st.lief)) {
           setzeQuelle(url, 'blob');
           if (st.sichtbarSeit) spiele(v);
         }
@@ -386,7 +386,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
       () => {
         // Abgebrochen (Netz-Start übernahm) oder fehlgeschlagen: der Netz-
         // Weg bleibt, sichtbar() setzt ihn spätestens beim Sichtbarwerden.
-        if (st.phase !== 'laedt') return;
+        if (st.phase !== 'holt') return;
         merke('leer');
         if (st.sichtbarSeit && !st.weg) {
           insNetz();
@@ -429,7 +429,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
       fenster.removeEventListener('load', los);
       fenster.removeEventListener('scroll', los);
       ereignisse.forEach(([t, f]) => v.removeEventListener(t, f));
-      [st.blobKlein, st.blobGross].forEach((u) => u && fenster.URL.revokeObjectURL(u));
+      [st.blobKlein, st.blobHoch].forEach((u) => u && fenster.URL.revokeObjectURL(u));
       if (st.notbild) st.notbild.remove();
     },
   };
