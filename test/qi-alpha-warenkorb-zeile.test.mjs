@@ -118,3 +118,12 @@ test('CartLineItem: bei fester Menge nur Entfernen, kein Plus/Minus', () => {
   assert.ok(src.indexOf('mengeFest(handle)') < src.indexOf('name="increase-quantity"'),
     'mengeFest muss vor dem Plus-Knopf greifen');
 });
+
+test('Tipp auf die Stahlketten-Zeile führt zum Qi Alpha, nicht auf die nackte Add-on-Seite', async () => {
+  // Ohne Karteneintrag führte der Link der Kettenzeile im Warenkorb-Fenster auf
+  // /products/qi-alpha-stahlkette, eine generische Produktseite (01.11.2026 gemessen: HTTP 200).
+  const {getVariantUrl} = await import('../app/lib/variants.js');
+  const url = getVariantUrl({handle: 'qi-alpha-stahlkette', pathname: '/', searchParams: new URLSearchParams(),
+    selectedOptions: [{name: 'Länge', value: '60 cm'}]});
+  assert.match(url, /^\/products\/qi-alpha(\?|$)/);
+});
