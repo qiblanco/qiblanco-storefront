@@ -86,6 +86,19 @@ export const VIDEO_TON = {
     max_dbfs: -91.0,
     notiz: '360-Grad-Produktdrehung — AAC-Spur vorhanden, aber digitale Stille',
   },
+  /*
+   * Volle Adresse statt imgix-Pfad: dieser Film läuft nicht über
+   * <ImgixVideo>, sondern direkt vom Shopify-CDN in BandLoop
+   * (KOPF.loop in campaign/the-alpha-shop-daten.js). Der Schlüssel IST die
+   * ausgelieferte Datei, die Probe misst genau ihn.
+   * Gemessen 2026-11-01 (ffprobe): eine Spur, h264 720x720, 9,17 s.
+   */
+  'https://cdn.shopify.com/videos/c/vp/719017d4447d42eabe22c203cb6a3f51/719017d4447d42eabe22c203cb6a3f51.HD-720p-1.6Mbps-98929981.mp4': {
+    hoerbar: false,
+    mean_dbfs: null,
+    max_dbfs: null,
+    notiz: 'Qi Alpha® 360-Grad-Loop im schwarzen Band — gar keine Audiospur im Container',
+  },
 };
 
 /**
@@ -100,4 +113,23 @@ export const VIDEO_TON = {
  */
 export function hatHoerbarenTon(videoPath) {
   return VIDEO_TON[videoPath]?.hoerbar === true;
+}
+
+/**
+ * Wert für das Attribut `data-video-ton` an einem <video>, das NICHT über
+ * <ImgixVideo> läuft (z. B. BandLoop).
+ *
+ * Anders als hatHoerbarenTon() unterscheidet sie "gemessen stumm" von
+ * "nicht gemessen": ohne Eintrag kommt `undefined`, React lässt das
+ * Attribut dann weg. Der Alle-Formate-Prüfer (Gate 12) nimmt nur ein
+ * Video mit exakt "stumm" vom Ton-Knopf aus. Ein ungemessener Film fällt
+ * dort also auf, statt still als stumm durchzugehen.
+ *
+ * @param {string} videoPath Schlüssel wie im Manifest
+ * @returns {'hoerbar'|'stumm'|undefined}
+ */
+export function tonAttribut(videoPath) {
+  const eintrag = VIDEO_TON[videoPath];
+  if (!eintrag) return undefined;
+  return eintrag.hoerbar === true ? 'hoerbar' : 'stumm';
 }
