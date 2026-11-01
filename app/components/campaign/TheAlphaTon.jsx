@@ -106,7 +106,14 @@ const QUELLE_LAUT = {
 };
 // Pegel der lauten Fassung: Master voll, der Grundsound knapp unter den
 // Akzenten (Z119 „darüber gemischt“), geduckt im selben Verhältnis wie sonst.
-const PEGEL_LAUT = {master: 1, bett: 0.8, geduckt: 0.16};
+// NACHTRAG 01.11.2026 (Christian: „den Grundton lauter machen und sonst gar
+// nicht so viel verändern“): nur der Grundsound +3 dB (bett 0,8 -> 1,13,
+// geduckt 0,16 -> 0,226). Master und Akzente (KLAENGE) bleiben exakt. Hörbar
+// danach: Grundsound -13,2 LUFS, Akzente 1 bis 4 dB darüber (vorher 4 bis 7).
+// Mehr geht so nicht sauber: schon +3 dB lässt die Summe mit tief/gong in
+// gut der Hälfte der Fälle kurz über 0 dBFS gehen. Messung im Jobordner
+// 20261101-prio1-qi-alpha-lp-nur-grundsound-lauter-pings-unveraendert.
+const PEGEL_LAUT = {master: 1, bett: 1.13, geduckt: 0.226};
 const SPEICHER = 'tap-ton'; // 'an' | 'aus' | 'gesehen'
 // Ereignisse, die Browser als Nutzer-Aktivierung zählen (HTML: „activation
 // triggering input event“). pointerdown zählt nur mit der Maus, darum
