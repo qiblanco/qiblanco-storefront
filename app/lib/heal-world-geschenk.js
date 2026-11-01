@@ -1,6 +1,6 @@
 /*
- * Heal-World-Geschenk 1. November 2026 (Christian 01.11.2026, Job
- * 20261101-prio1-heal-world-jana-code-je-geraet-awake-und-create-gratis-heute):
+ * Heal-World-Geschenk 1. November 2026 (Christian 01.11.2026, Pool-Job
+ * 20261101-prio1-heal-world-jana-code):
  * „pro G1, pro G-Bracelet, pro G-Home, was gekauft wird, kriegt er jeweils eine
  * Tüte" Crystal Cacao® Awake und Create, „wenn er den Code von Jana einlöst".
  *
