@@ -7,6 +7,7 @@ import {
   setzePreismodus,
   vorschauModus,
 } from '~/lib/preismodus';
+import {shopifyServerTorEinbauen} from '~/lib/shopify-tracking-tor';
 
 /**
  * The context implementation is separate from server.ts
@@ -58,6 +59,10 @@ export async function createAppLoadContext(request, env, executionContext) {
       }),
     },
   });
+
+  // Shopify-Statistik-/Marketing-Cookies nur nach Einwilligung durchreichen
+  // (Einwilligungs-Scan s03, 2026-11-01). Begründung in lib/shopify-tracking-tor.js.
+  shopifyServerTorEinbauen(hydrogenContext.storefront, request, env);
 
   // PREISMODUS netto|brutto (Grossjob 20260924-kasse-zeigt-bruttopreise-wie-
   // produktseite-prio10, s02): HIER und nicht im root-Loader, weil Kind-Loader
