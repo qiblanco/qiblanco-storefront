@@ -96,6 +96,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     sichtbarSeit: 0,
     notTimer: 0,
     notbild: null,
+    vorbild: null,
     weg: false,
     abbruch: typeof AbortController === 'function' ? new AbortController() : null,
     // Fortschritt der kleinen MP4 (für die Entscheidung beim Sichtbarwerden)
@@ -168,6 +169,19 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     fenster.setTimeout(holeHoch, 800);
   };
 
+  // Das Standbild wird beim Sichtbarwerden schon geladen (nicht eingehängt),
+  // sobald das Video nicht angewärmt bereitsteht: im Notfall steht es dann
+  // sofort, statt erst danach über die Leitung zu kommen.
+  const notbildLaden = () => {
+    if (st.vorbild || !notbildUrl) return;
+    const img = doc.createElement('img');
+    img.className = 'tap-film-notbild';
+    img.alt = '';
+    img.setAttribute('aria-hidden', 'true');
+    img.decoding = 'async';
+    img.src = notbildUrl;
+    st.vorbild = img;
+  };
   // Notfallplan: Standbild ÜBER dem Video, bis das erste Bild läuft.
   const notbildAn = (grund) => {
     if (st.erstesBild || st.weg || !notbildUrl || !figurBild) return;
@@ -177,12 +191,9 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
       st.notbild.classList.remove('tap-film-notbild-weg');
       return;
     }
-    const img = doc.createElement('img');
-    img.className = 'tap-film-notbild';
-    img.src = notbildUrl;
-    img.alt = '';
-    img.setAttribute('aria-hidden', 'true');
-    img.decoding = 'async';
+    notbildLaden();
+    const img = st.vorbild;
+    st.vorbild = null;
     // Genau über dem Video (es ist schmaler als die Figur, wo der Text
     // darunter Platz braucht).
     img.style.left = `${v.offsetLeft}px`;
@@ -246,6 +257,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   const sichtbar = () => {
     if (st.erstesBild || st.weg) return;
     if (!st.sichtbarSeit) st.sichtbarSeit = fenster.performance.now();
+    if (!st.warm) notbildLaden();
     if (st.phase === 'leer') insNetz();
     else if (st.phase === 'holt') {
       const rest = restMs();
