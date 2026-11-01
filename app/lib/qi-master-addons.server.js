@@ -1,6 +1,11 @@
 import {CartForm} from '@shopify/hydrogen';
-import {bindungsKorrektur, QM_ADDON} from '~/lib/qi-master-addons';
+import {addonArt, bindungsKorrektur, QM_ADDON} from '~/lib/qi-master-addons';
 import {QM_STAHLKETTE} from '~/components/campaign/the-alpha-shop-daten';
+import {
+  nummerAusVariantenTitel,
+  reservierungsSperre,
+} from '~/lib/qi-alpha-reservierung';
+import {RESERVIERUNGEN} from '~/lib/qi-alpha-reservierungen.server';
 
 /*
  * Die inklusive Stahlkette (0 €, EL-20261030-ae569366) zählt in der
@@ -38,7 +43,8 @@ const alsBindungsHandle = (handle) =>
  * DECKUNGSGRENZE, benannt: ein Kauf am Hydrogen vorbei (Storefront-API
  * direkt, checkout.qiblanco.com/cart/<id>:1) läuft hier nicht durch. Den fängt
  * das Seriennummern-Register (rt qm-seriennummern-register) als Befund
- * ADDON_OHNE_QM/DOPPELT an der Bestellung.
+ * ADDON_OHNE_QM/DOPPELT an der Bestellung, eine reservierte Nummer ohne den
+ * Schlüssel ihres Links als RESERVIERT_FREMD.
  *
  * FAIL-SOFT: scheitert das Nachlesen, bleibt das Ergebnis der Kundenaktion
  * unverändert — ein Lesefehler darf keinen Warenkorb leeren.
@@ -60,14 +66,29 @@ export async function bindeQiMasterAddons({cart, action, result}) {
   } catch {
     return result;
   }
-  const zeilen = (voll?.lines?.nodes || []).map((z) => ({
+  const alle = (voll?.lines?.nodes || []).map((z) => ({
     id: z.id,
     quantity: z.quantity,
     handle: alsBindungsHandle(z.merchandise?.product?.handle),
     variantId: z.merchandise?.id,
     attributes: z.attributes,
+    nummer:
+      addonArt(z.merchandise?.product?.handle) === 'wunschnummer'
+        ? nummerAusVariantenTitel(z.merchandise?.title)
+        : null,
   }));
-  const {entfernen, aendern} = bindungsKorrektur(zeilen);
+  // RESERVIERTE NUMMERN (Job 20261101-prio2-qi-alpha-premium-checkout-
+  // reservierte-nummern-links): eine Nummer aus lib/qi-alpha-reservierungen
+  // .server.js bleibt nur mit dem Schlüssel ihres persönlichen Links an der
+  // Zeile. Zuerst, damit die Bindungsregel danach mit dem echten Rest rechnet.
+  const gesperrt = reservierungsSperre(
+    alle.filter((z) => z.nummer),
+    RESERVIERUNGEN,
+  );
+  const zeilen = alle.filter((z) => !gesperrt.includes(z.id));
+  const bindung = bindungsKorrektur(zeilen);
+  const entfernen = [...gesperrt, ...bindung.entfernen];
+  const aendern = bindung.aendern;
   if (!entfernen.length && !aendern.length) return result;
 
   let neu = result;

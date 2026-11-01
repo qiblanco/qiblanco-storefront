@@ -1,5 +1,6 @@
-import {Link} from 'react-router';
+import {Link, useSearchParams} from 'react-router';
 import {THE_ALPHA_SCHLUSS, THE_ALPHA_KAUF_ZIEL} from '~/components/campaign/the-alpha-daten';
+import {kaufZiel, RESERVIERUNG_PARAM} from '~/lib/qi-alpha-reservierung';
 
 /*
  * KAUF-BAUSTEIN THE ALPHA — der rote Knopf „Jetzt Exklusiv Reservieren“ für
@@ -21,6 +22,12 @@ import {THE_ALPHA_SCHLUSS, THE_ALPHA_KAUF_ZIEL} from '~/components/campaign/the-
  * probe_naht_kaufbaustein.py, dass alle drei Varianten DIESEN Baustein tragen.
  * Stil: .ta-kauf/.ta-knopf in app/styles/the-alpha.css (das Rot der Vorlage
  * steht nur hier).
+ *
+ * PERSÖNLICHER LINK (Christian 01.11.2026, Premium-Kunden-Checkout): trägt
+ * die Adresse der Landingpage ?reservierung=<schlüssel>, führt derselbe Knopf
+ * in den Premium-Bereich /products/qi-alpha-reserviert/<schlüssel>
+ * (lib/qi-alpha-reservierung.js kaufZiel). Ob der Schlüssel gilt, entscheidet
+ * erst dessen Loader; ein unbekannter landet auf der normalen Kaufseite.
  */
 
 /**
@@ -31,9 +38,11 @@ export function TheAlphaKauf({
   ziel = THE_ALPHA_KAUF_ZIEL,
   className = '',
 }) {
+  const [such] = useSearchParams();
+  const wohin = kaufZiel(ziel, such.get(RESERVIERUNG_PARAM));
   return (
     <div className={`ta-kauf ${className}`} data-the-alpha-kauf="">
-      <Link className="ta-knopf" to={ziel} prefetch="intent">
+      <Link className="ta-knopf" to={wohin} prefetch="intent">
         {knopfText}
       </Link>
     </div>
