@@ -372,3 +372,44 @@ body:has(.nog) ._form_15 input[type='submit'] {
   border-radius: var(--nog-r1) !important;
   font-family: var(--nog-font) !important;
 }
+
+/* ─── Trustpilot-Stimmen im Satz dieser Seite (2026-11-01, s14) ─────────────
+   BEFUND design_gate am Preview (91/100, live seit 14 Tagen ebenfalls 91):
+   „H2-Ausrichtung gemischt (center, left)", „2 gesaettigte Akzent-Farbwelten",
+   „Schriftgroessen folgen keiner modularen Skala". Alle drei kommen aus dem
+   geteilten Baustein TrustpilotStimmen.jsx: Kopf und Hinweise zentriert mit
+   Tailwind-`!`, Google-Blau (1565c0) an den „weiterlesen"-Schaltern, Karten
+   in text-xs/text-sm (12/14 px) neben der 13/16er Skala dieser Seite.
+   Dasselbe Muster wie ist-qi-blanco-serioes.css (H2) und fragen.css Regel
+   „EIN Akzent auch in den Trustpilot-Stimmen" (Schalter). Wirkt nur unter
+   .nog; der Baustein selbst bleibt unveraendert (sieben Seiten).
+   WARUM @layer utilities: `!important` in der Ebene utilities schlaegt jede
+   ungelayerte Regel; in derselben Ebene entscheidet die Spezifitaet.
+   RUECKWEG: diesen Block entfernen. */
+@layer utilities {
+  .nog .TrustpilotStimmen > h2,
+  .nog .TrustpilotStimmen > p {
+    max-width: calc(var(--nog-breite-schmal) - 2 * var(--nog-s2)) !important;
+    margin-inline: auto !important;
+    text-align: left !important;
+  }
+  .nog .TrustpilotStimmen > h2 {
+    font-size: var(--nog-fs-h2) !important;
+    line-height: 1.25;
+    font-weight: 600;
+  }
+  .nog .TrustpilotStimmen > p.text-sm\! {
+    font-size: var(--nog-fs-xs) !important;
+    color: var(--nog-muted);
+  }
+}
+
+.nog .TrustpilotStimmen .text-xs,
+.nog .TrustpilotStimmen .text-sm {
+  font-size: var(--nog-fs-xs);
+}
+
+.nog .TrustpilotStimmen button[class*='1565c0]'] {
+  color: var(--nog-muted) !important;
+  text-decoration: underline;
+}
