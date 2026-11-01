@@ -95,7 +95,7 @@ export const APPLE_SEITEN = Object.freeze({
   'collections-all': {pfad: '/collections/all', schalter: 'APPLE_SEITE_COLLECTIONS_ALL', standard: 'off'},
   'collections-products': {pfad: '/collections/products', schalter: 'APPLE_SEITE_COLLECTIONS_PRODUCTS', standard: 'off'},
   'agb': {pfad: '/pages/agb', schalter: 'APPLE_SEITE_AGB', standard: 'off'},
-  'cookie-erklaerung': {pfad: '/pages/cookie-erklaerung', schalter: 'APPLE_SEITE_COOKIE_ERKLAERUNG', standard: 'off'},
+  'cookie-erklaerung': {pfad: '/pages/cookie-erklaerung', schalter: 'APPLE_SEITE_COOKIE_ERKLAERUNG', standard: 'on'},
   'datenschutz': {pfad: '/pages/datenschutz', schalter: 'APPLE_SEITE_DATENSCHUTZ', standard: 'off'},
   'erinnerung-erfolgreich': {pfad: '/pages/erinnerung-erfolgreich', schalter: 'APPLE_SEITE_ERINNERUNG_ERFOLGREICH', standard: 'off'},
   'impressum': {pfad: '/pages/impressum', schalter: 'APPLE_SEITE_IMPRESSUM', standard: 'off'},
