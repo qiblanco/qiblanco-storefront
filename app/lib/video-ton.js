@@ -97,7 +97,7 @@ export const VIDEO_TON = {
     hoerbar: false,
     mean_dbfs: null,
     max_dbfs: null,
-    notiz: 'Qi Alpha® 360-Grad-Loop im schwarzen Band — gar keine Audiospur im Container',
+    notiz: 'Qi Alpha® 360-Grad-Loop im schwarzen Band, ohne Audiospur im Container',
   },
 };
 

@@ -9,7 +9,6 @@ import {betragText} from '~/lib/betrag-text';
 import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
-import {tonAttribut} from '~/lib/video-ton';
 import {Schlussleiste} from '~/components/reusables/Schlussleiste';
 import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {PRODUCT_VARIANT_FRAGMENT} from '~/lib/qioneProductQuery';
@@ -812,7 +811,6 @@ function BandLoop({loop}) {
       disablePictureInPicture
       aria-label={loop.alt}
       data-tas-loop=""
-      data-video-ton={tonAttribut(loop.src)}
     />
   );
 }
