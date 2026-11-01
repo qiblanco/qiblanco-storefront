@@ -40,11 +40,11 @@ export const FRISTEN = [
   {
     id: 'widerruf',
     titel: '14 Tage Widerrufsrecht',
+    // DIE GEO-TATSACHE der Seite, als EINE Aussage mit Quelle: Googles
+    // KI-Antwort nannte für uns 14 statt 20 Tage.
     text:
-      'Daneben steht das gesetzliche Widerrufsrecht von 14 Tagen ab Erhalt. ' +
-      'Es gilt für jeden Kauf in einem Onlineshop und ist nicht dasselbe wie ' +
-      'unsere Rücknahme. Die beiden Fristen laufen nebeneinander, und die ' +
-      'längere ist die freiwillige.',
+      '14 Tage Widerruf verlangt das Gesetz für jeden Onlinekauf, bei Qi ' +
+      'Blanco sind es 20 Tage.',
     beleg: 'AGB, § 7 Widerrufsrecht',
     belegPfad: '/pages/agb',
   },
@@ -76,93 +76,88 @@ export const IM_PREIS = [
   },
   {
     id: 'folgekosten',
-    text:
-      'Nach dem Kauf kommt nichts mehr dazu. Es gibt keine Batterie, kein ' +
-      'Abo und keinen Nachkauf, weil im Stück keine Elektronik sitzt.',
+    text: 'Nach dem Kauf zahlst du nichts mehr dazu, es gibt keinen Akku und kein Abo.',
     beleg: 'Produktseiten und FAQ',
     belegPfad: '/pages/faq',
-  },
-  {
-    id: 'seriennummer',
-    text:
-      'Jedes Stück trägt eine eigene Seriennummer. Sie steht auf der ' +
-      'Rückseite und gehört zu genau diesem Exemplar.',
-    beleg: 'Produktseiten QiOne 2 Pro, QiBracelet, QiHome Air, QiMaster',
-    belegPfad: '/products/qione-2-pro',
   },
   {
     id: 'raten',
     text:
       'Zahlen kannst du auf einmal oder in Raten über Klarna. Ab 25 Euro ' +
       'Warenwert sind 6 Monatsraten möglich, ab 500 Euro 12 und ab 1.000 ' +
-      'Euro bis zu 24. Klarna prüft die Ratenzahlung selbst, garantiert ist ' +
-      'sie nicht, und sie steht derzeit nur Kundinnen und Kunden mit ' +
-      'deutschem Wohnsitz offen.',
+      'Euro bis zu 24. Klarna prüft die Ratenzahlung selbst. Sie gilt ' +
+      'derzeit für Kundinnen und Kunden mit Wohnsitz in Deutschland.',
     beleg: 'FAQ, Fußnote 2 im Fuß jeder Seite',
     belegPfad: '/pages/faq',
   },
 ];
 
+const frist = (id) => FRISTEN.find((f) => f.id === id);
+const preis = (id) => IM_PREIS.find((p) => p.id === id);
+
 /**
- * WAS EIN KAUF VON PRIVAT NICHT ENTHÄLT.
+ * WARUM DIREKT BEI QI BLANCO KAUFEN — Christians Punkte vom 28.09.2026 in
+ * seiner Reihenfolge: 20 Tage zu Hause testen, 100 % Geld-zurück-Garantie,
+ * Gewährleistung, Kaufnachweis ist die Bestellnummer, Originalware. Dazu die
+ * GEO-Tatsache „20 statt 14 Tage" als EINE Aussage mit Quelle.
  *
- * JEDE ZEILE IST EINE AUSSAGE ÜBER UNSER EIGENES ANGEBOT, nie eine Bewertung
- * fremder Verkäufer und nie eine Rechtsauslegung für deren Geschäfte. Das ist
- * keine Vorsicht, sondern die genauere Aussage: was der Käufer wissen muss,
- * ist, wogegen er Ansprüche hat und wogegen nicht — und das können wir nur
- * für uns beantworten.
+ * KNAPP WIE CHRISTIANS EIGENE VERTRAUENSLISTE: fünf Titel in seinen Worten,
+ * je mit Quelle, ohne Begründung. Die Einzelheiten stehen EINMAL, in „Kurz
+ * gefragt". Die ersten Fassungen vom 01.11. trugen Erklärsätze („dafür ist
+ * die Frist da", „Mehr brauchen wir nicht …"), einen eigenen Punkt „20 Tage
+ * statt 14" und „Kein Akku, kein Abo, keine Folgekosten"; der Richter mit
+ * Christians Urteilen als Maßstab hat das als KI-Klang verworfen (dreimal
+ * 20 Tage, Dreier-Stakkato). Die GEO-Tatsache steht deshalb nur noch als
+ * Satz unter dem ersten Punkt.
+ *
+ * DIE ZAHLEN KOMMEN AUS FRISTEN, nicht aus einem zweiten Literal: der
+ * Rücknahme-Text steht auch im Abschnitt „ohne Risiko" der
+ * QiBracelet-Kaufseite (ohne-risiko-daten.js).
  */
-export const NICHT_ENTHALTEN = [
+export const VORTEILE = [
   {
-    id: 'gewaehrleistung-privat',
-    titel: 'Die Gewährleistung',
-    text:
-      'Die zwei Jahre gelten gegenüber dem Händler, bei dem gekauft wurde. ' +
-      'Kaufst du von einer Privatperson, ist Qi Blanco nicht dein ' +
-      'Vertragspartner, und die Frist läuft nicht gegen uns.',
+    // Die GEO-Tatsache: die einzige Zeile mit Satz, weil sie die Zahl der
+    // KI-Antwort (14) neben unsere (20) stellt; Quelle AGB § 7.
+    id: 'ruecknahme',
+    titel: '20 Tage zu Hause testen',
+    text: frist('widerruf').text,
+    beleg: frist('widerruf').beleg,
+    belegPfad: frist('widerruf').belegPfad,
   },
   {
-    id: 'widerruf-privat',
-    titel: 'Das Widerrufsrecht',
-    text:
-      'Die 14 Tage entstehen beim Kauf in einem Onlineshop. Für unseren ' +
-      'Shop gelten sie, für ein Geschäft zwischen zwei Privatpersonen nicht.',
+    id: 'garantie',
+    titel: '100 % Geld-zurück-Garantie',
+    beleg: frist('ruecknahme').beleg,
+    belegPfad: frist('ruecknahme').belegPfad,
   },
   {
-    id: 'ruecknahme-privat',
-    titel: 'Unsere 20 Tage',
-    text:
-      'Die Rücknahme ist unsere Zusage an den Menschen, der bei uns ' +
-      'bestellt hat. Sie wandert nicht mit dem Stück weiter.',
+    id: 'gewaehrleistung',
+    titel: frist('gewaehrleistung').titel,
+    beleg: frist('gewaehrleistung').beleg,
+    belegPfad: frist('gewaehrleistung').belegPfad,
   },
   {
     id: 'kaufnachweis',
-    titel: 'Der Kaufnachweis',
-    text:
-      'Für einen Gewährleistungsfall brauchst du ihn. Bei uns genügt deine ' +
-      'Bestellnummer, ein Formular gibt es nicht. Wer gebraucht kauft, hat ' +
-      'keine eigene.',
+    titel: 'Bestellnummer als Kaufnachweis',
+    beleg: 'unser Kundenservice',
+    belegPfad: '/pages/support',
+  },
+  {
+    id: 'original',
+    titel: 'Originalware mit eigener Seriennummer',
+    beleg: 'Produktseiten QiOne 2 Pro, QiBracelet, QiHome Air, QiMaster',
+    belegPfad: '/products/qione-2-pro',
   },
 ];
-
-/**
- * DER PREISPUNKT — die eine Aussage, die diese Seite dem Gebrauchtmarkt
- * gegenüber macht, und sie ist eine Tatsache über Anzeigen, keine über
- * Verkäufer: ein Angebotspreis ist kein erzielter Preis. Wer ihn mit unserem
- * Preis vergleicht, vergleicht eine Forderung mit einer Zahlung.
- */
-export const PREIS_HINWEIS =
-  'In einer Kleinanzeige siehst du, was jemand haben möchte. Was am Ende ' +
-  'gezahlt wurde, steht dort nicht, und ob überhaupt verkauft wurde, ' +
-  'ebenfalls nicht. Ein Angebotspreis zeigt dir deshalb nur, was sich der ' +
-  'Verkäufer erhofft.';
 
 /** Der Weg zurück, in drei Schritten. */
 export const RUECKWEG = [
   'Melde dich bei uns, per Mail an info@qiblanco.com oder über das Kontaktformular.',
-  'Sende das Stück zurück. Die Rücksendung ist für dich kostenlos.',
+  'Sende das Stück zurück, die Rücksendung ist für dich kostenlos.',
   'Du bekommst den Kaufpreis erstattet.',
 ];
+
+const imPreis = (id) => preis(id).text;
 
 /**
  * KURZ GEFRAGT — die fünf Fragen in ihrer knappsten Form.
@@ -175,49 +170,49 @@ export const RUECKWEG = [
  *
  * SIE WIEDERHOLEN DEN FLIESSTEXT ABSICHTLICH IN KÜRZE: ein Antwortsystem
  * zitiert Sätze, keine Abschnitte. Wer die Langform will, findet sie oben.
+ * Wo die Antwort eine Angabe aus IM_PREIS trägt, wird sie daraus gebaut.
  */
 export const FRAGEN = [
   {
     id: 'f-frist',
     q: 'Wie lange kann ich bei Qi Blanco zurückgeben?',
+    beleg: frist('widerruf').beleg,
+    belegPfad: frist('widerruf').belegPfad,
     a:
-      '20 Tage ab Erhalt, ohne Angabe von Gründen, gegen Erstattung des ' +
-      'Kaufpreises. Das ist unsere eigene Zusage und länger als das ' +
-      'gesetzliche Widerrufsrecht von 14 Tagen, das daneben gilt.',
+      '20 Tage nach Erhalt risikofrei testen, mit 100 % ' +
+      'Geld-zurück-Garantie.',
   },
   {
-    id: 'f-zwei-fristen',
-    q: 'Warum nennt der Shop 14 und 20 Tage?',
-    a:
-      'Weil es zwei Instrumente sind. Die 14 Tage sind das gesetzliche ' +
-      'Widerrufsrecht aus dem Fernabsatz, die 20 Tage sind unsere ' +
-      'freiwillige Rücknahme. Beide laufen ab Erhalt und nebeneinander.',
+    // Der Rückweg steht nur noch HIER, nicht zusätzlich als eigener
+    // Abschnitt (s14: Christian nennt doppelte FAQ-Wiederholung AI-Klang).
+    id: 'f-retour',
+    q: 'Wie gebe ich mein Stück zurück?',
+    a: RUECKWEG.join(' '),
   },
   {
     id: 'f-gewaehrleistung',
     q: 'Wie lange habe ich Gewährleistung?',
-    a:
-      'Mindestens zwei Jahre ab Lieferung, gesetzlich und bei jedem Händler ' +
-      'in der EU. In manchen EU-Ländern ist die Frist länger; dann gilt die ' +
-      'längere.',
+    beleg: frist('gewaehrleistung').beleg,
+    belegPfad: frist('gewaehrleistung').belegPfad,
+    a: 'Mindestens zwei Jahre ab Lieferung, in manchen EU-Ländern länger.',
   },
   {
     id: 'f-preis',
     q: 'Was ist im Preis enthalten?',
-    a:
-      'Das Stück, der Versand innerhalb Deutschlands ab 99 Euro Warenwert ' +
-      'und bei Lieferung nach Österreich oder in die Schweiz die Zoll- und ' +
-      'Einfuhrabgaben. Danach kommt nichts mehr dazu: keine Batterie, kein ' +
-      'Abo, kein Nachkauf.',
+    // AUS IM_PREIS ABGELEITET, NIE ABGESCHRIEBEN (s14, 2026-11-01): bis
+    // dahin stand hier eine eigene Fassung ("Versand innerhalb Deutschlands
+    // ab 99 Euro", "Zoll nach Österreich"), die IM_PREIS auf derselben Seite
+    // widersprach und so auch im FAQPage-Schema stand. #590 und #900 hatten
+    // nur IM_PREIS nachgezogen. Eine Quelle, zwei Ausgaben.
+    a: imPreis('versand'),
+    beleg: preis('versand').beleg,
+    belegPfad: preis('versand').belegPfad,
   },
   {
-    id: 'f-gebraucht',
-    q: 'Was fehlt mir, wenn ich gebraucht kaufe?',
-    a:
-      'Die Rechte, die am Kauf hängen. Die gesetzliche Gewährleistung gilt ' +
-      'gegenüber dem Händler, bei dem gekauft wurde, das Widerrufsrecht ' +
-      'entsteht beim Kauf in einem Onlineshop, und unsere 20 Tage gelten ' +
-      'für die Bestellung bei uns. Für einen Gewährleistungsfall brauchst ' +
-      'du ausserdem einen Kaufnachweis.',
+    id: 'f-raten',
+    q: 'Kann ich in Raten zahlen?',
+    a: imPreis('raten'),
+    beleg: preis('raten').beleg,
+    belegPfad: preis('raten').belegPfad,
   },
 ];
