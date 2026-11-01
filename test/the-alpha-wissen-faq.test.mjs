@@ -3,7 +3,8 @@
  * Bundler) — Grossjob 20261026-prio1-the-alpha-variante-a-designmeister-
  * premium-gestaltung, Segment s07. Christian 26.10.2026 Z150–Z208.
  *
- * Gemessen: Christians acht Themen in seiner Folge, die Leitfrage wörtlich,
+ * Gemessen: Christians acht Themen in seiner Folge (dazu seit 01.11.2026 Größe
+ * vor der Rückgabe und Rabatte als letzte Frage), die Leitfrage wörtlich,
  * keine Weichmacher in den Antworten (Z175), die vergebenen Nummern aus der
  * einen Liste, die sechs Abschnitte in Christians Folge mit Quellen, und die
  * Verdrahtung unter „What's in the Box“.
