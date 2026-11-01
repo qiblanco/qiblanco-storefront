@@ -182,3 +182,24 @@ test('Stopper nutzt freiFrist (kein zweiter, abweichender Fristbaum im Takt)', (
   assert.match(quelle, /const frist = freiFrist\(/);
   assert.doesNotMatch(quelle, /const frist = spielt\(\)/);
 });
+
+test('Slap-Stop immer: wer oberhalb des Fensters ansetzt, hält in dessen Mitte (auch nach verbrauchtem 3-s-Halt)', () => {
+  // Christian 01.11.2026: „slap stop + der 3 sekunden stop beim ersten mal“,
+  // „wenn man neu laed … und der 3 sekunden stop weg ist trotzdem ein slap stop“.
+  // ROT VOR GRÜN: auf origin/main f647db26 fehlt slapZiel, und ein verbrauchter
+  // Stopper kehrt sofort zurück (if (stand === 'frei') return).
+  assert.equal(typeof st.slapZiel, 'function');
+  assert.equal(st.slapZiel({start: 1000, von: 2000, bis: 2600}), 2300, 'von oben: Mitte');
+  assert.equal(st.slapZiel({start: 2300, von: 2000, bis: 2600}), null, 'neuer Wisch aus dem Fenster: frei');
+  assert.equal(st.slapZiel({start: 2000, von: 2000, bis: 2600}), null, 'am Fensteranfang angesetzt: frei');
+  assert.equal(st.slapZiel({start: null, von: 2000, bis: 2600}), null, 'noch kein Wisch');
+  assert.equal(st.slapZiel({start: 100, von: 2000, bis: 2000}), null, 'kein Fenster');
+  assert.ok(st.RAD_PAUSE_MS >= 150 && st.RAD_PAUSE_MS <= 400);
+  const src = lies('app/components/campaign/the-alpha-stopper.js');
+  assert.doesNotMatch(src, /if \(stand === 'frei'\) return \(\) => \{\};/, 'verbraucht = trotzdem Slap-Stop');
+  assert.match(src, /stand === 'frei' && y > vorigY/, 'Schwung/Finger nach verbrauchtem Halt geklemmt');
+  assert.match(src, /figur\.dataset\.tapStopperSlap/);
+  // loesen() baut die Ereignisse nicht mehr ab (sonst kein Slap-Stop danach).
+  const loesen = src.slice(src.indexOf('const loesen'), src.indexOf('const zählen'));
+  assert.doesNotMatch(loesen, /abbauen\(\)/);
+});

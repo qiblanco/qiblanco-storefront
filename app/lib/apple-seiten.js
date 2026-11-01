@@ -61,7 +61,7 @@ export const APPLE_SEITEN = Object.freeze({
   'zell-schutz': {pfad: '/pages/zell-schutz', schalter: 'APPLE_SEITE_ZELL_SCHUTZ', standard: 'off'},
 
   // ---- s07 · übrige Landingpages ----
-  'e-smog-schutz': {pfad: '/pages/E-Smog-Schutz', schalter: 'APPLE_SEITE_E_SMOG_SCHUTZ', standard: 'on'},
+  'e-smog-schutz': {pfad: '/pages/E-Smog-Schutz', schalter: 'APPLE_SEITE_E_SMOG_SCHUTZ', standard: 'off'},
   'das-20-tage-versprechen': {pfad: '/pages/das-20-tage-versprechen', schalter: 'APPLE_SEITE_DAS_20_TAGE_VERSPRECHEN', standard: 'on'},
   'das-beispiel': {pfad: '/pages/das-beispiel', schalter: 'APPLE_SEITE_DAS_BEISPIEL', standard: 'on'},
   'e-smog': {pfad: '/pages/e-smog', schalter: 'APPLE_SEITE_E_SMOG', standard: 'on'},
@@ -112,7 +112,7 @@ export const APPLE_SEITEN = Object.freeze({
   'ueber-uns': {pfad: '/pages/ueber-uns', schalter: 'APPLE_SEITE_UEBER_UNS', standard: 'off'},
   'uebersicht': {pfad: '/pages/uebersicht', schalter: 'APPLE_SEITE_UEBERSICHT', standard: 'off'},
   'widerrufsbelehrung': {pfad: '/pages/widerrufsbelehrung', schalter: 'APPLE_SEITE_WIDERRUFSBELEHRUNG', standard: 'on'},
-  'policies': {pfad: '/policies', schalter: 'APPLE_SEITE_POLICIES', standard: 'off'},
+  'policies': {pfad: '/policies', schalter: 'APPLE_SEITE_POLICIES', standard: 'on'},
   'policies-privacy-policy': {pfad: '/policies/privacy-policy', schalter: 'APPLE_SEITE_POLICIES_PRIVACY_POLICY', standard: 'on'},
   'policy-refund-policy': {pfad: '/policies/refund-policy', schalter: 'APPLE_SEITE_POLICY_REFUND_POLICY', standard: 'on'},
   'policies-shipping-policy': {pfad: '/policies/shipping-policy', schalter: 'APPLE_SEITE_POLICIES_SHIPPING_POLICY', standard: 'on'},
