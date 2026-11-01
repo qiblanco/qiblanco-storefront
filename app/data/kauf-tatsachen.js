@@ -188,8 +188,8 @@ export const FRAGEN = [
     beleg: frist('widerruf').beleg,
     belegPfad: frist('widerruf').belegPfad,
     a:
-      '20 Tage ab Erhalt, mit vollem Kaufpreis zurück. Das gesetzliche ' +
-      'Widerrufsrecht hat 14 Tage.',
+      '20 Tage nach Erhalt risikofrei testen, mit 100 % ' +
+      'Geld-zurück-Garantie.',
   },
   {
     // Der Rückweg steht nur noch HIER, nicht zusätzlich als eigener
