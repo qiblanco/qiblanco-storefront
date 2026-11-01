@@ -42,6 +42,8 @@ export const VORSCHAU_NOINDEX = [
   // Route pages.Qi-Alpha-B.jsx (Schreibweise egal) und geht per 301 dorthin.
   {pfad: '/pages/Qi-Alpha-B', googlebot: true, rolle: 'Qi Alpha Testarm C (KI-optimiert)'},
   {pfad: '/pages/Qi-Alpha-C', googlebot: true, rolle: 'Qi Alpha Testarm B (Server)'},
+  // Elinas B-Seite (EL-20261101-a930d588, EL-20261101-242cff9c), getrennt von A.
+  {pfad: '/pages/Qi-Alpha-Elina', googlebot: true, rolle: 'Qi Alpha: Elinas B-Seite (getrennt von A)'},
   {pfad: '/products/qi-alpha-b', googlebot: true, rolle: 'Shop B: bisherige Kaufseite, seit 27.10.2026 hier'},
   {pfad: '/pages/qi-master-vorverkauf', googlebot: true, rolle: 'LP A'},
   {pfad: '/pages/qi-alpha-vorverkauf', googlebot: true, rolle: 'LP A nach Umbenennung'},

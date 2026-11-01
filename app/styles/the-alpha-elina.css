@@ -1,0 +1,121 @@
+/*
+ * ELINAS B-SEITE der Qi-Alpha-LP (/pages/Qi-Alpha-Elina). Nur diese Route lädt
+ * diese Datei, und jede Regel steht unter [data-tap-elina] (TapSeite elina):
+ * Christians Live-Seite /pages/Qi-Alpha und die Testarme B und C bleiben, wie
+ * sie sind (Elina EL-20261101-a930d588: „Elinas Fassung läuft komplett
+ * getrennt als eigene B-Seite unter eigener Adresse … Geteilte Bausteine nur
+ * über Schalter, sodass die Live-Seite unverändert bleibt.“).
+ *
+ * Herkunft: gestreckte Vorschau (EL-20261101-ead0cb14, Video ce2055f2), dann
+ * nach dem Test von Anna und Elina (EL-20261101-242cff9c):
+ *  (1) „Die Vorschau ist jetzt zu langsam (Anna: ‚viel zu langsam‘), der
+ *      Urzustand war zu schnell. Ziel ist die Mitte … Richtwert: Textzeile ca.
+ *      alle 170-200 px statt 96 bzw. 250-300, Bilder entsprechend“. Am
+ *      Touch-Gerät ist der Takt --tap-schritt-mitte = 185 px je Zeile
+ *      (Urzustand 96 px, gestreckte Vorschau 130svh = 1056 px bei 812 px
+ *      Bildhöhe); Wort, Absatz und Bild im Verhältnis des Urzustands
+ *      (48 : 96 : 160 : 160), also 92 / 185 / 308 / 308 px. Kein Einrasten
+ *      zwischen den Details, die ruhigeren Überblendungen der Vorschau bleiben.
+ *      Prüfschalter ?zeile=NN (px), useTapFilm.
+ *  (2) „Man kommt NICHT am Video vorbei, ohne mehrmals zu scrollen …
+ *      Christians bewährte Mechanik (Slap-Stop + 3-Sekunden-Halt) darf dafür
+ *      übernommen werden.“ Das Video steht in einer eigenen Bühne
+ *      (.tap-film-buehne), am Touch-Gerät drei lange Schritte (130svh) hoch,
+ *      sticky; dazu Christians Stopper (TheAlphaElina.jsx, the-alpha-stopper.js
+ *      unverändert). Desktop: zwei Schritte zu 50svh.
+ *  (3) „Das Video MUSS laden und abspielen … auch auf dem iPhone“: lehnt iOS
+ *      das Abspielen ohne Tipp ab, zeigt das Video ein Abspiel-Zeichen.
+ * Desktop (Maus, Trackpad) behält seinen Takt.
+ */
+
+.tap-seite[data-tap-elina].tap-js.tap-kette {
+  --tap-schritt-lang: 130svh;
+  --tap-schritt-video: 50svh;
+  --tap-video-schritte: 2;
+  --tap-schritt-mitte: 185px;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .tap-seite[data-tap-elina].tap-js.tap-kette {
+    --tap-schritt-wort: calc(var(--tap-schritt-mitte) / 2);
+    --tap-schritt-zeile: var(--tap-schritt-mitte);
+    --tap-schritt-absatz: calc(var(--tap-schritt-mitte) * 5 / 3);
+    --tap-schritt-bild: calc(var(--tap-schritt-mitte) * 5 / 3);
+    --tap-schritt-video: var(--tap-schritt-lang);
+    --tap-video-schritte: 3;
+  }
+}
+
+/* Video-Bühne: das Video erscheint, wenn die Bühne davor ausblendet, ganz im
+   Bild (Unterkante --tap-video-luft über dem Bildrand) und steht dort
+   --tap-video-schritte Video-Schritte lang. Die Bühne danach steht, wenn das
+   Video seine Bühne durchlaufen hat; im selben Moment weicht es. */
+.tap-seite[data-tap-elina].tap-js.tap-kette .tap-nach-video {
+  margin-top: calc(-100svh + var(--tap-video-luft));
+}
+
+.tap-seite[data-tap-elina].tap-js.tap-kette .tap-film-buehne {
+  margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - var(--tap-video-luft));
+  height: calc(var(--tap-video-hoehe, 0px) + var(--tap-video-schritte) * var(--tap-schritt-video));
+}
+
+.tap-seite[data-tap-elina].tap-js.tap-kette .tap-film-buehne > .tap-film {
+  position: sticky;
+  top: calc(100svh - var(--tap-video-hoehe, 0px) - var(--tap-video-luft));
+  margin: 0;
+}
+
+/* Ruhige Überblendungen der Vorschau („Flüssigkeit der Vorschau
+   beibehalten“): erst weg (220 ms), dann neu (ab 240 ms). */
+@media (hover: none) and (pointer: coarse) {
+  .tap-seite[data-tap-elina].tap-js.tap-kette .tap-scrub-bild,
+  .tap-seite[data-tap-elina].tap-js.tap-kette .tap-film.tap-sichtbar {
+    transition: opacity 520ms ease 240ms;
+  }
+
+  .tap-seite[data-tap-elina].tap-js.tap-kette .tap-scrub:is(.tap-aus, .tap-wartet) > .tap-scrub-bild,
+  .tap-seite[data-tap-elina].tap-js.tap-kette .tap-film:is(.tap-aus, .tap-wartet) {
+    transition: opacity 220ms ease;
+  }
+
+  .tap-seite[data-tap-elina].tap-js.tap-kette [data-tap-schritt] {
+    transition: opacity 560ms ease;
+  }
+
+  .tap-seite[data-tap-elina].tap-js.tap-kette .tap-bam[data-tap-schritt] {
+    transition:
+      opacity 700ms cubic-bezier(0.2, 0.9, 0.2, 1),
+      transform 700ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  }
+}
+
+/* Abspiel-Zeichen: lehnt iOS das Abspielen ohne Tipp ab (Stromsparmodus,
+   „Video-Vorschauen automatisch abspielen“ aus), setzt TheAlphaTon
+   data-tap-wartet-geste; bisher blieb dann still das Standbild stehen. Jetzt
+   zeigt das Video ein Abspiel-Zeichen, und ein Tipp irgendwo auf der Seite
+   startet es (GESTEN in TheAlphaTon). Das Zeichen fängt keine Tipps ab. */
+.tap-seite[data-tap-elina] .tap-film-bild:has(> video[data-tap-wartet-geste])::before,
+.tap-seite[data-tap-elina] .tap-film-bild:has(> video[data-tap-wartet-geste])::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+}
+
+.tap-seite[data-tap-elina] .tap-film-bild:has(> video[data-tap-wartet-geste])::before {
+  width: 76px;
+  height: 76px;
+  margin: -38px 0 0 -38px;
+  border: 2px solid var(--tap-leise);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.tap-seite[data-tap-elina] .tap-film-bild:has(> video[data-tap-wartet-geste])::after {
+  width: 26px;
+  height: 30px;
+  margin: -15px 0 0 -10px;
+  background: var(--tap-weiss);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}

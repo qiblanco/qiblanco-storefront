@@ -84,6 +84,8 @@ const PFLICHT = [
   '/products/the-alpha-b',
   '/pages/The-Alpha-B',
   '/pages/The-Alpha-C',
+  // Elinas B-Seite (EL-20261101-a930d588, EL-20261101-242cff9c).
+  '/pages/Qi-Alpha-Elina',
 ];
 const NACHBARN = [
   '/products/qi-alpha-goldkette',
@@ -142,7 +144,7 @@ test('robots Gruppe *: LP A, LP B, Shop B gesperrt; Shop A für Googlebot lesbar
 
 test('Sitemap-Handles je Typ: alle Listenpfade, auch Shop A', () => {
   assert.deepEqual(mod.vorschauSitemapHandles('products').sort(), ['qi-alpha', 'qi-alpha-b', 'qi-master', 'the-alpha', 'the-alpha-b']);
-  assert.deepEqual(mod.vorschauSitemapHandles('pages').sort(), ['Qi-Alpha-B', 'Qi-Alpha-C', 'The-Alpha-B', 'The-Alpha-C', 'qi-alpha-vorverkauf', 'qi-master-vorverkauf']);
+  assert.deepEqual(mod.vorschauSitemapHandles('pages').sort(), ['Qi-Alpha-B', 'Qi-Alpha-C', 'Qi-Alpha-Elina', 'The-Alpha-B', 'The-Alpha-C', 'qi-alpha-vorverkauf', 'qi-master-vorverkauf']);
 });
 
 test('Groß/Klein (The-Alpha, s03): Header in jeder Schreibweise, robots sperrt beide, A bleibt offen', () => {

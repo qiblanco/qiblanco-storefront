@@ -49,14 +49,6 @@ import {
  * video-schwarzraum-kuerzen-r2): Scrollstopper am Diamant-Video (`stopper`,
  * einmal je Besuch 3 s Video, Start des Videos unverändert) und kein langes
  * Schwarz mehr zwischen den Bühnen (useTapFilm, Szenen-Fassung).
- *
- * 01.11.2026 (Elina, EL-20261101-ead0cb14): gestreckter Takt am Touch-Gerät,
- * ein langer Wisch = ein Neues; das Video läuft am Scrollweg zwei Schritte
- * lang statt Scrollstopper (ersetzt den Video-Stopp aus #1201).
- *
- * Elinas B-Seite (EL-20261101-242cff9c): Takt in der Mitte (185 px je Zeile
- * am Touch-Gerät) und das Video wieder mit Christians Slap-Stop + 3-s-Halt
- * („darf dafür übernommen werden“): man kommt nur mit mehreren Wischen vorbei.
  */
 
 const [MANIFESTATION, PROTECTION, LONGEVITY] = THE_ALPHA_ABSCHNITTE;

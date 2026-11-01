@@ -116,17 +116,23 @@ import {
  *   das Neue einblendet (CSS); das Video steht auf jeder Bildhöhe einen
  *   Bild-Schritt allein, und der Stopper hält in genau diesem Fenster
  *   (figur.tapFenster, the-alpha-stopper.js). Die Kürzungen bleiben.
- * - GESTRECKT (Elina 01.11.2026, EL-20261101-ead0cb14: „Ein natürlicher
- *   langer Daumenwisch bringt genau EINEN neuen Abschnitt bzw. ein neues
- *   Detail … ohne hartes Einrasten oder Anhalten“): am Touch-Gerät ist jeder
- *   Schritt der Kette einen Bildschirm lang (--tap-schritt-lang, CSS), die
- *   Mechanik oben bleibt. Das Video steht in einer eigenen Bühne, am Handy
- *   drei lange Schritte (Elina EL-20261101-ce2055f2: „MEHRERE lange Wische
- *   (ca. 3)“), und läuft dabei in normaler Geschwindigkeit, ohne Kopplung ans
- *   Scrollen (the-alpha-video-lauf.js), statt vom Stopper gehalten zu werden.
- *   Prüfschalter ?schritt=NN setzt den Schritt auf NN svh.
  */
-const TapFassung = createContext({szene: false});
+/*
+ * ELINAS B-SEITE (/pages/Qi-Alpha-Elina, EL-20261101-a930d588 und
+ * EL-20261101-242cff9c): eigene Seite unter eigener Adresse, die auf
+ * Christians Live-Stand nicht zurückwirkt. Alles Folgende gilt NUR mit dem
+ * Schalter `elina` an TapSeite (data-tap-elina, Stil the-alpha-elina.css, den
+ * nur diese Route lädt); ohne ihn verhalten sich A, B, C wie bisher.
+ * - Takt am Touch-Gerät in der Mitte: 185 px je Zeile („Textzeile ca. alle
+ *   170-200 px statt 96 bzw. 250-300, Bilder entsprechend“), Prüfschalter
+ *   ?zeile=NN (px) und ?schritt=NN (svh, Video-Schritt).
+ * - Schrittmaß gemessen (Lineal), weil der Video-Schritt in svh steht.
+ * - Das Video steht in einer eigenen Bühne (drei lange Schritte, sticky),
+ *   läuft in normaler Geschwindigkeit (the-alpha-video-lauf.js) und trägt
+ *   Christians Slap-Stop + 3-s-Halt (the-alpha-stopper.js, unverändert);
+ *   es ruht, wenn es weicht.
+ */
+const TapFassung = createContext({szene: false, elina: false});
 
 // Hysterese der Kaufleiste: weg, sobald der Abschluss die kleine
 // Bildschirmhöhe erreicht; wieder da erst RUHE_PX darunter.
@@ -155,7 +161,7 @@ const RUHE_PX = 48;
  * ?film=still (Standbild: dieselbe Fassung, die ein Kunde mit „Bewegung
  * reduzieren“ sieht; für Prüfer, die nicht scrollen, z. B. das Shop-Tor).
  */
-function useTapFilm(wurzel, szene) {
+function useTapFilm(wurzel, szene, elina = false) {
   const [leiste, setLeiste] = useState(false);
   useEffect(() => {
     const el = wurzel.current;
@@ -199,12 +205,13 @@ function useTapFilm(wurzel, szene) {
     const filme = [];
     if (kette) {
       el.classList.add('tap-kette');
-      const wunsch = Number(new URLSearchParams(window.location.search).get('schritt'));
-      if (wunsch >= 20 && wunsch <= 300) el.style.setProperty('--tap-schritt-lang', `${wunsch}svh`);
-      // Elinas B-Seite (EL-20261101-242cff9c): ?zeile=NN setzt den Zeilentakt
-      // am Touch-Gerät auf NN px (Richtwert 170-200, Standard 185).
-      const zeile = Number(new URLSearchParams(window.location.search).get('zeile'));
-      if (zeile >= 60 && zeile <= 1200) el.style.setProperty('--tap-schritt-mitte', `${zeile}px`);
+      if (elina) {
+        const q = new URLSearchParams(window.location.search);
+        const wunsch = Number(q.get('schritt'));
+        if (wunsch >= 20 && wunsch <= 300) el.style.setProperty('--tap-schritt-lang', `${wunsch}svh`);
+        const zeile = Number(q.get('zeile'));
+        if (zeile >= 60 && zeile <= 1200) el.style.setProperty('--tap-schritt-mitte', `${zeile}px`);
+      }
       szenen.forEach((s, i) => {
         const vor = szenen[i - 1];
         if (!vor) return;
@@ -218,8 +225,10 @@ function useTapFilm(wurzel, szene) {
       });
       aufraeumen.push(() => {
         el.classList.remove('tap-kette');
-        el.style.removeProperty('--tap-schritt-lang');
-        el.style.removeProperty('--tap-schritt-mitte');
+        if (elina) {
+          el.style.removeProperty('--tap-schritt-lang');
+          el.style.removeProperty('--tap-schritt-mitte');
+        }
         szenen.forEach((s) =>
           s.classList.remove('tap-nachruecken', 'tap-nach-buehne', 'tap-nach-video', 'tap-aus', 'tap-wartet'),
         );
@@ -288,8 +297,8 @@ function useTapFilm(wurzel, szene) {
         return r.height > 0 && r.top >= 0 && r.bottom <= bild;
       });
     };
-    // Schrittmaß in Pixeln. Der gestreckte Takt steht in svh (CSS); eine
-    // eigene Variable liefert getComputedStyle als Text („100svh“), darum
+    // Elina: Schrittmaß in Pixeln gemessen. Der Video-Schritt steht in svh;
+    // eine eigene Variable liefert getComputedStyle als Text („130svh“), darum
     // misst ein unsichtbares Element seine Höhe.
     const lineal = (b) => {
       const m = document.createElement('div');
@@ -300,10 +309,12 @@ function useTapFilm(wurzel, szene) {
       aufraeumen.push(() => m.remove());
       return m;
     };
-    for (const s of buehnen) s.lineal = lineal(s.b);
+    if (elina) for (const s of buehnen) s.lineal = lineal(s.b);
     const masse = () => {
       for (const s of buehnen) {
-        s.px = s.lineal.getBoundingClientRect().height || 48;
+        s.px = elina
+          ? s.lineal.getBoundingClientRect().height || 48
+          : parseFloat(getComputedStyle(s.b).getPropertyValue('--tap-schritt')) || 48;
       }
       // Höhe des Videos für tap-nach-buehne / tap-nach-video (CSS).
       if (filmNachBuehne[0]) {
@@ -347,7 +358,7 @@ function useTapFilm(wurzel, szene) {
           );
         }
         for (const {f, video} of filme) {
-          const wartet = f.classList.contains('tap-wartet') || f.classList.contains('tap-aus');
+          const wartet = f.classList.contains('tap-wartet') || (elina && f.classList.contains('tap-aus'));
           if (wartet === Boolean(f.dataset.tapWartete)) continue;
           if (wartet) {
             f.dataset.tapWartete = '1';
@@ -478,7 +489,7 @@ function useTapFilm(wurzel, szene) {
       beobachter.forEach((b) => b.disconnect());
       aufraeumen.forEach((f) => f());
     };
-  }, [wurzel, szene]);
+  }, [wurzel, szene, elina]);
   return leiste;
 }
 
@@ -536,19 +547,21 @@ export function TapSeite({
   kaufText = THE_ALPHA_SCHLUSS.knopf,
   film = 'standard',
   ton = 'fenster',
+  elina = false,
 }) {
   const wurzel = useRef(null);
   const szene = film === 'szene';
-  const leiste = useTapFilm(wurzel, szene);
+  const leiste = useTapFilm(wurzel, szene, elina);
   return (
     <div
       className="tap-seite"
       data-the-alpha-premium={variante}
       data-tap-fassung={szene ? 'szene' : undefined}
       data-tap-ton-standard={ton === 'an' ? 'an' : undefined}
+      data-tap-elina={elina ? '' : undefined}
       ref={wurzel}
     >
-      <TapFassung.Provider value={{szene}}>{children}</TapFassung.Provider>
+      <TapFassung.Provider value={{szene, elina}}>{children}</TapFassung.Provider>
       <TapTon wurzel={wurzel} standard={ton === 'an' ? 'an' : 'fenster'} />
       <div className={`tap-leiste${leiste ? ' tap-leiste-an' : ''}`} aria-hidden={!leiste}>
         <span className="tap-leiste-marke">
@@ -682,26 +695,24 @@ export function TapVollbild({bild, format = 'hoch', loading = 'lazy'}) {
  * alle untereinander.
  *
  * `stopper`: einmal je Besuch hält die Seite an, wenn das laufende Video
- * mittig steht, bis 3 s Video gelaufen sind (the-alpha-stopper.js).
- *
- * Szenen-Fassung (A, gestreckt, Elina 01.11.2026): das Video steht in einer
- * eigenen Bühne (Hülle um die Figur, CSS) und läuft am Scrollweg
- * (the-alpha-video-lauf.js). Ohne Bewegung bleibt die Bühne eine schlichte
- * Hülle. */
+ * mittig steht, bis 3 s Video gelaufen sind (the-alpha-stopper.js). */
 export function TapFilm({film, stopper = false}) {
   const {video, videoStandbild, texte} = film;
-  const {szene} = useContext(TapFassung);
+  const {szene, elina} = useContext(TapFassung);
+  const buehne = szene && elina;
   const filmRef = useRef(null);
   const figurRef = useRef(null);
   const buehneRef = useRef(null);
+  // Elinas B-Seite: Video in eigener Bühne, normale Geschwindigkeit
+  // (the-alpha-video-lauf.js).
   useEffect(() => {
-    if (!szene || !buehneRef.current) return undefined;
+    if (!buehne || !buehneRef.current) return undefined;
     const still =
       window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ||
       new URLSearchParams(window.location.search).get('film') === 'still';
     if (still) return undefined;
     return tapVideoLauf(buehneRef.current, figurRef.current, filmRef.current, window);
-  }, [szene]);
+  }, [buehne]);
   // Scrollstopper (nur wo bestellt, A: Christian 30.10., Z4/Z5):
   // the-alpha-stopper.js.
   useEffect(() => {
@@ -769,7 +780,7 @@ export function TapFilm({film, stopper = false}) {
         ) : null}
       </figure>
     );
-    return szene ? (
+    return buehne ? (
       <div className="tap-film-buehne" ref={buehneRef}>
         {figur}
       </div>

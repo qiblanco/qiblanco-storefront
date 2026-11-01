@@ -58,21 +58,18 @@ test('Geometrie nahtlos: Bildschirm + Schritte + 1, Nachrücken um einen Bildsch
   // Handy unverändert); ist es samt Text höher als 90 % (Desktop), mittig.
   assert.match(CSS, /--tap-video-luft: max\(0px, min\(5svh, \(100svh - var\(--tap-video-hoehe, 0px\)\) \/ 2\)\);/);
   assert.match(CSS, /margin-top: calc\(-1 \* var\(--tap-video-hoehe, 0px\) - var\(--tap-video-luft\)\);/);
-  // Die Bühne danach steht, wenn das Video seine Bühne (am Handy drei Video-Schritte) durchlaufen
-  // hat (gestreckt, Elina 01.11.2026; vorher ein Bild-Schritt nach dem Erscheinen).
-  assert.match(CSS, /\.tap-js\.tap-kette \.tap-nach-video \{[^}]*margin-top: calc\(-100svh \+ var\(--tap-video-luft\)\);/);
+  // Die Bühne danach steht einen Bild-Schritt nach dem Erscheinen des Videos, jede Bildhöhe.
+  assert.match(CSS, /\.tap-js\.tap-kette \.tap-nach-video \{[^}]*margin-top: calc\(-100svh \+ var\(--tap-video-luft\) \+ var\(--tap-schritt-bild\)\);/);
   assert.doesNotMatch(CSS, /\+ 1\.5\) \* var\(--tap-schritt\)|--tap-schritt-absatz\) \/ 2|10svh \+ var\(--tap-schritt\) \/ 2/);
   // Übereinander liegende Bühnen fangen keine Tipps ab (Ton-Knopf am Video).
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-scrub \{\s*pointer-events: none;/);
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-scrub \[data-tap-schritt\]\.tap-an \{\s*pointer-events: auto;/);
 });
 
-test('Video: Start unverändert, es weicht, sobald die Bühne danach steht (Stopper hält es)', () => {
-  // Das Video weicht, sobald die Bühne danach steht; ein Stopper (B/C haben keinen,
-  // A seit 01.11.2026 auch nicht mehr) hielte es weiter.
+test('Video: Start und Stopper unverändert, es weicht nur, wenn der Stopper nicht hält', () => {
+  // Das Video weicht, sobald die Bühne danach steht, nie solange der Stopper hält.
   assert.match(P, /\? nach\.getBoundingClientRect\(\)\.top <= 1/);
   assert.match(P, /f\.dataset\.tapStopperStand !== 'hält'/);
-  // Elinas B-Seite (EL-20261101-242cff9c): A trägt wieder Christians Stopper.
   assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm film=\{THE_ALPHA_FILM_OHNE_TEXT\} stopper \/>/);
 });
 

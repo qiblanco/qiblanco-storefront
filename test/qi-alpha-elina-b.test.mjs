@@ -1,19 +1,13 @@
 /**
- * Wächter: QI ALPHA A, gestreckter Takt am Touch-Gerät und Video am Scrollweg
- * (Elina 01.11.2026, Vorgang EL-20261101-ead0cb14: „Ein natürlicher langer
- * Daumenwisch bringt genau EINEN neuen Abschnitt bzw. ein neues Detail … ohne
- * hartes Einrasten oder Anhalten“; „Video: kein Einrasten und kein Stopp. Das
- * Video läuft durch das Wischen weiter (an das Scrollen gekoppelt), und man
- * braucht etwa zwei lange Wische, um am Video vorbeizukommen.“)
- * Video NEU (Elina 01.11.2026, EL-20261101-ce2055f2): „MEHRERE lange Wische
- * (ca. 3), um am Video vorbeizukommen … Während man scrollt, läuft das Video
- * FLÜSSIG in normaler Geschwindigkeit weiter – kein Stocken, kein Anhalten,
- * kein Springen, keine Bild-für-Bild-Kopplung.“
- * Nur die Landingpage /pages/Qi-Alpha (Variante A, Szenen-Kette); B, C und die
- * Kaufseite /products/qi-alpha bleiben, wie sie sind (Präzisierung
- * EL-20261101-c3dfba9a).
- * ROT VOR GRÜN: auf dem Stand von #1200 fehlt the-alpha-video-lauf.js (Import
- * scheitert), der Takt am Handy ist 96/160 px, A trägt den Stopper.
+ * Wächter: ELINAS B-SEITE der Qi-Alpha-LP, /pages/Qi-Alpha-Elina
+ * (EL-20261101-a930d588: „komplett getrennt als eigene B-Seite unter eigener
+ * Adresse … Geteilte Bausteine nur über Schalter, sodass die Live-Seite
+ * unverändert bleibt“; EL-20261101-242cff9c: Takt in der Mitte, Textzeile ca.
+ * alle 170-200 px; Video nur mit mehreren Wischen, Christians Slap-Stop +
+ * 3-s-Halt; Video muss auch am iPhone abspielen).
+ * Herkunft: gestreckte Vorschau EL-20261101-ead0cb14 / ce2055f2.
+ * ROT VOR GRÜN: auf main c1e0b921 fehlen Route, TheAlphaElina.jsx,
+ * the-alpha-elina.css und the-alpha-video-lauf.js (Import scheitert).
  */
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -23,69 +17,70 @@ import {dirname, join} from 'node:path';
 
 const WURZEL = join(dirname(fileURLToPath(import.meta.url)), '..');
 const lies = (f) => readFileSync(join(WURZEL, f), 'utf8');
-const CSS = lies('app/styles/the-alpha-premium.css');
 const P = lies('app/components/campaign/TheAlphaPremium.jsx');
 const lauf = await import(join(WURZEL, 'app/components/campaign/the-alpha-video-lauf.js'));
 
-test('Touch-Gerät: Takt in der Mitte (185 px je Zeile, Elinas B-Seite), Video-Schritt 130svh, Desktop behält seinen Takt', () => {
-  assert.match(CSS, /\.tap-js\.tap-kette \{\s*--tap-schritt-lang: 130svh;\s*--tap-schritt-video: 50svh;\s*--tap-video-schritte: 2;/);
-  // EL-20261101-242cff9c: „Textzeile ca. alle 170-200 px statt 96 bzw. 250-300,
-  // Bilder entsprechend“ (Verhältnis des Urzustands 48 : 96 : 160 : 160).
-  assert.match(CSS, /\.tap-js\.tap-kette \{\s*--tap-schritt-mitte: 185px;\s*\}/);
-  const touch = CSS.slice(CSS.indexOf('@media (hover: none) and (pointer: coarse)'));
+const E = lies('app/styles/the-alpha-elina.css');
+const touch = E.slice(E.indexOf('@media (hover: none) and (pointer: coarse)'));
+
+test('Eigene Route /pages/Qi-Alpha-Elina: Elinas Baustein, eigener Stil, noindex', () => {
+  const r = lies('app/routes/pages.Qi-Alpha-Elina.jsx');
+  assert.match(r, /import TheAlphaElina from '~\/components\/campaign\/TheAlphaElina';/);
+  assert.match(r, /const KANON_PFAD = '\/pages\/Qi-Alpha-Elina';/);
+  assert.match(r, /\{rel: 'stylesheet', href: theAlphaElinaStyles\}/);
+  assert.match(r, /\{name: 'robots', content: 'noindex, nofollow'\}/);
+  assert.match(lies('app/lib/vorschau-noindex.js'), /\{pfad: '\/pages\/Qi-Alpha-Elina', googlebot: true/);
+  const k = lies('app/components/campaign/TheAlphaElina.jsx');
+  assert.match(k, /<TapSeite variante="a" film="szene" ton="an" elina>/);
+  assert.match(k, /<TapFilm film=\{THE_ALPHA_FILM_OHNE_TEXT\} stopper \/>/);
+});
+
+test('Live-Seite bleibt Christians Stand: kein Schalter an A, B, C, Stil nur unter [data-tap-elina]', () => {
+  for (const f of ['TheAlpha.jsx', 'TheAlphaVarianteB.jsx', 'TheAlphaVarianteC.jsx']) {
+    assert.doesNotMatch(lies(`app/components/campaign/${f}`), /elina/i, f);
+  }
+  assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapSeite variante="a" film="szene" ton="an">/);
+  assert.doesNotMatch(lies('app/styles/the-alpha-premium.css'), /tap-schritt-mitte|tap-film-buehne|data-tap-elina/);
+  assert.doesNotMatch(lies('app/routes/pages.Qi-Alpha.jsx'), /TheAlphaElina|the-alpha-elina/);
+  // Jede Regel der Elina-Datei hängt am Schalter.
+  const regeln = E.replace(/\/\*[\s\S]*?\*\//g, '').split('{').slice(0, -1)
+    .map((x) => x.split(/[;}]/).pop().trim()).filter((x) => x && !x.startsWith('@media'));
+  assert.ok(regeln.length >= 10);
+  for (const sel of regeln) {
+    // Komma nur außerhalb von Klammern trennt Selektoren (:is(.a, .b)).
+    for (const teil of sel.split(/,(?![^(]*\))/)) assert.match(teil.trim(), /^\.tap-seite\[data-tap-elina\]/, teil);
+  }
+  // Im geteilten Code ist alles Neue an den Schalter gebunden.
+  assert.match(P, /const TapFassung = createContext\(\{szene: false, elina: false\}\);/);
+  assert.match(P, /data-tap-elina=\{elina \? '' : undefined\}/);
+  assert.match(P, /const buehne = szene && elina;/);
+  assert.match(P, /if \(elina\) for \(const s of buehnen\) s\.lineal = lineal\(s\.b\);/);
+  assert.match(P, /: parseFloat\(getComputedStyle\(s\.b\)\.getPropertyValue\('--tap-schritt'\)\) \|\| 48;/);
+});
+
+test('Takt am Touch-Gerät in der Mitte: 185 px je Zeile, Wort/Absatz/Bild im Verhältnis des Urzustands', () => {
+  assert.match(E, /\.tap-seite\[data-tap-elina\]\.tap-js\.tap-kette \{\s*--tap-schritt-lang: 130svh;\s*--tap-schritt-video: 50svh;\s*--tap-video-schritte: 2;\s*--tap-schritt-mitte: 185px;/);
   assert.match(touch, /--tap-schritt-wort: calc\(var\(--tap-schritt-mitte\) \/ 2\);/);
   assert.match(touch, /--tap-schritt-zeile: var\(--tap-schritt-mitte\);/);
   assert.match(touch, /--tap-schritt-absatz: calc\(var\(--tap-schritt-mitte\) \* 5 \/ 3\);/);
   assert.match(touch, /--tap-schritt-bild: calc\(var\(--tap-schritt-mitte\) \* 5 \/ 3\);/);
-  assert.match(touch, /--tap-schritt-video: var\(--tap-schritt-lang\);/);
-  // Der Desktop-Takt (ab 768 px) ist unverändert.
-  assert.match(CSS, /--tap-schritt-wort: 64px;\s*--tap-schritt-absatz: 200px;\s*--tap-schritt-zeile: 128px;/);
-  // Keine Weiche nach der Fensterhöhe (Browserleisten).
-  assert.doesNotMatch(CSS, /@media \([a-z-]*height[^)]*\)/);
+  assert.match(touch, /--tap-schritt-video: var\(--tap-schritt-lang\);\s*--tap-video-schritte: 3;/);
+  assert.doesNotMatch(E, /@media \([a-z-]*height[^)]*\)/);
+  // Prüfschalter nur mit dem Schalter.
+  assert.match(P, /if \(elina\) \{\s*const q = new URLSearchParams/);
+  assert.match(P, /el\.style\.setProperty\('--tap-schritt-mitte', `\$\{zeile\}px`\)/);
 });
 
-test('Schrittmaß wird gemessen (svh), nicht als Text gelesen', () => {
-  assert.match(P, /height:var\(--tap-schritt\);visibility:hidden/);
-  assert.match(P, /s\.px = s\.lineal\.getBoundingClientRect\(\)\.height \|\| 48;/);
-  assert.doesNotMatch(P, /parseFloat\(getComputedStyle\(s\.b\)\.getPropertyValue\('--tap-schritt'\)\)/);
-  // Prüfschalter ?schritt=NN (svh) nur in der Kette.
-  assert.match(P, /el\.style\.setProperty\('--tap-schritt-lang', `\$\{wunsch\}svh`\)/);
-});
-
-test('Video: eigene Bühne, am Handy drei lange Schritte, sticky, mit Christians Slap-Stop + 3-s-Halt (B-Seite)', () => {
-  assert.match(CSS, /\.tap-js\.tap-kette \.tap-film-buehne \{[^}]*height: calc\(var\(--tap-video-hoehe, 0px\) \+ var\(--tap-video-schritte\) \* var\(--tap-schritt-video\)\);/);
-  const touch = CSS.slice(CSS.indexOf('@media (hover: none) and (pointer: coarse)'));
-  assert.match(touch, /^[^}]*--tap-schritt-video: var\(--tap-schritt-lang\);\s*--tap-video-schritte: 3;/);
-  assert.match(CSS, /\.tap-js\.tap-kette \.tap-film-buehne > \.tap-film \{\s*position: sticky;\s*top: calc\(100svh - var\(--tap-video-hoehe, 0px\) - var\(--tap-video-luft\)\);/);
-  assert.match(CSS, /\.tap-js\.tap-kette \.tap-nach-video \{[^}]*margin-top: calc\(-100svh \+ var\(--tap-video-luft\)\);/);
+test('Video: eigene Bühne, sticky, normale Geschwindigkeit, ruht wenn es weicht', () => {
+  assert.match(E, /\.tap-film-buehne \{[^}]*height: calc\(var\(--tap-video-hoehe, 0px\) \+ var\(--tap-video-schritte\) \* var\(--tap-schritt-video\)\);/);
+  assert.match(E, /\.tap-film-buehne > \.tap-film \{\s*position: sticky;/);
+  assert.match(E, /\.tap-nach-video \{\s*margin-top: calc\(-100svh \+ var\(--tap-video-luft\)\);/);
   const film = P.slice(P.indexOf('export function TapFilm'), P.indexOf('function MarkeImText'));
   assert.match(film, /<div className="tap-film-buehne" ref=\{buehneRef\}>/);
   assert.match(film, /tapVideoLauf\(buehneRef\.current, figurRef\.current, filmRef\.current, window\)/);
-  // EL-20261101-242cff9c: „Man kommt NICHT am Video vorbei, ohne mehrmals zu
-  // scrollen … Christians bewährte Mechanik (Slap-Stop + 3-Sekunden-Halt) darf
-  // dafür übernommen werden.“
-  assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm film=\{THE_ALPHA_FILM_OHNE_TEXT\} stopper \/>/);
-});
-
-test('Prüfschalter ?zeile=NN setzt den Zeilentakt (px) nur in der Kette', () => {
-  assert.match(P, /el\.style\.setProperty\('--tap-schritt-mitte', `\$\{zeile\}px`\)/);
-  assert.match(P, /el\.style\.removeProperty\('--tap-schritt-mitte'\)/);
-});
-
-test('Video ruht, wenn es weicht oder das Logo hält (kein unsichtbares Dekodieren)', () => {
-  assert.match(P, /const wartet = f\.classList\.contains\('tap-wartet'\) \|\| f\.classList\.contains\('tap-aus'\);/);
+  assert.match(P, /const wartet = f\.classList\.contains\('tap-wartet'\) \|\| \(elina && f\.classList\.contains\('tap-aus'\)\);/);
   const ton = lies('app/components/campaign/TheAlphaTon.jsx');
-  assert.match(ton, /!figur\.classList\.contains\('tap-aus'\) &&\s*!v\.dataset\.tapLaufEnde\)/);
-});
-
-test('B und C bleiben: alles Neue hängt an der Kette (nur A) bzw. an der Szenen-Fassung', () => {
-  for (const f of ['TheAlphaVarianteB.jsx', 'TheAlphaVarianteC.jsx']) {
-    const v = lies(`app/components/campaign/${f}`);
-    assert.doesNotMatch(v, /film="szene"/, f);
-  }
-  assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapSeite variante="a" film="szene" ton="an">/);
-  // Kaufseite: die Alpha-Vorlage kennt die Film-Bausteine nicht.
-  assert.doesNotMatch(lies('app/components/product-pages/AlphaVorlage.jsx'), /TheAlphaPremium|the-alpha-video-lauf/);
+  assert.match(ton, /!\(wurzel\.hasAttribute\('data-tap-elina'\) &&\s*\(figur\.classList\.contains\('tap-aus'\) \|\| v\.dataset\.tapLaufEnde\)\)/);
 });
 
 test('anteil(): Weg durch die Bühne aus zwei Rechtecken', () => {
@@ -212,10 +207,9 @@ test('Prüfschalter ?video=spulen: Bild am Daumen, Video steht', () => {
   assert.ok(Math.abs(video.currentTime - 0.5 * (19.9 - lauf.ENDE_VOR_SCHLUSS_S)) < 0.01);
 });
 
-test('Abspiel-Zeichen, wenn iOS das Abspielen ohne Tipp ablehnt (B-Seite), fängt keine Tipps ab', () => {
-  // EL-20261101-242cff9c: „Das Video MUSS laden und abspielen … auch auf dem iPhone“.
-  assert.match(CSS, /\.tap-film-bild:has\(> video\[data-tap-wartet-geste\]\)::before,/);
-  const regel = CSS.slice(CSS.indexOf('.tap-film-bild:has(> video[data-tap-wartet-geste])::before,'));
+test('Abspiel-Zeichen, wenn iOS das Abspielen ohne Tipp ablehnt, fängt keine Tipps ab', () => {
+  assert.match(E, /\.tap-seite\[data-tap-elina\] \.tap-film-bild:has\(> video\[data-tap-wartet-geste\]\)::before,/);
+  const regel = E.slice(E.indexOf('.tap-seite[data-tap-elina] .tap-film-bild:has(> video[data-tap-wartet-geste])::before,'));
   assert.match(regel, /^[^}]*pointer-events: none;/);
   const ton = lies('app/components/campaign/TheAlphaTon.jsx');
   assert.match(ton, /if \(e && e\.name === 'NotAllowedError'\) v\.dataset\.tapWartetGeste = '1';/);
