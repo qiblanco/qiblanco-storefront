@@ -7,7 +7,8 @@
  *
  * DIE ACHT THEMEN SIND CHRISTIANS FOLGE (Z176–Z184): Stärke, für wen,
  * Unterschied, Gitterchip, Diamant, 6G, Sauna/Wasser, Rückgabe. Die neunte,
- * Größe, steht seit 01.11.2026 vor der Rückgabe (Christian: „Wie groß ist der
+ * Größe, steht seit 01.11.2026 vor der Rückgabe; die zehnte, Rabatte, ist
+ * seit demselben Tag die letzte (Christian: „den letzten“) (Christian: „Wie groß ist der
  * Qi Alpha?“ => identische Größe zum QiOne 2 Pro, Abmessungen und Gewicht
  * „9,9g“; Job vom 01.11.2026, Prio 1, Größe 9,9 g). Zahlen aus
  * ai-ceo/wissen/kanon/qi-alpha-fakten.json fakten.groesse; die Höhe des
@@ -129,6 +130,19 @@ export const THE_ALPHA_FAQ = [
     antwort: [
       'Dann gibst du ihn zurück. Ab Erhalt hast du 20 Tage, um den Qi Alpha® in Ruhe zu erleben. Passt er nicht zu dir, bekommst du den vollen Kaufpreis zurück.',
       'Wir versenden im Januar 2027 kostenlos und voll versichert, nach der finalen Politur von Hand.',
+    ],
+  },
+  {
+    // Christian 01.11.2026: die letzte Frage. „Nein es ist ein exklusives
+    // Produkt, den es nicht für Black Friday oder im Summersale [je] geben
+    // wird.“ Wortlaut nach dem PR-Manager (pr-manager/wissen/qi-alpha-live-
+    // launch.md, R1: „nie in einem Sale wie Black Friday oder Sommer Sale“).
+    // Kein „nie mit Rabatt“: Partnercodes geben seit 01.11. 5 % auf den Qi
+    // Alpha® (shop-manager/config/qi-alpha-preisregeln.json).
+    id: 'rabatte',
+    frage: 'Wird es auf den Qi Alpha® Rabatte geben?',
+    antwort: [
+      'Nein. Der Qi Alpha® ist exklusiv. Es gibt ihn nie in einem Sale, weder am Black Friday noch im Summer Sale.',
     ],
   },
 ];
