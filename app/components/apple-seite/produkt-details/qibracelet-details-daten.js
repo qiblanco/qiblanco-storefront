@@ -12,9 +12,6 @@ const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750';
 
 export const KAUFSEITE = '/products/qibracelet';
 
-/** Feste Kaufleiste mobil bis zum Seitenende (DetailKaufleiste.jsx): Name wie im Kopf. */
-export const KAUFLEISTE = Object.freeze({name: 'QiBracelet®', href: KAUFSEITE});
-
 const BILD = Object.freeze({
   qibracelet: {
     url: `${CDN}/files/qb-video360-ersatzbild--360-qibracelet-winkel--a26b001f0816.jpg?v=1790809401`,

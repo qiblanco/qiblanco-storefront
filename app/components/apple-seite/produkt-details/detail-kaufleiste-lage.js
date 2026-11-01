@@ -24,6 +24,26 @@
 /** Je Gerät: mobil an, Desktop aus (dort ist der Abschluss-Knopf breit im Bild). */
 export const DETAIL_KAUFLEISTE_AN = {desktop: false, mobil: true};
 
+/** Name in der Leiste je Seite (wie im Kopf). Seiten ohne Eintrag: keine Leiste. */
+export const DETAIL_KAUFLEISTE_NAME = Object.freeze({
+  'qione-2-pro-details': 'QiOne® 2 Pro',
+  'qihome-details': 'QiHome® Air',
+  'qibracelet-details': 'QiBracelet®',
+});
+
+/**
+ * Name und Kaufseite der Leiste: die Kaufseite ist die des Kopf-Knopfs, so
+ * führt die Leiste immer dorthin, wohin der Kopf führt.
+ * @param {string} seite
+ * @param {Array<any>} sektionen
+ * @returns {{name: string, href: string}|null}
+ */
+export function detailKaufleiste(seite, sektionen) {
+  const name = DETAIL_KAUFLEISTE_NAME[seite];
+  const href = sektionen?.find((s) => s.art === 'hero')?.cta?.href;
+  return name && href ? {name, href} : null;
+}
+
 /**
  * @param {{geraetAn: boolean,
  *   kopf: {da: boolean, imBild: boolean, darueber: boolean}|null|undefined,

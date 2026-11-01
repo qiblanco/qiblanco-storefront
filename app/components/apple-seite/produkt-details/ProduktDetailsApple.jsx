@@ -7,6 +7,7 @@ import {Sektion} from '../AppleSektionen';
 import {useStartseitePreise} from '../startseite/startseite-preise';
 import {TechnikKette} from './TechnikKette';
 import {DetailKaufleiste} from './DetailKaufleiste';
+import {detailKaufleiste} from './detail-kaufleiste-lage';
 
 /*
  * APPLE-FASSUNG DER PRODUKT-DETAILSEITEN (Grossjob 20261029-GROSSJOB-alle-
@@ -41,14 +42,15 @@ function MikroskopSektion() {
 
 /**
  * @param {{seite: string, sektionen: Array<any>, video?: any, technik?: any,
- *   kaufleiste?: {name: string, href: string}|null, produkte?: Array<any>}} props
+ *   produkte?: Array<any>}} props
  *   produkte: aus startseiteProdukte() im Loader (Preise der Kaufseiten).
  *   technik: „So wirkt er“ (TechnikKette), nur wo die Daten sie tragen.
- *   kaufleiste: Name und Kaufseite der festen Kaufleiste mobil
- *   (DetailKaufleiste), damit am Seitenende ein Kaufknopf im Bild ist.
+ * Feste Kaufleiste mobil (DetailKaufleiste): Name je Seite, Kaufseite aus dem
+ * Kopf (detail-kaufleiste-lage.js), damit am Seitenende ein Kaufknopf im Bild ist.
  */
-export function ProduktDetailsApple({seite, sektionen, video = null, technik = null, kaufleiste = null, produkte = []}) {
+export function ProduktDetailsApple({seite, sektionen, video = null, technik = null, produkte = []}) {
   const preise = useStartseitePreise(produkte);
+  const kaufleiste = detailKaufleiste(seite, sektionen);
   return (
     <>
       <link rel="stylesheet" href={produktDetailsAppleStyles} />
