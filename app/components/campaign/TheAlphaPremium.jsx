@@ -4,6 +4,7 @@ import {Image} from '@shopify/hydrogen';
 import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
 import {TapTon, TapFilmTon, videoQuellen} from '~/components/campaign/TheAlphaTon';
 import {tapStopper} from '~/components/campaign/the-alpha-stopper';
+import {tapVideoLauf} from '~/components/campaign/the-alpha-video-lauf';
 import {
   THE_ALPHA_KOPF,
   THE_ALPHA_SCHLUSS,
@@ -115,6 +116,13 @@ import {
  *   das Neue einblendet (CSS); das Video steht auf jeder Bildhöhe einen
  *   Bild-Schritt allein, und der Stopper hält in genau diesem Fenster
  *   (figur.tapFenster, the-alpha-stopper.js). Die Kürzungen bleiben.
+ * - GESTRECKT (Elina 01.11.2026, EL-20261101-ead0cb14: „Ein natürlicher
+ *   langer Daumenwisch bringt genau EINEN neuen Abschnitt bzw. ein neues
+ *   Detail … ohne hartes Einrasten oder Anhalten“): am Touch-Gerät ist jeder
+ *   Schritt der Kette einen Bildschirm lang (--tap-schritt-lang, CSS), die
+ *   Mechanik oben bleibt. Das Video steht in einer eigenen Bühne zwei Schritte
+ *   lang und läuft am Scrollweg (the-alpha-video-lauf.js), statt vom Stopper
+ *   gehalten zu werden. Prüfschalter ?schritt=NN setzt den Schritt auf NN svh.
  */
 const TapFassung = createContext({szene: false});
 
@@ -189,6 +197,8 @@ function useTapFilm(wurzel, szene) {
     const filme = [];
     if (kette) {
       el.classList.add('tap-kette');
+      const wunsch = Number(new URLSearchParams(window.location.search).get('schritt'));
+      if (wunsch >= 20 && wunsch <= 300) el.style.setProperty('--tap-schritt-lang', `${wunsch}svh`);
       szenen.forEach((s, i) => {
         const vor = szenen[i - 1];
         if (!vor) return;
@@ -202,6 +212,7 @@ function useTapFilm(wurzel, szene) {
       });
       aufraeumen.push(() => {
         el.classList.remove('tap-kette');
+        el.style.removeProperty('--tap-schritt-lang');
         szenen.forEach((s) =>
           s.classList.remove('tap-nachruecken', 'tap-nach-buehne', 'tap-nach-video', 'tap-aus', 'tap-wartet'),
         );
@@ -270,9 +281,22 @@ function useTapFilm(wurzel, szene) {
         return r.height > 0 && r.top >= 0 && r.bottom <= bild;
       });
     };
+    // Schrittmaß in Pixeln. Der gestreckte Takt steht in svh (CSS); eine
+    // eigene Variable liefert getComputedStyle als Text („100svh“), darum
+    // misst ein unsichtbares Element seine Höhe.
+    const lineal = (b) => {
+      const m = document.createElement('div');
+      m.setAttribute('aria-hidden', 'true');
+      m.style.cssText =
+        'position:absolute;top:0;left:0;width:0;height:var(--tap-schritt);visibility:hidden;pointer-events:none';
+      b.appendChild(m);
+      aufraeumen.push(() => m.remove());
+      return m;
+    };
+    for (const s of buehnen) s.lineal = lineal(s.b);
     const masse = () => {
       for (const s of buehnen) {
-        s.px = parseFloat(getComputedStyle(s.b).getPropertyValue('--tap-schritt')) || 48;
+        s.px = s.lineal.getBoundingClientRect().height || 48;
       }
       // Höhe des Videos für tap-nach-buehne / tap-nach-video (CSS).
       if (filmNachBuehne[0]) {
@@ -316,7 +340,7 @@ function useTapFilm(wurzel, szene) {
           );
         }
         for (const {f, video} of filme) {
-          const wartet = f.classList.contains('tap-wartet');
+          const wartet = f.classList.contains('tap-wartet') || f.classList.contains('tap-aus');
           if (wartet === Boolean(f.dataset.tapWartete)) continue;
           if (wartet) {
             f.dataset.tapWartete = '1';
@@ -651,11 +675,26 @@ export function TapVollbild({bild, format = 'hoch', loading = 'lazy'}) {
  * alle untereinander.
  *
  * `stopper`: einmal je Besuch hält die Seite an, wenn das laufende Video
- * mittig steht, bis 3 s Video gelaufen sind (the-alpha-stopper.js). */
+ * mittig steht, bis 3 s Video gelaufen sind (the-alpha-stopper.js).
+ *
+ * Szenen-Fassung (A, gestreckt, Elina 01.11.2026): das Video steht in einer
+ * eigenen Bühne (Hülle um die Figur, CSS) und läuft am Scrollweg
+ * (the-alpha-video-lauf.js). Ohne Bewegung bleibt die Bühne eine schlichte
+ * Hülle. */
 export function TapFilm({film, stopper = false}) {
   const {video, videoStandbild, texte} = film;
+  const {szene} = useContext(TapFassung);
   const filmRef = useRef(null);
   const figurRef = useRef(null);
+  const buehneRef = useRef(null);
+  useEffect(() => {
+    if (!szene || !buehneRef.current) return undefined;
+    const still =
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ||
+      new URLSearchParams(window.location.search).get('film') === 'still';
+    if (still) return undefined;
+    return tapVideoLauf(buehneRef.current, figurRef.current, filmRef.current, window);
+  }, [szene]);
   // Scrollstopper (nur wo bestellt, A: Christian 30.10., Z4/Z5):
   // the-alpha-stopper.js.
   useEffect(() => {
@@ -678,7 +717,7 @@ export function TapFilm({film, stopper = false}) {
   }, [mitTexten, texte]);
   if (video?.src) {
     const tonFeld = video.ton === true ? 'ja' : video.ton === false ? 'nein' : undefined;
-    return (
+    const figur = (
       <figure
         ref={figurRef}
         className={`tap-vollbild tap-format-hoch tap-film${mitTexten ? ' tap-film-mit-text' : ''}`}
@@ -722,6 +761,13 @@ export function TapFilm({film, stopper = false}) {
           </figcaption>
         ) : null}
       </figure>
+    );
+    return szene ? (
+      <div className="tap-film-buehne" ref={buehneRef}>
+        {figur}
+      </div>
+    ) : (
+      figur
     );
   }
   return <TapVollbild bild={videoStandbild} />;

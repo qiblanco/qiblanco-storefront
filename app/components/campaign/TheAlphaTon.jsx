@@ -548,7 +548,11 @@ function binde_videos(wurzel, m) {
     return (
       !figur ||
       !wurzel.classList.contains('tap-js') ||
-      (figur.classList.contains('tap-sichtbar') && !figur.classList.contains('tap-wartet'))
+      // Szenen-Kette, gestreckt (Elina 01.11.): weicht das Video, ruht es;
+      // am Ende hält es das Logo (the-alpha-video-lauf.js).
+      (figur.classList.contains('tap-sichtbar') && !figur.classList.contains('tap-wartet') &&
+        !figur.classList.contains('tap-aus') &&
+        !v.dataset.tapLaufEnde)
     );
   };
   // Lehnt der Browser ab (iOS: Stromsparmodus, „Video-Vorschauen

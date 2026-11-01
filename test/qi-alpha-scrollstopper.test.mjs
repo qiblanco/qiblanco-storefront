@@ -81,8 +81,12 @@ test('Einmal je Besuch, nie ohne Bewegung, Videostart nicht angefasst', () => {
   assert.match(ton, /figur\.classList\.contains\('tap-sichtbar'\)/);
 });
 
-test('Stopper nur an A (Diamant-Video), nicht an B und C', () => {
-  assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm film=\{THE_ALPHA_FILM_OHNE_TEXT\} stopper \/>/);
+// Seit 01.11.2026 (Elina, EL-20261101-ead0cb14, Punkt 4: „kein Einrasten und
+// kein Stopp … Das ersetzt den Video-Stopp aus #1201“) trägt auch A keinen
+// Stopper mehr; das Video läuft am Scrollweg (qi-alpha-gestreckt.test.mjs).
+// Der Baustein bleibt bestellbar (TapFilm stopper).
+test('Stopper an keiner Variante bestellt, Baustein bleibt bestellbar', () => {
+  assert.doesNotMatch(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm[^>]*stopper/);
   assert.doesNotMatch(lies('app/components/campaign/TheAlphaVarianteB.jsx'), /stopper/);
   assert.doesNotMatch(lies('app/components/campaign/TheAlphaVarianteC.jsx'), /stopper/);
   const p = lies('app/components/campaign/TheAlphaPremium.jsx');

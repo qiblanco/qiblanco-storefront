@@ -248,9 +248,49 @@ html:has(main[data-film-seite]) {
 }
 
 .tap-js.tap-kette .tap-nach-video {
-  /* Die Bühne danach steht einen Bild-Schritt nach dem Erscheinen des
-     Videos, auf jeder Bildhöhe gleich (vorher am Desktop: kein Schritt). */
-  margin-top: calc(-100svh + var(--tap-video-luft) + var(--tap-schritt-bild));
+  /* Die Bühne danach steht, wenn das Video seine Bühne (.tap-film-buehne,
+     zwei Video-Schritte) durchlaufen hat; im selben Moment weicht es. */
+  margin-top: calc(-100svh + var(--tap-video-luft));
+}
+
+/* ---------- Gestreckter Takt (A, Elina 01.11.2026, EL-20261101-ead0cb14) ----------
+   „Schon ein 1-cm-Daumenwisch lädt gefühlt zwei Abschnitte … Ein natürlicher
+   langer Daumenwisch bringt genau EINEN neuen Abschnitt bzw. ein neues Detail.
+   Dafür bekommt jede Etappe deutlich mehr Scrollweg (gestreckt), ohne hartes
+   Einrasten oder Anhalten.“ Am Touch-Gerät ist jeder Schritt der Kette (Zeile,
+   Absatz, Bild, Wechsel zur nächsten Bühne) --tap-schritt-lang hoch: ein
+   Bildschirm, gemessen an der kleinen Bildhöhe (svh: ändert sich nicht, wenn
+   die Browserleisten ein- und ausklappen, also kein Umbau beim Scrollen).
+   Desktop (Maus, Trackpad) behält seinen Takt. Prüfschalter ?schritt=NN
+   (NN svh, useTapFilm). Das Video (Punkt 4) steht zwei Video-Schritte lang
+   und läuft am Scrollweg (the-alpha-video-lauf.js); kein Stopper mehr. */
+.tap-js.tap-kette {
+  --tap-schritt-lang: 100svh;
+  --tap-schritt-video: 50svh;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .tap-js.tap-kette {
+    --tap-schritt-wort: var(--tap-schritt-lang);
+    --tap-schritt-zeile: var(--tap-schritt-lang);
+    --tap-schritt-absatz: var(--tap-schritt-lang);
+    --tap-schritt-bild: var(--tap-schritt-lang);
+    --tap-schritt-video: var(--tap-schritt-lang);
+  }
+}
+
+.tap-js.tap-kette .tap-film-buehne {
+  /* Das Video erscheint, wenn die Bühne davor ausblendet, ganz im Bild
+     (Unterkante --tap-video-luft über dem Bildrand, wie bisher), und steht
+     dort zwei Video-Schritte lang. */
+  margin-top: calc(-1 * var(--tap-video-hoehe, 0px) - var(--tap-video-luft));
+  height: calc(var(--tap-video-hoehe, 0px) + 2 * var(--tap-schritt-video));
+}
+
+.tap-js.tap-kette .tap-film-buehne > .tap-film {
+  position: sticky;
+  top: calc(100svh - var(--tap-video-hoehe, 0px) - var(--tap-video-luft));
+  margin: 0;
 }
 
 /* Bühnen liegen übereinander: nur was gerade zu sehen ist, nimmt Tipps an
@@ -280,6 +320,31 @@ html:has(main[data-film-seite]) {
 
 .tap-js.tap-kette .tap-scrub:is(.tap-aus, .tap-wartet) [data-tap-schritt] {
   pointer-events: none;
+}
+
+/* Ruhigere Überblendungen zum längeren Takt (Elina 01.11., Punkt 5): ein
+   Schritt ist jetzt ein ganzer Wisch, das Neue kommt weich statt schnappend.
+   Reihenfolge bleibt: erst weg (220 ms), dann neu (ab 240 ms). */
+@media (hover: none) and (pointer: coarse) {
+  .tap-js.tap-kette .tap-scrub-bild,
+  .tap-js.tap-kette .tap-film.tap-sichtbar {
+    transition: opacity 520ms ease 240ms;
+  }
+
+  .tap-js.tap-kette .tap-scrub:is(.tap-aus, .tap-wartet) > .tap-scrub-bild,
+  .tap-js.tap-kette .tap-film:is(.tap-aus, .tap-wartet) {
+    transition: opacity 220ms ease;
+  }
+
+  .tap-js.tap-kette [data-tap-schritt] {
+    transition: opacity 560ms ease;
+  }
+
+  .tap-js.tap-kette .tap-bam[data-tap-schritt] {
+    transition:
+      opacity 700ms cubic-bezier(0.2, 0.9, 0.2, 1),
+      transform 700ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  }
 }
 
 /* Karten-Bühne: beide Karten passen in einen Bildschirm (am Handy

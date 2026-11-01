@@ -49,6 +49,10 @@ import {
  * video-schwarzraum-kuerzen-r2): Scrollstopper am Diamant-Video (`stopper`,
  * einmal je Besuch 3 s Video, Start des Videos unverändert) und kein langes
  * Schwarz mehr zwischen den Bühnen (useTapFilm, Szenen-Fassung).
+ *
+ * 01.11.2026 (Elina, EL-20261101-ead0cb14): gestreckter Takt am Touch-Gerät,
+ * ein langer Wisch = ein Neues; das Video läuft am Scrollweg zwei Schritte
+ * lang statt Scrollstopper (ersetzt den Video-Stopp aus #1201).
  */
 
 const [MANIFESTATION, PROTECTION, LONGEVITY] = THE_ALPHA_ABSCHNITTE;
@@ -69,7 +73,7 @@ export default function TheAlpha() {
     <TapSeite variante="a" film="szene" ton="an">
       <TapTitelkarte />
       <TapWoerterbuch />
-      <TapFilm film={THE_ALPHA_FILM_OHNE_TEXT} stopper />
+      <TapFilm film={THE_ALPHA_FILM_OHNE_TEXT} />
       <TapKapitel abschnitt={MANIFESTATION}>
         <TapKarten bilder={MANIFESTATION.bilder} />
       </TapKapitel>
