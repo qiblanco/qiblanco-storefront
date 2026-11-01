@@ -1044,6 +1044,24 @@ html:has(main[data-film-seite]) {
   position: relative;
 }
 
+/* iPhone: Standbild nur als Notfallplan (the-alpha-video-ios.js, Christian
+   01.11.2026). Es liegt genau über dem Video, bis dessen erstes Bild läuft,
+   dann blendet es aus: nie Schwarz zwischen Standbild und Film. */
+.tap-film-bild > img.tap-film-notbild {
+  position: absolute;
+  max-width: none;
+  margin: 0;
+  aspect-ratio: auto !important;
+  object-fit: cover;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 200ms ease;
+}
+
+.tap-film-bild > img.tap-film-notbild-weg {
+  opacity: 0;
+}
+
 /* Bild und Text passen zusammen auf einen Bildschirm (die Szene erscheint
    erst, wenn sie ganz im Bild ist): das Video gibt dem Text die Höhe ab. */
 .tap-film-mit-text video {
