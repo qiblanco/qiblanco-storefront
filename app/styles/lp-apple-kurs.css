@@ -328,7 +328,6 @@
 }
 .as-kurs .as-pod__gaeste > .as-pod__titel {
   margin-bottom: var(--as-s-6);
-  text-align: center;
 }
 .as-kurs .as-pod__gastliste {
   display: grid;
