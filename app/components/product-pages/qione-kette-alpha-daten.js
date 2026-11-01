@@ -33,7 +33,7 @@ export const PRODUKT = {
   punkte: [
     {zeichen: 'schutz', text: 'Hält deinen QiOne® den ganzen Tag am Körper'},
     {zeichen: 'material', text: 'Derselbe Stahl wie sein Gehäuse'},
-    {zeichen: 'wellen', text: 'Sauna, Meer und Sport gehen mit'},
+    {zeichen: 'wellen', text: 'Die Kette geht mit ins Meer und zum Sport'},
   ],
   // Bewachter SEO-Link der heutigen Seite (Grossjob 20261006-...-seo-strategie,
   // s02): die Kette verweist mit dem Produktnamen auf die Kaufseite des Geräts.
@@ -86,13 +86,16 @@ export const ZUSAMMENFASSUNG = {
   titel: 'Bereit für deinen QiOne®.',
   zeilen: [
     'Versicherter Versand, in 2 bis 3 Tagen bei dir',
-    'Ab 99 € versenden wir kostenlos innerhalb Deutschlands',
+    'Versand nach Deutschland 5,90 €, ab 99 € kostenlos',
     '20 Tage zu Hause testen, voller Kaufpreis zurück',
   ],
   knopf: 'In den Warenkorb legen',
   ruecknahme: null,
 };
 
+/* Box nur mit Bild und Bildunterschrift, ohne Liste darunter (Christian 29.10.: „wie beim
+ * QiBracelet, da wird auch nichts drunter geschrieben“); 316L, 1,6 mm und Karabiner stehen im Kopf
+ * und in den Fakten-Kacheln. */
 export const BOX = {
   titel: "What's in the Box",
   kacheln: [],
@@ -117,7 +120,7 @@ export const FAKTEN = {
       icon: 'wellen',
       zahl: 'Wasserfest',
       titel: 'Überall mit dir',
-      satz: 'Sauna, Meer, Chlor, Schweiß. Sie bleibt dran.',
+      satz: 'Meer, Chlor und Schweiß machen ihr nichts.',
     },
   ],
 };
@@ -140,8 +143,8 @@ export const WISSEN = {
       titel: 'Den ganzen Tag auf der Haut.',
       absaetze: [
         'An der Kette liegt dein QiOne® dort, wo du ihn haben willst: unter dem Hemd, über dem Pullover, beim Sport.',
-        'Der Karabiner schließt mit einer Hand. Abends legst du ihn ab oder schläfst mit ihm.',
-        'Der Stahl braucht keine Pflege. Wasser und ein weiches Tuch genügen.',
+        'Mit dem Karabinerverschluss legst du die Kette abends ab und morgens wieder an.',
+        'Zum Reinigen genügen Wasser und ein weiches Tuch.',
       ],
       bild: 4,
     },
@@ -190,14 +193,14 @@ export const FAQ = {
       a: 'Ja. Die Kette ist 1,6 mm stark, die Öse des QiOne® 2 Pro misst 2,5 mm. Du fädelst sie durch und schließt den Karabiner.',
     },
     {
-      f: 'Darf die Kette nass werden oder in die Sauna?',
-      a: 'Ja. Chirurgenstahl 316L rostet nicht und läuft nicht an. Im Meer, im Schwimmbad und in der Sauna bleibt sie dran. In der Sauna wird der Stahl so warm wie die Luft.',
+      f: 'Darf die Kette nass werden?',
+      a: 'Ja. Chirurgenstahl 316L rostet nicht und läuft nicht an, darum bleibt die Kette im Meer und im Schwimmbad dran.',
     },
     {
-      // PR-Manager s13 (G1/P5): kein Verträglichkeitsversprechen, sondern der
-      // Vergleich mit dem Gehäuse, das der Kunde schon trägt.
+      // PR-Manager s13 (G1/P5): kein Verträglichkeitsversprechen, nur der
+      // Stahl und der Weg zum Hautarzt.
       f: 'Vertrage ich die Kette auf der Haut?',
-      a: 'Die Kette ist aus Chirurgenstahl 316L, aus demselben Stahl wie das Gehäuse deines QiOne®. Verträgst du deinen QiOne® auf der Haut, verträgst du auch die Kette. Hast du eine Nickelallergie, frag vorher deinen Hautarzt.',
+      a: 'Die Kette ist aus Chirurgenstahl 316L, also aus demselben Stahl wie das Gehäuse deines QiOne®. Hast du eine Nickelallergie, sprich vorher mit deinem Hautarzt.',
     },
     {
       f: 'Kann ich die Kette zusammen mit dem QiOne® 2 Pro kaufen?',
