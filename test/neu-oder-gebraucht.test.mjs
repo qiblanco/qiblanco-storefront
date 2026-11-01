@@ -17,7 +17,7 @@ import {ohneProsa} from './_quelltext.mjs';
 import {
   FRAGEN,
   FRISTEN,
-  GRUENDE,
+  VORTEILE,
   IM_PREIS,
   RUECKWEG,
 } from '../app/data/kauf-tatsachen.js';
@@ -136,7 +136,7 @@ test('jede Frist und jeder Preisposten trägt einen Beleg', () => {
   for (const p of IM_PREIS) {
     assert.ok(p.beleg && p.beleg.length > 5, `Posten ohne Beleg: ${p.id}`);
   }
-  for (const g of GRUENDE) {
+  for (const g of VORTEILE) {
     assert.ok(g.beleg && g.beleg.length > 5, `Grund ohne Beleg: ${g.id}`);
   }
   // Und die Komponente zeigt ihn auch an — ein Beleg im Datenmodul, den
@@ -175,7 +175,7 @@ test('die GEO-Tatsache steht als eine Aussage: 20 Tage bei uns, 14 im Gesetz', (
   assert.match(w.text, /14 Tage/);
   assert.match(w.text, /20 Tage/);
   assert.equal(w.belegPfad, '/pages/agb');
-  assert.equal(GRUENDE.find((g) => g.id === 'widerruf').text, w.text);
+  assert.equal(VORTEILE.find((g) => g.id === 'widerruf').text, w.text);
 });
 
 // ---------------------------------------------------------------------------
@@ -184,17 +184,17 @@ test('die GEO-Tatsache steht als eine Aussage: 20 Tage bei uns, 14 im Gesetz', (
 // ---------------------------------------------------------------------------
 
 test('die Gründe für den Direktkauf stehen in Christians Reihenfolge', () => {
-  const titel = GRUENDE.map((g) => g.titel).join(' | ');
+  const titel = VORTEILE.map((g) => g.titel).join(' | ');
   assert.match(titel, /20 Tage zu Hause testen/);
   assert.match(titel, /100 % Geld-zurück-Garantie/);
   assert.match(titel, /Gewährleistung/);
   assert.match(titel, /Bestellnummer/);
   assert.match(titel, /original/i);
-  assert.match(KOMPONENTE, /GRUENDE\.map/);
+  assert.match(KOMPONENTE, /VORTEILE\.map/);
   // Die Quellen kommen aus FRISTEN, nie abgeschrieben.
   for (const id of ['ruecknahme', 'widerruf', 'gewaehrleistung']) {
     assert.equal(
-      GRUENDE.find((g) => g.id === id).beleg,
+      VORTEILE.find((g) => g.id === id).beleg,
       FRISTEN.find((f) => f.id === id).beleg,
     );
   }
@@ -204,7 +204,7 @@ test('Christians beanstandete Sätze stehen nirgends mehr', () => {
   const sichtbar = [
     ...FRAGEN.flatMap((f) => [f.q, f.a]),
     ...FRISTEN.flatMap((f) => [f.titel, f.text]),
-    ...GRUENDE.flatMap((g) => [g.titel, g.text]),
+    ...VORTEILE.flatMap((g) => [g.titel, g.text]),
     ...IM_PREIS.map((p) => p.text),
     ...RUECKWEG,
     KOMPONENTE,
@@ -250,7 +250,7 @@ test('kein Vorwurf wird wiederholt und kein Kritiker genannt', () => {
     ...FRAGEN.flatMap((f) => [f.q, f.a]),
     ...FRISTEN.flatMap((f) => [f.titel, f.text]),
     ...IM_PREIS.map((p) => p.text),
-    ...GRUENDE.flatMap((g) => [g.titel, g.text]),
+    ...VORTEILE.flatMap((g) => [g.titel, g.text]),
     ...RUECKWEG,
   ].join(' ');
   for (const wort of [
@@ -275,7 +275,7 @@ test('keine Wirkaussage auf dieser Flaeche', () => {
     ...FRAGEN.map((f) => f.a),
     ...FRISTEN.map((f) => f.text),
     ...IM_PREIS.map((p) => p.text),
-    ...GRUENDE.map((g) => g.text),
+    ...VORTEILE.map((g) => g.text),
   ].join(' ');
   for (const wort of ['heilt', 'Heilung', 'Studie', 'Zellstudie', 'kohärent']) {
     assert.ok(
@@ -292,7 +292,7 @@ test('keine Rueckgabequote — auch nicht geschaetzt', () => {
     ...FRAGEN.map((f) => f.a),
     ...FRISTEN.map((f) => f.text),
     ...IM_PREIS.map((p) => p.text),
-    ...GRUENDE.flatMap((g) => [g.titel, g.text]),
+    ...VORTEILE.flatMap((g) => [g.titel, g.text]),
   ].join(' ');
   assert.ok(!/Rückgabequote|Ruecknahmequote|Retourenquote/i.test(alles));
   // Die eine erlaubte Prozentangabe ist Christians Wortlaut „100 %

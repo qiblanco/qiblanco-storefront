@@ -111,7 +111,7 @@ const preis = (id) => IM_PREIS.find((p) => p.id === id);
  * Rücknahme-Text steht auch im Abschnitt „ohne Risiko" der
  * QiBracelet-Kaufseite (ohne-risiko-daten.js).
  */
-export const GRUENDE = [
+export const VORTEILE = [
   {
     id: 'ruecknahme',
     titel: '20 Tage zu Hause testen',
@@ -119,7 +119,7 @@ export const GRUENDE = [
     belegPfad: frist('ruecknahme').belegPfad,
   },
   {
-    id: 'geld-zurueck',
+    id: 'garantie',
     titel: '100 % Geld-zurück-Garantie',
     beleg: frist('ruecknahme').beleg,
     belegPfad: frist('ruecknahme').belegPfad,
@@ -194,7 +194,7 @@ export const FRAGEN = [
   {
     // Der Rückweg steht nur noch HIER, nicht zusätzlich als eigener
     // Abschnitt (s14: Christian nennt doppelte FAQ-Wiederholung AI-Klang).
-    id: 'f-rueckgabe',
+    id: 'f-retour',
     q: 'Wie gebe ich mein Stück zurück?',
     a: RUECKWEG.join(' '),
   },

@@ -335,7 +335,7 @@ export const WV_GRUPPEN = [
         pfad: '/pages/neu-oder-gebraucht',
         anker: 'Qi Blanco neu oder gebraucht?',
         teaser:
-          '20 Tage zu Hause testen, Geld-zurück-Garantie, Gewährleistung und Versand, jede Angabe mit Quelle.',
+          'Rücknahme, Widerruf, Gewährleistung und Versand mit Quelle, und was bei einem Kauf von privat wegfällt.',
         weiter: ['/pages/ist-qi-blanco-serioes', '/pages/bewertungen'],
       },
       {

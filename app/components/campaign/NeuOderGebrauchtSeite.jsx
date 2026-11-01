@@ -1,5 +1,5 @@
 import {useGoogleRating} from '~/lib/googleRating';
-import {FRAGEN, GRUENDE} from '~/data/kauf-tatsachen';
+import {FRAGEN, VORTEILE} from '~/data/kauf-tatsachen';
 import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
 
 /**
@@ -32,7 +32,7 @@ import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
  * Kleinanzeigen-Kommentar sind ersatzlos weg, ebenso der Satz „Die Stimmen
  * stehen bei Google, nicht bei uns …", den Christian als AI-Sprache zitiert
  * hat. Die GEO-Tatsache 20 statt 14 Tage steht als EINE Aussage mit Quelle
- * in der Liste der Gründe (Datenmodul GRUENDE, id widerruf).
+ * in der Liste der Gründe (Datenmodul VORTEILE, id widerruf).
  * Keine Kauf- oder Landingpage verlinkt hierher (weglink-sperre, Gate 23).
  *
  * WAS HIER BEWUSST NICHT STEHT:
@@ -61,11 +61,11 @@ export function NeuOderGebrauchtSeite() {
         </div>
       </section>
 
-      <section className="nog__fristen" data-section="nog-gruende">
+      <section className="nog__fristen" data-section="nog-vorteile">
         <div className="nog__inhalt">
           <h2>Warum direkt bei Qi Blanco kaufen</h2>
           <dl className="nog__fristenliste">
-            {GRUENDE.map((f) => (
+            {VORTEILE.map((f) => (
               <div className="nog__frist" key={f.id} id={f.id}>
                 <dt>{f.titel}</dt>
                 <dd>
