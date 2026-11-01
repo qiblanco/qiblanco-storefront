@@ -378,7 +378,7 @@ body:has(.nog) ._form_15 input[type='submit'] {
    „H2-Ausrichtung gemischt (center, left)", „2 gesaettigte Akzent-Farbwelten",
    „Schriftgroessen folgen keiner modularen Skala". Alle drei kommen aus dem
    geteilten Baustein TrustpilotStimmen.jsx: Kopf und Hinweise zentriert mit
-   Tailwind-`!`, Google-Blau #1565c0 an den „weiterlesen"-Schaltern, Karten
+   Tailwind-`!`, Google-Blau (1565c0) an den „weiterlesen"-Schaltern, Karten
    in text-xs/text-sm (12/14 px) neben der 13/16er Skala dieser Seite.
    Dasselbe Muster wie ist-qi-blanco-serioes.css (H2) und fragen.css Regel
    „EIN Akzent auch in den Trustpilot-Stimmen" (Schalter). Wirkt nur unter
@@ -409,7 +409,7 @@ body:has(.nog) ._form_15 input[type='submit'] {
   font-size: var(--nog-fs-xs);
 }
 
-.nog .TrustpilotStimmen button[class*='text-[#1565c0]'] {
+.nog .TrustpilotStimmen button[class*='1565c0]'] {
   color: var(--nog-muted) !important;
   text-decoration: underline;
 }

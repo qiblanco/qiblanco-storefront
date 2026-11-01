@@ -442,16 +442,16 @@ export const FAQ_KAUF = [
     //
     // ARBEITSTEILUNG wie im Abgrenzungs-SSoT: die FAQ antwortet in EINEM
     // Absatz und verlinkt in die Tiefe. Dort stehen beide Fristen mit ihrer
-    // Quelle, dazu was im Preis enthalten ist und warum sich der Kauf direkt
-    // bei uns lohnt.
-    // LINKTEXT 2026-11-01 (s14 desselben Grossjobs): die Zielseite ist
-    // positiv umgeschrieben, der Katalog „was ein Kauf von privat nicht
-    // enthält" ist weg; der Linktext verspricht ihn nicht mehr.
+    // Quelle nebeneinander, dazu was im Preis enthalten ist und was ein Kauf
+    // von privat nicht enthält.
+    // LINKTEXT 2026-09-28: Gedankenstrich durch Komma ersetzt (keine
+    // Gedankenstriche im Kundentext, Grossjob 20260928-GROSSJOB-frageseiten-
+    // menschlich-…); Inhalt und Ziel unverändert.
     weiter: {
       pfad: '/pages/neu-oder-gebraucht',
       text:
-        '20 Tage zu Hause testen, Geld-zurück-Garantie und Gewährleistung ' +
-        'mit Quelle',
+        'Rücknahme, Widerruf, Gewährleistung und Versand mit Quelle, und ' +
+        'was bei einem Kauf von privat wegfällt',
     },
     // DER ZWEITE WEG AUS DIESER ANTWORT, und einer der zwei eingehenden
     // Links, die /pages/healy-alternative braucht (Job 20261007-healy-
