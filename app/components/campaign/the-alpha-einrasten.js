@@ -42,6 +42,12 @@
  */
 
 const PAUSE_MS = 200;
+// Ein abklingender Schwung (jedes Rad-Ereignis kleiner als das vorige) bleibt
+// derselbe Wisch, auch wenn ein langsames Gerät Bilder später liefert (gemessen
+// WebKit/Chromium unter Last 01.11.: Lücken über 200 ms mitten im Trackpad-
+// Schwung, danach zählte der Rest als neuer Wisch und flog über die nächste
+// Einheit). Ein neuer Wisch setzt mit einem größeren Ausschlag wieder an.
+const ABKLING_MS = 1000;
 // Ein Wisch gilt als vorbei, wenn so lange nichts mehr scrollt. Touch großzügig:
 // ein Schwung pausiert nie, aber ein beschäftigtes Gerät malt einzelne Bilder
 // spät (gemessen WebKit unter Last: über 400 ms zwischen zwei Bildern, danach
@@ -72,9 +78,13 @@ export function bühnenRast({oben, px, schritte, start, extra = [], max = Infini
   return aus.map((s) => Math.min(s, max)).filter((s) => s > 0);
 }
 
-/** Beginnt mit diesem Rad-Ereignis ein neuer Wisch? Pause seit dem letzten. */
-export function neuerRadWisch(jetzt, letztes) {
-  return letztes === null || jetzt - letztes > PAUSE_MS;
+/** Beginnt mit diesem Rad-Ereignis ein neuer Wisch? Pause seit dem letzten,
+ * außer der Schwung klingt noch ab (Ausschlag kleiner als zuletzt). */
+export function neuerRadWisch(jetzt, letztes, delta = 0, letzteDelta = 0) {
+  if (letztes === null) return true;
+  const pause = jetzt - letztes;
+  if (pause <= PAUSE_MS) return false;
+  return !(pause <= ABKLING_MS && Math.abs(delta) > 0 && Math.abs(delta) < Math.abs(letzteDelta));
 }
 
 /** Wie weit trägt ein Rad- oder Tastenschritt die Seite nach unten (px)? */
@@ -95,6 +105,7 @@ export function tapEinrasten(stellen, f = window) {
   let geste = null;
   let finger = false;
   let letztesRad = null;
+  let letzteDelta = 0;
   let haltAus = 0;
 
   const neu = (art) => {
@@ -132,8 +143,9 @@ export function tapEinrasten(stellen, f = window) {
   };
   const beiRad = (e) => {
     const jetzt = f.performance.now();
-    if (!geste || geste.art !== 'rad' || neuerRadWisch(jetzt, letztesRad)) neu('rad');
+    if (!geste || geste.art !== 'rad' || neuerRadWisch(jetzt, letztesRad, e.deltaY, letzteDelta)) neu('rad');
     letztesRad = jetzt;
+    letzteDelta = e.deltaY;
     geste.zuletzt = jetzt;
     bremse(e);
   };

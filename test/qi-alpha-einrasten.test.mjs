@@ -74,6 +74,11 @@ test('Neuer Rad-Wisch erst nach einer Pause; Schrittweiten', () => {
   assert.equal(ra.neuerRadWisch(1000, null), true);
   assert.equal(ra.neuerRadWisch(1030, 1000), false, 'Trackpad-Schwung bleibt ein Wisch');
   assert.equal(ra.neuerRadWisch(1300, 1000), true);
+  // Abklingender Schwung mit später Lücke (langsames Gerät): derselbe Wisch
+  assert.equal(ra.neuerRadWisch(1500, 1000, 12, 20), false, 'Schwung klingt ab');
+  assert.equal(ra.neuerRadWisch(1500, 1000, 30, 20), true, 'größerer Ausschlag: neuer Wisch');
+  assert.equal(ra.neuerRadWisch(1500, 1000, 400, 400), true, 'Mausrad-Raste nach Pause: neuer Wisch');
+  assert.equal(ra.neuerRadWisch(2200, 1000, 12, 20), true, 'lange Pause: neuer Wisch');
   assert.equal(ra.schritt({type: 'wheel', deltaY: 3, deltaMode: 1}, 900), 48);
   assert.equal(ra.schritt({type: 'keydown', key: 'ArrowDown'}, 900), 40);
   assert.equal(ra.schritt({type: 'keydown', key: 'PageDown'}, 900), 810);
