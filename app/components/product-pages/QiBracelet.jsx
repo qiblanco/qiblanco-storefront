@@ -8,7 +8,6 @@ import {YoutubeIframe} from '../reusables/YoutubeIframe';
 import { UpsellLineUp } from '../UpsellLineUp';
 import {ProductFAQ} from '../ProductFAQ';
 import {FAQ_QIBRACELET} from '~/data/product-faqs';
-import {InhaltswegNeuOderGebraucht} from './InhaltswegNeuOderGebraucht';
 
 
 /*
@@ -565,7 +564,6 @@ function RisikofreiErleben() {
         innerhalb von 20 Tagen unkompliziert zurückgeben und erhältst den vollen
         Kaufpreis zurück.
       </p>
-      <InhaltswegNeuOderGebraucht />
       <p className="mt-2">
         <b>
           Deine Vorteile <br />

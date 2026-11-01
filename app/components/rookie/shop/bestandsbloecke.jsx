@@ -1,4 +1,3 @@
-import {InhaltswegNeuOderGebraucht} from '~/components/product-pages/InhaltswegNeuOderGebraucht';
 
 /*
  * ZWEI BLOECKE DER CHAMPION-SEITE, WOERTLICH ZITIERT (Rookie /pages/qione-2-pro-b,
@@ -31,7 +30,6 @@ export function RisikofreiErleben() {
         nicht behalten wollen, kannst du ihn innerhalb von 20 Tagen
         unkompliziert zurückgeben – und erhältst den vollen Kaufpreis zurück.
       </p>
-      <InhaltswegNeuOderGebraucht />
       <p className="mt-1">
         Deine Vorteile: <br />✔ In Ruhe erleben: Erfahre den QiOne® 2 Pro in
         deinem eigenen Tempo. <br />

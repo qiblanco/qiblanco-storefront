@@ -178,12 +178,8 @@ export const FAKTEN = {
 export const RISIKOFREI = {
   zeile: '20 Tage zu Hause testen. Passt er nicht, bekommst du den vollen Kaufpreis zurück.',
   details: ['Die 20 Tage beginnen, wenn er bei dir ankommt.', 'Die Rücksendung kostet dich nichts.'],
-  // Bewachter Inhaltslink (probe_neue_seiten_inhaltslinks__20260925.py, s02-Falle).
-  link: {
-    vor: 'Alles zu Rückgabe, Widerruf und Gewährleistung findest du unter',
-    text: 'Neu oder gebraucht',
-    href: '/pages/neu-oder-gebraucht#ruecknahme',
-  },
+  // Kein Link auf /pages/neu-oder-gebraucht (Christian 28.09.2026, kein
+  // Weglink von Kaufseiten; Grossjob 20260928-…-licht s14, weglink-sperre Gate 23).
 };
 
 /*
