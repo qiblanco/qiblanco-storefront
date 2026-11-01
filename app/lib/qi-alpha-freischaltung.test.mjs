@@ -9,7 +9,10 @@ import {
   freischaltungsDaten,
   istFreigeschaltet,
   istStartseite,
+  ladeLeistenWahl,
+  leistenWahlZuruecksetzen,
   menueMitQiAlpha,
+  uebernehmeLeistenWahl,
 } from './qi-alpha-freischaltung.js';
 
 const VORHER = Date.parse('2026-11-01T10:10:59.999Z');
@@ -65,4 +68,30 @@ test('Probe-Uhr gilt nur ausserhalb der Produktion', () => {
   const env = {QI_ALPHA_PROBE_JETZT: '2026-11-01T10:11:00Z'};
   assert.equal(freischaltungsDaten({env, istProduktion: false, jetztMs: 1}).jetzt, AB);
   assert.equal(freischaltungsDaten({env, istProduktion: true, jetztMs: 1}).jetzt, 1);
+});
+
+test('Banner-Wahl per Metafeld: bewertung schaltet die Startseite zurueck auf 4,8 Sterne', () => {
+  assert.equal(bannerVariante({pathname: '/', freigeschaltet: true, wahl: 'bewertung'}), 'bewertung');
+  assert.equal(bannerVariante({pathname: '/', freigeschaltet: true, wahl: 'qi-alpha'}), 'qi-alpha');
+  assert.equal(bannerVariante({pathname: '/', freigeschaltet: true, wahl: undefined}), 'qi-alpha');
+  assert.equal(bannerVariante({pathname: '/products/qi-alpha', freigeschaltet: true, wahl: 'qi-alpha'}), 'bewertung');
+});
+
+test('Metafeld-Quellen: gueltig -> metafeld, danach unlesbar -> zuletzt, nie gelesen -> vorgabe', () => {
+  leistenWahlZuruecksetzen();
+  assert.deepEqual(uebernehmeLeistenWahl(null), {wahl: 'qi-alpha', quelle: 'vorgabe'});
+  assert.deepEqual(uebernehmeLeistenWahl('quatsch'), {wahl: 'qi-alpha', quelle: 'vorgabe'});
+  assert.deepEqual(uebernehmeLeistenWahl(' Bewertung '), {wahl: 'bewertung', quelle: 'metafeld'});
+  assert.deepEqual(uebernehmeLeistenWahl(null), {wahl: 'bewertung', quelle: 'zuletzt'});
+  assert.deepEqual(uebernehmeLeistenWahl('qi-alpha'), {wahl: 'qi-alpha', quelle: 'metafeld'});
+  leistenWahlZuruecksetzen();
+});
+
+test('ladeLeistenWahl wirft nie und liest shop.metafield.value', async () => {
+  leistenWahlZuruecksetzen();
+  const gut = {query: async () => ({shop: {metafield: {value: 'bewertung'}}})};
+  assert.deepEqual(await ladeLeistenWahl(gut), {wahl: 'bewertung', quelle: 'metafeld'});
+  const kaputt = {query: async () => { throw new Error('netz'); }};
+  assert.deepEqual(await ladeLeistenWahl(kaputt), {wahl: 'bewertung', quelle: 'zuletzt'});
+  leistenWahlZuruecksetzen();
 });

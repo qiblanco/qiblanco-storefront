@@ -351,7 +351,16 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
 
   const {pathname} = useLocation();
   const qiAlphaFrei = useQiAlphaFreigeschaltet();
-  const leiste = bannerVariante({pathname, freigeschaltet: qiAlphaFrei});
+  const leistenWahl = useRouteLoaderData('root')?.qiAlphaFreischaltung;
+  const leiste = bannerVariante({
+    pathname,
+    freigeschaltet: qiAlphaFrei,
+    wahl: leistenWahl?.wahl,
+  });
+  const leistenAttr = {
+    'data-kopfleiste-wahl': leistenWahl?.wahl,
+    'data-kopfleiste-quelle': leistenWahl?.quelle,
+  };
   // Zonenzuordnung aus app/lib/kakao-zone.js — der einen Stelle, an der steht,
   // welche Fläche zu welcher Produktwelt gehört. Vorher stand die Liste hier
   // und kannte nur DREI der fünf Kakao-Pfade: /pages/kristall-kakao und
@@ -405,6 +414,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
       {leiste === 'qi-alpha' ? (
         <AnnouncementBanner
           variante="qi-alpha"
+          attr={leistenAttr}
           announcement={
             <p>
               <span className="banner-line">
@@ -416,6 +426,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         />
       ) : (
       <AnnouncementBanner
+        attr={leistenAttr}
         announcement={
           isCacaoPage ? (
             <p>
@@ -1419,7 +1430,7 @@ function GoogleSterneBadge() {
  * zurück — und das ist der Google-Badge weiter unten auf der Seite, der auch
  * dann dasteht, wenn der Kopf gar keine Bewertungszeile trägt.
  */
-function AnnouncementBanner({announcement, link, onAnnouncementClick, variante}) {
+function AnnouncementBanner({announcement, link, onAnnouncementClick, variante, attr}) {
   // Die Qi-Alpha-Leiste trägt KEIN KopfBewertung: sie ist keine Bewertung, und
   // die Sterne-Klick-Delegation (useSterneSprungDelegation) darf sie nicht
   // auf den Rezensionsbereich umlenken.
@@ -1428,7 +1439,7 @@ function AnnouncementBanner({announcement, link, onAnnouncementClick, variante})
       ? 'Header-AnnouncementBanner Header-AnnouncementBanner--qi-alpha'
       : 'Header-AnnouncementBanner KopfBewertung';
   return (
-    <div className={klasse} data-kopfleiste={variante || 'bewertung'}>
+    <div className={klasse} data-kopfleiste={variante || 'bewertung'} {...(attr || {})}>
       <Link prefetch="intent" to={link} onClick={onAnnouncementClick}>
         {announcement}
       </Link>

@@ -25,9 +25,18 @@
  * uncacheable` (gemessen 01.11.2026), jede neue Seite kommt also mit frischer
  * Serverzeit.
  *
- * RÜCKWEG, ein Schritt: STARTSEITEN_LEISTE = 'bewertung' (alter 4,8-Sterne-
- * Banner überall), MENUE_QI_ALPHA = false (Menüpunkt weg). Oder hb-deploy
- * revert des Merges.
+ * UMSCHALTEN OHNE CODE (Christian: „zurückholen und austauschen … auswählen“):
+ * Shop-Metafeld `qb_kopfleiste.startseite` des Global Deutsch-Shops, Werte
+ * 'qi-alpha' | 'bewertung' (Definition mit access.storefront=PUBLIC_READ, sonst
+ * liefert die Storefront-API NULL). Umschalten per
+ *   claude-jobs/20261101-prio1-qi-alpha-banner-nur-startseite-4-8-sterne-waehlbar/kopfleiste-wahl setze bewertung
+ * wirkt binnen rund einer Minute (Cache 30 s + 30 s), ohne Deploy.
+ * Reihenfolge der Quellen: Metafeld gültig -> sein Wert; unlesbar, Isolate hat
+ * schon gelesen -> letzter Wert; sonst STARTSEITEN_LEISTE. Welche Quelle galt,
+ * steht als data-kopfleiste-quelle im HTML.
+ *
+ * RÜCKWEG, ein Schritt: Metafeld auf 'bewertung' (alter 4,8-Sterne-Banner
+ * überall). Menüpunkt: MENUE_QI_ALPHA = false. Oder hb-deploy revert.
  */
 
 /** Freischaltung in UTC. 11:11 Uhr MEZ (Winterzeit seit 25.10.2026) = 10:11Z. */
@@ -45,7 +54,62 @@ export const QI_ALPHA_LP = '/pages/Qi-Alpha';
  * Alle anderen Seiten zeigen IMMER den 4,8-Sterne-Banner.
  */
 export const BANNER_VARIANTEN = Object.freeze(['bewertung', 'qi-alpha']);
+/** Rückfall, wenn das Metafeld nie lesbar war (Zustand beim Deploy). */
 export const STARTSEITEN_LEISTE = 'qi-alpha';
+
+export const KOPFLEISTE_METAFELD = Object.freeze({namespace: 'qb_kopfleiste', key: 'startseite'});
+export const KOPFLEISTE_QUERY = `#graphql
+  query KopfleisteStartseite {
+    shop {
+      metafield(namespace: "qb_kopfleiste", key: "startseite") {
+        value
+      }
+    }
+  }
+`;
+
+let zuletztWahl = null;
+
+/**
+ * Bewertet einen Metafeld-Wert. Unbekannte Werte erzeugen keinen dritten
+ * Zustand: sie zählen wie „unlesbar“.
+ * @param {string|null|undefined} wert
+ * @returns {{wahl: string, quelle: 'metafeld'|'zuletzt'|'vorgabe'}}
+ */
+export function uebernehmeLeistenWahl(wert) {
+  const w = String(wert ?? '').trim().toLowerCase();
+  if (BANNER_VARIANTEN.includes(w)) {
+    zuletztWahl = w;
+    return {wahl: w, quelle: 'metafeld'};
+  }
+  if (zuletztWahl) return {wahl: zuletztWahl, quelle: 'zuletzt'};
+  return {wahl: STARTSEITEN_LEISTE, quelle: 'vorgabe'};
+}
+
+/** Nur für Tests. */
+export function leistenWahlZuruecksetzen() {
+  zuletztWahl = null;
+}
+
+/**
+ * Liest die Wahl über die Storefront-API (Cache 30 s, damit ein Umschalten
+ * binnen rund einer Minute ankommt). Wirft nie.
+ * @param {any} storefront Hydrogen-Storefront-Client
+ */
+export async function ladeLeistenWahl(storefront) {
+  let wert = null;
+  try {
+    const cache =
+      typeof storefront?.CacheCustom === 'function'
+        ? storefront.CacheCustom({mode: 'public', maxAge: 30, staleWhileRevalidate: 30})
+        : undefined;
+    const data = await storefront.query(KOPFLEISTE_QUERY, {cache});
+    wert = data?.shop?.metafield?.value ?? null;
+  } catch {
+    wert = null;
+  }
+  return uebernehmeLeistenWahl(wert);
+}
 
 /** Menüpunkt „Qi Alpha®“ unter „Shop“ (Desktop + Handy) ab der Freischaltung. */
 export const MENUE_QI_ALPHA = true;

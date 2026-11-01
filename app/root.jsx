@@ -147,7 +147,7 @@ import {
   wahlGilt,
 } from '~/lib/einwilligung-schalter';
 import {EINWILLIGUNG_FASSUNG} from '~/lib/einwilligung-texte';
-import {freischaltungsDaten} from '~/lib/qi-alpha-freischaltung';
+import {freischaltungsDaten, ladeLeistenWahl} from '~/lib/qi-alpha-freischaltung';
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
@@ -254,10 +254,15 @@ export async function loader(args) {
     isProductionHost: isQiblancoProductionHost(args.request.url),
     // Qi-Alpha-Freischaltung 01.11.2026 10:11Z: Serverzeit dieser Antwort,
     // damit nie die Kunden-Uhr entscheidet (app/lib/qi-alpha-freischaltung.js).
-    qiAlphaFreischaltung: freischaltungsDaten({
-      env,
-      istProduktion: isQiblancoProductionHost(args.request.url),
-    }),
+    // Dazu die Banner-WAHL der Startseite aus dem Shop-Metafeld
+    // qb_kopfleiste.startseite (umschaltbar ohne Deploy).
+    qiAlphaFreischaltung: {
+      ...freischaltungsDaten({
+        env,
+        istProduktion: isQiblancoProductionHost(args.request.url),
+      }),
+      ...(await ladeLeistenWahl(args.context.storefront)),
+    },
     enableTrackingInPreview: env.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true',
     // Region-aware Consent-Policy (Job 20260718): Oxygen-Geo-Land + Streng-
     // Regionen-Konfig als data-Attribute an den Client (tracker/qpx-loader).
