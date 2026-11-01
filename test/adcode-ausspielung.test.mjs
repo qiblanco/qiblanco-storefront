@@ -172,8 +172,8 @@ function routenWeiterleitung(zielUrlString) {
     'bindeHealWorldGeschenk',
     `${rumpf}; return loader;`,
   );
-  // Die Heal-World-Geschenk-Bindung (lib/heal-world-geschenk.server.js) laesst
-  // das Ergebnis hier unveraendert: der Stub-Korb traegt keine Zeilen.
+  // Die Heal-World-Geschenk-Bindung (lib/heal-world-geschenk.server.js) gibt
+  // hier das Ergebnis der Route zurück: der Stub-Korb hat keine Zeilen.
   const loader = bauen((url, init) => ({url, init}), rabattlinkZiel, async ({result}) => result);
   const request = new Request(`${BASIS}${zielUrlString}`);
   const code = decodeURIComponent(zielUrlString.split('/discount/')[1].split('?')[0]);
