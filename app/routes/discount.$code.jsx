@@ -1,5 +1,6 @@
 import {redirect} from 'react-router';
 import {rabattlinkZiel} from '~/lib/discount-ziel';
+import {bindeHealWorldGeschenk} from '~/lib/heal-world-geschenk.server';
 
 /**
  * Automatically applies a discount found on the url
@@ -14,7 +15,7 @@ import {rabattlinkZiel} from '~/lib/discount-ziel';
  * @param {LoaderFunctionArgs}
  */
 export async function loader({request, context, params}) {
-  const {cart} = context;
+  const {cart, storefront} = context;
   const {code} = params;
 
   // Nur Pfade auf der eigenen Herkunft; Begründung in lib/discount-ziel.js.
@@ -24,7 +25,15 @@ export async function loader({request, context, params}) {
     return redirect(redirectUrl);
   }
 
-  const result = await cart.updateDiscountCodes([code]);
+  const gesetzt = await cart.updateDiscountCodes([code]);
+  // Heal-World-Geschenk: liegt schon ein Gerät im Warenkorb, kommt die
+  // Geschenk-Zeile mit Janas Code im selben Schritt (lib/heal-world-geschenk.js).
+  const result = await bindeHealWorldGeschenk({
+    cart,
+    storefront,
+    action: 'DiscountCodesUpdate',
+    result: gesetzt,
+  });
   const headers = cart.setCartId(result.cart.id);
 
   // Using set-cookie on a 303 redirect will not work if the domain origin have port number (:3000)

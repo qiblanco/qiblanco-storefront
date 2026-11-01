@@ -15,6 +15,7 @@ import {
 } from '~/lib/kakao-set-zeile.server';
 import {noindexMeta} from '~/lib/seo';
 import {bindeRatenanteil} from '~/lib/qi-alpha-teilzahlung';
+import {bindeHealWorldGeschenk} from '~/lib/heal-world-geschenk.server';
 
 /**
  * Route-gebundenes Stylesheet (Muster mm-lp.css): die vier Regeln von
@@ -159,6 +160,11 @@ export async function action({request, context}) {
     result,
     land: storefront?.i18n?.country,
   });
+
+  // Heal-World-Geschenk 01.11.2026: je Gerät eine Geschenk-Zeile (1× Awake +
+  // 1× Create), nur mit Janas Code HEALWORLD5 (lib/heal-world-geschenk.js).
+  // Vor der Kakao-Normalform, damit sie den fertigen Warenkorb sieht.
+  result = await bindeHealWorldGeschenk({cart, storefront, action, result});
 
   // Das Einführungsangebot liegt höchstens einmal im Warenkorb (Großjob
   // 20261017 kakao-unter-herstellkosten, s02). Vor der Kakao-Normalform, die
