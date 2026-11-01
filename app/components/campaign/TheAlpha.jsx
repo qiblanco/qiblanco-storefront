@@ -53,6 +53,10 @@ import {
  * 01.11.2026 (Elina, EL-20261101-ead0cb14): gestreckter Takt am Touch-Gerät,
  * ein langer Wisch = ein Neues; das Video läuft am Scrollweg zwei Schritte
  * lang statt Scrollstopper (ersetzt den Video-Stopp aus #1201).
+ *
+ * Elinas B-Seite (EL-20261101-242cff9c): Takt in der Mitte (185 px je Zeile
+ * am Touch-Gerät) und das Video wieder mit Christians Slap-Stop + 3-s-Halt
+ * („darf dafür übernommen werden“): man kommt nur mit mehreren Wischen vorbei.
  */
 
 const [MANIFESTATION, PROTECTION, LONGEVITY] = THE_ALPHA_ABSCHNITTE;
@@ -73,7 +77,7 @@ export default function TheAlpha() {
     <TapSeite variante="a" film="szene" ton="an">
       <TapTitelkarte />
       <TapWoerterbuch />
-      <TapFilm film={THE_ALPHA_FILM_OHNE_TEXT} />
+      <TapFilm film={THE_ALPHA_FILM_OHNE_TEXT} stopper />
       <TapKapitel abschnitt={MANIFESTATION}>
         <TapKarten bilder={MANIFESTATION.bilder} />
       </TapKapitel>

@@ -277,12 +277,27 @@ html:has(main[data-film-seite]) {
   --tap-video-schritte: 2;
 }
 
+/* MITTE (Elinas B-Seite, EL-20261101-242cff9c, nach Test von Anna und Elina):
+   „Die Vorschau ist jetzt zu langsam (Anna: ‚viel zu langsam‘), der Urzustand
+   war zu schnell. Ziel ist die Mitte … Richtwert: Textzeile ca. alle 170-200 px
+   statt 96 bzw. 250-300, Bilder entsprechend“. Am Touch-Gerät ist der Takt
+   jetzt --tap-schritt-mitte = 185 px je Zeile (Urzustand 96 px, gestreckte
+   Vorschau 130svh = 1056 px bei 812 px Bildhöhe); Wort, Absatz und Bild im
+   Verhältnis des Urzustands (48 : 96 : 160 : 160), also 92 / 185 / 308 / 308 px.
+   Kein Einrasten zwischen den Details, wie in der Vorschau. Das Video bleibt
+   lang (drei lange Schritte, --tap-schritt-lang) und bekommt wieder
+   Christians Slap-Stop + 3-s-Halt (TheAlpha.jsx, the-alpha-stopper.js):
+   man kommt nur mit mehreren Wischen vorbei. Prüfschalter ?zeile=NN (px). */
+.tap-js.tap-kette {
+  --tap-schritt-mitte: 185px;
+}
+
 @media (hover: none) and (pointer: coarse) {
   .tap-js.tap-kette {
-    --tap-schritt-wort: var(--tap-schritt-lang);
-    --tap-schritt-zeile: var(--tap-schritt-lang);
-    --tap-schritt-absatz: var(--tap-schritt-lang);
-    --tap-schritt-bild: var(--tap-schritt-lang);
+    --tap-schritt-wort: calc(var(--tap-schritt-mitte) / 2);
+    --tap-schritt-zeile: var(--tap-schritt-mitte);
+    --tap-schritt-absatz: calc(var(--tap-schritt-mitte) * 5 / 3);
+    --tap-schritt-bild: calc(var(--tap-schritt-mitte) * 5 / 3);
     --tap-schritt-video: var(--tap-schritt-lang);
     --tap-video-schritte: 3;
   }
@@ -1116,6 +1131,39 @@ html:has(main[data-film-seite]) {
    da, der nächste kommt erst, wenn der vorige weg ist („wie im Film“). */
 .tap-film-bild {
   position: relative;
+}
+
+/* Abspiel-Zeichen (Elinas B-Seite, EL-20261101-242cff9c: „Das Video MUSS laden
+   und abspielen … auch auf dem iPhone“). Lehnt iOS das Abspielen ohne Tipp ab
+   (Stromsparmodus, „Video-Vorschauen automatisch abspielen“ aus), setzt
+   TheAlphaTon data-tap-wartet-geste; bisher blieb dann still das Standbild
+   stehen. Jetzt zeigt das Video ein Abspiel-Zeichen, und ein Tipp irgendwo
+   auf der Seite startet es (GESTEN in TheAlphaTon). Das Zeichen fängt keine
+   Tipps ab. */
+.tap-film-bild:has(> video[data-tap-wartet-geste])::before,
+.tap-film-bild:has(> video[data-tap-wartet-geste])::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+}
+
+.tap-film-bild:has(> video[data-tap-wartet-geste])::before {
+  width: 76px;
+  height: 76px;
+  margin: -38px 0 0 -38px;
+  border: 2px solid var(--tap-leise);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.tap-film-bild:has(> video[data-tap-wartet-geste])::after {
+  width: 26px;
+  height: 30px;
+  margin: -15px 0 0 -10px;
+  background: var(--tap-weiss);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
 
 /* Bild und Text passen zusammen auf einen Bildschirm (die Szene erscheint

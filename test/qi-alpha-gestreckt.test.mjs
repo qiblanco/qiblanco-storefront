@@ -27,12 +27,17 @@ const CSS = lies('app/styles/the-alpha-premium.css');
 const P = lies('app/components/campaign/TheAlphaPremium.jsx');
 const lauf = await import(join(WURZEL, 'app/components/campaign/the-alpha-video-lauf.js'));
 
-test('Touch-Gerät: jeder Schritt der Kette 130svh (ein langer Wisch), Desktop behält seinen Takt', () => {
+test('Touch-Gerät: Takt in der Mitte (185 px je Zeile, Elinas B-Seite), Video-Schritt 130svh, Desktop behält seinen Takt', () => {
   assert.match(CSS, /\.tap-js\.tap-kette \{\s*--tap-schritt-lang: 130svh;\s*--tap-schritt-video: 50svh;\s*--tap-video-schritte: 2;/);
+  // EL-20261101-242cff9c: „Textzeile ca. alle 170-200 px statt 96 bzw. 250-300,
+  // Bilder entsprechend“ (Verhältnis des Urzustands 48 : 96 : 160 : 160).
+  assert.match(CSS, /\.tap-js\.tap-kette \{\s*--tap-schritt-mitte: 185px;\s*\}/);
   const touch = CSS.slice(CSS.indexOf('@media (hover: none) and (pointer: coarse)'));
-  for (const art of ['wort', 'zeile', 'absatz', 'bild', 'video']) {
-    assert.match(touch, new RegExp(`--tap-schritt-${art}: var\\(--tap-schritt-lang\\);`), art);
-  }
+  assert.match(touch, /--tap-schritt-wort: calc\(var\(--tap-schritt-mitte\) \/ 2\);/);
+  assert.match(touch, /--tap-schritt-zeile: var\(--tap-schritt-mitte\);/);
+  assert.match(touch, /--tap-schritt-absatz: calc\(var\(--tap-schritt-mitte\) \* 5 \/ 3\);/);
+  assert.match(touch, /--tap-schritt-bild: calc\(var\(--tap-schritt-mitte\) \* 5 \/ 3\);/);
+  assert.match(touch, /--tap-schritt-video: var\(--tap-schritt-lang\);/);
   // Der Desktop-Takt (ab 768 px) ist unverändert.
   assert.match(CSS, /--tap-schritt-wort: 64px;\s*--tap-schritt-absatz: 200px;\s*--tap-schritt-zeile: 128px;/);
   // Keine Weiche nach der Fensterhöhe (Browserleisten).
@@ -47,7 +52,7 @@ test('Schrittmaß wird gemessen (svh), nicht als Text gelesen', () => {
   assert.match(P, /el\.style\.setProperty\('--tap-schritt-lang', `\$\{wunsch\}svh`\)/);
 });
 
-test('Video: eigene Bühne, am Handy drei lange Schritte (ca. 3 Wische), sticky, kein Stopper an A', () => {
+test('Video: eigene Bühne, am Handy drei lange Schritte, sticky, mit Christians Slap-Stop + 3-s-Halt (B-Seite)', () => {
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-film-buehne \{[^}]*height: calc\(var\(--tap-video-hoehe, 0px\) \+ var\(--tap-video-schritte\) \* var\(--tap-schritt-video\)\);/);
   const touch = CSS.slice(CSS.indexOf('@media (hover: none) and (pointer: coarse)'));
   assert.match(touch, /^[^}]*--tap-schritt-video: var\(--tap-schritt-lang\);\s*--tap-video-schritte: 3;/);
@@ -56,7 +61,15 @@ test('Video: eigene Bühne, am Handy drei lange Schritte (ca. 3 Wische), sticky,
   const film = P.slice(P.indexOf('export function TapFilm'), P.indexOf('function MarkeImText'));
   assert.match(film, /<div className="tap-film-buehne" ref=\{buehneRef\}>/);
   assert.match(film, /tapVideoLauf\(buehneRef\.current, figurRef\.current, filmRef\.current, window\)/);
-  assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm film=\{THE_ALPHA_FILM_OHNE_TEXT\} \/>/);
+  // EL-20261101-242cff9c: „Man kommt NICHT am Video vorbei, ohne mehrmals zu
+  // scrollen … Christians bewährte Mechanik (Slap-Stop + 3-Sekunden-Halt) darf
+  // dafür übernommen werden.“
+  assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm film=\{THE_ALPHA_FILM_OHNE_TEXT\} stopper \/>/);
+});
+
+test('Prüfschalter ?zeile=NN setzt den Zeilentakt (px) nur in der Kette', () => {
+  assert.match(P, /el\.style\.setProperty\('--tap-schritt-mitte', `\$\{zeile\}px`\)/);
+  assert.match(P, /el\.style\.removeProperty\('--tap-schritt-mitte'\)/);
 });
 
 test('Video ruht, wenn es weicht oder das Logo hält (kein unsichtbares Dekodieren)', () => {
@@ -197,4 +210,14 @@ test('Prüfschalter ?video=spulen: Bild am Daumen, Video steht', () => {
   win.takt();
   assert.equal(video.paused, true);
   assert.ok(Math.abs(video.currentTime - 0.5 * (19.9 - lauf.ENDE_VOR_SCHLUSS_S)) < 0.01);
+});
+
+test('Abspiel-Zeichen, wenn iOS das Abspielen ohne Tipp ablehnt (B-Seite), fängt keine Tipps ab', () => {
+  // EL-20261101-242cff9c: „Das Video MUSS laden und abspielen … auch auf dem iPhone“.
+  assert.match(CSS, /\.tap-film-bild:has\(> video\[data-tap-wartet-geste\]\)::before,/);
+  const regel = CSS.slice(CSS.indexOf('.tap-film-bild:has(> video[data-tap-wartet-geste])::before,'));
+  assert.match(regel, /^[^}]*pointer-events: none;/);
+  const ton = lies('app/components/campaign/TheAlphaTon.jsx');
+  assert.match(ton, /if \(e && e\.name === 'NotAllowedError'\) v\.dataset\.tapWartetGeste = '1';/);
+  assert.match(ton, /const GESTEN = \['pointerup', 'touchend', 'mousedown', 'keydown', 'click'\];/);
 });

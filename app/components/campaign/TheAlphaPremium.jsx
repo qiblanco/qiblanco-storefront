@@ -201,6 +201,10 @@ function useTapFilm(wurzel, szene) {
       el.classList.add('tap-kette');
       const wunsch = Number(new URLSearchParams(window.location.search).get('schritt'));
       if (wunsch >= 20 && wunsch <= 300) el.style.setProperty('--tap-schritt-lang', `${wunsch}svh`);
+      // Elinas B-Seite (EL-20261101-242cff9c): ?zeile=NN setzt den Zeilentakt
+      // am Touch-Gerät auf NN px (Richtwert 170-200, Standard 185).
+      const zeile = Number(new URLSearchParams(window.location.search).get('zeile'));
+      if (zeile >= 60 && zeile <= 1200) el.style.setProperty('--tap-schritt-mitte', `${zeile}px`);
       szenen.forEach((s, i) => {
         const vor = szenen[i - 1];
         if (!vor) return;
@@ -215,6 +219,7 @@ function useTapFilm(wurzel, szene) {
       aufraeumen.push(() => {
         el.classList.remove('tap-kette');
         el.style.removeProperty('--tap-schritt-lang');
+        el.style.removeProperty('--tap-schritt-mitte');
         szenen.forEach((s) =>
           s.classList.remove('tap-nachruecken', 'tap-nach-buehne', 'tap-nach-video', 'tap-aus', 'tap-wartet'),
         );

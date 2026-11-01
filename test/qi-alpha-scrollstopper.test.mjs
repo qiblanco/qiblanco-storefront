@@ -85,8 +85,10 @@ test('Einmal je Besuch, nie ohne Bewegung, Videostart nicht angefasst', () => {
 // kein Stopp … Das ersetzt den Video-Stopp aus #1201“) trägt auch A keinen
 // Stopper mehr; das Video läuft am Scrollweg (qi-alpha-gestreckt.test.mjs).
 // Der Baustein bleibt bestellbar (TapFilm stopper).
-test('Stopper an keiner Variante bestellt, Baustein bleibt bestellbar', () => {
-  assert.doesNotMatch(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm[^>]*stopper/);
+// Elinas B-Seite (EL-20261101-242cff9c): A trägt den Stopper wieder („Slap-Stop
+// + 3-Sekunden-Halt darf dafür übernommen werden“); B und C weiter ohne.
+test('Stopper nur an A bestellt, Baustein bleibt bestellbar', () => {
+  assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm[^>]*stopper/);
   assert.doesNotMatch(lies('app/components/campaign/TheAlphaVarianteB.jsx'), /stopper/);
   assert.doesNotMatch(lies('app/components/campaign/TheAlphaVarianteC.jsx'), /stopper/);
   const p = lies('app/components/campaign/TheAlphaPremium.jsx');

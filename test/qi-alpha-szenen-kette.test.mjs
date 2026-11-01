@@ -67,12 +67,13 @@ test('Geometrie nahtlos: Bildschirm + Schritte + 1, Nachrücken um einen Bildsch
   assert.match(CSS, /\.tap-js\.tap-kette \.tap-scrub \[data-tap-schritt\]\.tap-an \{\s*pointer-events: auto;/);
 });
 
-test('Video: Start unverändert, es weicht, sobald die Bühne danach steht (A ohne Stopper)', () => {
+test('Video: Start unverändert, es weicht, sobald die Bühne danach steht (Stopper hält es)', () => {
   // Das Video weicht, sobald die Bühne danach steht; ein Stopper (B/C haben keinen,
   // A seit 01.11.2026 auch nicht mehr) hielte es weiter.
   assert.match(P, /\? nach\.getBoundingClientRect\(\)\.top <= 1/);
   assert.match(P, /f\.dataset\.tapStopperStand !== 'hält'/);
-  assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm film=\{THE_ALPHA_FILM_OHNE_TEXT\} \/>/);
+  // Elinas B-Seite (EL-20261101-242cff9c): A trägt wieder Christians Stopper.
+  assert.match(lies('app/components/campaign/TheAlpha.jsx'), /<TapFilm film=\{THE_ALPHA_FILM_OHNE_TEXT\} stopper \/>/);
 });
 
 test('Karten und Seitenband sind in der Szenen-Fassung eigene Bühnen', () => {
