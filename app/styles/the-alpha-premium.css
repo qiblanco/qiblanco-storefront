@@ -171,6 +171,12 @@ html:has(main[data-film-seite]) {
   overscroll-behavior-y: none;
 }
 
+/* Einrasten an jeder Einheit (the-alpha-einrasten.js): einen Augenblick kein
+   Überlauf hält den Daumen-Schwung an der Raststelle an. */
+html[data-tap-rast-halt] {
+  overflow: hidden;
+}
+
 /* ---------- Scroll-Bühnen (Z286/Z287, Z294) ---------- */
 /* Die Bühne ist einen Bildschirm plus ihre Schritte hoch; ihr Inhalt steht
    still (sticky) und baut sich mit dem Scrollen auf (useTapFilm). Nach dem
@@ -1042,6 +1048,24 @@ html:has(main[data-film-seite]) {
    da, der nächste kommt erst, wenn der vorige weg ist („wie im Film“). */
 .tap-film-bild {
   position: relative;
+}
+
+/* iPhone: Standbild nur als Notfallplan (the-alpha-video-ios.js, Christian
+   01.11.2026). Es liegt genau über dem Video, bis dessen erstes Bild läuft,
+   dann blendet es aus: nie Schwarz zwischen Standbild und Film. */
+.tap-film-bild > img.tap-film-notbild {
+  position: absolute;
+  max-width: none;
+  margin: 0;
+  aspect-ratio: auto !important;
+  object-fit: cover;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 200ms ease;
+}
+
+.tap-film-bild > img.tap-film-notbild-weg {
+  opacity: 0;
 }
 
 /* Bild und Text passen zusammen auf einen Bildschirm (die Szene erscheint
