@@ -9,12 +9,12 @@
  * Unterschied, Gitterchip, Diamant, 6G, Sauna/Wasser, Rückgabe. Die neunte,
  * Größe, steht seit 01.11.2026 vor der Rückgabe (Christian: „Wie groß ist der
  * Qi Alpha?“ => identische Größe zum QiOne 2 Pro, Abmessungen und Gewicht
- * „9,9g“; Job 20261101-prio1-qi-alpha-faq-wie-gross-9-9-gramm). Zahlen aus
+ * „9,9g“; Job vom 01.11.2026, Prio 1, Größe 9,9 g). Zahlen aus
  * ai-ceo/wissen/kanon/qi-alpha-fakten.json fakten.groesse; die Höhe des
  * QiOne® 2 Pro ist nirgends hinterlegt und steht deshalb nicht da. Die Fragen
  * sind premium neu gestellt (Z188–Z193). Die erste steht wörtlich so, wie
  * Christian sie bestätigt hat (Z194: „wow, thats it“), und ist der Maßstab für
- * Ton und Niveau der übrigen sieben.
+ * Ton und Niveau der übrigen Fragen.
  *
  * DIE ANTWORTEN nennen zuerst, was der Mensch bekommt, und stehen ohne
  * Konjunktiv und ohne Weichmacher (Z175: „wir haben angst zu usnerer größe zu
