@@ -15,9 +15,9 @@ import {useStartseitePreise} from './startseite-preise';
  * nur --as-*-Tokens.
  *
  * Messanker wie der Baukasten: data-section="as-modelle" für die Reihe,
- * B trägt den Sticky-Kaufknopf der Rookie (data-section
- * "start-b-sticky-kaufknopf", Stil aus rookie-start.css, das links() von
- * start-b weiter lädt).
+ * beide Arme tragen den Sticky-Kaufknopf der Rookie (data-section
+ * "start-b-sticky-kaufknopf"). B nimmt den Stil aus rookie-start.css, das
+ * links() von start-b weiter lädt; A bekommt ihn aus start-b-apple.css.
  */
 
 function Modelle({preise}) {
@@ -88,7 +88,16 @@ export function StartseiteApple({seite, produkte = []}) {
             kopfSelektor="[data-apple-seite='start-b'] [data-section='as-hero']"
             kaufknopfSelektor="[data-apple-seite='start-b'] [data-section='as-band'] [data-as-cta='primary']"
           />
-        ) : null}
+        ) : (
+          // A trägt denselben Sticky (01.11.2026, Grossjob 20261031-prio1-folge-
+          // seitenende, s03): ohne ihn stand am Seitenende auf dem iPhone kein
+          // Kaufknopf im Bild, der Fuß ist mobil gut 3000 px hoch. Er weicht
+          // dem Abschlussband, dessen Knopf dann selbst im Bild steht.
+          <StickyKaufknopf
+            kopfSelektor="[data-apple-seite='startseite'] [data-section='as-hero']"
+            kaufknopfSelektor="[data-apple-seite='startseite'] [data-section='as-cta'] [data-as-cta='primary']"
+          />
+        )}
       </AppleSeite>
     </>
   );
