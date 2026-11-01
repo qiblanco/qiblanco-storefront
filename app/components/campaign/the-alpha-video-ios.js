@@ -160,7 +160,9 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     } catch {
       // vor den Metadaten nicht setzbar: egal, es steht am Anfang
     }
-    holeGross();
+    // Erst, wenn der Speicher-Lauf auch nach dem ersten Bild fehlerfrei
+    // bleibt (ein Gerät, das blob: nicht dekodiert, meldet es kurz danach).
+    fenster.setTimeout(holeGross, 800);
   };
 
   // Notfallplan: Standbild ÜBER dem Video, bis das erste Bild läuft.
@@ -198,7 +200,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   };
 
   const bildDa = () => {
-    if (!st.sichtbarSeit) {
+    if (!st.sichtbarSeit && !v.dataset.tapImBild) {
       if (st.waermt) warmFertig();
       return;
     }
@@ -268,7 +270,10 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     }
   };
   const pause = () => {
-    // Weggescrollt: jetzt unsichtbar hochwechseln.
+    // Nur wenn weggescrollt (binde_videos nimmt tapImBild weg, ehe es
+    // anhält): Uhr zurück, jetzt unsichtbar hochwechseln. Eine Pause durch
+    // Quellwechsel oder Anwärmen zählt nicht.
+    if (v.dataset.tapImBild) return;
     st.sichtbarSeit = 0;
     fenster.clearTimeout(st.notTimer);
     wechsle();
@@ -293,7 +298,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   // Große Stufe erst, wenn die kleine aus dem Speicher nachweislich läuft
   // (angewärmt) und schnell kam.
   function holeGross() {
-    if (st.grossGeholt || !gross || st.phase !== 'blob' || st.blobDefekt) return;
+    if (st.grossGeholt || !gross || st.phase !== 'blob' || st.blobDefekt || v.error || st.weg) return;
     if (!(st.bps >= HOCH_AB_BPS)) return;
     st.grossGeholt = true;
     holen(gross)
