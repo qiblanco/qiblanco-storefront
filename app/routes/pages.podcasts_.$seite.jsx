@@ -1,6 +1,8 @@
 import {redirect} from 'react-router';
 import {useLoaderData} from 'react-router';
 import {Podcasts} from '~/components/campaign/Podcasts';
+import {PodcastsApple} from '~/components/apple-seite/lp/PodcastsApple';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
 import {ladeSeite, nummerAusSegment, SEITEN_ZAHL} from '~/lib/podcast-daten.server';
 import {CANONICAL_ORIGIN, canonicalLink, absoluteCanonical} from '~/lib/seo';
 import lpTokenStyles from '~/styles/schlaf-zellen-schutz.css?url';
@@ -63,16 +65,35 @@ export const meta = ({data}) => {
   return eintraege;
 };
 
-export async function loader({params}) {
+/*
+ * APPLE-FASSUNG (s07-r5, wie pages.podcasts.jsx): je Folgeseite eine eigene
+ * Schalterzeile in app/lib/apple-seiten.js, gefunden über ihren Pfad. Eine
+ * Seite ohne Zeile (etwa eine neue Seite 6) bleibt fail-closed auf C.
+ */
+export async function loader({params, context}) {
   const nr = nummerAusSegment(params.seite);
   if (nr === 1) throw redirect('/pages/podcasts', 301);
   if (nr === null || nr < 1 || nr > SEITEN_ZAHL) {
     throw new Response(null, {status: 404});
   }
-  return ladeSeite(nr, CANONICAL_ORIGIN);
+  const seite = appleSeiteFuerPfad(`/pages/podcasts/seite-${nr}`);
+  return {
+    ...ladeSeite(nr, CANONICAL_ORIGIN),
+    appleSeite: appleSeiteLaden(context, seite),
+  };
 }
 
 export default function PodcastFolgeSeite() {
-  const {daten, pfade, gaeste} = useLoaderData();
+  const {daten, pfade, gaeste, appleSeite} = useLoaderData();
+  if (appleSeite?.an) {
+    return (
+      <PodcastsApple
+        seite={appleSeite.seite}
+        daten={daten}
+        pfade={pfade}
+        gaeste={gaeste}
+      />
+    );
+  }
   return <Podcasts daten={daten} pfade={pfade} gaeste={gaeste} />;
 }
