@@ -58,6 +58,19 @@
  * Der Stand steht für Prüfer an der Figur: data-tap-stopper-stand =
  * wartet | hält | frei, und warum frei: data-tap-stopper-grund =
  * video (3 s gelaufen) | stockt (Video kommt nicht weiter) | deckel.
+ *
+ * SLAP-STOP IMMER (Christian 01.11.2026, Job 20261101-prio1-qi-alpha-lp-
+ * iphone-ruckelt-samsung-video-slapstop-3s-vor-1011z): „beim video fehlt
+ * auch bei samsung der slap stop, also ich kann das video zu leicht
+ * überspringen d.h. hier slap stop + der 3 sekunden stop beim ersten mal“
+ * und „wenn man neu laed, und es nicht sauber laed und der 3 sekunden stop
+ * weg ist trotzdem ein slap stop ist.“ Ist der 3-s-Halt verbraucht (zweiter
+ * Durchlauf, Neuladen in derselben Sitzung, Notausgang beim Laden), endet
+ * trotzdem jeder Wisch, der oberhalb des Fensters beginnt, in der Mitte des
+ * Fensters (slapZiel); weiter geht es mit einem neuen Wisch. Ein Wisch ist
+ * ein Finger-Zug samt Schwung, eine Rad-Folge ohne Pause (RAD_PAUSE_MS) oder
+ * ein Tastendruck. Kein Warten, kein Video-Zähler: nur der Halt am Video.
+ * Prüfer: data-tap-stopper-slap = Zahl der Slap-Stops dieses Besuchs.
  */
 
 export const STOPPER_SEKUNDEN = 3;
@@ -73,6 +86,9 @@ export const STILL_MS = 2000;
 export const START_MS = 6000;
 export const ABGELEHNT_MS = 1200;
 export const DECKEL_MS = 10000;
+// Rad/Trackpad: eine Pause dieser Länge beginnt einen neuen Wisch (der
+// Nachlauf eines Trackpad-Wischs kommt in Abständen um 16 ms).
+export const RAD_PAUSE_MS = 220;
 const SPEICHER = 'tap-stopper:';
 const TASTEN_VOR = new Set(['ArrowDown', 'PageDown', 'End', ' ', 'Spacebar']);
 
@@ -102,6 +118,14 @@ export function fensterHalt({y, von, bis, vorher}) {
   if (!(bis > von) || vorher === null || !(vorher < von) || y < von) return null;
   const mitte = Math.round((von + bis) / 2);
   return Math.min(Math.round(y), mitte);
+}
+
+/** Slap-Stop: wohin ein Wisch nach unten höchstens trägt, der bei `start`
+ * begann (Scroll-Pixel). Nur wer oberhalb des Fensters ansetzt, wird an
+ * dessen Mitte angehalten; null = kein Halt. */
+export function slapZiel({start, von, bis}) {
+  if (!(bis > von) || start === null || !(start < von)) return null;
+  return Math.round((von + bis) / 2);
 }
 
 /** Wie lange darf das Video am Halt ohne Fortschritt bleiben, bevor die Seite
@@ -186,9 +210,9 @@ export function tapStopper(figur, video, f = window) {
   if (still) return () => {};
   const d = f.document;
   const schluessel = speicherSchluessel(video);
+  // Verbraucht heißt nur: kein 3-s-Halt mehr. Der Slap-Stop bleibt.
   let stand = liesSpeicher(f, schluessel) ? 'frei' : 'wartet';
   figur.dataset.tapStopperStand = stand;
-  if (stand === 'frei') return () => {};
 
   let haltY = 0;
   let gespielt = 0;
@@ -199,6 +223,16 @@ export function tapStopper(figur, video, f = window) {
   let amHaltMs = 0;
   let takt = 0;
   let touchY0 = null;
+  // Slap-Stop: Lage beim Beginn des laufenden Wischs, und ob er schon am
+  // Video angehalten wurde.
+  let wischStart = null;
+  let radZeit = -Infinity;
+  let slaps = 0;
+  let geklatscht = false;
+  const neuerWisch = () => {
+    wischStart = f.scrollY;
+    geklatscht = false;
+  };
   // Kleinste Lage dieses Durchlaufs (fensterHalt: nur wer von oben kommt).
   let vorher = f.scrollY;
   const html = d.documentElement;
@@ -229,9 +263,43 @@ export function tapStopper(figur, video, f = window) {
     }, 120);
   };
 
+  const slap = () => {
+    if (geklatscht) return;
+    geklatscht = true;
+    slaps += 1;
+    figur.dataset.tapStopperSlap = String(slaps);
+  };
+
   const sperre = (e) => {
     if (e.type === 'touchstart') {
       touchY0 = e.touches?.[0]?.clientY ?? null;
+      neuerWisch();
+      return;
+    }
+    if (e.type === 'keydown') neuerWisch();
+    if (e.type === 'wheel') {
+      const jetzt = f.performance.now();
+      if (jetzt - radZeit > RAD_PAUSE_MS) neuerWisch();
+      radZeit = jetzt;
+    }
+    if (stand === 'frei') {
+      // Slap-Stop für Rad, Trackpad und Tasten: der Schritt endet in der
+      // Mitte des Fensters; der Rest derselben Rad-Folge (bzw. des Finger-
+      // Zugs) wird an der Mitte geschluckt.
+      if (!istVorwaerts(e, touchY0) || !e.cancelable) return;
+      const fe = fenster();
+      const ziel = fe ? slapZiel({start: wischStart, ...fe}) : null;
+      if (ziel === null) return;
+      const y = f.scrollY;
+      if (y >= ziel - 1) {
+        e.preventDefault();
+        return;
+      }
+      if (e.type !== 'touchmove' && y + schrittWeite(e, f.innerHeight) > ziel + 1) {
+        e.preventDefault();
+        f.scrollTo(0, ziel);
+        slap();
+      }
       return;
     }
     if (stand === 'wartet') {
@@ -275,6 +343,16 @@ export function tapStopper(figur, video, f = window) {
     } else if (stand === 'hält' && y > haltY + 1 && y > vorigY) {
       schwungStopp();
       f.scrollTo(0, haltY);
+    } else if (stand === 'frei' && y > vorigY) {
+      // Slap-Stop für Finger und Schwung: wer oberhalb des Fensters ansetzt,
+      // kommt in diesem Wisch nicht über dessen Mitte.
+      const fe = fenster();
+      const ziel = fe ? slapZiel({start: wischStart, ...fe}) : null;
+      if (ziel !== null && y > ziel + 1) {
+        slap();
+        schwungStopp();
+        f.scrollTo(0, ziel);
+      }
     }
     vorigY = Math.min(y, f.scrollY);
   };
@@ -286,7 +364,9 @@ export function tapStopper(figur, video, f = window) {
     figur.dataset.tapStopperGrund = grund;
     merkeSpeicher(f, schluessel);
     f.cancelAnimationFrame(takt);
-    abbauen();
+    // Die Ereignisse bleiben gebunden: ab hier trägt sie der Slap-Stop. Der
+    // laufende Wisch darf weiter (er hat am Video gewartet).
+    wischStart = f.scrollY;
   };
 
   const zählen = (jetzt) => {
