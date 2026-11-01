@@ -6,10 +6,16 @@
  * eine Antwort ändert, ändert sie auf allen vier Seiten.
  *
  * DIE ACHT THEMEN SIND CHRISTIANS FOLGE (Z176–Z184): Stärke, für wen,
- * Unterschied, Gitterchip, Diamant, 6G, Sauna/Wasser, Rückgabe. Die Fragen
+ * Unterschied, Gitterchip, Diamant, 6G, Sauna/Wasser, Rückgabe. Die neunte,
+ * Größe, steht seit 01.11.2026 vor der Rückgabe; die zehnte, Rabatte, ist
+ * seit demselben Tag die letzte (Christian: „den letzten“) (Christian: „Wie groß ist der
+ * Qi Alpha?“ => identische Größe zum QiOne 2 Pro, Abmessungen und Gewicht
+ * „9,9g“; Job vom 01.11.2026, Prio 1, Größe 9,9 g). Zahlen aus
+ * ai-ceo/wissen/kanon/qi-alpha-fakten.json fakten.groesse; die Höhe des
+ * QiOne® 2 Pro ist nirgends hinterlegt und steht deshalb nicht da. Die Fragen
  * sind premium neu gestellt (Z188–Z193). Die erste steht wörtlich so, wie
  * Christian sie bestätigt hat (Z194: „wow, thats it“), und ist der Maßstab für
- * Ton und Niveau der übrigen sieben.
+ * Ton und Niveau der übrigen Fragen.
  *
  * DIE ANTWORTEN nennen zuerst, was der Mensch bekommt, und stehen ohne
  * Konjunktiv und ohne Weichmacher (Z175: „wir haben angst zu usnerer größe zu
@@ -111,11 +117,32 @@ export const THE_ALPHA_FAQ = [
     ],
   },
   {
+    id: 'groesse',
+    frage: 'Wie groß ist der Qi Alpha®?',
+    antwort: [
+      // \u00a0: Maß und Gewicht brechen nie um (iPhone 390 px brach „20 / × 15 mm“).
+      'Genauso groß wie der QiOne® 2 Pro: rund 20\u00a0×\u00a015\u00a0mm. Er wiegt 9,9\u00a0g.',
+    ],
+  },
+  {
     id: 'passt-nicht',
     frage: 'Was ist, wenn er nicht zu mir passt?',
     antwort: [
       'Dann gibst du ihn zurück. Ab Erhalt hast du 20 Tage, um den Qi Alpha® in Ruhe zu erleben. Passt er nicht zu dir, bekommst du den vollen Kaufpreis zurück.',
       'Wir versenden im Januar 2027 kostenlos und voll versichert, nach der finalen Politur von Hand.',
+    ],
+  },
+  {
+    // Christian 01.11.2026: die letzte Frage. „Nein es ist ein exklusives
+    // Produkt, den es nicht für Black Friday oder im Summersale [je] geben
+    // wird.“ Wortlaut nach dem PR-Manager (pr-manager/wissen/qi-alpha-live-
+    // launch.md, R1: „nie in einem Sale wie Black Friday oder Sommer Sale“).
+    // Kein „nie mit Rabatt“: Partnercodes geben seit 01.11. 5 % auf den Qi
+    // Alpha® (shop-manager/config/qi-alpha-preisregeln.json).
+    id: 'rabatte',
+    frage: 'Wird es auf den Qi Alpha® Rabatte geben?',
+    antwort: [
+      'Nein. Der Qi Alpha® ist exklusiv. Es gibt ihn nie in einem Sale, weder am Black Friday noch im Summer Sale.',
     ],
   },
 ];
