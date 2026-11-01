@@ -2,6 +2,9 @@ import {useLoaderData} from 'react-router';
 import {redirect} from 'react-router';
 import {ESmogSchutz} from '~/components/campaign/ESmogSchutz';
 import lpDStyles from '~/styles/e-smog-schutz.css?url';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {LpApple} from '~/components/apple-seite/lp/LpApple';
+import {ESMOGSCHUTZ_SEKTIONEN} from '~/components/apple-seite/lp/lp-esmogschutz';
 
 /**
  * Ad-Landingpage /pages/E-Smog-Schutz — E-SMOG „Die unsichtbare Dauerbelastung,
@@ -56,6 +59,13 @@ export async function loader({context, request}) {
     throw redirect(CANONICAL_PATH + url.search, 301);
   }
 
+  // APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+  // ausser-seo-geo, s07-r4): Schalter in app/lib/apple-seiten.js. An: die
+  // Apple-Fassung ohne Produktabfrage. Aus: die Seite unverändert (C, Rückweg:
+  // Befehl „zurück“ in homepage-bauer/bin/apple-seite).
+  const appleSeite = appleSeiteLaden(context, appleSeiteFuerPfad(CANONICAL_PATH));
+  if (appleSeite.an) return {appleSeite, products: []};
+
   let data;
   try {
     data = await context.storefront.query(CAMPAIGN_PRODUCTS_QUERY, {
@@ -84,7 +94,8 @@ export async function loader({context, request}) {
 }
 
 export default function ESmogSchutzRoute() {
-  const {products} = useLoaderData();
+  const {products, appleSeite} = useLoaderData();
+  if (appleSeite?.an) return <LpApple seite={appleSeite.seite} sektionen={ESMOGSCHUTZ_SEKTIONEN} />;
   return <ESmogSchutz products={products} />;
 }
 

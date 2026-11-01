@@ -10,6 +10,7 @@ import {EINFACH_SEKTIONEN} from './lp-einfach.js';
 import {MECHANISMUS_SEKTIONEN} from './lp-mechanismus.js';
 import {SKEPTIKER_SEKTIONEN} from './lp-skeptiker.js';
 import {SCHLAF_SEKTIONEN} from './lp-schlaf.js';
+import {ESMOGSCHUTZ_SEKTIONEN} from './lp-esmogschutz.js';
 
 const SEITEN = {
   '/pages/haelt-das-mein-leben-aus': ALLTAG_SEKTIONEN,
@@ -19,6 +20,7 @@ const SEITEN = {
   '/pages/so-wirkt-kohaerentes-wasser': MECHANISMUS_SEKTIONEN,
   '/pages/wir-machen-ihn-auf': SKEPTIKER_SEKTIONEN,
   '/pages/tiefer-schlaf': SCHLAF_SEKTIONEN,
+  '/pages/E-Smog-Schutz': ESMOGSCHUTZ_SEKTIONEN,
 };
 
 test('jede Seite besteht pruefeSeite (Hero zuerst, Anna, kein Preisanker, kein Konjunktiv)', () => {
@@ -72,7 +74,7 @@ function pruefe360(bilder, name) {
 
 test('360: jede LP-Ansicht der Geräte dreht (kein Standbild)', () => {
   let n = 0;
-  for (const [name, s] of Object.entries({ALLTAG_SEKTIONEN, VERSPRECHEN_SEKTIONEN, TRAGEFORM_SEKTIONEN, EINFACH_SEKTIONEN, MECHANISMUS_SEKTIONEN, SKEPTIKER_SEKTIONEN, SCHLAF_SEKTIONEN})) {
+  for (const [name, s] of Object.entries({ALLTAG_SEKTIONEN, VERSPRECHEN_SEKTIONEN, TRAGEFORM_SEKTIONEN, EINFACH_SEKTIONEN, MECHANISMUS_SEKTIONEN, SKEPTIKER_SEKTIONEN, SCHLAF_SEKTIONEN, ESMOGSCHUTZ_SEKTIONEN})) {
     n += pruefe360(s.map((x) => x.bild), name);
   }
   assert.ok(n >= 3, `mindestens die drei bekannten 360-Stellen, gefunden ${n}`);
