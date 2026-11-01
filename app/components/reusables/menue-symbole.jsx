@@ -110,6 +110,7 @@ const PIKTOGRAMME = {
  */
 export const MENUE_SYMBOLE = [
   // Shop — die fünf Produkte
+  {pfade: ['/pages/qi-alpha', '/products/qi-alpha'], titel: ['qi alpha'], bild: 'qi-alpha-01-front.jpg?v=1792849253'},
   {pfade: ['/products/qione-2-pro'], titel: ['qione 2 pro'], bild: 'icon-qione.png?v=1760088701'},
   {pfade: ['/products/qibracelet'], titel: ['qibracelet'], bild: 'icon-bracelet.png?v=1760089233'},
   {pfade: ['/products/qihome-air'], titel: ['qihome air'], bild: 'icon-home.png?v=1760089232'},

@@ -3,7 +3,7 @@
 import {Suspense, useState, useEffect, useRef, useCallback} from 'react';
 import {CdnBild} from './reusables/CdnBild';
 import {createPortal} from 'react-dom';
-import {Await, NavLink, useAsyncValue, Link, useLocation} from 'react-router';
+import {Await, NavLink, useAsyncValue, Link, useLocation, useRouteLoaderData} from 'react-router';
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
@@ -24,6 +24,37 @@ import {
   GOOGLE_REZENSIONEN_ANKER_ID,
 } from '~/components/reusables/GoogleRezensionenBereich';
 import {MarkeR} from '~/components/reusables/MarkeR';
+import {
+  QI_ALPHA_FREISCHALTUNG_MS,
+  QI_ALPHA_LP,
+  bannerVariante,
+  istFreigeschaltet,
+  menueMitQiAlpha,
+} from '~/lib/qi-alpha-freischaltung';
+
+/**
+ * Qi-Alpha-Freischaltung 01.11.2026 10:11Z (app/lib/qi-alpha-freischaltung.js).
+ * Der Anfangswert kommt aus der SERVERZEIT des Root-Loaders, damit Server und
+ * Hydrierung dasselbe rendern und keine vorgehende Kunden-Uhr den Banner früh
+ * zeigt. Ist die Seite vor 10:11 geladen, kippt ein Zeitgeber nach der
+ * Restzeit (Serverzeit bis Freischaltung) - nie früher, höchstens um die
+ * Ladezeit später.
+ */
+export function useQiAlphaFreigeschaltet() {
+  const root = useRouteLoaderData('root');
+  const jetzt = root?.qiAlphaFreischaltung?.jetzt;
+  const [an, setAn] = useState(() => istFreigeschaltet(jetzt));
+  useEffect(() => {
+    if (!Number.isFinite(jetzt)) return undefined;
+    if (istFreigeschaltet(jetzt)) {
+      setAn(true);
+      return undefined;
+    }
+    const t = setTimeout(() => setAn(true), QI_ALPHA_FREISCHALTUNG_MS - jetzt);
+    return () => clearTimeout(t);
+  }, [jetzt]);
+  return an;
+}
 
 /**
  * „Partner werden" im Menü „Mehr" führt auf UNSERE Erklärseite, nicht mehr
@@ -319,6 +350,17 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   }, []);
 
   const {pathname} = useLocation();
+  const qiAlphaFrei = useQiAlphaFreigeschaltet();
+  const leistenWahl = useRouteLoaderData('root')?.qiAlphaFreischaltung;
+  const leiste = bannerVariante({
+    pathname,
+    freigeschaltet: qiAlphaFrei,
+    wahl: leistenWahl?.wahl,
+  });
+  const leistenAttr = {
+    'data-kopfleiste-wahl': leistenWahl?.wahl,
+    'data-kopfleiste-quelle': leistenWahl?.quelle,
+  };
   // Zonenzuordnung aus app/lib/kakao-zone.js — der einen Stelle, an der steht,
   // welche Fläche zu welcher Produktwelt gehört. Vorher stand die Liste hier
   // und kannte nur DREI der fünf Kakao-Pfade: /pages/kristall-kakao und
@@ -369,7 +411,22 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
       className={`header-wrapper KopfHaftet ${hidden ? 'header--hidden' : ''}`}
       data-scroll-dir={richtung}
     >
+      {leiste === 'qi-alpha' ? (
+        <AnnouncementBanner
+          variante="qi-alpha"
+          attr={leistenAttr}
+          announcement={
+            <p>
+              <span className="banner-line">
+                The <MarkeR text="Qi Alpha®" /> is now available
+              </span>
+            </p>
+          }
+          link={QI_ALPHA_LP}
+        />
+      ) : (
       <AnnouncementBanner
+        attr={leistenAttr}
         announcement={
           isCacaoPage ? (
             <p>
@@ -404,6 +461,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         }
         onAnnouncementClick={isCacaoPage ? undefined : onRezensionenKlick}
       />
+      )}
       <GoogleRezensionenPopup
         offen={rezensionenPopupOffen}
         onSchliessen={() => setRezensionenPopupOffen(false)}
@@ -528,6 +586,8 @@ export function HeaderMenu({
 }) {
   const className = `header-menu-${viewport}`;
   const {close} = useAside();
+  const qiAlphaFrei = useQiAlphaFreigeschaltet();
+  const menuMitAlpha = menueMitQiAlpha(menu || FALLBACK_HEADER_MENU, qiAlphaFrei);
 
   return (
     <nav className={className} role="navigation">
@@ -542,7 +602,7 @@ export function HeaderMenu({
           Home
         </NavLink>
       )}
-      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+      {menuMitAlpha.items.map((item) => {
         if (!item.url) return null;
 
         const {to: url, isExternal} = resolveMenuItemLink(item);
@@ -1370,9 +1430,16 @@ function GoogleSterneBadge() {
  * zurück — und das ist der Google-Badge weiter unten auf der Seite, der auch
  * dann dasteht, wenn der Kopf gar keine Bewertungszeile trägt.
  */
-function AnnouncementBanner({announcement, link, onAnnouncementClick}) {
+function AnnouncementBanner({announcement, link, onAnnouncementClick, variante, attr}) {
+  // Die Qi-Alpha-Leiste trägt KEIN KopfBewertung: sie ist keine Bewertung, und
+  // die Sterne-Klick-Delegation (useSterneSprungDelegation) darf sie nicht
+  // auf den Rezensionsbereich umlenken.
+  const klasse =
+    variante === 'qi-alpha'
+      ? 'Header-AnnouncementBanner Header-AnnouncementBanner--qi-alpha'
+      : 'Header-AnnouncementBanner KopfBewertung';
   return (
-    <div className="Header-AnnouncementBanner KopfBewertung">
+    <div className={klasse} data-kopfleiste={variante || 'bewertung'} {...(attr || {})}>
       <Link prefetch="intent" to={link} onClick={onAnnouncementClick}>
         {announcement}
       </Link>

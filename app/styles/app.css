@@ -1203,6 +1203,20 @@ aside h3 {
   text-decoration: none;
   background: #000000;
 }
+/* Qi-Alpha-Leiste (Christian 01.11.2026: „schwarzen Banner und dann in roter
+   Schrift“), nur auf der Startseite ab 10:11Z - app/lib/qi-alpha-freischaltung.js.
+   Rot auf Schwarz: Kontrast 5,9:1. */
+.Header-AnnouncementBanner--qi-alpha {
+  --qb-kopfleiste-rot: #ff3b30;
+}
+.Header-AnnouncementBanner--qi-alpha a,
+.Header-AnnouncementBanner--qi-alpha a:hover {
+  background: #000000;
+  color: var(--qb-kopfleiste-rot)!important;
+}
+.Header-AnnouncementBanner--qi-alpha a p {
+  color: var(--qb-kopfleiste-rot);
+}
 /* Two meaning units (line 1 proof, line 2 offer): each stays unbroken, so any
    wrap happens cleanly between them, never mid-phrase. */
 .Header-AnnouncementBanner .banner-line {
