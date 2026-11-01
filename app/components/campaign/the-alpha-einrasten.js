@@ -41,6 +41,8 @@
  * ein, die senkrechte Geschichte nie.
  */
 
+import {istIos} from './the-alpha-video-ios.js';
+
 const PAUSE_MS = 200;
 // Ein abklingender Schwung (jedes Rad-Ereignis kleiner als das vorige) bleibt
 // derselbe Wisch, auch wenn ein langsames Gerät Bilder später liefert (gemessen
@@ -96,30 +98,17 @@ export function schritt(e, bild) {
 
 /** Bindet das Einrasten an die Seite. `stellen()` liefert die Raststellen
  * aufsteigend. Gibt die Aufräum-Funktion zurück. */
-/** Android (Telefon und Tablet, jeder Browser). Auch mit „Desktop-Website
- * anfordern“: dann meldet Chrome „X11; Linux x86_64“, aber einen Touchschirm. */
-export function istAndroid(nav) {
-  if (!nav) return false;
-  const ua = String(nav.userAgent || '');
-  if (/Android/i.test(ua)) return true;
-  if (String(nav.userAgentData?.platform || '') === 'Android') return true;
-  return /Linux/.test(ua) && !/CrOS/.test(ua) && Number(nav.maxTouchPoints || 0) > 1;
-}
-
-/** Gilt das Einrasten auf diesem Gerät? Überall außer Android: iPhone/iPad,
- * Mac und Desktop (Rad, Trackpad, Tasten). Christians Wort gilt für jedes
- * Gerät („dass man die ganze Homepage nicht einfach mit einem riesigen Wisch
- * überfliegen kann“); ausgenommen hat er nur Android, 01.11.2026 ~11:35
- * (Samsung, Chrome): „echt perfekt … vom Scroll-Gefühl her und von den
- * Slap-Stops“. Android bleibt deshalb wie live (nur Video-Stopper). Desktop/
- * Mac seit Job 20261101-qi-alpha-einrasten-desktop-mac-entscheid (vorher wie
- * live, Job …-r5). ?rast=an schaltet es für Prüfer überall ein, ?rast=aus
- * überall ab. */
+/** Gilt das Einrasten auf diesem Gerät? Nur iPhone/iPad (Safari und Chrome).
+ * Christian 01.11.2026 ~11:35 (Samsung, Chrome): „auf meinem Samsung im
+ * Chrome ist es jetzt echt perfekt … vom Scroll-Gefühl her und von den
+ * Slap-Stops“: Android und Desktop bleiben wie live (nur Video-Stopper),
+ * das iPhone bekommt die Einrastpunkte (Job …-r5, Auftrag Punkt 3/4).
+ * ?rast=an schaltet es für Prüfer überall ein, ?rast=aus überall ab. */
 export function einrastenAn(nav, suche = '') {
   const q = String(suche || '');
   if (/(^|[?&])rast=aus(&|$)/.test(q)) return false;
   if (/(^|[?&])rast=an(&|$)/.test(q)) return true;
-  return !istAndroid(nav);
+  return istIos(nav);
 }
 
 export function tapEinrasten(stellen, f = window) {
