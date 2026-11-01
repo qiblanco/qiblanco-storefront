@@ -1,0 +1,60 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {mp4Lesen} from './film-dekoder.js';
+
+/*
+ * 12 Bilder 32x32, H.264 High, zwei B-Bilder, GOP 6, faststart; erzeugt mit
+ * ffmpeg (testsrc, libx264 -bf 2 -g 6). Erwartung aus ffprobe (Paketreihe).
+ */
+const KLEIN =
+  'AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAOMbW9vdgAAAGxtdmhkAAAAAAAAAAAAAAAAAAAD6AAAAfQAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAArd0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAABAAAAAAAAAfQAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAACAAAAAgAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAH0AAAEAAABAAAAAAIvbWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAAAwAAAAGABVxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAABWaWRlb0hhbmRsZXIAAAAB2m1pbmYAAAAUdm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAAZpzdGJsAAAAvnN0c2QAAAAAAAAAAQAAAK5hdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAACAAIABIAAAASAAAAAAAAAABFUxhdmM2Mi4xMS4xMDAgbGlieDI2NAAAAAAAAAAAAAAAGP//AAAANGF2Y0MBZAAK/+EAF2dkAAqs2UlsBEAAAAMAQAAADAPEiWWAAQAGaOvjyyLA/fj4AAAAABBwYXNwAAAAAQAAAAEAAAAUYnRydAAAAAAAAGzwAAAAAAAAABhzdHRzAAAAAAAAAAEAAAAMAAACAAAAABhzdHNzAAAAAAAAAAIAAAABAAAABwAAADBjdHRzAAAAAAAAAAQAAAAIAAAEAAAAAAEAAAYAAAAAAQAAAgAAAAACAAAEAAAAABxzdHNjAAAAAAAAAAEAAAABAAAADAAAAAEAAABEc3RzegAAAAAAAAAAAAAADAAABDEAAAAMAAAAGQAAACIAAAAdAAAAIAAAAbUAAAAMAAAAIAAAAAwAAAAWAAAAFwAAABRzdGNvAAAAAAAAAAEAAAO8AAAAYXVkdGEAAABZbWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAbWRpcmFwcGwAAAAAAAAAAAAAAAAsaWxzdAAAACSpdG9vAAAAHGRhdGEAAAABAAAAAExhdmY2Mi4zLjEwMAAAAAhmcmVlAAAG121kYXQAAAKcBgX//5jcRem95tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTY1IC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAyNSAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDExMyBtZT1oZXggc3VibWU9NyBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MSA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTEgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0yIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTYga2V5aW50X21pbj0xIHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NiByYz1jcmYgbWJ0cmVlPTEgY3JmPTIzLjAgcWNvbXA9MC42MCBxcG1pbj0wIHFwbWF4PTY5IHFwc3RlcD00IGlwX3JhdGlvPTEuNDAgYXE9MToxLjAwAIAAAAGNZYiEAGfChwVgLBsA/+EOu2ApW/HhMC2wzH5aTZ47tCAF2mdS4K9pxGvOIr8R4W2jPyJ8ur8Ww2/NocjBdGumoIYy+PpyYhrkcASpgrTBi2lI1cd9slp3umGAcOXOvbVZ4vBX6dH7oHwgiocIwLesAt7DFuF28E78m29tNn0LtgO7OwmjNcWABpNpd6vDfe/IQL3bvniT9NwepEBgRkUcUWHR4+wEJIm38UZ2yOih7Ebe05cy5O7KWOM7fgaVcgifiDGmO3sIvh+84srrP9cu095PT0+8agY7/bHvHWhH5GUw3rEsMJkHy3Hb7zWR3iyKO6QN0w1heUo6AAjsbj13LVJmKyHUCfCxXqA/5Kwjo2XxedL2SuMEJr+3H5CdzPAMOQIjIVabSZA1FjmVAEzfC/PenvzBFsfltYcYVdPO/mLlajzT2ORHZPj2CT2VxKLXoHvkMQgN8Yfm1VCA0mgZ46FuRICmT4rtbwscindMMF+q5lKNL8v0OlAF9XtxlgAP51kwrj2vOPfJ+gU6/QAAAAhBmiFsR39VQAAAABVBmkI8IZMphHdwOOdf6mOQw96s6rMAAAAeQZpjSeEPJlMCO/9whoOVgk/pAT+YDN7OwIUHFR84AAAAGUGahEnhDyZTAjv/b5hv8R46kmJbcOhP14EAAAAcQZqlSeEPJlMCO/9whS+2AgK9hpJQYaqccwGKKwAAAbFliIIAEf/wNJeDpT1X/4Rq6LJgoEZ4DbaeZpPs4R2AMIjom84EKp5Z5Lc849BCbBCs+HUHWp4REN34VO7uknLC+6Kv6QClKPekhJO12is2KaWynQHnJPJ1xvTglmm9xk9ND28nvd4ZpUCQeLJNaCQQJhBHXAe12WvGgGGOxDMWP5lD1LwoSIbLGGwlP1Jag333znRnAAtK/iTdLp5St75fc3W2Nik0CWYvCKQR0hwTNBn9x3GCU0JHdAFhYSzxLrb88yYc2i6t+U4Qpy2BgZeB2Zbhw3EjEDVg6Pkh5CAYzv48G1Be9S7A9LE0hNDCwxFrlF9KHJiR0mBqIN9oOsy0G5D+RKj+4egK4ZSwlj9y7OiXiNNsw/cZjk+U3NI2vp/sYID/7ZLxxzHj03KLo5uviGmnavjH9sYoKOgMCAmSRHR7INNM8qY1NWEBoUHlrEMEVnkTXCqwkymnaGE9tohsoCWk9Gv+FfKwrArTpB7ka8lc5FYbe71EYQLWdkvH2NTn+VPRONiVK+Bojf5xF0YyAINwF/4K8FWyPjj+3k/YxkVJGisjAydmDKFjfMfSi0vBAAAACEGaIWxHf1VBAAAAHEGaQzwhkymEJf+H/WUq0+m0id8MnzNP2XAqInAAAAAIAZ5iakMfxIAAAAASQZpkSeEPJlMCFP9pi1F45PB5AAAAE0GahUnhDyZTAhj/kfx2xc+yRe4=';
+
+function puffer(b64) {
+  const b = Buffer.from(b64, 'base64');
+  return b.buffer.slice(b.byteOffset, b.byteOffset + b.length);
+}
+
+// ffprobe: pts (Zeitbasis 1/12288), Größe, Lage, Schlüsselbild — in Dekodierreihenfolge.
+const ERWARTET = [
+  [0, 1073, 956, true],
+  [512, 12, 2029, false],
+  [1024, 25, 2041, false],
+  [1536, 34, 2066, false],
+  [2048, 29, 2100, false],
+  [2560, 32, 2129, false],
+  [3072, 437, 2161, true],
+  [3584, 12, 2598, false],
+  [4608, 32, 2610, false],
+  [4096, 12, 2642, false],
+  [5120, 22, 2654, false],
+  [5632, 23, 2676, false],
+];
+
+test('mp4Lesen liest Codec, Maße und jede Probe wie ffprobe', () => {
+  const f = mp4Lesen(puffer(KLEIN));
+  assert.equal(f.codec, 'avc1.64000a');
+  assert.equal(f.breite, 32);
+  assert.equal(f.hoehe, 32);
+  assert.equal(f.proben.length, 12);
+  assert.equal(f.dauer, 500000);
+  assert.ok(
+    f.beschreibung.length > 7 && f.beschreibung[0] === 1,
+    'avcC-Inhalt',
+  );
+  f.proben.forEach((p, i) => {
+    const [pts, groesse, lage, key] = ERWARTET[i];
+    assert.equal(p.zeit, Math.round((pts * 1e6) / 12288), 'zeit ' + i);
+    assert.equal(p.groesse, groesse, 'groesse ' + i);
+    assert.equal(p.lage, lage, 'lage ' + i);
+    assert.equal(p.schluessel, key, 'schluessel ' + i);
+  });
+});
+
+test('mp4Lesen: Anzeigezeiten sind B-Bild-umsortiert, nicht Dekodierzeiten', () => {
+  const f = mp4Lesen(puffer(KLEIN));
+  assert.ok(f.proben[8].zeit > f.proben[9].zeit, 'Probe 8 zeigt nach Probe 9');
+});
+
+test('mp4Lesen wirft ohne moov statt still nichts zu liefern', () => {
+  assert.throws(() => mp4Lesen(new ArrayBuffer(16)), /moov/);
+});
