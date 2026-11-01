@@ -112,7 +112,7 @@ export const APPLE_SEITEN = Object.freeze({
   'ueber-uns': {pfad: '/pages/ueber-uns', schalter: 'APPLE_SEITE_UEBER_UNS', standard: 'off'},
   'uebersicht': {pfad: '/pages/uebersicht', schalter: 'APPLE_SEITE_UEBERSICHT', standard: 'off'},
   'widerrufsbelehrung': {pfad: '/pages/widerrufsbelehrung', schalter: 'APPLE_SEITE_WIDERRUFSBELEHRUNG', standard: 'on'},
-  'policies': {pfad: '/policies', schalter: 'APPLE_SEITE_POLICIES', standard: 'on'},
+  'policies': {pfad: '/policies', schalter: 'APPLE_SEITE_POLICIES', standard: 'off'},
   'policies-privacy-policy': {pfad: '/policies/privacy-policy', schalter: 'APPLE_SEITE_POLICIES_PRIVACY_POLICY', standard: 'on'},
   'policy-refund-policy': {pfad: '/policies/refund-policy', schalter: 'APPLE_SEITE_POLICY_REFUND_POLICY', standard: 'on'},
   'policies-shipping-policy': {pfad: '/policies/shipping-policy', schalter: 'APPLE_SEITE_POLICIES_SHIPPING_POLICY', standard: 'on'},
