@@ -1,4 +1,4 @@
-import {createContext, useContext, useEffect, useRef, useState} from 'react';
+import {createContext, useContext, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {Link} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
@@ -146,7 +146,24 @@ const RUHE_PX = 48;
  * ?film=still (Standbild: dieselbe Fassung, die ein Kunde mit „Bewegung
  * reduzieren“ sieht; für Prüfer, die nicht scrollen, z. B. das Shop-Tor).
  */
+/** Einrasten an jeder Einheit (the-alpha-einrasten.js), nur in der
+ * Szenen-Fassung. Gebunden im Layout-Effekt, also VOR dem Video-Stopper (dessen
+ * useEffect in TapFilm läuft zwar als Kind zuerst, aber alle Layout-Effekte
+ * laufen vor allen anderen): so sieht dieses Modul jedes Rad- und
+ * Tastenereignis zuerst und kann ein angehaltenes verbrauchen. Die Raststellen
+ * liefert useTapFilm über wurzel.tapRaststellen; fehlen sie (keine Kette, ohne
+ * Bewegung, ?rast=aus), gibt es keinen Halt. */
+const useFruehEffekt = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+function useEinrasten(wurzel, szene) {
+  useFruehEffekt(() => {
+    const el = wurzel.current;
+    if (!el || !szene) return undefined;
+    return tapEinrasten(() => (typeof el.tapRaststellen === 'function' ? el.tapRaststellen() : []), window);
+  }, [wurzel, szene]);
+}
+
 function useTapFilm(wurzel, szene) {
+  useEinrasten(wurzel, szene);
   const [leiste, setLeiste] = useState(false);
   useEffect(() => {
     const el = wurzel.current;
@@ -366,7 +383,9 @@ function useTapFilm(wurzel, szene) {
     }
     // Einrasten an jeder Einheit (the-alpha-einrasten.js, Christian 01.11.2026:
     // „dass man die ganze Homepage nicht einfach mit einem riesigen Wisch
-    // überfliegen kann“): je Bühne eine Raststelle, wo sie ganz dasteht.
+    // überfliegen kann“): je Bühne eine Raststelle, wo sie ganz dasteht. Die
+    // Ereignisse bindet useEinrasten früher (Layout-Effekt); hier kommen nur
+    // die Raststellen dazu.
     if (kette && new URLSearchParams(window.location.search).get('rast') !== 'aus') {
       const raststellen = () => {
         const y = window.scrollY;
@@ -384,7 +403,8 @@ function useTapFilm(wurzel, szene) {
           )
           .sort((a, b) => a - b);
       };
-      aufraeumen.push(tapEinrasten(raststellen, window));
+      el.tapRaststellen = raststellen;
+      aufraeumen.push(() => delete el.tapRaststellen);
     }
     let angefordert = false;
     const anfordern = () => {

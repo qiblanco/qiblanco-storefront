@@ -81,7 +81,9 @@ test('Neuer Rad-Wisch erst nach einer Pause; Schrittweiten', () => {
 
 test('Verdrahtet: Szenen-Kette bindet das Einrasten, Video-Stopper unverändert', () => {
   const p = lies('app/components/campaign/TheAlphaPremium.jsx');
-  assert.match(p, /tapEinrasten\(raststellen, window\)/);
+  assert.match(p, /el\.tapRaststellen = raststellen;/);
+  assert.match(p, /const useFruehEffekt = typeof window === 'undefined' \? useEffect : useLayoutEffect;/);
+  assert.match(p, /function useTapFilm\(wurzel, szene\) \{\n  useEinrasten\(wurzel, szene\);/, 'vor dem Video-Stopper gebunden');
   assert.match(p, /if \(kette && new URLSearchParams\(window\.location\.search\)\.get\('rast'\) !== 'aus'\)/);
   assert.match(p, /className="tap-wb-quelle" data-tap-schritt="" data-tap-rast=""/);
   const css = lies('app/styles/the-alpha-premium.css');
@@ -90,4 +92,5 @@ test('Verdrahtet: Szenen-Kette bindet das Einrasten, Video-Stopper unverändert'
   const e = lies('app/components/campaign/the-alpha-einrasten.js');
   assert.doesNotMatch(e, /style\.overflow/);
   assert.match(e, /data-tap-stopper-stand="hält"/, 'hält der Video-Stopper, regelt er allein');
+  assert.equal((e.match(/e\.stopImmediatePropagation\(\)/g) || []).length, 2, 'angehaltenes Ereignis ist verbraucht');
 });
