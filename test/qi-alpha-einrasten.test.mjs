@@ -99,3 +99,34 @@ test('Verdrahtet: Szenen-Kette bindet das Einrasten, Video-Stopper unverändert'
   assert.match(e, /data-tap-stopper-stand="hält"/, 'hält der Video-Stopper, regelt er allein');
   assert.equal((e.match(/e\.stopImmediatePropagation\(\)/g) || []).length, 2, 'angehaltenes Ereignis ist verbraucht');
 });
+
+// Job 20261101-qi-alpha-einrasten-desktop-mac-entscheid: Christians Wort gilt
+// für jedes Gerät („die ganze Homepage nicht einfach mit einem riesigen Wisch
+// überfliegen“); ausgenommen hat er nur Android (Samsung 11:35 „echt perfekt
+// … Slap-Stops“). ROT VOR GRÜN: auf origin/main 88209623 ist der Mac false.
+const UA = {
+  iphone: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1',
+  samsung: 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36',
+  samsungTablet: 'Mozilla/5.0 (Linux; Android 14; SM-X710) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+  androidDesktopModus: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+  macSafari: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15',
+  macChrome: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+  winChrome: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+  linuxChrome: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+};
+
+test('Einrasten: iPhone, Mac und Desktop ja; Android nie (auch nicht im Desktop-Modus)', () => {
+  assert.equal(ra.einrastenAn({userAgent: UA.iphone}, ''), true);
+  assert.equal(ra.einrastenAn({userAgent: UA.macSafari, maxTouchPoints: 5}, ''), true, 'iPad gibt sich als Mac aus');
+  assert.equal(ra.einrastenAn({userAgent: UA.macSafari, maxTouchPoints: 0}, ''), true, 'Mac Safari');
+  assert.equal(ra.einrastenAn({userAgent: UA.macChrome, maxTouchPoints: 0}, ''), true, 'Mac Chrome');
+  assert.equal(ra.einrastenAn({userAgent: UA.winChrome, maxTouchPoints: 0}, ''), true, 'Windows');
+  assert.equal(ra.einrastenAn({userAgent: UA.linuxChrome, maxTouchPoints: 0}, ''), true, 'Linux-Desktop');
+  assert.equal(ra.einrastenAn({userAgent: UA.samsung, maxTouchPoints: 5}, ''), false, 'Samsung Chrome wie live');
+  assert.equal(ra.einrastenAn({userAgent: UA.samsung}, ''), false, 'Android schon am User-Agent');
+  assert.equal(ra.einrastenAn({userAgent: UA.samsungTablet, maxTouchPoints: 10}, ''), false, 'Android-Tablet');
+  assert.equal(ra.einrastenAn({userAgent: UA.androidDesktopModus, maxTouchPoints: 5}, ''), false, '„Desktop-Website“ am Android');
+  assert.equal(ra.einrastenAn({userAgent: UA.winChrome, userAgentData: {platform: 'Android'}}, ''), false);
+  assert.equal(ra.einrastenAn({userAgent: UA.samsung}, '?rast=an'), true, 'Prüfschalter bleibt');
+  assert.equal(ra.einrastenAn({userAgent: UA.macSafari}, '?rast=aus'), false, 'Prüfschalter bleibt');
+});
