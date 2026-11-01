@@ -148,6 +148,8 @@ jobs:
           KONFIGURATOR_QIONE_2_PRO: ${{ github.ref_name == 'main' && 'on' || '' }}
           KONFIGURATOR_QIHOME_AIR: ${{ github.ref_name == 'main' && 'on' || '' }}
           KONFIGURATOR_QIBRACELET: ${{ github.ref_name == 'main' && 'on' || '' }}
+          # s13 (Christian Zx 29.10.2026): Kette im Apple-Stil; '' = heutige Seite (Rueckweg).
+          KONFIGURATOR_QIONE_KETTE: ${{ github.ref_name == 'main' && 'on' || '' }}
         run: |
           {
             printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
@@ -176,6 +178,7 @@ jobs:
             printf 'KONFIGURATOR_QIONE_2_PRO=%s\n' "$KONFIGURATOR_QIONE_2_PRO"
             printf 'KONFIGURATOR_QIHOME_AIR=%s\n' "$KONFIGURATOR_QIHOME_AIR"
             printf 'KONFIGURATOR_QIBRACELET=%s\n' "$KONFIGURATOR_QIBRACELET"
+            printf 'KONFIGURATOR_QIONE_KETTE=%s\n' "$KONFIGURATOR_QIONE_KETTE"
           } > "$RUNNER_TEMP/oxygen.env"
           echo "OXYGEN_ENV_FILE=$RUNNER_TEMP/oxygen.env" >> "$GITHUB_ENV"
 
