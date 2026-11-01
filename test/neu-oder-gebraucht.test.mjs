@@ -17,9 +17,8 @@ import {ohneProsa} from './_quelltext.mjs';
 import {
   FRAGEN,
   FRISTEN,
+  GRUENDE,
   IM_PREIS,
-  NICHT_ENTHALTEN,
-  PREIS_HINWEIS,
   RUECKWEG,
 } from '../app/data/kauf-tatsachen.js';
 import {buildFaqPageJsonLd} from '../app/lib/faq-schema.js';
@@ -137,6 +136,9 @@ test('jede Frist und jeder Preisposten trägt einen Beleg', () => {
   for (const p of IM_PREIS) {
     assert.ok(p.beleg && p.beleg.length > 5, `Posten ohne Beleg: ${p.id}`);
   }
+  for (const g of GRUENDE) {
+    assert.ok(g.beleg && g.beleg.length > 5, `Grund ohne Beleg: ${g.id}`);
+  }
   // Und die Komponente zeigt ihn auch an — ein Beleg im Datenmodul, den
   // niemand sieht, ist kein Beleg.
   assert.match(KOMPONENTE, /Quelle:/);
@@ -156,17 +158,85 @@ test('die Zufriedenheitszahl ist kein Literal', () => {
 test('die Zahl sagt, was sie ist: eine Bewertung des Unternehmens', () => {
   // Ohne diesen Halbsatz wäre sie eine Produktbewertung mit falschem
   // Subjekt — genau der Verstoss, den s04 vermieden hat.
-  assert.match(KOMPONENTE, /nicht ein\s+einzelnes Produkt/);
+  // Seit 2026-11-01 ohne die Antithese „…, nicht ein einzelnes Produkt"
+  // (Christian 28.09.: „X, nicht Y" ist AI-Sprache), das Subjekt bleibt.
+  assert.match(KOMPONENTE, /Google-Bewertungen für Qi Blanco/);
+  assert.ok(!/nicht ein\s+einzelnes Produkt/.test(KOMPONENTE));
 });
 
-test('beide Fristen stehen nebeneinander und sind unterschieden', () => {
+test('die GEO-Tatsache steht als eine Aussage: 20 Tage bei uns, 14 im Gesetz', () => {
   const ids = FRISTEN.map((f) => f.id);
   assert.deepEqual(ids, ['ruecknahme', 'widerruf', 'gewaehrleistung']);
   const r = FRISTEN.find((f) => f.id === 'ruecknahme');
   const w = FRISTEN.find((f) => f.id === 'widerruf');
   assert.match(r.text, /20 Tage/);
+  // Beide Zahlen in EINER Aussage, mit Quelle (AGB) - so kann ein
+  // Antwortsystem sie zusammen zitieren.
   assert.match(w.text, /14 Tage/);
-  assert.match(w.text, /nicht dasselbe/);
+  assert.match(w.text, /20 Tage/);
+  assert.equal(w.belegPfad, '/pages/agb');
+  assert.equal(GRUENDE.find((g) => g.id === 'widerruf').text, w.text);
+});
+
+// ---------------------------------------------------------------------------
+// Christians Nachtrag 28.09.2026 (s14, umgesetzt 2026-11-01): positiv, warum
+// direkt bei Qi Blanco kaufen; Katalog und Kleinanzeigen-Kommentar ersatzlos.
+// ---------------------------------------------------------------------------
+
+test('die Gründe für den Direktkauf stehen in Christians Reihenfolge', () => {
+  const titel = GRUENDE.map((g) => g.titel).join(' | ');
+  assert.match(titel, /20 Tage zu Hause testen/);
+  assert.match(titel, /100 % Geld-zurück-Garantie/);
+  assert.match(titel, /Gewährleistung/);
+  assert.match(titel, /Bestellnummer/);
+  assert.match(titel, /original/i);
+  assert.match(KOMPONENTE, /GRUENDE\.map/);
+  // Die Quellen kommen aus FRISTEN, nie abgeschrieben.
+  for (const id of ['ruecknahme', 'widerruf', 'gewaehrleistung']) {
+    assert.equal(
+      GRUENDE.find((g) => g.id === id).beleg,
+      FRISTEN.find((f) => f.id === id).beleg,
+    );
+  }
+});
+
+test('Christians beanstandete Sätze stehen nirgends mehr', () => {
+  const sichtbar = [
+    ...FRAGEN.flatMap((f) => [f.q, f.a]),
+    ...FRISTEN.flatMap((f) => [f.titel, f.text]),
+    ...GRUENDE.flatMap((g) => [g.titel, g.text]),
+    ...IM_PREIS.map((p) => p.text),
+    ...RUECKWEG,
+    KOMPONENTE,
+    ROUTE,
+  ].join(' ');
+  for (const satz of [
+    /von privat/i,
+    /Kleinanzeige/i,
+    /Angebotspreis/i,
+    /Privatperson/i,
+    /nicht bei uns/i,
+    /ab 99 Euro/i,
+  ]) {
+    assert.ok(!satz.test(sichtbar), `wieder da: ${satz}`);
+  }
+});
+
+test('f-preis IST IM_PREIS: der Versandsatz wörtlich, auch im Schema', () => {
+  // Bis 2026-11-01 trug die Antwort eine eigene Fassung (DE erst ab 99 Euro,
+  // Zoll für AT) und widersprach IM_PREIS auf derselben Seite.
+  const a = FRAGEN.find((f) => f.id === 'f-preis').a;
+  for (const id of ['versand']) {
+    const t = IM_PREIS.find((p) => p.id === id).text;
+    assert.ok(a.includes(t), `f-preis trägt IM_PREIS.${id} nicht wörtlich`);
+  }
+  const schema = buildFaqPageJsonLd(FRAGEN, {inLanguage: 'de-DE'});
+  const q = schema.mainEntity.find((e) => e.name === 'Was ist im Preis enthalten?');
+  assert.ok(q, 'f-preis fehlt im Schema');
+  assert.ok(
+    q.acceptedAnswer.text.includes(IM_PREIS.find((p) => p.id === 'versand').text),
+    'Schema-Antwort weicht von IM_PREIS ab',
+  );
 });
 
 // ---------------------------------------------------------------------------
@@ -180,8 +250,7 @@ test('kein Vorwurf wird wiederholt und kein Kritiker genannt', () => {
     ...FRAGEN.flatMap((f) => [f.q, f.a]),
     ...FRISTEN.flatMap((f) => [f.titel, f.text]),
     ...IM_PREIS.map((p) => p.text),
-    ...NICHT_ENTHALTEN.flatMap((n) => [n.titel, n.text]),
-    PREIS_HINWEIS,
+    ...GRUENDE.flatMap((g) => [g.titel, g.text]),
     ...RUECKWEG,
   ].join(' ');
   for (const wort of [
@@ -206,8 +275,7 @@ test('keine Wirkaussage auf dieser Flaeche', () => {
     ...FRAGEN.map((f) => f.a),
     ...FRISTEN.map((f) => f.text),
     ...IM_PREIS.map((p) => p.text),
-    ...NICHT_ENTHALTEN.map((n) => n.text),
-    PREIS_HINWEIS,
+    ...GRUENDE.map((g) => g.text),
   ].join(' ');
   for (const wort of ['heilt', 'Heilung', 'Studie', 'Zellstudie', 'kohärent']) {
     assert.ok(
@@ -224,22 +292,14 @@ test('keine Rueckgabequote — auch nicht geschaetzt', () => {
     ...FRAGEN.map((f) => f.a),
     ...FRISTEN.map((f) => f.text),
     ...IM_PREIS.map((p) => p.text),
-    ...NICHT_ENTHALTEN.map((n) => n.text),
+    ...GRUENDE.flatMap((g) => [g.titel, g.text]),
   ].join(' ');
   assert.ok(!/Rückgabequote|Ruecknahmequote|Retourenquote/i.test(alles));
-  assert.ok(!/%/.test(alles), 'Prozentzahl ohne Quelle auf der Seite');
-});
-
-test('der Gebrauchtmarkt-Abschnitt urteilt über UNSER Angebot', () => {
-  // Keine Bewertung fremder Verkaeufer, keine Rechtsauslegung für deren
-  // Geschaefte. Jede Zeile ist eine Aussage darueber, wogegen der Kaeufer
-  // Ansprueche hat — und das können wir nur für uns beantworten.
-  assert.equal(NICHT_ENTHALTEN.length, 4);
-  for (const wort of ['Betrüger', 'Fälschung', 'gefälscht', 'illegal']) {
-    const t = NICHT_ENTHALTEN.map((n) => n.text).join(' ');
-    assert.ok(!new RegExp(wort, 'i').test(t), `Angriff auf Dritte: ${wort}`);
-  }
-  assert.match(PREIS_HINWEIS, /Angebotspreis/);
+  // Die eine erlaubte Prozentangabe ist Christians Wortlaut „100 %
+  // Geld-zurück-Garantie" (28.09.2026); jede andere Prozentzahl wäre eine
+  // Zahl ohne Quelle.
+  const ohneGarantie = alles.replace(/100 % Geld-zurück-Garantie/g, '');
+  assert.ok(!/%/.test(ohneGarantie), 'Prozentzahl ohne Quelle auf der Seite');
 });
 
 // ---------------------------------------------------------------------------

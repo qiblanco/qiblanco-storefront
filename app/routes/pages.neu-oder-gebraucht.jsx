@@ -74,11 +74,14 @@ export function links() {
   return [{rel: 'stylesheet', href: nogStyles}];
 }
 
+// Positiv seit 2026-11-01 (s14, Christians Nachtrag 28.09.): der Titel trägt
+// weiter „neu oder gebraucht", denn so wird gesucht, und nennt dann, was der
+// Direktkauf bringt. Keine Zeile über den Privatkauf.
 const TITEL =
-  'Qi Blanco gebraucht kaufen: was fehlt und was im Preis steckt | Qi Blanco';
+  'Qi Blanco neu oder gebraucht? 20 Tage testen, Geld zurück | Qi Blanco';
 const BESCHREIBUNG =
-  'Rücknahme, Widerruf, Gewährleistung und Versand bei Qi Blanco – jede ' +
-  'Angabe mit Quelle. Und was ein Kauf von privat nicht enthält.';
+  '20 Tage zu Hause testen, 100 % Geld-zurück-Garantie, mindestens zwei ' +
+  'Jahre Gewährleistung und Versand bei Qi Blanco, jede Angabe mit Quelle.';
 
 /**
  * SCHEMA-DATEN. `datePublished` ist der Tag der Veröffentlichung,
@@ -88,7 +91,7 @@ const BESCHREIBUNG =
  * DIESER SEITE ÄNDERT, ZIEHT `NOG_GEAENDERT` IM SELBEN COMMIT NACH.
  */
 const NOG_VEROEFFENTLICHT = '2026-09-12';
-const NOG_GEAENDERT = '2026-09-12';
+const NOG_GEAENDERT = '2026-11-01';
 
 /**
  * DAS FAQPage-SCHEMA WIRD AUS DEM SICHTBAREN TEXT GEBAUT: `FRAGEN` ist
@@ -99,7 +102,7 @@ const NOG_GEAENDERT = '2026-09-12';
  * DER STILLE VERLUST IST DER TEURE FALL: `buildFaqPageJsonLd` wirft Items
  * aus, die das Deny-Netz treffen, und liefert dann ein kürzeres Schema — die
  * Seite bliebe sichtbar und würde nur für Google ärmer, ohne Fehlermeldung.
- * Am 2026-09-12 passieren alle fünf Fragen das Netz; der Test
+ * Am 2026-09-12 und wieder am 2026-11-01 passieren alle fünf Fragen das Netz; der Test
  * test/neu-oder-gebraucht.test.mjs hält mit einem Soll von fünf
  * Question-Einträgen dagegen.
  */
