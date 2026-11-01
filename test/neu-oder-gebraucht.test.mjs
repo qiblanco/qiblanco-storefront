@@ -175,7 +175,10 @@ test('die GEO-Tatsache steht als eine Aussage: 20 Tage bei uns, 14 im Gesetz', (
   assert.match(w.text, /14 Tage/);
   assert.match(w.text, /20 Tage/);
   assert.equal(w.belegPfad, '/pages/agb');
-  assert.equal(VORTEILE.find((g) => g.id === 'widerruf').text, w.text);
+  // Sichtbar EINMAL, unter „20 Tage zu Hause testen" (kein eigener Punkt).
+  assert.equal(VORTEILE.find((g) => g.id === 'ruecknahme').text, w.text);
+  assert.equal(VORTEILE.find((g) => g.id === 'ruecknahme').belegPfad, '/pages/agb');
+  assert.equal(VORTEILE.filter((g) => /14/.test(`${g.titel} ${g.text || ''}`)).length, 1);
 });
 
 // ---------------------------------------------------------------------------
@@ -191,11 +194,12 @@ test('die Gründe für den Direktkauf stehen in Christians Reihenfolge', () => {
   assert.match(titel, /Bestellnummer/);
   assert.match(titel, /original/i);
   assert.match(KOMPONENTE, /VORTEILE\.map/);
+  assert.equal(VORTEILE.length, 5);
   // Die Quellen kommen aus FRISTEN, nie abgeschrieben.
-  for (const id of ['ruecknahme', 'widerruf', 'gewaehrleistung']) {
+  for (const [vid, fid] of [['ruecknahme', 'widerruf'], ['gewaehrleistung', 'gewaehrleistung']]) {
     assert.equal(
-      VORTEILE.find((g) => g.id === id).beleg,
-      FRISTEN.find((f) => f.id === id).beleg,
+      VORTEILE.find((g) => g.id === vid).beleg,
+      FRISTEN.find((f) => f.id === fid).beleg,
     );
   }
 });

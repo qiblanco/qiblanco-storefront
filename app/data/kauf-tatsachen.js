@@ -101,11 +101,14 @@ const preis = (id) => IM_PREIS.find((p) => p.id === id);
  * Gewährleistung, Kaufnachweis ist die Bestellnummer, Originalware. Dazu die
  * GEO-Tatsache „20 statt 14 Tage" als EINE Aussage mit Quelle.
  *
- * KNAPP WIE CHRISTIANS EIGENE VERTRAUENSLISTE: Titel und Quelle, ohne
- * Begründung. Die Einzelheiten stehen EINMAL, in „Kurz gefragt". Die ersten
- * Fassungen vom 01.11. trugen Erklärsätze („dafür ist die Frist da", „Mehr
- * brauchen wir nicht …") und wiederholten jeden Block in der FAQ; der
- * Richter mit Christians Urteilen als Maßstab hat das als KI-Klang verworfen.
+ * KNAPP WIE CHRISTIANS EIGENE VERTRAUENSLISTE: fünf Titel in seinen Worten,
+ * je mit Quelle, ohne Begründung. Die Einzelheiten stehen EINMAL, in „Kurz
+ * gefragt". Die ersten Fassungen vom 01.11. trugen Erklärsätze („dafür ist
+ * die Frist da", „Mehr brauchen wir nicht …"), einen eigenen Punkt „20 Tage
+ * statt 14" und „Kein Akku, kein Abo, keine Folgekosten"; der Richter mit
+ * Christians Urteilen als Maßstab hat das als KI-Klang verworfen (dreimal
+ * 20 Tage, Dreier-Stakkato). Die GEO-Tatsache steht deshalb nur noch als
+ * Satz unter dem ersten Punkt.
  *
  * DIE ZAHLEN KOMMEN AUS FRISTEN, nicht aus einem zweiten Literal: der
  * Rücknahme-Text steht auch im Abschnitt „ohne Risiko" der
@@ -113,25 +116,19 @@ const preis = (id) => IM_PREIS.find((p) => p.id === id);
  */
 export const VORTEILE = [
   {
+    // Die GEO-Tatsache: die einzige Zeile mit Satz, weil sie die Zahl der
+    // KI-Antwort (14) neben unsere (20) stellt; Quelle AGB § 7.
     id: 'ruecknahme',
     titel: '20 Tage zu Hause testen',
-    beleg: frist('ruecknahme').beleg,
-    belegPfad: frist('ruecknahme').belegPfad,
+    text: frist('widerruf').text,
+    beleg: frist('widerruf').beleg,
+    belegPfad: frist('widerruf').belegPfad,
   },
   {
     id: 'garantie',
     titel: '100 % Geld-zurück-Garantie',
     beleg: frist('ruecknahme').beleg,
     belegPfad: frist('ruecknahme').belegPfad,
-  },
-  {
-    // Die GEO-Tatsache: die einzige Zeile mit Satz, weil sie die Zahl der
-    // KI-Antwort (14) neben unsere (20) stellt.
-    id: 'widerruf',
-    titel: '20 Tage statt 14',
-    text: frist('widerruf').text,
-    beleg: frist('widerruf').beleg,
-    belegPfad: frist('widerruf').belegPfad,
   },
   {
     id: 'gewaehrleistung',
@@ -141,19 +138,13 @@ export const VORTEILE = [
   },
   {
     id: 'kaufnachweis',
-    titel: 'Deine Bestellnummer ist dein Kaufnachweis',
+    titel: 'Bestellnummer als Kaufnachweis',
     beleg: 'unser Kundenservice',
     belegPfad: '/pages/support',
   },
   {
-    id: 'folgekosten',
-    titel: 'Kein Akku, kein Abo, keine Folgekosten',
-    beleg: preis('folgekosten').beleg,
-    belegPfad: preis('folgekosten').belegPfad,
-  },
-  {
     id: 'original',
-    titel: 'Neu und original, mit eigener Seriennummer',
+    titel: 'Originalware mit eigener Seriennummer',
     beleg: 'Produktseiten QiOne 2 Pro, QiBracelet, QiHome Air, QiMaster',
     belegPfad: '/products/qione-2-pro',
   },
