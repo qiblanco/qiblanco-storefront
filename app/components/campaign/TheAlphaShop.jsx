@@ -191,13 +191,19 @@ export function TheAlphaShop({
   // raten-rest-sofort, s03): nur im EUR-Markt DE/AT, Aufteilung aus derselben
   // Summe wie die Zusammenfassung. Über 10.000 € zahlt der Kunde 10.000 € in
   // Raten und den Rest sofort; bis 10.000 € gilt der normale Ratenweg.
-  // Im Premium-Bereich nur Direktzahlung: der Rest-Link der geteilten Zahlung
-  // (qi-alpha-teilzahlung) trägt keinen Reservierungs-Schlüssel, und die
-  // Sperre im Warenkorb nähme die reservierte Nummer dort wieder heraus.
-  const ratenAn = !premium && ratenMarkt({waehrung, land});
+  // Im Premium-Bereich (Job 20261101-prio10-qi-alpha-premium-checkout-raten)
+  // trägt Schritt 1 den Reservierungs-Schlüssel des Links an Bestellung 1;
+  // der Wächter hängt ihn an den Rest-Link, und der Warenkorb-Permalink setzt
+  // ihn an die Nummern-Zeile. Ein Ratenvorgang trägt genau ein Gerät (Vertrag
+  // des Wächters: ein Qi Alpha®, eine Nummer, eine Kette): ab zwei Geräten
+  // läuft die Ratenzahlung je Gerät, nacheinander über denselben Link.
+  const ratenAn = ratenMarkt({waehrung, land});
   const art = ratenAn ? zahlart : 'direkt';
-  const teilung = aufteilung({summe, waehrung, land});
+  const ratenJeGeraet = premium && einheiten.length > 1;
+  const teilung = ratenJeGeraet ? null : aufteilung({summe, waehrung, land});
   const geteilt = art === 'raten' && teilung;
+  const ratenGesperrt = art === 'raten' && ratenJeGeraet;
+  const ratenGeraet = premium ? (einheiten[0] ?? null) : null;
   const betrag = (wert) => betragText(wert, waehrung);
   const oeffneFenster = () => {
     if (!teilung || !haupt?.id) return;
@@ -298,7 +304,11 @@ export function TheAlphaShop({
       </button>
     ) : (
       <AddToCartButton
-        disabled={!haupt?.availableForSale || (premium && !einheiten.length)}
+        disabled={
+          !haupt?.availableForSale ||
+          (premium && !einheiten.length) ||
+          ratenGesperrt
+        }
         onClick={() => open('cart')}
         lines={premium ? premiumLinien : linien}
       >
@@ -644,12 +654,23 @@ export function TheAlphaShop({
                   }}
                   titel={BEZAHLUNG.raten.name}
                   text={
-                    teilung ? BEZAHLUNG.raten.text : BEZAHLUNG.raten.textGanz
+                    teilung || ratenJeGeraet
+                      ? BEZAHLUNG.raten.text
+                      : BEZAHLUNG.raten.textGanz
                   }
                   data={{'data-tas-zahlart': 'raten'}}
                 />
               ) : null}
             </div>
+            {ratenGesperrt ? (
+              <div
+                className="tas-hinweis"
+                data-tas-raten="je-geraet"
+                aria-live="polite"
+              >
+                <p>{TEILZAHLUNG_TEXT.jeGeraet}</p>
+              </div>
+            ) : null}
             {geteilt ? (
               <div
                 className="tas-hinweis"
@@ -830,11 +851,22 @@ export function TheAlphaShop({
           betrag={betrag}
           link={teil1Link({
             vorgang: fenster.vorgang,
-            konfig: konfigText({
-              qiAlpha: haupt?.id,
-              nummer: nummerEintrag?.variante?.id ?? null,
-              kette: kette?.variante?.id ?? null,
-            }),
+            konfig: konfigText(
+              premium
+                ? {
+                    qiAlpha: haupt?.id,
+                    nummer: ratenGeraet?.variante?.id ?? null,
+                    kette: ketteFuer(ratenGeraet?.n)?.variante?.id ?? null,
+                  }
+                : {
+                    qiAlpha: haupt?.id,
+                    nummer: nummerEintrag?.variante?.id ?? null,
+                    kette: kette?.variante?.id ?? null,
+                  },
+            ),
+            // Nur eine reservierte Nummer trägt den Schlüssel; eine frei
+            // gewählte braucht ihn nicht.
+            reservierung: ratenGeraet?.name ? reservierung.schluessel : null,
           })}
           onClose={schliesseFenster}
         />

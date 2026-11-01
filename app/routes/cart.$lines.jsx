@@ -10,6 +10,10 @@ import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
 import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
 import {
+  reservierungAmPermalink,
+  reservierungBekannt,
+} from '~/lib/qi-alpha-reservierung-permalink.server';
+import {
   bindeRatenanteil,
   merkmaleAusQuery,
   mitRatenanteil,
@@ -111,8 +115,18 @@ export async function loader({request, context, params}) {
     }
   }
   const teilzahlungsMerkmale = mitTeilzahlung
-    ? merkmaleAusQuery(searchParams, {sitzungsCodes})
+    ? merkmaleAusQuery(searchParams, {sitzungsCodes, reservierungBekannt})
     : [];
+  // RATEN IM PREMIUM-BEREICH (Job 20261101-prio10-qi-alpha-premium-checkout-
+  // raten): der Rest-Link trägt `&reservierung=<schlüssel>`. Die Nummern-Zeile
+  // der reservierten Nummer bekommt damit Schlüssel und Namen als Merkmal,
+  // bevor der Warenkorb entsteht; die Sperre (bindeQiMasterAddons) lässt sie
+  // dann stehen. Der Parameter geht nicht in die Kassen-Adresse.
+  const zeilen = await reservierungAmPermalink({
+    storefront,
+    zeilen: linesMap,
+    schluessel: searchParams.get(TEILZAHLUNG.reservierung.param),
+  });
   const hasMarketingConsent = hasAttributionConsent(request, env);
   // Job 20260907-fbc-klick-id-... (s02): hier stand `hasMarketingConsent ? ... : []`
   // für die GESAMTE Attributsliste — ein Direkt-zur-Kasse-Link ohne Consent
@@ -127,7 +141,7 @@ export async function loader({request, context, params}) {
 
   // create a cart
   const erstellt = await cart.create({
-    lines: linesMap,
+    lines: zeilen,
     discountCodes: discountArray,
     ...(attributionAttributes.length
       ? {attributes: attributionAttributes}

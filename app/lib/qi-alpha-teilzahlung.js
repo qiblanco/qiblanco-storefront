@@ -31,6 +31,8 @@
  * Warenkorb-Handler der Route übergeben).
  */
 
+import {istSchluessel} from './qi-alpha-reservierung.js';
+
 export const TEILZAHLUNG = {
   // Shopify-Variante „qi-alpha-ratenanteil“ (angelegt 2026-10-28, s06).
   variante: '66048336396556',
@@ -40,6 +42,12 @@ export const TEILZAHLUNG = {
   // Nur hier trägt der Katalog den Ratenanteil (CH/International entfernt).
   maerkte: ['DE', 'AT'],
   merkmale: {vorgang: '_qa_vorgang', konfig: '_qa_konfig'},
+  // PREMIUM-BEREICH (Job 20261101-prio10-qi-alpha-premium-checkout-raten):
+  // der Reservierungs-Schlüssel reist als drittes Merkmal an Bestellung 1,
+  // der Wächter hängt ihn als `?reservierung=` an den Rest-Link, und der
+  // Permalink setzt damit `_reservierung` an die Nummern-Zeile. Bewusst nicht
+  // in `merkmale`: die zwei Vertrags-Merkmale oben bleiben, wie sie sind.
+  reservierung: {merkmal: '_qa_reservierung', param: 'reservierung'},
 };
 
 /** Bietet dieser Markt die geteilte Zahlung an? */
@@ -99,11 +107,19 @@ export function vorgangsKennung(zufall = Math.random, jetzt = Date.now()) {
   return `qa-${Math.floor(jetzt).toString(36)}-${z}`;
 }
 
-/** Adresse des Schritt-1-Checkouts: nur der Ratenanteil, Menge 1. */
-export function teil1Link({vorgang, konfig}) {
+/**
+ * Adresse des Schritt-1-Checkouts: nur der Ratenanteil, Menge 1. Im
+ * Premium-Bereich trägt sie den Reservierungs-Schlüssel des Links, den der
+ * Kunde ohnehin hat; in die Kassen-Adresse geht er nicht (dort nur die
+ * Tracking-Allowlist, lib/checkout-tracking.js).
+ */
+export function teil1Link({vorgang, konfig, reservierung = null}) {
   const q = new URLSearchParams();
   if (vorgang) q.set(TEILZAHLUNG.merkmale.vorgang, vorgang);
   if (konfig) q.set(TEILZAHLUNG.merkmale.konfig, konfig);
+  if (istSchluessel(reservierung)) {
+    q.set(TEILZAHLUNG.reservierung.merkmal, reservierung);
+  }
   const such = q.toString();
   return `/cart/${TEILZAHLUNG.variante}:1${such ? `?${such}` : ''}`;
 }
@@ -118,7 +134,10 @@ export function teil1Link({vorgang, konfig}) {
  * Partnercode). Steht in _qa_konfig `partner=-`, setzt der erste brauchbare
  * Code dort ein; ob er sich mit der Anrechnung verträgt, prüft der Wächter.
  */
-export function merkmaleAusQuery(searchParams, {sitzungsCodes = []} = {}) {
+export function merkmaleAusQuery(
+  searchParams,
+  {sitzungsCodes = [], reservierungBekannt = () => false} = {},
+) {
   const out = [];
   const vorgang = searchParams.get(TEILZAHLUNG.merkmale.vorgang);
   if (vorgang && VORGANG_RX.test(vorgang)) {
@@ -133,6 +152,12 @@ export function merkmaleAusQuery(searchParams, {sitzungsCodes = []} = {}) {
       if (code) konfig = `${konfig.slice(0, -1)}${code}`;
     }
     out.push({key: TEILZAHLUNG.merkmale.konfig, value: konfig});
+  }
+  // Der Schlüssel nur in seiner Form und nur, wenn die Server-Liste ihn kennt
+  // (`reservierungBekannt`, cart.$lines.jsx). Ein erfundener fällt weg.
+  const schluessel = searchParams.get(TEILZAHLUNG.reservierung.merkmal);
+  if (istSchluessel(schluessel) && reservierungBekannt(schluessel)) {
+    out.push({key: TEILZAHLUNG.reservierung.merkmal, value: schluessel});
   }
   return out;
 }
