@@ -9,8 +9,8 @@
  * ROT VOR GRÜN: auf origin/main 4adbb7e6 fehlt the-alpha-video-ios.js
  * (Import scheitert), der Film trägt kein data-tap-klein, binde_videos setzt
  * das Poster an jedem Gerät.
- * Wiederhergestellt ohne Einrasten (Job 20261101-prio1-qi-alpha-lp-video-
- * autostart-zurueck-ohne-einrasten-sound-synchron): #1200 nahm mit dem
+ * Wiederhergestellt ohne Einrasten (Job vom 01.11.2026, Video-Autostart
+ * ohne Einrasten, Ton-Symbol synchron): #1200 nahm mit dem
  * Einrasten (Zittern) auch den Video-Teil zurück, Christian 01.11.2026: „das
  * Video springt wieder erst bei Klick aufs Standbild an“. Rot auf c1e0b921
  * aus demselben Grund wie oben.
