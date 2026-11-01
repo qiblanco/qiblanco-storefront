@@ -18,7 +18,7 @@ import {
 const VORHER = Date.parse('2026-11-01T10:10:59.999Z');
 const AB = Date.parse('2026-11-01T10:11:00Z');
 
-test('Freischaltung ist 11:11 Berlin = 10:11Z, keine Millisekunde frueher', () => {
+test('Freischaltung ist 11:11 Berlin = 10:11Z, keine Millisekunde früher', () => {
   assert.equal(QI_ALPHA_FREISCHALTUNG_MS, AB);
   assert.equal(istFreigeschaltet(VORHER), false);
   assert.equal(istFreigeschaltet(AB), true);
@@ -37,7 +37,7 @@ test('Banner: Qi Alpha nur auf den zwei Startseiten-Armen, sonst 4,8 Sterne', ()
   assert.equal(istStartseite('/'), true);
 });
 
-test('Banner-Wahl bewertung holt die 4,8-Sterne-Leiste auch auf der Startseite zurueck', () => {
+test('Banner-Wahl bewertung holt die 4,8-Sterne-Leiste auch auf der Startseite zurück', () => {
   assert.equal(bannerVariante({pathname: '/', freigeschaltet: true, wahl: 'bewertung'}), 'bewertung');
 });
 
@@ -51,7 +51,7 @@ const MENUE = {
   ],
 };
 
-test('Menue: Qi Alpha® als erster Shop-Punkt auf die LP, erst ab Freischaltung', () => {
+test('Menü: Qi Alpha® als erster Shop-Punkt auf die LP, erst ab Freischaltung', () => {
   assert.equal(menueMitQiAlpha(MENUE, false), MENUE);
   const neu = menueMitQiAlpha(MENUE, true);
   const shop = neu.items[1];
@@ -70,14 +70,14 @@ test('Probe-Uhr gilt nur ausserhalb der Produktion', () => {
   assert.equal(freischaltungsDaten({env, istProduktion: true, jetztMs: 1}).jetzt, 1);
 });
 
-test('Banner-Wahl per Metafeld: bewertung schaltet die Startseite zurueck auf 4,8 Sterne', () => {
+test('Banner-Wahl per Metafeld: bewertung schaltet die Startseite zurück auf 4,8 Sterne', () => {
   assert.equal(bannerVariante({pathname: '/', freigeschaltet: true, wahl: 'bewertung'}), 'bewertung');
   assert.equal(bannerVariante({pathname: '/', freigeschaltet: true, wahl: 'qi-alpha'}), 'qi-alpha');
   assert.equal(bannerVariante({pathname: '/', freigeschaltet: true, wahl: undefined}), 'qi-alpha');
   assert.equal(bannerVariante({pathname: '/products/qi-alpha', freigeschaltet: true, wahl: 'qi-alpha'}), 'bewertung');
 });
 
-test('Metafeld-Quellen: gueltig -> metafeld, danach unlesbar -> zuletzt, nie gelesen -> vorgabe', () => {
+test('Metafeld-Quellen: gültig -> metafeld, danach unlesbar -> zuletzt, nie gelesen -> vorgabe', () => {
   leistenWahlZuruecksetzen();
   assert.deepEqual(uebernehmeLeistenWahl(null), {wahl: 'qi-alpha', quelle: 'vorgabe'});
   assert.deepEqual(uebernehmeLeistenWahl('quatsch'), {wahl: 'qi-alpha', quelle: 'vorgabe'});

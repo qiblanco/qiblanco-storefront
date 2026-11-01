@@ -29,7 +29,7 @@
  * Shop-Metafeld `qb_kopfleiste.startseite` des Global Deutsch-Shops, Werte
  * 'qi-alpha' | 'bewertung' (Definition mit access.storefront=PUBLIC_READ, sonst
  * liefert die Storefront-API NULL). Umschalten per
- *   claude-jobs/20261101-prio1-qi-alpha-banner-nur-startseite-4-8-sterne-waehlbar/kopfleiste-wahl setze bewertung
+ *   homepage-bauer/bin/kopfleiste-wahl setze bewertung
  * wirkt binnen rund einer Minute (Cache 30 s + 30 s), ohne Deploy.
  * Reihenfolge der Quellen: Metafeld gültig -> sein Wert; unlesbar, Isolate hat
  * schon gelesen -> letzter Wert; sonst STARTSEITEN_LEISTE. Welche Quelle galt,
