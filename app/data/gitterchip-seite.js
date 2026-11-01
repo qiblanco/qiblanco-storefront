@@ -276,8 +276,8 @@ export const STUFEN = [
         // Regeneration neben dem QiHome® Air um 53,3 ± 6,4 % gegenüber der
         // unbehandelten Kontrolle verbessert (p ≤ 0,01). Kontrolle = 100 %,
         // also 153,3 %; beide Zahlen stehen in der FAQ der Studienseite.
-        // hoechstwert: Skala des Diagramms (Standard 100), damit 153,3 in die
-        // Fläche passt.
+        // hoechstwert: dieser Wert füllt die volle Höhe (sonst 100), damit
+        // 153,3 in die Fläche passt; umgesetzt im Seiten-CSS (--gc-skala).
         id: 'qihome-air',
         titel: ['Zellregeneration', 'bei Nervenzellen'],
         balken: [

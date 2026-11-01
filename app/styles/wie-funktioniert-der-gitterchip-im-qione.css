@@ -459,6 +459,21 @@
   border-radius: var(--qb-radius-bild);
 }
 
+/* Skala für Diagramme mit Werten über 100 (QiHome® Air: Kontrolle = 100 %,
+   153,3 %). --gc-skala = 100 / hoechstwert kommt inline aus den Daten; ohne sie
+   bleibt alles wie im Bausatz. Dieselben drei Formeln wie qb-balkendiagramm.css,
+   je mit dem Faktor - bewusst hier und nicht im geteilten Bausatz (5 Seiten). */
+.gc-studien__diagramm[data-gc-diagramm] .qb-balkendiagramm__balken {
+  height: calc(var(--qb-sb-anteil) * var(--gc-skala, 1) * 100%);
+}
+
+.gc-studien__diagramm[data-gc-diagramm] .qb-balkendiagramm__wert {
+  bottom: calc(var(--qb-sb-anteil) * var(--gc-skala, 1) * 100%);
+  transform: translateY(
+    calc((1 - var(--qb-sb-p)) * var(--qb-sb-anteil) * var(--gc-skala, 1) * var(--qb-sb-hoehe))
+  );
+}
+
 .gc-studien__kennzahlen {
   display: grid;
   gap: var(--gc-s3);

@@ -67,12 +67,9 @@ function ausrollen(t) {
  *   balken: Array<{bezeichnung: string, wert: number, stellen?: number, ton: 'ohne'|'mit'}>,
  *   studieHref: string,
  *   studieZeile: string,
- *   hoechstwert?: number,
  * }} props
- * hoechstwert: der Wert, der die volle Höhe der Fläche füllt (Standard 100).
- *   Nur für Diagramme mit Werten über 100 (z. B. Kontrolle = 100 %).
  */
-export function BalkenDiagramm({titel, balken, studieHref, studieZeile, hoechstwert = 100}) {
+export function BalkenDiagramm({titel, balken, studieHref, studieZeile}) {
   const wurzel = useRef(null);
   const [zustand, setZustand] = useState('fertig');
 
@@ -162,7 +159,7 @@ export function BalkenDiagramm({titel, balken, studieHref, studieZeile, hoechstw
               key={b.bezeichnung}
               to={studieHref}
               className={`qb-balkendiagramm__saeule qb-balkendiagramm__saeule--${b.ton}`}
-              style={{'--qb-sb-anteil': b.wert / hoechstwert}}
+              style={{'--qb-sb-anteil': b.wert / 100}}
               data-qb-sb-wert={b.wert}
               data-qb-sb-stellen={stellen}
               aria-label={`${b.bezeichnung}: ${text} Prozent. Zur Studie`}
