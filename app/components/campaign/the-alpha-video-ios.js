@@ -99,6 +99,9 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     geholt: 0,
     gesamt: 0,
     holStart: 0,
+    // Anwärmen: die aktuelle Quelle hat schon ein Bild geliefert (dekodiert)
+    warm: false,
+    waermt: false,
   };
   v.dataset.tapIos = 'leer';
   v.removeAttribute('poster');
@@ -119,7 +122,45 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     v.load();
     merke(phase);
     st.erstesBild = false;
+    st.warm = false;
     if (alt && alt.startsWith('blob:') && alt !== url) fenster.URL.revokeObjectURL(alt);
+    anwaermen();
+  };
+
+  // ANWÄRMEN, solange das Video noch nicht zu sehen ist: stumm abspielen bis
+  // zum ersten Bild, dann anhalten und an den Anfang. Damit hat iPhone die
+  // Daten geladen und den Dekoder offen, bevor man ankommt (iOS lädt vor
+  // play() keine Videodaten). Der Film beginnt auf Schwarz: zu sehen ist
+  // davon nichts, und die Szene steht ohnehin noch unsichtbar.
+  function anwaermen() {
+    if (st.sichtbarSeit || st.weg || st.warm) return;
+    st.waermt = true;
+    let p;
+    try {
+      p = v.play();
+    } catch {
+      st.waermt = false;
+      return;
+    }
+    if (p && p.catch) {
+      p.catch(() => {
+        // Abgelehnt (Stromsparmodus) oder abgebrochen: beim Sichtbarwerden
+        // greift der Notfallplan.
+        st.waermt = false;
+      });
+    }
+  }
+  const warmFertig = () => {
+    st.waermt = false;
+    st.warm = true;
+    v.dataset.tapIosWarm = st.phase;
+    v.pause();
+    try {
+      v.currentTime = 0;
+    } catch {
+      // vor den Metadaten nicht setzbar: egal, es steht am Anfang
+    }
+    holeGross();
   };
 
   // Notfallplan: Standbild ÜBER dem Video, bis das erste Bild läuft.
@@ -157,6 +198,10 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   };
 
   const bildDa = () => {
+    if (!st.sichtbarSeit) {
+      if (st.waermt) warmFertig();
+      return;
+    }
     if (st.erstesBild) return;
     st.erstesBild = true;
     st.lief = true;
@@ -173,6 +218,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   const zeit = () => {
     if (v.currentTime > 0.04 && !v.paused) bildDa();
   };
+
 
   // Restzeit der kleinen MP4 nach bisherigem Tempo (ms), Infinity = unbekannt.
   const restMs = () => {
@@ -199,16 +245,26 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   };
 
   const abgelehnt = () => notbildAn('abgelehnt');
+  // Rückfallkette: blob (Speicher) -> kleine MP4 aus dem Netz -> Quellen der
+  // Seite (HLS/MP4). Ein Video, das ein Gerät aus dem Speicher nicht
+  // dekodiert, fällt beim Anwärmen auf, nicht erst vor den Augen des Kunden.
   const fehler = () => {
     if (st.weg) return;
-    notbildAn('fehler');
-    // Zurück auf die Quellen der Seite (HLS/MP4), nie ein totes Feld.
+    st.waermt = false;
+    if (st.phase === 'blob' || st.phase === 'gross') {
+      st.blobGross = null;
+      st.blobDefekt = true;
+      setzeQuelle(klein, 'netz');
+      if (st.sichtbarSeit) spiele(v);
+      return;
+    }
+    if (st.sichtbarSeit) notbildAn('fehler');
     if (v.getAttribute('src')) {
       v.removeAttribute('src');
       st.url = null;
       merke('quellen');
       v.load();
-      spiele(v);
+      if (st.sichtbarSeit) spiele(v);
     }
   };
   const pause = () => {
@@ -234,6 +290,23 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
 
   // Ganz holen, mit Fortschritt (Stück für Stück), niedrige Priorität: der
   // Seitenaufbau geht vor.
+  // Große Stufe erst, wenn die kleine aus dem Speicher nachweislich läuft
+  // (angewärmt) und schnell kam.
+  function holeGross() {
+    if (st.grossGeholt || !gross || st.phase !== 'blob' || st.blobDefekt) return;
+    if (!(st.bps >= HOCH_AB_BPS)) return;
+    st.grossGeholt = true;
+    holen(gross)
+      .then(({url: g}) => {
+        if (st.weg) return fenster.URL.revokeObjectURL(g);
+        st.blobGross = g;
+        if (!st.lief) setzeQuelle(g, 'gross');
+        else wechsle();
+        return undefined;
+      })
+      .catch(() => {});
+  }
+
   const holen = (url, mitFortschritt = false) =>
     fenster
       .fetch(url, {
@@ -282,15 +355,8 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
           if (st.sichtbarSeit) spiele(v);
         }
         const ms = Math.max(1, fenster.performance.now() - t0);
-        const bps = (bytes * 8 * 1000) / ms;
-        if (!gross || bps < HOCH_AB_BPS) return undefined;
-        return holen(gross).then(({url: g}) => {
-          if (st.weg) return fenster.URL.revokeObjectURL(g);
-          st.blobGross = g;
-          if (!st.lief) setzeQuelle(g, 'gross');
-          else wechsle();
-          return undefined;
-        });
+        st.bps = (bytes * 8 * 1000) / ms;
+        return undefined;
       },
       () => {
         // Abgebrochen (Netz-Start übernahm) oder fehlgeschlagen: der Netz-
