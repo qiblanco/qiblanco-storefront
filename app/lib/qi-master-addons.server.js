@@ -60,9 +60,13 @@ export async function bindeQiMasterAddons({cart, action, result}) {
   if (!cartId) return result;
   if (!ZEILEN_AKTIONEN.has(action)) return result;
 
+  // 250 Zeilen (Höchstwert der Storefront API je Abruf) wie cart.$lines.jsx:
+  // ohne Angabe liest Hydrogen nur 100, und Shopify liefert die Zeilen in
+  // umgekehrter Eingabe-Reihenfolge — eine reservierte Nummer als erste von
+  // 101 Zeilen blieb so ungeprüft im Korb (Gegenprüfung 01.11.2026).
   let voll;
   try {
-    voll = await cart.get({cartId});
+    voll = await cart.get({cartId, numCartLines: 250});
   } catch {
     return result;
   }

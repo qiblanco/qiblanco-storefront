@@ -217,3 +217,23 @@ test('Seite: Spiegel nutzt Kaufseite und Loader, Liste nur auf dem Server', () =
   );
   assert.match(bindung, /reservierungsSperre\(/);
 });
+
+test('Warenkorb-Sperre liest 250 Zeilen, nicht Hydrogens Vorgabe 100', () => {
+  // Gegenprüfung 01.11.2026: eine reservierte Nummer als erste von 101 Zeilen
+  // blieb ohne Schlüssel im Korb, weil cart.get ohne numCartLines nur 100 liest.
+  const bindung = readFileSync(
+    join(WURZEL, 'app/lib/qi-master-addons.server.js'),
+    'utf8',
+  );
+  const rumpf = bindung.slice(bindung.indexOf('export async function bindeQiMasterAddons'));
+  assert.match(rumpf, /cart\.get\(\{cartId, numCartLines: 250\}\)/);
+});
+
+test('Namen der Reservierungen stehen nur in der Server-Liste', () => {
+  const vergeben = readFileSync(
+    join(WURZEL, 'app/components/campaign/the-alpha-daten-serie-vergeben.js'),
+    'utf8',
+  );
+  for (const r of RESERVIERUNGEN)
+    for (const x of r.nummern) assert.ok(!vergeben.includes(x.name), x.name);
+});

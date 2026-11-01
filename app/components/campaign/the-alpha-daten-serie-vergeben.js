@@ -15,8 +15,7 @@ export const THE_ALPHA_SERIE = 111;
  * kaufbar ist. (Übergabe s03 des Grossjobs 20261025-prio1-the-alpha-…)
  *
  * SEIT 01.11.2026 sind 2, 44, 88 und 99 per persönlichem Link reserviert
- * (Christian: „88 reserviert für Lisa … 44 … Verena … 99 … Matthias, die
- * Nummer 2 … Daniela“; Liste lib/qi-alpha-reservierungen.server.js). In
+ * (Namen und Schlüssel nur in lib/qi-alpha-reservierungen.server.js). In
  * Shopify sind sie dafür kaufbar; hier bleiben sie gesperrt, damit der normale
  * Shop sie nie anbietet. Gekauft werden sie nur im Premium-Bereich
  * /products/qi-alpha-reserviert/<schlüssel>.
