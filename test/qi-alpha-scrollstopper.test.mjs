@@ -126,11 +126,14 @@ test('Rad, Trackpad und Tasten: der Schritt über den Fensteranfang wird abgefan
 });
 
 test('Gehalten auch, wenn das Video noch lädt; startet es nicht, wird freigegeben', () => {
-  assert.equal(st.START_MS, 4000);
+  assert.equal(st.START_MS, 6000, 'Handy-Netz: Video kam nach 2,5 bis über 4 s voran');
+  assert.ok(st.START_MS < st.DECKEL_MS, 'Startfenster unter dem Deckel: keine Sackgasse');
   assert.equal(st.ABGELEHNT_MS, 1200);
   assert.ok(st.DECKEL_MS >= 8000);
   const src = lies('app/components/campaign/the-alpha-stopper.js');
-  assert.match(src, /video\.dataset\.tapWartetGeste\s*\? ABGELEHNT_MS/);
+  // Vom Browser abgelehnt (wartet auf Geste): kurzer Notausgang, über freiFrist.
+  assert.match(src, /wartetGeste: Boolean\(video\.dataset\.tapWartetGeste\)/);
+  assert.equal(st.freiFrist({spielt: false, gespielt: 0, wartetGeste: true}), st.ABGELEHNT_MS);
   // Wer zurückgescrollt ist, lässt das Video nicht hängen.
   assert.match(src, /const amHalt = f\.scrollY >= haltY - 2 && gezeigt\(\);\s*if \(!amHalt\) seitFortschritt = jetzt;/);
   // Der Deckel zählt nur Zeit am Halt: Hin-und-Her wartet das Video nicht weg.
@@ -144,4 +147,34 @@ test('Fenster kommt aus der Szenen-Kette: Bühne davor weicht bis Bühne danach 
   assert.match(p, /film\.f\.tapFenster = \(\) => \{/);
   assert.match(p, /const von = Math\.ceil\(y \+ vor\.b\.getBoundingClientRect\(\)\.top - 1 \+ \(vor\.zahl \+ 1\) \* vor\.px\);/);
   assert.match(p, /const bis = Math\.floor\(y \+ nach\.getBoundingClientRect\(\)\.top - 1\);/);
+});
+
+// HÄLT, BIS DAS VIDEO WIRKLICH LÄUFT (Job 20261031-prio1-qi-alpha-lp-video-
+// nicht-ueberscrollbar-3s-halt-feste-reihenfolge, Christian 31.10.2026: „nicht
+// mehr gespürt, dass das Video irgendwie da 3 Sekunden anhält“). Gemessen live,
+// Handy-Netz 10 Mbit/s, ein Wisch von ganz oben: Halt am Video, der Browser
+// meldet das Video nach ~1,2 s „spielend“ (paused=false, readyState 2), es kommt
+// aber erst 2,5–2,8 s nach dem Halt voran. Die alte Regel gab nach 2,0 s mit
+// 0 s Video frei (Grund „stockt“). ROT VOR GRÜN: auf origin/main 12391d0a fehlt
+// freiFrist (Import liefert undefined).
+test('Ladendes Video, das schon „spielt“, aber nie vorankam: Startfenster, nicht Stock-Notausgang', () => {
+  assert.equal(typeof st.freiFrist, 'function');
+  assert.equal(st.freiFrist({spielt: true, gespielt: 0, wartetGeste: false}), st.START_MS,
+    'spielend gemeldet, 0 s gelaufen: lädt noch');
+  assert.equal(st.freiFrist({spielt: false, gespielt: 0, wartetGeste: false}), st.START_MS);
+  assert.ok(st.START_MS >= 2800 + 1000, 'Startfenster deckt den gemessenen Start (2,8 s) mit Luft');
+});
+
+test('Schon gelaufen und hängt: Stock-Notausgang; vom Browser abgelehnt: kurz', () => {
+  assert.equal(st.freiFrist({spielt: true, gespielt: 0.4, wartetGeste: false}), st.STILL_MS);
+  assert.equal(st.freiFrist({spielt: false, gespielt: 1.2, wartetGeste: false}), st.STILL_MS);
+  assert.equal(st.freiFrist({spielt: false, gespielt: 0, wartetGeste: true}), st.ABGELEHNT_MS);
+  // Ein abgelehntes Video, das nach einer Geste doch spielt, lädt wieder im Startfenster.
+  assert.equal(st.freiFrist({spielt: true, gespielt: 0, wartetGeste: true}), st.START_MS);
+});
+
+test('Stopper nutzt freiFrist (kein zweiter, abweichender Fristbaum im Takt)', () => {
+  const quelle = lies('app/components/campaign/the-alpha-stopper.js');
+  assert.match(quelle, /const frist = freiFrist\(/);
+  assert.doesNotMatch(quelle, /const frist = spielt\(\)/);
 });
