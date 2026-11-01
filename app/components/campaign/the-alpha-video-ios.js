@@ -215,9 +215,12 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     notbildWeg();
   };
   // Erstes Bild: requestVideoFrameCallback (Safari 15.4+), sonst die Zeit.
+  // Nur ein LAUFENDES Bild zählt: steht das Video (Stromsparmodus lehnt
+  // play() ab), meldet WebKit trotzdem das erste dekodierte Bild, und das ist
+  // im Film schwarz. Dann weiter warten, das Standbild bleibt.
   const warteAufBild = () => {
     if (typeof v.requestVideoFrameCallback === 'function') {
-      v.requestVideoFrameCallback(() => bildDa());
+      v.requestVideoFrameCallback(() => (v.paused ? warteAufBild() : bildDa()));
     }
   };
   const zeit = () => {

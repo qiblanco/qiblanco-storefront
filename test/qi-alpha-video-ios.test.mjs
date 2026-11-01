@@ -206,3 +206,21 @@ test('Notfallplan: lehnt iOS ab (Stromsparmodus), steht das Standbild sofort', a
   assert.equal(w.kinder.length, 1);
   iv.aufraeumen();
 });
+
+test('Stromsparmodus: das stehende erste Bild (schwarz) zählt nicht als Film, das Standbild kommt trotzdem', async () => {
+  const w = welt();
+  const rueckrufe = [];
+  w.v.requestVideoFrameCallback = (f) => rueckrufe.push(f);
+  const iv = vi.bindeIosVideo(w.v, {spiele: () => {}, fenster: w.fenster, doc: w.doc});
+  await w.lauf(10);
+  iv.sichtbar();
+  // WebKit meldet das erste dekodierte Bild auch bei stehendem Video
+  rueckrufe.splice(0).forEach((f) => f());
+  iv.abgelehnt();
+  assert.equal(w.kinder.length, 1, 'Standbild statt Schwarz');
+  assert.equal(rueckrufe.length, 1, 'wartet weiter auf ein laufendes Bild');
+  w.v.paused = false;
+  rueckrufe.splice(0).forEach((f) => f());
+  assert.equal(w.kinder[0].classList.has('tap-film-notbild-weg'), true, 'Standbild geht mit dem ersten laufenden Bild');
+  iv.aufraeumen();
+});
