@@ -6,7 +6,7 @@ import {salesbotWidgetCspQuellen} from '~/lib/salesbot-widget';
 import {istStillgelegteJSaleSeite} from '~/data/ten-years-deals';
 import {refAusAufruf, wendePartnercodeAn} from '~/lib/partnercode.server';
 import {einbettungsWeiche} from '~/lib/einbettungs-weiche.server';
-import {qpxBasisEndpoint} from '~/lib/dienst-domain';
+import {qpxBasisEndpoint} from '~/components/reusables/dienst-domain';
 import {
   buyerIpAusRequest,
   istInternerZugriff,
@@ -29,7 +29,7 @@ import {
  */
 function qpxConnectSrc(env) {
   const origins = [];
-  // Basis-Endpoint über dieselbe Abbildung wie root.jsx (lib/dienst-domain.js),
+  // Basis-Endpoint über dieselbe Abbildung wie root.jsx (components/reusables/dienst-domain.js),
   // sonst stünde in connect-src der alte Host und der Beacon an den neuen
   // würde still geblockt.
   for (const endpoint of [env?.PUBLIC_QPX_ENDPOINT, qpxBasisEndpoint(env)]) {
@@ -486,7 +486,7 @@ export default async function handleRequest(
       // erste ist ANMELDE_ENDPUNKT in app/components/reusables/Anmeldeweiche.jsx.
       // Fehlt diese Zeile, scheitert der Abruf STILL und jedes Formular bleibt
       // beim AC-Embed.
-      // Seit 2026-10-30 eigene Domain (lib/dienst-domain.js).
+      // Seit 2026-10-30 eigene Domain (components/reusables/dienst-domain.js).
       'https://anmelden.dienst.qiblanco.com',
       'https://*.myshopify.dev',
       'https://*.vimeo.com',
