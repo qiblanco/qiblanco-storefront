@@ -76,7 +76,10 @@ export async function loader({params, context}) {
   if (nr === null || nr < 1 || nr > SEITEN_ZAHL) {
     throw new Response(null, {status: 404});
   }
-  const seite = appleSeiteFuerPfad(`/pages/podcasts/seite-${nr}`);
+  // Schlüssel = Anfragepfad im URL-Muster der Route (nach der Prüfung oben ist
+  // params.seite byte-gleich `seite-${nr}`): so belegt der Pfadleser der
+  // Deploy-Tore die Schalterzeilen seite-2..5 je Seite (format_reichweite).
+  const seite = appleSeiteFuerPfad(`/pages/podcasts/${params.seite}`);
   return {
     ...ladeSeite(nr, CANONICAL_ORIGIN),
     appleSeite: appleSeiteLaden(context, seite),
