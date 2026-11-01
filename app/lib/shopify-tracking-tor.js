@@ -1,4 +1,6 @@
 import {useEffect, useState} from 'react';
+import {buyerCountry, policyForCountry} from '~/lib/consent-policy';
+import {EINWILLIGUNG_FASSUNG} from '~/lib/einwilligung-texte';
 
 /**
  * Tor für Hydrogens Shopify-Analytik (Auftrag einwilligung-scanner-20261023T144303Z, Segment s03).
@@ -12,6 +14,10 @@ import {useEffect, useState} from 'react';
  *   2. useShopifyCookies schreibt _shopify_y/_s auf .qiblanco.com;
  *   3. sendShopifyAnalytics schickt page_viewed an monorail-edge.shopifysvc.com.
  * Analytics.Provider montiert diesen Teilbaum nur, wenn `shop` gesetzt ist.
+ * Ein vierter Weg liegt am Server (gemessen herkunft-live-mehr.json, 3 von 5 Seiten): Hydrogens
+ * createRequestHandler hängt die Set-Cookie-Zeilen der ersten UNGECACHTEN Storefront-API-
+ * Unterabfrage an das Dokument (storefront.setCollectedSubrequestHeaders), darunter
+ * _shopify_analytics/_marketing. Ob das passiert, hängt an der Cache-Lage, nicht an der Seite.
  *
  * DAS TOR: in Regionen mit Einwilligungspflicht bekommt der Provider `shop` erst nach einer
  * Wahl (gleich welcher), und `canTrack` folgt der Kategorie Statistik. Vor der Wahl wird
@@ -22,8 +28,15 @@ import {useEffect, useState} from 'react';
  * Die Region-Regel ist dieselbe wie in MetaPixel.jsx (regionPolicy) und consent-policy.js;
  * ändert sich eine, gehört die andere in denselben Commit.
  *
+ * DER SERVERTEIL: shopifyServerTorEinbauen (aufgerufen in lib/context.js) filtert an genau diesen
+ * zwei Stellen (Dokument und Browser-Proxy storefront.forward) _shopify_analytics und
+ * _shopify_marketing heraus, solange das CookieConsent-Cookie der Anfrage die Kategorie nicht
+ * erlaubt. Gelesen wie in /qb-einwilligung.js (leseCookie): abgelaufen oder ältere Hauptnummer
+ * der Fassung zählt als keine Wahl. _shopify_essential und alle anderen Zeilen bleiben.
+ *
  * Rückweg: in root.jsx `shop={hydriert ? data.shop : null}` und ohne `canTrack` (Stand
- * vor diesem Commit), oder `git revert` dieses Commits.
+ * vor diesem Commit) und in lib/context.js den Aufruf shopifyServerTorEinbauen entfernen,
+ * oder `git revert` dieses Commits.
  * Probe: homepage-bauer/pruefungen/probe_shopify_vor_der_wahl.py (shared-state).
  */
 
@@ -100,4 +113,107 @@ export function useShopifyTrackingTor() {
     };
   }, []);
   return stand;
+}
+
+const JAHR_MS = 31536000000;
+
+function hauptnummer(v) {
+  const n = parseInt(String(v || '').split('.')[0], 10);
+  return Number.isFinite(n) ? n : 0;
+}
+
+/**
+ * Die gültige Wahl aus dem Cookie-Kopf einer Anfrage, oder null (keine, abgelaufen, alte Fassung).
+ * Dieselben Regeln wie leseCookie() in /qb-einwilligung.js.
+ * @param {string | null | undefined} cookieKopf
+ * @param {number} [jetzt]
+ * @returns {{statistics: boolean, marketing: boolean} | null}
+ */
+export function wahlAusCookie(cookieKopf, jetzt = Date.now()) {
+  const m = String(cookieKopf || '').match(/(?:^|;\s*)CookieConsent=([^;]*)/);
+  if (!m) return null;
+  let s = m[1];
+  try {
+    s = decodeURIComponent(s);
+  } catch {
+    // Rohwert lesen
+  }
+  const bool = (k) => {
+    const r = s.match(new RegExp(`(?:^|[,{])\\s*${k}\\s*:\\s*(true|false)`));
+    return r ? r[1] === 'true' : null;
+  };
+  const marketing = bool('marketing');
+  const utc = s.match(/(?:^|[,{])\s*utc\s*:\s*(\d+)/);
+  if (marketing === null || !utc) return null;
+  if (jetzt - Number(utc[1]) > JAHR_MS) return null;
+  const qbv = s.match(/(?:^|[,{])\s*qbv\s*:\s*'([^']*)'/);
+  if ((qbv ? hauptnummer(qbv[1]) : 1) < hauptnummer(EINWILLIGUNG_FASSUNG)) return null;
+  return {statistics: bool('statistics') === true, marketing};
+}
+
+/**
+ * Darf der Server Shopifys Statistik- bzw. Marketing-Cookie durchreichen?
+ * @param {Request} request
+ * @param {Record<string, string | undefined>} env
+ */
+export function shopifyServerErlaubt(request, env) {
+  const wahl = wahlAusCookie(request.headers.get('Cookie'));
+  if (policyForCountry(buyerCountry(request), env) === 'optout') {
+    return {
+      _shopify_analytics: !wahl || wahl.statistics,
+      _shopify_marketing: !wahl || wahl.marketing,
+    };
+  }
+  return {
+    _shopify_analytics: Boolean(wahl && wahl.statistics),
+    _shopify_marketing: Boolean(wahl && wahl.marketing),
+  };
+}
+
+/**
+ * Entfernt nicht erlaubte _shopify_analytics/_marketing-Zeilen aus den Set-Cookie-Köpfen.
+ * @returns {number} Zahl der entfernten Zeilen
+ */
+export function filtereShopifyCookies(headers, erlaubt) {
+  const zeilen = headers.getSetCookie ? headers.getSetCookie() : [];
+  const bleibt = zeilen.filter((z) => {
+    const name = z.split('=')[0].trim();
+    return !(name in erlaubt) || erlaubt[name];
+  });
+  if (bleibt.length === zeilen.length) return 0;
+  headers.delete('Set-Cookie');
+  bleibt.forEach((z) => headers.append('Set-Cookie', z));
+  return zeilen.length - bleibt.length;
+}
+
+/**
+ * Hängt den Filter an die zwei Stellen, an denen Hydrogen Shopifys Set-Cookie an den Browser gibt.
+ * Wirft nie: ein Fehler hier darf keine Seite und keinen Warenkorb berühren.
+ */
+export function shopifyServerTorEinbauen(storefront, request, env) {
+  if (!storefront) return;
+  const erlaubt = () => shopifyServerErlaubt(request, env);
+  const sammeln = storefront.setCollectedSubrequestHeaders;
+  if (typeof sammeln === 'function') {
+    storefront.setCollectedSubrequestHeaders = (response) => {
+      sammeln(response);
+      try {
+        filtereShopifyCookies(response.headers, erlaubt());
+      } catch {
+        // unveränderliche Köpfe (Umleitung): nichts zu filtern
+      }
+    };
+  }
+  const weiter = storefront.forward;
+  if (typeof weiter === 'function') {
+    storefront.forward = async (...args) => {
+      const response = await weiter(...args);
+      try {
+        filtereShopifyCookies(response.headers, erlaubt());
+      } catch {
+        // wie oben
+      }
+      return response;
+    };
+  }
 }
