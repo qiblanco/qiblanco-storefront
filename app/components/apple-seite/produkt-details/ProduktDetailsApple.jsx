@@ -40,11 +40,14 @@ function MikroskopSektion() {
 }
 
 /**
- * @param {{seite: string, sektionen: Array<any>, video?: any, technik?: any, produkte?: Array<any>}} props
+ * @param {{seite: string, sektionen: Array<any>, video?: any, technik?: any,
+ *   kaufleiste?: {name: string, href: string}|null, produkte?: Array<any>}} props
  *   produkte: aus startseiteProdukte() im Loader (Preise der Kaufseiten).
  *   technik: „So wirkt er“ (TechnikKette), nur wo die Daten sie tragen.
+ *   kaufleiste: Name und Kaufseite der festen Kaufleiste mobil
+ *   (DetailKaufleiste), damit am Seitenende ein Kaufknopf im Bild ist.
  */
-export function ProduktDetailsApple({seite, sektionen, video = null, technik = null, produkte = []}) {
+export function ProduktDetailsApple({seite, sektionen, video = null, technik = null, kaufleiste = null, produkte = []}) {
   const preise = useStartseitePreise(produkte);
   return (
     <>
