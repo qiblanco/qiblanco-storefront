@@ -15,7 +15,7 @@ import {bindeHealWorldGeschenk} from '~/lib/heal-world-geschenk.server';
  * @param {LoaderFunctionArgs}
  */
 export async function loader({request, context, params}) {
-  const {cart} = context;
+  const {cart, storefront} = context;
   const {code} = params;
 
   // Nur Pfade auf der eigenen Herkunft; Begründung in lib/discount-ziel.js.
@@ -30,6 +30,7 @@ export async function loader({request, context, params}) {
   // Geschenk-Zeile mit Janas Code im selben Schritt (lib/heal-world-geschenk.js).
   const result = await bindeHealWorldGeschenk({
     cart,
+    storefront,
     action: 'DiscountCodesUpdate',
     result: gesetzt,
   });

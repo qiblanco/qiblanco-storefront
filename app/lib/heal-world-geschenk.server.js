@@ -18,9 +18,69 @@ import {geschenkKorrektur, hwNachlesen} from '~/lib/heal-world-geschenk';
  * DECKUNGSGRENZE, benannt: ein Kauf am Hydrogen vorbei
  * (checkout.qiblanco.com/cart/<id>:N) läuft hier nicht durch.
  *
+ * WARUM EINE EIGENE ABFRAGE STATT cart.get(): ein über den Permalink angelegter
+ * Warenkorb liefert beim Nachlesen `discountCodes: []`, obwohl HEALWORLD5 an
+ * der Zeile hängt (gemessen 01.11.2026, Korb hinter /cart/<QiOne>:1?discount=
+ * HEALWORLD5: discountCodes leer, discountAllocations.code = HEALWORLD5). Der
+ * Code zählt deshalb auch, wenn er nur an einer Zuteilung steht.
+ *
  * FAIL-SOFT: scheitert das Nachlesen oder die Korrektur, bleibt das Ergebnis
  * der Kundenaktion unverändert — ein Lesefehler darf keinen Warenkorb leeren.
  */
+const HW_KORB_QUERY = `#graphql
+  query HwGeschenkKorb($cartId: ID!) {
+    cart(id: $cartId) {
+      id
+      discountCodes {
+        code
+      }
+      discountAllocations {
+        ... on CartCodeDiscountAllocation {
+          code
+        }
+      }
+      lines(first: 100) {
+        nodes {
+          id
+          quantity
+          merchandise {
+            ... on ProductVariant {
+              product {
+                handle
+              }
+            }
+          }
+          discountAllocations {
+            ... on CartCodeDiscountAllocation {
+              code
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+function codesAusKorb(korb) {
+  const codes = [...(korb?.discountCodes || [])];
+  for (const a of korb?.discountAllocations || []) if (a?.code) codes.push(a);
+  for (const z of korb?.lines?.nodes || []) {
+    for (const a of z?.discountAllocations || []) if (a?.code) codes.push(a);
+  }
+  return codes;
+}
+
+async function korbLesen({cart, storefront, cartId}) {
+  if (storefront?.query) {
+    const {cart: korb} = await storefront.query(HW_KORB_QUERY, {
+      variables: {cartId},
+      cache: storefront.CacheNone(),
+    });
+    return korb;
+  }
+  return cart.get({cartId});
+}
+
 const HW_AKTIONEN = new Set([
   CartForm.ACTIONS.LinesAdd,
   CartForm.ACTIONS.LinesUpdate,
@@ -28,7 +88,13 @@ const HW_AKTIONEN = new Set([
   CartForm.ACTIONS.DiscountCodesUpdate,
 ]);
 
-export async function bindeHealWorldGeschenk({cart, action, result, jetzt}) {
+export async function bindeHealWorldGeschenk({
+  cart,
+  storefront,
+  action,
+  result,
+  jetzt,
+}) {
   const cartId = result?.cart?.id;
   if (!cartId) return result;
   if (!HW_AKTIONEN.has(action)) return result;
@@ -37,7 +103,7 @@ export async function bindeHealWorldGeschenk({cart, action, result, jetzt}) {
 
   let voll;
   try {
-    voll = await cart.get({cartId});
+    voll = await korbLesen({cart, storefront, cartId});
   } catch (e) {
     console.warn('heal-world-geschenk: Warenkorb nicht lesbar', e?.message || e);
     return result;
@@ -51,7 +117,7 @@ export async function bindeHealWorldGeschenk({cart, action, result, jetzt}) {
   }));
   const {entfernen, aendern, hinzu} = geschenkKorrektur({
     zeilen,
-    codes: voll?.discountCodes,
+    codes: codesAusKorb(voll),
     jetzt: zeit,
   });
   if (!entfernen.length && !aendern.length && !hinzu.length) return result;

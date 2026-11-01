@@ -160,7 +160,12 @@ export async function loader({request, context, params}) {
   // direkt zur Kasse führt (/cart/<Angebot>:3).
   const beschenkt = angelegt?.errors?.length
     ? angelegt
-    : await bindeHealWorldGeschenk({cart, action: 'LinesAdd', result: angelegt});
+    : await bindeHealWorldGeschenk({
+        cart,
+        storefront,
+        action: 'LinesAdd',
+        result: angelegt,
+      });
   const begrenzt = beschenkt?.errors?.length
     ? beschenkt
     : await begrenzeAngebot({cart, action: 'LinesAdd', result: beschenkt});

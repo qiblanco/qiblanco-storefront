@@ -164,7 +164,7 @@ export async function action({request, context}) {
   // Heal-World-Geschenk 01.11.2026: je Gerät eine Geschenk-Zeile (1× Awake +
   // 1× Create), nur mit Janas Code HEALWORLD5 (lib/heal-world-geschenk.js).
   // Vor der Kakao-Normalform, damit sie den fertigen Warenkorb sieht.
-  result = await bindeHealWorldGeschenk({cart, action, result});
+  result = await bindeHealWorldGeschenk({cart, storefront, action, result});
 
   // Das Einführungsangebot liegt höchstens einmal im Warenkorb (Großjob
   // 20261017 kakao-unter-herstellkosten, s02). Vor der Kakao-Normalform, die
