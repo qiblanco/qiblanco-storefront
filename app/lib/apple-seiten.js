@@ -64,7 +64,7 @@ export const APPLE_SEITEN = Object.freeze({
   'e-smog-schutz': {pfad: '/pages/E-Smog-Schutz', schalter: 'APPLE_SEITE_E_SMOG_SCHUTZ', standard: 'off'},
   'das-20-tage-versprechen': {pfad: '/pages/das-20-tage-versprechen', schalter: 'APPLE_SEITE_DAS_20_TAGE_VERSPRECHEN', standard: 'on'},
   'das-beispiel': {pfad: '/pages/das-beispiel', schalter: 'APPLE_SEITE_DAS_BEISPIEL', standard: 'off'},
-  'e-smog': {pfad: '/pages/e-smog', schalter: 'APPLE_SEITE_E_SMOG', standard: 'off'},
+  'e-smog': {pfad: '/pages/e-smog', schalter: 'APPLE_SEITE_E_SMOG', standard: 'on'},
   'entgiftung': {pfad: '/pages/entgiftung', schalter: 'APPLE_SEITE_ENTGIFTUNG', standard: 'off'},
   'exclusive-solutions': {pfad: '/pages/exclusive-solutions', schalter: 'APPLE_SEITE_EXCLUSIVE_SOLUTIONS', standard: 'off'},
   // forschung: bewusst ohne Zeile. Die Seite ist versteckt, test/forschung-seite.test.mjs
