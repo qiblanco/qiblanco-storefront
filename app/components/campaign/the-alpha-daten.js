@@ -62,11 +62,6 @@ export const THE_ALPHA_FILM_OHNE_TEXT = {
   video: {
     // CDN-VIDEO (cdn-publish 29.10.2026, gid://shopify/Video/77517194297612), 720p.
     src: 'https://cdn.shopify.com/videos/c/vp/89a8e35542a04522913ab13cb2c7b738/89a8e35542a04522913ab13cb2c7b738.HD-720p-4.5Mbps-99309506.mp4',
-    // Kleine Stufe (480p, 2,4 MB) desselben CDN-Videos: am iPhone rechtzeitig
-    // ganz vorgeladen, danach 720p (the-alpha-video-ios.js, Christian
-    // 01.11.2026: „0,3 Sekunden“). Android und Desktop nutzen sie nicht.
-    klein:
-      'https://cdn.shopify.com/videos/c/vp/89a8e35542a04522913ab13cb2c7b738/89a8e35542a04522913ab13cb2c7b738.SD-480p-1.5Mbps-99309506.mp4',
     poster: THE_ALPHA_VIDEO.video.poster,
     ton: false,
   },

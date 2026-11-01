@@ -1,10 +1,9 @@
-import {createContext, useContext, useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {createContext, useContext, useEffect, useRef, useState} from 'react';
 import {Link} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
 import {TapTon, TapFilmTon, videoQuellen} from '~/components/campaign/TheAlphaTon';
 import {tapStopper} from '~/components/campaign/the-alpha-stopper';
-import {tapEinrasten, bühnenRast, einrastenAn} from '~/components/campaign/the-alpha-einrasten';
 import {
   THE_ALPHA_KOPF,
   THE_ALPHA_SCHLUSS,
@@ -146,24 +145,7 @@ const RUHE_PX = 48;
  * ?film=still (Standbild: dieselbe Fassung, die ein Kunde mit „Bewegung
  * reduzieren“ sieht; für Prüfer, die nicht scrollen, z. B. das Shop-Tor).
  */
-/** Einrasten an jeder Einheit (the-alpha-einrasten.js), nur in der
- * Szenen-Fassung. Gebunden im Layout-Effekt, also VOR dem Video-Stopper (dessen
- * useEffect in TapFilm läuft zwar als Kind zuerst, aber alle Layout-Effekte
- * laufen vor allen anderen): so sieht dieses Modul jedes Rad- und
- * Tastenereignis zuerst und kann ein angehaltenes verbrauchen. Die Raststellen
- * liefert useTapFilm über wurzel.tapRaststellen; fehlen sie (keine Kette, ohne
- * Bewegung, ?rast=aus), gibt es keinen Halt. */
-const useFruehEffekt = typeof window === 'undefined' ? useEffect : useLayoutEffect;
-function useEinrasten(wurzel, szene) {
-  useFruehEffekt(() => {
-    const el = wurzel.current;
-    if (!el || !szene || !einrastenAn(navigator, window.location.search)) return undefined;
-    return tapEinrasten(() => (typeof el.tapRaststellen === 'function' ? el.tapRaststellen() : []), window);
-  }, [wurzel, szene]);
-}
-
 function useTapFilm(wurzel, szene) {
-  useEinrasten(wurzel, szene);
   const [leiste, setLeiste] = useState(false);
   useEffect(() => {
     const el = wurzel.current;
@@ -380,31 +362,6 @@ function useTapFilm(wurzel, szene) {
         const bis = Math.floor(y + nach.getBoundingClientRect().top - 1);
         return {von, bis};
       };
-    }
-    // Einrasten an jeder Einheit (the-alpha-einrasten.js, Christian 01.11.2026:
-    // „dass man die ganze Homepage nicht einfach mit einem riesigen Wisch
-    // überfliegen kann“): je Bühne eine Raststelle, wo sie ganz dasteht. Die
-    // Ereignisse bindet useEinrasten früher (Layout-Effekt); hier kommen nur
-    // die Raststellen dazu.
-    if (kette && new URLSearchParams(window.location.search).get('rast') !== 'aus') {
-      const raststellen = () => {
-        const y = window.scrollY;
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        return buehnen
-          .flatMap((s) =>
-            bühnenRast({
-              oben: y + s.b.getBoundingClientRect().top,
-              px: s.px,
-              schritte: s.schritte.length,
-              start: s.start,
-              extra: s.schritte.flatMap((w, i) => (w.hasAttribute('data-tap-rast') ? [i] : [])),
-              max,
-            }),
-          )
-          .sort((a, b) => a - b);
-      };
-      el.tapRaststellen = raststellen;
-      aufraeumen.push(() => delete el.tapRaststellen);
     }
     let angefordert = false;
     const anfordern = () => {
@@ -658,8 +615,7 @@ export function TapWoerterbuch({eintrag = THE_ALPHA_WOERTERBUCH}) {
               <b>{i + 1}.</b> {teile(b)}
             </p>
           ))}
-          {/* Eigene Einheit „Google AI“ (Raststelle davor, the-alpha-einrasten.js). */}
-          <p className="tap-wb-quelle" data-tap-schritt="" data-tap-rast="">
+          <p className="tap-wb-quelle" data-tap-schritt="">
             {eintrag.quelle}
           </p>
         </div>
@@ -683,10 +639,8 @@ export function TapVollbild({bild, format = 'hoch', loading = 'lazy'}) {
  * Erreichen der Szene, Pause beim Wegscrollen, inline (TheAlphaTon.jsx).
  * Felder in the-alpha-daten.js THE_ALPHA_VIDEO.video: src (MP4, Pflicht),
  * poster, optional hls (sonst aus der Shopify-CDN-Adresse abgeleitet),
- * untertitel (WebVTT, gezeigt solange der Video-Ton nicht zu hören ist),
- * ton (true/false; fehlt es, misst der Browser, ob Ton drin ist) und klein
- * (kleine MP4: am iPhone vorgeladen, ohne Poster, Standbild nur als Notfall;
- * the-alpha-video-ios.js, Christian 01.11.2026).
+ * untertitel (WebVTT, gezeigt solange der Video-Ton nicht zu hören ist) und
+ * ton (true/false; fehlt es, misst der Browser, ob Ton drin ist).
  *
  * TEXT UNTER DEM VIDEO (`film.texte`, nur A; Christian 29.10.2026: „der text
  * ist immer noch im Video zu sehen anstatt darunter“): die Sätze stehen als
@@ -739,7 +693,6 @@ export function TapFilm({film, stopper = false}) {
             data-tap-video=""
             data-tap-video-ton={tonFeld}
             data-tap-poster={video.poster || videoStandbild.url}
-            data-tap-klein={video.klein}
             muted
             loop
             playsInline
