@@ -258,14 +258,18 @@ html:has(main[data-film-seite]) {
    langer Daumenwisch bringt genau EINEN neuen Abschnitt bzw. ein neues Detail.
    Dafür bekommt jede Etappe deutlich mehr Scrollweg (gestreckt), ohne hartes
    Einrasten oder Anhalten.“ Am Touch-Gerät ist jeder Schritt der Kette (Zeile,
-   Absatz, Bild, Wechsel zur nächsten Bühne) --tap-schritt-lang hoch: ein
-   Bildschirm, gemessen an der kleinen Bildhöhe (svh: ändert sich nicht, wenn
-   die Browserleisten ein- und ausklappen, also kein Umbau beim Scrollen).
+   Absatz, Bild, Wechsel zur nächsten Bühne) --tap-schritt-lang hoch, gemessen
+   an der kleinen Bildhöhe (svh: ändert sich nicht, wenn die Browserleisten
+   ein- und ausklappen, also kein Umbau beim Scrollen). 130svh: ein langer
+   natürlicher Wisch (45 % des Fensters in 250 ms, iOS-Schwung 0,998/ms) trägt
+   1,32 Fenster; gemessen 01.11. (wisch_messung.py, EL-20261101-08a63ff6):
+   100svh 14 von 22 Wischen genau ein Neues (6x zwei), 130svh 25 von 29 (1x
+   zwei, nichts übersprungen). DE und US tragen denselben Wert.
    Desktop (Maus, Trackpad) behält seinen Takt. Prüfschalter ?schritt=NN
    (NN svh, useTapFilm). Das Video (Punkt 4) steht zwei Video-Schritte lang
    und läuft am Scrollweg (the-alpha-video-lauf.js); kein Stopper mehr. */
 .tap-js.tap-kette {
-  --tap-schritt-lang: 100svh;
+  --tap-schritt-lang: 130svh;
   --tap-schritt-video: 50svh;
 }
 

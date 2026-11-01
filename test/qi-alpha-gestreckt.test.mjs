@@ -23,8 +23,8 @@ const CSS = lies('app/styles/the-alpha-premium.css');
 const P = lies('app/components/campaign/TheAlphaPremium.jsx');
 const lauf = await import(join(WURZEL, 'app/components/campaign/the-alpha-video-lauf.js'));
 
-test('Touch-Gerät: jeder Schritt der Kette ein Bildschirm (svh), Desktop behält seinen Takt', () => {
-  assert.match(CSS, /\.tap-js\.tap-kette \{\s*--tap-schritt-lang: 100svh;\s*--tap-schritt-video: 50svh;/);
+test('Touch-Gerät: jeder Schritt der Kette 130svh (ein langer Wisch), Desktop behält seinen Takt', () => {
+  assert.match(CSS, /\.tap-js\.tap-kette \{\s*--tap-schritt-lang: 130svh;\s*--tap-schritt-video: 50svh;/);
   const touch = CSS.slice(CSS.indexOf('@media (hover: none) and (pointer: coarse)'));
   for (const art of ['wort', 'zeile', 'absatz', 'bild', 'video']) {
     assert.match(touch, new RegExp(`--tap-schritt-${art}: var\\(--tap-schritt-lang\\);`), art);
