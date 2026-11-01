@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
+import {bindeIosVideo, iosZweigAn} from '~/components/campaign/the-alpha-video-ios';
 
 /*
  * THE ALPHA TON: Ton und Video der Film-Seite (Grossjob 20261026-prio1-the-
@@ -423,6 +424,13 @@ function binde_videos(wurzel, m) {
   const videos = [...wurzel.querySelectorAll('video[data-tap-video]')];
   if (!videos.length) return () => {};
   const aufraeumen = [];
+  // iPhone/iPad (Safari und Chrome): eigener Lade- und Notbild-Weg, siehe
+  // the-alpha-video-ios.js (Christian 01.11.2026: „0,3 Sekunden“, Standbild
+  // nur als Notfallplan). Android und Desktop laufen unverändert unten.
+  const ios = new Map();
+  const suche = typeof window !== 'undefined' ? window.location.search : '';
+  const alleVideos = videos;
+  const normal = alleVideos.filter((v) => !iosZweigAn(v, navigator, suche));
 
   const tonSetzen = (v) => {
     const mitTon = m.zustand === 'an' && hatTon(v);
@@ -492,14 +500,14 @@ function binde_videos(wurzel, m) {
     if (v.readyState === 0 && v.networkState !== 2) v.load();
   };
   let ersteStufe = false;
-  const poster = () => videos.forEach((v) => {
+  const poster = () => normal.forEach((v) => {
     if (!v.poster && v.dataset.tapPoster) v.poster = v.dataset.tapPoster;
   });
   const gescrollt = () => {
     if (ersteStufe) return;
     ersteStufe = true;
     poster();
-    videos.forEach(vorladen('metadata'));
+    normal.forEach(vorladen('metadata'));
   };
   let spaet = null;
   const geladen = () => {
@@ -556,23 +564,35 @@ function binde_videos(wurzel, m) {
   // bis eine Geste kommt: dann startet nachholen() es im Rahmen der Geste.
   const spiele = (v) => {
     if (!v.dataset.tapImBild || document.hidden || !eingeblendet(v)) return;
+    const iv = ios.get(v);
+    if (iv) iv.sichtbar();
     let p;
     try {
       p = v.play();
     } catch {
       // Manche iOS-Fassungen werfen hier, statt abzulehnen (WebKit-Bug 216887).
       v.dataset.tapWartetGeste = '1';
+      if (iv) iv.abgelehnt();
       return;
     }
     if (p && p.then) {
       p.then(
         () => delete v.dataset.tapWartetGeste,
         (e) => {
-          if (e && e.name === 'NotAllowedError') v.dataset.tapWartetGeste = '1';
+          if (e && e.name === 'NotAllowedError') {
+            v.dataset.tapWartetGeste = '1';
+            if (iv) iv.abgelehnt();
+          }
         },
       );
     }
   };
+  alleVideos.forEach((v) => {
+    if (normal.includes(v)) return;
+    const iv = bindeIosVideo(v, {spiele});
+    ios.set(v, iv);
+    aufraeumen.push(() => iv.aufraeumen());
+  });
   const nachholen = () => {
     for (const v of videos) if (v.paused) spiele(v);
   };
@@ -600,7 +620,7 @@ function binde_videos(wurzel, m) {
     {threshold: [0, 0.1, 0.35, 0.6]},
   );
   videos.forEach((v) => {
-    nah.observe(v);
+    if (!ios.has(v)) nah.observe(v);
     szene.observe(v);
     const figur = v.closest('[data-tap-ein]');
     if (figur) {
@@ -745,7 +765,7 @@ export function TapTon({wurzel, standard = 'fenster'}) {
   const tonStandard = standard === 'an';
   const [bereit, setBereit] = useState(false);
   const [zustand, setZustand] = useState('aus');
-  // Was der Besucher will (Schalter-Anzeige), getrennt davon, ob es schon
+  // Was der Besucher will, getrennt davon, ob es schon
   // hörbar ist (zustand). Ohne Ton-Standard fallen beide zusammen.
   const [wunsch, setWunsch] = useState(tonStandard ? 'an' : 'aus');
   // Fenster: null (nie) | 'auf' | 'zu' (schließt gerade) | 'weg'
@@ -912,7 +932,13 @@ export function TapTon({wurzel, standard = 'fenster'}) {
       if (tonStandard) wunschSetzen('an');
     }
   };
-  const an = tonStandard ? wunsch === 'an' : zustand === 'an';
+  // Das Symbol zeigt, was zu HÖREN ist, nie nur den Wunsch (Christian
+  // 01.11.2026: „am Anfang steht Sound on. Aber rechts unten ist das
+  // Soundzeichen auf an. Also das ist also asynchron.“). Solange der Browser
+  // den Ton zurückhält und „Sound On“ fragt, steht das Symbol auf AUS; nach
+  // „Sound On“ beide AN, nach ✕ bleibt es AUS. Ein Tipp auf das Symbol bei
+  // gewünschtem, noch nicht hörbarem Ton schaltet ihn ein (umschalten).
+  const an = zustand === 'an';
   const hinweisAn = () => {
     merke('an');
     m.einschalten();
