@@ -40,6 +40,7 @@ import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
 import {Schlussleiste} from '~/components/reusables/Schlussleiste';
 import {GESTEN, spieleSicher} from '~/components/reusables/video-nachholen';
 import {filmAufLeinwand} from '~/components/reusables/film-dekoder';
+import {tonAttribut} from '~/lib/video-ton';
 
 /* Galerie-Hauptbild: Breitenstufen bis zum CDN-Master (2048/2056 px), damit
    Tablets mit dpr 2 nicht hochskalieren (Gate 12 bild-aufloesung). sizes folgt
@@ -884,6 +885,10 @@ export function TheAlphaShop({
  * (film-dekoder.js). Die Stromspar-Regel gilt nur dem <video>. Erst wenn das
  * erste Bild steht, tritt das Canvas an die Stelle des Films; bis dahin
  * bleibt das Poster, und ein früher Tipp startet weiter den Film selbst.
+ *
+ * KEIN TON-KNOPF: der Film hat keine Audiospur (gemessen, app/lib/video-ton.js).
+ * `data-video-ton` kommt aus diesem Manifest, damit der Alle-Formate-Prüfer
+ * ihn als tonlos erkennt. Wechselt der Film, gehört er dort neu gemessen.
  */
 function BandLoop({loop}) {
   const ref = useRef(null);
@@ -1015,6 +1020,7 @@ function BandLoop({loop}) {
         disablePictureInPicture
         aria-label={loop.alt}
         data-tas-loop=""
+        data-video-ton={tonAttribut(loop.src)}
       />
       <canvas
         ref={leinwandRef}
