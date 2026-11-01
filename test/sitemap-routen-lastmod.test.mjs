@@ -183,6 +183,38 @@ await pruefe('Generator: letzter INHALTLICHER Commit zählt; eine FLACHE Kopie l
   }
 });
 
+await pruefe('Generator: ein Auszug UNTER einem fremden Repo liefert null, nicht dessen Historie', async () => {
+  // Der Suite-Auszug hat kein eigenes .git; liegt sein TMPDIR unter einem
+  // anderen Repo (auf dem Server: shared-state), fand `git -C` dessen .git in
+  // einem Elternordner. Dann kippte das Urteil mit dem TMPDIR (Gate 22,
+  // 2026-11-01). Hier steht das fremde Repo absichtlich darüber und trägt
+  // sogar eine Routendatei unter demselben relativen Pfad.
+  const aussen = mkdtempSync(join(tmpdir(), 'routen-lastmod-aussen-'));
+  const g = (args, datum) =>
+    execFileSync('git', ['-C', aussen, '-c', 'user.name=t', '-c', 'user.email=t@t', ...args], {
+      stdio: 'ignore',
+      env: {...process.env, GIT_COMMITTER_DATE: datum, GIT_AUTHOR_DATE: datum},
+    });
+  try {
+    g(['init', '-q'], '2026-01-01T00:00:00Z');
+    const auszug = join(aussen, 'auszug');
+    mkdirSync(join(auszug, 'app', 'routes'), {recursive: true});
+    writeFileSync(join(auszug, 'app', 'routes', 'pages.fremd.jsx'), 'export const f = 1;\n');
+    g(['add', '-A'], '2026-01-01T00:00:00Z');
+    g(['commit', '-q', '-m', 'fremd'], '2026-04-05T06:07:08Z');
+    assert.equal(routenLastmod(auszug), null);
+    assert.equal(routenLastmod(auszug, {vertiefen: true}), null);
+    // Gegenrichtung: an der echten Wurzel desselben Repos wird gemessen.
+    mkdirSync(join(aussen, 'app', 'routes'), {recursive: true});
+    writeFileSync(join(aussen, 'app', 'routes', 'pages.eigen.jsx'), 'export const e = 1;\n');
+    g(['add', '-A'], '2026-01-01T00:00:00Z');
+    g(['commit', '-q', '-m', 'eigen'], '2026-05-06T07:08:09Z');
+    assert.deepEqual(routenLastmod(aussen), {eigen: '2026-05-06T07:08:09Z'});
+  } finally {
+    rmSync(aussen, {recursive: true, force: true});
+  }
+});
+
 await pruefe('Generator: EIN git-Aufruf liefert dieselbe Tabelle wie der Einzelweg, auch bei Umbenennung', async () => {
   // Der Gesamtweg (ein `git log -- app/routes`) muss je Route dasselbe Datum
   // finden wie ein `git log -- <datei>` je Route (ROUTEN_LASTMOD_EINZELN=1).

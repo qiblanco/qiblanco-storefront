@@ -46,9 +46,19 @@
  * ganze Verzeichnis zählte eine reine Umbenennung 0 Zeilen. Gleichheit der
  * Tabelle mit dem Einzelweg ist gemessen (Job-Ordner s05, vergleich-*.json).
  * Schalter zurück: ROUTEN_LASTMOD_EINZELN=1 (Verhalten vorher, je Datei).
+ *
+ * NUR DAS EIGENE REPO (2026-11-01, Job
+ * 20261101-repair-gate22-sitemap-lastmod-falschrot-ax41): `git -C <wurzel>`
+ * sucht ein `.git` auch in den Elternordnern. Ein Auszug ohne eigenes `.git`
+ * (Suite-Baum, `git archive`), der unter einem FREMDEN Repo liegt (auf dem
+ * Server: alles unter shared-state), las dessen Historie, fand für
+ * `app/routes` nichts und gab `{}` zurück — "gemessen, keine Route hat ein
+ * Datum" statt `null` = "nicht messbar". Darum zählt nur ein Repo, dessen
+ * Wurzel `wurzel` selbst ist; sonst `null`. Gate 22 urteilte deshalb je nach
+ * TMPDIR verschieden über denselben Stand.
  */
 import {execFileSync} from 'node:child_process';
-import {readdirSync} from 'node:fs';
+import {readdirSync, realpathSync} from 'node:fs';
 import {join} from 'node:path';
 
 /** @param {string} wurzel @param {string[]} args */
@@ -160,9 +170,28 @@ function alleInhaltlichenAenderungen(wurzel, pfade) {
   return datum;
 }
 
+/**
+ * Lage des Repos an `wurzel`, in EINEM git-Aufruf (auf ax41 kostet jeder
+ * Aufruf 1-3 s über den Gehirn-Dienst).
+ * @param {string} wurzel
+ * @returns {{eigen: boolean, voll: boolean}} eigen: `wurzel` ist selbst die
+ *   Repo-Wurzel, kein Elternordner eines fremden Repos
+ */
+function repoLage(wurzel) {
+  const [oben = '', flach = ''] = git(wurzel, [
+    'rev-parse',
+    '--show-toplevel',
+    '--is-shallow-repository',
+  ]).split('\n');
+  return {
+    eigen: realpathSync(oben.trim()) === realpathSync(wurzel),
+    voll: flach.trim() === 'false',
+  };
+}
+
 /** @param {string} wurzel */
 function istVoll(wurzel) {
-  return git(wurzel, ['rev-parse', '--is-shallow-repository']).trim() === 'false';
+  return repoLage(wurzel).voll;
 }
 
 /**
@@ -173,7 +202,9 @@ function istVoll(wurzel) {
  */
 export function routenLastmod(wurzel, {vertiefen = false} = {}) {
   try {
-    if (!istVoll(wurzel)) {
+    const lage = repoLage(wurzel);
+    if (!lage.eigen) return null;
+    if (!lage.voll) {
       if (!vertiefen) return null;
       execFileSync('git', ['-C', wurzel, 'fetch', '--quiet', '--unshallow'], {
         stdio: 'ignore',
