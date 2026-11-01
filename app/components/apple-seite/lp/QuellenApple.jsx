@@ -30,29 +30,35 @@ function Eintrag({quelle}) {
   const teile = angabeTeile(quelle);
   return (
     <li>
-      <strong>{quelle.titel}</strong>
-      <br />
-      {teile.join(' · ')}
-      {quelle.doi ? (
-        <>
-          {teile.length ? ' · ' : null}
-          <a href={`https://doi.org/${quelle.doi}`} rel="noopener noreferrer nofollow" target="_blank">
-            doi.org/{quelle.doi}
-          </a>
-        </>
-      ) : null}
-      {quelle.zitiert_in?.length ? (
-        <>
-          <br />
-          Benutzt in:{' '}
-          {quelle.zitiert_in.map((a, i) => (
-            <span key={a.slug}>
-              {i > 0 ? ', ' : null}
-              <Link to={`/blogs/wissen/${a.slug}`}>{a.titel}</Link>
-            </span>
-          ))}
-        </>
-      ) : null}
+      <p>
+        <strong>{quelle.titel}</strong>
+        <br />
+        {teile.join(' · ')}
+        {quelle.doi ? (
+          <>
+            {teile.length ? ' · ' : null}
+            <a
+              href={`https://doi.org/${quelle.doi}`}
+              rel="noopener noreferrer nofollow"
+              target="_blank"
+            >
+              doi.org/{quelle.doi}
+            </a>
+          </>
+        ) : null}
+        {quelle.zitiert_in?.length ? (
+          <>
+            <br />
+            Benutzt in:{' '}
+            {quelle.zitiert_in.map((a, i) => (
+              <span key={a.slug}>
+                {i > 0 ? ', ' : null}
+                <Link to={`/blogs/wissen/${a.slug}`}>{a.titel}</Link>
+              </span>
+            ))}
+          </>
+        ) : null}
+      </p>
     </li>
   );
 }
@@ -75,7 +81,11 @@ export function QuellenApple({seite, quellen}) {
           </ul>
         </div>
         <p className="course-lesson__nav">
-          <a className="btn btn--primary as-knopf" href="/blogs/wissen" data-as-cta="primary">
+          <a
+            className="btn btn--primary as-knopf"
+            href="/blogs/wissen"
+            data-as-cta="primary"
+          >
             Zu den Fachartikeln
           </a>
         </p>
