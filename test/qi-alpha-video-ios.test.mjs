@@ -46,11 +46,11 @@ test('iosZweigAn: nur mit kleiner Quelle, ?video=alt schaltet ab', () => {
   assert.equal(vi.iosZweigAn(v, {userAgent: SAMSUNG_CHROME}, ''), false);
 });
 
-test('Einrasten nur am iPhone (Android/Desktop wie live), ?rast=an/aus für Prüfer', () => {
+test('Einrasten am iPhone und Mac, Android wie live, ?rast=an/aus für Prüfer', () => {
   assert.equal(ra.einrastenAn({userAgent: IPHONE_SAFARI}, ''), true);
   assert.equal(ra.einrastenAn({userAgent: IPHONE_CHROME}, ''), true);
   assert.equal(ra.einrastenAn({userAgent: SAMSUNG_CHROME}, ''), false);
-  assert.equal(ra.einrastenAn({userAgent: MAC_SAFARI}, ''), false);
+  assert.equal(ra.einrastenAn({userAgent: MAC_SAFARI}, ''), true, 'Mac rastet ein (Job …-desktop-mac-entscheid)');
   assert.equal(ra.einrastenAn({userAgent: SAMSUNG_CHROME}, '?rast=an'), true);
   assert.equal(ra.einrastenAn({userAgent: IPHONE_SAFARI}, '?x=1&rast=aus'), false);
   const prem = lies('app/components/campaign/TheAlphaPremium.jsx');
