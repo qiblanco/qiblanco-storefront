@@ -1,4 +1,5 @@
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
+import lpApplePodcastsStyles from '~/styles/lp-apple-podcasts.css?url';
 import {KursApple} from './KursApple';
 
 /*
@@ -169,6 +170,7 @@ export function PodcastsApple({seite, daten, pfade, gaeste}) {
   const bis = von + daten.folgen.length - 1;
   return (
     <KursApple seite={seite}>
+      <link rel="stylesheet" href={lpApplePodcastsStyles} />
       <div className="as-pod" data-qbp-route="podcasts">
         <header className="as-pod__kopf">
           <h1>Podcasts von Qi Blanco</h1>
