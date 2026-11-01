@@ -12,6 +12,9 @@ const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750';
 
 export const KAUFSEITE = '/products/qihome-air';
 
+/** Feste Kaufleiste mobil bis zum Seitenende (DetailKaufleiste.jsx): Name wie im Kopf. */
+export const KAUFLEISTE = Object.freeze({name: 'QiHome® Air', href: KAUFSEITE});
+
 const BILD = Object.freeze({
   qihome: {
     url: `${CDN}/files/qb-video360-ersatzbild--360-qihome-front-1440--d19c273efe67.jpg?v=1793414663`,

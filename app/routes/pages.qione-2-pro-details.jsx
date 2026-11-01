@@ -6,6 +6,7 @@ import pdpLandingStyles from '~/styles/pdp-landing-qi.css?url';
 import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {ProduktDetailsApple} from '~/components/apple-seite/produkt-details/ProduktDetailsApple';
 import {
+  KAUFLEISTE,
   QIONE_2_PRO_DETAILS,
   TECHNIK,
   VIDEO,
@@ -145,6 +146,7 @@ export default function QiOne2ProDetailsPage() {
       <ProduktDetailsApple
         seite="qione-2-pro-details"
         sektionen={QIONE_2_PRO_DETAILS}
+        kaufleiste={KAUFLEISTE}
         video={VIDEO}
         technik={TECHNIK}
         produkte={produkte}

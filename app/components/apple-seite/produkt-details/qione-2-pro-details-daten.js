@@ -19,6 +19,9 @@ const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750';
 
 export const KAUFSEITE = '/products/qione-2-pro';
 
+/** Feste Kaufleiste mobil bis zum Seitenende (DetailKaufleiste.jsx): Name wie im Kopf. */
+export const KAUFLEISTE = Object.freeze({name: 'QiOne® 2 Pro', href: KAUFSEITE});
+
 const BILD = Object.freeze({
   qione: {
     url: `${CDN}/files/qb-video360-ersatzbild--360-qione-front-1440--f0024fcab5ec.jpg?v=1793414659`,

@@ -7,6 +7,7 @@ import {seitenSignale} from '~/lib/seiten-seo';
 import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {ProduktDetailsApple} from '~/components/apple-seite/produkt-details/ProduktDetailsApple';
 import {
+  KAUFLEISTE,
   QIHOME_DETAILS,
   VIDEO,
 } from '~/components/apple-seite/produkt-details/qihome-details-daten';
@@ -92,6 +93,7 @@ export default function QiHomeDetailsPage() {
       <ProduktDetailsApple
         seite="qihome-details"
         sektionen={QIHOME_DETAILS}
+        kaufleiste={KAUFLEISTE}
         video={VIDEO}
         produkte={produkte}
       />

@@ -5,6 +5,7 @@ import {seitenSignale} from '~/lib/seiten-seo';
 import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {ProduktDetailsApple} from '~/components/apple-seite/produkt-details/ProduktDetailsApple';
 import {
+  KAUFLEISTE,
   QIBRACELET_DETAILS,
 } from '~/components/apple-seite/produkt-details/qibracelet-details-daten';
 import {startseiteProdukte} from '~/components/apple-seite/startseite/startseite-preise';
@@ -126,6 +127,7 @@ export default function QiBraceletDetailsPage() {
       <ProduktDetailsApple
         seite="qibracelet-details"
         sektionen={QIBRACELET_DETAILS}
+        kaufleiste={KAUFLEISTE}
         produkte={produkte}
       />
     );

@@ -6,6 +6,7 @@ import {AppleSeite} from '../AppleSeite';
 import {Sektion} from '../AppleSektionen';
 import {useStartseitePreise} from '../startseite/startseite-preise';
 import {TechnikKette} from './TechnikKette';
+import {DetailKaufleiste} from './DetailKaufleiste';
 
 /*
  * APPLE-FASSUNG DER PRODUKT-DETAILSEITEN (Grossjob 20261029-GROSSJOB-alle-
@@ -56,6 +57,14 @@ export function ProduktDetailsApple({seite, sektionen, video = null, technik = n
           const preis = s.cta?.href ? preise[s.cta.href] : null;
           return <Sektion key={`${s.art}-${i}`} index={i} {...s} {...(preis ? {preis} : {})} />;
         })}
+        {kaufleiste ? (
+          <DetailKaufleiste
+            seite={seite}
+            name={kaufleiste.name}
+            href={kaufleiste.href}
+            preis={preise[kaufleiste.href] || null}
+          />
+        ) : null}
       </AppleSeite>
     </>
   );
