@@ -659,6 +659,11 @@
   window.addEventListener('CookiebotOnAccept', trySync);
   window.addEventListener('CookiebotOnDecline', trySync);
   window.addEventListener('CookiebotOnConsentReady', trySync);
+  // Die API lädt erst nach der Wahl (lib/shopify-tracking-tor.js); Hydrogen meldet, wenn sie steht.
+  // Nur mit getroffener Wahl: in 'optout'-Regionen lädt sie schon vorher.
+  document.addEventListener('shopifyCustomerPrivacyApiLoaded', function () {
+    if (window.Cookiebot && window.Cookiebot.hasResponse) trySync();
+  });
 
   // ---- Hydration-Wettlauf: Banner erscheint nicht zuverlaessig ------------
   // BEFUND (gemessen 2026-08-23 am Live-Shop, Job 20260823-verkauft-der-laden):

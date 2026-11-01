@@ -72,9 +72,22 @@ export function shopifyTorStand(win) {
   const entschieden = Boolean(cb && cb.hasResponse && cb.consent);
   const statistik = entschieden && cb.consent.statistics === true;
   if (regionPolitik(win && win.document) === 'optout') {
-    return {montieren: true, tracken: !entschieden || statistik};
+    return {
+      montieren: true,
+      tracken: entschieden ? statistik : shopifyErlaubtOhneWahl(win),
+    };
   }
   return {montieren: entschieden, tracken: statistik};
+}
+
+/**
+ * Ohne Wahl in 'optout'-Regionen gilt Shopifys eigener Stand wie vor diesem Tor
+ * (Hydrogens Vorgabe analyticsProcessingAllowed), etwa eine Ablehnung aus der Kasse.
+ */
+function shopifyErlaubtOhneWahl(win) {
+  const sp = win && win.Shopify && win.Shopify.customerPrivacy;
+  if (!sp || typeof sp.analyticsProcessingAllowed !== 'function') return true;
+  return sp.analyticsProcessingAllowed() !== false;
 }
 
 /** `canTrack` für Analytics.Provider. Am Server und im Fehlerfall: false. */
@@ -170,20 +183,53 @@ export function shopifyServerErlaubt(request, env) {
   };
 }
 
+/** Löscht die Zeile das Cookie (leerer Wert, Max-Age<=0 oder Ablauf in der Vergangenheit)? */
+export function istLoeschung(zeile, jetzt = Date.now()) {
+  const teile = String(zeile).split(';');
+  if (teile[0].slice(teile[0].indexOf('=') + 1).trim() === '') return true;
+  for (const t of teile.slice(1)) {
+    const [k, ...v] = t.split('=');
+    const schluessel = k.trim().toLowerCase();
+    const wert = v.join('=').trim();
+    if (schluessel === 'max-age' && Number(wert) <= 0) return true;
+    if (schluessel === 'expires') {
+      const ab = Date.parse(wert);
+      if (Number.isFinite(ab) && ab <= jetzt) return true;
+    }
+  }
+  return false;
+}
+
 /**
  * Entfernt nicht erlaubte _shopify_analytics/_marketing-Zeilen aus den Set-Cookie-Köpfen.
+ * Löschzeilen bleiben: nach einem Widerruf muss Shopify die httpOnly-Cookies abräumen können.
  * @returns {number} Zahl der entfernten Zeilen
  */
 export function filtereShopifyCookies(headers, erlaubt) {
   const zeilen = headers.getSetCookie ? headers.getSetCookie() : [];
   const bleibt = zeilen.filter((z) => {
     const name = z.split('=')[0].trim();
-    return !(name in erlaubt) || erlaubt[name];
+    return !(name in erlaubt) || erlaubt[name] || istLoeschung(z);
   });
   if (bleibt.length === zeilen.length) return 0;
   headers.delete('Set-Cookie');
   bleibt.forEach((z) => headers.append('Set-Cookie', z));
   return zeilen.length - bleibt.length;
+}
+
+/**
+ * Nimmt Hydrogens Merker `_server_tracking` aus Server-Timing. Er sagt dem Browser „der Server
+ * hat die Cookies schon gesetzt“; wurden sie gefiltert, muss der Browser sie nach der Wahl
+ * selbst holen (über storefront.forward, dann mit CookieConsent).
+ */
+export function ohneServerTracking(headers) {
+  const st = headers.get('Server-Timing');
+  if (!st || !st.includes('_server_tracking')) return;
+  const rest = st
+    .replace(/(^|,)\s*_server_tracking(;[^,]*)?(?=,|$)/g, '')
+    .replace(/^\s*,\s*/, '');
+  headers.delete('Server-Timing');
+  if (rest.trim()) headers.set('Server-Timing', rest);
 }
 
 /**
@@ -198,7 +244,9 @@ export function shopifyServerTorEinbauen(storefront, request, env) {
     storefront.setCollectedSubrequestHeaders = (response) => {
       sammeln(response);
       try {
-        filtereShopifyCookies(response.headers, erlaubt());
+        if (filtereShopifyCookies(response.headers, erlaubt()) > 0) {
+          ohneServerTracking(response.headers);
+        }
       } catch {
         // unveränderliche Köpfe (Umleitung): nichts zu filtern
       }
