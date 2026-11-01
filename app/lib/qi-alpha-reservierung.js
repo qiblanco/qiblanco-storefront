@@ -192,13 +192,13 @@ export function reserviertStand(reservierung, varianten) {
  *
  * Reihenfolge wie auf der Kaufseite: Shopify legt die Zeilen umgekehrt in den
  * Warenkorb, übergeben wird je Gerät Kette, Nummer und am Ende der Qi Alpha®.
- * @param {{haupt: object, geraete: Array<{nummer: object|null, merkmale?: Array, kette: object|null}>, linie: Function}} p
+ * @param {{haupt: object, einheiten: Array<{nummer: object|null, merkmale?: Array, kette: object|null}>, linie: Function}} p
  *   `linie` = addonLinien aus lib/qi-master-addons.js (Merkmal _qm_addon).
  */
-export function geraeteLinien({haupt, geraete, linie}) {
-  if (!haupt?.id || !geraete?.length) return [];
+export function einheitenLinien({haupt, einheiten, linie}) {
+  if (!haupt?.id || !einheiten?.length) return [];
   const aus = [];
-  for (const g of [...geraete].reverse()) {
+  for (const g of [...einheiten].reverse()) {
     const zeilen = linie({
       wunschnummer: g.nummer ?? null,
       kette: g.kette ?? null,
@@ -212,7 +212,7 @@ export function geraeteLinien({haupt, geraete, linie}) {
   }
   aus.push({
     merchandiseId: haupt.id,
-    quantity: geraete.length,
+    quantity: einheiten.length,
     selectedVariant: haupt,
   });
   return aus;
