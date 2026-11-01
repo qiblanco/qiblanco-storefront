@@ -7,6 +7,7 @@ import {
   useErsatzbild,
 } from '~/components/reusables/video360-ersatzbild';
 import {useNaeheLaden} from '~/components/reusables/useNaeheLaden';
+import {LEINWAND_STIL, useFilmDekoder} from '~/components/reusables/useFilmDekoder';
 
 /*
  * Die Adresse der 360-Grad-Produktdrehung des QiOne(R) 2 Pro steht GENAU
@@ -157,6 +158,9 @@ const GESTEN = ['touchend', 'pointerup', 'click', 'keydown'];
  * NACHHOLEN: lehnt der Browser play() ab (iOS Stromsparmodus), bleibt das
  * Ersatzbild stehen, und die nächste Berührung irgendwo auf der Seite startet
  * die Drehung im Rahmen dieser Geste. Unter prefers-reduced-motion nie.
+ * OHNE TIPPEN (Apple-Upgrade 01.11.2026, useFilmDekoder.js): lehnt iOS ab,
+ * dreht sich derselbe Film sofort über WebCodecs in einem Canvas über dem
+ * Ersatzbild. Der Tipp-Weg bleibt für iPhones ohne WebCodecs (iOS < 16.4).
  */
 export function Produkt360Video({
   className,
@@ -174,6 +178,9 @@ export function Produkt360Video({
   const video = DREHUNG_VIDEO[drehung] ?? DREHUNG_VIDEO.qione;
   const basis = ERSATZBILD_360[drehung] ?? QIONE_ERSATZ;
   const ersatz = alt ? {...basis, alt} : basis;
+  const dekoder = useFilmDekoder(ref, nah ? video.src : null);
+  const dekoderRef = useRef(dekoder);
+  dekoderRef.current = dekoder;
 
   useEffect(() => {
     const el = ref.current;
@@ -186,6 +193,8 @@ export function Produkt360Video({
       wartet = false;
       geste(false);
       if (ruhe?.matches) return;
+      // Dreht der dekodierte Film schon, bleibt es dabei.
+      if (dekoderRef.current.zeigt()) return;
       starte();
     };
     const geste = (an) =>
@@ -196,6 +205,7 @@ export function Produkt360Video({
       );
     const abgelehnt = () => {
       zuBildRef.current();
+      dekoderRef.current.abgelehnt();
       if (wartet) return;
       wartet = true;
       geste(true);
@@ -263,6 +273,14 @@ export function Produkt360Video({
       preload={sofort ? 'metadata' : 'none'}
     />
     <Ersatzbild ersatz={ersatz} zustand={zustand} anzeige={anzeige} />
+    <canvas
+      ref={dekoder.leinwandRef}
+      width={drehung === 'qione' ? QIONE_360_KANTE : 720}
+      height={drehung === 'qione' ? QIONE_360_KANTE : 720}
+      aria-hidden="true"
+      data-qb-dekoder="aus"
+      style={LEINWAND_STIL}
+    />
     </div>
   );
 }

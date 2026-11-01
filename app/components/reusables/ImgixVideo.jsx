@@ -10,6 +10,7 @@ import {
 } from '~/components/reusables/video360-ersatzbild';
 import {spieleSicher} from '~/components/reusables/video-nachholen';
 import {NAEHE_RAND} from '~/components/reusables/useNaeheLaden';
+import {LEINWAND_STIL, useFilmDekoder} from '~/components/reusables/useFilmDekoder';
 
 /*
  * ImgixVideo — Sound-Toggle (Job bl-20260803T232952Z-b702ec, 2026-08-03),
@@ -151,7 +152,10 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
   const mitErsatz = Boolean(ersatz);
   // Abgelehntes Autoplay (iOS Stromsparmodus u. a.) bei Sicht und Berührung
   // nachholen; Ersatzbild bleibt, bis es läuft (video360-ersatzbild.jsx).
-  useVideoNachholen(videoRef);
+  // Apple-Upgrade (01.11.2026): bei einer 360-Drehung dreht nach der Ablehnung
+  // derselbe Film sofort über WebCodecs (useFilmDekoder.js), ohne Tippen.
+  const dekoder = useFilmDekoder(videoRef, mitErsatz ? videoQuellen(videoPath).mp4 : null, mitErsatz);
+  useVideoNachholen(videoRef, true, {beiAbgelehnt: dekoder.abgelehnt, gesperrt: dekoder.zeigt});
   // DOMAIN-WECHSEL 2026-09-18 (Vorgang EL-20260814-9a7f9a50, Elina).
   // imgix führt die Video-Auslieferung auf imgix.net zusammen; die eigene
   // Anleitung sagt wörtlich, .imgix.video-URLs hören nach dem Sunset auf
@@ -313,6 +317,16 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
         aria-hidden={mitErsatz ? 'true' : undefined}
       />
       {mitErsatz && <Ersatzbild ersatz={ersatz} zustand={zustand} />}
+      {mitErsatz && (
+        <canvas
+          ref={dekoder.leinwandRef}
+          width={720}
+          height={720}
+          aria-hidden="true"
+          data-qb-dekoder="aus"
+          style={LEINWAND_STIL}
+        />
+      )}
       {zeigtTonSteuerung && (
       <button
         type="button"
