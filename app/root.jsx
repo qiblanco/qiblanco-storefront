@@ -116,6 +116,10 @@ import {QpxCommerce} from './components/QpxCommerce';
 import {UpPromoteTracking} from './components/UpPromoteTracking';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
 import {strictRegions} from '~/lib/consent-policy';
+import {
+  shopifyDarfTracken,
+  useShopifyTrackingTor,
+} from '~/lib/shopify-tracking-tor';
 import {publicSkript} from '~/lib/public-skript';
 import {einschubWeicheQuelle} from '~/lib/einschub-weiche';
 import {
@@ -1056,6 +1060,11 @@ function AnalytikNachHydration({data, filmSeite = false, children}) {
   useEffect(() => {
     startTransition(() => setHydriert(true));
   }, []);
+  // Shopify-Analytik erst nach der Wahl (Einwilligungs-Scan s03, 2026-11-01):
+  // ohne `shop` montiert der Provider ShopifyAnalytics nicht, also weder
+  // _shopify_analytics/_marketing noch _shopify_y/_s noch monorail vor der Wahl.
+  // Begründung, Region-Regel und Rückweg in lib/shopify-tracking-tor.js.
+  const shopifyTor = useShopifyTrackingTor();
 
   const seitengeruest = useMemo(
     () =>
@@ -1075,8 +1084,9 @@ function AnalytikNachHydration({data, filmSeite = false, children}) {
   return (
     <Analytics.Provider
       cart={data.cart}
-      shop={hydriert ? data.shop : null}
+      shop={hydriert && shopifyTor.montieren ? data.shop : null}
       consent={data.consent}
+      canTrack={shopifyDarfTracken}
     >
       {/*
         EU-Gewaehrleistungs-Mitteilung (VO (EU) 2025/1960, ab
