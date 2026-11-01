@@ -4,7 +4,7 @@ import {Image} from '@shopify/hydrogen';
 import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
 import {TapTon, TapFilmTon, videoQuellen} from '~/components/campaign/TheAlphaTon';
 import {tapStopper} from '~/components/campaign/the-alpha-stopper';
-import {tapEinrasten, bühnenRast} from '~/components/campaign/the-alpha-einrasten';
+import {tapEinrasten, bühnenRast, einrastenAn} from '~/components/campaign/the-alpha-einrasten';
 import {
   THE_ALPHA_KOPF,
   THE_ALPHA_SCHLUSS,
@@ -157,7 +157,7 @@ const useFruehEffekt = typeof window === 'undefined' ? useEffect : useLayoutEffe
 function useEinrasten(wurzel, szene) {
   useFruehEffekt(() => {
     const el = wurzel.current;
-    if (!el || !szene) return undefined;
+    if (!el || !szene || !einrastenAn(navigator, window.location.search)) return undefined;
     return tapEinrasten(() => (typeof el.tapRaststellen === 'function' ? el.tapRaststellen() : []), window);
   }, [wurzel, szene]);
 }
@@ -683,8 +683,10 @@ export function TapVollbild({bild, format = 'hoch', loading = 'lazy'}) {
  * Erreichen der Szene, Pause beim Wegscrollen, inline (TheAlphaTon.jsx).
  * Felder in the-alpha-daten.js THE_ALPHA_VIDEO.video: src (MP4, Pflicht),
  * poster, optional hls (sonst aus der Shopify-CDN-Adresse abgeleitet),
- * untertitel (WebVTT, gezeigt solange der Video-Ton nicht zu hören ist) und
- * ton (true/false; fehlt es, misst der Browser, ob Ton drin ist).
+ * untertitel (WebVTT, gezeigt solange der Video-Ton nicht zu hören ist),
+ * ton (true/false; fehlt es, misst der Browser, ob Ton drin ist) und klein
+ * (kleine MP4: am iPhone vorgeladen, ohne Poster, Standbild nur als Notfall;
+ * the-alpha-video-ios.js, Christian 01.11.2026).
  *
  * TEXT UNTER DEM VIDEO (`film.texte`, nur A; Christian 29.10.2026: „der text
  * ist immer noch im Video zu sehen anstatt darunter“): die Sätze stehen als
@@ -737,6 +739,7 @@ export function TapFilm({film, stopper = false}) {
             data-tap-video=""
             data-tap-video-ton={tonFeld}
             data-tap-poster={video.poster || videoStandbild.url}
+            data-tap-klein={video.klein}
             muted
             loop
             playsInline

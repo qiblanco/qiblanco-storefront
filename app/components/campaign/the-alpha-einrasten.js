@@ -41,6 +41,8 @@
  * ein, die senkrechte Geschichte nie.
  */
 
+import {istIos} from './the-alpha-video-ios.js';
+
 const PAUSE_MS = 200;
 // Ein abklingender Schwung (jedes Rad-Ereignis kleiner als das vorige) bleibt
 // derselbe Wisch, auch wenn ein langsames Gerät Bilder später liefert (gemessen
@@ -96,6 +98,19 @@ export function schritt(e, bild) {
 
 /** Bindet das Einrasten an die Seite. `stellen()` liefert die Raststellen
  * aufsteigend. Gibt die Aufräum-Funktion zurück. */
+/** Gilt das Einrasten auf diesem Gerät? Nur iPhone/iPad (Safari und Chrome).
+ * Christian 01.11.2026 ~11:35 (Samsung, Chrome): „auf meinem Samsung im
+ * Chrome ist es jetzt echt perfekt … vom Scroll-Gefühl her und von den
+ * Slap-Stops“: Android und Desktop bleiben wie live (nur Video-Stopper),
+ * das iPhone bekommt die Einrastpunkte (Job …-r5, Auftrag Punkt 3/4).
+ * ?rast=an schaltet es für Prüfer überall ein, ?rast=aus überall ab. */
+export function einrastenAn(nav, suche = '') {
+  const q = String(suche || '');
+  if (/(^|[?&])rast=aus(&|$)/.test(q)) return false;
+  if (/(^|[?&])rast=an(&|$)/.test(q)) return true;
+  return istIos(nav);
+}
+
 export function tapEinrasten(stellen, f = window) {
   const d = f.document;
   const html = d.documentElement;
