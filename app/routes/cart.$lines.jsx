@@ -9,6 +9,7 @@ import {istFremderRahmen} from '~/lib/einbettungs-weiche.server';
 import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
 import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
+import {bindeHealWorldGeschenk} from '~/lib/heal-world-geschenk.server';
 import {
   bindeRatenanteil,
   merkmaleAusQuery,
@@ -157,9 +158,12 @@ export async function loader({request, context, params}) {
   // Kasse (Job 20260925-qm-addon-bindung-greift-nur-bei-attribut).
   // Das Einführungsangebot höchstens einmal — auch über den Permalink, der
   // direkt zur Kasse führt (/cart/<Angebot>:3).
-  const begrenzt = angelegt?.errors?.length
+  const beschenkt = angelegt?.errors?.length
     ? angelegt
-    : await begrenzeAngebot({cart, action: 'LinesAdd', result: angelegt});
+    : await bindeHealWorldGeschenk({cart, action: 'LinesAdd', result: angelegt});
+  const begrenzt = beschenkt?.errors?.length
+    ? beschenkt
+    : await begrenzeAngebot({cart, action: 'LinesAdd', result: beschenkt});
   const gebunden = begrenzt?.errors?.length
     ? begrenzt
     : await bindeQiMasterAddons({cart, action: 'LinesAdd', result: begrenzt});
