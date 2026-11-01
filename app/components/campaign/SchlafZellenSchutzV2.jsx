@@ -499,8 +499,8 @@ function MikroskopSection() {
       dataSection="lp-v2-mikroskop"
       heightVhDesktop={320}
       heightVhMobile={280}
-      srcDesktop="https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov"
-      srcMobile="https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov"
+      srcDesktop="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/mikroskop-desktop-faststart.mp4?v=1793465730"
+      srcMobile="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/mikroskop-mobil-faststart.mp4?v=1793465597"
       overlayStart={{
         titel: 'Zellbiologisch geprüft',
         text: 'Entdecke die Effekte auf Zellebene.',
