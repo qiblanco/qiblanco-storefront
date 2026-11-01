@@ -23,13 +23,22 @@ const wissen = await import(join(WURZEL, 'app/components/the-alpha-shop/the-alph
 // Dieselbe Liste wie die Live-Probe (bin/probe_wissen_faq.py im Jobordner).
 const WEICH = /(?<![\p{L}])(könnte\p{L}*|würde\p{L}*|sollte\p{L}*|soll|sollen|möglicherweise|vielleicht|eventuell|evtl\.?|nach Angaben|angeblich|vermutlich|vermutet|wohl|gegebenenfalls|ggf\.?|wäre\p{L}*|hätte\p{L}*|dürfte\p{L}*|scheint|scheinen|denkbar|theoretisch)(?![\p{L}])/giu;
 
-test('Fragen: acht Themen in Christians Folge, Leitfrage wörtlich zuerst', () => {
+test('Fragen: acht Themen in Christians Folge, Größe (01.11.) vor der Rückgabe, Leitfrage wörtlich zuerst', () => {
   const ids = faq.THE_ALPHA_FAQ.map((f) => f.id);
-  assert.deepEqual(ids, ['mehr', 'bereit', 'unterschied', 'gitterchip', 'diamant', 'sechs-g', 'sauna-wasser', 'passt-nicht']);
+  assert.deepEqual(ids, ['mehr', 'bereit', 'unterschied', 'gitterchip', 'diamant', 'sechs-g', 'sauna-wasser', 'groesse', 'passt-nicht']);
   assert.equal(
     faq.THE_ALPHA_FAQ[0].frage,
     'Was bekomme ich mit dem Qi Alpha®, das kein anderes Qi-Blanco-Produkt kann?',
   );
+});
+
+test('Größe: gleiche Größe wie der QiOne® 2 Pro, mm und 9,9 g (Christian 01.11.2026)', () => {
+  const g = faq.THE_ALPHA_FAQ.find((f) => f.id === 'groesse');
+  assert.equal(g.frage, 'Wie groß ist der Qi Alpha®?');
+  const a = g.antwort.join(' ');
+  assert.match(a, /QiOne® 2 Pro/);
+  assert.match(a, /20 × 15 mm/);
+  assert.match(a, /9,9 g/);
 });
 
 test('Antworten: ohne Weichmacher, vergebene Nummern aus der einen Liste', () => {
