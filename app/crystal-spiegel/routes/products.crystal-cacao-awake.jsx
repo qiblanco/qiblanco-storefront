@@ -107,6 +107,12 @@ async function loadCriticalData({context, request}, handle) {
 
   const [{product}, sortenPreise] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
+      // PREIS FRISCH, nicht streichen: ohne `cache` nimmt Hydrogen CacheDefault
+      // (SWR 24 h), dann zeigt die Seite nach einer Preis- oder Kursaenderung bis
+      // zu 24 h den alten Betrag (PL 13.10.: Seite 4.861 zl, Kasse 4.847 zl).
+      // Grossjob 20261004-GROSSJOB-preisanzeige-netto-brutto-rundung-alle-shops-waehrungen s09;
+      // Probe homepage-bauer/pruefungen/probe_preisabfrage_cache_kurz.py.
+      cache: storefront.CacheShort(),
       variables: {
         handle, // ✅ use the static handle
         selectedOptions: getSelectedProductOptions(request),
@@ -346,6 +352,8 @@ export default function Product() {
         dem Kauf. Dieselbe Kachel auf beiden Sorten: der Beitrag nennt keine
         Sorte, er zeigt beide Tueten.
       */}
+      {/* Baustein wie /products/qibracelet (Elina, EL-20261026-074aa739): runde
+          Pfeile + "weiterwischen" unter der Bahn, keine Karussell-Bauart. */}
       <IgTestimonialSlideshow produkt="Kakao" />
       {/* AMAZON-STIL (Grossjob 20260930-GROSSJOB-amazonstil-crystal-cacao-...,
           s04): dieselben Bausteine wie qiblanco.com (s03), byte-gleich

@@ -3,7 +3,7 @@
 import {Link} from '~/crystal-spiegel-rahmen/router';
 import {Image} from '@shopify/hydrogen';
 import {Preis} from './Preis';
-import {useVariantUrl} from '~/lib/variants';
+import {useVariantUrl} from '~/crystal-spiegel/lib/variants';
 
 /**
  * `preisSlot` (2026-09-08): die Kachel zeigt normalerweise den API-Preis der
