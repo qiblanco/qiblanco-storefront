@@ -4,6 +4,7 @@ import {Image} from '@shopify/hydrogen';
 import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
 import {TapTon, TapFilmTon, videoQuellen} from '~/components/campaign/TheAlphaTon';
 import {tapStopper} from '~/components/campaign/the-alpha-stopper';
+import {tapEinrasten, bühnenRast} from '~/components/campaign/the-alpha-einrasten';
 import {
   THE_ALPHA_KOPF,
   THE_ALPHA_SCHLUSS,
@@ -363,6 +364,28 @@ function useTapFilm(wurzel, szene) {
         return {von, bis};
       };
     }
+    // Einrasten an jeder Einheit (the-alpha-einrasten.js, Christian 01.11.2026:
+    // „dass man die ganze Homepage nicht einfach mit einem riesigen Wisch
+    // überfliegen kann“): je Bühne eine Raststelle, wo sie ganz dasteht.
+    if (kette && new URLSearchParams(window.location.search).get('rast') !== 'aus') {
+      const raststellen = () => {
+        const y = window.scrollY;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        return buehnen
+          .flatMap((s) =>
+            bühnenRast({
+              oben: y + s.b.getBoundingClientRect().top,
+              px: s.px,
+              schritte: s.schritte.length,
+              start: s.start,
+              extra: s.schritte.flatMap((w, i) => (w.hasAttribute('data-tap-rast') ? [i] : [])),
+              max,
+            }),
+          )
+          .sort((a, b) => a - b);
+      };
+      aufraeumen.push(tapEinrasten(raststellen, window));
+    }
     let angefordert = false;
     const anfordern = () => {
       if (angefordert) return;
@@ -615,7 +638,8 @@ export function TapWoerterbuch({eintrag = THE_ALPHA_WOERTERBUCH}) {
               <b>{i + 1}.</b> {teile(b)}
             </p>
           ))}
-          <p className="tap-wb-quelle" data-tap-schritt="">
+          {/* Eigene Einheit „Google AI“ (Raststelle davor, the-alpha-einrasten.js). */}
+          <p className="tap-wb-quelle" data-tap-schritt="" data-tap-rast="">
             {eintrag.quelle}
           </p>
         </div>
