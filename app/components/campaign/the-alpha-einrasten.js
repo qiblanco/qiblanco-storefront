@@ -42,7 +42,12 @@
  */
 
 const PAUSE_MS = 200;
-const RUHE_MS = 400;
+// Ein Wisch gilt als vorbei, wenn so lange nichts mehr scrollt. Touch großzügig:
+// ein Schwung pausiert nie, aber ein beschäftigtes Gerät malt einzelne Bilder
+// spät (gemessen WebKit unter Last: über 400 ms zwischen zwei Bildern, danach
+// lief der Rest des Schwungs ungebremst). Ein neuer Wisch beginnt ohnehin mit
+// dem nächsten Finger auf dem Glas.
+const RUHE_MS = {touch: 1500, rad: 600, taste: 600};
 const HALT_MS = 120;
 const VOR = new Set(['ArrowDown', 'PageDown', ' ', 'Spacebar']);
 
@@ -111,7 +116,7 @@ export function tapEinrasten(stellen, f = window) {
     f.scrollTo(0, geste.rast);
   };
   // Ist der Wisch noch im Gang? Finger drauf, oder Bewegung/Eingabe vor kurzem.
-  const lebt = () => geste && (finger || f.performance.now() - geste.zuletzt <= RUHE_MS);
+  const lebt = () => geste && (finger || f.performance.now() - geste.zuletzt <= RUHE_MS[geste.art]);
 
   const beiTouchStart = () => {
     finger = true;
@@ -180,7 +185,11 @@ export function tapEinrasten(stellen, f = window) {
     [f, 'touchmove', beiTouchMove, {passive: false, capture: true}],
     [f, 'wheel', beiRad, {passive: false, capture: true}],
     [f, 'keydown', beiTaste, {capture: true}],
-    [f, 'scroll', beiScroll, {passive: true}],
+    // Capture: vor dem Scroll-Wächter des Video-Stoppers (Bubble an window).
+    // Chrome lässt nur das erste Rad-Ereignis eines Zugs abbrechen; trägt ein
+    // späteres (400-px-Raste) über die Raststelle bis ins Fenster des Videos,
+    // holt dieses Modul die Seite zurück, bevor der Video-Stopper dort hält.
+    [f, 'scroll', beiScroll, {passive: true, capture: true}],
   ];
   ereignisse.forEach(([z, t, h, o]) => z.addEventListener(t, h, o));
   html.dataset.tapRast = 'an';
