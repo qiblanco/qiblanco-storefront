@@ -45,6 +45,9 @@
 
 // Ab Sichtbarwerden: so lange ohne erstes Bild, dann das Standbild.
 export const NOTFALL_MS = 1500;
+// Beim Sichtbarwerden ohne messbaren Fortschritt so lange auf die kleine MP4
+// im Speicher warten, dann direkt aus dem Netz.
+export const WARTEN_MS = 700;
 // Erst so lange nach dem Binden holen, wenn das load-Ereignis noch fehlt
 // (der Titel ist dann längst da; Bandbreite gehört vorher der Seite).
 export const VORLADEN_SPAETESTENS_MS = 400;
@@ -240,7 +243,21 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   const sichtbar = () => {
     if (st.erstesBild || st.weg) return;
     if (!st.sichtbarSeit) st.sichtbarSeit = fenster.performance.now();
-    if (st.phase === 'leer' || (st.phase === 'laedt' && restMs() > NOTFALL_MS)) insNetz();
+    if (st.phase === 'leer') insNetz();
+    else if (st.phase === 'laedt') {
+      const rest = restMs();
+      if (rest !== Infinity && rest > NOTFALL_MS) insNetz();
+      else if (rest === Infinity) {
+        // Noch kein Fortschritt messbar: kurz auf den Speicher warten.
+        fenster.clearTimeout(st.wartTimer);
+        st.wartTimer = fenster.setTimeout(() => {
+          if (st.phase === 'laedt' && !st.weg) {
+            insNetz();
+            spiele(v);
+          }
+        }, WARTEN_MS);
+      }
+    }
     fenster.clearTimeout(st.notTimer);
     st.notTimer = fenster.setTimeout(() => notbildAn('langsam'), NOTFALL_MS);
     warteAufBild();
@@ -404,6 +421,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
       st.weg = true;
       if (st.abbruch) st.abbruch.abort();
       fenster.clearTimeout(st.notTimer);
+      fenster.clearTimeout(st.wartTimer);
       fenster.clearTimeout(frueh);
       fenster.removeEventListener('load', los);
       fenster.removeEventListener('scroll', los);
