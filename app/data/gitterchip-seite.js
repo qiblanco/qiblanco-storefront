@@ -270,18 +270,26 @@ export const STUFEN = [
         studie: 'studie-oxidativer-stress',
         zeile: 'Studie zu QiBracelet® mit Leberzellen, gleiche Gitterchip®-Technik.',
       },
-    ],
-    kennzahlen: [
       {
-        // e0005 laienSummary.punkte[0]: „53,3 % bessere Zellregeneration
-        // neben dem QiHome® Air als ohne Gerät (p ≤ 0,01)“.
+        // Christian, 01.11.2026: die Kennzahl „+53,3 %“ „genauso optisch schön
+        // wie die grün-roten Balken oben“. Dartsch 2026 (e0005), Abschnitt 4.1:
+        // Regeneration neben dem QiHome® Air um 53,3 ± 6,4 % gegenüber der
+        // unbehandelten Kontrolle verbessert (p ≤ 0,01). Kontrolle = 100 %,
+        // also 153,3 %; beide Zahlen stehen in der FAQ der Studienseite.
+        // hoechstwert: Skala des Diagramms (Standard 100), damit 153,3 in die
+        // Fläche passt.
         id: 'qihome-air',
-        wert: '53,3',
-        anzeige: '+53,3 %',
-        text: 'schnellere Zellregeneration bei Nervenzellen neben dem QiHome® Air',
+        titel: ['Zellregeneration', 'bei Nervenzellen'],
+        balken: [
+          {bezeichnung: 'Ohne Gerät', wert: 100, stellen: 0, ton: 'ohne'},
+          {bezeichnung: 'Mit QiHome® Air', wert: 153.3, ton: 'mit'},
+        ],
+        hoechstwert: 170,
         studie: 'studie-qihome-air',
         zeile: 'Studie zu QiHome® Air mit neuronalen Zellen.',
       },
+    ],
+    kennzahlen: [
       {
         // e0004 laienSummary: 171 freiwillig geteilte Erfahrungsberichte,
         // am häufigsten mehr Ruhe und Gelassenheit (rund 20 %).

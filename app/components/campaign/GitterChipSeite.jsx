@@ -109,6 +109,7 @@ function Studien({stufe}) {
                 </>
               }
               balken={d.balken}
+              hoechstwert={d.hoechstwert}
               studieHref={studienPfad(d.studie)}
               studieZeile={d.zeile}
             />
