@@ -206,8 +206,15 @@ export function useErsatzbild(videoRef, an = true) {
  * Bild (Christian 01.10.2026). Unter prefers-reduced-motion wird nichts
  * nachgeholt: dort bleibt das Standbild. Reine Teile (spieleSicher, GESTEN)
  * in video-nachholen.js, geprüft in video-nachholen.test.mjs.
+ *
+ * `opt` (Apple-Upgrade 01.11.2026, optional): `beiAbgelehnt()` läuft nach
+ * jeder Ablehnung (dort startet useFilmDekoder den dekodierten Film), und
+ * solange `gesperrt()` wahr ist, versucht der Weg kein play() mehr (der
+ * dekodierte Film dreht schon). Ohne `opt` bleibt alles wie vorher.
  */
-export function useVideoNachholen(videoRef, an = true) {
+export function useVideoNachholen(videoRef, an = true, opt = null) {
+  const optRef = useRef(opt);
+  optRef.current = opt;
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !an || bevorzugtRuhe()) return undefined;
@@ -228,8 +235,15 @@ export function useVideoNachholen(videoRef, an = true) {
     };
     const versuch = () => {
       if (!imBild || !video.paused || !hatQuelle()) return;
+      if (optRef.current?.gesperrt?.()) {
+        gestenAus();
+        return;
+      }
       spieleSicher(video).then((ok) => {
-        if (!ok && video.paused) gestenAn();
+        if (!ok && video.paused) {
+          gestenAn();
+          optRef.current?.beiAbgelehnt?.();
+        }
       });
     };
     // Synchron im Ereignis: nur so gilt der Aufruf als Teil der Geste.

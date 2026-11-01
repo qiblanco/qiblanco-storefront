@@ -4,6 +4,8 @@ import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionen
 import {StudienCards} from '~/components/product-pages/StudienCards';
 import {ProductFAQ} from '~/components/ProductFAQ';
 import {FAQ_QI_MASTER} from '~/data/product-faqs';
+import {useVideoNachholen} from '~/components/reusables/video360-ersatzbild';
+import {LEINWAND_STIL, useFilmDekoder} from '~/components/reusables/useFilmDekoder';
 
 /*
  * LP B /pages/qi-alpha-b — die Landingpage zum Qi Alpha nach der Blaupause
@@ -108,17 +110,31 @@ export const QA_PRODUKTVIDEO = {
   schleife: true,
 };
 
-/** Stummes Schleifenvideo: spielt erst im Bild, steht bei reduzierter Bewegung. */
+/* Lage des Canvas: oben bündig, Höhe aus dem Seitenverhältnis des Films. */
+const QA_LEINWAND_STIL = {...LEINWAND_STIL, bottom: 'auto', height: 'auto'};
+
+/**
+ * Stummes Schleifenvideo: spielt erst im Bild, steht bei reduzierter Bewegung.
+ * Apple-Upgrade (01.11.2026): lehnt iOS den Film ab, dreht derselbe Film sofort
+ * über WebCodecs in einem Canvas darüber (useFilmDekoder.js); ohne WebCodecs
+ * startet ihn die erste Berührung der Seite (useVideoNachholen).
+ */
 function QaSchleifenVideo({video}) {
   const ref = useRef(null);
+  const dekoder = useFilmDekoder(ref, video.src);
+  useVideoNachholen(ref, true, {beiAbgelehnt: dekoder.abgelehnt, gesperrt: dekoder.zeigt});
+  const zeigtRef = useRef(dekoder.zeigt);
+  zeigtRef.current = dekoder.zeigt;
   useEffect(() => {
     const el = ref.current;
     if (!el || typeof IntersectionObserver === 'undefined') return undefined;
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
     const beobachter = new IntersectionObserver(
       ([eintrag]) => {
-        if (eintrag.isIntersecting) el.play().catch(() => {});
-        else el.pause();
+        // Dreht schon der dekodierte Film, bleibt das <video> still.
+        if (eintrag.isIntersecting) {
+          if (!zeigtRef.current()) el.play().catch(() => {});
+        } else el.pause();
       },
       {threshold: 0.25},
     );
@@ -126,19 +142,29 @@ function QaSchleifenVideo({video}) {
     return () => beobachter.disconnect();
   }, []);
   return (
-    <video
-      ref={ref}
-      className="qa-video__medium"
-      src={video.src}
-      poster={video.poster}
-      width={video.breite}
-      height={video.hoehe}
-      aria-label={video.alt}
-      muted
-      loop
-      playsInline
-      preload="none"
-    />
+    <div style={{position: 'relative'}}>
+      <video
+        ref={ref}
+        className="qa-video__medium"
+        src={video.src}
+        poster={video.poster}
+        width={video.breite}
+        height={video.hoehe}
+        aria-label={video.alt}
+        muted
+        loop
+        playsInline
+        preload="none"
+      />
+      <canvas
+        ref={dekoder.leinwandRef}
+        width={video.breite}
+        height={video.hoehe}
+        aria-hidden="true"
+        data-qb-dekoder="aus"
+        style={QA_LEINWAND_STIL}
+      />
+    </div>
   );
 }
 
