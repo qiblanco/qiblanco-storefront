@@ -224,3 +224,15 @@ test('Stromsparmodus: das stehende erste Bild (schwarz) zählt nicht als Film, d
   assert.equal(w.kinder[0].classList.has('tap-film-notbild-weg'), true, 'Standbild geht mit dem ersten laufenden Bild');
   iv.aufraeumen();
 });
+
+test('Notfall-Uhr: ein zweites spiele() (Wechsel ins Netz) stellt sie nicht zurück, das Standbild steht 1,5 s nach dem ERSTEN Sichtbarwerden', async () => {
+  const w = welt({fetchOk: false});
+  const iv = vi.bindeIosVideo(w.v, {spiele: () => {}, fenster: w.fenster, doc: w.doc});
+  await w.lauf(10);
+  iv.sichtbar();
+  await w.lauf(vi.WARTEN_MS);
+  iv.sichtbar();
+  await w.lauf(vi.NOTFALL_MS - vi.WARTEN_MS + 50);
+  assert.equal(w.kinder.length, 1, 'Standbild nach NOTFALL_MS ab dem ersten Sichtbarwerden');
+  iv.aufraeumen();
+});

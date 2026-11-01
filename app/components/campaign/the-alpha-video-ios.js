@@ -222,6 +222,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     st.erstesBild = true;
     st.lief = true;
     fenster.clearTimeout(st.notTimer);
+    st.notTimer = 0;
     v.dataset.tapIosBild = '1';
     notbildWeg();
   };
@@ -273,8 +274,12 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
         }, WARTEN_MS);
       }
     }
-    fenster.clearTimeout(st.notTimer);
-    st.notTimer = fenster.setTimeout(() => notbildAn('langsam'), NOTFALL_MS);
+    // Die Notfall-Uhr läuft ab dem ERSTEN Sichtbarwerden; weitere spiele()-
+    // Aufrufe (Wechsel ins Netz, Wiederholungen) stellen sie nicht zurück.
+    if (!st.notTimer) {
+      const rest = st.sichtbarSeit + NOTFALL_MS - fenster.performance.now();
+      st.notTimer = fenster.setTimeout(() => notbildAn('langsam'), Math.max(0, rest));
+    }
     warteAufBild();
   };
 
@@ -308,6 +313,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     if (v.dataset.tapImBild) return;
     st.sichtbarSeit = 0;
     fenster.clearTimeout(st.notTimer);
+    st.notTimer = 0;
     wechsle();
   };
   let letzte = 0;
@@ -436,6 +442,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
       st.weg = true;
       if (st.abbruch) st.abbruch.abort();
       fenster.clearTimeout(st.notTimer);
+      st.notTimer = 0;
       fenster.clearTimeout(st.wartTimer);
       fenster.clearTimeout(frueh);
       fenster.removeEventListener('load', los);
