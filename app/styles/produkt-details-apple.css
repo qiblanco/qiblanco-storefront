@@ -120,7 +120,9 @@
     min-width: 0;
     min-height: var(--as-tippziel);
     margin: 0;
-    padding-inline: var(--as-s-4);
+    /* Kompakt wie die Leisten bei Apple: das Haus setzt den Knopf 70 px hoch,
+       hier genügt die Trefferfläche (48 px). Leiste 65 px, Fuß-Polster 72 px. */
+    padding: calc(var(--as-s-1) * 1.5) var(--as-s-4);
   }
   /* Am Seitenende bleibt die Leiste stehen. Der Fuß bekommt ihre Höhe als
      Polster: Impressum, Datenschutz und Widerruf bleiben frei. Immer gesetzt,
