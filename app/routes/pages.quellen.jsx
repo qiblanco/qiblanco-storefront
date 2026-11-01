@@ -1,5 +1,7 @@
-import {Link} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import {QUELLEN} from '~/data/werk';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {QuellenApple} from '~/components/apple-seite/lp/QuellenApple';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
 import quellenStyles from '~/styles/werk-quellen.css?url';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
@@ -64,8 +66,15 @@ export const meta = () => [
   },
 ];
 
-export function loader() {
-  return {};
+/*
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s07-r4): der Schalter steht in app/lib/apple-seiten.js. An:
+ * QuellenApple mit denselben Daten. Aus: die Seite unverändert (C, Rückweg:
+ * Befehl „zurück“ in homepage-bauer/bin/apple-seite). Meta und JSON-LD bleiben
+ * in beiden Fassungen gleich.
+ */
+export function loader({context}) {
+  return {appleSeite: appleSeiteLaden(context, appleSeiteFuerPfad(PFAD))};
 }
 
 /**
@@ -124,6 +133,8 @@ function Angabe({quelle}) {
 }
 
 export default function QuellenSeite() {
+  const {appleSeite} = useLoaderData() ?? {};
+  if (appleSeite?.an) return <QuellenApple seite={appleSeite.seite} quellen={QUELLEN} />;
   return (
     <div className="qb-qu">
       <div className="qb-qu__inhalt">
