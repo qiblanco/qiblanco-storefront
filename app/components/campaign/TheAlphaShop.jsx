@@ -3,6 +3,7 @@ import {useSearchParams} from 'react-router';
 import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
+import {starteLoop} from '~/lib/loop-rueckfall';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
@@ -668,33 +669,66 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
  * Lucas 360-Grad-Loop im Abschnitt „Kohärentes Licht“: stumm, inline, in Schleife, ohne
  * Bedienleiste; beim Laden steht das Poster. Wer weniger Bewegung wünscht
  * (prefers-reduced-motion), sieht den ersten Rahmen still.
+ *
+ * RÜCKFALL BILDFOLGE (Christian 01.11.2026, Annas iPhone, Chrome: „360-Grad-
+ * Animation, das spielt gar nicht ab“): lehnt iOS das Abspielen ohne
+ * Berührung ab (Stromsparmodus, „Video-Vorschauen automatisch abspielen“
+ * aus), dreht sich an derselben Stelle dieselbe Drehung als animierte
+ * Bildfolge (loop.bildfolge, 220 Bilder, 720 px). Das Poster steht, bis
+ * die Bildfolge geladen ist; erst dann tritt sie an die Stelle des Films,
+ * also nie ein Schwarzbild. Wer abspielen darf (Android, Desktop, iOS ohne
+ * Sperre), sieht wie bisher den Film. Erkennung: app/lib/loop-rueckfall.js.
  */
 function BandLoop({loop}) {
   const ref = useRef(null);
+  const [bildfolge, setBildfolge] = useState(false);
+  const [bildfolgeDa, setBildfolgeDa] = useState(false);
   useEffect(() => {
     const v = ref.current;
-    if (!v || typeof window.matchMedia !== 'function') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!v) return undefined;
+    if (
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
       v.pause();
+      return undefined;
     }
-  }, []);
+    if (!loop.bildfolge) return undefined;
+    return starteLoop(v, () => setBildfolge(true));
+  }, [loop.bildfolge]);
   return (
-    <video
-      ref={ref}
-      className="tas-band-loop"
-      src={loop.src}
-      poster={loop.poster}
-      width="720"
-      height="720"
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="auto"
-      disablePictureInPicture
-      aria-label={loop.alt}
-      data-tas-loop=""
-    />
+    <>
+      <video
+        ref={ref}
+        className={
+          bildfolgeDa ? 'tas-band-loop tas-band-loop--ersetzt' : 'tas-band-loop'
+        }
+        src={loop.src}
+        poster={loop.poster}
+        width="720"
+        height="720"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        disablePictureInPicture
+        aria-label={loop.alt}
+        data-tas-loop=""
+      />
+      {bildfolge ? (
+        <img
+          className="tas-band-loop tas-band-bildfolge"
+          src={loop.bildfolge}
+          alt={bildfolgeDa ? loop.alt : ''}
+          width="720"
+          height="720"
+          decoding="async"
+          data-tas-bildfolge={bildfolgeDa ? 'laeuft' : 'laedt'}
+          onLoad={() => setBildfolgeDa(true)}
+        />
+      ) : null}
+    </>
   );
 }
 

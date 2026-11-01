@@ -190,6 +190,27 @@
   pointer-events: none;
 }
 
+/* Rückfall-Bildfolge (BandLoop): liegt deckungsgleich über dem Film und
+   bleibt unsichtbar, bis sie geladen ist; dann tritt sie an seine Stelle.
+   So steht bis dahin das Poster, nie ein Schwarzbild. */
+.tas-licht-buehne {
+  position: relative;
+}
+
+.tas-band-bildfolge {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.tas-band-bildfolge[data-tas-bildfolge='laeuft'] {
+  opacity: 1;
+}
+
+.tas-band-loop--ersetzt {
+  visibility: hidden;
+}
+
 .tas-seite .tas-band-titel {
   font-size: var(--tas-fs-6);
   font-weight: 600;

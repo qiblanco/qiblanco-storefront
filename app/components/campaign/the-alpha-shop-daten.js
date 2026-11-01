@@ -31,6 +31,12 @@ export const KOPF = {
   loop: {
     src: 'https://cdn.shopify.com/videos/c/vp/719017d4447d42eabe22c203cb6a3f51/719017d4447d42eabe22c203cb6a3f51.HD-720p-1.6Mbps-98929981.mp4',
     poster: `${CDN}/files/qi-alpha-360-poster.jpg?v=1793023790`,
+    /*
+     * Dieselbe Drehung als animiertes WebP (Lucas Loop, 220 Bilder, 24 fps,
+     * 720 px, 1,4 MB), Rückfall für iPhones, die den Film ohne Berührung
+     * nicht abspielen (BandLoop). Leer = kein Rückfall, Poster wie bisher.
+     */
+    bildfolge: `${CDN}/files/qb-qi-alpha--qi-alpha-360-bildfolge--6ef8a0510989.webp?v=1793510374`,
     alt: 'Qi Alpha®, 360-Grad-Ansicht',
   },
 };
