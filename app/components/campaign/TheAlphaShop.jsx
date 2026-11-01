@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {Fragment, useCallback, useEffect, useRef, useState} from 'react';
 import {useSearchParams} from 'react-router';
 import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
@@ -8,6 +8,11 @@ import {bruttoAnzeige} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
 import {addonLinien, addonsImMarkt, QM_ADDON} from '~/lib/qi-master-addons';
 import {vorbestellungFürHandle} from '~/lib/vorbestellung';
+import {
+  einheitenLinien,
+  reservierungsMerkmale,
+  reserviertStand,
+} from '~/lib/qi-alpha-reservierung';
 import {
   aufteilung,
   konfigText,
@@ -91,7 +96,12 @@ const GRAVUR_SIZES =
  * 20261026-prio1-the-alpha-variante-a-designmeister-premium-gestaltung die
  * Wissens-Strecke und die Fragen ein (Prop `nachDerBox`).
  */
-export function TheAlphaShop({product, addons, nachDerBox = null}) {
+export function TheAlphaShop({
+  product,
+  addons,
+  reservierung = null,
+  nachDerBox = null,
+}) {
   const land = useMarktLand();
   const {open} = useAside();
   const haupt = product.selectedOrFirstAvailableVariant;
@@ -99,7 +109,30 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   // Add-ons nur neben einem kaufbaren Qi Alpha, sonst in jedem Markt, in
   // dem Shopify sie mit Preis in der Marktwährung führt (addonsImMarkt; bis
   // 30.10.2026 nur EUR/CHF, F-2755). Dieselbe Regel wie die Kaufseite B.
-  const {stand, nummernAn, ketten, marktAddons} = kaufAuswahl(addons, haupt);
+  const {
+    stand,
+    nummernAn: nummernFrei,
+    ketten,
+    marktAddons,
+  } = kaufAuswahl(addons, haupt);
+  // PREMIUM-KUNDEN-CHECKOUT (Christian 01.11.2026, Job 20261101-prio2-qi-
+  // alpha-premium-checkout-reservierte-nummern-links): `reservierung` kommt
+  // nur aus dem Spiegel products.qi-alpha-reserviert.$schluessel.jsx. Dann
+  // stehen in der Nummernwahl oben NUR die reservierte(n) Nummer(n) mit
+  // „Reserviert für <Name>“, darunter die freie Auswahl, kein Vorschlag und
+  // kein „Ohne Wunschnummer“. Jede gewählte Nummer ist ein Gerät mit eigener
+  // Kette („wenn er die zwei Nummern auswählt, dann kommen auch zwei G-Master
+  // in den Korb“). Ohne `reservierung` bleibt alles wie bisher.
+  const premium = Boolean(reservierung);
+  const reserviert = premium
+    ? reserviertStand(reservierung, marktAddons.wunschnummer?.variants?.nodes)
+    : [];
+  const nummernAn = nummernFrei || reserviert.length > 0;
+  const [reserviertAn, setReserviertAn] = useState(() =>
+    reserviert.filter((x) => x.variante).map((x) => x.n),
+  );
+  const [kettenJe, setKettenJe] = useState({});
+  const [fokus, setFokus] = useState(null);
 
   const [nummer, setNummer] = useState(null);
   const [freiOffen, setFreiOffen] = useState(false);
@@ -119,6 +152,23 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
     ketten.find((k) => k.titel === ketteTitel) ??
     ketten.find((k) => k.titel === 'stahl') ??
     ketten[ketten.length - 1];
+  // Die Geräte im Premium-Bereich: angewählte reservierte Nummern, dann die
+  // frei gewählte. Ab zwei Geräten wählt jedes seine Kette selbst.
+  const einheiten = premium
+    ? [
+        ...reserviert
+          .filter((x) => x.variante && reserviertAn.includes(x.n))
+          .map((x) => ({n: x.n, variante: x.variante, name: x.name})),
+        ...(nummerEintrag
+          ? [{n: nummerEintrag.n, variante: nummerEintrag.variante, name: null}]
+          : []),
+      ]
+    : [];
+  const mehrere = einheiten.length > 1;
+  const ketteFuer = (n) =>
+    (mehrere && ketten.find((k) => k.titel === kettenJe[n])) || kette;
+  const fokusNummer =
+    einheiten.find((g) => g.n === fokus)?.n ?? einheiten[0]?.n ?? null;
 
   const brutto = (money, handle) =>
     money ? bruttoAnzeige(money.amount, handle, money.currencyCode, land) : 0;
@@ -129,15 +179,23 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   const nummerPreis = brutto(nummerPreisBasis, QM_ADDON.wunschnummer);
   const kettePreis = (k) =>
     k?.variante ? brutto(k.variante.price, QM_ADDON.kette) : 0;
-  const summe =
-    hauptPreis +
-    (nummerEintrag ? nummerPreis : 0) +
-    (kette?.art === 'gold' ? kettePreis(kette) : 0);
+  const kettenBetrag = (k) => (k?.art === 'gold' ? kettePreis(k) : 0);
+  const summe = premium
+    ? einheiten.reduce(
+        (s, g) => s + hauptPreis + nummerPreis + kettenBetrag(ketteFuer(g.n)),
+        0,
+      )
+    : hauptPreis +
+      (nummerEintrag ? nummerPreis : 0) +
+      (kette?.art === 'gold' ? kettePreis(kette) : 0);
   // GETEILTE ZAHLUNG (Grossjob 20261027-qi-alpha-geteilte-zahlung-10000-
   // raten-rest-sofort, s03): nur im EUR-Markt DE/AT, Aufteilung aus derselben
   // Summe wie die Zusammenfassung. Über 10.000 € zahlt der Kunde 10.000 € in
   // Raten und den Rest sofort; bis 10.000 € gilt der normale Ratenweg.
-  const ratenAn = ratenMarkt({waehrung, land});
+  // Im Premium-Bereich nur Direktzahlung: der Rest-Link der geteilten Zahlung
+  // (qi-alpha-teilzahlung) trägt keinen Reservierungs-Schlüssel, und die
+  // Sperre im Warenkorb nähme die reservierte Nummer dort wieder heraus.
+  const ratenAn = !premium && ratenMarkt({waehrung, land});
   const art = ratenAn ? zahlart : 'direkt';
   const teilung = aufteilung({summe, waehrung, land});
   const geteilt = art === 'raten' && teilung;
@@ -150,7 +208,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   };
   const schliesseFenster = useCallback(() => setFenster(null), []);
   useEffect(() => {
-    if (vorwahlRaten && teilung && haupt?.availableForSale) {
+    if (!premium && vorwahlRaten && teilung && haupt?.availableForSale) {
       setFenster({vorgang: vorgangsKennung()});
     }
     // Nur beim ersten Laden: die Vorwahl öffnet einmal.
@@ -164,6 +222,20 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
   // Die Kette geht als Zeile mit, ob Gold oder die inklusive Stahlkette zu
   // 0 € (Elina 30.10.2026, EL-20261030-ae569366: „damit Monta beide Artikel
   // bekommt“). Stahl ohne Variante (Rückfall, s. kettenOptionen) = keine Zeile.
+  // Premium: je Gerät Nummer (reserviert mit Schlüssel und Name als
+  // Zeilen-Merkmal, lib/qi-alpha-reservierung.js) und Kette, dazu der
+  // Qi Alpha® in der Menge der Geräte.
+  const premiumLinien = einheitenLinien({
+    haupt,
+    linie: addonLinien,
+    einheiten: einheiten.map((g) => ({
+      nummer: g.variante,
+      merkmale: g.name
+        ? reservierungsMerkmale(reservierung.schluessel, g.name)
+        : null,
+      kette: ketteFuer(g.n)?.variante ?? null,
+    })),
+  });
   const linien = haupt?.id
     ? [
         ...addonLinien({
@@ -174,16 +246,40 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
       ]
     : [];
 
-  const gravur = gravurText(nummerEintrag?.n ?? null, THE_ALPHA_SERIE);
-  const ketteGold = kette?.art === 'gold';
+  // Gravur: nur Nummer und Edition, nie der Name (Christian: „auf der
+  // Laserung steht dann nur 88 von 111“). Premium zeigt das zuletzt
+  // angewählte Gerät.
+  const gravur = gravurText(
+    premium ? fokusNummer : (nummerEintrag?.n ?? null),
+    THE_ALPHA_SERIE,
+  );
+  const ketteAnsicht =
+    premium && einheiten.length ? ketteFuer(fokusNummer) : kette;
+  const ketteGold = ketteAnsicht?.art === 'gold';
   const wahlNummer = (n) => {
     setNummer(n);
     if (n === null) setFreiOffen(false);
+    if (n !== null) setFokus(n);
   };
   const vorschlagFrei = (n) =>
     stand.nummern.find((x) => x.n === n)?.status === 'frei';
   const freiGewaehlt =
-    nummerEintrag && !NUMMER.vorschlaege.includes(nummerEintrag.n);
+    nummerEintrag && (premium || !NUMMER.vorschlaege.includes(nummerEintrag.n));
+  const schalteReserviert = (n) => {
+    const an = reserviertAn.includes(n);
+    setReserviertAn(
+      an ? reserviertAn.filter((x) => x !== n) : [...reserviertAn, n],
+    );
+    if (!an) setFokus(n);
+  };
+  const schalteFrei = () => {
+    if (freiOffen || nummerEintrag) {
+      setFreiOffen(false);
+      setNummer(null);
+    } else {
+      setFreiOffen(true);
+    }
+  };
   const grossesBild = GALERIE.bilder[bild] ?? GALERIE.bilder[0];
   const seite = useRef(null);
   // Der eine Kaufknopf: in der Zusammenfassung und, mobil nach ihr, in der
@@ -203,9 +299,9 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
       </button>
     ) : (
       <AddToCartButton
-        disabled={!haupt?.availableForSale}
+        disabled={!haupt?.availableForSale || (premium && !einheiten.length)}
         onClick={() => open('cart')}
-        lines={linien}
+        lines={premium ? premiumLinien : linien}
       >
         {haupt?.availableForSale ? ZUSAMMENFASSUNG.knopf : 'Ausverkauft'}
       </AddToCartButton>
@@ -247,7 +343,9 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                 key={grossesBild.url}
                 className="tas-bild tas-blende"
                 src={`${grossesBild.url}&width=1200`}
-                srcSet={GALERIE_BREITEN.map((w) => `${grossesBild.url}&width=${w} ${w}w`).join(', ')}
+                srcSet={GALERIE_BREITEN.map(
+                  (w) => `${grossesBild.url}&width=${w} ${w}w`,
+                ).join(', ')}
                 sizes={GALERIE_SIZES}
                 alt={grossesBild.alt}
                 width="1200"
@@ -323,18 +421,42 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               </h2>
               <div
                 className="tas-karten"
-                role="radiogroup"
+                role={premium ? 'group' : 'radiogroup'}
                 aria-labelledby="tas-nummer-titel"
               >
-                <Karte
-                  an={!nummerEintrag && !freiOffen}
-                  onClick={() => wahlNummer(null)}
-                  titel={NUMMER.ohneTitel}
-                  text={NUMMER.ohneHinweis}
-                  preis={`+ ${betragText(0, waehrung)}`}
-                  data={{'data-tas-nummer': 'ohne'}}
-                />
-                {NUMMER.vorschlaege.map((n) =>
+                {premium
+                  ? reserviert.map((x) => (
+                      <Karte
+                        key={x.n}
+                        rolle="checkbox"
+                        an={Boolean(x.variante) && reserviertAn.includes(x.n)}
+                        gesperrt={!x.variante}
+                        onClick={() => schalteReserviert(x.n)}
+                        titel={`${x.n}/${THE_ALPHA_SERIE}`}
+                        text={
+                          x.variante
+                            ? `Reserviert für ${x.name}`
+                            : `Reserviert für ${x.name}, bereits gekauft`
+                        }
+                        preis={`+ ${betragText(nummerPreis, waehrung)}`}
+                        data={{
+                          'data-tas-nummer': String(x.n),
+                          'data-tas-reserviert': x.status,
+                        }}
+                      />
+                    ))
+                  : null}
+                {premium ? null : (
+                  <Karte
+                    an={!nummerEintrag && !freiOffen}
+                    onClick={() => wahlNummer(null)}
+                    titel={NUMMER.ohneTitel}
+                    text={NUMMER.ohneHinweis}
+                    preis={`+ ${betragText(0, waehrung)}`}
+                    data={{'data-tas-nummer': 'ohne'}}
+                  />
+                )}
+                {(premium ? [] : NUMMER.vorschlaege).map((n) =>
                   vorschlagFrei(n) ? (
                     <Karte
                       key={n}
@@ -350,8 +472,9 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                   ) : null,
                 )}
                 <Karte
+                  rolle={premium ? 'checkbox' : 'radio'}
                   an={freiOffen || Boolean(freiGewaehlt)}
-                  onClick={() => setFreiOffen(true)}
+                  onClick={premium ? schalteFrei : () => setFreiOffen(true)}
                   titel={
                     freiGewaehlt
                       ? `${NUMMER.freiTitel}: ${nummerEintrag.n}/${THE_ALPHA_SERIE}`
@@ -378,7 +501,9 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                     <img
                       className="tas-gravur-foto"
                       src={`${NUMMER.bildGravur.url}&width=${NUMMER.bildGravur.breite}`}
-                      srcSet={GRAVUR_BREITEN.map((w) => `${NUMMER.bildGravur.url}&width=${w} ${w}w`).join(', ')}
+                      srcSet={GRAVUR_BREITEN.map(
+                        (w) => `${NUMMER.bildGravur.url}&width=${w} ${w}w`,
+                      ).join(', ')}
                       sizes={GRAVUR_SIZES}
                       alt={NUMMER.bildGravur.alt}
                       width={NUMMER.bildGravur.breite}
@@ -416,26 +541,66 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               <span className="tas-auszeichnung">{KETTE.auszeichnung}</span>{' '}
               <span className="tas-titel-rest">{KETTE.titel}</span>
             </h2>
-            <div
-              className="tas-karten"
-              role="radiogroup"
-              aria-labelledby="tas-kette-titel"
-            >
-              {ketten.map((k) => (
-                <Karte
-                  key={k.titel}
-                  an={kette?.titel === k.titel}
-                  onClick={() => setKetteTitel(k.titel)}
-                  titel={k.name}
-                  preis={
-                    k.art === 'gold'
-                      ? betragText(kettePreis(k), waehrung)
-                      : KETTE_STAHL_PREIS
-                  }
-                  data={{'data-tas-kette': k.titel}}
-                />
-              ))}
-            </div>
+            {/* Premium mit zwei oder mehr Geräten: je Gerät eine Kettenwahl
+                („Ketten je Gerät frei“), sonst die eine wie bisher. */}
+            {mehrere ? (
+              einheiten.map((g) => (
+                <Fragment key={g.n}>
+                  <p
+                    id={`tas-kette-${g.n}`}
+                    className="tas-einheit-titel"
+                    data-tas-einheit={g.n}
+                  >
+                    {mitMarkeR(`Kette zu Qi Alpha® ${g.n}/${THE_ALPHA_SERIE}`)}
+                  </p>
+                  <div
+                    className="tas-karten"
+                    role="radiogroup"
+                    aria-labelledby={`tas-kette-${g.n}`}
+                    data-tas-einheit-ketten={g.n}
+                  >
+                    {ketten.map((k) => (
+                      <Karte
+                        key={k.titel}
+                        an={ketteFuer(g.n)?.titel === k.titel}
+                        onClick={() => {
+                          setKettenJe({...kettenJe, [g.n]: k.titel});
+                          setFokus(g.n);
+                        }}
+                        titel={k.name}
+                        preis={
+                          k.art === 'gold'
+                            ? betragText(kettePreis(k), waehrung)
+                            : KETTE_STAHL_PREIS
+                        }
+                        data={{'data-tas-kette': k.titel}}
+                      />
+                    ))}
+                  </div>
+                </Fragment>
+              ))
+            ) : (
+              <div
+                className="tas-karten"
+                role="radiogroup"
+                aria-labelledby="tas-kette-titel"
+              >
+                {ketten.map((k) => (
+                  <Karte
+                    key={k.titel}
+                    an={kette?.titel === k.titel}
+                    onClick={() => setKetteTitel(k.titel)}
+                    titel={k.name}
+                    preis={
+                      k.art === 'gold'
+                        ? betragText(kettePreis(k), waehrung)
+                        : KETTE_STAHL_PREIS
+                    }
+                    data={{'data-tas-kette': k.titel}}
+                  />
+                ))}
+              </div>
+            )}
             <div
               className="tas-bildpaar"
               data-tas-kette-farbe={ketteGold ? 'gold' : 'stahl'}
@@ -460,9 +625,7 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
               </span>
             </h2>
             <div
-              className={
-                ratenAn ? 'tas-karten tas-karten--zwei' : 'tas-karten'
-              }
+              className={ratenAn ? 'tas-karten tas-karten--zwei' : 'tas-karten'}
               role="radiogroup"
               aria-labelledby="tas-zahl-titel"
             >
@@ -481,7 +644,9 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
                     oeffneFenster();
                   }}
                   titel={BEZAHLUNG.raten.name}
-                  text={teilung ? BEZAHLUNG.raten.text : BEZAHLUNG.raten.textGanz}
+                  text={
+                    teilung ? BEZAHLUNG.raten.text : BEZAHLUNG.raten.textGanz
+                  }
                   data={{'data-tas-zahlart': 'raten'}}
                 />
               ) : null}
@@ -535,25 +700,55 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
         </div>
         <div className="tas-summe-zeilen">
           <dl className="tas-posten">
-            <div>
-              <dt>
-                <MarkeR text={PRODUKT.name} /> · {gravur}
-              </dt>
-              <dd>
-                {betragText(
-                  hauptPreis + (nummerEintrag ? nummerPreis : 0),
-                  waehrung,
-                )}
-              </dd>
-            </div>
-            <div>
-              <dt>{mitMarkeR(kette?.name)}</dt>
-              <dd>
-                {ketteGold
-                  ? betragText(kettePreis(kette), waehrung)
-                  : KETTE_STAHL_PREIS}
-              </dd>
-            </div>
+            {premium ? (
+              // Je Gerät Qi Alpha® mit Gravur und seine Kette (Christian:
+              // „was im Paket steht, dann zweimal G-Master und einmal
+              // Goldkette und einmal Stahlkette“).
+              einheiten.map((g) => {
+                const k = ketteFuer(g.n);
+                return (
+                  <Fragment key={g.n}>
+                    <div data-tas-posten-einheit={g.n}>
+                      <dt>
+                        <MarkeR text={PRODUKT.name} /> ·{' '}
+                        {gravurText(g.n, THE_ALPHA_SERIE)}
+                      </dt>
+                      <dd>{betragText(hauptPreis + nummerPreis, waehrung)}</dd>
+                    </div>
+                    <div data-tas-posten-kette={k?.art}>
+                      <dt>{mitMarkeR(k?.name)}</dt>
+                      <dd>
+                        {k?.art === 'gold'
+                          ? betragText(kettePreis(k), waehrung)
+                          : KETTE_STAHL_PREIS}
+                      </dd>
+                    </div>
+                  </Fragment>
+                );
+              })
+            ) : (
+              <>
+                <div>
+                  <dt>
+                    <MarkeR text={PRODUKT.name} /> · {gravur}
+                  </dt>
+                  <dd>
+                    {betragText(
+                      hauptPreis + (nummerEintrag ? nummerPreis : 0),
+                      waehrung,
+                    )}
+                  </dd>
+                </div>
+                <div>
+                  <dt>{mitMarkeR(kette?.name)}</dt>
+                  <dd>
+                    {ketteGold
+                      ? betragText(kettePreis(kette), waehrung)
+                      : KETTE_STAHL_PREIS}
+                  </dd>
+                </div>
+              </>
+            )}
             <div className="tas-posten-summe">
               <dt>Summe</dt>
               <dd data-tas-summe="">{betragText(summe, waehrung)}</dd>
@@ -835,14 +1030,24 @@ function Zeichen({art}) {
 }
 
 /** Eine Auswahl-Karte wie bei Apple: Rahmen, gewählt = dunkel umrandet. */
-function Karte({an, onClick, titel, text = null, preis = null, data = {}}) {
+function Karte({
+  an,
+  onClick,
+  titel,
+  text = null,
+  preis = null,
+  data = {},
+  rolle = 'radio',
+  gesperrt = false,
+}) {
   return (
     <button
       type="button"
-      role="radio"
+      role={rolle}
       aria-checked={an}
       className="tas-karte"
       onClick={onClick}
+      disabled={gesperrt}
       {...data}
     >
       <span className="tas-karte-kopf">

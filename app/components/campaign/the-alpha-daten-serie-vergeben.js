@@ -13,5 +13,11 @@ export const THE_ALPHA_SERIE = 111;
  * Wort nie widerspricht, auch wenn Shopify hinterherläuft. Eine Nummer ist
  * auf der Seite frei NUR, wenn sie hier fehlt UND ihre Shopify-Variante
  * kaufbar ist. (Übergabe s03 des Grossjobs 20261025-prio1-the-alpha-…)
+ *
+ * SEIT 01.11.2026 sind 2, 44, 88 und 99 per persönlichem Link reserviert
+ * (Namen und Schlüssel nur in lib/qi-alpha-reservierungen.server.js). In
+ * Shopify sind sie dafür kaufbar; hier bleiben sie gesperrt, damit der normale
+ * Shop sie nie anbietet. Gekauft werden sie nur im Premium-Bereich
+ * /products/qi-alpha-reserviert/<schlüssel>.
  */
 export const THE_ALPHA_VERGEBEN = [2, 33, 44, 88, 99, 111];

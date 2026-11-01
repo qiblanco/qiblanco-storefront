@@ -263,7 +263,10 @@ function loadDeferredData() {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, addons} = useLoaderData();
+  // `reservierung` liefert nur der Spiegel für reservierte Nummern
+  // (products.qi-alpha-reserviert.$schluessel.jsx, gleiche Seite, gleicher
+  // Code); hier ist es immer undefined.
+  const {product, addons, reservierung} = useLoaderData();
   // Unter „What's in the Box“: Wissens-Strecke und Fragen (Christian
   // 26.10.2026, Z150–Z208; Grossjob 20261026-…-premium-gestaltung, s07).
   // Dazwischen die Anmeldung zum Live am 08.11. (Christian 25.10.2026: „Es
@@ -279,6 +282,7 @@ export default function Product() {
       <TheAlphaShop
         product={product}
         addons={addons}
+        reservierung={reservierung ?? null}
         nachDerBox={
           <>
             <TheAlphaWissen />

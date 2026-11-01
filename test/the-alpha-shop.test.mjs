@@ -442,13 +442,22 @@ test('Funnel-Kopf: nur /products/qi-alpha, nicht B-Fassung, Wunschnummer oder Ke
   assert.ok(re, 'Pfadmuster fehlt');
   // eslint-disable-next-line no-eval
   const muster = eval(re[0]);
-  for (const ja of ['/products/qi-alpha', '/products/qi-alpha/', '/products/Qi-Alpha', '/en/products/qi-alpha']) {
+  for (const ja of [
+    '/products/qi-alpha',
+    '/products/qi-alpha/',
+    '/products/Qi-Alpha',
+    '/en/products/qi-alpha',
+    // Spiegel für reservierte Nummern (Premium-Kunden-Checkout, 01.11.2026)
+    '/products/qi-alpha-reserviert/zrtdN1K39oTMjNu4gqfp7n',
+  ]) {
     assert.ok(muster.test(ja), ja);
   }
   for (const nein of [
     '/products/qi-alpha-b',
     '/products/qi-alpha-wunschnummer',
     '/products/qi-alpha-goldkette',
+    '/products/qi-alpha-reserviert',
+    '/products/qi-alpha-reserviert/kurz',
     '/products/qione-2-pro',
     '/pages/Qi-Alpha',
     '/cart',

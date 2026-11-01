@@ -1,7 +1,8 @@
 import {createContext, useContext, useEffect, useRef, useState} from 'react';
-import {Link} from 'react-router';
+import {Link, useSearchParams} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
+import {kaufZiel, RESERVIERUNG_PARAM} from '~/lib/qi-alpha-reservierung';
 import {TapTon, TapFilmTon, videoQuellen} from '~/components/campaign/TheAlphaTon';
 import {tapStopper} from '~/components/campaign/the-alpha-stopper';
 import {
@@ -509,6 +510,10 @@ export function TapSeite({
   const wurzel = useRef(null);
   const szene = film === 'szene';
   const leiste = useTapFilm(wurzel, szene);
+  // Persönlicher Link (?reservierung=…): auch die Leiste führt in den
+  // Premium-Bereich, wie der rote Knopf (TheAlphaKauf, kaufZiel).
+  const [such] = useSearchParams();
+  const kaufWohin = kaufZiel(THE_ALPHA_KAUF_ZIEL, such.get(RESERVIERUNG_PARAM));
   return (
     <div
       className="tap-seite"
@@ -525,7 +530,7 @@ export function TapSeite({
         </span>
         <Link
           className="tap-leiste-knopf"
-          to={THE_ALPHA_KAUF_ZIEL}
+          to={kaufWohin}
           prefetch="intent"
           tabIndex={leiste ? undefined : -1}
         >
