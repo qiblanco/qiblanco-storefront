@@ -233,6 +233,9 @@ export function filmAufLeinwand(leinwand, src, opt = {}) {
   let erstes = true;
   let aus = false;
   let io = null;
+  let direkt = false;
+  let bestellt = 0;
+  let gemalt = 0;
 
   const stopp = () => {
     if (aus) return;
@@ -286,6 +289,46 @@ export function filmAufLeinwand(leinwand, src, opt = {}) {
     }
   }
 
+  // Über createImageBitmap statt drawImage(VideoFrame): die WebKit des
+  // Prüfstands (Linux) zeichnete im Dauerlauf auf einer Seite mit vielen
+  // Bildern ein fremdes Seitenbild statt des Films (gemessen auf
+  // qi-blanco.com, 01.11.2026). Die Kopie ist eindeutig. Lehnt ein Browser
+  // VideoFrame als Quelle ab, gilt drawImage direkt. Reihenfolge-Schutz: ein
+  // später fertiges älteres Bild überschreibt nie ein neueres.
+  function zeichne(quelle) {
+    leinwand
+      .getContext('2d')
+      .drawImage(quelle, 0, 0, leinwand.width, leinwand.height);
+    if (erstes) {
+      erstes = false;
+      if (beiErstemBild) beiErstemBild();
+    }
+  }
+
+  function malen(f) {
+    if (direkt || typeof createImageBitmap !== 'function') {
+      zeichne(f);
+      f.close();
+      return;
+    }
+    const nr = ++bestellt;
+    createImageBitmap(f).then(
+      (bm) => {
+        f.close();
+        if (!aus && nr > gemalt) {
+          gemalt = nr;
+          zeichne(bm);
+        }
+        bm.close();
+      },
+      () => {
+        direkt = true;
+        if (!aus) zeichne(f);
+        f.close();
+      },
+    );
+  }
+
   function bild(jetzt) {
     raf = 0;
     if (aus || !imBild || document.hidden) return;
@@ -299,15 +342,7 @@ export function filmAufLeinwand(leinwand, src, opt = {}) {
         if (zeigen) zeigen.close();
         zeigen = schlange.shift();
       }
-      if (zeigen) {
-        const c = leinwand.getContext('2d');
-        c.drawImage(zeigen, 0, 0, leinwand.width, leinwand.height);
-        zeigen.close();
-        if (erstes) {
-          erstes = false;
-          if (beiErstemBild) beiErstemBild();
-        }
-      }
+      if (zeigen) malen(zeigen);
     }
     fuettern();
     if (!aus) raf = requestAnimationFrame(bild);
