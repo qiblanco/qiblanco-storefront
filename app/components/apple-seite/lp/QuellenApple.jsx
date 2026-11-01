@@ -9,6 +9,9 @@ import {KursApple} from './KursApple';
  * Lesefassung (KursApple: Lesebreite, Typo-Skala, ein Bild-Radius), der Weg
  * zurück in die Fachartikel als Knopf (Kurs-Navigation, kein zweiter H2-Stil)
  * und Anna am Ende.
+ * s07-r5: Vorspann gestrichen. Der Richter (menschlichkeit/bin/pruefen
+ * --ki-klang --richter) verwarf ihn 3 von 3 (erklärt, wie die Seite gebaut
+ * ist); h1 „Quellen“ und die Liste tragen die Seite allein.
  *   return appleSeite?.an ? <QuellenApple seite={appleSeite.seite} quellen={QUELLEN} /> : <C />;
  */
 
@@ -69,10 +72,6 @@ export function QuellenApple({seite, quellen}) {
       <article className="course-lesson">
         <h1>Quellen</h1>
         <div className="course-lesson-body">
-          <p>
-            Alle Studien und Arbeiten, die unsere Fachartikel zitieren, mit
-            vollständiger Angabe und dem Artikel, in dem sie vorkommen.
-          </p>
           <h2>Alle Arbeiten, auf die wir uns berufen</h2>
           <ul>
             {quellen.map((q) => (
