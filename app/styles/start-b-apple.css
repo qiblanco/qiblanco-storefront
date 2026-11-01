@@ -76,11 +76,47 @@
 }
 
 /*
- * STICKY-KAUFKNOPF (nur Arm B, mobil). Die Rookie-Leiste bringt Lage und
- * Sichtbarkeit aus rookie-start.css mit; ihre Farb- und Abstands-Tokens
+ * STICKY-KAUFKNOPF (beide Arme, mobil). In B bringt die Rookie-Leiste Lage
+ * und Sichtbarkeit aus rookie-start.css mit; ihre Farb- und Abstands-Tokens
  * (--rs-*, --st-*) gelten nur unter .qb-rookie-start. In der Apple-Fassung
  * setzt dieser Block dieselben Rollen mit --as-*.
+ *
+ * ARM A (/, 01.11.2026, Grossjob 20261031-prio1-folge-seitenende, s03) lädt
+ * rookie-start.css nicht. Lage und Sichtbarkeit stehen deshalb hier, nur unter
+ * [data-apple-seite='startseite'], damit B unverändert bleibt. Die Bauform ist
+ * die der Detailseiten-Kaufleiste: Kopf-Ebene, Annas Rahmen bleibt darüber.
  */
+[data-apple-seite='startseite'] > .qb-rs-sticky {
+  display: none;
+}
+/* Der Schlussabstand der Seite bleibt beim Anna-Abschnitt, nicht bei der
+   Leiste (sonst rückt der Fuß auf allen Breiten 64 px näher). */
+[data-apple-seite='startseite'] > :nth-last-child(2):has(+ .qb-rs-sticky) {
+  margin-bottom: var(--as-s-8);
+}
+@media screen and (max-width: 749px) {
+  [data-apple-seite='startseite'] > .qb-rs-sticky {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: var(--z-kopf);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transform: translateY(100%);
+    visibility: hidden;
+  }
+  [data-apple-seite='startseite'] > .qb-rs-sticky--sichtbar {
+    transform: none;
+    visibility: visible;
+  }
+  /* Am Seitenende bleibt der Knopf stehen. Der Fuß bekommt die Höhe der
+     Leiste als Polster (48 Knopf + 2 x 8 Rand + Linie = 65 px, 9 Stufen des
+     8pt-Rasters = 72 px): Impressum, Datenschutz und Widerruf bleiben frei.
+     Immer gesetzt, nicht erst beim Erscheinen: nichts springt. */
+  body:has([data-apple-seite='startseite'] > .qb-rs-sticky) footer {
+    padding-bottom: calc(var(--qb-ref-raster, 8px) * 9 + env(safe-area-inset-bottom));
+  }
+}
 @media screen and (max-width: 749px) {
   /* Fest am unteren Rand: apple-seite.css gibt `.as-seite > :last-child`
      den Schlussabstand --as-s-8, und die Leiste ist das letzte Kind. Ohne
