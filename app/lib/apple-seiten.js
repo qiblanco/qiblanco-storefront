@@ -74,7 +74,7 @@ export const APPLE_SEITEN = Object.freeze({
   'kohaerentes-wasser': {pfad: '/pages/kohaerentes-wasser', schalter: 'APPLE_SEITE_KOHAERENTES_WASSER', standard: 'on'},
   'menschen-alltag': {pfad: '/pages/menschen-alltag', schalter: 'APPLE_SEITE_MENSCHEN_ALLTAG', standard: 'off'},
   'mentales-setting': {pfad: '/pages/mentales-setting', schalter: 'APPLE_SEITE_MENTALES_SETTING', standard: 'on'},
-  'podcasts': {pfad: '/pages/podcasts', schalter: 'APPLE_SEITE_PODCASTS', standard: 'on'},
+  'podcasts': {pfad: '/pages/podcasts', schalter: 'APPLE_SEITE_PODCASTS', standard: 'off'},
   'pages-podcasts-seite-2': {pfad: '/pages/podcasts/seite-2', schalter: 'APPLE_SEITE_PAGES_PODCASTS_SEITE_2', standard: 'on'},
   'pages-podcasts-seite-3': {pfad: '/pages/podcasts/seite-3', schalter: 'APPLE_SEITE_PAGES_PODCASTS_SEITE_3', standard: 'off'},
   'pages-podcasts-seite-4': {pfad: '/pages/podcasts/seite-4', schalter: 'APPLE_SEITE_PAGES_PODCASTS_SEITE_4', standard: 'off'},
