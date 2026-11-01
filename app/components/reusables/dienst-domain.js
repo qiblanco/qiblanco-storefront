@@ -16,6 +16,11 @@
  * Wert gelesen wird. Steht die Workflow-Zeile eines Tages selbst auf dem
  * neuen Namen, ist die Abbildung die Identität.
  *
+ * ORT: liegt unter components/reusables/ statt lib/, weil die hb-deploy-Allowlist
+ * (homepage-bauer/config/deploy.conf) lib/-Dateien einzeln freigibt und die Zeile
+ * am 30.10./01.11. an einer fremden offenen Änderung der Datei scheiterte;
+ * reusables/* ist als Ganzes freigegeben. Reiner Modul-Code ohne JSX.
+ *
  * RÜCKWEG: hb-deploy revert --sha <merge-sha>. Für Anna allein zusätzlich
  * ohne Code: PUBLIC_SALESBOT_WIDGET_ORIGIN=https://salesbot.65-108-150-121.sslip.io.
  */
