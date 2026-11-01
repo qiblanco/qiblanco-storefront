@@ -33,6 +33,7 @@ import {
 import {THE_ALPHA_SERIE} from './the-alpha-daten-serie-vergeben';
 import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
 import {Schlussleiste} from '~/components/reusables/Schlussleiste';
+import {GESTEN, spieleSicher} from '~/components/reusables/video-nachholen';
 
 /* Galerie-Hauptbild: Breitenstufen bis zum CDN-Master (2048/2056 px), damit
    Tablets mit dpr 2 nicht hochskalieren (Gate 12 bild-aufloesung). sizes folgt
@@ -668,15 +669,82 @@ export function TheAlphaShop({product, addons, nachDerBox = null}) {
  * Lucas 360-Grad-Loop im Abschnitt „Kohärentes Licht“: stumm, inline, in Schleife, ohne
  * Bedienleiste; beim Laden steht das Poster. Wer weniger Bewegung wünscht
  * (prefers-reduced-motion), sieht den ersten Rahmen still.
+ *
+ * IPHONE (Christian 01.11.2026: „Nee, es soll das Video abgespielt werden.
+ * … Keine Ersatzdinger bauen.“): im Stromsparmodus oder mit „Video-Vorschauen
+ * automatisch abspielen“ aus lehnt iOS (Safari und Chrome, beide WebKit) das
+ * autoplay-Attribut ab. Das versucht es genau einmal, danach stand das Poster
+ * für immer. Deshalb: muted/defaultMuted als Eigenschaft setzen (React setzt
+ * muted nur als Attribut), play() selbst aufrufen, sobald Daten da sind, und
+ * lehnt iOS ab, bei der ersten Berührung der Seite (Tippen, Taste) erneut,
+ * synchron im Ereignis, bis der Film läuft. Kein Knopf, kein Ersatzbild.
+ * Android und Desktop starten wie bisher über autoplay; der Aufruf dort ist
+ * ein No-op auf einem laufenden Film.
  */
 function BandLoop({loop}) {
   const ref = useRef(null);
   useEffect(() => {
     const v = ref.current;
-    if (!v || typeof window.matchMedia !== 'function') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!v) return undefined;
+    if (
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
       v.pause();
+      return undefined;
     }
+    v.defaultMuted = true;
+    v.muted = true;
+    v.playsInline = true;
+    let gesten = false;
+    const gestenAus = () => {
+      if (!gesten) return;
+      gesten = false;
+      GESTEN.forEach((t) =>
+        document.removeEventListener(t, beiGeste, {capture: true}),
+      );
+    };
+    const gestenAn = () => {
+      if (gesten) return;
+      gesten = true;
+      GESTEN.forEach((t) =>
+        document.addEventListener(t, beiGeste, {capture: true, passive: true}),
+      );
+    };
+    const versuch = () => {
+      if (!v.paused) return;
+      v.muted = true;
+      spieleSicher(v).then((ok) => {
+        if (!ok && v.paused) gestenAn();
+      });
+    };
+    // Synchron im Ereignis: nur so gilt play() für iOS als Teil der Geste.
+    function beiGeste() {
+      versuch();
+    }
+    // Hält iOS den Film später an (zurück aus dem Hintergrund im
+    // Stromsparmodus), holt die nächste Berührung ihn wieder.
+    const beiPause = () => {
+      if (!document.hidden) gestenAn();
+    };
+    const beiSicht = () => {
+      if (!document.hidden) versuch();
+    };
+    v.addEventListener('playing', gestenAus);
+    v.addEventListener('pause', beiPause);
+    v.addEventListener('loadeddata', versuch);
+    v.addEventListener('canplay', versuch);
+    document.addEventListener('visibilitychange', beiSicht);
+    gestenAn();
+    versuch();
+    return () => {
+      gestenAus();
+      v.removeEventListener('playing', gestenAus);
+      v.removeEventListener('pause', beiPause);
+      v.removeEventListener('loadeddata', versuch);
+      v.removeEventListener('canplay', versuch);
+      document.removeEventListener('visibilitychange', beiSicht);
+    };
   }, []);
   return (
     <video
