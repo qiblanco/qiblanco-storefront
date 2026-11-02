@@ -40,7 +40,7 @@ export const APPLE_SEITEN = Object.freeze({
   'start-b': {pfad: '/pages/start-b', schalter: 'APPLE_SEITE_START_B', standard: 'on'},
 
   // ---- s05 · Produkt-Details und Produkt-LPs ----
-  'qibracelet': {pfad: '/pages/qibracelet', schalter: 'APPLE_SEITE_QIBRACELET', standard: 'on'},
+  'qibracelet': {pfad: '/pages/qibracelet', schalter: 'APPLE_SEITE_QIBRACELET', standard: 'off'},
   'qibracelet-details': {pfad: '/pages/qibracelet-details', schalter: 'APPLE_SEITE_QIBRACELET_DETAILS', standard: 'on'},
   'qihome-air': {pfad: '/pages/qihome-air', schalter: 'APPLE_SEITE_QIHOME_AIR', standard: 'on'},
   'qihome-details': {pfad: '/pages/qihome-details', schalter: 'APPLE_SEITE_QIHOME_DETAILS', standard: 'on'},
