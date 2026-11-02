@@ -521,8 +521,7 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
     handle: 'cookie-erklaerung',
     ausSitemap: true,
     klasse: 'hygiene',
-    grund:
-      'Rechtsseite mit Absicht-noindex, erreichbar über den Cookie-Hinweis; kein Anzeigenziel und kein Kanalziel',
+    grund: 'Rechtsseite mit Absicht-noindex. Kein Anzeigenziel und kein Kanalziel.',
     seit: '2026-11-02',
   },
   // Neu 2026-09-24 (Großjob „Forschung bei Qi Blanco“, Christian 24.09.2026:
