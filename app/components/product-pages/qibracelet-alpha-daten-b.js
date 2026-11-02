@@ -3,7 +3,8 @@
  * Grossjob 20261027-GROSSJOB-apple-konfigurator-qione-qihome-qibracelet-ab, s12).
  * Hypothese „Alltag zuerst“: Kacheln aus den Texten von A (WISSEN Erde, FAKTEN,
  * VARIANTE.anpassen), die Fakten-Kacheln und die Kapitel Gitterchip und Erde
- * entfallen. Technik steht weiter im Gerätevergleich und in der FAQ.
+ * entfallen. Technik steht weiter im Gerätevergleich und in der FAQ. Neu sind die
+ * Kachel-Titel „Schlaf“ und „Deine Größe“; deren Satz sagt „den Reif“ statt „ihn“.
  */
 import {WISSEN} from './qibracelet-alpha-daten';
 

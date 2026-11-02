@@ -1,7 +1,8 @@
 /*
  * B-FASSUNG DES UNTEREN BEREICHS /products/qihome-air (Christian Zx 29.10.2026;
  * Grossjob 20261027-GROSSJOB-apple-konfigurator-qione-qihome-qibracelet-ab, s12).
- * Hypothese „Raum zuerst“: dieselben Texte wie A in anderer Folge, kein neuer Satz.
+ * Hypothese „Raum zuerst“: dieselben Texte wie A in anderer Folge; ein Satz ist für die
+ * neue Folge umformuliert (Schlafzimmer, unten).
  */
 import {WISSEN} from './qihome-air-alpha-daten';
 

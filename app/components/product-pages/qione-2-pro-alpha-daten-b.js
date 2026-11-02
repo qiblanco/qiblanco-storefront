@@ -3,7 +3,8 @@
  * „kurz, lang, welche Texte, welche Beschreibungen, welche Videos“; Grossjob
  * 20261027-GROSSJOB-apple-konfigurator-qione-qihome-qibracelet-ab, s12).
  * Hypothese „kurz, Video zuerst“. Nur das Delta zu A: der Oberteil liest dieselben
- * Daten wie A, alle Sätze stammen aus den s03-Texten von A.
+ * Daten wie A, die Sätze stammen aus den s03-Texten von A; neu ist nur die Link-Zeile
+ * zur Studie.
  */
 import {NUTZEN} from './qione-2-pro-alpha-daten';
 
