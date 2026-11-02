@@ -1,6 +1,7 @@
 import {redirect} from 'react-router';
 import {rabattlinkZiel} from '~/lib/discount-ziel';
 import {bindeHealWorldGeschenk} from '~/lib/heal-world-geschenk.server';
+import {bindeReservierungsCode} from '~/lib/qi-master-addons.server';
 
 /**
  * Automatically applies a discount found on the url
@@ -25,7 +26,13 @@ export async function loader({request, context, params}) {
     return redirect(redirectUrl);
   }
 
-  const gesetzt = await cart.updateDiscountCodes([code]);
+  // Persönlicher Link mit Rabatt: kein zweiter Code neben seinem (Christian
+  // 02.11.2026), auch nicht über diesen Weg.
+  const gesetzt = await bindeReservierungsCode({
+    cart,
+    action: 'DiscountCodesUpdate',
+    result: await cart.updateDiscountCodes([code]),
+  });
   // Heal-World-Geschenk: liegt schon ein Gerät im Warenkorb, kommt die
   // Geschenk-Zeile mit Janas Code im selben Schritt (lib/heal-world-geschenk.js).
   const result = await bindeHealWorldGeschenk({

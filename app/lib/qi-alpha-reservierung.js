@@ -72,6 +72,95 @@ export function reservierungZu(liste, schluessel, shop = 'deutsch') {
   };
 }
 
+/**
+ * Was der Browser vom Rabatt eines Links erfährt: nur die Beträge, nie den Code
+ * (Liste in lib/qi-alpha-reservierung-rabatte.server.js). null = kein Rabatt.
+ */
+export function rabattAngabe(rabatte, schluessel) {
+  const r = rabatte?.[schluessel];
+  return r
+    ? {jeAlphaEur: r.jeAlphaEur, wunschnummerWertEur: r.wunschnummerWertEur}
+    : null;
+}
+
+/**
+ * DIE RABATT-REGEL IM WARENKORB, rein (kein Netz). Trägt eine Zeile den
+ * Schlüssel eines Links mit Rabatt, gilt genau sein Code und kein anderer
+ * (Christian 02.11.2026: „ist kein weiterer Rabatt kombinierbar“). Ohne
+ * Schlüssel fällt ein solcher Code heraus, damit er nicht am normalen Kauf
+ * hängt. Ausgabe: die neue Code-Liste, null = nichts zu ändern.
+ */
+export function rabattCodeKorrektur(zeilen, codes, rabatte) {
+  const ist = (codes || []).map(String);
+  const schluessel = (zeilen || [])
+    .flatMap((z) => z?.attributes || [])
+    .find((a) => a?.key === MERKMAL_SCHLUESSEL && rabatte?.[a.value])?.value;
+  if (schluessel) {
+    const soll = rabatte[schluessel].code;
+    const gleich = ist.length === 1 && ist[0].toLowerCase() === soll.toLowerCase();
+    return gleich ? null : [soll];
+  }
+  const geheim = new Set(
+    Object.values(rabatte || {}).map((r) => r.code.toLowerCase()),
+  );
+  const rest = ist.filter((c) => !geheim.has(c.toLowerCase()));
+  return rest.length === ist.length ? null : rest;
+}
+
+/** Bringt diese Eingabe einen Schlüssel mit Rabatt in den Warenkorb? */
+export function eingabeTraegtRabatt(lines, rabatte) {
+  return (lines || []).some((z) =>
+    (z?.attributes || []).some(
+      (a) => a?.key === MERKMAL_SCHLUESSEL && rabatte?.[a.value],
+    ),
+  );
+}
+
+// Der Wortlaut für Warenkorbzeile und Summe: hier, nicht in den Komponenten.
+export const wunschnummerGratisText = (wert) =>
+  `Wunschnummer im Wert von ${wert} – für dich gratis`;
+export const vorteilJeAlphaText = (wert) =>
+  `Dein Vorteil: ${wert} je Qi Alpha®`;
+export const gesamtVorteilText = (wert) =>
+  `Gesamtvorteil ${wert} je Qi Alpha® mit Wunschnummer. `;
+export const NICHT_KOMBINIERBAR_TEXT =
+  'Nicht mit anderen Rabatten kombinierbar.';
+
+/**
+ * Anzeige im Warenkorb, rein. Der Browser kennt weder Code noch Liste: beides
+ * liest er an der Zeile. Gratis = Wunschnummer zu 0 mit Vergleichspreis.
+ */
+export function gratisWert(line) {
+  const preis = Number(line?.cost?.amountPerQuantity?.amount);
+  const wert = Number(line?.cost?.compareAtAmountPerQuantity?.amount);
+  return preis === 0 && wert > 0 ? wert : null;
+}
+
+/** Vorteil je Stück an einer Zeile mit Schlüssel; null ohne Abzug. */
+export function vorteilJeStueck(line) {
+  const mit = (line?.attributes || []).some(
+    (a) => a?.key === MERKMAL_SCHLUESSEL,
+  );
+  if (!mit) return null;
+  const summe = (line?.discountAllocations || []).reduce(
+    (s, d) => s + Number(d?.discountedAmount?.amount || 0),
+    0,
+  );
+  const menge = Number(line?.quantity) || 1;
+  return summe > 0 ? summe / menge : null;
+}
+
+/**
+ * Gesamtvorteil je Gerät für den Warenkorb: Abzug je Stück plus Wert der
+ * geschenkten Nummer, null ohne Abzug. Ohne Nummer im Korb nur der Abzug.
+ */
+export function gesamtVorteil(lines) {
+  const abzug = (lines || []).map(vorteilJeStueck).find(Boolean);
+  if (!abzug) return null;
+  const wert = (lines || []).map(gratisWert).find(Boolean) ?? null;
+  return {abzug, wert, gesamt: wert ? abzug + wert : null};
+}
+
 /** Alle reservierten Nummern eines Shops (für die Sperre im normalen Shop). */
 export function reservierteNummern(liste, shop = 'deutsch') {
   const aus = new Set();
@@ -192,10 +281,12 @@ export function reserviertStand(reservierung, varianten) {
  *
  * Reihenfolge wie auf der Kaufseite: Shopify legt die Zeilen umgekehrt in den
  * Warenkorb, übergeben wird je Gerät Kette, Nummer und am Ende der Qi Alpha®.
- * @param {{haupt: object, einheiten: Array<{nummer: object|null, merkmale?: Array, kette: object|null}>, linie: Function}} p
+ * @param {{haupt: object, einheiten: Array<{nummer: object|null, merkmale?: Array, kette: object|null}>, linie: Function, hauptMerkmale?: Array|null}} p
  *   `linie` = addonLinien aus lib/qi-master-addons.js (Merkmal _qm_addon).
+ *   `hauptMerkmale`: Link mit Rabatt, der Qi Alpha® trägt den Schlüssel selbst,
+ *   damit der Rabatt auch ohne Wunschnummer bleibt.
  */
-export function einheitenLinien({haupt, einheiten, linie}) {
+export function einheitenLinien({haupt, einheiten, linie, hauptMerkmale = null}) {
   if (!haupt?.id || !einheiten?.length) return [];
   const aus = [];
   for (const g of [...einheiten].reverse()) {
@@ -214,6 +305,7 @@ export function einheitenLinien({haupt, einheiten, linie}) {
     merchandiseId: haupt.id,
     quantity: einheiten.length,
     selectedVariant: haupt,
+    ...(hauptMerkmale?.length ? {attributes: hauptMerkmale} : {}),
   });
   return aus;
 }

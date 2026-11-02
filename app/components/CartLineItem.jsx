@@ -9,6 +9,13 @@ import {warenkorbTitel, warenkorbUnterzeile} from '~/lib/vorbestellung';
 import {useMarktLand} from '~/lib/markt-land';
 import {addonZeile, mengeFest} from '~/lib/qi-master-addons';
 import {kakaoSetArt} from '~/lib/kakao-set-zeile';
+import {
+  gratisWert,
+  vorteilJeAlphaText,
+  vorteilJeStueck,
+  wunschnummerGratisText,
+} from '~/lib/qi-alpha-reservierung';
+import {formatPreis} from '~/lib/markt-pricing';
 /**
  * A single line item in the cart. It displays the product image, title, price.
  * It also provides controls to update the quantity or remove the line item.
@@ -37,6 +44,12 @@ export function CartLineItem({layout, line}) {
   const vorbestellungZeile = warenkorbUnterzeile(line);
   const unterzeilen =
     addon?.unterzeilen ?? (vorbestellungZeile ? [vorbestellungZeile] : null);
+  // Persönlicher Link mit Rabatt (Christian 02.11.2026): „es soll eben gezeigt
+  // werden, dass die Wunschnummer im Wert von 2.000 Euro gratis ist.“
+  const waehrung = line?.cost?.totalAmount?.currencyCode || 'EUR';
+  const betrag = (wert) => formatPreis(wert, waehrung, 'cart-cent');
+  const wertGratis = addon ? gratisWert(line) : null;
+  const vorteil = addon ? null : vorteilJeStueck(line);
 
   return (
     <li
@@ -88,11 +101,27 @@ export function CartLineItem({layout, line}) {
             taxRate={displayPrice.taxRate}
             centGenau
           />
+        ) : wertGratis ? (
+          <div className="product-price" data-warenkorb-gratis="">
+            <span>
+              <s>{betrag(wertGratis)}</s> {betrag(0)}
+            </span>
+          </div>
         ) : (
           <div className="product-price" aria-hidden="true">
             &nbsp;
           </div>
         )}
+        {wertGratis ? (
+          <p className="warenkorb-vorteil">
+            {wunschnummerGratisText(betrag(wertGratis))}
+          </p>
+        ) : null}
+        {vorteil ? (
+          <p className="warenkorb-vorteil" data-warenkorb-vorteil="">
+            {vorteilJeAlphaText(betrag(vorteil))}
+          </p>
+        ) : null}
         <ul>
           {(unterzeilen ? [] : selectedOptions).map((option) =>
             option.value !== 'Default Title' ? (

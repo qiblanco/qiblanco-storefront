@@ -7,7 +7,10 @@ import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import zweifelStyles from '~/styles/zweifel-beleg.css?url';
 import cartSeiteStyles from '~/styles/cart-seite.css?url';
 import {persistAttributionOnCartResult} from '~/lib/cart-attribution.server';
-import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
+import {
+  bindeQiMasterAddons,
+  bindeReservierungsCode,
+} from '~/lib/qi-master-addons.server';
 import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {
   kakaoPackungenEingabe,
@@ -143,6 +146,10 @@ export async function action({request, context}) {
     default:
       throw new Error(`${action} cart action is not defined`);
   }
+
+  // Persönlicher Link mit Rabatt (Christian 02.11.2026): sein Code gilt allein
+  // und kommt vor den Bindungen in den Warenkorb, die Rabattcodes lesen.
+  result = await bindeReservierungsCode({cart, action, inputs, result});
 
   // Qi-Alpha-Ratenanteil (geteilte Zahlung) steht nie im Sitzungs-Warenkorb:
   // er gehört allein in den Schritt-1-Warenkorb des Permalinks (Großjob

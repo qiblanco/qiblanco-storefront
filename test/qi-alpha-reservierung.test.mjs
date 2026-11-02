@@ -237,3 +237,98 @@ test('Namen der Reservierungen stehen nur in der Server-Liste', () => {
   for (const r of RESERVIERUNGEN)
     for (const x of r.nummern) assert.ok(!vergeben.includes(x.name), x.name);
 });
+
+/* Rabatt am persönlichen Link (Christian 02.11.2026, Job 20261102-prio1-qi-
+ * alpha-link-daniela-matthias-1500-rabatt-wunschnummer-gratis). */
+const {RESERVIERUNGS_RABATTE} = await import(
+  join(WURZEL, 'app/lib/qi-alpha-reservierung-rabatte.server.js')
+);
+const LINK = 'wSIMCnsmwwigXD36YlzcmS';
+const GEHEIM = RESERVIERUNGS_RABATTE[LINK].code;
+const mitLink = {attributes: [{key: '_reservierung', value: LINK}]};
+
+test('Rabatt: nur der eine Link, 1.500 € je Qi Alpha, Code nie im Browser', () => {
+  assert.deepEqual(Object.keys(RESERVIERUNGS_RABATTE), [LINK]);
+  assert.equal(r.rabattAngabe(RESERVIERUNGS_RABATTE, 'zrtdN1K39oTMjNu4gqfp7n'), null);
+  assert.equal(r.rabattAngabe(RESERVIERUNGS_RABATTE, '90TDcbhtcWSZCCyM47GABe'), null);
+  const a = r.rabattAngabe(RESERVIERUNGS_RABATTE, LINK);
+  assert.deepEqual(a, {jeAlphaEur: 1500, wunschnummerWertEur: 2000});
+  assert.ok(!JSON.stringify(a).includes(GEHEIM));
+  for (const datei of [
+    'app/lib/qi-alpha-reservierung.js',
+    'app/components/campaign/TheAlphaShop.jsx',
+    'app/components/CartLineItem.jsx',
+  ]) {
+    assert.ok(!readFileSync(join(WURZEL, datei), 'utf8').includes(GEHEIM), datei);
+  }
+});
+
+test('Rabatt-Regel: Schlüssel setzt den Code und verdrängt jeden anderen', () => {
+  const k = RESERVIERUNGS_RABATTE;
+  assert.deepEqual(r.rabattCodeKorrektur([mitLink], [], k), [GEHEIM]);
+  assert.deepEqual(r.rabattCodeKorrektur([mitLink], ['HEALWORLD5'], k), [GEHEIM]);
+  assert.deepEqual(r.rabattCodeKorrektur([mitLink], [GEHEIM, 'PARTNER5'], k), [GEHEIM]);
+  assert.equal(r.rabattCodeKorrektur([mitLink], [GEHEIM], k), null);
+});
+
+test('Rabatt-Regel: ohne Schlüssel fällt der Code heraus, fremde Codes bleiben', () => {
+  const k = RESERVIERUNGS_RABATTE;
+  assert.deepEqual(r.rabattCodeKorrektur([{attributes: []}], [GEHEIM], k), []);
+  assert.deepEqual(r.rabattCodeKorrektur([], [GEHEIM.toLowerCase(), 'X'], k), ['X']);
+  assert.equal(r.rabattCodeKorrektur([{attributes: []}], ['HEALWORLD5'], k), null);
+  const lisa = {attributes: [{key: '_reservierung', value: 'zrtdN1K39oTMjNu4gqfp7n'}]};
+  assert.equal(r.rabattCodeKorrektur([lisa], [], k), null);
+  assert.equal(r.rabattCodeKorrektur([lisa], ['PARTNER5'], k), null);
+});
+
+test('Alpha-Zeile trägt den Schlüssel nur am Link mit Rabatt, auch ohne Nummer', () => {
+  const haupt = {id: 'A'};
+  const merkmale = [{key: '_reservierung', value: LINK}];
+  const ohne = r.einheitenLinien({
+    haupt,
+    linie: addonLinien,
+    einheiten: [{nummer: null, kette: null}],
+    hauptMerkmale: merkmale,
+  });
+  assert.equal(ohne.length, 1);
+  assert.equal(ohne[0].quantity, 1);
+  assert.deepEqual(ohne[0].attributes, merkmale);
+  const lisa = r.einheitenLinien({
+    haupt,
+    linie: addonLinien,
+    einheiten: [{nummer: {id: 'N'}, kette: null}],
+  });
+  assert.equal(lisa.at(-1).attributes, undefined);
+});
+
+test('Warenkorb-Anzeige: gratis und Vorteil lesen die Zeile', () => {
+  const nummer = {
+    cost: {amountPerQuantity: {amount: '0.0'}, compareAtAmountPerQuantity: {amount: '2000.0'}},
+  };
+  assert.equal(r.gratisWert(nummer), 2000);
+  assert.equal(r.gratisWert({cost: {amountPerQuantity: {amount: '2000.0'}}}), null);
+  assert.equal(r.gratisWert({cost: {amountPerQuantity: {amount: '0.0'}}}), null);
+  const alpha = {
+    ...mitLink,
+    quantity: 2,
+    discountAllocations: [{discountedAmount: {amount: '3000.0'}}],
+  };
+  assert.equal(r.vorteilJeStueck(alpha), 1500);
+  assert.equal(r.vorteilJeStueck({...alpha, attributes: []}), null);
+  assert.equal(r.vorteilJeStueck({...mitLink, discountAllocations: []}), null);
+});
+
+test('Gesamtvorteil im Warenkorb: 3.500 € mit Nummer, ohne Nummer nur der Abzug', () => {
+  const alpha = {
+    ...mitLink,
+    quantity: 2,
+    discountAllocations: [{discountedAmount: {amount: '3000.0'}}],
+  };
+  const nummer = {
+    cost: {amountPerQuantity: {amount: '0.0'}, compareAtAmountPerQuantity: {amount: '2000.0'}},
+  };
+  assert.deepEqual(r.gesamtVorteil([alpha, nummer]), {abzug: 1500, wert: 2000, gesamt: 3500});
+  assert.deepEqual(r.gesamtVorteil([alpha]), {abzug: 1500, wert: null, gesamt: null});
+  assert.equal(r.gesamtVorteil([nummer]), null);
+  assert.equal(r.gesamtVorteil([]), null);
+});
