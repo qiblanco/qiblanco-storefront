@@ -115,10 +115,10 @@ export const FAKTEN = {
   ueberschrift: null,
   kacheln: [
     {
-      icon: 'generationen',
+      icon: 'dauer',
       zahl: 'Jahrzehnte',
-      titel: 'Vererbbar',
-      satz: 'Erst trägst du ihn. Dann die nächste Generation.',
+      titel: 'Robust',
+      satz: 'Kein Akku, keine Elektronik. Nichts, das leer wird.',
     },
     {
       icon: 'material',
@@ -215,7 +215,7 @@ export const FAQ = {
     },
     {
       f: 'Wie lange hält der QiOne® 2 Pro?',
-      a: 'Jahrzehnte. Ohne Akku und ohne Elektronik gibt es nichts, das leer wird. Du trägst ihn, solange du willst, und vererbst ihn dann.',
+      a: 'Jahrzehnte. Ohne Akku und ohne Elektronik gibt es nichts, das leer wird. Du trägst ihn, solange du willst.',
     },
     {
       f: 'Wie funktioniert der QiOne®?',

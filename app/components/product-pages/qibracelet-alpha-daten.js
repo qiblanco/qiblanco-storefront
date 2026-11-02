@@ -120,9 +120,9 @@ export const KETTE = null;
 export const KETTE_GOLD = null;
 
 export const FAKTEN = {
-  ueberschrift: 'Einmal kaufen. An die Familie weitergeben.',
+  ueberschrift: 'Einmal kaufen. Für ein Leben gebaut.',
   kacheln: [
-    {icon: 'generationen', zahl: 'Jahrzehnte', satz: 'Lebensdauer. Aus Chirurgenstahl 316L.'},
+    {icon: 'dauer', zahl: 'Jahrzehnte', satz: 'Lebensdauer. Aus Chirurgenstahl 316L.'},
     {icon: 'wellen', zahl: 'Sauna · Meer · Pool', satz: 'Es bleibt dran.'},
     {icon: 'material', zahl: '316L', satz: 'Implantatstahl aus der Orthopädie.'},
     {icon: 'handgelenk', zahl: 'Über 1.000', satz: 'QiBracelet® im Einsatz.'},
