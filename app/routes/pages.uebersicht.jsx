@@ -245,9 +245,8 @@ function UebersichtInhalt({apple = false}) {
           {/* A ohne Gedankenstriche (sprach-pruefe/stil-pruefe), C unverändert. */}
           {apple ? (
             <p className="ue-legende">
-              Zweck heißt: was die Seite dem Besucher bringt. Zustand heißt:
-              live, unfertig, archiviert oder ersetzt. Angezeigt wird er nur, wo
-              er von live abweicht.
+              Bei jeder Seite siehst du, was sie dir als Besucher bringt. Ist
+              eine Seite gerade nicht live, findest du direkt daneben den Grund.
             </p>
           ) : (
             <p className="ue-legende">
