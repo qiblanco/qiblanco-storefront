@@ -1,0 +1,89 @@
+/*
+ * APPLE-FASSUNG /pages/superhuman (s07-r8). Eigene Datei, nur von
+ * components/apple-seite/lp/SuperhumanApple.jsx geladen: Gate 12 behandelt
+ * jeden CSS-Importeur als berührt. Nur --as-*-Tokens (BAUKASTEN §2).
+ * Das Formular kommt zur Laufzeit als ActiveCampaign-Embed mit eigenem CSS
+ * (ID-Selektoren, teils !important), deshalb hier mit !important im Scope.
+ */
+[data-apple-seite='superhuman'] .as-sh-anmeldung {
+  scroll-margin-top: var(--as-s-12);
+}
+[data-apple-seite='superhuman'] .as-sh-karte {
+  max-width: 560px;
+  margin: var(--as-s-4) 0 0;
+  padding: var(--as-s-4) var(--as-s-3);
+  background: var(--as-flaeche);
+  border-radius: var(--as-radius);
+  min-height: 264px;
+}
+[data-apple-seite='superhuman'] .as-sh-klein {
+  max-width: 560px;
+  margin: var(--as-s-2) 0 0;
+  color: var(--as-grau);
+  font-size: var(--as-fs-2);
+}
+[data-apple-seite='superhuman'] .as-sh-vorsatz {
+  max-width: 720px;
+  margin-top: var(--as-s-2);
+}
+
+/* ---- ActiveCampaign-Embed (formId 13) ------------------------------------- */
+[data-apple-seite='superhuman'] ._form_13 {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+  font-size: var(--as-fs-3) !important;
+  color: var(--as-tinte) !important;
+}
+[data-apple-seite='superhuman'] ._form_13 ._form-content,
+[data-apple-seite='superhuman'] ._form_13 ._form_element,
+[data-apple-seite='superhuman'] ._form_13 ._field-wrapper,
+[data-apple-seite='superhuman'] ._form_13 ._button-wrapper {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 0 var(--as-s-2) !important;
+  padding: 0 !important;
+  float: none !important;
+  background: none !important;
+}
+[data-apple-seite='superhuman'] ._form_13 * {
+  font-family: inherit !important;
+  font-size: inherit !important;
+}
+[data-apple-seite='superhuman'] ._form_13 ._form-label {
+  display: none !important;
+}
+[data-apple-seite='superhuman'] ._form_13 input:not([type='hidden']) {
+  display: block !important;
+  width: 100% !important;
+  min-height: var(--as-tippziel) !important;
+  margin: 0 !important;
+  padding: var(--as-s-1) var(--as-s-2) !important;
+  box-sizing: border-box !important;
+  background: var(--as-weiss) !important;
+  border: 1px solid var(--as-linie) !important;
+  border-radius: var(--as-s-1) !important;
+  font-family: inherit !important;
+  font-size: var(--as-fs-3) !important;
+  color: var(--as-tinte) !important;
+}
+[data-apple-seite='superhuman'] ._form_13 ._submit {
+  display: block !important;
+  width: 100% !important;
+  min-height: var(--as-tippziel) !important;
+  padding: var(--as-s-1) var(--as-s-3) !important;
+  background: var(--as-gold) !important;
+  border: 0 !important;
+  border-radius: var(--as-s-1) !important;
+  font-family: inherit !important;
+  font-size: var(--as-fs-3) !important;
+  font-weight: 600 !important;
+  color: var(--as-tinte) !important;
+  cursor: pointer;
+}
