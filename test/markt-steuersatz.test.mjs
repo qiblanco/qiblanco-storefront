@@ -239,12 +239,12 @@ const KANON_DATEIEN = new Set([
   'app/lib/produkt-schema.js',
 ]);
 
-// Die Suite laeuft parallel, und Nachbartests legen Wegwerf-Dateien unter
-// app/ an und loeschen sie wieder (google-reviews-ausschluss.test.mjs:
+// Die Suite läuft parallel, und Nachbartests legen Wegwerf-Dateien unter
+// app/ an und löschen sie wieder (google-reviews-ausschluss.test.mjs:
 // app/lib/.test-googleRating-server-<pid>.mjs). Eine Datei, die zwischen
 // readdir und dem Lesen verschwindet, ist KEIN Aufrufer und kein Befund --
 // am 2026-11-01 machte genau das diesen Arm unter Last rot (ENOENT, stat),
-// und der Gate-Cache hielt das Rot fuer den Tag. Darum: Dateityp aus dem
+// und der Gate-Cache hielt das Rot für den Tag. Darum: Dateityp aus dem
 // Verzeichniseintrag (kein zweites stat) und ENOENT beim Lesen -> Restbericht.
 function quellDateien(wurzel) {
   const raus = [];
@@ -312,7 +312,7 @@ test('(C) jeder Aufruf des Steuer-Kanons gibt ein Markt-Land mit', () => {
     }
     const roh = liesOderVerschwunden(datei);
     if (roh === null) {
-      rest.push(`${rel}: verschwand waehrend des Laufs (Wegwerf-Datei eines Nachbartests)`);
+      rest.push(`${rel}: verschwand während des Laufs (Wegwerf-Datei eines Nachbartests)`);
       continue;
     }
     const quelle = ohneKommentare(roh);
