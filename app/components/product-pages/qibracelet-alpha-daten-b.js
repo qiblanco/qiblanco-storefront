@@ -14,7 +14,7 @@ export const ALLTAG = {
   zeilen: [
     {titel: 'Sauna · Meer · Pool', zeile: 'Es bleibt dran.'},
     {titel: 'Schlaf', zeile: 'Es ist immer an deiner Seite.'},
-    {titel: 'Deine Größe', zeile: 'Mit beiden Händen drückst du ihn enger oder dehnst ihn weiter.'},
+    {titel: 'Deine Größe', zeile: 'Mit beiden Händen drückst du den Reif enger oder dehnst ihn weiter.'},
   ],
 };
 

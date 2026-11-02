@@ -9,11 +9,8 @@ export * from './qihome-air-alpha-daten';
 
 const kapitel = (etikett) => WISSEN.kapitel.filter((k) => k.etikett === etikett);
 
-/** „Hinstellen. Fertig.“ steht direkt hinter dem Einsatz. */
-export const RAUM = {kapitel: kapitel('Raum'), studien: null};
+/** „Hinstellen. Fertig.“ und das, was unter dem Haus liegt: beides handelt vom Raum. */
+export const RAUM = {kapitel: [...kapitel('Raum'), ...kapitel('Erde')], studien: null};
 
-/** Labor und Erdstrahlung erst nach dem Gerätevergleich. */
-export const BELEG = {
-  kapitel: [...kapitel('Zelle'), ...kapitel('Erde')],
-  studien: WISSEN.studien,
-};
+/** Das Labor nach dem Gerätevergleich, die Studien direkt darunter. */
+export const BELEG = {kapitel: kapitel('Zelle'), studien: WISSEN.studien};

@@ -14,6 +14,19 @@ const GITTERCHIP_POSTER_MOBILE = `${GITTERCHIP_BILD}mobile-9x16-start.webp?v=179
 const GITTERCHIP_ENDBILD_DESKTOP = `${GITTERCHIP_BILD}desktop-16x9-ende.webp?v=1793445799`;
 const GITTERCHIP_ENDBILD_MOBILE = `${GITTERCHIP_BILD}mobile-9x16-ende.webp?v=1793445782`;
 
+const TEXTE = {
+  overlayStart: {
+    titel: 'Der Gitterchip® in Aktion',
+    text: 'Scrolle: der Blick ins Innere des QiOne\u00ae 2 Pro.',
+  },
+  overlayEnd: [
+    {
+      titel: 'Koh\u00e4rente Ordnung',
+      text: 'Der Gitterchip® hilft Wassermolek\u00fclen, in den koh\u00e4renten, geordneten Zustand \u00fcberzugehen.',
+    },
+  ],
+};
+
 /*
  * GitterchipMoleculesScrub -- die EINE Definition der GitterChip-Molecules-
  * Scroll-Scrub-Animation (CDN-Quellen 16:9/9:16 + Overlay-Texte), wieder-
@@ -33,12 +46,14 @@ const GITTERCHIP_ENDBILD_MOBILE = `${GITTERCHIP_BILD}mobile-9x16-ende.webp?v=179
  * `laden` reicht ebenso nur durch (ScrollScrubVideo, Schalter je Seite):
  * ohne Angabe gilt das Nähe-Laden, "bisher" stellt den Rand bis 14.10.2026
  * für genau diese Seite zurück.
+ * `ohneText`: nur das Video, wenn die Überschrift schon über dem Video steht.
  */
 export function GitterchipMoleculesScrub({
   dataSection,
   heightVhDesktop,
   heightVhMobile,
   laden,
+  ohneText = false,
 }) {
   return (
     <ScrollScrubVideo
@@ -52,16 +67,7 @@ export function GitterchipMoleculesScrub({
       posterMobile={GITTERCHIP_POSTER_MOBILE}
       endbildDesktop={GITTERCHIP_ENDBILD_DESKTOP}
       endbildMobile={GITTERCHIP_ENDBILD_MOBILE}
-      overlayStart={{
-        titel: 'Der Gitterchip® in Aktion',
-        text: 'Scrolle: der Blick ins Innere des QiOne\u00ae 2 Pro.',
-      }}
-      overlayEnd={[
-        {
-          titel: 'Koh\u00e4rente Ordnung',
-          text: 'Der Gitterchip® hilft Wassermolek\u00fclen, in den koh\u00e4renten, geordneten Zustand \u00fcberzugehen.',
-        },
-      ]}
+      {...(ohneText ? {} : TEXTE)}
     />
   );
 }

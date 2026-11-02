@@ -95,9 +95,14 @@ export default function ProductVariante() {
                     dataSection="konfig-b-gitterchip-video"
                     heightVhDesktop={200}
                     heightVhMobile={200}
+                    ohneText
                   />
                 </>
               ),
+            },
+            {
+              name: 'wissen',
+              inhalt: <AlphaWissen kapitel={DATEN.BEWEIS.kapitel} studien={DATEN.BEWEIS.studien} />,
             },
             {
               name: 'stimmen',
@@ -122,10 +127,6 @@ export default function ProductVariante() {
                   />
                 </div>
               ),
-            },
-            {
-              name: 'wissen',
-              inhalt: <AlphaWissen kapitel={DATEN.BEWEIS.kapitel} studien={DATEN.BEWEIS.studien} />,
             },
             {name: 'faq', inhalt: <AlphaFaqMitPreis daten={DATEN.FAQ} product={product} />},
           ],
