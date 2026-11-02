@@ -178,7 +178,7 @@ export const ZELL_SEKTIONEN_A = Object.freeze([
   {
     art: 'kapitel',
     etikett: 'Was diese Studien nicht sagen',
-    titel: 'Drei Grenzen, ausgeschrieben',
+    titel: 'Drei Grenzen',
     absaetze: [
       'Kein Nachweis einer Wirkung gegen Krankheiten.',
       'Keine Übertragung der Zellergebnisse 1:1 auf den ganzen Menschen.',
