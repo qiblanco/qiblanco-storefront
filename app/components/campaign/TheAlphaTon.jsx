@@ -565,6 +565,9 @@ function binde_videos(wurzel, m) {
   const spiele = (v) => {
     if (!v.dataset.tapImBild || document.hidden || !eingeblendet(v)) return;
     const iv = ios.get(v);
+    // iPhone: zeigt das Canvas den Film schon (Rückfall, the-alpha-video-
+    // ios.js Nachtrag 02.11.), bleibt das Video stehen.
+    if (iv && iv.zeigtLeinwand()) return;
     if (iv) iv.sichtbar();
     let p;
     try {

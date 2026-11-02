@@ -242,3 +242,36 @@ test('Notfall-Uhr: ein zweites spiele() (Wechsel ins Netz) stellt sie nicht zur�
   assert.equal(w.kinder.length, 1, 'Standbild nach NOTFALL_MS ab dem ersten Sichtbarwerden');
   iv.aufraeumen();
 });
+
+/* ---- Nachtrag 02.11.2026: iPhone in Chrome startet nicht von selbst ----
+ * Christian 02.11.2026: „außer dass das Video bei Apple iPhone 18 Pro in
+ * Chrome das Video noch nicht von alleine abläuft“. Job 20261102-prio1-qi-
+ * alpha-lp-video-autostart-iphone-chrome. ROT VOR GRÜN: auf origin/main
+ * f04bc3c3 fehlen LEINWAND_ZEIT, zeigtLeinwand und das Canvas-CSS. */
+test('Rückfall Canvas: Notfallplan startet denselben Film selbst dekodiert, Video bleibt dann stehen, Sätze folgen der Canvas-Zeit', () => {
+  assert.equal(vi.LEINWAND_ZEIT, 'tap-leinwand-zeit');
+  const ios = lies('app/components/campaign/the-alpha-video-ios.js');
+  assert.match(ios, /import \{filmAufLeinwand\} from '\.\.\/reusables\/film-dekoder\.js'/);
+  assert.match(ios, /const notbildAn = \(grund\) => \{\n\s*if \(st\.erstesBild \|\| st\.weg\) return;\n\s*leinwandAn\(\);/);
+  assert.match(ios, /typeof fenster\.VideoDecoder !== 'function'/, 'ohne WebCodecs bleibt alles wie bisher');
+  assert.match(ios, /massVomFilm: true/);
+  const ton = lies('app/components/campaign/TheAlphaTon.jsx');
+  assert.match(ton, /if \(iv && iv\.zeigtLeinwand\(\)\) return;/);
+  const prem = lies('app/components/campaign/TheAlphaPremium.jsx');
+  assert.match(prem, /'emptied', LEINWAND_ZEIT\]/);
+  const css = lies('app/styles/the-alpha-premium.css');
+  assert.match(css, /\.tap-film-bild > canvas\.tap-film-leinwand \{[^}]*position: absolute[^}]*opacity: 0/);
+  assert.match(css, /\.tap-film-bild > canvas\.tap-film-leinwand-an \{\s*opacity: 1;/);
+});
+
+test('Rückfall Canvas: ohne VideoDecoder (alter Browser) bleibt es beim Standbild, kein Canvas', async () => {
+  const w = welt();
+  const iv = vi.bindeIosVideo(w.v, {spiele: () => {}, fenster: w.fenster, doc: w.doc});
+  await w.lauf(10);
+  iv.sichtbar();
+  iv.abgelehnt();
+  assert.equal(w.kinder.length, 1);
+  assert.equal(w.kinder[0].className, 'tap-film-notbild');
+  assert.equal(iv.zeigtLeinwand(), false);
+  iv.aufraeumen();
+});

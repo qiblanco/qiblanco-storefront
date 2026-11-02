@@ -212,13 +212,16 @@ const VORRAT = 6;
  * Spielt `src` (MP4, H.264) über WebCodecs in `leinwand` in Schleife ab,
  * ohne <video>. Bilder ruhen, solange die Seite verborgen oder `buehne`
  * außerhalb des Fensters ist.
+ * `beiZeit(s)` meldet zu jedem gemalten Bild seine Filmzeit in Sekunden
+ * (wie currentTime eines <video>, je Schleife von vorn). `massVomFilm`
+ * gibt der Leinwand die Pixelmaße des Films.
  * @param {HTMLCanvasElement} leinwand
  * @param {string} src
- * @param {{buehne?: Element, beiErstemBild?: () => void, beiFehler?: (e: unknown) => void}} [opt]
+ * @param {{buehne?: Element, beiErstemBild?: () => void, beiFehler?: (e: unknown) => void, beiZeit?: (s: number) => void, massVomFilm?: boolean}} [opt]
  * @returns {{stopp: () => void}}
  */
 export function filmAufLeinwand(leinwand, src, opt = {}) {
-  const {buehne = leinwand.parentElement, beiErstemBild, beiFehler} = opt;
+  const {buehne = leinwand.parentElement, beiErstemBild, beiFehler, beiZeit, massVomFilm} = opt;
   const abbruch = new AbortController();
   const schlange = [];
   let dek = null;
@@ -295,10 +298,11 @@ export function filmAufLeinwand(leinwand, src, opt = {}) {
   // qi-blanco.com, 01.11.2026). Die Kopie ist eindeutig. Lehnt ein Browser
   // VideoFrame als Quelle ab, gilt drawImage direkt. Reihenfolge-Schutz: ein
   // später fertiges älteres Bild überschreibt nie ein neueres.
-  function zeichne(quelle) {
+  function zeichne(quelle, zeit) {
     leinwand
       .getContext('2d')
       .drawImage(quelle, 0, 0, leinwand.width, leinwand.height);
+    if (beiZeit) beiZeit((zeit % film.dauer) / 1e6);
     if (erstes) {
       erstes = false;
       if (beiErstemBild) beiErstemBild();
@@ -306,8 +310,9 @@ export function filmAufLeinwand(leinwand, src, opt = {}) {
   }
 
   function malen(f) {
+    const zeit = f.timestamp;
     if (direkt || typeof createImageBitmap !== 'function') {
-      zeichne(f);
+      zeichne(f, zeit);
       f.close();
       return;
     }
@@ -317,13 +322,13 @@ export function filmAufLeinwand(leinwand, src, opt = {}) {
         f.close();
         if (!aus && nr > gemalt) {
           gemalt = nr;
-          zeichne(bm);
+          zeichne(bm, zeit);
         }
         bm.close();
       },
       () => {
         direkt = true;
-        if (!aus) zeichne(f);
+        if (!aus) zeichne(f, zeit);
         f.close();
       },
     );
@@ -376,6 +381,10 @@ export function filmAufLeinwand(leinwand, src, opt = {}) {
     if (aus) return;
     film = mp4Lesen(puffer);
     bytes = new Uint8Array(puffer);
+    if (massVomFilm) {
+      leinwand.width = film.breite;
+      leinwand.height = film.hoehe;
+    }
     const konfig = {
       codec: film.codec,
       codedWidth: film.breite,
