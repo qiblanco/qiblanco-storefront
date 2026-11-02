@@ -279,5 +279,5 @@
 
 /* B-Fassung QiOne® 2 Pro (s12): das Video im unteren Bereich trägt den Grundton aus app.css. */
 .av-slot--video .ScrollScrubVideo {
-  background: rgb(8, 9, 24);
+  --pdpqi-dunkel: rgb(8, 9, 24); /* pdp-qi.css setzt die Fläche per !important aus dieser Variable */
 }
