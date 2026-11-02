@@ -276,3 +276,8 @@
 .tas-seite.av-seite .eu-gwl-dialog__fuss .eu-gwl__link:is(:hover, :focus-visible) {
   color: var(--tas-tinte);
 }
+
+/* B-Fassung QiOne® 2 Pro (s12): das Video im unteren Bereich trägt den Grundton aus app.css. */
+.av-slot--video .ScrollScrubVideo {
+  background: rgb(8, 9, 24);
+}
