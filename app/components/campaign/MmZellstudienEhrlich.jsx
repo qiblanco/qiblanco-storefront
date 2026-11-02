@@ -1,5 +1,6 @@
 import {ReputonWidget} from '~/components/index-components/ReputonWidget';
 import {useGoogleRating} from '~/lib/googleRating';
+import {ANNA, BILD, STIMMEN, STUDIEN as STUDIEN_A, ZIEL} from '~/components/apple-seite/lp/lp-gemeinsam.js';
 import {
   MmPage,
   MmHero,
@@ -114,6 +115,103 @@ const PICK = [
   {handle: 'qihome-air', name: 'QiHome Air', note: 'Für den Raum', cta: 'Zum QiHome Air'},
 ];
 
+/*
+ * APPLE-FASSUNG (A) DERSELBEN SEITE (Grossjob 20261029-GROSSJOB-alle-shop-seiten-
+ * apple-niveau-ausser-seo-geo, s07-r8). Steht hier und nicht in einer eigenen
+ * Datei: die Seite ist kein Neubau, sondern dieselbe Studien-Übersicht wie C
+ * (studien_konformitaet.pruefe_diff unterscheidet genau das). Die vier Arbeiten
+ * mit Methode, Ergebnis und Grenze, jede als PDF, die drei Grenzen und der
+ * Transparenz-Hinweis bleiben. Aussortiert gegenüber C: Badge-Reihe mit
+ * Google-Note, Bewertungs-Widget mit Sternen, Balkendiagramm, Zahlenband,
+ * Produktkacheln, Funnel-Kacheln.
+ */
+const studieKapitel = (s) => ({
+  art: 'kapitel',
+  etikett: s.etikett,
+  titel: s.titel,
+  absaetze: [`Methode: ${s.methode}`, `Ergebnis: ${s.ergebnis}`, `Grenze: ${s.grenze}`],
+  quellen: [s.quelle],
+  link: {text: 'Publikation als PDF', href: s.pdf},
+});
+
+export const ZELL_SEKTIONEN_A = Object.freeze([
+  {
+    art: 'hero',
+    overline: 'Evidenz, mit Grenzen',
+    titel: 'Die vier Zellstudien, eingeordnet',
+    unter: 'Was untersucht wurde, was herauskam und wo die Aussagekraft endet.',
+    bild: BILD.studie,
+    cta: ZIEL.qione,
+    cta2: {text: 'Erst der Mechanismus', href: '/pages/so-wirkt-kohaerentes-wasser'},
+  },
+  {
+    art: 'fakten',
+    titel: 'Auf einen Blick',
+    kacheln: [
+      {zahl: '4', titel: 'Publikationen', satz: 'In Fachjournalen, 2021 bis 2024, jede als PDF.'},
+      {zahl: '3', titel: 'In-vitro', satz: 'An Zellkulturen im Labor.'},
+      {zahl: '171', titel: 'Berichte', satz: 'Erfahrungen, deskriptiv ausgewertet.'},
+    ],
+  },
+  ...STUDIEN_A.map(studieKapitel),
+  {
+    art: 'band',
+    etikett: 'Evidenzstufen',
+    titel: 'Wo diese Studien stehen und wo nicht',
+    text: [
+      'Von schwach zu stark: Laborzellen (in-vitro), Tierstudie, Studie am Menschen, Meta-Analyse vieler Studien.',
+      'Unsere publizierte Evidenz steht auf der Stufe in-vitro plus deskriptive Erfahrungsberichte. Einen Heileffekt am Menschen weist sie nicht nach.',
+    ],
+    bild: BILD.denken,
+  },
+  {
+    art: 'kapitel',
+    etikett: 'Ergänzend: Erfahrungen',
+    titel: 'Was 171 Menschen berichtet haben',
+    absaetze: [
+      'Neben den Zellstudien haben wir 171 öffentliche Erfahrungsberichte ausgewertet. Deskriptiv, ohne Kontrollgruppe, also kein Beweis, aber ein Stimmungsbild.',
+      'Rund 20 % nennen Ruhe, Gelassenheit und besseren Schlaf, rund 17 % mehr Energie und Vitalität.',
+    ],
+    quellen: ['P. C. Dartsch, Advances in Bioengineering & Biomedical Science Research 2024 (N = 171 freiwillige Erfahrungsberichte).'],
+  },
+  {art: 'stimmen', titel: 'Stimmen aus der Praxis', stimmen: STIMMEN},
+  {
+    art: 'kapitel',
+    etikett: 'Was diese Studien nicht sagen',
+    titel: 'Drei Grenzen, ausgeschrieben',
+    absaetze: [
+      'Kein Nachweis einer Wirkung gegen Krankheiten.',
+      'Keine Übertragung der Zellergebnisse 1:1 auf den ganzen Menschen.',
+      'Keine randomisierte, kontrollierte Studie am Menschen. Die gibt es (noch) nicht.',
+    ],
+  },
+  {
+    art: 'faq',
+    titel: 'Fragen zur Evidenz',
+    fragen: FAQ.map((x) => ({
+      f: x.frage,
+      a: x.antwort.replace('ist oben direkt als PDF', 'ist als PDF').replace(', ohne Risiko', ''),
+    })),
+  },
+  {
+    art: 'cta',
+    titel: 'Die beste Evidenz ist deine eigene.',
+    text: 'Trag ihn 20 Tage. Überzeugt er dich nicht, geht alles zurück.',
+    cta: ZIEL.qione,
+    cta2: {text: 'So läuft die Rückgabe', href: '/pages/das-20-tage-versprechen'},
+    hell: true,
+  },
+  {
+    art: 'kapitel',
+    etikett: 'Transparenz-Hinweis',
+    titel: 'Was der QiOne® 2 Pro ist und was nicht',
+    absaetze: [
+      'QiOne® 2 Pro ist kein Medizinprodukt und nicht dazu bestimmt, Krankheiten zu diagnostizieren, zu behandeln oder zu heilen. Die genannten Studien sind präklinische In-vitro-Untersuchungen an Zellkulturen; sie belegen keinen Heileffekt am Menschen. Erfahrungsberichte sind deskriptiv und ohne Kontrollgruppe. „Kohärentes Wasser“ bezeichnet ein Ordnungs-Modell und ist keine anerkannte medizinische Diagnose.',
+    ],
+  },
+  ANNA,
+]);
+
 export function MmZellstudienEhrlich({products}) {
   const g = useGoogleRating();
   const badges = BADGES.map((b) =>
@@ -204,7 +302,7 @@ export function MmZellstudienEhrlich({products}) {
         title="Drei Grenzen, ausgeschrieben"
         text="Diese drei Aussagen decken die Studien nicht ab."
         punkte={[
-          'Kein Nachweis, dass der QiOne Krankheiten heilt oder lindert.',
+          'Kein Nachweis einer Wirkung gegen Krankheiten.',
           'Keine Übertragung der Zellergebnisse 1:1 auf den ganzen Menschen.',
           'Keine randomisierte, kontrollierte Studie am Menschen. Die gibt es (noch) nicht.',
         ]}
