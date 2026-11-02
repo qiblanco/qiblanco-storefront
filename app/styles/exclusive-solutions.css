@@ -1777,6 +1777,10 @@
   cursor: pointer;
   transition: border-color .15s ease, background-color .15s ease;
 }
+/* iOS zoomt bei Schrift unter 16 px beim Antippen hinein und nicht zurück. */
+@media (max-width: 767px) {
+  .ghx-pak__size { font-size: 16px; }
+}
 .ghx-pak__size:hover,
 .ghx-pak__size:focus {
   outline: none;

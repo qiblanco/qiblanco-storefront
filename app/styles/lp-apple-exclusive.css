@@ -154,3 +154,8 @@
   border-color: var(--as-gold);
   color: var(--as-tinte);
 }
+@media (max-width: 767px) {
+  [data-apple-seite='exclusive-solutions'] .ghx-pak__size {
+    font-size: var(--as-fs-3);
+  }
+}
