@@ -1,5 +1,10 @@
 import {UEBERSICHT_BEREICHE} from '~/data/uebersicht-links';
 import uebersichtStyles from '~/styles/uebersicht.css?url';
+import {useLoaderData} from 'react-router';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import uebersichtAppleStyles from '~/styles/uebersicht-apple.css?url';
 
 /**
  * /pages/uebersicht — ÜBERSICHT aller Seiten des Shops.
@@ -146,7 +151,80 @@ function Eintrag({eintrag}) {
   );
 }
 
+/**
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s12-r3): Schalter APPLE_SEITE_UEBERSICHT in
+ * app/lib/apple-seiten.js. Der Loader liest nur den Schalter.
+ * @param {LoaderFunctionArgs} args
+ */
+export async function loader({context}) {
+  return {appleSeite: appleSeiteLaden(context, 'uebersicht')};
+}
+
+/*
+ * A und C zeigen dieselbe Liste (UebersichtInhalt), Zeichen für Zeichen. A legt
+ * nur die Apple-Hülle darum (Marker data-apple-seite, Token-CSS) und
+ * uebersicht-apple.css biegt die ue-Tokens auf --as-* um; Anna steht am Ende.
+ * Rückweg: homepage-bauer/bin/apple-seite zurueck uebersicht, dann rendert C.
+ */
 export default function Uebersicht() {
+  const {appleSeite} = useLoaderData() ?? {};
+  if (!appleSeite?.an) return <UebersichtInhalt />;
+  return (
+    <>
+      <link rel="stylesheet" href={uebersichtAppleStyles} />
+      <AppleSeite seite="uebersicht">
+        <UebersichtInhalt apple />
+        <div className="uea-anna">
+          <AppleAnna />
+        </div>
+      </AppleSeite>
+    </>
+  );
+}
+
+/**
+ * Die Apple-Fassung zeigt je Bereich die ersten APPLE_SICHTBAR Einträge, den
+ * Rest hinter „Alle … zeigen“ (<details>, steht im Server-HTML). Grund: der
+ * längste Bereich war 14-mal so hoch wie der Median der Abschnitte
+ * (design-rubrik „Sektions-Ausreisser“, Grenze 5-fach; s12-r3 Iteration 2).
+ * C zeigt die Liste unverändert ganz.
+ */
+const APPLE_SICHTBAR = 12;
+
+function BereichListe({eintraege, apple}) {
+  if (!apple || eintraege.length <= APPLE_SICHTBAR) {
+    return (
+      <ul className="ue-liste">
+        {eintraege.map((eintrag) => (
+          <Eintrag key={eintrag.pfad} eintrag={eintrag} />
+        ))}
+      </ul>
+    );
+  }
+  return (
+    <>
+      <ul className="ue-liste">
+        {eintraege.slice(0, APPLE_SICHTBAR).map((eintrag) => (
+          <Eintrag key={eintrag.pfad} eintrag={eintrag} />
+        ))}
+      </ul>
+      <details className="uea-mehr">
+        <summary className="uea-mehr-knopf">
+          Alle {eintraege.length} Seiten zeigen
+        </summary>
+        <ul className="ue-liste uea-mehr-liste">
+          {eintraege.slice(APPLE_SICHTBAR).map((eintrag) => (
+            <Eintrag key={eintrag.pfad} eintrag={eintrag} />
+          ))}
+        </ul>
+      </details>
+    </>
+  );
+}
+
+/** @param {{apple?: boolean}} props */
+function UebersichtInhalt({apple = false}) {
   const alle = UEBERSICHT_BEREICHE.flatMap((b) => b.eintraege);
   const gesamt = alle.length;
   const live = alle.filter((e) => e.zustand === 'live').length;
@@ -156,18 +234,27 @@ export default function Uebersicht() {
     <div className="ue">
       <section className="ue-abschnitt ue-kopf" data-section="ue-kopf">
         <div className="ue-innen">
-          <h1>Übersicht — alle Seiten</h1>
+          <h1>{apple ? 'Übersicht aller Seiten' : 'Übersicht — alle Seiten'}</h1>
           <p className="ue-lead">
             Jede Seite beider Läden, nach Bereichen geordnet: die öffentliche
             Seite, die Landingpages im Einsatz und im Bau, Sales-, Rechts- und
             Systemseiten, dazu der US-Laden. Diese Übersicht ist eine
             Arbeitsfläche und selbst nicht für Suchmaschinen freigegeben.
           </p>
-          <p className="ue-legende">
-            Zweck heißt: was die Seite dem Besucher bringt. Zustand heißt: live,
-            unfertig, archiviert oder ersetzt — angezeigt wird er nur, wo er von
-            live abweicht.
-          </p>
+          {/* A ohne Gedankenstriche (sprach-pruefe/stil-pruefe), C unverändert. */}
+          {apple ? (
+            <p className="ue-legende">
+              Zweck heißt: was die Seite dem Besucher bringt. Zustand heißt:
+              live, unfertig, archiviert oder ersetzt. Angezeigt wird er nur, wo
+              er von live abweicht.
+            </p>
+          ) : (
+            <p className="ue-legende">
+              Zweck heißt: was die Seite dem Besucher bringt. Zustand heißt: live,
+              unfertig, archiviert oder ersetzt — angezeigt wird er nur, wo er von
+              live abweicht.
+            </p>
+          )}
           <p className="ue-stand">
             {gesamt} Einträge in {UEBERSICHT_BEREICHE.length} Bereichen · {live}{' '}
             live, {gesamt - live} abweichend · {offen} ohne festgestellten Zweck
@@ -200,11 +287,7 @@ export default function Uebersicht() {
           <div className="ue-innen">
             <h2>{bereich.titel}</h2>
             <p className="ue-bereich-text">{bereich.beschreibung}</p>
-            <ul className="ue-liste">
-              {bereich.eintraege.map((eintrag) => (
-                <Eintrag key={eintrag.pfad} eintrag={eintrag} />
-              ))}
-            </ul>
+            <BereichListe eintraege={bereich.eintraege} apple={apple} />
           </div>
         </section>
       ))}
@@ -222,3 +305,5 @@ export default function Uebersicht() {
     </div>
   );
 }
+
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
