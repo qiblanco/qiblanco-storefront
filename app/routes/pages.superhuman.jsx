@@ -1,5 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {Superhuman} from '~/components/kurse/Superhuman';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {SuperhumanApple} from '~/components/apple-seite/lp/SuperhumanApple';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
@@ -53,7 +55,10 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args, 'superhuman'); // ✅ Static handle
 
-  return {...deferredData, ...criticalData};
+  // APPLE-FASSUNG (s07-r8): Schalter in app/lib/apple-seiten.js, aus = C unverändert.
+  const appleSeite = appleSeiteLaden(args.context, appleSeiteFuerPfad('/pages/superhuman'));
+
+  return {...deferredData, ...criticalData, appleSeite};
 }
 
 /**
@@ -89,7 +94,9 @@ function loadDeferredData({context}) {
 
 export default function KakaoPage() {
   /** @type {LoaderReturnData} */
-  const {page} = useLoaderData();
+  const {page, appleSeite} = useLoaderData();
+
+  if (appleSeite?.an) return <SuperhumanApple seite={appleSeite.seite} />;
 
   return (
     <>
