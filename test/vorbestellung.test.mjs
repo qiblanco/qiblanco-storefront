@@ -210,6 +210,32 @@ test('Server ordnet nur nach dem Hinzufügen und legt bei Fehler die alte Folge 
   assert.match(src, /cart\.addLines\(vorher, \{cartId\}\)/);
 });
 
+test('Reservierter Link: Schlüssel und Rabatt überleben Umordnung und neuen Variantentitel', async () => {
+  const r = await import('../app/lib/qi-alpha-reservierung.js');
+  const liste = [{schluessel: 'a'.repeat(16), nummern: [{n: 88, name: 'Test'}]}];
+  const rabatte = {['a'.repeat(16)]: {code: 'GEHEIM'}};
+  // Die Variante heißt nach dem Shopify-Write „88/111 - 1st. Edition“.
+  assert.equal(r.nummerAusVariantenTitel('88/111 - 1st. Edition'), 88);
+  const merkmale = r.reservierungsMerkmale('a'.repeat(16), 'Test');
+  const plan = addons.reihenfolgeKorrektur([
+    {id: 'n', handle: 'qi-alpha-wunschnummer', quantity: 1, merchandiseId: 'gid://v/n', attributes: merkmale},
+    {id: 'q', handle: 'qi-alpha', quantity: 1, merchandiseId: 'gid://v/q', attributes: []},
+  ]);
+  const zeile = plan.hinzufuegen.find((l) => l.merchandiseId === 'gid://v/n');
+  assert.deepEqual(zeile.attributes, merkmale);
+  // Wieder im Korb: die Sperre lässt die Nummer stehen, der Code bleibt.
+  const danach = [{id: 'n2', nummer: 88, attributes: zeile.attributes}];
+  assert.deepEqual(r.reservierungsSperre(danach, liste), []);
+  assert.equal(r.rabattCodeKorrektur(danach, ['GEHEIM'], rabatte), null);
+});
+
+test('Server: Sperre und Rabattcode laufen vor der Umordnung, Nachlesen mit 250 Zeilen', () => {
+  const src = lies('app/lib/qi-master-addons.server.js');
+  assert.match(src, /if \(entfernen\.length \|\| aendern\.length \|\| codes\) \{/);
+  assert.ok(src.indexOf('reservierungsSperre(') < src.indexOf('ordneQiAlphaZeilen({'));
+  assert.match(src, /stand = await cart\.get\(\{cartId, numCartLines: 250\}\)/);
+});
+
 test('CartMain zeichnet die Zeilen sortiert', () => {
   const src = lies('app/components/CartMain.jsx');
   assert.match(src, /sortiereWarenkorb\(cart\?\.lines\?\.nodes\)\.map\(\(line\) =>/);
