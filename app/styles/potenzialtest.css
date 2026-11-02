@@ -390,6 +390,11 @@
 .pt-einwilligung input[aria-invalid='true'] {
   border-color: var(--pt-fehler);
 }
+@media (forced-colors: active) {
+  .pt-einwilligung input::before {
+    background: CanvasText;
+  }
+}
 .pt-fehler {
   margin: var(--pt-s1) 0 0;
   font-size: var(--pt-fs-2);
