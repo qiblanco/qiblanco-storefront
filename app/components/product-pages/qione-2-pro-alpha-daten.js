@@ -36,7 +36,7 @@ export const PRODUKT = {
   modus: null,
   name: 'QiOne® 2 Pro',
   claim: 'Lifetime Wearable',
-  kurzzeile: '2. Generation · 8× Leistungsvolumen',
+  kurzzeile: '2. Generation · 8× so viel Leistungsvolumen wie der QiOne® 1',
   // Elinas Kernpunkte (EL-20261027-c05a2273, „von Elina entschieden“).
   punkte: [
     {zeichen: 'wachstum', text: 'Persönliches Wachstum'},
@@ -61,7 +61,7 @@ export const VARIANTE = null;
 export const KETTE = {
   handle: 'qione-kette',
   auszeichnung: 'Kette.',
-  titel: 'Trag ihn an seiner eigenen.',
+  titel: 'Trag ihn an seiner eigenen Kette.',
   zeile: 'Edelstahl, im selben Glanz wie sein Gehäuse. So trägst du ihn jeden Tag auf der Haut.',
   ohne: {
     titel: 'Ohne Kette',
