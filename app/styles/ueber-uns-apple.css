@@ -1,0 +1,130 @@
+/*
+ * APPLE-FASSUNG /pages/ueber-uns (Grossjob 20261029-GROSSJOB-alle-shop-
+ * seiten-apple-niveau-ausser-seo-geo, s12-r3). Lädt nur mit Schalter an
+ * (routes/pages.ueber-uns.jsx). Inhalt und Reihenfolge bleiben wie in C, die
+ * uu-Tokens aus ueber-uns.css zeigen im Apple-Scope auf --as-* aus
+ * apple-seite.css: dieselbe Tinte, dasselbe Grau, dieselbe Fläche, dieselbe
+ * Skala und derselbe Radius wie auf den Apple-Kaufseiten. Keine freien Werte.
+ *
+ * Drei Farb-Akte wie in C, nur im Apple-Ton: Kopf hell (statt dunkel), Grund
+ * weiß, Fläche #f5f5f7 für Belege und Google-Abschnitt. Eine Textspalte
+ * (--as-text-breite), mittig.
+ */
+[data-apple-seite='ueber-uns'] .uu {
+  --uu-font: inherit;
+  /* Skala aus --as-fs-*: 14 · 17 · 21 · 24 (EIN H2-Stil auf jeder Breite) ·
+     H1 28 (Handy, reset.css setzt h1 dort mit !important) / 40 (Desktop).
+     Dieselbe Leiter wie rechtsseite-apple.css (dort 100): mit H2 40 auf dem
+     Desktop stand zwischen 21 und 40 ein Sprung, den die Rubrik als wilde
+     Skala liest (s12-r3 Iteration 1). */
+  --uu-fs-xs: var(--as-fs-2);
+  --uu-fs-base: var(--as-fs-3);
+  --uu-fs-md: var(--as-fs-3);
+  --uu-fs-lg: var(--as-fs-4);
+  --uu-fs-h2: var(--as-fs-5);
+  --uu-fs-h1: var(--as-fs-7);
+
+  --uu-s1: var(--as-s-1);
+  --uu-s2: var(--as-s-2);
+  --uu-s3: var(--as-s-3);
+  --uu-s4: var(--as-s-4);
+  --uu-s6: var(--as-s-6);
+  --uu-s8: var(--as-s-8);
+  --uu-takt: var(--as-s-8);
+
+  --uu-grund: var(--as-weiss);
+  --uu-flaeche: var(--as-flaeche);
+  --uu-dunkel: var(--as-band);
+  --uu-text: var(--as-tinte);
+  --uu-text-hell: var(--as-weiss);
+  --uu-muted: var(--as-grau);
+  --uu-akzent: var(--as-gold);
+  --uu-linie: var(--as-linie);
+  --uu-r: var(--as-radius);
+  --uu-breite: var(--as-text-breite);
+  --uu-mass: var(--as-text-breite);
+
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (min-width: 750px) {
+  [data-apple-seite='ueber-uns'] .uu {
+    --uu-fs-h1: var(--as-fs-7);
+    --uu-takt: var(--as-s-12);
+  }
+}
+
+/* HAUS-GRUNDREGELN IM SCOPE NEUTRALISIEREN (Falle s04, wie service-apple.css):
+   reset.css setzt li auf 1,2rem und Schatten auf jede Überschrift. */
+:where([data-apple-seite='ueber-uns'] .uu) p,
+:where([data-apple-seite='ueber-uns'] .uu) li {
+  font-size: var(--uu-fs-base);
+}
+[data-apple-seite='ueber-uns'] .uu :where(h1, h2, h3) {
+  text-shadow: none;
+}
+
+/* Kopf: hell wie die Apple-Kaufseiten, H1 groß, Lead in Grau. */
+[data-apple-seite='ueber-uns'] .uu-kopf {
+  padding-top: var(--uu-takt);
+  padding-bottom: var(--as-s-6);
+}
+[data-apple-seite='ueber-uns'] .uu-kopf h1 {
+  margin-bottom: var(--as-s-3);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* Kopf hell statt dunkel (Apple-Kaufseiten): Grund weiß, H1 in Tinte, Lead
+   in Grau. Ausdrücklich gesetzt, nicht über --uu-dunkel: das Token färbt in C
+   auch den Knopftext. (s12-r3 Iteration 3: über das Token umgebogen stand die
+   H1 in Tinte auf Tinte, die Rubrik gab trotzdem 100.) */
+[data-apple-seite='ueber-uns'] .uu-kopf {
+  background: var(--as-weiss);
+  color: var(--as-tinte);
+}
+[data-apple-seite='ueber-uns'] .uu-kopf h1 {
+  color: var(--as-tinte);
+}
+[data-apple-seite='ueber-uns'] .uu-kopf .uu-lead {
+  color: var(--as-grau);
+}
+
+/* EIN H2-Stil wie .as-h2 */
+[data-apple-seite='ueber-uns'] .uu-h2 {
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* Person und Absichts-Kasten: Fläche statt Rahmen, ein Radius. */
+[data-apple-seite='ueber-uns'] .uu-person {
+  background: var(--as-flaeche);
+  border: 0;
+  padding: var(--as-s-3);
+}
+[data-apple-seite='ueber-uns'] .ab-hinweis {
+  margin: 0;
+  padding: var(--as-s-3);
+  border-radius: var(--as-radius);
+}
+
+/* Der eine Knopf: Tippziel 48, Form der Apple-Kaufseiten (Pille). */
+[data-apple-seite='ueber-uns'] .uu-knopf {
+  min-height: var(--as-tippziel);
+  padding: var(--as-s-2) var(--as-s-3);
+  border-radius: var(--as-tippziel);
+  color: var(--as-tinte);
+}
+[data-apple-seite='ueber-uns'] .uu-knopf:hover,
+[data-apple-seite='ueber-uns'] .uu-knopf:focus-visible {
+  background: var(--as-weiss);
+}
+
+/* Anna am Ende in derselben Textspalte. */
+[data-apple-seite='ueber-uns'] .uua-anna .as-sektion {
+  max-width: calc(var(--as-text-breite) + 2 * var(--as-s-3));
+  padding: var(--as-s-8) var(--as-s-3) 0;
+}

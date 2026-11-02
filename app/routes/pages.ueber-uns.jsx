@@ -1,4 +1,4 @@
-import {Link} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
 import {
   ORGANISATION,
@@ -16,6 +16,10 @@ import ueberUnsStyles from '~/styles/ueber-uns.css?url';
 import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
 import absichtHinweisStyles from '~/styles/absicht-hinweis.css?url';
 import {teilbildTags} from '~/lib/seiten-seo';
+import {appleSeiteLaden, appleSeiteFuerPfad} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import ueberUnsAppleStyles from '~/styles/ueber-uns-apple.css?url';
 
 /**
  * /pages/ueber-uns — WER HINTER QI BLANCO STEHT.
@@ -239,7 +243,41 @@ export const meta = () => [
   {'script:ld+json': aboutSchema()},
 ];
 
+/**
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s12-r3): Schalter APPLE_SEITE_UEBER_UNS in
+ * app/lib/apple-seiten.js. Der Loader liest nur den Schalter. Die Seite nennt
+ * ihren Pfad statt des Namens (Digraph-Regel BAUKASTEN §6).
+ * @param {LoaderFunctionArgs} args
+ */
+export async function loader({context}) {
+  return {appleSeite: appleSeiteLaden(context, appleSeiteFuerPfad(PFAD))};
+}
+
+/*
+ * A und C zeigen denselben Inhalt (UeberUnsInhalt), Zeichen für Zeichen. A legt
+ * nur die Apple-Hülle darum (Marker data-apple-seite, Token-CSS) und die
+ * Scope-CSS dieser Seite biegt die uu-Tokens auf --as-* um; Anna steht am
+ * Ende. Rückweg: Befehl homepage-bauer/bin/apple-seite für diese Seite, dann
+ * rendert C.
+ */
 export default function UeberUns() {
+  const {appleSeite} = useLoaderData() ?? {};
+  if (!appleSeite?.an || !appleSeite.seite) return <UeberUnsInhalt />;
+  return (
+    <>
+      <link rel="stylesheet" href={ueberUnsAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        <UeberUnsInhalt />
+        <div className="uua-anna">
+          <AppleAnna />
+        </div>
+      </AppleSeite>
+    </>
+  );
+}
+
+function UeberUnsInhalt() {
   const o = ORGANISATION;
   return (
     <div className="uu">
@@ -400,3 +438,4 @@ export default function UeberUns() {
 }
 
 /** @typedef {import('react-router').MetaFunction} MetaFunction */
+/** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
