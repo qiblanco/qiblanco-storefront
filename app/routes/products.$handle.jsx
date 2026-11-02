@@ -34,6 +34,10 @@ import {brotkrumeSchema, produktSchema} from '~/lib/produkt-schema';
 import {MARKE, produktBeschreibung} from '~/lib/produkt-seo';
 import {StarRating, SterneSprung} from '~/components/reusables/StarRating';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
+import {appleSeiteLaden, appleSeiteFuerPfad} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import produktAppleStyles from '~/styles/produkt-apple.css?url';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
@@ -212,7 +216,12 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  // Apple-Fassung nur für Produkte mit eigener Zeile in app/lib/apple-seiten.js.
+  return {
+    ...deferredData,
+    ...criticalData,
+    appleSeite: appleSeiteLaden(args.context, appleSeiteFuerPfad(alterPfad)),
+  };
 }
 
 /**
@@ -284,13 +293,22 @@ function RenderProductPage({product}) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, campaignDeal} = useLoaderData();
+  const {product, campaignDeal, appleSeite} = useLoaderData();
 
   if (campaignDeal) {
     return <TenYearsDealPage deal={campaignDeal} />;
   }
 
-  return <StandardProduct product={product} />;
+  if (!appleSeite?.an || !appleSeite.seite) return <StandardProduct product={product} />;
+  return (
+    <>
+      <link rel="stylesheet" href={produktAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        <StandardProduct product={product} />
+        <AppleAnna />
+      </AppleSeite>
+    </>
+  );
 }
 
 function StandardProduct({product}) {
