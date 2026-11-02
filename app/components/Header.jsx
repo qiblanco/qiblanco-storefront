@@ -356,6 +356,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
     pathname,
     freigeschaltet: qiAlphaFrei,
     wahl: leistenWahl?.wahl,
+    appleSeiten: leistenWahl?.appleSeiten,
   });
   const leistenAttr = {
     'data-kopfleiste-wahl': leistenWahl?.wahl,
@@ -404,14 +405,16 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
    * jeder Anlauf hat eine neue Merkliste gepflegt statt den Marker.
    */
   useSterneSprungDelegation(onRezensionenKlick);
-  useKopfHoeheVariable();
+  // Mit der Leiste ändert sich die Kopfhöhe auch beim Seitenwechsel ohne Scroll.
+  useKopfHoeheVariable(leiste);
 
   return (
     <header
       className={`header-wrapper KopfHaftet ${hidden ? 'header--hidden' : ''}`}
       data-scroll-dir={richtung}
+      data-kopfleiste-aus={leiste === 'keine' ? leistenWahl?.appleQuelle || 'vorgabe' : undefined}
     >
-      {leiste === 'qi-alpha' ? (
+      {leiste === 'keine' ? null : leiste === 'qi-alpha' ? (
         <AnnouncementBanner
           variante="qi-alpha"
           attr={leistenAttr}

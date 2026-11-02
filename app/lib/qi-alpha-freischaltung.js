@@ -37,6 +37,14 @@
  *
  * RÜCKWEG, ein Schritt: Metafeld auf 'bewertung' (alter 4,8-Sterne-Banner
  * überall). Menüpunkt: MENUE_QI_ALPHA = false. Oder hb-deploy revert.
+ *
+ * APPLE-KAUFSEITEN (Job 20261031-de-apple-seiten-ankuendigungsleiste-14000-
+ * ausblenden, Christian 29.10.2026: „dieses verpflichtent 14000 nuter
+ * preisanker dort … das passt nich mehr hin … also das wirklich dauerhaft
+ * löaschen“): die drei Kaufseiten in APPLE_KAUFSEITEN_OHNE_LEISTE tragen keine
+ * Leiste. Dasselbe Prinzip, zweites Feld: `qb_kopfleiste.apple_seiten`, Werte
+ * 'keine' | 'bewertung', Vorgabe 'keine'. Zurückholen ohne Deploy:
+ *   homepage-bauer/bin/kopfleiste-wahl --flaeche apple-seiten setze bewertung
  */
 
 /** Freischaltung in UTC. 11:11 Uhr MEZ (Winterzeit seit 25.10.2026) = 10:11Z. */
@@ -51,11 +59,25 @@ export const QI_ALPHA_LP = '/pages/Qi-Alpha';
  * BANNER-WAHL DER STARTSEITE (Christian: „auswählen kann“).
  *   'qi-alpha'  -> ab der Freischaltung „The Qi Alpha® is now available“
  *   'bewertung' -> der bisherige 4,8-Sterne-Banner (auch vor der Freischaltung)
- * Alle anderen Seiten zeigen IMMER den 4,8-Sterne-Banner.
+ * Alle anderen Seiten zeigen den 4,8-Sterne-Banner, ausser den Apple-Kaufseiten
+ * (APPLE_KAUFSEITEN_OHNE_LEISTE).
  */
 export const BANNER_VARIANTEN = Object.freeze(['bewertung', 'qi-alpha']);
 /** Rückfall, wenn das Metafeld nie lesbar war (Zustand beim Deploy). */
 export const STARTSEITEN_LEISTE = 'qi-alpha';
+
+/**
+ * Die Kaufseiten ohne Leiste, genau diese drei Pfade. Die B-Fassungen
+ * (/products/qione-2-pro-b …) und die Landingpages unter /pages/ behalten sie.
+ */
+export const APPLE_KAUFSEITEN_OHNE_LEISTE = Object.freeze([
+  '/products/qione-2-pro',
+  '/products/qibracelet',
+  '/products/qihome-air',
+]);
+export const APPLE_LEISTE_VARIANTEN = Object.freeze(['keine', 'bewertung']);
+/** Rückfall, wenn das Feld nie lesbar war (Zustand beim Deploy). */
+export const APPLE_SEITEN_LEISTE = 'keine';
 
 export const KOPFLEISTE_METAFELD = Object.freeze({namespace: 'qb_kopfleiste', key: 'startseite'});
 export const KOPFLEISTE_QUERY = `#graphql
@@ -64,11 +86,15 @@ export const KOPFLEISTE_QUERY = `#graphql
       metafield(namespace: "qb_kopfleiste", key: "startseite") {
         value
       }
+      appleSeiten: metafield(namespace: "qb_kopfleiste", key: "apple_seiten") {
+        value
+      }
     }
   }
 `;
 
 let zuletztWahl = null;
+let zuletztApple = null;
 
 /**
  * Bewertet einen Metafeld-Wert. Unbekannte Werte erzeugen keinen dritten
@@ -86,9 +112,26 @@ export function uebernehmeLeistenWahl(wert) {
   return {wahl: STARTSEITEN_LEISTE, quelle: 'vorgabe'};
 }
 
+/**
+ * Dieselbe Bewertung für das Feld der Apple-Kaufseiten: unbekannt zählt wie
+ * unlesbar, kein dritter Zustand.
+ * @param {string|null|undefined} wert
+ * @returns {{appleSeiten: string, appleQuelle: 'metafeld'|'zuletzt'|'vorgabe'}}
+ */
+export function uebernehmeAppleWahl(wert) {
+  const w = String(wert ?? '').trim().toLowerCase();
+  if (APPLE_LEISTE_VARIANTEN.includes(w)) {
+    zuletztApple = w;
+    return {appleSeiten: w, appleQuelle: 'metafeld'};
+  }
+  if (zuletztApple) return {appleSeiten: zuletztApple, appleQuelle: 'zuletzt'};
+  return {appleSeiten: APPLE_SEITEN_LEISTE, appleQuelle: 'vorgabe'};
+}
+
 /** Nur für Tests. */
 export function leistenWahlZuruecksetzen() {
   zuletztWahl = null;
+  zuletztApple = null;
 }
 
 /**
@@ -98,6 +141,7 @@ export function leistenWahlZuruecksetzen() {
  */
 export async function ladeLeistenWahl(storefront) {
   let wert = null;
+  let appleWert = null;
   try {
     const cache =
       typeof storefront?.CacheCustom === 'function'
@@ -105,10 +149,12 @@ export async function ladeLeistenWahl(storefront) {
         : undefined;
     const data = await storefront.query(KOPFLEISTE_QUERY, {cache});
     wert = data?.shop?.metafield?.value ?? null;
+    appleWert = data?.shop?.appleSeiten?.value ?? null;
   } catch {
     wert = null;
+    appleWert = null;
   }
-  return uebernehmeLeistenWahl(wert);
+  return {...uebernehmeLeistenWahl(wert), ...uebernehmeAppleWahl(appleWert)};
 }
 
 /** Menüpunkt „Qi Alpha®“ unter „Shop“ (Desktop + Handy) ab der Freischaltung. */
@@ -124,6 +170,12 @@ export function istStartseite(pathname) {
   return STARTSEITEN_PFADE.includes(p.toLowerCase());
 }
 
+export function istAppleKaufseite(pathname) {
+  let p = String(pathname || '/').split(/[?#]/)[0];
+  if (p.length > 1) p = p.replace(/\/+$/, '');
+  return APPLE_KAUFSEITEN_OHNE_LEISTE.includes(p.toLowerCase());
+}
+
 export function istFreigeschaltet(jetztMs) {
   return Number.isFinite(jetztMs) && jetztMs >= QI_ALPHA_FREISCHALTUNG_MS;
 }
@@ -132,7 +184,13 @@ export function istFreigeschaltet(jetztMs) {
  * Welche Leiste zeigt diese Seite? Reine Funktion, damit Probe und Seite
  * dieselbe Entscheidung rechnen.
  */
-export function bannerVariante({pathname, freigeschaltet, wahl = STARTSEITEN_LEISTE}) {
+export function bannerVariante({
+  pathname,
+  freigeschaltet,
+  wahl = STARTSEITEN_LEISTE,
+  appleSeiten = APPLE_SEITEN_LEISTE,
+}) {
+  if (istAppleKaufseite(pathname) && appleSeiten !== 'bewertung') return 'keine';
   if (!freigeschaltet) return 'bewertung';
   if (wahl !== 'qi-alpha') return 'bewertung';
   return istStartseite(pathname) ? 'qi-alpha' : 'bewertung';
