@@ -165,7 +165,8 @@ export async function loader({context}) {
  * A und C zeigen dieselbe Liste (UebersichtInhalt), Zeichen für Zeichen. A legt
  * nur die Apple-Hülle darum (Marker data-apple-seite, Token-CSS) und
  * uebersicht-apple.css biegt die ue-Tokens auf --as-* um; Anna steht am Ende.
- * Rückweg: homepage-bauer/bin/apple-seite zurueck uebersicht, dann rendert C.
+ * Rückweg: Befehl homepage-bauer/bin/apple-seite für diese Seite, dann
+ * rendert C.
  */
 export default function Uebersicht() {
   const {appleSeite} = useLoaderData() ?? {};

@@ -256,9 +256,10 @@ export async function loader({context}) {
 
 /*
  * A und C zeigen denselben Inhalt (UeberUnsInhalt), Zeichen für Zeichen. A legt
- * nur die Apple-Hülle darum (Marker data-apple-seite, Token-CSS) und
- * ueber-uns-apple.css biegt die uu-Tokens auf --as-* um; Anna steht am Ende.
- * Rückweg: homepage-bauer/bin/apple-seite zurueck ueber-uns, dann rendert C.
+ * nur die Apple-Hülle darum (Marker data-apple-seite, Token-CSS) und die
+ * Scope-CSS dieser Seite biegt die uu-Tokens auf --as-* um; Anna steht am
+ * Ende. Rückweg: Befehl homepage-bauer/bin/apple-seite für diese Seite, dann
+ * rendert C.
  */
 export default function UeberUns() {
   const {appleSeite} = useLoaderData() ?? {};
