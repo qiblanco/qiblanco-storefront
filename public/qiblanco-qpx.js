@@ -652,10 +652,13 @@
     var MED_VIDEO_MAX = 20, MED_BILD_MAX = 40, MED_EINTRAG_MAX = 55;
     var MED_UMKEHR_PCT = 5, MED_UMKEHR_MAX = 20, MED_BILD_MIN_MS = 500;
     var MED_EXTERN_MAX = 40;
-    var MED_EXTERN_STAND = { video_stand: 1, video_scrub: 1, bild_gesehen: 1, ausstieg: 1 };
+    var MED_EXTERN_STAND = { video_stand: 1, video_scrub: 1, bild_gesehen: 1, ausstieg: 1,
+                             video_laden: 1 };
     var MED_FAMILIEN = { imgix: 1, youtube: 1, scrub: 1, "360": 1, unbekannt: 1 };
     var MED_ARTEN = { video_start: 1, video_quartil: 1, video_stand: 1,
-                      video_scrub: 1, bild_gesehen: 1, scroll_umkehr: 1, ausstieg: 1 };
+                      video_scrub: 1, bild_gesehen: 1, scroll_umkehr: 1, ausstieg: 1,
+                      video_laden: 1 };
+    var MED_EXTERN_LADEN_FAM = { youtube: 1 };
     var medien = {};
     var medN = 0, medBildN = 0;
     var medIo = null, medObserved = [];
@@ -672,6 +675,102 @@
     if (MED_ZUSATZ) { MED_ARTEN.video_sicht = 1; MED_ARTEN.video_bewusst = 1; }
     var MED_PERF = false;
     try { MED_PERF = !!(w.performance && typeof w.performance.now === "function"); } catch (e) {}
+
+    var VIT_ON = MEDIEN_ON && CFG.vitals !== false;
+    var VIT_PV = PV_ID;
+    var VIT_INP_MAX = 500;
+    var vit = null;
+    function vitMs(x) {
+      return (typeof x === "number" && isFinite(x) && x >= 0) ? Math.round(x) : null;
+    }
+    function vitBeobachte(typ, fn, extra) {
+      try {
+        if (!w.PerformanceObserver) return false;
+        var unter = w.PerformanceObserver.supportedEntryTypes;
+        if (unter && unter.indexOf(typ) < 0) return false;
+        var po = new w.PerformanceObserver(function (liste) {
+          try {
+            var es = liste.getEntries();
+            for (var i = 0; i < es.length; i++) fn(es[i]);
+          } catch (e) {}
+        });
+        var o = { type: typ, buffered: true }, k;
+        if (extra) { for (k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) o[k] = extra[k]; } }
+        po.observe(o);
+        return true;
+      } catch (e) { return false; }
+    }
+    function vitInteraktion(en) {
+      var id = en.interactionId || (en.entryType === "first-input" ? "fi" : 0);
+      if (!id) return;
+      var alt = vit.inpIds[id];
+      if (alt == null) {
+        vit.inpN++;
+        if (vit.inpN > VIT_INP_MAX) return;
+      }
+      vit.inpIds[id] = Math.max(alt || 0, en.duration || 0);
+    }
+    function vitStart() {
+      if (!VIT_ON || !MED_PERF || typeof w.performance.getEntriesByType !== "function") return;
+      var nav = w.performance.getEntriesByType("navigation")[0];
+      if (!nav) return;
+      var navPfad = "";
+      try { navPfad = new URL(nav.name, w.location.href).pathname; } catch (e) { return; }
+      if (navPfad !== w.location.pathname) return;
+      var akt = nav.activationStart > 0 ? nav.activationStart : 0;
+      vit = { akt: akt, ttfb: vitMs(Math.max(0, nav.responseStart - akt)), typ: String(nav.type || ""),
+              versteckt: (d.visibilityState === "hidden" && d.prerendering !== true) ? 0 : Infinity,
+              lcp: null, lcpWeg: 0, inpN: 0, inpIds: {}, cls: 0, clsAn: false, clsF: 0, clsErst: 0, clsLetzt: 0 };
+      try {
+        var vs = w.performance.getEntriesByType("visibility-state") || [];
+        for (var vi = 0; vi < vs.length; vi++) {
+          if (vs[vi].name === "hidden") { vit.versteckt = Math.min(vit.versteckt, vs[vi].startTime); break; }
+        }
+      } catch (e) {}
+      d.addEventListener("visibilitychange", function () {
+        if (vit && d.visibilityState === "hidden" && vit.versteckt === Infinity) vit.versteckt = medUhr();
+      }, true);
+      vitBeobachte("largest-contentful-paint", function (en) {
+        if (en.startTime < vit.versteckt) vit.lcp = Math.max(0, en.startTime - vit.akt);
+        else vit.lcpWeg = 1;
+      });
+      vit.clsAn = vitBeobachte("layout-shift", function (en) {
+        if (en.hadRecentInput || en.startTime >= vit.versteckt) return;
+        if (vit.clsF && en.startTime - vit.clsLetzt < 1000 && en.startTime - vit.clsErst < 5000) {
+          vit.clsF += en.value;
+        } else {
+          vit.clsF = en.value; vit.clsErst = en.startTime;
+        }
+        vit.clsLetzt = en.startTime;
+        if (vit.clsF > vit.cls) vit.cls = vit.clsF;
+      });
+      vitBeobachte("event", vitInteraktion, { durationThreshold: 40 });
+      vitBeobachte("first-input", vitInteraktion);
+    }
+    function vitInp() {
+      var werte = [], id;
+      for (id in vit.inpIds) {
+        if (Object.prototype.hasOwnProperty.call(vit.inpIds, id)) werte.push(vit.inpIds[id]);
+      }
+      if (!werte.length) return null;
+      werte.sort(function (a, b) { return b - a; });
+      return vitMs(werte[Math.min(werte.length - 1, Math.floor(vit.inpN / 50))]);
+    }
+    function vitEintrag() {
+      if (!vit || PV_ID !== VIT_PV) return null;
+      var m = { nav: vit.typ, ger: device() }, x;
+      if (vit.ttfb != null) m.ttfb = vit.ttfb;
+      x = medFcp();
+      if (x > 0 && x < vit.versteckt) m.fcp = vitMs(Math.max(0, x - vit.akt));
+      else if (x > 0) vit.lcpWeg = 1;
+      if (vit.lcp != null) m.lcp = vitMs(vit.lcp);
+      x = vitInp(); if (x != null) { m.inp = x; m.inp_n = vit.inpN; }
+      if (vit.clsAn) m.cls = Math.round(vit.cls * 1000) / 1000;
+      if (vit.akt) m.vorab = 1;
+      if (vit.lcpWeg) m.verdeckt = 1;
+      return { art: "seite_laden", obj: "seite", wert: m.lcp != null ? m.lcp : null, toff: 0, meta: m };
+    }
+    try { vitStart(); } catch (e) { vit = null; }
 
     function medSanit(s) {
       try {
@@ -736,20 +835,53 @@
       catch (e) { return 1; }
     }
     function medSichtbarZ(z) { return z === "sichtbar_ton" || z === "sichtbar_stumm"; }
+    function medDeckt(x) {
+      try {
+        if (/^(img|video|canvas|iframe|svg|picture|object|embed)$/i.test(x.tagName || "")) return true;
+        var cs = w.getComputedStyle(x);
+        if (!cs) return true;
+        var op = parseFloat(cs.opacity);
+        if (op === op && op < 0.5) return false;
+        if (cs.backgroundImage && cs.backgroundImage !== "none") return true;
+        var bg = String(cs.backgroundColor || "");
+        if (bg === "transparent") return false;
+        var m = /^rgba?\(([^)]*)\)$/.exec(bg);
+        if (!m) return true;
+        var p = m[1].split(/[\s,\/]+/).filter(function (s) { return s; });
+        if (p.length < 4) return true;
+        var a = parseFloat(p[3]);
+        if (/%$/.test(p[3])) a = a / 100;
+        return !(a < 0.5);
+      } catch (e) { return true; }
+    }
     function medVerdeckt(el) {
       try {
         if (typeof el.checkVisibility === "function" &&
             el.checkVisibility({ opacityProperty: true, visibilityProperty: true }) === false) return true;
       } catch (e) {}
       try {
-        if (typeof d.elementFromPoint !== "function" || !el.getBoundingClientRect) return false;
+        if (!el.getBoundingClientRect) return false;
         var r = el.getBoundingClientRect(), vh = w.innerHeight || 0, vw = w.innerWidth || 0;
         var x = r.left + r.width / 2, y = r.top + r.height / 2;
         if (!(r.width > 0 && r.height > 0) || x < 0 || y < 0 || (vw && x > vw) || (vh && y > vh)) return false;
+        var h = el.parentNode;
+        var eigen = function (t) {
+          return t === el || !!(h && h.contains && h.contains(t)) || !!(el.contains && el.contains(t));
+        };
+        if (typeof d.elementsFromPoint === "function" && typeof w.getComputedStyle === "function") {
+          var st = d.elementsFromPoint(x, y) || [];
+          for (var i = 0; i < st.length; i++) {
+            var t = st[i];
+            if (eigen(t)) return false;
+            if (t.contains && t.contains(el)) continue;
+            if (medDeckt(t)) return true;
+          }
+          return false;
+        }
+        if (typeof d.elementFromPoint !== "function") return false;
         var hit = d.elementFromPoint(x, y);
         if (!hit || hit === el) return false;
-        var h = el.parentNode;
-        return !(h && h.contains && h.contains(hit)) && !(el.contains && el.contains(hit));
+        return !eigen(hit);
       } catch (e2) { return false; }
     }
     function medSichtPruef(k, now, lief) {
@@ -1200,6 +1332,7 @@
         if (!MEDIEN_ON || !e || !MED_ARTEN[e.art]) return false;
         var obj = medSanit(e.obj); if (!obj) return false;
         var fam = MED_FAMILIEN[e.fam] ? e.fam : "unbekannt";
+        if (e.art === "video_laden" && !MED_EXTERN_LADEN_FAM[fam]) return false;
         var eintrag = { art: e.art, obj: obj, fam: fam, toff: Date.now() - MED_T0 };
         if (typeof e.wert === "number" && isFinite(e.wert)) eintrag.wert = e.wert;
         if (typeof e.zus === "string") eintrag.zus = e.zus;
@@ -1219,6 +1352,9 @@
     function medienListe(now) {
       if (!MEDIEN_ON) return [];
       var out = [], neu = [], id, i;
+      var ve = null;
+      try { ve = vitEintrag(); } catch (e) { ve = null; }
+      if (ve) out.push(ve);
       for (id in medien) {
         if (!Object.prototype.hasOwnProperty.call(medien, id)) continue;
         var k = medien[id], el = k.el;
@@ -1319,6 +1455,7 @@
         else if (e.art === "ausstieg") stufe = 1;
         else if (e.art === "video_laden") stufe = (e.wert == null ? 1 : 2) + (e.meta && e.meta.stk ? 10 : 0);
         else if (e.art === "video_stocken") stufe = e.meta ? (e.meta.n || 0) * 10 + (e.meta.zu ? 1 : 0) : 0;
+        else if (e.art === "seite_laden") stufe = (e.wert == null ? 1 : 2);
         k.push({ a: e.art, o: e.obj, s: stufe, z: e.zus || "" });
       }
       return k;
