@@ -46,9 +46,9 @@
 }
 
 /* ─── Titel und Bewertung ──────────────────────────────────────────────────
-   Die Bewertung stieß ohne Abstand an den Titel (Shop-Tor A1, 0 px). Der
-   Abstand kommt aus dem Raum unter ihr: alles Weitere bleibt, wo es stand. */
+   Die Bewertung stieß ohne Abstand an den Titel (Shop-Tor A1, 0 px). Sie rückt
+   selbst ab, ohne den Fluss zu bewegen: alles Weitere bleibt, wo es stand. */
 .product-main > h1 + .product-rating {
-  margin-top: var(--qb-abstand-1);
-  margin-bottom: calc(-1 * var(--qb-abstand-1));
+  position: relative;
+  top: calc(var(--qb-abstand-1) / 2);
 }
