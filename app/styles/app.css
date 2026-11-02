@@ -2203,6 +2203,17 @@ footer.footer :focus-visible {
 .cart-line .product-price {
   font-weight: 600;
 }
+/* Persönlicher Link mit Rabatt (Christian 02.11.2026): ruhig unter dem Preis. */
+.cart-line .product-price s {
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.5);
+}
+.cart-line .warenkorb-vorteil {
+  margin: 2px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: rgba(0, 0, 0, 0.6);
+}
 
 /* Banner und Leerzustand sind Kopfinhalt, kein Scrollgut: sie duerfen weder
  * schrumpfen noch mitscrollen. */

@@ -1,7 +1,8 @@
 import {redirect} from 'react-router';
 import {loader as kaufseitenLoader} from './products.qi-alpha';
-import {reservierungZu} from '~/lib/qi-alpha-reservierung';
+import {rabattAngabe, reservierungZu} from '~/lib/qi-alpha-reservierung';
 import {RESERVIERUNGEN} from '~/lib/qi-alpha-reservierungen.server';
+import {RESERVIERUNGS_RABATTE} from '~/lib/qi-alpha-reservierung-rabatte.server';
 
 /*
  * PREMIUM-KUNDEN-CHECKOUT /products/qi-alpha-reserviert/<schlüssel>
@@ -45,7 +46,13 @@ export async function loader(args) {
     ...args,
     request: new Request(kaufUrl, args.request),
   });
-  return {...daten, reservierung};
+  return {
+    ...daten,
+    reservierung: {
+      ...reservierung,
+      rabatt: rabattAngabe(RESERVIERUNGS_RABATTE, reservierung.schluessel),
+    },
+  };
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */

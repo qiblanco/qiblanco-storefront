@@ -10,6 +10,7 @@ import {addonLinien, addonsImMarkt, QM_ADDON} from '~/lib/qi-master-addons';
 import {vorbestellungFürHandle} from '~/lib/vorbestellung';
 import {
   einheitenLinien,
+  MERKMAL_SCHLUESSEL,
   reservierungsMerkmale,
   reserviertStand,
 } from '~/lib/qi-alpha-reservierung';
@@ -126,6 +127,13 @@ export function TheAlphaShop({
   // Kette („wenn er die zwei Nummern auswählt, dann kommen auch zwei G-Master
   // in den Korb“). Ohne `reservierung` bleibt alles wie bisher.
   const premium = Boolean(reservierung);
+  // RABATT AM LINK (Christian 02.11.2026, Job 20261102-prio1-qi-alpha-link-
+  // daniela-matthias-1500-rabatt-wunschnummer-gratis): 1.500 € je Qi Alpha®,
+  // die reservierte Nummer gratis (Variantenpreis 0 in Shopify). „Aber wenn
+  // man eben die Wunschnummer abwählt, dann ist es trotzdem noch so“: nur hier
+  // gibt es deshalb „Ohne Wunschnummer“ als ein Gerät ohne Nummer. Links ohne
+  // Rabatt (Lisa, Verena) bleiben unverändert.
+  const rabatt = reservierung?.rabatt ?? null;
   const reserviert = premium
     ? reserviertStand(reservierung, marktAddons.wunschnummer?.variants?.nodes)
     : [];
@@ -156,7 +164,7 @@ export function TheAlphaShop({
     ketten[ketten.length - 1];
   // Die Geräte im Premium-Bereich: angewählte reservierte Nummern, dann die
   // frei gewählte. Ab zwei Geräten wählt jedes seine Kette selbst.
-  const einheiten = premium
+  const gewaehlt = premium
     ? [
         ...reserviert
           .filter((x) => x.variante && reserviertAn.includes(x.n))
@@ -166,6 +174,10 @@ export function TheAlphaShop({
           : []),
       ]
     : [];
+  const einheiten =
+    rabatt && !gewaehlt.length
+      ? [{n: null, variante: null, name: null}]
+      : gewaehlt;
   const mehrere = einheiten.length > 1;
   const ketteFuer = (n) =>
     (mehrere && ketten.find((k) => k.titel === kettenJe[n])) || kette;
@@ -175,16 +187,30 @@ export function TheAlphaShop({
   const brutto = (money, handle) =>
     money ? bruttoAnzeige(money.amount, handle, money.currencyCode, land) : 0;
   const hauptPreis = brutto(haupt?.price, product.handle);
+  // Der erste Preis über 0: die Nummern eines Links mit Rabatt stehen auf 0.
   const nummerPreisBasis = marktAddons.wunschnummer?.variants?.nodes?.find(
-    (v) => v.price,
+    (v) => Number(v.price?.amount) > 0,
   )?.price;
   const nummerPreis = brutto(nummerPreisBasis, QM_ADDON.wunschnummer);
   const kettePreis = (k) =>
     k?.variante ? brutto(k.variante.price, QM_ADDON.kette) : 0;
   const kettenBetrag = (k) => (k?.art === 'gold' ? kettePreis(k) : 0);
+  // Reservierte Nummer am Link mit Rabatt: gratis. Ohne Nummer: nichts. Frei
+  // gewählte Nummer: Preis wie im Shop.
+  const nummerGratis = (g) => Boolean(rabatt && g.name);
+  const nummerBetrag = (g) =>
+    !g.variante || nummerGratis(g) ? 0 : nummerPreis;
+  // Der Abzug rechnet Shopify in der Marktwährung um. Die Summe zieht ihn
+  // deshalb nur im EUR-Markt ab, sonst nennt ihn der Warenkorb genau.
+  const abzugJe = rabatt && waehrung === 'EUR' ? rabatt.jeAlphaEur : 0;
   const summe = premium
     ? einheiten.reduce(
-        (s, g) => s + hauptPreis + nummerPreis + kettenBetrag(ketteFuer(g.n)),
+        (s, g) =>
+          s +
+          hauptPreis -
+          abzugJe +
+          nummerBetrag(g) +
+          kettenBetrag(ketteFuer(g.n)),
         0,
       )
     : hauptPreis +
@@ -237,6 +263,9 @@ export function TheAlphaShop({
         : null,
       kette: ketteFuer(g.n)?.variante ?? null,
     })),
+    hauptMerkmale: rabatt
+      ? [{key: MERKMAL_SCHLUESSEL, value: reservierung.schluessel}]
+      : null,
   });
   const linien = haupt?.id
     ? [
@@ -407,6 +436,12 @@ export function TheAlphaShop({
                 {betragText(hauptPreis, waehrung)}
               </span>
             </p>
+            {rabatt ? (
+              <p className="tas-vorteil" data-tas-vorteil="">
+                Dein Vorteil: {betragText(rabatt.jeAlphaEur, 'EUR')} je{' '}
+                <MarkeR text={PRODUKT.name} />
+              </p>
+            ) : null}
             <p className="tas-herkunft">{PRODUKT.herkunft.join(' ')}</p>
           </section>
 
@@ -440,7 +475,15 @@ export function TheAlphaShop({
                             ? `Reserviert für ${x.name}`
                             : `Reserviert für ${x.name}, bereits gekauft`
                         }
-                        preis={`+ ${betragText(nummerPreis, waehrung)}`}
+                        preis={
+                          rabatt ? (
+                            <>
+                              <s>{betragText(nummerPreis, waehrung)}</s> gratis
+                            </>
+                          ) : (
+                            `+ ${betragText(nummerPreis, waehrung)}`
+                          )
+                        }
                         data={{
                           'data-tas-nummer': String(x.n),
                           'data-tas-reserviert': x.status,
@@ -448,6 +491,21 @@ export function TheAlphaShop({
                       />
                     ))
                   : null}
+                {rabatt ? (
+                  <Karte
+                    rolle="checkbox"
+                    an={!gewaehlt.length && !freiOffen}
+                    onClick={() => {
+                      setReserviertAn([]);
+                      setFreiOffen(false);
+                      setNummer(null);
+                    }}
+                    titel={NUMMER.ohneTitel}
+                    text={NUMMER.ohneHinweis}
+                    preis={`+ ${betragText(0, waehrung)}`}
+                    data={{'data-tas-nummer': 'ohne'}}
+                  />
+                ) : null}
                 {premium ? null : (
                   <Karte
                     an={!nummerEintrag && !freiOffen}
@@ -715,8 +773,28 @@ export function TheAlphaShop({
                         <MarkeR text={PRODUKT.name} /> ·{' '}
                         {gravurText(g.n, THE_ALPHA_SERIE)}
                       </dt>
-                      <dd>{betragText(hauptPreis + nummerPreis, waehrung)}</dd>
+                      <dd>
+                        {betragText(hauptPreis + nummerBetrag(g), waehrung)}
+                      </dd>
                     </div>
+                    {nummerGratis(g) ? (
+                      <div data-tas-posten-gratis={g.n}>
+                        <dt>
+                          Wunschnummer im Wert von{' '}
+                          {betragText(nummerPreis, waehrung)} – für dich gratis
+                        </dt>
+                        <dd>
+                          <s>{betragText(nummerPreis, waehrung)}</s>{' '}
+                          {betragText(0, waehrung)}
+                        </dd>
+                      </div>
+                    ) : null}
+                    {rabatt ? (
+                      <div data-tas-posten-vorteil={g.n ?? 'ohne'}>
+                        <dt>Dein Vorteil</dt>
+                        <dd>− {betragText(rabatt.jeAlphaEur, 'EUR')}</dd>
+                      </div>
+                    ) : null}
                     <div data-tas-posten-kette={k?.art}>
                       <dt>{mitMarkeR(k?.name)}</dt>
                       <dd>
@@ -755,6 +833,17 @@ export function TheAlphaShop({
               <dt>Summe</dt>
               <dd data-tas-summe="">{betragText(summe, waehrung)}</dd>
             </div>
+            {rabatt ? (
+              <div className="tas-posten-hinweis" data-tas-gesamtvorteil="">
+                <dt>
+                  {einheiten.some(nummerGratis)
+                    ? `Gesamtvorteil ${betragText(rabatt.jeAlphaEur + rabatt.wunschnummerWertEur, 'EUR')} je Qi Alpha® mit Wunschnummer. `
+                    : ''}
+                  Nicht mit anderen Rabatten kombinierbar.
+                  {abzugJe ? '' : ' Den genauen Betrag zeigt der Warenkorb.'}
+                </dt>
+              </div>
+            ) : null}
             {geteilt ? (
               <>
                 <div className="tas-posten-teil" data-tas-teilung="sofort">

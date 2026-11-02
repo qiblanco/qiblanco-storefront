@@ -2,10 +2,13 @@ import {CartForm} from '@shopify/hydrogen';
 import {addonArt, bindungsKorrektur, QM_ADDON} from '~/lib/qi-master-addons';
 import {QM_STAHLKETTE} from '~/components/campaign/the-alpha-shop-daten';
 import {
+  eingabeTraegtRabatt,
   nummerAusVariantenTitel,
+  rabattCodeKorrektur,
   reservierungsSperre,
 } from '~/lib/qi-alpha-reservierung';
 import {RESERVIERUNGEN} from '~/lib/qi-alpha-reservierungen.server';
+import {RESERVIERUNGS_RABATTE} from '~/lib/qi-alpha-reservierung-rabatte.server';
 
 /*
  * Die inklusive Stahlkette (0 €, EL-20261030-ae569366) zählt in der
@@ -93,14 +96,53 @@ export async function bindeQiMasterAddons({cart, action, result}) {
   const bindung = bindungsKorrektur(zeilen);
   const entfernen = [...gesperrt, ...bindung.entfernen];
   const aendern = bindung.aendern;
-  if (!entfernen.length && !aendern.length) return result;
+  // Rabatt am persönlichen Link: gerechnet mit den Zeilen, die bleiben. Wer die
+  // letzte Zeile mit Schlüssel entfernt, verliert den Code mit ihr.
+  const bleibt = zeilen.filter((z) => !bindung.entfernen.includes(z.id));
+  const codes = rabattCodeKorrektur(
+    bleibt,
+    (voll?.discountCodes || []).map((c) => c.code),
+    RESERVIERUNGS_RABATTE,
+  );
+  if (!entfernen.length && !aendern.length && !codes) return result;
 
   let neu = result;
   try {
     if (entfernen.length) neu = await cart.removeLines(entfernen, {cartId});
     if (aendern.length) neu = await cart.updateLines(aendern, {cartId});
+    if (codes) neu = await cart.updateDiscountCodes(codes, {cartId});
   } catch {
     return result;
   }
   return neu?.cart ? neu : result;
+}
+
+/*
+ * Rabatt am persönlichen Link VOR den übrigen Bindungen, wo er sich sonst erst
+ * einen Klick später zeigte: ein Code aus dem Feld oder von /discount/<code>
+ * fällt sofort heraus, das Heal-World-Geschenk sieht ihn gar nicht erst; auch
+ * der erste Klick auf den Kaufknopf des Links setzt den Code im selben Schritt.
+ * Liest nur bei diesen zwei Aktionen nach. Fail-soft wie oben.
+ */
+export async function bindeReservierungsCode({cart, action, inputs, result}) {
+  const cartId = result?.cart?.id;
+  if (!cartId) return result;
+  const anlass =
+    action === CartForm.ACTIONS.DiscountCodesUpdate ||
+    (action === CartForm.ACTIONS.LinesAdd &&
+      eingabeTraegtRabatt(inputs?.lines, RESERVIERUNGS_RABATTE));
+  if (!anlass) return result;
+  try {
+    const voll = await cart.get({cartId, numCartLines: 250});
+    const codes = rabattCodeKorrektur(
+      voll?.lines?.nodes,
+      (voll?.discountCodes || []).map((c) => c.code),
+      RESERVIERUNGS_RABATTE,
+    );
+    if (!codes) return result;
+    const neu = await cart.updateDiscountCodes(codes, {cartId});
+    return neu?.cart ? neu : result;
+  } catch {
+    return result;
+  }
 }

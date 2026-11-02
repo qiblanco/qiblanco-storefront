@@ -773,6 +773,25 @@
   white-space: nowrap;
 }
 
+/* Persönlicher Link mit Rabatt (Christian 02.11.2026): ruhige Zeilen, kein
+   zweiter Akzent. Durchgestrichen nur der Wert der geschenkten Nummer. */
+.tas-produkt .tas-vorteil {
+  margin-top: var(--tas-s-1);
+  font-size: var(--tas-fs-3);
+  color: var(--tas-tinte);
+}
+
+.tas-posten s,
+.tas-karte-preis s {
+  color: var(--tas-grau);
+}
+
+.tas-posten > .tas-posten-hinweis {
+  border-bottom: 0;
+  color: var(--tas-grau);
+  line-height: 1.45;
+}
+
 .tas-versand {
   list-style: none;
   padding: var(--tas-s-2);
