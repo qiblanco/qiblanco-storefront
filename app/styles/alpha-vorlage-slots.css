@@ -254,6 +254,8 @@
 .tas-seite.av-seite .avq-quellen a:is(:hover, :focus-visible),
 .tas-seite.av-seite .eu-gwl .eu-gwl__link,
 .tas-seite.av-seite .eu-gwl .eu-gwl__link:is(:hover, :focus-visible),
+.tas-seite.av-seite .eu-gwl-dialog__fuss .eu-gwl__link,
+.tas-seite.av-seite .eu-gwl-dialog__fuss .eu-gwl__link:is(:hover, :focus-visible),
 .tas-seite.av-seite .tas-summe-kasse .eu-gwl .eu-gwl__link,
 .tas-seite.av-seite .tas-summe-kasse .eu-gwl .eu-gwl__link:is(:hover, :focus-visible) {
   text-decoration-line: underline;
@@ -270,6 +272,7 @@
 }
 .tas-seite.av-seite .avw-studien-link:is(:hover, :focus-visible),
 .tas-seite.av-seite .av-vergleich-link a:is(:hover, :focus-visible),
-.tas-seite.av-seite .avq-link:is(:hover, :focus-visible) {
+.tas-seite.av-seite .avq-link:is(:hover, :focus-visible),
+.tas-seite.av-seite .eu-gwl-dialog__fuss .eu-gwl__link:is(:hover, :focus-visible) {
   color: var(--tas-tinte);
 }
