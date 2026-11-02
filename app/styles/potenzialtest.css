@@ -356,11 +356,39 @@
   cursor: pointer;
 }
 .pt-einwilligung input {
+  appearance: none;
+  display: grid;
+  place-content: center;
   flex: none;
   width: 24px;
   height: 24px;
   margin: 0;
-  accent-color: var(--pt-dunkel);
+  border: 2px solid var(--pt-muted);
+  border-radius: var(--pt-r1);
+  background: var(--pt-weiss);
+  cursor: pointer;
+}
+.pt-einwilligung input::before {
+  content: '';
+  width: var(--pt-s2);
+  height: var(--pt-s2);
+  background: var(--pt-weiss);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0, 43% 62%);
+  transform: scale(0);
+}
+.pt-einwilligung input:checked {
+  border-color: var(--pt-dunkel);
+  background: var(--pt-dunkel);
+}
+.pt-einwilligung input:checked::before {
+  transform: scale(1);
+}
+.pt-einwilligung input:focus-visible {
+  outline: 2px solid var(--pt-akzent-tinte);
+  outline-offset: 2px;
+}
+.pt-einwilligung input[aria-invalid='true'] {
+  border-color: var(--pt-fehler);
 }
 .pt-fehler {
   margin: var(--pt-s1) 0 0;
