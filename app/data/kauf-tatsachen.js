@@ -145,7 +145,7 @@ export const VORTEILE = [
   {
     id: 'original',
     titel: 'Originalware mit eigener Seriennummer',
-    beleg: 'Produktseiten QiOne 2 Pro, QiBracelet, QiHome Air, QiMaster',
+    beleg: 'Produktseiten QiOne 2 Pro, QiBracelet, QiHome Air, Qi Alpha®',
     belegPfad: '/products/qione-2-pro',
   },
 ];
