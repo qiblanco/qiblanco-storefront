@@ -213,3 +213,9 @@ test('boxKacheln: nur Teile mit Name und Bild, nie eine Textzeile', () => {
   assert.deepEqual(L.boxKacheln([{name: 'Ohne Bild'}]), []);
   assert.deepEqual(L.boxKacheln(null), []);
 });
+
+test('faqMitPreis: setzt den Preis ein, ohne Preis entfaellt die Frage, die ihn nennt', () => {
+  const faq = {ueberschrift: 'F', fragen: [{f: 'Was kostet er?', a: 'Er kostet {preis}.'}, {f: 'Wie lange?', a: 'Lange.'}]};
+  assert.equal(L.faqMitPreis(faq, '1.234 €').fragen[0].a, 'Er kostet 1.234 €.');
+  assert.deepEqual(L.faqMitPreis(faq, null).fragen.map((x) => x.f), ['Wie lange?']);
+});

@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {Fragment, useEffect, useRef, useState} from 'react';
 import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
@@ -135,7 +135,8 @@ export async function ladeAlphaKetten(storefront, daten) {
  *   daten: object,
  *   ketten?: object|null,
  *   slots?: {vergleich?: import('react').ReactNode, wissen?: import('react').ReactNode,
- *            stimmen?: import('react').ReactNode, faq?: import('react').ReactNode},
+ *            stimmen?: import('react').ReactNode, faq?: import('react').ReactNode,
+ *            reihe?: Array<'fakten'|'risikofrei'|{name: string, inhalt: import('react').ReactNode}>},
  *   vertrauen?: import('react').ReactNode,
  *   videoKachel?: import('react').ReactNode,
  * }} props
@@ -670,9 +671,7 @@ function Schritt({name, erster = false, auszeichnung, titel = null, children}) {
  */
 function Slots({daten, slots}) {
   const {FAKTEN, RISIKOFREI, STIMMEN, FAQ} = daten;
-  return (
-    <>
-      {FAKTEN?.kacheln?.length ? (
+  const fakten = FAKTEN?.kacheln?.length ? (
         <SlotHuelle name="fakten" titel={FAKTEN.ueberschrift}>
           <ul className="av-kacheln">
             {FAKTEN.kacheln.map((k) => (
@@ -688,8 +687,8 @@ function Slots({daten, slots}) {
             ))}
           </ul>
         </SlotHuelle>
-      ) : null}
-      {RISIKOFREI?.zeile ? (
+  ) : null;
+  const risikofrei = RISIKOFREI?.zeile ? (
         <SlotHuelle name="risikofrei">
           <details className="av-risikofrei">
             <summary>
@@ -707,7 +706,28 @@ function Slots({daten, slots}) {
             ) : null}
           </details>
         </SlotHuelle>
-      ) : null}
+  ) : null;
+  // B-Fassung (Christian Zx 29.10.2026, s12): gleicher Oberteil, der untere
+  // Bereich steht in eigener Reihenfolge. Ohne `reihe` gilt die feste Folge.
+  if (slots.reihe) {
+    return (
+      <>
+        {slots.reihe.map((b) => {
+          if (b === 'fakten') return <Fragment key={b}>{fakten}</Fragment>;
+          if (b === 'risikofrei') return <Fragment key={b}>{risikofrei}</Fragment>;
+          return b.inhalt ? (
+            <SlotHuelle key={b.name} name={b.name}>
+              {b.inhalt}
+            </SlotHuelle>
+          ) : null;
+        })}
+      </>
+    );
+  }
+  return (
+    <>
+      {fakten}
+      {risikofrei}
       {slots.vergleich ? <SlotHuelle name="vergleich">{slots.vergleich}</SlotHuelle> : null}
       {slots.wissen ? <SlotHuelle name="wissen">{slots.wissen}</SlotHuelle> : null}
       {slots.stimmen ? (

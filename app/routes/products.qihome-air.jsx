@@ -19,11 +19,11 @@ import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
 import {
   AlphaFaqMitRate,
+  AlphaKachelBlock,
   AlphaStimmen,
   AlphaVergleich,
   AlphaWissen,
 } from '~/components/product-pages/AlphaVorlageSlots';
-import {mitMarkeR} from '~/components/reusables/MarkeR';
 /*
  * Die Stylesheets der Seite (samt Begründung und tragender Reihenfolge) stehen
  * seit dem 28.09.2026 in QiHomeAirSeite.jsx, weil /pages/qihome-air dieselbe Seite
@@ -156,7 +156,7 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
           // in s04 gestrichenen Floskeln).
           vergleich: (
             <>
-              <Einsatz daten={ALPHA_DATEN.EINSATZ} />
+              <AlphaKachelBlock daten={ALPHA_DATEN.EINSATZ} />
               <AlphaVergleich
                 handle="qihome-air"
                 daten={ALPHA_DATEN.VERGLEICH}
@@ -177,27 +177,6 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
         }}
       />
     </>
-  );
-}
-
-/*
- * EINSATZ (nur QiHome Air, s04): drei Orte, keine Auswahl. Kachel-Stil der
- * Faktenkacheln (av-kacheln), eine Überschrift im H2-Stil der Slots.
- */
-function Einsatz({daten}) {
-  if (!daten?.zeilen?.length) return null;
-  return (
-    <div className="av-einsatz" data-av-einsatz="" style={{marginBottom: 'var(--tas-s-8)'}}>
-      <h2 className="tas-box-titel">{mitMarkeR(daten.ueberschrift)}</h2>
-      <ul className="av-kacheln">
-        {daten.zeilen.map((z) => (
-          <li key={z.titel} className="av-kachel">
-            <span className="av-kachel-zahl">{z.titel}</span>
-            <span className="av-kachel-satz">{mitMarkeR(z.zeile)}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
 

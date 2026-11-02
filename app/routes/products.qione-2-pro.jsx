@@ -21,17 +21,14 @@ import alphaQiOneStyles from '~/styles/alpha-qione.css?url';
 import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
 import {
-  AlphaFaqMitRate,
+  AlphaFaqMitPreis,
   AlphaStimmen,
   AlphaVergleich,
+  AlphaWeltrekord,
   AlphaWissen,
 } from '~/components/product-pages/AlphaVorlageSlots';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
-import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {useGoogleRating} from '~/lib/googleRating';
-import {useMarktLand} from '~/lib/markt-land';
-import {bruttoAnzeige} from '~/lib/markt-pricing';
-import {betragText} from '~/lib/betrag-text';
 /*
  * ZWEIFEL-BELEG IST HIER ENTFALLEN (2026-09-08, Elina EL-20260908-d8349a01).
  *
@@ -155,14 +152,7 @@ export default function Product() {
  * heißt dieselben <link>-Tags wie vor s05.
  */
 function Konfigurator({product, ketten, vergleichsPreise}) {
-  const land = useMarktLand();
   const money = product?.selectedOrFirstAvailableVariant?.price;
-  const preisText = money
-    ? betragText(
-        bruttoAnzeige(money.amount, product.handle, money.currencyCode, land),
-        money.currencyCode,
-      )
-    : null;
   return (
     <>
       <link rel="stylesheet" href={produktVorlageStyles} />
@@ -204,29 +194,15 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
           // dann die Google-Stimmen und die Instagram-Reihe der heutigen Seite.
           stimmen: (
             <>
-              <QiOneWeltrekord daten={ALPHA_DATEN.WELTREKORD} />
+              <AlphaWeltrekord daten={ALPHA_DATEN.WELTREKORD} />
               <AlphaStimmen daten={ALPHA_DATEN.STIMMEN_GOOGLE} igProdukt="QiOne 2 Pro" />
             </>
           ),
-          faq: <AlphaFaqMitRate daten={mitPreis(ALPHA_DATEN.FAQ, preisText)} product={product} />,
+          faq: <AlphaFaqMitPreis daten={ALPHA_DATEN.FAQ} product={product} />,
         }}
       />
     </>
   );
-}
-
-/**
- * `{preis}` in den Fragen durch den Shopify-Preis ersetzen (Seite und Kasse
- * nennen dieselbe Zahl). Ohne Preis entfällt die Frage, die ihn nennt.
- */
-function mitPreis(faq, preisText) {
-  const fragen = (faq?.fragen ?? [])
-    .filter((x) => preisText || !`${x.f} ${x.a}`.includes('{preis}'))
-    .map((x) => ({
-      f: x.f.replaceAll('{preis}', preisText ?? ''),
-      a: x.a.replaceAll('{preis}', preisText ?? ''),
-    }));
-  return {...faq, fragen};
 }
 
 /** Nutzen-Raster (s03 nutzen) nach Apple: vier Spalten, Etikett, Titel, Text. */
@@ -263,37 +239,6 @@ function QiOneNutzen({daten}) {
           );
         })}
       </ul>
-    </div>
-  );
-}
-
-/** Weltrekordhalter (s03 weltrekord): Video-Fassade links, Text rechts. */
-function QiOneWeltrekord({daten}) {
-  if (!daten?.video) return null;
-  return (
-    <div className="avq-weltrekord" data-av-weltrekord="">
-      <div className="avq-weltrekord-video">
-        <YoutubeIframe
-          link={`https://www.youtube.com/embed/${daten.video}`}
-          titel={daten.videoTitel}
-        />
-      </div>
-      <div className="avq-weltrekord-text">
-        <p className="taw-etikett">{daten.siegel}</p>
-        <h2 className="tas-box-titel">{daten.titel}</h2>
-        <p>{daten.text}</p>
-        {daten.quellen?.length ? (
-          <ul className="avq-quellen" aria-label="Quellen">
-            {daten.quellen.map((q) => (
-              <li key={q.href}>
-                <a href={q.href} target="_blank" rel="noopener noreferrer">
-                  {q.text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-      </div>
     </div>
   );
 }

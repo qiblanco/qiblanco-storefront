@@ -231,3 +231,17 @@ export function faqSichtbar(fragen, angebot) {
     .filter((x) => angebot || !rate.test(`${x.f} ${x.a}`))
     .map((x) => ({f: mitRate(x.f, angebot), a: mitRate(x.a, angebot)}));
 }
+
+/**
+ * `{preis}` in den Fragen durch den Shopify-Preis ersetzen (Seite und Kasse
+ * nennen dieselbe Zahl). Ohne Preis entfällt die Frage, die ihn nennt.
+ */
+export function faqMitPreis(faq, preisText) {
+  const fragen = (faq?.fragen ?? [])
+    .filter((x) => preisText || !`${x.f} ${x.a}`.includes('{preis}'))
+    .map((x) => ({
+      f: x.f.replaceAll('{preis}', preisText ?? ''),
+      a: x.a.replaceAll('{preis}', preisText ?? ''),
+    }));
+  return {...faq, fragen};
+}

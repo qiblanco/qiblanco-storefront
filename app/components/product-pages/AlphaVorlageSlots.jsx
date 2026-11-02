@@ -5,11 +5,13 @@ import {produktLink, BLOCK_PUBLIC} from '~/components/reusables/blockLinks';
 import {vergleichSpalten} from '~/components/reusables/amazonstil-daten';
 import {faqPageJsonLdString} from '~/lib/faq-schema';
 import {GOOGLE_REVIEWS_URL} from '~/lib/googleRating';
-import {StarRating} from '~/components/reusables/StarRating';
 import {useMarktLand} from '~/lib/markt-land';
-import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
-import {faqSichtbar, mitBreite, ratenAngebot} from './alpha-vorlage-logik';
+import {betragText} from '~/lib/betrag-text';
+import {StarRating} from '~/components/reusables/StarRating';
+import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
+import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
+import {faqMitPreis, faqSichtbar, mitBreite, ratenAngebot} from './alpha-vorlage-logik';
 
 /*
  * SLOTS DES KONFIGURATORS IM QI-ALPHA-STIL (Grossjob 20261027-GROSSJOB-apple-
@@ -233,6 +235,61 @@ export function AlphaWissen({kapitel, bilder = [], studien = null}) {
   );
 }
 
+/* ---- Kachelblock und Weltrekord (aus den A-Routen, jetzt eine Quelle für A und B) -- */
+
+/**
+ * Überschrift plus Kacheln ohne Auswahl: Einsatz des QiHome® Air (s04) und
+ * Alltag des QiBracelet® in der B-Fassung (s12). Kachel-Stil der Faktenkacheln.
+ * @param {{daten: {ueberschrift: string, zeilen: Array<{titel: string, zeile: string}>}, anker?: object}} props
+ */
+export function AlphaKachelBlock({daten, anker = {'data-av-einsatz': ''}}) {
+  if (!daten?.zeilen?.length) return null;
+  return (
+    <div className="av-einsatz" {...anker} style={{marginBottom: 'var(--tas-s-8)'}}>
+      <h2 className="tas-box-titel">{mitMarkeR(daten.ueberschrift)}</h2>
+      <ul className="av-kacheln">
+        {daten.zeilen.map((z) => (
+          <li key={z.titel} className="av-kachel">
+            <span className="av-kachel-zahl">{z.titel}</span>
+            <span className="av-kachel-satz">{mitMarkeR(z.zeile)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** Weltrekordhalter (s03 weltrekord): Video-Fassade links, Text rechts (Stil alpha-qione.css). */
+export function AlphaWeltrekord({daten}) {
+  if (!daten?.video) return null;
+  return (
+    <div className="avq-weltrekord" data-av-weltrekord="">
+      <div className="avq-weltrekord-video">
+        <YoutubeIframe
+          link={`https://www.youtube.com/embed/${daten.video}`}
+          titel={daten.videoTitel}
+        />
+      </div>
+      <div className="avq-weltrekord-text">
+        <p className="taw-etikett">{daten.siegel}</p>
+        <h2 className="tas-box-titel">{daten.titel}</h2>
+        <p>{daten.text}</p>
+        {daten.quellen?.length ? (
+          <ul className="avq-quellen" aria-label="Quellen">
+            {daten.quellen.map((q) => (
+              <li key={q.href}>
+                <a href={q.href} target="_blank" rel="noopener noreferrer">
+                  {q.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 /* ---- Stimmen ------------------------------------------------------------------ */
 
 /**
@@ -339,4 +396,17 @@ export function AlphaFaqMitRate({daten, product}) {
   const brutto = money ? bruttoAnzeige(money.amount, product.handle, money.currencyCode, land) : 0;
   const angebot = ratenAngebot({brutto, waehrung: money?.currencyCode || 'EUR', land});
   return <AlphaFaq daten={daten} angebot={angebot} />;
+}
+
+/** FAQ, deren Fragen `{preis}` tragen: Seite und Kasse nennen dieselbe Zahl. */
+export function AlphaFaqMitPreis({daten, product}) {
+  const land = useMarktLand();
+  const money = product?.selectedOrFirstAvailableVariant?.price;
+  const preisText = money
+    ? betragText(
+        bruttoAnzeige(money.amount, product.handle, money.currencyCode, land),
+        money.currencyCode,
+      )
+    : null;
+  return <AlphaFaqMitRate daten={faqMitPreis(daten, preisText)} product={product} />;
 }
