@@ -9,7 +9,12 @@ import {warenkorbTitel, warenkorbUnterzeile} from '~/lib/vorbestellung';
 import {useMarktLand} from '~/lib/markt-land';
 import {addonZeile, mengeFest} from '~/lib/qi-master-addons';
 import {kakaoSetArt} from '~/lib/kakao-set-zeile';
-import {gratisWert, vorteilJeStueck} from '~/lib/qi-alpha-reservierung';
+import {
+  gratisWert,
+  vorteilJeAlphaText,
+  vorteilJeStueck,
+  wunschnummerGratisText,
+} from '~/lib/qi-alpha-reservierung';
 import {formatPreis} from '~/lib/markt-pricing';
 /**
  * A single line item in the cart. It displays the product image, title, price.
@@ -109,12 +114,12 @@ export function CartLineItem({layout, line}) {
         )}
         {wertGratis ? (
           <p className="warenkorb-vorteil">
-            Wunschnummer im Wert von {betrag(wertGratis)} – für dich gratis
+            {wunschnummerGratisText(betrag(wertGratis))}
           </p>
         ) : null}
         {vorteil ? (
           <p className="warenkorb-vorteil" data-warenkorb-vorteil="">
-            Dein Vorteil: {betrag(vorteil)} je Qi Alpha®
+            {vorteilJeAlphaText(betrag(vorteil))}
           </p>
         ) : null}
         <ul>

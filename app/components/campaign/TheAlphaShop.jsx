@@ -164,7 +164,7 @@ export function TheAlphaShop({
     ketten[ketten.length - 1];
   // Die Geräte im Premium-Bereich: angewählte reservierte Nummern, dann die
   // frei gewählte. Ab zwei Geräten wählt jedes seine Kette selbst.
-  const gewaehlt = premium
+  const vorauswahl = premium
     ? [
         ...reserviert
           .filter((x) => x.variante && reserviertAn.includes(x.n))
@@ -175,9 +175,9 @@ export function TheAlphaShop({
       ]
     : [];
   const einheiten =
-    rabatt && !gewaehlt.length
+    rabatt && !vorauswahl.length
       ? [{n: null, variante: null, name: null}]
-      : gewaehlt;
+      : vorauswahl;
   const mehrere = einheiten.length > 1;
   const ketteFuer = (n) =>
     (mehrere && ketten.find((k) => k.titel === kettenJe[n])) || kette;
@@ -494,7 +494,7 @@ export function TheAlphaShop({
                 {rabatt ? (
                   <Karte
                     rolle="checkbox"
-                    an={!gewaehlt.length && !freiOffen}
+                    an={!vorauswahl.length && !freiOffen}
                     onClick={() => {
                       setReserviertAn([]);
                       setFreiOffen(false);

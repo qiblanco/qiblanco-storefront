@@ -116,6 +116,16 @@ export function eingabeTraegtRabatt(lines, rabatte) {
   );
 }
 
+// Der Wortlaut für Warenkorbzeile und Summe: hier, nicht in den Komponenten.
+export const wunschnummerGratisText = (wert) =>
+  `Wunschnummer im Wert von ${wert} – für dich gratis`;
+export const vorteilJeAlphaText = (wert) =>
+  `Dein Vorteil: ${wert} je Qi Alpha®`;
+export const gesamtVorteilText = (wert) =>
+  `Gesamtvorteil ${wert} je Qi Alpha® mit Wunschnummer. `;
+export const NICHT_KOMBINIERBAR_TEXT =
+  'Nicht mit anderen Rabatten kombinierbar.';
+
 /**
  * Anzeige im Warenkorb, rein. Der Browser kennt weder Code noch Liste: beides
  * liest er an der Zeile. Gratis = Wunschnummer zu 0 mit Vergleichspreis.

@@ -6,7 +6,11 @@ import {useMarktLand} from '~/lib/markt-land';
 import {cartLineContentIds} from '~/lib/pixel-content';
 import {qpxTrack, buildInitiateCheckoutEvent} from '~/lib/qpx-commerce';
 import {versandhinweisFürLinien} from '~/lib/vorbestellung';
-import {gesamtVorteil} from '~/lib/qi-alpha-reservierung';
+import {
+  gesamtVorteil,
+  gesamtVorteilText,
+  NICHT_KOMBINIERBAR_TEXT,
+} from '~/lib/qi-alpha-reservierung';
 import {KasseImBrowser} from '~/components/reusables/KasseImBrowser';
 
 /**
@@ -59,9 +63,9 @@ export function CartSummary({cart, layout}) {
       {vorteil ? (
         <p className="warenkorb-gesamtvorteil" data-warenkorb-gesamtvorteil="">
           {vorteil.gesamt
-            ? `Gesamtvorteil ${formatPreis(vorteil.gesamt, currencyCode)} je Qi Alpha® mit Wunschnummer. `
+            ? gesamtVorteilText(formatPreis(vorteil.gesamt, currencyCode))
             : ''}
-          Nicht mit anderen Rabatten kombinierbar.
+          {NICHT_KOMBINIERBAR_TEXT}
         </p>
       ) : null}
       <div className="cart-delivery-notes">
