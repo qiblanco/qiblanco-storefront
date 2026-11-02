@@ -453,7 +453,7 @@ test('KLICK -> BILD: offen beim Anbinden, Wert beim ersten Abspielen', async () 
     assert.equal(fest.meta.zf, '3,1');
     U.tab('hidden');
     const nachher = nurArt(U.gemeldet, 'video_laden');
-    assert.equal(nachher[nachher.length - 1].wert, 1800, 'ein fester Wert wird nie wieder ueberschrieben');
+    assert.equal(nachher[nachher.length - 1].wert, 1800, 'ein fester Wert wird nie wieder überschrieben');
   } finally {
     ohneLadeUhr();
   }
@@ -474,7 +474,7 @@ test('KLICK -> BILD: Tab nach hinten vor dem Bild ist ein Abbruch, nie eine Zahl
     assert.equal(l[l.length - 1].wert, undefined);
     U.tab('visible');
     l = nurArt(U.gemeldet, 'video_laden');
-    assert.equal(l[l.length - 1].meta.g, 'offen', 'zurueck im Tab: wieder offen');
+    assert.equal(l[l.length - 1].meta.g, 'offen', 'zurück im Tab: wieder offen');
   } finally {
     ohneLadeUhr();
   }
