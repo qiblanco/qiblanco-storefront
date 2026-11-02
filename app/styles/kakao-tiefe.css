@@ -104,6 +104,10 @@
 [data-kt-farbe='create'] {
   --kt-sorte: var(--kt-create);
   --kt-sorte-text: var(--kt-create-text);
+  /* Schrift in der Haustinte: Blau bleibt Daten-Kodierung (Balken, Legendenpunkt,
+     Rand). Als Textfarbe zaehlt es in der design-rubrik als zweiter Akzent neben
+     Gold, gemessen 02.11.2026: harmonisch 75 statt 100. */
+  --kt-sorte-schrift: var(--kt-text);
 }
 [data-kt-farbe='neutral'] {
   --kt-sorte: var(--kt-neutral);
@@ -179,7 +183,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--kt-space-1);
-  color: var(--kt-sorte-text);
+  color: var(--kt-sorte-schrift, var(--kt-sorte-text));
 }
 .kt .kt-legende__eintrag::before {
   content: '';
@@ -371,7 +375,7 @@
 .kt .kt-profil__sorte {
   font-size: var(--kt-fs-1);
   font-weight: 700;
-  color: var(--kt-sorte-text);
+  color: var(--kt-sorte-schrift, var(--kt-sorte-text));
 }
 .kt .kt-profil .kt-balken {
   height: 12px;
@@ -475,7 +479,7 @@
 .kt .kt-urstamm__name {
   font-size: var(--kt-fs-2);
   font-weight: 700;
-  color: var(--kt-sorte-text);
+  color: var(--kt-sorte-schrift, var(--kt-sorte-text));
 }
 
 /* ---- Akt 4/5 · Bild und Text --------------------------------------------- */
@@ -634,4 +638,15 @@
   .kt .kt-kacheln--spur {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
+}
+
+/* ---- Überschriften der Kaufseite einheitlich mittig ---------------------- */
+/* Kundenfragen und FAQ standen links, alle übrigen H2 dieser Seite mittig
+   (design-rubrik, H2-Ausrichtung). Diese Datei lädt nur die Kakao-Kaufseite. */
+.qb-kf__titel,
+.ProductFAQ__header h2 {
+  text-align: center;
+}
+.ProductFAQ__header {
+  justify-content: center;
 }

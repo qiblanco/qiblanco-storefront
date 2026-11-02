@@ -29,7 +29,9 @@ import {
  * FARBE: die Sorte der Seite trägt ihre Sortenfarbe, die Vergleichssorte
  * ein Neutral (data-kt-farbe="neutral"). So bleibt es je Seite bei Gold plus
  * EINER Sortenfarbe; eine dritte gesättigte Farbwelt kostet in der
- * design-rubrik 25 Punkte (Kandidat 2026-10-02: 88 statt 95).
+ * design-rubrik 25 Punkte (Kandidat 2026-10-02: 88 statt 95). Auf Create zählt
+ * die Sortenfarbe als Textfarbe selbst als zweiter Akzent (gemessen 02.11.2026);
+ * dort trägt sie nur Balken, Legendenpunkt und Rand (--kt-sorte-schrift).
  *
  * MESSBAR: jede Mineralstoff-Kachel trägt data-kt-symbol und data-kt-wert
  * (der Rohwert der JSON). Daran hält probe_mineralstoffe_naht.py die sechs
