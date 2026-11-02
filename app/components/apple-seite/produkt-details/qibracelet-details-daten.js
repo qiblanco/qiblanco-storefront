@@ -54,7 +54,7 @@ export const QIBRACELET_DETAILS = Object.freeze([
     art: 'fakten',
     titel: 'Einmal kaufen. Für ein Leben gebaut.',
     kacheln: [
-      {zahl: 'Jahrzehnte', titel: 'Lebensdauer', satz: 'Robust gebaut für jeden Tag.'},
+      {zahl: 'Jahrzehnte', titel: 'Lebensdauer', satz: 'Ohne Akku und ohne Elektronik.'},
       {zahl: '316L', titel: 'Material', satz: 'Implantatstahl aus der Orthopädie.'},
       {zahl: '750er', titel: 'Gold im Gitterchip®', satz: 'Von Goldschmieden von Hand vollendet.'},
     ],
