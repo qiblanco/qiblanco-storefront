@@ -11,7 +11,7 @@ const videos = [
   {
     label: 'Video 1',
     title: 'Entgiftung',
-    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/entgiftung_720x.png?v=1645197348',
+    img: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/entgiftung-1152.webp?v=1793410366',
     bullets: [
       'Warum Giftstoffe unsere Körperaktivitäten lähmen',
       'Wie du dich effektiv entgiftest und deine Zellen wieder vollfunktionsfähig machst',
