@@ -48,7 +48,10 @@ test('Rabatte: letzte Frage, kein Sale, nicht Black Friday, nicht Summer Sale (C
   assert.equal(r.id, 'rabatte');
   assert.equal(r.frage, 'Wird es auf den Qi Alpha® Rabatte geben?');
   const a = r.antwort.join(' ');
-  assert.match(a, /^Nein\./);
+  // Christian 02.11.2026 (netter, PR-Manager): das Nein bleibt vorn, exklusiv bleibt drin.
+  assert.match(a, /^Nein\b/);
+  assert.match(a, /exklusiv/);
+  assert.match(a, /nie in einen Sale/);
   assert.match(a, /Black Friday/);
   assert.match(a, /Summer Sale/);
   // Partnercodes geben 5 % auf den Qi Alpha®: die Antwort sagt nie „nie mit Rabatt“.

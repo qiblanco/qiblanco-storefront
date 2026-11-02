@@ -121,7 +121,10 @@ export const THE_ALPHA_FAQ = [
     frage: 'Wie groß ist der Qi Alpha®?',
     antwort: [
       // \u00a0: Maß und Gewicht brechen nie um (iPhone 390 px brach „20 / × 15 mm“).
-      'Genauso groß wie der QiOne® 2 Pro: rund 20\u00a0×\u00a015\u00a0mm. Er wiegt 9,9\u00a0g.',
+      // Christian 02.11.2026: „das mal etwas netter formulieren mit dem pr
+      // manager“. Fassung G-D, vom PR-Chef frei (Job 20261102-prio2-qi-alpha-
+      // faq-rabatt-groesse-pr-manager-netter, pr/); kein Tragegefühl, keine Zusage.
+      'Er hat dieselbe Größe wie der QiOne® 2 Pro: rund 20\u00a0×\u00a015\u00a0mm. Dabei wiegt er nur 9,9\u00a0g.',
     ],
   },
   {
@@ -139,10 +142,14 @@ export const THE_ALPHA_FAQ = [
     // launch.md, R1: „nie in einem Sale wie Black Friday oder Sommer Sale“).
     // Kein „nie mit Rabatt“: Partnercodes geben seit 01.11. 5 % auf den Qi
     // Alpha® (shop-manager/config/qi-alpha-preisregeln.json).
+    // Christian 02.11.2026: „das mal etwas netter formulieren mit dem pr
+    // manager“. Fassung R-D, vom PR-Chef frei (Job 20261102-prio2-qi-alpha-
+    // faq-rabatt-groesse-pr-manager-netter, pr/): das Nein bleibt, dahinter
+    // steht zuerst, was der Mensch davon hat.
     id: 'rabatte',
     frage: 'Wird es auf den Qi Alpha® Rabatte geben?',
     antwort: [
-      'Nein. Der Qi Alpha® ist exklusiv. Es gibt ihn nie in einem Sale, weder am Black Friday noch im Summer Sale.',
+      'Nein, und so musst du auf keinen Aktionstag warten. Der Qi Alpha® ist exklusiv und kommt nie in einen Sale, weder am Black Friday noch im Summer Sale.',
     ],
   },
 ];
