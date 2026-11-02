@@ -14,6 +14,7 @@ import {
   ladeHls,
   mseVorhanden,
 } from '~/components/reusables/hls-laden';
+import {leitung} from '~/components/reusables/leitung';
 
 /*
  * ImgixVideo — Sound-Toggle (Job bl-20260803T232952Z-b702ec, 2026-08-03),
@@ -75,6 +76,18 @@ const HLS_KONFIG = {
 const HLS_STUFENDECKEL = {
   capLevelToPlayerSize: true,
   maxDevicePixelRatio: 1.5,
+};
+
+/*
+ * LANGSAME LEITUNG (02.11.2026, Grossjob Ladezeiten s13, M3): meldet der
+ * Browser '3g' (leitung.js), deckelt hls.js auf die CSS-Größe des Kastens
+ * statt auf das 1,5-fache. Gemessen im 332-px-Kasten bei 300 ms / 1,6 Mbit/s:
+ * erstes Bild ~3,5 s ohne Stocken statt ~6 s mit Stocken (720p hält die
+ * Leitung nicht, hls.js fiel danach ohnehin auf 480p). Auf 4G bleibt 1,5:
+ * 480p war dort sichtbar weicher.
+ */
+const HLS_STUFENDECKEL_LANGSAM = {
+  maxDevicePixelRatio: 1,
 };
 
 /*
@@ -191,10 +204,11 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
     let rueckfall = null;
     let abgebaut = false;
 
-    // Ruhe gewünscht: die Drehung gar nicht laden, das Ersatzbild bleibt
-    // stehen. Spart nebenbei imgix-Kontingent. Nur mit Ersatzbild — ohne
-    // bliebe sonst ein leerer Kasten.
-    if (mitErsatz && bevorzugtRuhe()) return;
+    // Ruhe gewünscht oder Datensparen/2G (leitung.js): die Drehung gar nicht
+    // laden, das Ersatzbild bleibt stehen. Spart nebenbei Kontingent. Nur mit
+    // Ersatzbild — ohne bliebe sonst ein leerer Kasten.
+    const stufe = leitung();
+    if (mitErsatz && (bevorzugtRuhe() || stufe === 'sparen')) return;
 
     function aufMp4() {
       rueckfall = null;
@@ -241,7 +255,13 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
         return;
       }
       hls = new Hls(
-        quelle === 'shopify' ? {...HLS_KONFIG, ...HLS_STUFENDECKEL} : HLS_KONFIG,
+        quelle === 'shopify'
+          ? {
+              ...HLS_KONFIG,
+              ...HLS_STUFENDECKEL,
+              ...(stufe === 'langsam' ? HLS_STUFENDECKEL_LANGSAM : {}),
+            }
+          : HLS_KONFIG,
       );
       if (mitErsatz) {
         // Fataler Fehler (Netz, Manifest, Medien): hls.js gibt auf, das

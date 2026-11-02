@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {videoQuellen} from '~/data/video-quellen';
 import {
   ERSATZBILD_360,
@@ -7,6 +7,7 @@ import {
   useErsatzbild,
 } from '~/components/reusables/video360-ersatzbild';
 import {useNaeheLaden} from '~/components/reusables/useNaeheLaden';
+import {leitung} from '~/components/reusables/leitung';
 
 /*
  * Die Adresse der 360-Grad-Produktdrehung des QiOne(R) 2 Pro steht GENAU
@@ -171,13 +172,34 @@ export function Produkt360Video({
   const zuBildRef = useRef(zuBild);
   zuBildRef.current = zuBild;
   const nah = useNaeheLaden(ref, {sofort});
+  /*
+   * DATENSPAREN / 2G (02.11.2026, Grossjob Ladezeiten s13, M3, leitung.js):
+   * die Drehung lädt nicht, das Ersatzbild bleibt. Der Server kennt die
+   * Leitung nicht, das Server-HTML bleibt für alle gleich; nach der
+   * Hydration nimmt `sparen` die Quelle zurück. Mit `sofort` stand sie schon
+   * im Markup: dann bricht load() den laufenden Abruf ab.
+   */
+  const [sparen, setSparen] = useState(false);
+  useEffect(() => {
+    if (leitung() === 'sparen') setSparen(true);
+  }, []);
   const video = DREHUNG_VIDEO[drehung] ?? DREHUNG_VIDEO.qione;
   const basis = ERSATZBILD_360[drehung] ?? QIONE_ERSATZ;
   const ersatz = alt ? {...basis, alt} : basis;
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || !nah) return;
+    if (!el || !sparen) return;
+    el.autoplay = false;
+    el.pause();
+    // React hat das src-Attribut schon entfernt; ohne load() lädt der
+    // Browser die alte Quelle weiter.
+    if (!el.getAttribute('src') && el.currentSrc) el.load();
+  }, [sparen]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !nah || sparen) return;
     const ruhe = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     let wartet = false;
 
@@ -236,7 +258,7 @@ export function Produkt360Video({
       ruhe?.removeEventListener?.('change', anwenden);
       geste(false);
     };
-  }, [nah]);
+  }, [nah, sparen]);
 
   return (
     <div
@@ -248,7 +270,7 @@ export function Produkt360Video({
     <video
       ref={ref}
       className={className || undefined}
-      src={nah ? video.src : undefined}
+      src={nah && !sparen ? video.src : undefined}
       poster={anzeige ? undefined : ersatz.bild}
       width={QIONE_360_KANTE}
       height={QIONE_360_KANTE}
