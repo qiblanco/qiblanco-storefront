@@ -85,6 +85,28 @@ html[data-dialog-offen] .qb-kaufleiste { display: none; }
   color: var(--qb-text-gedaempft);
 }
 
+/* ─── Kakao-Mengenstaffel: Betrag der gewählten Menge ───────────────────────
+   CacaoLeistenPreis (CacaoPriceDisplay.jsx). Streichpreis neben dem Betrag und
+   die Menge darunter: zwei Zeilen wie die übrigen Kaufseiten. */
+.qb-kaufleiste .qb-kaufleiste__staffel .product-price-on-sale {
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--qb-abstand-1);
+}
+/* Die Spalte ist breiter als ein Einzelpreis (107 px bei 159 € / 228 €): mit dem
+   schmaleren Knopfrand bleibt die Beschriftung bei 390 px in einer Zeile. */
+.qb-kaufleiste:has(.qb-kaufleiste__staffel) .btn--primary {
+  padding-inline: var(--qb-abstand-1);
+}
+.qb-kaufleiste__menge {
+  margin: 0;
+  font-size: var(--qb-text-klein);
+  font-weight: var(--qb-fw-fliess);
+  line-height: var(--qb-lh-h2);
+  color: var(--qb-text-gedaempft);
+  white-space: nowrap;
+}
+
 /* ─── Arm b des A/B-Tests: Nutzenaussage statt Preis ────────────────────────
    kaufleiste-lage.js (kaufleisteAnzeige). Dieselbe Rolle und Größe wie der
    Preis, den sie in Arm b ersetzt, damit die Leiste in beiden Armen gleich
