@@ -50,6 +50,7 @@ const HUELLEN = [
   ['products.qi-master-wunschnummer.jsx', '/products/qi-master-wunschnummer', '/products/qi-alpha'],
   ['products.qi-alpha-goldkette.jsx', '/products/qi-alpha-goldkette', '/products/qi-alpha'],
   ['products.qi-alpha-wunschnummer.jsx', '/products/qi-alpha-wunschnummer', '/products/qi-alpha'],
+  ['products.qi-alpha-stahlkette.jsx', '/products/qi-alpha-stahlkette', '/products/qi-alpha'],
   ['products.the-alpha.jsx', '/products/the-alpha', '/products/qi-alpha'],
   ['products.the-alpha.jsx', '/products/The-Alpha', '/products/qi-alpha'],
   ['products.the-alpha-b.jsx', '/products/the-alpha-b', '/products/qi-alpha-b'],

@@ -1,0 +1,17 @@
+/*
+ * ANGEBOTE IM KONFIGURATOR (Grossjob 20261027-GROSSJOB-apple-konfigurator-
+ * qione-qihome-qibracelet-ab, s13-r3): /products/pjdz538hgs0 und
+ * /products/8kendiw34hd. Lädt nur mit Konfigurator (AngebotKonfigurator.jsx),
+ * NACH alpha-qione.css. Nur Scope .av-seite[data-konfigurator=…], nur Tokens
+ * der Alpha (tas-*). Dieselbe Regel wie alpha-kette.css (s13):
+ *
+ *   av-kachel-titel   eine Stufe größer (--tas-fs-4): die Seiten haben keinen
+ *                     Vergleich und kein Nutzen-Raster, die Kacheltitel tragen
+ *                     die Zwischenstufe zwischen Fließtext (fs-3) und
+ *                     Kachelzahl (fs-5) der Typo-Skala (Rubrik 96 -> Skala).
+ */
+.av-seite[data-konfigurator='pjdz538hgs0'] .av-kachel-titel,
+.av-seite[data-konfigurator='8kendiw34hd'] .av-kachel-titel {
+  font-size: var(--tas-fs-4);
+  line-height: 1.2;
+}
