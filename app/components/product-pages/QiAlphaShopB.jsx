@@ -226,8 +226,8 @@ function Edition() {
         <div className="Column">
           <h3 className="mt-3">Diamant</h3>
           <p>
-            Wir verwenden ausschließlich zertifizierte hochreichen Natur
-            Diamanten – reiner Kohlenstoff, gefasst am Gitterchip<sup>®</sup>.
+            Im Qi Alpha® sitzt genau ein zertifizierter, hochreiner
+            Naturdiamant – reiner Kohlenstoff, gefasst am Gitterchip<sup>®</sup>.
           </p>
           <h3 className="mt-3">The One Eye</h3>
           <p>
