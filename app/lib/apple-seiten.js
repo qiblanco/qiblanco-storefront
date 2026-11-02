@@ -92,7 +92,7 @@ export const APPLE_SEITEN = Object.freeze({
   // ---- s08 · Service, Formulare, Kollektionen, Rechtsseiten ----
   'cart': {pfad: '/cart', schalter: 'APPLE_SEITE_CART', standard: 'off'},
   'collections': {pfad: '/collections', schalter: 'APPLE_SEITE_COLLECTIONS', standard: 'off'},
-  'collections-all': {pfad: '/collections/all', schalter: 'APPLE_SEITE_COLLECTIONS_ALL', standard: 'on'},
+  'collections-all': {pfad: '/collections/all', schalter: 'APPLE_SEITE_COLLECTIONS_ALL', standard: 'off'},
   'collections-products': {pfad: '/collections/products', schalter: 'APPLE_SEITE_COLLECTIONS_PRODUCTS', standard: 'off'},
   'agb': {pfad: '/pages/agb', schalter: 'APPLE_SEITE_AGB', standard: 'on'},
   'cookie-erklaerung': {pfad: '/pages/cookie-erklaerung', schalter: 'APPLE_SEITE_COOKIE_ERKLAERUNG', standard: 'on'},
@@ -105,7 +105,7 @@ export const APPLE_SEITEN = Object.freeze({
   'partner-details': {pfad: '/pages/partner-details', schalter: 'APPLE_SEITE_PARTNER_DETAILS', standard: 'off'},
   'produktberatung': {pfad: '/pages/produktberatung', schalter: 'APPLE_SEITE_PRODUKTBERATUNG', standard: 'on'},
   'produktberatung-b': {pfad: '/pages/produktberatung-b', schalter: 'APPLE_SEITE_PRODUKTBERATUNG_B', standard: 'on'},
-  'sprechstunde': {pfad: '/pages/sprechstunde', schalter: 'APPLE_SEITE_SPRECHSTUNDE', standard: 'on'},
+  'sprechstunde': {pfad: '/pages/sprechstunde', schalter: 'APPLE_SEITE_SPRECHSTUNDE', standard: 'off'},
   'superhuman-anmeldung-erfolgreich': {pfad: '/pages/superhuman-anmeldung-erfolgreich', schalter: 'APPLE_SEITE_SUPERHUMAN_ANMELDUNG_ERFOLGREICH', standard: 'off'},
   'superhuman-kurs-bestatigung': {pfad: '/pages/superhuman-kurs-bestatigung', schalter: 'APPLE_SEITE_SUPERHUMAN_KURS_BESTATIGUNG', standard: 'off'},
   'teilnahmebedingungen': {pfad: '/pages/teilnahmebedingungen', schalter: 'APPLE_SEITE_TEILNAHMEBEDINGUNGEN', standard: 'on'},
@@ -118,8 +118,8 @@ export const APPLE_SEITEN = Object.freeze({
   'policies-shipping-policy': {pfad: '/policies/shipping-policy', schalter: 'APPLE_SEITE_POLICIES_SHIPPING_POLICY', standard: 'on'},
   'policies-terms-of-service': {pfad: '/policies/terms-of-service', schalter: 'APPLE_SEITE_POLICIES_TERMS_OF_SERVICE', standard: 'on'},
   'products-sprechstunde-mit-christian': {pfad: '/products/sprechstunde-mit-christian', schalter: 'APPLE_SEITE_PRODUCTS_SPRECHSTUNDE_MIT_CHRISTIAN', standard: 'off'},
-  'search': {pfad: '/search', schalter: 'APPLE_SEITE_SEARCH', standard: 'on'},
-  'widerruf': {pfad: '/widerruf', schalter: 'APPLE_SEITE_WIDERRUF', standard: 'on'},
+  'search': {pfad: '/search', schalter: 'APPLE_SEITE_SEARCH', standard: 'off'},
+  'widerruf': {pfad: '/widerruf', schalter: 'APPLE_SEITE_WIDERRUF', standard: 'off'},
   'widerruf-bestaetigen': {pfad: '/widerruf/bestaetigen', schalter: 'APPLE_SEITE_WIDERRUF_BESTAETIGEN', standard: 'off'},
 });
 for (const eintrag of Object.values(APPLE_SEITEN)) Object.freeze(eintrag);
