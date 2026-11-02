@@ -633,7 +633,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/neu-oder-gebraucht',
-    lastmod: '2026-09-12T23:30:00Z',
+    lastmod: '2026-11-01T18:54:40Z',
     grund:
       'Die nachpruefbaren Tatsachen des Kaufs als Fliesstext (Grossjob ' +
       '20260912-…-googles-ki-antwort-raet-vom-kauf-ab, Segment s05). Anlass ' +

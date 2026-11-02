@@ -234,7 +234,7 @@ export const GENANNT = {
         'Beiträge. Keiner davon kommt von jemandem, der ihn getragen hat.',
       weiter: {
         pfad: '/pages/neu-oder-gebraucht',
-        text: 'Was ein Kauf von privat nicht enthält',
+        text: 'Was du bekommst, wenn du direkt bei uns kaufst',
       },
     },
     {
