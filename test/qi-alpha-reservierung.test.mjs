@@ -317,3 +317,18 @@ test('Warenkorb-Anzeige: gratis und Vorteil lesen die Zeile', () => {
   assert.equal(r.vorteilJeStueck({...alpha, attributes: []}), null);
   assert.equal(r.vorteilJeStueck({...mitLink, discountAllocations: []}), null);
 });
+
+test('Gesamtvorteil im Warenkorb: 3.500 € mit Nummer, ohne Nummer nur der Abzug', () => {
+  const alpha = {
+    ...mitLink,
+    quantity: 2,
+    discountAllocations: [{discountedAmount: {amount: '3000.0'}}],
+  };
+  const nummer = {
+    cost: {amountPerQuantity: {amount: '0.0'}, compareAtAmountPerQuantity: {amount: '2000.0'}},
+  };
+  assert.deepEqual(r.gesamtVorteil([alpha, nummer]), {abzug: 1500, wert: 2000, gesamt: 3500});
+  assert.deepEqual(r.gesamtVorteil([alpha]), {abzug: 1500, wert: null, gesamt: null});
+  assert.equal(r.gesamtVorteil([nummer]), null);
+  assert.equal(r.gesamtVorteil([]), null);
+});

@@ -140,6 +140,17 @@ export function vorteilJeStueck(line) {
   return summe > 0 ? summe / menge : null;
 }
 
+/**
+ * Gesamtvorteil je Gerät für den Warenkorb: Abzug je Stück plus Wert der
+ * geschenkten Nummer, null ohne Abzug. Ohne Nummer im Korb nur der Abzug.
+ */
+export function gesamtVorteil(lines) {
+  const abzug = (lines || []).map(vorteilJeStueck).find(Boolean);
+  if (!abzug) return null;
+  const wert = (lines || []).map(gratisWert).find(Boolean) ?? null;
+  return {abzug, wert, gesamt: wert ? abzug + wert : null};
+}
+
 /** Alle reservierten Nummern eines Shops (für die Sperre im normalen Shop). */
 export function reservierteNummern(liste, shop = 'deutsch') {
   const aus = new Set();

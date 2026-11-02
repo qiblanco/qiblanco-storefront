@@ -6,6 +6,7 @@ import {useMarktLand} from '~/lib/markt-land';
 import {cartLineContentIds} from '~/lib/pixel-content';
 import {qpxTrack, buildInitiateCheckoutEvent} from '~/lib/qpx-commerce';
 import {versandhinweisFürLinien} from '~/lib/vorbestellung';
+import {gesamtVorteil} from '~/lib/qi-alpha-reservierung';
 import {KasseImBrowser} from '~/components/reusables/KasseImBrowser';
 
 /**
@@ -40,6 +41,8 @@ export function CartSummary({cart, layout}) {
 
   const currencyCode = cart.cost?.subtotalAmount?.currencyCode ?? 'EUR';
   const taxedSubtotal = {amount: correctedTotal.toFixed(2), currencyCode};
+  // Persönlicher Link mit Rabatt (Christian 02.11.2026).
+  const vorteil = gesamtVorteil(lines);
 
   return (
     <div aria-labelledby="cart-summary" className={className}>
@@ -53,6 +56,14 @@ export function CartSummary({cart, layout}) {
           Komma aussah. Gestapelt braucht es ihn nicht.
           "versichterter" war ein Tippfehler und stand damit auf jeder Seite des
           Shops direkt über dem Kaufbutton. */}
+      {vorteil ? (
+        <p className="warenkorb-gesamtvorteil" data-warenkorb-gesamtvorteil="">
+          {vorteil.gesamt
+            ? `Gesamtvorteil ${formatPreis(vorteil.gesamt, currencyCode)} je Qi Alpha® mit Wunschnummer. `
+            : ''}
+          Nicht mit anderen Rabatten kombinierbar.
+        </p>
+      ) : null}
       <div className="cart-delivery-notes">
         {/* Die Lieferzusage hängt am Inhalt des Warenkorbs, nicht an einer
             festen Zeile: liegt eine Vorbestellung darin, nennt sie deren

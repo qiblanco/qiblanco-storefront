@@ -2208,6 +2208,12 @@ footer.footer :focus-visible {
   font-weight: 400;
   color: rgba(0, 0, 0, 0.5);
 }
+.warenkorb-gesamtvorteil {
+  margin: 0 0 8px;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: rgba(0, 0, 0, 0.6);
+}
 .cart-line .warenkorb-vorteil {
   margin: 2px 0 0;
   font-size: 0.8125rem;

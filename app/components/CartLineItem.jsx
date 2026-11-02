@@ -98,7 +98,9 @@ export function CartLineItem({layout, line}) {
           />
         ) : wertGratis ? (
           <div className="product-price" data-warenkorb-gratis="">
-            <s>{betrag(wertGratis)}</s> {betrag(0)}
+            <span>
+              <s>{betrag(wertGratis)}</s> {betrag(0)}
+            </span>
           </div>
         ) : (
           <div className="product-price" aria-hidden="true">
