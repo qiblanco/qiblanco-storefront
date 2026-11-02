@@ -1,4 +1,4 @@
-import {redirect} from 'react-router';
+import {redirect, useLoaderData} from 'react-router';
 import {SprechstundeSeite} from '~/components/campaign/SprechstundeSeite';
 import sprechstundeStyles from '~/styles/sprechstunde.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
@@ -23,6 +23,10 @@ import {
   termineBrauchbar,
   ticketCode,
 } from '~/lib/sprechstunde-abruf.server';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import sprechstundeAppleStyles from '~/styles/sprechstunde-apple.css?url';
 
 /**
  * /pages/sprechstunde — Sprechstunde mit Christian: eine Stunde 1:1 per Zoom,
@@ -130,7 +134,17 @@ function angebot(body) {
   };
 }
 
-export async function loader({request, context}) {
+/**
+ * Der Schalter der Apple-Fassung hängt sich an jede Datenantwort. Weiterleitungen
+ * und die Kalenderdatei (Response) gehen unverändert durch.
+ */
+export async function loader(args) {
+  const daten = await seitenDaten(args);
+  if (daten instanceof Response) return daten;
+  return {...daten, appleSeite: appleSeiteLaden(args.context, 'sprechstunde')};
+}
+
+async function seitenDaten({request, context}) {
   const url = new URL(request.url);
   const api = basis(context);
   const status = (url.searchParams.get('status') || '').trim();
@@ -474,13 +488,24 @@ function jsonLd() {
 }
 
 export default function SprechstundeRoute() {
+  const {appleSeite} = useLoaderData() ?? {};
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{__html: jsonLd()}}
       />
-      <SprechstundeSeite />
+      {appleSeite?.an && appleSeite.seite ? (
+        <>
+          <link rel="stylesheet" href={sprechstundeAppleStyles} />
+          <AppleSeite seite={appleSeite.seite}>
+            <SprechstundeSeite />
+            <AppleAnna />
+          </AppleSeite>
+        </>
+      ) : (
+        <SprechstundeSeite />
+      )}
     </>
   );
 }
