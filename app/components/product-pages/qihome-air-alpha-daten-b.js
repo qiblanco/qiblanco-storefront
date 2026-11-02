@@ -9,8 +9,19 @@ export * from './qihome-air-alpha-daten';
 
 const kapitel = (etikett) => WISSEN.kapitel.filter((k) => k.etikett === etikett);
 
-/** „Hinstellen. Fertig.“ und das, was unter dem Haus liegt: beides handelt vom Raum. */
-export const RAUM = {kapitel: [...kapitel('Raum'), ...kapitel('Erde')], studien: null};
+// In B steht „Erde“ direkt hinter „in dem Raum, in dem du am meisten Zeit verbringst“.
+// Mit „Deshalb gehört …“ läse sich das als Widerspruch (PR-Chef s12).
+const erdeImRaum = kapitel('Erde').map((k) => ({
+  ...k,
+  absaetze: k.absaetze.map((a) =>
+    a.startsWith('Deshalb gehört')
+      ? 'Am besten dort, wo du schläfst. Dort verbringst du viele Stunden am Stück.'
+      : a,
+  ),
+}));
 
-/** Das Labor nach dem Gerätevergleich, die Studien direkt darunter. */
+/** „Hinstellen. Fertig.“ und das, was unter dem Haus liegt: beides handelt vom Raum. */
+export const RAUM = {kapitel: [...kapitel('Raum'), ...erdeImRaum], studien: null};
+
+/** Das Labor direkt hinter dem Raum, die Studien darunter. */
 export const BELEG = {kapitel: kapitel('Zelle'), studien: WISSEN.studien};

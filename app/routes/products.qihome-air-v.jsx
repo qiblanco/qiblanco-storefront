@@ -84,6 +84,16 @@ export default function ProductVariante() {
             {name: 'einsatz', inhalt: <AlphaKachelBlock daten={DATEN.EINSATZ} />},
             'fakten',
             {name: 'raum', inhalt: <AlphaWissen kapitel={DATEN.RAUM.kapitel} bilder={bilder} />},
+            {
+              name: 'wissen',
+              inhalt: (
+                <AlphaWissen
+                  kapitel={DATEN.BELEG.kapitel}
+                  studien={DATEN.BELEG.studien}
+                  bilder={bilder}
+                />
+              ),
+            },
             'risikofrei',
             {name: 'stimmen', inhalt: <AlphaStimmen daten={DATEN.STIMMEN_GOOGLE} />},
             {
@@ -94,16 +104,6 @@ export default function ProductVariante() {
                   daten={DATEN.VERGLEICH}
                   preise={vergleichsPreise}
                   eigenerPreis={product?.selectedOrFirstAvailableVariant?.price}
-                />
-              ),
-            },
-            {
-              name: 'wissen',
-              inhalt: (
-                <AlphaWissen
-                  kapitel={DATEN.BELEG.kapitel}
-                  studien={DATEN.BELEG.studien}
-                  bilder={bilder}
                 />
               ),
             },
