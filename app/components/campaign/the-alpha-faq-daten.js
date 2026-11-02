@@ -72,7 +72,7 @@ export const THE_ALPHA_FAQ = [
     frage: 'Bin ich bereit für den Qi Alpha®?',
     antwort: [
       'Ja, wenn du alles willst. Der Qi Alpha® ist gemacht für Menschen, die das Maximum aus ihrem Leben holen, beruflich und privat. Für den Alltag ist der QiOne® 2 Pro mehr als ausreichend.',
-      'Der Vorverkauf startet am 01.11.2026. Am Sonntag, 8. November, um 12 Uhr halte ich ihn zum ersten Mal live für dich in die Kamera. Komm vorbei und stell mir deine Fragen!',
+      'Der Vorverkauf läuft seit dem 01.11.2026. Am Sonntag, 8. November, um 12 Uhr halte ich ihn zum ersten Mal live für dich in die Kamera. Komm vorbei und stell mir deine Fragen!',
     ],
   },
   {
