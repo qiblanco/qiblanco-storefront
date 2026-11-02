@@ -5,6 +5,7 @@ import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
 import {kaufZiel, RESERVIERUNG_PARAM} from '~/lib/qi-alpha-reservierung';
 import {TapTon, TapFilmTon, videoQuellen} from '~/components/campaign/TheAlphaTon';
 import {tapStopper} from '~/components/campaign/the-alpha-stopper';
+import {LEINWAND_ZEIT} from '~/components/campaign/the-alpha-video-ios';
 import {
   THE_ALPHA_KOPF,
   THE_ALPHA_SCHLUSS,
@@ -674,11 +675,15 @@ export function TapFilm({film, stopper = false}) {
   useEffect(() => {
     const v = filmRef.current;
     if (!v || !mitTexten) return undefined;
-    const takt = () => {
-      const t = v.currentTime;
+    // iPhone-Rückfall (the-alpha-video-ios.js, Nachtrag 02.11.): zeigt ein
+    // Canvas den Film, gilt dessen Zeit, nicht die des stehenden Videos.
+    const takt = (e) => {
+      const leinwand = v.dataset.tapIosLeinwand === 'spielt';
+      if (leinwand && (!e || e.type !== LEINWAND_ZEIT)) return;
+      const t = leinwand ? e.detail : v.currentTime;
       setAktiv(texte.findIndex((s) => t >= s.von && t < s.bis));
     };
-    const ereignisse = ['timeupdate', 'seeked', 'playing', 'pause', 'emptied'];
+    const ereignisse = ['timeupdate', 'seeked', 'playing', 'pause', 'emptied', LEINWAND_ZEIT];
     ereignisse.forEach((e) => v.addEventListener(e, takt));
     takt();
     return () => ereignisse.forEach((e) => v.removeEventListener(e, takt));

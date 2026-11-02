@@ -1062,6 +1062,21 @@ html:has(main[data-film-seite]) {
   opacity: 0;
 }
 
+/* iPhone, Rückfall (Nachtrag 02.11.2026): lässt iOS das Video nicht von
+   selbst laufen, zeigt ein Canvas genau darüber denselben Film (selbst
+   dekodiert). Unsichtbar, bis sein erstes Bild gemalt ist. */
+.tap-film-bild > canvas.tap-film-leinwand {
+  position: absolute;
+  margin: 0;
+  object-fit: cover;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.tap-film-bild > canvas.tap-film-leinwand-an {
+  opacity: 1;
+}
+
 /* Bild und Text passen zusammen auf einen Bildschirm (die Szene erscheint
    erst, wenn sie ganz im Bild ist): das Video gibt dem Text die Höhe ab. */
 .tap-film-mit-text video {

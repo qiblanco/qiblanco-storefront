@@ -41,7 +41,31 @@
  *  - Kommt man vor der kleinen MP4 an (sehr schnell oder sehr langsames
  *    Netz), spielt die kleine MP4 direkt aus dem Netz (Low-Quality-Start).
  *  - Prüfschalter ?video=alt: alter Weg (HLS, Poster), zum Vergleich.
+ *
+ * NACHTRAG 02.11.2026 (Christian: „außer dass das Video bei Apple iPhone 18
+ * Pro in Chrome das Video noch nicht von alleine abläuft. Auf dem Browser
+ * eines Macs in Safari geht es schon.“ Job 20261102-prio1-qi-alpha-lp-video-
+ * autostart-iphone-chrome): bis hier endete jeder Weg ohne laufendes Bild im
+ * Standbild, bis eine Berührung kam. Das ist genau das Bild vom iPhone in
+ * Chrome. Chrome auf dem iPhone ist WebKit in einem WKWebView (Chromium
+ * ios/web/.../wk_web_view_configuration_provider.mm setzt nur
+ * allowsInlineMediaPlayback); was dort ein <video> ohne Berührung anhält oder
+ * nicht ins Laufen bringt (Stromsparmodus, „Video-Vorschauen automatisch
+ * abspielen“ aus, ein blob:-Video, das nie ein Bild liefert), gilt nur dem
+ * Medienelement. Darum jetzt, sobald der Notfallplan greift: DIESELBE kleine
+ * MP4 über WebCodecs (iOS 16.4+) in ein Canvas genau über dem Video
+ * (reusables/film-dekoder.js, wie der 360-Film der Kaufseite, #1208). Erst
+ * mit dem ersten gemalten Bild tritt das Canvas an die Stelle des Standbilds.
+ * Läuft das Video vorher selbst an, geht das Canvas wortlos. Der Film hat
+ * keine Tonspur (data-tap-video-ton="nein"), es fehlt also nichts. Die Sätze
+ * unter dem Film folgen der Canvas-Zeit (Ereignis LEINWAND_ZEIT).
  */
+
+import {filmAufLeinwand} from '../reusables/film-dekoder.js';
+
+// Ereignis am <video>, solange das Canvas den Film zeigt: detail = Filmzeit
+// in Sekunden (wie currentTime). TapFilm stellt damit die Sätze.
+export const LEINWAND_ZEIT = 'tap-leinwand-zeit';
 
 // Ab Sichtbarwerden: so lange ohne erstes Bild, dann das Standbild.
 export const NOTFALL_MS = 1500;
@@ -106,6 +130,8 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     // Anwärmen: die aktuelle Quelle hat schon ein Bild geliefert (dekodiert)
     warm: false,
     waermt: false,
+    // Rückfall Canvas (Nachtrag 02.11.): null | {el, dek, zeigt}
+    leinwand: null,
   };
   v.dataset.tapIos = 'leer';
   v.removeAttribute('poster');
@@ -184,7 +210,10 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   };
   // Notfallplan: Standbild ÜBER dem Video, bis das erste Bild läuft.
   const notbildAn = (grund) => {
-    if (st.erstesBild || st.weg || !notbildUrl || !figurBild) return;
+    if (st.erstesBild || st.weg) return;
+    leinwandAn();
+    if (st.leinwand && st.leinwand.zeigt) return;
+    if (!notbildUrl || !figurBild) return;
     v.poster = notbildUrl;
     v.dataset.tapNotbild = grund;
     if (st.notbild) {
@@ -213,14 +242,91 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     delete v.dataset.tapNotbild;
   };
 
+  // RÜCKFALL CANVAS (Nachtrag 02.11.): derselbe Film, selbst dekodiert.
+  const leinwandLage = () => {
+    const l = st.leinwand;
+    if (!l) return;
+    l.el.style.left = `${v.offsetLeft}px`;
+    l.el.style.top = `${v.offsetTop}px`;
+    l.el.style.width = `${v.offsetWidth}px`;
+    l.el.style.height = `${v.offsetHeight}px`;
+  };
+  const leinwandAus = (grund = 'aus') => {
+    const l = st.leinwand;
+    if (!l) return;
+    st.leinwand = null;
+    l.dek.stopp();
+    l.el.remove();
+    fenster.removeEventListener('resize', leinwandLage);
+    v.dataset.tapIosLeinwand = grund;
+  };
+  function leinwandAn() {
+    if (st.leinwand || st.leinwandFehler || st.weg || !figurBild) return;
+    if (typeof fenster.VideoDecoder !== 'function') return;
+    const el = doc.createElement('canvas');
+    el.className = 'tap-film-leinwand';
+    el.setAttribute('aria-hidden', 'true');
+    const cs = fenster.getComputedStyle ? fenster.getComputedStyle(v) : null;
+    if (cs) {
+      el.style.objectFit = cs.objectFit;
+      el.style.objectPosition = cs.objectPosition;
+    }
+    const l = {el, dek: null, zeigt: false};
+    st.leinwand = l;
+    leinwandLage();
+    figurBild.insertBefore(el, v.nextSibling);
+    fenster.addEventListener('resize', leinwandLage, {passive: true});
+    v.dataset.tapIosLeinwand = 'holt';
+    // Aus dem Speicher, wenn die kleine MP4 schon da ist; sonst (und nach
+    // einem Fehler am Speicher) aus dem Netz.
+    const quelle = !st.leinwandNetz && st.blobKlein ? st.blobKlein : klein;
+    l.dek = filmAufLeinwand(el, quelle, {
+      buehne: v,
+      massVomFilm: true,
+      beiErstemBild: () => {
+        if (st.leinwand !== l) return;
+        // Das Video lief inzwischen selbst: es bleibt beim Video.
+        if (st.erstesBild) {
+          leinwandAus();
+          return;
+        }
+        l.zeigt = true;
+        fenster.clearTimeout(st.notTimer);
+        st.notTimer = 0;
+        el.classList.add('tap-film-leinwand-an');
+        v.dataset.tapIosLeinwand = 'spielt';
+        notbildWeg();
+        if (!v.paused) v.pause();
+      },
+      beiZeit: (t) => {
+        if (l.zeigt) v.dispatchEvent(new CustomEvent(LEINWAND_ZEIT, {detail: t}));
+      },
+      beiFehler: () => {
+        if (st.leinwand !== l) return;
+        if (quelle !== klein) {
+          st.leinwandNetz = true;
+          leinwandAus('neu');
+          leinwandAn();
+          return;
+        }
+        st.leinwandFehler = true;
+        leinwandAus('fehler');
+        // Bleibt beim bisherigen Notfallplan: Standbild, die Berührung startet.
+        if (!st.erstesBild && st.sichtbarSeit) notbildAn('fehler');
+      },
+    });
+  }
+
   const bildDa = () => {
     if (!st.sichtbarSeit && !v.dataset.tapImBild) {
       if (st.waermt) warmFertig();
       return;
     }
     if (st.erstesBild) return;
+    if (st.leinwand && st.leinwand.zeigt) return;
     st.erstesBild = true;
     st.lief = true;
+    leinwandAus();
     fenster.clearTimeout(st.notTimer);
     st.notTimer = 0;
     v.dataset.tapIosBild = '1';
@@ -438,7 +544,11 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   return {
     sichtbar,
     abgelehnt,
+    // Zeigt das Canvas den Film, bleibt das <video> stehen (kein Sprung an
+    // den Anfang mitten im Film).
+    zeigtLeinwand: () => Boolean(st.leinwand && st.leinwand.zeigt),
     aufraeumen() {
+      leinwandAus();
       st.weg = true;
       if (st.abbruch) st.abbruch.abort();
       fenster.clearTimeout(st.notTimer);
