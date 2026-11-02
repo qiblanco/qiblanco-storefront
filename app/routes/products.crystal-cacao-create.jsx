@@ -11,7 +11,8 @@ import {
 } from '@shopify/hydrogen';
 import {ProductImage} from '~/components/ProductImage';
 import {CacaoProductForm} from '~/components/CacaoProductForm';
-import {CacaoLeistenPreis, CacaoPriceDisplay} from '~/components/CacaoPriceDisplay';
+import {CacaoPriceDisplay} from '~/components/CacaoPriceDisplay';
+import {CacaoLeistenPreis} from '~/components/CacaoLeistenPreis';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import kakaoCreateSeiteStyles from '~/styles/kakao-create-seite.css?url';
