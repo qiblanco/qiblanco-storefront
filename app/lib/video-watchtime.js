@@ -108,6 +108,53 @@ function buche(konto) {
   konto.spieltSeit = konto.spielt ? t : 0;
 }
 
+/*
+ * KLICK -> BILD (Feldachse Ladezeit, Job 20261102-ladezeit-feldachse-pixel)
+ * --------------------------------------------------------------------------
+ * Von der Server-IP spielt YouTube nie (Bot-Sperre); wie lange ein Kunde vom
+ * Klick auf die Vorschau bis zum laufenden Bild wartet, gibt es deshalb NUR
+ * aus dem Feld. Die Fassade übergibt den Zeitpunkt ihres Klicks (`ladenAb`,
+ * Uhr `ladeUhr()`), die Brücke kennt das erste `playerState === 1`. Gemeldet
+ * wird als STAND `video_laden` (fam youtube) über dieselbe Naht:
+ *   - beim Anbinden `wert` leer, `g: 'offen'`;
+ *   - beim ersten Abspielen `wert` = Klick -> Bild in ms, `t1: 'spielt'`;
+ *   - geht der Tab vorher nach hinten, `g: 'abbruch'` mit `offen_ms`;
+ *     kommt er zurück, wieder `offen`; wird die Fassade abgebaut, `g: 'weg'`.
+ * `an` ist Klick -> erste Antwort des Players (Rahmen geladen), `zf` die
+ * Folge der Player-Zustände bis zum Abspielen. EHRLICHE GRENZE: verlangt
+ * der Browser im Player einen zweiten Tipp (iOS), steckt dessen Zögern im
+ * Wert; `zf` zeigt dann eine Pause (2) oder einen Halt vor dem Laden.
+ * Ohne `ladenAb` (Einbettung ohne Fassaden-Klick) wird nichts gemeldet.
+ */
+export function ladeUhr() {
+  try {
+    if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+      return performance.now();
+    }
+  } catch {
+    /* bewusst stumm: dann die Wanduhr */
+  }
+  return Date.now();
+}
+
+function meldeLaden(konto, grund) {
+  if (konto.ladenAb == null || konto.ladenFest) return;
+  const meta = {t0: 'klick', obj_q: konto.objektQuelle, fam_q: 'anker'};
+  if (konto.ladenAntwort != null) meta.an = konto.ladenAntwort;
+  if (konto.ladenZustaende.length) meta.zf = konto.ladenZustaende.join(',');
+  const verstrichen = Math.max(0, Math.round(ladeUhr() - konto.ladenAb));
+  const eintrag = {art: 'video_laden', obj: konto.objekt, fam: 'youtube', meta};
+  if (grund === 'spielt') {
+    eintrag.wert = verstrichen;
+    meta.t1 = 'spielt';
+    konto.ladenFest = 1;
+  } else {
+    meta.g = grund;
+    if (grund !== 'offen') meta.offen_ms = verstrichen;
+  }
+  melde(konto, eintrag);
+}
+
 function melde(konto, eintrag) {
   try {
     const qpx = typeof window !== 'undefined' && window.qpx;
@@ -195,6 +242,7 @@ function aufNachricht(ev) {
    * Empfängers darf die Erfassung nie reißen. */
   if (!konto.geantwortet) {
     konto.geantwortet = 1;
+    if (konto.ladenAb != null) konto.ladenAntwort = Math.max(0, Math.round(ladeUhr() - konto.ladenAb));
     if (konto.onAntwort) {
       try {
         konto.onAntwort();
@@ -215,6 +263,10 @@ function aufNachricht(ev) {
   let neuerLauf = konto.spielt;
   if (d.event === 'onStateChange') {
     const st = typeof d.info === 'number' ? d.info : (info && info.playerState);
+    if (typeof st === 'number' && !konto.ladenFest && konto.ladenZustaende.length < 8 &&
+        konto.ladenZustaende[konto.ladenZustaende.length - 1] !== st) {
+      konto.ladenZustaende.push(st);
+    }
     neuerLauf = st === ZUSTAND_ABSPIELEND;
     if (st === ZUSTAND_ENDE) {
       konto.position = konto.dauer || konto.position;
@@ -245,6 +297,7 @@ function aufNachricht(ev) {
    * dies ist ein Nebenausgang der Messung, nicht ihr Zweck. */
   if (neuerLauf && !konto.spieltGemeldet) {
     konto.spieltGemeldet = 1;
+    meldeLaden(konto, 'spielt');
     if (konto.onSpielt) {
       try {
         konto.onSpielt();
@@ -271,6 +324,16 @@ function empfaengerStarten() {
     }
   };
   document.addEventListener('visibilitychange', aufSichtbarkeit);
+  /* Klick -> Bild: VOR dem Abschluss-Flush des Pixels melden. Der Pixel hört
+   * am document; ein Fang-Hörer am window läuft in der Capture-Phase davor. */
+  window.addEventListener(
+    'visibilitychange',
+    () => {
+      const grund = document.visibilityState === 'hidden' ? 'abbruch' : 'offen';
+      for (const s of spieler) meldeLaden(s.konto, grund);
+    },
+    true,
+  );
 }
 
 /**
@@ -304,7 +367,7 @@ function adresseVon(iframe) {
 
 export function youtubeWatchtimeAnbinden(
   iframe,
-  {objekt, objektQuelle = 'anker', onSpielt, onAntwort, widgetId = 1} = {},
+  {objekt, objektQuelle = 'anker', onSpielt, onAntwort, widgetId = 1, ladenAb} = {},
 ) {
   if (typeof window === 'undefined' || !iframe || !objekt) return () => {};
   const konto = {
@@ -347,6 +410,11 @@ export function youtubeWatchtimeAnbinden(
     onAntwort: typeof onAntwort === 'function' ? onAntwort : null,
     geantwortet: 0,
     initialisiert: 0,
+    /* Klick -> Bild (s. meldeLaden): nur mit dem Klickzeitpunkt der Fassade. */
+    ladenAb: typeof ladenAb === 'number' && Number.isFinite(ladenAb) ? ladenAb : null,
+    ladenAntwort: null,
+    ladenZustaende: [],
+    ladenFest: 0,
   };
   /* `fenster` ist die WindowProxy des iframes; sie bleibt über dessen
    * Navigationen dieselbe, also kann `readyToListen` schon zugeordnet werden,
@@ -368,6 +436,7 @@ export function youtubeWatchtimeAnbinden(
   };
   spieler.push(eintrag);
   empfaengerStarten();
+  meldeLaden(konto, 'offen');
 
   /* EIN Ersatz-Gruß beim load der EIGENEN Quelle, falls der Handschlag bis
    * dahin nicht steht (etwa weil YouTube `readyToListen` je fallen lässt). Ein
@@ -441,6 +510,7 @@ export function youtubeWatchtimeAnbinden(
   }
 
   return () => {
+    meldeLaden(konto, 'weg');
     if (hatLoad) iframe.removeEventListener('load', beiLoad);
     mrcUhrLoeschen();
     if (io) io.disconnect();

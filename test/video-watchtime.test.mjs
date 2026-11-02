@@ -405,3 +405,87 @@ test('HANDSCHLAG: onAntwort genau einmal, und nur für den eigenen Ursprung', as
   U.nachricht(r.contentWindow, {event: 'onReady', info: null}, NC);
   assert.equal(antworten, 1, 'die ERSTE Nachricht zählt, und nur einmal');
 });
+
+/* --- Klick -> Bild (Feldachse Ladezeit, Job 20261102-ladezeit-feldachse-pixel) ---
+ * Von der Server-IP spielt YouTube nie; die Wartezeit des Kunden gibt es nur aus
+ * dem Feld. Geprüft wird, dass die Brücke sie als STAND `video_laden` meldet,
+ * ohne Fassaden-Klick schweigt und ein Abbruch nie als Zahl erscheint. */
+function mitLadeUhr(U) {
+  Object.defineProperty(globalThis, 'performance', {
+    value: {now: U.jetzt},
+    configurable: true,
+    writable: true,
+  });
+}
+const echtePerformance = globalThis.performance;
+function ohneLadeUhr() {
+  Object.defineProperty(globalThis, 'performance', {
+    value: echtePerformance,
+    configurable: true,
+    writable: true,
+  });
+}
+
+test('KLICK -> BILD: offen beim Anbinden, Wert beim ersten Abspielen', async () => {
+  const U = mkUmgebung();
+  mitLadeUhr(U);
+  try {
+    const {youtubeWatchtimeAnbinden, ladeUhr} = await ladeModul(U);
+    const rahmen = RAHMEN();
+    const klick = ladeUhr();
+    youtubeWatchtimeAnbinden(rahmen, {objekt: 'yt-laden', ladenAb: klick});
+    let l = nurArt(U.gemeldet, 'video_laden');
+    assert.equal(l.length, 1, 'beim Anbinden genau eine Meldung');
+    assert.equal(l[0].fam, 'youtube');
+    assert.equal(l[0].wert, undefined, 'offen hat keinen Wert');
+    assert.equal(l[0].meta.g, 'offen');
+    U.uhr(600);
+    U.nachricht(rahmen.contentWindow, {event: 'onReady'});
+    U.uhr(500);
+    U.nachricht(rahmen.contentWindow, {event: 'onStateChange', info: 3});
+    U.uhr(700);
+    U.nachricht(rahmen.contentWindow, {event: 'onStateChange', info: 1});
+    l = nurArt(U.gemeldet, 'video_laden');
+    const fest = l[l.length - 1];
+    assert.equal(fest.wert, 1800, 'Klick -> Bild = 600 + 500 + 700 ms');
+    assert.equal(fest.meta.t1, 'spielt');
+    assert.equal(fest.meta.an, 600, 'Klick -> erste Antwort des Players');
+    assert.equal(fest.meta.zf, '3,1');
+    U.tab('hidden');
+    const nachher = nurArt(U.gemeldet, 'video_laden');
+    assert.equal(nachher[nachher.length - 1].wert, 1800, 'ein fester Wert wird nie wieder ueberschrieben');
+  } finally {
+    ohneLadeUhr();
+  }
+});
+
+test('KLICK -> BILD: Tab nach hinten vor dem Bild ist ein Abbruch, nie eine Zahl', async () => {
+  const U = mkUmgebung();
+  mitLadeUhr(U);
+  try {
+    const {youtubeWatchtimeAnbinden, ladeUhr} = await ladeModul(U);
+    const rahmen = RAHMEN();
+    youtubeWatchtimeAnbinden(rahmen, {objekt: 'yt-abbruch', ladenAb: ladeUhr()});
+    U.uhr(4100);
+    U.tab('hidden');
+    let l = nurArt(U.gemeldet, 'video_laden');
+    assert.equal(l[l.length - 1].meta.g, 'abbruch');
+    assert.equal(l[l.length - 1].meta.offen_ms, 4100);
+    assert.equal(l[l.length - 1].wert, undefined);
+    U.tab('visible');
+    l = nurArt(U.gemeldet, 'video_laden');
+    assert.equal(l[l.length - 1].meta.g, 'offen', 'zurueck im Tab: wieder offen');
+  } finally {
+    ohneLadeUhr();
+  }
+});
+
+test('KLICK -> BILD: ohne Fassaden-Klick wird nichts gemeldet', async () => {
+  const U = mkUmgebung();
+  const {youtubeWatchtimeAnbinden} = await ladeModul(U);
+  const rahmen = RAHMEN();
+  youtubeWatchtimeAnbinden(rahmen, {objekt: 'yt-ohne-klick'});
+  U.nachricht(rahmen.contentWindow, {event: 'onStateChange', info: 1});
+  U.tab('hidden');
+  assert.equal(nurArt(U.gemeldet, 'video_laden').length, 0);
+});

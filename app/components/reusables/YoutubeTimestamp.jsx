@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {youtubeWatchtimeAnbinden, mitJsApi} from '~/lib/video-watchtime';
+import {youtubeWatchtimeAnbinden, mitJsApi, ladeUhr} from '~/lib/video-watchtime';
 import {VIDEO_LQIP} from '~/data/video-lqip';
 
 /*
@@ -460,6 +460,8 @@ export function YoutubeTimestamp({
   const antwort = useRef(false);
   const entschieden = useRef(false);
   const widgetId = useRef(0);
+  /* Zeitpunkt des Klicks, für die Feldmessung Klick -> Bild (video-watchtime.js). */
+  const klickZeit = useRef(null);
   const rahmen = useRef(null);
   const schonGewaermt = useRef(false);
   const start = Math.max(0, Math.floor(startSeconds || 0));
@@ -503,6 +505,7 @@ export function YoutubeTimestamp({
       objekt,
       objektQuelle,
       widgetId: widgetId.current,
+      ladenAb: klickZeit.current,
       onSpielt: () => entscheide('player', 'spielt'),
       onAntwort: () => {
         antwort.current = true;
@@ -844,6 +847,7 @@ export function YoutubeTimestamp({
       {...huellenProps}
       onClick={() => {
         if (!widgetId.current) widgetId.current = naechsteWidgetId++;
+        if (klickZeit.current == null) klickZeit.current = ladeUhr();
         setLaueft(true);
       }}
       {...absichtsSignale}
