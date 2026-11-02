@@ -52,7 +52,11 @@ export function alpha(text) {
 export function alphaWortlaut() {
   const absaetze = quelle?.wortlaut?.absaetze ?? [];
   return absaetze
-    .filter((t) => !/Vorverkauf starte/.test(t))
+    // Jeder Absatz mit 'Vorverkauf' entfällt, in jeder Zeitform: seit dem 01.11.2026
+    // heißt er 'Der Vorverkauf läuft seit dem 01.11.2026.', /Vorverkauf starte/ träfe
+    // ihn nicht mehr, und B trüge ungewollt einen neuen Satz (Job 20261025-qi-alpha-
+    // vorverkaufsstart-0111-wortlaut, Merge-Segment).
+    .filter((t) => !/Vorverkauf/.test(t))
     .map((t) => alpha(t).replace(/100 Stück/g, QA_AUFLAGE));
 }
 
