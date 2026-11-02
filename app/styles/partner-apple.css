@@ -1,0 +1,128 @@
+/*
+ * APPLE-FASSUNG /pages/partner, /pages/partner-details und /pages/partner-
+ * beispielseite (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s12-r4). Lädt nur mit Schalter an. Inhalt und Reihenfolge
+ * bleiben wie in C. Die Tokens von .lp-a3 und .pbs zeigen im Apple-Scope auf
+ * --as-*; das Rezept .lp-a3 selbst bleibt unangetastet, es trägt weitere Routen.
+ * Skala 14 · 17 · 21 · 24 (EIN H2-Stil) · H1 28 (Handy, reset.css) / 40.
+ */
+[data-apple-seite^='partner'] .lp-a3 {
+  --a-font: inherit;
+  --a-fs-xs: var(--as-fs-2);
+  --a-fs-base: var(--as-fs-3);
+  --a-fs-md: var(--as-fs-3);
+  --a-fs-lg: var(--as-fs-4);
+  --a-fs-xl: var(--as-fs-5);
+  --a-fs-h2: var(--as-fs-5);
+  --a-fs-h1: var(--as-fs-7);
+
+  --a-s1: var(--as-s-1);
+  --a-s2: var(--as-s-2);
+  --a-s3: var(--as-s-3);
+  --a-s4: var(--as-s-4);
+  --a-s6: var(--as-s-6);
+  --a-s8: var(--as-s-8);
+  --a-s12: var(--as-s-12);
+
+  --a-grund: var(--as-weiss);
+  --a-flaeche: var(--as-flaeche);
+  --a-text: var(--as-tinte);
+  --a-text-hell: var(--as-weiss);
+  --a-muted: var(--as-grau);
+  --a-akzent: var(--as-gold);
+  --a-akzent-tief: var(--as-gold-tinte);
+  --a-akzent-tinte: var(--as-gold-tinte);
+  --a-linie: var(--as-linie);
+  --a-r1: var(--as-s-1);
+  --a-r2: var(--as-radius);
+  --a-breite: var(--as-breite);
+  --a-breite-schmal: var(--as-text-breite);
+  --a-mass: var(--as-text-breite);
+
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+/* Auf dem dunklen Schluss-Bogen bleibt die Gold-Tinte das helle Gold (Rezept
+   .lp-a3): der Remap oben darf das nicht überschreiben. */
+[data-apple-seite^='partner'] .lp-a3 .lp-vp-final-cta {
+  --a-akzent-tinte: var(--as-gold);
+}
+[data-apple-seite^='partner'] .lp-a3 :where(h1, h2, h3) {
+  text-shadow: none;
+}
+
+[data-apple-seite^='partner'] .pbs {
+  --pbs-font: inherit;
+  --pbs-fs-sm: var(--as-fs-2);
+  --pbs-fs-base: var(--as-fs-3);
+  --pbs-fs-md: var(--as-fs-3);
+  --pbs-fs-lg: var(--as-fs-4);
+  --pbs-fs-h2: var(--as-fs-5);
+  --pbs-fs-h1: var(--as-fs-7);
+
+  --pbs-s1: var(--as-s-1);
+  --pbs-s2: var(--as-s-2);
+  --pbs-s3: var(--as-s-3);
+  --pbs-s4: var(--as-s-4);
+  --pbs-s6: var(--as-s-6);
+  --pbs-s8: var(--as-s-8);
+  --pbs-s12: var(--as-s-12);
+
+  --pbs-grund: var(--as-weiss);
+  --pbs-flaeche: var(--as-flaeche);
+  --pbs-text: var(--as-tinte);
+  --pbs-muted: var(--as-grau);
+  --pbs-akzent: var(--as-gold);
+  --pbs-tinte: var(--as-gold-tinte);
+  --pbs-linie: var(--as-linie);
+  --pbs-r1: var(--as-s-1);
+  --pbs-r2: var(--as-radius);
+  --pbs-mass: var(--as-text-breite);
+  --pbs-breite: var(--as-text-breite);
+
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+[data-apple-seite^='partner'] .pbs :where(h1, h2, h3) {
+  text-shadow: none;
+}
+
+/* HAUS-GRUNDREGELN IM SCOPE NEUTRALISIEREN (wie service-apple.css): reset.css
+   setzt p, li auf 1,2rem. :where hält die Spezifität bei 0, Klassen gewinnen. */
+:where([data-apple-seite^='partner'] .lp-a3) li,
+:where([data-apple-seite^='partner'] .pbs) li {
+  font-size: var(--as-fs-3);
+}
+[data-apple-seite^='partner'] .lp-a3 .lp-pt-liste li,
+[data-apple-seite^='partner'] .lp-a3 .lp-pt-schritte li {
+  font-size: var(--as-fs-3);
+}
+
+/* Der Seitengrund hinter Kopf und Fuß folgt dem Apple-Weiß statt dem Creme aus
+   .lp-a3 und .pbs: sonst steht über der ersten Sektion ein cremefarbener Streifen. */
+body:has([data-apple-seite^='partner']) {
+  background: white;
+}
+/* Eine dunkle Welt und ein neutrales Kontinuum: Bögen und Geräte-Mocks behalten
+   --a-dunkel aus .lp-a3, das Dunkel von Kopfband und Fuß. Das Aufklappmenü ist auf
+   diesen Seiten weiß statt creme (die Farbe steht inline in Header.jsx), die
+   Mock-Platzhalter stehen in der Fläche. */
+body:has([data-apple-seite^='partner']) .submenu {
+  background-color: white !important;
+}
+[data-apple-seite^='partner'] .lp-a3 .lp-pd-mock * {
+  --a-linie: var(--as-flaeche);
+}
+[data-apple-seite^='partner'] .as-anna .as-absatz {
+  font-size: var(--as-fs-3);
+}
+[data-apple-seite^='partner'] .lp-a3 .lp-pd-mock__blase .lp-pd-mock__z {
+  background: var(--as-weiss);
+}
+/* Die Sprungliste steht auf dem Handy noch im Kopf: Links ohne Ziffer davor. */
+[data-apple-seite^='partner'] .pbs .pbs__sprungliste li {
+  padding-left: 0;
+}
+[data-apple-seite^='partner'] .pbs .pbs__sprungliste li::before {
+  content: none;
+}

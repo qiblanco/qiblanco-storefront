@@ -1,7 +1,12 @@
+import {useLoaderData} from 'react-router';
 import {PartnerDetails} from '~/components/campaign/PartnerDetails';
 import lpTokenStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import ppStyles from '~/styles/affiliate-partnerprogramm.css?url';
 import pdStyles from '~/styles/partner-details.css?url';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import partnerAppleStyles from '~/styles/partner-apple.css?url';
 
 /**
  * /pages/partner-details — Hilfeseite für BESTEHENDE Partner: welcher Link
@@ -60,12 +65,22 @@ export const headers = () => ({
   'Cache-Control': 'no-store',
 });
 
-export function loader() {
-  return {};
+export function loader({context}) {
+  return {appleSeite: appleSeiteLaden(context, 'partner-details')};
 }
 
 export default function PartnerDetailsRoute() {
-  return <PartnerDetails />;
+  const {appleSeite} = useLoaderData() ?? {};
+  if (!appleSeite?.an || !appleSeite.seite) return <PartnerDetails />;
+  return (
+    <>
+      <link rel="stylesheet" href={partnerAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        <PartnerDetails />
+        <AppleAnna />
+      </AppleSeite>
+    </>
+  );
 }
 
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
