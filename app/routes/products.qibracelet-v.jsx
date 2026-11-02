@@ -90,6 +90,16 @@ export default function ProductVariante() {
             },
             'risikofrei',
             {
+              name: 'wissen',
+              inhalt: (
+                <AlphaWissen
+                  kapitel={DATEN.BELEG.kapitel}
+                  studien={DATEN.BELEG.studien}
+                  bilder={product?.images?.nodes ?? []}
+                />
+              ),
+            },
+            {
               name: 'vergleich',
               inhalt: (
                 <AlphaVergleich
@@ -97,16 +107,6 @@ export default function ProductVariante() {
                   daten={DATEN.VERGLEICH}
                   preise={vergleichsPreise}
                   eigenerPreis={product?.selectedOrFirstAvailableVariant?.price}
-                />
-              ),
-            },
-            {
-              name: 'wissen',
-              inhalt: (
-                <AlphaWissen
-                  kapitel={DATEN.BELEG.kapitel}
-                  studien={DATEN.BELEG.studien}
-                  bilder={product?.images?.nodes ?? []}
                 />
               ),
             },
