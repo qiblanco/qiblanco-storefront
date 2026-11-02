@@ -82,7 +82,7 @@ const FAQ = [
   {
     frage: 'Hält er wirklich Jahrzehnte?',
     antwort:
-      'Das Herstellungsverfahren ist auf sehr lange Lebensdauer ausgelegt und als vererbbares Stück gedacht. Verschleißteile gibt es keine.',
+      'Ja. Er ist robust und für ein Leben gebaut.',
   },
   {
     frage: 'Und die gesundheitliche Wirkung?',
@@ -169,7 +169,7 @@ export function MmHaeltDasAus({products}) {
           {titel: 'Dusche & Alltag', text: 'Wasser macht ihm nichts. Es gibt keine Batterie und keine Kontakte, die korrodieren könnten.'},
           {titel: 'Sport & Schweiß', text: 'Schweiß ist kein Problem. Chirurgenstahl ist korrosionsbeständig, das Gold-Gitter ohnehin.'},
           {titel: 'Sauna & Schwimmbad', text: 'Beständig gegen Hitze und Chlor. Du kannst ihn anbehalten, wo du ihn sonst abnehmen würdest.'},
-          {titel: 'Über Jahrzehnte', text: 'Das Herstellungsverfahren macht ihn extrem langlebig. Er ist als vererbbares Stück gedacht, nicht als Wegwerfprodukt.'},
+          {titel: 'Über Jahrzehnte', text: 'Das Herstellungsverfahren macht ihn extrem langlebig. Verschleißteile gibt es keine.'},
         ]}
         note="Grenze: Robustheit ist eine Materialeigenschaft. Sie sagt nichts über eine gesundheitliche Wirkung aus. Was in Zellkulturen gemessen wurde, ist präklinisch."
       />

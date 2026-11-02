@@ -125,7 +125,7 @@ export const WAHL = [
     id: 'qione',
     titel: 'QiOne® 2 Pro',
     handle: 'qione-2-pro',
-    text: 'Der QiOne® 2 Pro passt zu dir, wenn du nichts bedienen willst. Du hängst ihn um und trägst ihn beim Duschen, beim Sport und nachts. Gebaut ist er für Jahrzehnte, du kannst ihn sogar vererben.',
+    text: 'Der QiOne® 2 Pro passt zu dir, wenn du nichts bedienen willst. Du hängst ihn um und trägst ihn beim Duschen, beim Sport und nachts. Er ist robust und für Jahrzehnte gebaut.',
     linktext: 'Zum QiOne® 2 Pro',
     haupt: true,
   },
