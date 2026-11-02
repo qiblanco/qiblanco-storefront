@@ -194,12 +194,6 @@
 }
 .avs-titel-link {
   color: inherit;
-  text-decoration: none;
-}
-.avs-titel-link:hover,
-.avs-titel-link:focus-visible {
-  text-decoration: underline;
-  text-decoration-color: var(--av-gold);
 }
 .avs-ig {
   margin-top: var(--tas-s-8);
@@ -220,4 +214,62 @@
 }
 .avs .qb-igt__pfeil {
   font-size: var(--tas-fs-3);
+}
+
+/*
+ * LINKS POPPEN NICHT (Christian Z4, 25.10.2026; Kanon
+ * ai-ceo/wissen/kanon/preisanker-und-videokante.md Regel 4). Ein Textlink ist
+ * dauerhaft an einer feinen, gedämpften Linie erkennbar, auch am Handy ohne
+ * Drüberfahren. Hover und Fokus wechseln NUR die Schriftfarbe: keine
+ * Unterstreichung, die erst beim Hover erscheint, kein Sprung, keine neue
+ * Größe. Knöpfe (avv-link) und Bildkacheln bleiben ohne Linie.
+ *
+ * Gegenspieler, die hier überstimmt werden (nicht dort geändert, weil sie
+ * auch außerhalb der Apple-Kaufseiten gelten):
+ *   reset.css             a:hover { text-decoration: underline }
+ *   eu-gewaehrleistung    .eu-gwl__link:hover (Footer, Listenpunkt)
+ *   the-alpha-produkt     .tas-summe-kasse .eu-gwl--pdp .eu-gwl__link:hover (auch Qi Alpha)
+ *   ig-testimonials       .qb-igt__profil:hover .qb-igt__handle
+ * Wurzel .tas-seite.av-seite: eine Klasse spezifischer als alpha-qione.css
+ * (.av-seite .avq-link, .av-seite .av-vergleich-link a setzen dort none und
+ * werden spaeter geladen); die Kasse-Selektoren schlagen the-alpha-produkt.
+ */
+.tas-seite.av-seite a:hover,
+.tas-seite.av-seite a:focus-visible,
+.tas-seite.av-seite .qb-igt__profil:hover .qb-igt__handle {
+  text-decoration: none;
+}
+
+.tas-seite.av-seite .avs-titel-link,
+.tas-seite.av-seite .avs-titel-link:is(:hover, :focus-visible),
+.tas-seite.av-seite .avw-studien-link,
+.tas-seite.av-seite .avw-studien-link:is(:hover, :focus-visible),
+.tas-seite.av-seite .av-vergleich-link a,
+.tas-seite.av-seite .av-vergleich-link a:is(:hover, :focus-visible),
+.tas-seite.av-seite .avq-link,
+.tas-seite.av-seite .avq-link:is(:hover, :focus-visible),
+.tas-seite.av-seite .avv-merkmal a,
+.tas-seite.av-seite .avv-merkmal a:is(:hover, :focus-visible),
+.tas-seite.av-seite .avq-quellen a,
+.tas-seite.av-seite .avq-quellen a:is(:hover, :focus-visible),
+.tas-seite.av-seite .eu-gwl .eu-gwl__link,
+.tas-seite.av-seite .eu-gwl .eu-gwl__link:is(:hover, :focus-visible),
+.tas-seite.av-seite .tas-summe-kasse .eu-gwl .eu-gwl__link,
+.tas-seite.av-seite .tas-summe-kasse .eu-gwl .eu-gwl__link:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--tas-linie);
+  text-underline-offset: 0.2em;
+}
+
+/* Farbwechsel: Schrift im Fließtext wird Gold-Tinte, goldene Links werden Tinte. */
+.tas-seite.av-seite .avs-titel-link:is(:hover, :focus-visible),
+.tas-seite.av-seite .avv-merkmal a:is(:hover, :focus-visible),
+.tas-seite.av-seite .avq-quellen a:is(:hover, :focus-visible) {
+  color: var(--av-gold-tinte);
+}
+.tas-seite.av-seite .avw-studien-link:is(:hover, :focus-visible),
+.tas-seite.av-seite .av-vergleich-link a:is(:hover, :focus-visible),
+.tas-seite.av-seite .avq-link:is(:hover, :focus-visible) {
+  color: var(--tas-tinte);
 }
