@@ -1,0 +1,85 @@
+/*
+ * APPLE-FASSUNG /pages/exclusive-solutions (s07-r8). exclusive-solutions.css
+ * lädt die Route weiter für die Paket-Karten; hier zeigen ihre Flächen, Linien,
+ * Schrift und Knöpfe auf --as-*. Bündel, Preise und Warenkorb bleiben aus C.
+ */
+[data-apple-seite='exclusive-solutions'] .as-ex-video {
+  max-width: 640px;
+  margin-top: var(--as-s-3);
+  border-radius: var(--as-radius);
+  overflow: hidden;
+}
+[data-apple-seite='exclusive-solutions'] .as-ex-absatz {
+  max-width: var(--as-text-breite);
+}
+
+[data-apple-seite='exclusive-solutions'] .ghx-section {
+  background: var(--as-flaeche);
+  font-family: inherit;
+  color: var(--as-tinte);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pakete__head .ghx-pill {
+  display: none;
+}
+[data-apple-seite='exclusive-solutions'] .ghx-h2 {
+  font-family: inherit;
+  font-size: var(--as-fs-6);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--as-tinte);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-sub,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__lead,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__fineprint,
+[data-apple-seite='exclusive-solutions'] .ghx-pakete__footnote {
+  font-family: inherit;
+  color: var(--as-grau);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-sub {
+  font-size: var(--as-fs-3);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__lead,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__fineprint,
+[data-apple-seite='exclusive-solutions'] .ghx-pakete__footnote {
+  font-size: var(--as-fs-2);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak {
+  background: var(--as-weiss);
+  border: var(--as-strich) solid var(--as-linie);
+  border-radius: var(--as-radius);
+  box-shadow: none;
+  padding: var(--as-s-4) var(--as-s-3);
+  transform: none;
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak--featured {
+  border: var(--as-strich-stark) solid var(--as-gold);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak * {
+  font-family: inherit;
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__price {
+  font-size: var(--as-fs-7);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--as-tinte);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__cta {
+  min-height: var(--as-tippziel);
+  border-radius: var(--as-tippziel);
+  border: var(--as-strich) solid var(--as-tinte);
+  background: var(--as-weiss);
+  color: var(--as-tinte);
+  font-size: var(--as-fs-3);
+  font-weight: 600;
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__cta--gold {
+  border-color: var(--as-gold);
+  background: var(--as-gold);
+  color: var(--as-tinte);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__size {
+  min-height: var(--as-tippziel);
+  border-radius: var(--as-radius);
+  border-color: var(--as-linie);
+  font-size: var(--as-fs-2);
+}
