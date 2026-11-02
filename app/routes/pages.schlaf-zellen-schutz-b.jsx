@@ -1,5 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {SchlafZellenSchutz} from '~/components/campaign/SchlafZellenSchutz';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {SchlafZellenSchutzApple} from '~/components/apple-seite/schlaf-zellen-schutz/SchlafZellenSchutzApple';
 import {HydrationsRettung} from '~/components/reusables/HydrationsRettung';
 import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import lpASeiteStyles from '~/styles/schlaf-zellen-schutz-seite.css?url';
@@ -30,6 +32,11 @@ import externeStimmenStyles from '~/styles/externe-stimmen.css?url';
  *
  * KEIN eigener Split hier: würfelte B selbst, könnte ein Besucher zwischen
  * den Armen pendeln. B rendert immer B.
+ *
+ * LETZTE A/B-RUNDE (Christian 01.11.2026, szs-e6-gs082, E6 in
+ * lib/lp-ab-v2.server.js, Definition heatmap-manager/config/experimente.yaml):
+ * die Apple-Fassung von A, nur die Stimmen stehen direkt hinter dem Kopf
+ * (Hypothese GS-082, szs-daten.js teileFuer). Aus: die Variante von Test 1.
  */
 export function links() {
   // Dieselben drei Stylesheets wie A, in derselben Reihenfolge (Kaskade).
@@ -62,6 +69,7 @@ export const headers = () => ({
 });
 
 export async function loader({context}) {
+  const appleSeite = appleSeiteLaden(context, 'schlaf-zellen-schutz-b');
   let data;
   try {
     data = await context.storefront.query(CAMPAIGN_PRODUCTS_QUERY, {
@@ -73,10 +81,11 @@ export async function loader({context}) {
       '[preis-fallback] Campaign-Query (Variante B) fehlgeschlagen:',
       fehler?.message || fehler,
     );
-    return {products: []};
+    return {products: [], appleSeite};
   }
 
   return {
+    appleSeite,
     products: [data.qione, data.bracelet, data.qihome]
       .filter(Boolean)
       .map((product) => ({
@@ -87,7 +96,8 @@ export async function loader({context}) {
 }
 
 export default function SchlafZellenSchutzVarianteBRoute() {
-  const {products} = useLoaderData();
+  const {products, appleSeite} = useLoaderData();
+  if (appleSeite?.an) return <SchlafZellenSchutzApple products={products} variante="b" />;
   return (
     <>
       {/* Dieselbe Hydrations-Rettung wie A (Begründung in der Komponente). */}
