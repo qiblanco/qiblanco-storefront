@@ -134,7 +134,7 @@ function GeldheldenHero() {
    Geldhelden-Podcast); startSeconds 817 ÜBERNOMMEN von /pages/tiefer-schlaf
    (live gegengeprüft per Klickprobe: iframe ?start=817, 2026-07-21);
    Thumbnail-Stufe gemessen: maxresdefault HTTP 200, 1280x720. */
-const HERO_VIDEO = {
+export const HERO_VIDEO = {
   youtubeId: 'BQxzbXqREWE', // Interview-Video Christian — ID nur von Christian
   startSeconds: 817, // übernommener Zeitstempel — mit der ID eintragen
   thumbnail: 'https://i.ytimg.com/vi/BQxzbXqREWE/maxresdefault.jpg', // nach maxres-Messung setzen; null = hqdefault-Fallback
@@ -165,7 +165,7 @@ function HeroVideoSection() {
    CLAIMS-GATE: WHO-Einstufung („möglicherweise krebserregend") und
    „Studien zeigen: E-Smog verschlechtert Schlaf" aus der Vorlage
    bewusst NICHT übernommen — Entscheidungsliste an Christian. */
-const PROBLEM_CARDS = [
+export const PROBLEM_CARDS = [
   {
     icon: '📡',
     title: 'Dein Zuhause strahlt 24/7',
@@ -687,7 +687,7 @@ function paketFallback(p) {
   return p.fallback;
 }
 
-function Pak({ p, productsByHandle, onChoose }) {
+function Pak({ p, productsByHandle, onChoose, schild = true }) {
   const {open} = useAside();
   const marktLand = useMarktLand();
   const [sizes, setSizes] = React.useState(() =>
@@ -740,7 +740,7 @@ function Pak({ p, productsByHandle, onChoose }) {
 
   return (
     <article className={`ghx-pak${p.featured ? ' ghx-pak--featured' : ''}`}>
-      <span className={`ghx-pill ${p.pillCls} ghx-pak__pill`}>{p.pill}</span>
+      {schild ? <span className={`ghx-pill ${p.pillCls} ghx-pak__pill`}>{p.pill}</span> : null}
       <h3 className="ghx-h3">{p.title}</h3>
       <p className="ghx-pak__lead">{p.lead}</p>
       <ul className="ghx-pak__items">
@@ -817,7 +817,7 @@ function Pak({ p, productsByHandle, onChoose }) {
   );
 }
 
-function GeldheldenPakete({products}) {
+export function GeldheldenPakete({products, schild = true}) {
   const productsByHandle = React.useMemo(() => getProductsByHandle(products), [products]);
   const pakete = [
     {
@@ -941,11 +941,12 @@ function GeldheldenPakete({products}) {
               p={p}
               productsByHandle={productsByHandle}
               onChoose={onChoose}
+              schild={schild}
             />
           ))}
         </div>
         <p className="ghx-pakete__footnote">
-          Alle Preise inkl. MwSt. Einmalig, kein Abo, kein Verschleiß. 20 Tage risikofrei. 100% Versicherter Versand
+          {schild ? 'Alle Preise inkl. MwSt. ' : ''}Einmalig, kein Abo, kein Verschleiß. 20 Tage risikofrei. 100% Versicherter Versand
         </p>
       </div>
       {toast && (
