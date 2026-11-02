@@ -131,7 +131,11 @@
   background: var(--as-gold);
 }
 [data-apple-seite='exclusive-solutions'] .ghx-pak__divider {
-  background: var(--as-linie);
+  background: none;
+  border-top: var(--as-strich) solid var(--as-linie);
+}
+[data-apple-seite='exclusive-solutions'] .as-ex-video .YoutubeTimestamp {
+  background: var(--as-flaeche);
 }
 [data-apple-seite='exclusive-solutions'] .ghx-pak__size:hover,
 [data-apple-seite='exclusive-solutions'] .ghx-pak__size:focus {
