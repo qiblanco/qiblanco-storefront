@@ -56,7 +56,7 @@ const STUFEN = [
     punkte: [
       'Dein Körper braucht den richtigen Treibstoff',
       'Was zu wenig in unseren Lebensmitteln enthalten ist',
-      'Was dein Körper wirklich braucht',
+      'Was dein Körper braucht',
     ],
   },
   {
