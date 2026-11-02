@@ -512,6 +512,19 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
   // Der Eintrag `wie-funktioniert-der-gitterchip-im-qione` (seit 2026-09-24,
   // klasse vorab) ist am 2026-10-01 mit der Freigabe entfernt; die Seite steht
   // jetzt in NUR_ROUTE_SEITEN (Job growth-m-lp-produktseite-verkauft-s05).
+  // Neu 2026-11-02. Rechtsseite aus dem Einwilligungs-Register, noindex in der
+  // eigenen Route und vom Cookie-Hinweis jeder Seite verlinkt. Ohne diesen
+  // Eintrag misst der Landing-Kanon sie als Landing-Bereich (Pfad in /pages/ +
+  // noindex live), und Gate 16 R7 hält den Link im Hinweis für ein Leck. Die
+  // anderen Rechtsseiten brauchen das nicht: sie sind crawlbar.
+  {
+    handle: 'cookie-erklaerung',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund:
+      'Rechtsseite mit Absicht-noindex, erreichbar über den Cookie-Hinweis; kein Anzeigenziel und kein Kanalziel',
+    seit: '2026-11-02',
+  },
   // Neu 2026-09-24 (Großjob „Forschung bei Qi Blanco“, Christian 24.09.2026:
   // „Die Page heißt /pages/forschung. Nicht crawlen, nicht veröffentlicht.“).
   // Dieselbe Lage wie bis 2026-10-01 die GitterChip-Seite: von Anfang an unsichtbar gebaut,
