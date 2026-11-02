@@ -1,5 +1,4 @@
 import {useEffect, useRef, useState} from 'react';
-import Hls from 'hls.js';
 import {videoQuellen} from '~/data/video-quellen';
 import {hatHoerbarenTon} from '~/lib/video-ton';
 import {
@@ -10,6 +9,11 @@ import {
 } from '~/components/reusables/video360-ersatzbild';
 import {spieleSicher} from '~/components/reusables/video-nachholen';
 import {NAEHE_RAND} from '~/components/reusables/useNaeheLaden';
+import {
+  appleNativHls,
+  ladeHls,
+  mseVorhanden,
+} from '~/components/reusables/hls-laden';
 
 /*
  * ImgixVideo — Sound-Toggle (Job bl-20260803T232952Z-b702ec, 2026-08-03),
@@ -111,11 +115,14 @@ const SICHTWEITE = NAEHE_RAND;
  */
 const RUECKFALL_MS = 4000;
 
-function appleNativHls(video) {
-  if (typeof navigator === 'undefined') return false;
-  if (!/Apple/.test(navigator.vendor || '')) return false;
-  return Boolean(video.canPlayType('application/vnd.apple.mpegurl'));
-}
+/*
+ * HLS.JS ERST BEI BEDARF (02.11.2026, Grossjob Ladezeiten s13, M2): der
+ * Chunk kommt per ladeHls() (hls-laden.js) erst, wenn das Video in
+ * Sichtweite ist und weder natives Apple-HLS greift noch MSE fehlt. Bis er
+ * da ist, steht das Poster bzw. das Ersatzbild wie bisher bis zum ersten
+ * laufenden Bild. Schlägt der Import fehl, spielt die mp4-Fassung. Wird
+ * die Komponente vorher abgebaut, setzt der späte Import nichts mehr auf.
+ */
 
 function anfangsZustandStumm(videoPath) {
   // SSR/kein sessionStorage -> Default stumm (Policy-konform). Pro
@@ -182,6 +189,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
     let hls = null;
     let beobachter = null;
     let rueckfall = null;
+    let abgebaut = false;
 
     // Ruhe gewünscht: die Drehung gar nicht laden, das Ersatzbild bleibt
     // stehen. Spart nebenbei imgix-Kontingent. Nur mit Ersatzbild — ohne
@@ -203,27 +211,48 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
       if (appleNativHls(video)) {
         // iPhone/iPad/Mac-Safari und Chrome auf iOS: der eingebaute Spieler.
         video.src = hlsUrl;
-      } else if (Hls.isSupported()) {
-        hls = new Hls(
-          quelle === 'shopify' ? {...HLS_KONFIG, ...HLS_STUFENDECKEL} : HLS_KONFIG,
-        );
-        if (mitErsatz) {
-          // Fataler Fehler (Netz, Manifest, Medien): hls.js gibt auf, das
-          // <video> selbst meldet dann nicht zwingend etwas.
-          hls.on(Hls.Events.ERROR, (_e, data) => {
-            if (data && data.fatal) zuBildRef.current();
+      } else if (mseVorhanden()) {
+        ladeHls()
+          .then(mitHlsJs)
+          .catch(() => {
+            // Chunk nicht ladbar oder hls.js wirft beim Aufsetzen:
+            // dieselbe Quelle als mp4.
+            if (!abgebaut) aufMp4();
           });
-        }
-        hls.loadSource(hlsUrl);
-        hls.attachMedia(video);
-        rueckfall = setTimeout(aufMp4, RUECKFALL_MS);
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      } else {
+        ohneHlsJs();
+      }
+    }
+
+    function ohneHlsJs() {
+      if (video.canPlayType('application/vnd.apple.mpegurl')) {
         // Natives HLS ohne MSE, dieselbe URL, erst in Sichtweite gesetzt.
         video.src = hlsUrl;
       } else {
         // Rückfall mp4
         video.src = mp4Url;
       }
+    }
+
+    function mitHlsJs(Hls) {
+      if (abgebaut) return;
+      if (!Hls.isSupported()) {
+        ohneHlsJs();
+        return;
+      }
+      hls = new Hls(
+        quelle === 'shopify' ? {...HLS_KONFIG, ...HLS_STUFENDECKEL} : HLS_KONFIG,
+      );
+      if (mitErsatz) {
+        // Fataler Fehler (Netz, Manifest, Medien): hls.js gibt auf, das
+        // <video> selbst meldet dann nicht zwingend etwas.
+        hls.on(Hls.Events.ERROR, (_e, data) => {
+          if (data && data.fatal) zuBildRef.current();
+        });
+      }
+      hls.loadSource(hlsUrl);
+      hls.attachMedia(video);
+      rueckfall = setTimeout(aufMp4, RUECKFALL_MS);
     }
 
     if (typeof IntersectionObserver === 'undefined') {
@@ -242,6 +271,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
     }
 
     return () => {
+      abgebaut = true;
       if (beobachter) beobachter.disconnect();
       if (rueckfall) clearTimeout(rueckfall);
       if (hls) hls.destroy();

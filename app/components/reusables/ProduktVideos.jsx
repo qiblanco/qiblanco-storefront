@@ -1,6 +1,10 @@
 import {useCallback, useEffect, useId, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
-import Hls from 'hls.js';
+import {
+  appleNativHls,
+  ladeHls,
+  mseVorhanden,
+} from '~/components/reusables/hls-laden';
 import {
   aktiveVideos,
   produktName,
@@ -57,7 +61,14 @@ import {
  * Kaufseiten sind bewusst anker-frei (Design-Rubrik-Collector).
  */
 
-/** Ein Video: HLS über hls.js, Safari nativ, sonst mp4. */
+/*
+ * Ein Video: Apple-Geräte natives HLS, sonst HLS über hls.js, ohne beides
+ * mp4. hls.js kommt erst beim Öffnen des Dialogs (hls-laden.js, Grossjob
+ * Ladezeiten s13, 02.11.2026): vorher lud jede Kaufseite mit Galerie-Video
+ * den Chunk schon beim Seitenaufruf. Der Dialog öffnet auf einen Klick; die
+ * Wartezeit auf den Chunk fällt in die Zeit, in der das Manifest ohnehin
+ * erst geholt wird. Schlägt der Import fehl, spielt die mp4-Fassung.
+ */
 function Spieler({video, autoStart}) {
   const ref = useRef(null);
 
@@ -65,16 +76,8 @@ function Spieler({video, autoStart}) {
     const el = ref.current;
     if (!el) return undefined;
     let hls = null;
-    if (video.hls && Hls.isSupported()) {
-      hls = new Hls({capLevelToPlayerSize: true});
-      hls.loadSource(video.hls);
-      hls.attachMedia(el);
-    } else if (video.hls && el.canPlayType('application/vnd.apple.mpegurl')) {
-      el.src = video.hls;
-    } else {
-      el.src = video.mp4;
-    }
-    if (autoStart) {
+    let abgebaut = false;
+    const starte = () => {
       // Stumme Videos starten sofort (Autoplay-Policy erlaubt stumm). Ein
       // Video MIT Ton startet mit Ton, weil der Besucher es gerade selbst
       // gewählt hat; lehnt der Browser das ab, bleibt es stehen und die
@@ -82,8 +85,42 @@ function Spieler({video, autoStart}) {
       el.muted = !video.ton;
       const p = el.play();
       if (p && typeof p.catch === 'function') p.catch(() => {});
+    };
+    const ohneHlsJs = () => {
+      if (video.hls && el.canPlayType('application/vnd.apple.mpegurl')) {
+        el.src = video.hls;
+      } else {
+        el.src = video.mp4;
+      }
+    };
+    if (video.hls && !appleNativHls(el) && mseVorhanden()) {
+      ladeHls()
+        .then((Hls) => {
+          if (abgebaut) return;
+          if (Hls.isSupported()) {
+            hls = new Hls({capLevelToPlayerSize: true});
+            hls.loadSource(video.hls);
+            hls.attachMedia(el);
+          } else {
+            ohneHlsJs();
+          }
+          if (autoStart) starte();
+        })
+        .catch(() => {
+          if (abgebaut) return;
+          if (hls) {
+            hls.destroy();
+            hls = null;
+          }
+          el.src = video.mp4;
+          if (autoStart) starte();
+        });
+    } else {
+      ohneHlsJs();
+      if (autoStart) starte();
     }
     return () => {
+      abgebaut = true;
       if (hls) hls.destroy();
       el.pause();
     };
