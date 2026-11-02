@@ -721,6 +721,12 @@
       vit = { akt: akt, ttfb: vitMs(Math.max(0, nav.responseStart - akt)), typ: String(nav.type || ""),
               versteckt: (d.visibilityState === "hidden" && d.prerendering !== true) ? 0 : Infinity,
               lcp: null, lcpWeg: 0, inpN: 0, inpIds: {}, cls: 0, clsAn: false, clsF: 0, clsErst: 0, clsLetzt: 0 };
+      try {
+        var vs = w.performance.getEntriesByType("visibility-state") || [];
+        for (var vi = 0; vi < vs.length; vi++) {
+          if (vs[vi].name === "hidden") { vit.versteckt = Math.min(vit.versteckt, vs[vi].startTime); break; }
+        }
+      } catch (e) {}
       d.addEventListener("visibilitychange", function () {
         if (vit && d.visibilityState === "hidden" && vit.versteckt === Infinity) vit.versteckt = medUhr();
       }, true);
@@ -754,7 +760,9 @@
       if (!vit || PV_ID !== VIT_PV) return null;
       var m = { nav: vit.typ, ger: device() }, x;
       if (vit.ttfb != null) m.ttfb = vit.ttfb;
-      x = medFcp(); if (x > 0) m.fcp = vitMs(Math.max(0, x - vit.akt));
+      x = medFcp();
+      if (x > 0 && x < vit.versteckt) m.fcp = vitMs(Math.max(0, x - vit.akt));
+      else if (x > 0) vit.lcpWeg = 1;
       if (vit.lcp != null) m.lcp = vitMs(vit.lcp);
       x = vitInp(); if (x != null) { m.inp = x; m.inp_n = vit.inpN; }
       if (vit.clsAn) m.cls = Math.round(vit.cls * 1000) / 1000;

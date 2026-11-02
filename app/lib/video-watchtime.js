@@ -118,8 +118,11 @@ function buche(konto) {
  * wird als STAND `video_laden` (fam youtube) über dieselbe Naht:
  *   - beim Anbinden `wert` leer, `g: 'offen'`;
  *   - beim ersten Abspielen `wert` = Klick -> Bild in ms, `t1: 'spielt'`;
- *   - geht der Tab vorher nach hinten, `g: 'abbruch'` mit `offen_ms`;
- *     kommt er zurück, wieder `offen`; wird die Fassade abgebaut, `g: 'weg'`.
+ *   - geht der Tab vorher nach hinten, `g: 'abbruch'` mit `offen_ms` -- und
+ *     das ist der ENDSTAND: ein späteres Abspielen enthielte die Zeit im
+ *     Hintergrund und wird nie mehr zur Zahl (Gegenprüfer 02.11.: Klick, Tab
+ *     hinten, 60 s später vorn -> sonst `wert: 60800`). Ebenso ein Abspielen,
+ *     das im verdeckten Tab beginnt. Wird die Fassade abgebaut, `g: 'weg'`.
  * `an` ist Klick -> erste Antwort des Players (Rahmen geladen), `zf` die
  * Folge der Player-Zustände bis zum Abspielen. EHRLICHE GRENZE: verlangt
  * der Browser im Player einen zweiten Tipp (iOS), steckt dessen Zögern im
@@ -137,8 +140,11 @@ export function ladeUhr() {
   return Date.now();
 }
 
-function meldeLaden(konto, grund) {
+function meldeLaden(konto, anlass) {
   if (konto.ladenAb == null || konto.ladenFest) return;
+  /* Spielt der Player an, während der Tab verdeckt ist, steckt Hintergrundzeit
+   * im Wert: das ist ein Abbruch, keine Ladezeit. */
+  const grund = anlass === 'spielt' && document.visibilityState === 'hidden' ? 'abbruch' : anlass;
   const meta = {t0: 'klick', obj_q: konto.objektQuelle, fam_q: 'anker'};
   if (konto.ladenAntwort != null) meta.an = konto.ladenAntwort;
   if (konto.ladenZustaende.length) meta.zf = konto.ladenZustaende.join(',');
@@ -151,6 +157,7 @@ function meldeLaden(konto, grund) {
   } else {
     meta.g = grund;
     if (grund !== 'offen') meta.offen_ms = verstrichen;
+    if (grund === 'abbruch') konto.ladenFest = 1;
   }
   melde(konto, eintrag);
 }
@@ -329,8 +336,8 @@ function empfaengerStarten() {
   window.addEventListener(
     'visibilitychange',
     () => {
-      const grund = document.visibilityState === 'hidden' ? 'abbruch' : 'offen';
-      for (const s of spieler) meldeLaden(s.konto, grund);
+      if (document.visibilityState !== 'hidden') return;
+      for (const s of spieler) meldeLaden(s.konto, 'abbruch');
     },
     true,
   );

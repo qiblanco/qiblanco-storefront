@@ -472,9 +472,34 @@ test('KLICK -> BILD: Tab nach hinten vor dem Bild ist ein Abbruch, nie eine Zahl
     assert.equal(l[l.length - 1].meta.g, 'abbruch');
     assert.equal(l[l.length - 1].meta.offen_ms, 4100);
     assert.equal(l[l.length - 1].wert, undefined);
+    /* Gegenprüfer 02.11.: 60 s später zurück, dann spielt der Player an --
+     * der Wert enthielte die Hintergrundzeit. Der Abbruch bleibt Endstand. */
+    U.uhr(60000);
     U.tab('visible');
+    U.uhr(300);
+    U.nachricht(rahmen.contentWindow, {event: 'onStateChange', info: 1});
     l = nurArt(U.gemeldet, 'video_laden');
-    assert.equal(l[l.length - 1].meta.g, 'offen', 'zurück im Tab: wieder offen');
+    assert.equal(l[l.length - 1].meta.g, 'abbruch', 'zurück im Tab: der Abbruch bleibt');
+    assert.ok(l.every((e) => e.wert === undefined), 'nach einem Abbruch nie eine Zahl');
+  } finally {
+    ohneLadeUhr();
+  }
+});
+
+test('KLICK -> BILD: Abspielen im verdeckten Tab ist ein Abbruch', async () => {
+  const U = mkUmgebung();
+  mitLadeUhr(U);
+  try {
+    const {youtubeWatchtimeAnbinden, ladeUhr} = await ladeModul(U);
+    const rahmen = RAHMEN();
+    youtubeWatchtimeAnbinden(rahmen, {objekt: 'yt-hinten', ladenAb: ladeUhr()});
+    U.uhr(500);
+    U.tab('hidden');
+    U.uhr(20000);
+    U.nachricht(rahmen.contentWindow, {event: 'onStateChange', info: 1});
+    const l = nurArt(U.gemeldet, 'video_laden');
+    assert.ok(l.every((e) => e.wert === undefined), 'Hintergrund-Anlauf ist keine Ladezeit');
+    assert.equal(l[l.length - 1].meta.g, 'abbruch');
   } finally {
     ohneLadeUhr();
   }
