@@ -83,3 +83,11 @@
   border-color: var(--as-linie);
   font-size: var(--as-fs-2);
 }
+[data-apple-seite='exclusive-solutions'] .ghx-pakete__head {
+  text-align: left;
+  margin-inline: 0;
+  max-width: none;
+}
+[data-apple-seite='exclusive-solutions'] #pakete .ghx-inner {
+  max-width: var(--as-breite);
+}
