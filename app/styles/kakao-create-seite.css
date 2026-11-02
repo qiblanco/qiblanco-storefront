@@ -1,0 +1,52 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   NUR /products/crystal-cacao-create (links() der Route). Eigene Datei, weil
+   kakao-tiefe.css und qb-kaufleiste.css auch andere Seiten laden.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Kaufleiste: Betrag der gewählten Menge ───────────────────────────────
+   CacaoLeistenPreis (CacaoPriceDisplay.jsx). Streichpreis neben dem Betrag und
+   die Menge darunter: zwei Zeilen wie die übrigen Kaufseiten. Die Spalte ist
+   breiter als ein Einzelpreis (107 px bei 159 € / 228 €): mit dem schmaleren
+   Knopfrand bleibt die Beschriftung bei 390 px in einer Zeile. */
+.qb-kaufleiste .qb-kaufleiste__staffel .product-price-on-sale {
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--qb-abstand-1);
+}
+.qb-kaufleiste:has(.qb-kaufleiste__staffel) .btn--primary {
+  padding-inline: var(--qb-abstand-1);
+}
+.qb-kaufleiste__menge {
+  margin: 0;
+  font-size: var(--qb-text-klein);
+  font-weight: var(--qb-fw-fliess);
+  line-height: var(--qb-lh-h2);
+  color: var(--qb-text-gedaempft);
+  white-space: nowrap;
+}
+
+/* ─── Ein Akzent ───────────────────────────────────────────────────────────
+   Das Create-Blau bleibt Daten-Kodierung (Balken, Legendenpunkt, Rand). Als
+   Textfarbe zählt es in der design-rubrik als zweiter Akzent neben Gold,
+   gemessen 02.11.2026: harmonisch 75 statt 100. */
+.kt .kt-legende__eintrag[data-kt-farbe='create'],
+.kt .kt-profil__sorte[data-kt-farbe='create'],
+.kt [data-kt-farbe='create'] .kt-urstamm__name {
+  color: var(--kt-text);
+}
+
+/* ─── Überschriften einheitlich mittig ─────────────────────────────────────
+   Kundenfragen und FAQ standen links, alle übrigen H2 der Seite mittig. */
+.qb-kf__titel,
+.ProductFAQ__header h2 {
+  text-align: center;
+}
+.ProductFAQ__header {
+  justify-content: center;
+}
+
+/* ─── Titel und Bewertung ──────────────────────────────────────────────────
+   Die Bewertung stieß ohne Abstand an den Titel (Shop-Tor A1, 0 px). */
+.product-main > h1 + .product-rating {
+  margin-top: var(--qb-abstand-1);
+}

@@ -14,6 +14,7 @@ import {CacaoProductForm} from '~/components/CacaoProductForm';
 import {CacaoLeistenPreis, CacaoPriceDisplay} from '~/components/CacaoPriceDisplay';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
+import kakaoCreateSeiteStyles from '~/styles/kakao-create-seite.css?url';
 import {ladeStaffelKasse} from '~/lib/cacao-pricing';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {ProductImageList} from '~/components/ProductImageList';
@@ -50,6 +51,7 @@ export function links() {
     ...(sortenStilAn('crystal-cacao-create') ? [{rel: 'stylesheet', href: amazonstilStyles}] : []),
     // Kakao-Tiefe unter dem Amazon-Bereich (reusables/KakaoTiefe.jsx).
     {rel: 'stylesheet', href: kakaoTiefeStyles},
+    {rel: 'stylesheet', href: kakaoCreateSeiteStyles},
   ];
 }
 
