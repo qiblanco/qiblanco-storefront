@@ -17,6 +17,8 @@
  */
 import {describe, it, beforeEach} from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {ladeLeistenWahl, leistenWahlZuruecksetzen} from '../app/lib/qi-alpha-freischaltung.js';
 import {
   PREISMODUS_VORGABE,
   istBrutto,
@@ -300,4 +302,72 @@ describe('Altersdeckel der root-Daten (offene Tabs über den Kipp)', () => {
     rootDatenGesehen({modus: 'brutto'}, t0 + PREISMODUS_MAX_ALTER_MS + 2);
     assert.equal(rootDatenZuAlt(t0 + PREISMODUS_MAX_ALTER_MS + 3), false);
   });
+});
+
+/**
+ * ROOT-KETTE PARALLEL + LANGES SWR DER METAFELDER (Grossjob 20261026-homepage-
+ * ladezeiten-..., s12, Maßnahme M1). Gemessen 02.11.2026: Kopfzeile, Bewertung
+ * und Leistenwahl liefen nacheinander, an einer ruhigen Kante kostete jeder
+ * Cache-Fehlschlag einen Rundweg zur Storefront-API (DE 82 ms, TH 261 ms).
+ *
+ * Der Loader selbst ist hier nicht ladbar (Alias, CSS-Importe), darum liest der
+ * erste Teil den Quelltext. Der zweite Teil ruft die echten Lader.
+ */
+const root = readFileSync(new URL('../app/root.jsx', import.meta.url), 'utf8');
+
+describe('root-Loader wartet parallel', () => {
+  const block = root.match(/await Promise\.all\(\[\s*loadCriticalData\(args\),[\s\S]*?\]\)/)?.[0] ?? '';
+
+  it('Kopfzeile, Bewertung und Leiste stehen in EINEM Promise.all', () => {
+    assert.match(block, /ladeGoogleRating\(args\.context\)/);
+    assert.match(block, /ladeLeistenWahl\(args\.context\.storefront\)/);
+  });
+
+  it('Bewertung behält ihren Rückfall, die Kopfzeile darf weiter werfen', () => {
+    assert.match(block, /ladeGoogleRating\(args\.context\)\.catch\(\(\) => \(\{\s*\.\.\.GOOGLE_RATING_FALLBACK_VOLL,?\s*\}\)\)/);
+    assert.doesNotMatch(block, /loadCriticalData\(args\)\.catch/);
+  });
+
+  it('kein zweites await auf denselben Abfragen im Antwortobjekt', () => {
+    assert.doesNotMatch(root, /await ladeGoogleRating/);
+    assert.doesNotMatch(root, /await ladeLeistenWahl/);
+    assert.doesNotMatch(root, /await loadCriticalData/);
+  });
+});
+
+function storefront(wert) {
+  const gesehen = {};
+  return {
+    gesehen,
+    CacheCustom: (o) => {
+      gesehen.cache = o;
+      return o;
+    },
+    query: async () => {
+      if (wert instanceof Error) throw wert;
+      return {shop: {metafield: {value: wert}}};
+    },
+  };
+}
+
+describe('Metafelder: 30 s frisch, eine Stunde stale', () => {
+  beforeEach(() => {
+    preismodusZuruecksetzen();
+    leistenWahlZuruecksetzen();
+  });
+
+  for (const [name, laden, wert] of [
+    ['Preismodus', ladePreismodus, 'brutto'],
+    ['Leistenwahl', ladeLeistenWahl, 'bewertung'],
+  ]) {
+    it(`${name}: maxAge 30, staleWhileRevalidate 3600`, async () => {
+      const sf = storefront(wert);
+      await laden(sf);
+      assert.deepEqual(sf.gesehen.cache, {mode: 'public', maxAge: 30, staleWhileRevalidate: 3600});
+    });
+
+    it(`${name}: wirft nie`, async () => {
+      await assert.doesNotReject(laden(storefront(new Error('API weg'))));
+    });
+  }
 });

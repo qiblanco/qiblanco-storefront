@@ -30,7 +30,9 @@
  * 'qi-alpha' | 'bewertung' (Definition mit access.storefront=PUBLIC_READ, sonst
  * liefert die Storefront-API NULL). Umschalten per
  *   homepage-bauer/bin/kopfleiste-wahl setze bewertung
- * wirkt binnen rund einer Minute (Cache 30 s + 30 s), ohne Deploy.
+ * wirkt ohne Deploy. Cache 30 s frisch + 3600 s stale: danach sieht der erste
+ * Aufruf je Kante noch den alten Wert und stößt die Erneuerung an, der nächste
+ * sieht den neuen.
  * Reihenfolge der Quellen: Metafeld gültig -> sein Wert; unlesbar, Isolate hat
  * schon gelesen -> letzter Wert; sonst STARTSEITEN_LEISTE. Welche Quelle galt,
  * steht als data-kopfleiste-quelle im HTML.
@@ -92,8 +94,8 @@ export function leistenWahlZuruecksetzen() {
 }
 
 /**
- * Liest die Wahl über die Storefront-API (Cache 30 s, damit ein Umschalten
- * binnen rund einer Minute ankommt). Wirft nie.
+ * Liest die Wahl über die Storefront-API (Cache 30 s frisch + 3600 s stale,
+ * Folge für das Umschalten im Kopf der Datei). Wirft nie.
  * @param {any} storefront Hydrogen-Storefront-Client
  */
 export async function ladeLeistenWahl(storefront) {
@@ -101,7 +103,7 @@ export async function ladeLeistenWahl(storefront) {
   try {
     const cache =
       typeof storefront?.CacheCustom === 'function'
-        ? storefront.CacheCustom({mode: 'public', maxAge: 30, staleWhileRevalidate: 30})
+        ? storefront.CacheCustom({mode: 'public', maxAge: 30, staleWhileRevalidate: 3600})
         : undefined;
     const data = await storefront.query(KOPFLEISTE_QUERY, {cache});
     wert = data?.shop?.metafield?.value ?? null;

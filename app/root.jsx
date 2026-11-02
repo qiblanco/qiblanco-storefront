@@ -217,8 +217,19 @@ export async function loader(args) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
+  // Await the critical data required to render initial state of the page.
+  // Parallel statt nacheinander (Maßnahme M1 des Ladezeiten-Grossjobs, Stand
+  // 02.11.2026): an einer ruhigen Kante kostete jeder Cache-Fehlschlag einen
+  // eigenen Rundweg zur Storefront-API (DE 82 ms, TH 261 ms). Fehlerverhalten
+  // wie zuvor: die Kopfzeile darf werfen, die Bewertung fällt auf den
+  // Schnappschuss zurück, die Leiste wirft nie.
+  const [criticalData, googleRating, leistenWahl] = await Promise.all([
+    loadCriticalData(args),
+    ladeGoogleRating(args.context).catch(() => ({
+      ...GOOGLE_RATING_FALLBACK_VOLL,
+    })),
+    ladeLeistenWahl(args.context.storefront),
+  ]);
 
   const {storefront, env} = args.context;
 
@@ -249,9 +260,7 @@ export async function loader(args) {
     // (Fix v2 Punkt 5; Repair 2026-07-31): fail-safe, 6h gecacht (Reputon-
     // Feed, kein Key nötig), fällt auf 4,8/437-Schnappschuss zurück (nie
     // 500en/erfinden).
-    googleRating: await ladeGoogleRating(args.context).catch(() => ({
-      ...GOOGLE_RATING_FALLBACK_VOLL,
-    })),
+    googleRating,
     isProductionHost: isQiblancoProductionHost(args.request.url),
     // Qi-Alpha-Freischaltung 01.11.2026 10:11Z: Serverzeit dieser Antwort,
     // damit nie die Kunden-Uhr entscheidet (app/lib/qi-alpha-freischaltung.js).
@@ -262,7 +271,7 @@ export async function loader(args) {
         env,
         istProduktion: isQiblancoProductionHost(args.request.url),
       }),
-      ...(await ladeLeistenWahl(args.context.storefront)),
+      ...leistenWahl,
     },
     enableTrackingInPreview: env.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true',
     // Region-aware Consent-Policy (Job 20260718): Oxygen-Geo-Land + Streng-
