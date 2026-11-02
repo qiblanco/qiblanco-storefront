@@ -23,10 +23,17 @@
 }
 [data-apple-seite='exclusive-solutions'] .ghx-h2 {
   font-family: inherit;
-  font-size: var(--as-fs-6);
+  font-size: var(--as-fs-5);
   font-weight: 600;
-  letter-spacing: -0.015em;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   color: var(--as-tinte);
+  text-align: left;
+}
+@media (min-width: 750px) {
+  [data-apple-seite='exclusive-solutions'] .ghx-h2 {
+    font-size: var(--as-fs-7);
+  }
 }
 [data-apple-seite='exclusive-solutions'] .ghx-sub,
 [data-apple-seite='exclusive-solutions'] .ghx-pak__lead,
@@ -90,4 +97,56 @@
 }
 [data-apple-seite='exclusive-solutions'] #pakete .ghx-inner {
   max-width: var(--as-breite);
+}
+
+/* Paket-Karte: eine Skala, ein Gold, keine zweite Warnfarbe. */
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-label,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-text,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__save,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__size,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare-label,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare-value,
+[data-apple-seite='exclusive-solutions'] .ghx-toast,
+[data-apple-seite='exclusive-solutions'] .ghx-toast * {
+  font-size: var(--as-fs-2);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-label,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__size,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare-label {
+  color: var(--as-tinte);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare-value {
+  color: var(--as-grau);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__save {
+  background: var(--as-flaeche);
+  color: var(--as-tinte);
+  font-weight: 600;
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item::before {
+  background: var(--as-gold);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__divider {
+  background: var(--as-linie);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__size:hover,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__size:focus {
+  border-color: var(--as-gold);
+  background-color: var(--as-weiss);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-label--button:hover .ghx-pak__item-text,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-label--button:focus-visible .ghx-pak__item-text {
+  color: var(--as-gold-tinte);
+  border-bottom-color: var(--as-gold);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-text {
+  border-bottom-color: var(--as-linie);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__cta:hover {
+  border-color: var(--as-gold);
+  color: var(--as-tinte);
 }
