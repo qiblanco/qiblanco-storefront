@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {youtubeWatchtimeAnbinden, mitJsApi} from '~/lib/video-watchtime';
 import {VIDEO_LQIP} from '~/data/video-lqip';
+import {posterGleicherHerkunft, vorschauUrl} from '~/lib/youtube-einbettung';
 
 /*
  * YoutubeTimestamp — das wiederverwendbare Muster „YouTube-Video als
@@ -625,12 +626,18 @@ export function YoutubeTimestamp({
             `&origin=${encodeURIComponent(window.location.origin)}&widgetid=${widgetId.current}`,
         )
       : '';
+  /* VORSCHAUBILD GLEICHER HERKUNFT (Auftrag einwilligung-scanner-20261023T144303Z-s02,
+   * 2026-11-03): das Poster kommt über die eigene Route `/yt-vorschau/<id>`,
+   * nicht mehr von i.ytimg.com. Vor der Wahl im Einwilligungshinweis geht
+   * damit keine Anfrage an Google; das Bild ist dasselbe. Ein `thumbnail`
+   * auf i.ytimg.com wird ebenso umgeschrieben, ein eigenes Standbild
+   * (cdn.shopify.com) bleibt, wie es ist. */
   const posterProps = thumbnail
-    ? {src: thumbnail, width: 1280, height: 720, onError: posterFehlt}
+    ? {src: posterGleicherHerkunft(thumbnail), width: 1280, height: 720, onError: posterFehlt}
     : {
-        src: `https://i.ytimg.com/vi/${videoId}/${stufenDatei}.jpg`,
+        src: vorschauUrl(videoId, stufenDatei),
         srcSet: POSTER_STUFEN.slice(posterStufe)
-          .map(([datei, breite]) => `https://i.ytimg.com/vi/${videoId}/${datei}.jpg ${breite}w`)
+          .map(([datei, breite]) => `${vorschauUrl(videoId, datei)} ${breite}w`)
           .join(', '),
         sizes,
         width: stufenBreite,
@@ -876,7 +883,7 @@ export function YoutubeTimestamp({
    * nicht-nutzergesteuerter Code, keine Fremdeingabe).
    */
   const posterUrl =
-    thumbnail || `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
+    posterGleicherHerkunft(thumbnail) || vorschauUrl(videoId, 'hqdefault');
   const escape = (wert) =>
     String(wert || '').replace(/[<>&"]/g, (c) =>
       ({'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c]),

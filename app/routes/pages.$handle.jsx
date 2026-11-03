@@ -15,6 +15,8 @@ import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import {seitenSignale} from '~/lib/seiten-seo';
 import {fremdHtmlMitBildAuszeichnung} from '~/lib/fremd-html-bilder';
 import {fremdHtmlMitUeberschriftenRang} from '~/lib/fremd-html-ueberschriften';
+import {cmsYoutubeUmwandeln} from '~/lib/youtube-einbettung';
+import {CmsHtmlMitVideos} from '~/components/reusables/CmsHtmlMitVideos';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -238,14 +240,21 @@ export default function Page() {
           ausschließlich über die .rs-doc-Tokens, nie durch Eingriff in den
           Text. Kein <main> mehr: PageLayout liefert bereits eines
           (components/PageLayout.jsx), das hier war ein zweites, verschachteltes. */}
-      <div
+      {/* Ein YouTube-iframe, das jemand künftig in den Text einfügt, wird
+          beim Rendern zur Video-Fassade: vor der Wahl im Einwilligungshinweis
+          keine Anfrage an YouTube, ein Tipp spielt ab (Auftrag
+          einwilligung-scanner-20261023T144303Z-s02). Ohne iframe im Text ist
+          die Ausgabe byte-gleich zu vorher. */}
+      <CmsHtmlMitVideos
         className="rs-doc__rumpf"
-        dangerouslySetInnerHTML={{
-          __html: fremdHtmlMitUeberschriftenRang(
-            fremdHtmlMitBildAuszeichnung(page.body),
-            Boolean(titel),
-          ),
-        }}
+        html={
+          cmsYoutubeUmwandeln(
+            fremdHtmlMitUeberschriftenRang(
+              fremdHtmlMitBildAuszeichnung(page.body),
+              Boolean(titel),
+            ),
+          ).html
+        }
       />
     </Rechtsseite>
   );

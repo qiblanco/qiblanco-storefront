@@ -35,6 +35,11 @@
 .as-kurs .course-lesson__video {
   margin: var(--as-s-6) 0 0;
 }
+.as-kurs .course-lesson__video .YoutubeTimestamp,
+.as-kurs .qb-yt-cms,
+.as-kurs .qb-yt-cms .YoutubeTimestamp {
+  border-radius: var(--as-radius);
+}
 .as-kurs .course-lesson__video iframe {
   display: block;
   width: 100%;
