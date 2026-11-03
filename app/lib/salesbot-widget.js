@@ -32,12 +32,14 @@
  * plus zweiter Merge. Der Default macht die Seite mit dem Merge fertig; die
  * Umkehrbarkeit liefert `PUBLIC_SALESBOT_WIDGET_ORIGIN` (siehe unten).
  *
- * Die Domain braucht keinen DNS-Eintrag: sslip.io löst
- * <ip-mit-bindestrichen>.sslip.io auf ebendiese IP auf (gleiche Präzedenz wie
- * qpx.65-108-150-121.sslip.io seit 2026-07-09).
+ * Seit 2026-10-30 die eigene Domain anna.dienst.qiblanco.com (DNS
+ * *.dienst.qiblanco.com -> ai-server, Caddy-Zweitname im selben Block, Job
+ * 20261030-folge-dienste-auf-eigene-domain-nach-dns). Bis dahin
+ * salesbot.65-108-150-121.sslip.io; der Name bleibt erreichbar und ist der
+ * Rückweg ohne Code: PUBLIC_SALESBOT_WIDGET_ORIGIN=https://salesbot.65-108-150-121.sslip.io.
  */
 export const SALESBOT_WIDGET_DEFAULT_ORIGIN =
-  'https://salesbot.65-108-150-121.sslip.io';
+  'https://anna.dienst.qiblanco.com';
 
 /** Sentinel-Wert von `PUBLIC_SALESBOT_WIDGET_ORIGIN`, der das Widget abschaltet. */
 export const SALESBOT_WIDGET_AUS = 'off';
