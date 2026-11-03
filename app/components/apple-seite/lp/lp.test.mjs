@@ -79,3 +79,43 @@ test('360: jede LP-Ansicht der Geräte dreht (kein Standbild)', () => {
   }
   assert.ok(n >= 3, `mindestens die drei bekannten 360-Stellen, gefunden ${n}`);
 });
+
+test('Kurs-Lektionsbilder: schärfere Datei, Anzeigebreite gleich, kein srcset (Flanke #279)', async () => {
+  const {scharfeLektionsbilder} = await import('./kurs-bilder.js');
+  const cdn = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
+  // Mit width-Attribut: Datei in 2 x W, das Attribut bleibt
+  assert.equal(
+    scharfeLektionsbilder(`<p>Text</p><img style="float: left" src="${cdn}Christian_480x480.webp?v=1733929584" width="233" height="298">`),
+    `<p>Text</p><img style="float: left" src="${cdn}Christian.webp?v=1733929584&amp;width=466" width="233" height="298">`,
+  );
+  // Ohne width-Attribut gab die alte Datei die Breite vor: sie wird als Attribut gesetzt
+  assert.equal(
+    scharfeLektionsbilder(`<img src="${cdn}Christian-Bauer-290x300_1_240x240.webp?v=2">`),
+    `<img width="232" src="${cdn}Christian-Bauer-290x300_1.webp?v=2&amp;width=464">`,
+  );
+  assert.equal(
+    scharfeLektionsbilder(`<img src="${cdn}Kreislauf_Biohacking.png_1_480x480.webp?v=3" style="display: block">`),
+    `<img width="480" src="${cdn}Kreislauf_Biohacking.png_1.webp?v=3&amp;width=960" style="display: block">`,
+  );
+  // Füllt die Spalte: Datei breiter als die Spalte, kein width-Attribut
+  assert.equal(
+    scharfeLektionsbilder(`<img src="${cdn}qiblanco-com-qione-2-pro-transparent_1.webp?v=166659147">`),
+    `<img src="${cdn}QiOne2Pro_01_transparent.png?v=1683116991&amp;width=1232">`,
+  );
+  // data-mce-src bleibt, ein "src=" im alt-Wert auch
+  const mce = scharfeLektionsbilder(`<img alt="a src=b width=9" data-mce-src="${cdn}x.webp" src="${cdn}Christian_480x480.webp?v=1" width="233">`);
+  assert.equal(mce, `<img alt="a src=b width=9" data-mce-src="${cdn}x.webp" src="${cdn}Christian.webp?v=1&amp;width=466" width="233">`);
+  // Kein srcset in keiner Form; byte-gleich bleiben: unbekannte Datei (auch mit Größen-Namen), fremder Host,
+  // vorhandenes srcset, width nicht numerisch, width nur im alt-Wert bei Tabelleneintrag ohne Anzeige, Text ohne Bild
+  for (const roh of [
+    `<img src="${cdn}chlorella_algen-1024x576.jpg_1.webp?v=1">`,
+    `<img src="${cdn}banner_1920x1080.jpg?v=1">`,
+    '<img src="https://i.ytimg.com/vi/x/hqdefault.jpg">',
+    `<img src="${cdn}Christian_480x480.webp" srcset="${cdn}Christian_480x480.webp 1x">`,
+    `<img src="${cdn}Christian_480x480.webp?v=1" width="100%">`,
+    `<img alt="width=233" src="${cdn}Christian_480x480.webp?v=1">`,
+    `<img src="https://example.com/s/files/files/Christian_480x480.webp">`,
+    '<p>ohne Bild</p>',
+    '',
+  ]) assert.equal(scharfeLektionsbilder(roh), roh);
+});
