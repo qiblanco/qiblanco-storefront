@@ -1,5 +1,10 @@
 import {CartForm} from '@shopify/hydrogen';
-import {addonArt, bindungsKorrektur, QM_ADDON} from '~/lib/qi-master-addons';
+import {
+  addonArt,
+  bindungsKorrektur,
+  QM_ADDON,
+  reihenfolgeKorrektur,
+} from '~/lib/qi-master-addons';
 import {QM_STAHLKETTE} from '~/components/campaign/the-alpha-shop-daten';
 import {
   eingabeTraegtRabatt,
@@ -104,17 +109,72 @@ export async function bindeQiMasterAddons({cart, action, result}) {
     (voll?.discountCodes || []).map((c) => c.code),
     RESERVIERUNGS_RABATTE,
   );
-  if (!entfernen.length && !aendern.length && !codes) return result;
 
   let neu = result;
+  if (entfernen.length || aendern.length || codes) {
+    try {
+      if (entfernen.length) neu = await cart.removeLines(entfernen, {cartId});
+      if (aendern.length) neu = await cart.updateLines(aendern, {cartId});
+      if (codes) neu = await cart.updateDiscountCodes(codes, {cartId});
+    } catch {
+      return result;
+    }
+    if (!neu?.cart) return result;
+  }
+  if (action !== CartForm.ACTIONS.LinesAdd) return neu;
+  return ordneQiAlphaZeilen({cart, cartId, result: neu, geaendert: neu !== result, voll});
+}
+
+/*
+ * REIHENFOLGE FÜR DIE KASSE (Christian 28.10.2026 Z14; Regel und Messung in
+ * qi-master-addons.js bei reihenfolgeKorrektur). Nur nach dem Hinzufügen —
+ * Menge ändern und Entfernen verschieben keine Zeile. Stehen Qi Alpha,
+ * Nummer und Kette nicht in Soll-Folge, nimmt der Server genau diese Zeilen
+ * heraus und legt sie in EINEM Aufruf wieder hinein (Merkmale und Mengen
+ * bleiben). Kosten: zwei Mutationen, nur wenn die Folge falsch ist.
+ *
+ * FAIL-SOFT: scheitert das Wiederhinzufügen, legt der Server die Zeilen in der
+ * alten Folge zurück; eine falsche Reihenfolge ist besser als ein leerer
+ * Warenkorb.
+ */
+async function ordneQiAlphaZeilen({cart, cartId, result, geaendert, voll}) {
+  let stand = voll;
+  if (geaendert) {
+    try {
+      stand = await cart.get({cartId, numCartLines: 250});
+    } catch {
+      return result;
+    }
+  }
+  const zeilen = (stand?.lines?.nodes || []).map((z) => ({
+    id: z.id,
+    quantity: z.quantity,
+    handle: z.merchandise?.product?.handle,
+    merchandiseId: z.merchandise?.id,
+    attributes: z.attributes,
+  }));
+  const plan = reihenfolgeKorrektur(zeilen);
+  if (!plan) return result;
+  const vorher = zeilen
+    .filter((z) => plan.entfernen.includes(z.id))
+    .reverse()
+    .map((z) => ({
+      merchandiseId: z.merchandiseId,
+      quantity: z.quantity,
+      ...(z.attributes?.length
+        ? {attributes: z.attributes.map(({key, value}) => ({key, value}))}
+        : {}),
+    }));
   try {
-    if (entfernen.length) neu = await cart.removeLines(entfernen, {cartId});
-    if (aendern.length) neu = await cart.updateLines(aendern, {cartId});
-    if (codes) neu = await cart.updateDiscountCodes(codes, {cartId});
+    const raus = await cart.removeLines(plan.entfernen, {cartId});
+    if (!raus?.cart || raus.userErrors?.length) return result;
+    const rein = await cart.addLines(plan.hinzufuegen, {cartId});
+    if (rein?.cart && !rein.userErrors?.length) return rein;
+    const alteFolge = await cart.addLines(vorher, {cartId});
+    return alteFolge?.cart ? alteFolge : result;
   } catch {
     return result;
   }
-  return neu?.cart ? neu : result;
 }
 
 /*

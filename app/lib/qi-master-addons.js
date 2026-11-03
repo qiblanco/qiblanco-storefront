@@ -155,11 +155,17 @@ export function nummerAnzeige(titel) {
 
 /*
  * NAME AN DER KASSE (Christian 27.10.2026, Job 20261027-qi-alpha-immer-mit-
- * registered-zeichen): „Qi Alpha immer mit R“, die Nummern-Position heißt
- * genau „Qi Alpha® 19/111“, die Kette „Qi Blanco® Goldkette - 750iger
- * ethisches Vollgold“ mit der Länge darunter. Die Shopify-Varianten der Nummer
- * heißen seit 28.10. „N/111“ (vorher „Alpha N/111“, davor „Alpha N/100“);
- * jeder Leser hier versteht alle drei Schreibweisen.
+ * registered-zeichen): „Qi Alpha immer mit R“, die Kette „Qi Blanco®
+ * Goldkette – 750er ethisches Vollgold“ mit der Länge darunter.
+ *
+ * WUNSCHNUMMER (Christian 28.10.2026 Z14, Grossjob 20261028-qi-alpha-kopf-
+ * 99-…, s06): „„Qi Alpha® 19/111“ änderen zu „Wunschnummer 19/111 - 1st.
+ * Edition““. Am 01.11.2026 hat Christian die Warenkorbzeile neu gefasst
+ * (unten, PR #1183); sein jüngeres Wort gilt für die Zeile. Aus Z14 bleibt
+ * die Variante: die Shopify-Varianten von qi-alpha-wunschnummer heißen
+ * „19/111 - 1st. Edition“ (Kasse, Bestellbestätigung, Rechnung). Vorher
+ * hießen sie „19/111“, „Alpha 19/111“ und „Alpha 19/100“; jeder Leser hier
+ * versteht alle vier Schreibweisen.
  */
 export const QI_ALPHA_NAME = 'Qi Alpha®';
 
@@ -171,9 +177,12 @@ export const QI_ALPHA_NAME = 'Qi Alpha®';
  */
 export const WUNSCHNUMMER_ZUSATZ = 'Wunschnummer';
 
-/** „Alpha 19/100“, „Alpha 19/111“, „19/111“ -> „19/111“; sonst null. */
+/**
+ * „Alpha 19/100“, „Alpha 19/111“, „19/111“, „19/111 - 1st. Edition“ ->
+ * „19/111“; sonst null.
+ */
 export function nummerKurz(titel) {
-  const m = /^(?:Alpha\s*)?(\d{1,3})\s*\/\s*(100|111)$/.exec(
+  const m = /^(?:Alpha\s*)?(\d{1,3})\s*\/\s*(100|111)(?:\s*-\s*1st\.\s*Edition)?$/.exec(
     String(titel ?? '').trim(),
   );
   return m ? `${Number(m[1])}/111` : null;
@@ -182,8 +191,8 @@ export function nummerKurz(titel) {
 /**
  * Anzeige einer Add-on-Zeile im Warenkorb: Titel und Unterzeilen (nur die
  * Werte, ohne „Name:“), genau wie Shopify sie in der Kasse untereinander
- * setzt. Die Nummer steht in einer Zeile mit dem Namen: „Qi Alpha® 19/111“.
- * null = keine Add-on-Zeile.
+ * setzt. Die Nummer steht in einer Zeile mit dem Namen: „Qi Alpha® 19/111 –
+ * Wunschnummer“. null = keine Add-on-Zeile.
  */
 export function addonZeile(line) {
   const merchandise = line?.merchandise;
@@ -203,6 +212,69 @@ export function addonZeile(line) {
     unterzeilen: (merchandise?.selectedOptions ?? [])
       .map((o) => o?.value)
       .filter((v) => v && v !== 'Default Title'),
+  };
+}
+
+/*
+ * REIHENFOLGE IM WARENKORB UND IN DER KASSE (Christian 28.10.2026 Z14: „es
+ * muss zuerst der qialpha stehen, dann die wunschnummer und dann die kette“,
+ * unabhängig von der Reihenfolge des Hinzufügens).
+ *
+ * Gemessen 29.10.2026 (s06, mess-reihenfolge.json): Shopify führt die zuletzt
+ * hinzugefügte Zeile zuerst, innerhalb EINES cartLinesAdd das letzte Element
+ * zuerst, und die Kasse übernimmt genau diese Reihenfolge. Deshalb zwei Wege:
+ *   - Anzeige (Seitenleiste, Warenkorbseite): sortiereWarenkorb sortiert
+ *     beim Zeichnen, auch optimistische Zeilen.
+ *   - Kasse: reihenfolgeKorrektur sagt der Warenkorb-Action, welche Zeilen
+ *     sie entfernen und in EINEM Aufruf in umgekehrter Soll-Folge wieder
+ *     hinzufügen muss (qi-master-addons.server.js).
+ * Alle übrigen Produkte behalten ihre Reihenfolge und stehen danach.
+ */
+const RANG = {'qi-alpha': 0, wunschnummer: 1, kette: 2};
+
+/** Rang einer Zeile nach Produkt-Handle: 0 Qi Alpha, 1 Nummer, 2 Kette, 3 sonst. */
+export function warenkorbRang(handle) {
+  if (istQiAlpha(handle)) return RANG['qi-alpha'];
+  // Die inklusive Stahlkette (0 €, PR #1126) ist eine Kette und steht an
+  // derselben Stelle wie die Goldkette.
+  if (handle === QM_STAHLKETTE_HANDLE) return RANG.kette;
+  const art = addonArt(handle);
+  return art ? RANG[art] : 3;
+}
+
+/** Zeilen in Soll-Reihenfolge (stabil; Zeilen ohne Qi-Alpha-Bezug danach). */
+export function sortiereWarenkorb(lines) {
+  return (lines ?? [])
+    .map((line, i) => ({line, i, r: warenkorbRang(line?.merchandise?.product?.handle)}))
+    .sort((a, b) => a.r - b.r || a.i - b.i)
+    .map((x) => x.line);
+}
+
+/**
+ * Rein (kein Netz). Eingabe: Warenkorbzeilen in Shopify-Reihenfolge mit
+ * {id, quantity, handle, merchandiseId, attributes}. Ausgabe null, wenn
+ * Qi Alpha, Nummer und Kette schon in Soll-Folge stehen, sonst
+ * {entfernen: [ids], hinzufuegen: [CartLineInput]} — hinzufuegen ist
+ * umgekehrt, weil Shopify das letzte Element eines Aufrufs zuerst führt.
+ */
+export function reihenfolgeKorrektur(zeilen) {
+  const gruppe = (zeilen ?? []).filter((z) => warenkorbRang(z.handle) < 3);
+  const raenge = gruppe.map((z) => warenkorbRang(z.handle));
+  const geordnet = raenge.every((r, i) => i === 0 || raenge[i - 1] <= r);
+  if (geordnet || gruppe.some((z) => !z.merchandiseId)) return null;
+  const soll = sortiereWarenkorb(
+    gruppe.map((z) => ({...z, merchandise: {product: {handle: z.handle}}})),
+  );
+  return {
+    entfernen: gruppe.map((z) => z.id),
+    hinzufuegen: soll.reverse().map((z) => {
+      const eingabe = {merchandiseId: z.merchandiseId, quantity: z.quantity};
+      const merkmale = (z.attributes ?? [])
+        .filter((a) => a?.key)
+        .map(({key, value}) => ({key, value}));
+      if (merkmale.length) eingabe.attributes = merkmale;
+      return eingabe;
+    }),
   };
 }
 

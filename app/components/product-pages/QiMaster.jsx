@@ -774,7 +774,9 @@ function PersoenlichkeitAbschnitt() {
  *     Gegenpruefung, keine Umformulierung, keine Fussnote). Angepasst sind
  *     allein Umlaute und Eszett, weil die Seite echte Zeichen trägt.
  *     Das schließt Schreibweisen ein, die ein Lektorat glattziehen würde
- *     („750iger", „hochreichen Natur Diamanten") — sie bleiben stehen.
+ *     („hochreichen Natur Diamanten") — sie bleiben stehen. Ausnahme auf
+ *     Christians eigenes Wort (28.10.2026 Z15): „Statt „750iger“ ist „750er
+ *     Gold“ die übliche und korrekte Schreibweise“ -> „750er Goldlegierung“.
  *
  * DIE ABGELOESTE FASSUNG IST WEG, NICHT VERSCHOBEN: „Ein Stück, kein
  * Serienteil." / „750er Gold" mit „Kette und Verschluss aus 750er Gold" /
@@ -810,7 +812,7 @@ function AlphaSerie() {
             Eigene Goldlegierung
           </h3>
           <p>
-            Für den Gitterchip<sup>®</sup> kommt eine eigene spezielle 750iger Goldlegierung
+            Für den Gitterchip<sup>®</sup> kommt eine eigene spezielle 750er Goldlegierung
             zum Einsatz um die gewohnten Eigenschaften zu gewährleisten.
           </p>
         </div>

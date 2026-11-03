@@ -16,6 +16,7 @@ import {
   wunschnummerGratisText,
 } from '~/lib/qi-alpha-reservierung';
 import {formatPreis} from '~/lib/markt-pricing';
+import {mitMarkeR} from '~/components/reusables/MarkeR';
 /**
  * A single line item in the cart. It displays the product image, title, price.
  * It also provides controls to update the quantity or remove the line item.
@@ -83,7 +84,9 @@ export function CartLineItem({layout, line}) {
                 alles andere den Produkttitel. Quelle ist ~/lib/vorbestellung —
                 dieselbe, aus der CartSummary den Lieferhinweis zieht; der
                 Wortlaut steht dort und bewusst nicht hier. */}
-            <strong>{addon?.titel || warenkorbTitel(line)}</strong>
+            {/* ® klein hochgestellt (Christian 28.10.2026 Z1/Z14), wie auf
+                der Produktseite: mitMarkeR setzt jedes „®“ als <sup>. */}
+            <strong>{mitMarkeR(addon?.titel || warenkorbTitel(line))}</strong>
             {(unterzeilen ?? []).map((zeile) => (
               <Fragment key={zeile}>
                 <br />

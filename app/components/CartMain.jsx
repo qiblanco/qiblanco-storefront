@@ -6,6 +6,7 @@ import {CartSummary} from './CartSummary';
 import {formatPreis} from '~/lib/markt-pricing';
 import {taxRateForHandle} from '~/lib/cart-display-pricing';
 import {istBrutto} from '~/lib/preismodus';
+import {sortiereWarenkorb} from '~/lib/qi-master-addons';
 
 /**
  * The main cart component that displays the cart items and summary.
@@ -31,7 +32,10 @@ export function CartMain({layout, cart: originalCart}) {
       <div className="cart-details">
         <div aria-labelledby="cart-lines">
           <ul>
-            {(cart?.lines?.nodes ?? []).map((line) => (
+            {/* Qi Alpha®, Wunschnummer, Kette in dieser Folge, egal in
+                welcher Reihenfolge sie dazukamen (Christian 28.10.2026 Z14;
+                Regel in lib/qi-master-addons.js). */}
+            {sortiereWarenkorb(cart?.lines?.nodes).map((line) => (
               <CartLineItem key={line.id} line={line} layout={layout} />
             ))}
           </ul>
