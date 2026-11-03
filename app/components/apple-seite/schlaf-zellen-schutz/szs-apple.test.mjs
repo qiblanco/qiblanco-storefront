@@ -6,6 +6,10 @@ import {KONJUNKTIV, VERBOTEN, texteVon} from '../apple-seite-logik.js';
 import * as D from './szs-daten.js';
 import {APPLE_SEITEN} from '../../../lib/apple-seiten.js';
 
+import {
+  E1, E2, E3, E4, E6, E6_AKTIV, LP_EXP_B_PFAD, LP_EXP_E6_MARKER, besucherEimer, entscheideLpExperiment, experimentE6Aktiv,
+} from '../../../lib/lp-ab-v2.server.js';
+
 const C = readFileSync(new URL('../../campaign/SchlafZellenSchutz.jsx', import.meta.url), 'utf8');
 const ALLE_TEXTE = texteVon({
   KOPF: D.KOPF, VERTRAUEN: D.VERTRAUEN, WIRKPRINZIP: D.WIRKPRINZIP, EBENEN: D.EBENEN, LABOR: D.LABOR,
@@ -88,4 +92,89 @@ test('Bilder tragen gemessene Breite und Höhe', () => {
     assert.ok(e.bild.url.startsWith('https://cdn.shopify.com/'), e.etikett);
   }
   for (const z of D.ZAHLWEGE) assert.ok(z.breite > 0 && z.hoehe > 0, z.alt);
+});
+
+// ═══ Letzte A/B-Runde szs-e6-gs082 (Christian 01.11.2026) ═══════════════════════
+const A_URL = 'https://qiblanco.com/pages/schlaf-zellen-schutz';
+
+function anfrage(i, query = '') {
+  // Hausfremde Adresse: die interne Liste (interner-verkehr.js) trifft sie nicht.
+  const kopf = new Map([
+    ['user-agent', `Mozilla/5.0 (iPhone) Besucher ${i}`],
+    ['oxygen-buyer-ip', `198.51.${100 + (i % 100)}.${1 + (i % 250)}`],
+  ]);
+  return {method: 'GET', url: `${A_URL}${query}`, headers: {get: (k) => kopf.get(k.toLowerCase()) ?? null}};
+}
+const entscheideE6 = (req, env = {}) => entscheideLpExperiment(req, env, false, false, false, false, true);
+
+test('E6: B zeigt alles wie A, nur die Stimmen stehen oben', () => {
+  const a = D.teileFuer('a');
+  const b = D.teileFuer('b');
+  assert.equal(b.stimmenOben, true);
+  assert.equal(a.stimmenOben, false);
+  for (const k of Object.keys(a)) {
+    if (k !== 'variante' && k !== 'stimmenOben') assert.deepEqual(b[k], a[k], k);
+  }
+  for (const v of ['b2', 'k50', 'k25']) assert.equal(D.teileFuer(v).stimmenOben, false, v);
+  const quelle = readFileSync(new URL('./SchlafZellenSchutzApple.jsx', import.meta.url), 'utf8');
+  const kopf = quelle.indexOf('<Kopf preis={qionePreis} />');
+  const oben = quelle.indexOf('{t.stimmenOben ? stimmen : null}');
+  const video = quelle.indexOf('{t.gitterchipVideo ?');
+  assert.ok(kopf > 0 && kopf < oben && oben < video, 'Stimmen zwischen Kopf und Video');
+  const unten = quelle.indexOf('{t.stimmenOben ? null : stimmen}');
+  assert.ok(unten > quelle.indexOf('{t.weiter6 ?'), 'in A unverändert nach dem Labor');
+});
+
+test('E6: Schalter aus bis zum Start, kein Besucher und kein Pin kommt auf B', () => {
+  assert.equal(E6_AKTIV, false);
+  for (let i = 0; i < 2000; i += 1) {
+    const e = entscheideLpExperiment(anfrage(i), {}, false, false, false, false);
+    assert.equal(e, null, `Besucher ${i}`);
+  }
+  assert.equal(entscheideLpExperiment(anfrage(1, '?lp_exp=b'), {}, false, false, false, false), null);
+});
+
+test('E6: 15 % in den Eimern 30..44, A sonst; Query bleibt, Marker g', () => {
+  let b = 0;
+  const n = 20000;
+  for (let i = 0; i < n; i += 1) {
+    const req = anfrage(i, '?fbclid=abc&utm_source=meta');
+    const e = entscheideE6(req);
+    const kopf = req.headers;
+    const eimer = besucherEimer(kopf.get('oxygen-buyer-ip'), kopf.get('user-agent'), E1.salz);
+    assert.equal(Boolean(e), eimer >= 30 && eimer < 45, `Eimer ${eimer}`);
+    if (e) {
+      b += 1;
+      assert.equal(e.ziel, `${LP_EXP_B_PFAD}?fbclid=abc&utm_source=meta&lp_m=${LP_EXP_E6_MARKER}`);
+      assert.equal(e.arm, 'b');
+    }
+  }
+  assert.ok(Math.abs(b / n - 0.15) < 0.02, `Anteil ${b / n}`);
+});
+
+test('E6: Eimer überlappen nicht, und jede Kollision schaltet E6 ab', () => {
+  const arme = [[E3.eimer_ab, E3.anteil_prozent], [E4.eimer_ab, E4.anteil_prozent], [E6.eimer_ab, E6.anteil_prozent], [100 - E2.anteil_prozent, E2.anteil_prozent]];
+  const belegt = new Set();
+  for (const [ab, n] of arme) {
+    for (let e = ab; e < ab + n; e += 1) {
+      assert.ok(!belegt.has(e), `Eimer ${e} doppelt`);
+      belegt.add(e);
+    }
+  }
+  assert.equal(E6.salz, E1.salz);
+  assert.equal(E6.id, 'szs-e6-gs082');
+  assert.equal(experimentE6Aktiv({}, true, false), true);
+  assert.equal(experimentE6Aktiv({}, false, false), false);
+  assert.equal(experimentE6Aktiv({}, true, true), false, 'E1 belegt die Route');
+  assert.equal(experimentE6Aktiv({LP_EXP_SZS_E6_MODE: 'off'}, true, false), false);
+  assert.equal(experimentE6Aktiv({}, true, false, {...E6, eimer_ab: 20}), false, 'in K25');
+  assert.equal(experimentE6Aktiv({}, true, false, {...E6, eimer_ab: 80}), false, 'in B2');
+  assert.equal(experimentE6Aktiv({}, true, false, {...E6, salz: 'anders'}), false, 'fremdes Salz');
+});
+
+test('E6: Pin und Rückweg', () => {
+  const pin = entscheideE6(anfrage(3, '?lp_exp=b'));
+  assert.equal(pin.ziel, `${LP_EXP_B_PFAD}?lp_exp=b&lp_m=${LP_EXP_E6_MARKER}`);
+  assert.equal(entscheideE6(anfrage(3, '?lp_exp=a')), null);
+  assert.equal(entscheideE6(anfrage(3, '?lp_exp=b'), {LP_EXP_SZS_E6_MODE: 'off'}), null);
 });

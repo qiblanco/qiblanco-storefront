@@ -29,7 +29,7 @@ import {
 } from './szs-daten';
 
 /*
- * APPLE-FASSUNG /pages/schlaf-zellen-schutz und Testarme b2, k50, k25 (s06).
+ * APPLE-FASSUNG /pages/schlaf-zellen-schutz und Testarme b, b2, k50, k25 (s06).
  * Welche Teile ein Arm trägt: szs-daten.js teileFuer(). Ziel und Wortlaut des
  * Kaufknopfs sind die von C (SchlafZellenSchutz.jsx QIONE_ZIEL/QIONE_CTA):
  * „Jetzt kaufen“ auf die Kampagnen-Kaufseite /pages/qione-2-pro (BLOCK_LP).
@@ -238,7 +238,7 @@ function Schluss({preis}) {
 }
 
 /*
- * FESTER KAUFKNOPF MOBIL (A, K50, K25; nicht B2). Dieselbe Regel wie C
+ * FESTER KAUFKNOPF MOBIL (A, B, K50, K25; nicht B2). Dieselbe Regel wie C
  * (StickyKaufknopf): sichtbar, sobald der Kopf aus dem Bild ist, und nicht,
  * solange Geräte oder Schluss im Bild sind. Inhalt nur im sichtbaren Zustand
  * im DOM (KaufknopfChatSignal misst bei childList). Nur bis 749 px.
@@ -289,7 +289,7 @@ function FesterKnopf({seite}) {
 }
 
 /**
- * @param {{products?: Array<any>, variante?: 'a'|'b2'|'k50'|'k25'}} props
+ * @param {{products?: Array<any>, variante?: 'a'|'b'|'b2'|'k50'|'k25'}} props
  *   products: dieselbe Loader-Abfrage wie C (qione, bracelet, qihome).
  */
 export function SchlafZellenSchutzApple({products = [], variante = 'a'}) {
@@ -297,11 +297,13 @@ export function SchlafZellenSchutzApple({products = [], variante = 'a'}) {
   const seite = SEITE_JE_VARIANTE[t.variante];
   const preis = usePreise(products);
   const qionePreis = preis('qione-2-pro');
+  const stimmen = <AppleStimmen titel={STIMMEN.titel} stimmen={STIMMEN.stimmen} link={STIMMEN.link} />;
   return (
     <>
       <link rel="stylesheet" href={szsAppleStyles} />
       <AppleSeite seite={seite}>
         <Kopf preis={qionePreis} />
+        {t.stimmenOben ? stimmen : null}
         {t.gitterchipVideo ? (
           <GitterchipMoleculesScrub dataSection="lp-a-gitterchip-video" heightVhDesktop={SCROLL_VH} heightVhMobile={SCROLL_VH} />
         ) : null}
@@ -313,7 +315,7 @@ export function SchlafZellenSchutzApple({products = [], variante = 'a'}) {
         {t.mikroskopVideo ? <ScrollScrubVideo dataSection="lp-a-mikroskop-video" heightVhDesktop={SCROLL_VH} heightVhMobile={SCROLL_VH} {...MIKROSKOP} /> : null}
         {t.labor ? <Labor /> : null}
         {t.weiter6 ? <Weiter nr={6} preis={qionePreis} /> : null}
-        <AppleStimmen titel={STIMMEN.titel} stimmen={STIMMEN.stimmen} link={STIMMEN.link} />
+        {t.stimmenOben ? null : stimmen}
         {t.weiter2 ? <Weiter nr={2} preis={qionePreis} /> : null}
         {t.videos ? <Videos /> : null}
         <AppleFakten titel={GARANTIE.titel} kacheln={GARANTIE.kacheln} />
