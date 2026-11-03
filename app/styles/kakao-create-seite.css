@@ -4,15 +4,10 @@
    ══════════════════════════════════════════════════════════════════════════ */
 
 /* ─── Kaufleiste: Betrag der gewählten Menge ───────────────────────────────
-   CacaoLeistenPreis.jsx. Streichpreis neben dem Betrag und
-   die Menge darunter: zwei Zeilen wie die übrigen Kaufseiten. Die Spalte ist
-   breiter als ein Einzelpreis (107 px bei 159 € / 228 €): mit dem schmaleren
-   Knopfrand bleibt die Beschriftung bei 390 px in einer Zeile. */
-.qb-kaufleiste .qb-kaufleiste__staffel .product-price-on-sale {
-  flex-direction: row;
-  align-items: baseline;
-  gap: var(--qb-abstand-1);
-}
+   CacaoLeistenPreis.jsx. Betrag oben, die Menge darunter: zwei Zeilen wie die
+   übrigen Kaufseiten. Den Streichpreis trägt nur die Kaufbox, so bleibt die
+   Knopfbeschriftung bei 390 px auch in CHF in einer Zeile; dazu der
+   schmalere Knopfrand. */
 .qb-kaufleiste:has(.qb-kaufleiste__staffel) .btn--primary {
   padding-inline: var(--qb-abstand-1);
 }
