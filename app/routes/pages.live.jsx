@@ -163,7 +163,7 @@ const SPEZIAL_AN = true;
 const BILD =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/' +
   'coming-home-live-anna-christian-2026-11.jpg?v=1793702644';
-const BILD_BREITEN = [480, 640, 960, 1280];
+const BILD_BREITEN = [480, 640, 960, 1280, 1600, 1920];
 const BILD_ALT = 'Christian und Anna Bauer – Coming Home';
 
 /** Blog des Nahtvertrags N3; muss dem Server-Modul gleichen (Loader prueft). */
@@ -554,7 +554,7 @@ function KopfApple() {
           className="as-bild"
           src={bildQuelle(960)}
           srcSet={BILD_BREITEN.map((b) => `${bildQuelle(b)} ${b}w`).join(', ')}
-          sizes="(min-width: 750px) 640px, calc(100vw - 32px)"
+          sizes="(min-width: 750px) 680px, calc(100vw - 32px)"
           width="1280"
           height="640"
           alt={BILD_ALT}
