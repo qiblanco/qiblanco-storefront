@@ -52,3 +52,16 @@
   color: var(--as-tinte);
   text-shadow: none;
 }
+
+/* Kopf am Desktop (shop-tor D4, s12-r5): höchstens drei Schriftstärken und Luft
+   zwischen Nutzerzeile und Preis. Wortlaut und Reihenfolge bleiben. */
+[data-apple-seite^='products-'] .product .sterne-sprung.product-rating > span:last-child {
+  font-size: var(--as-fs-2);
+  font-weight: 400;
+}
+[data-apple-seite^='products-'] .product-main > p.mt-2 {
+  margin-bottom: var(--as-s-2);
+}
+[data-apple-seite^='products-'] .product-main > p.mt-2 b {
+  font-weight: 600;
+}
