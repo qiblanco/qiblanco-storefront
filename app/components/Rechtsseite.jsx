@@ -1,5 +1,9 @@
-import rechtsseiteAppleStyles from '~/styles/rechtsseite-apple.css?url';
+import {useContext} from 'react';
 import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {
+  AppleStilImKopf,
+  rechtsseiteAppleStyles,
+} from '~/components/apple-seite/stil-kopf';
 
 /**
  * RECHTSSEITE — das gemeinsame Grundlayout aller Dokument-/Reintext-Seiten.
@@ -31,9 +35,14 @@ import {AppleSeite} from '~/components/apple-seite/AppleSeite';
  * Farbe: Text, Reihenfolge und Elemente bleiben Zeichen für Zeichen gleich.
  * Ohne `apple` (oder Schalter aus) rendert C unverändert.
  *
+ * Steht die Route in RECHTSSEITEN_ROUTEN (apple-seite/stil-kopf.js), setzt
+ * root.jsx Layout beide Stylesheets in den <head> (Flanke #172) und die
+ * Body-Links hier und in AppleSeite fallen weg.
+ *
  * @param {{titel?: string, stand?: string, apple?: {seite: string|null, an: boolean}|null, children: import('react').ReactNode}} props
  */
 export function Rechtsseite({titel, stand, apple = null, children}) {
+  const imKopf = useContext(AppleStilImKopf);
   const dokument = (
     <div className="rs-doc">
       <div className="rs-doc__inner">
@@ -50,7 +59,7 @@ export function Rechtsseite({titel, stand, apple = null, children}) {
   if (!apple?.an || !apple.seite) return dokument;
   return (
     <>
-      <link rel="stylesheet" href={rechtsseiteAppleStyles} />
+      {imKopf ? null : <link rel="stylesheet" href={rechtsseiteAppleStyles} />}
       <AppleSeite seite={apple.seite}>{dokument}</AppleSeite>
     </>
   );

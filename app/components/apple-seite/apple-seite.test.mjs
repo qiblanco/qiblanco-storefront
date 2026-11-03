@@ -309,3 +309,103 @@ test('Produkt360Video: drei Drehungen als mp4, abgelehntes play() wird bei Berü
   assert.match(src, /document\.addEventListener\(t, nachholen/);
   assert.match(src, /prefers-reduced-motion: reduce/);
 });
+
+/* ---- (5) Token-CSS der Rechtsseiten im Kopf (Flanke #172, Job 20261029-
+   GROSSJOB-alle-shop-seiten-apple-niveau-ausser-seo-geo-s12-b172) ---------- */
+
+async function renderModul(contents) {
+  const esbuild = await import('esbuild');
+  const ergebnis = await esbuild.build({
+    stdin: {contents, resolveDir: resolve(APP, '..'), loader: 'jsx'},
+    bundle: true,
+    write: false,
+    format: 'esm',
+    platform: 'node',
+    jsx: 'automatic',
+    loader: {'.js': 'jsx'},
+    external: ['react', 'react-dom', 'react/*', 'react-dom/*'],
+    alias: {'~': APP},
+    plugins: [
+      {
+        name: 'url-stub',
+        setup(b) {
+          b.onResolve({filter: /\?url$/}, (a) => ({path: a.path, namespace: 'url'}));
+          b.onLoad({filter: /.*/, namespace: 'url'}, (a) => ({contents: `export default ${JSON.stringify('/assets/' + a.path.split('/').pop().replace(/\?url$/, ''))};`}));
+        },
+      },
+    ],
+  });
+  const {writeFileSync, unlinkSync} = await import('node:fs');
+  const {createRequire} = await import('node:module');
+  const req = createRequire(join(APP, '..', 'package.json'));
+  const code = ergebnis.outputFiles[0].text.replace(/from "(react(?:-dom)?(?:\/[a-z-]+)?)"/g, (_, m) => `from ${JSON.stringify(pathToFileURL(req.resolve(m)).href)}`);
+  const pfad = join(process.env.TMPDIR || '/tmp', `apple-stil-kopf-${process.pid}-${Date.now()}.mjs`);
+  writeFileSync(pfad, code);
+  try {
+    return await import(pathToFileURL(pfad).href);
+  } finally {
+    unlinkSync(pfad);
+  }
+}
+
+const STIL_KOPF = process.env.APPLE_STIL_KOPF || './app/components/apple-seite/stil-kopf.js';
+const KOPF = await renderModul(`import {renderToStaticMarkup} from 'react-dom/server';
+  import {createElement as h} from 'react';
+  import {Rechtsseite} from './app/components/Rechtsseite.jsx';
+  import {AppleSeite} from './app/components/apple-seite/AppleSeite.jsx';
+  import {AppleStilImKopf, rechtsseiteStilKopf, RECHTSSEITEN_ROUTEN} from ${JSON.stringify(STIL_KOPF)};
+  export {rechtsseiteStilKopf, RECHTSSEITEN_ROUTEN};
+  export function rs(imKopf, apple) {
+    const kind = h(Rechtsseite, {titel: 'AGB', apple}, h('p', null, 'Text'));
+    return renderToStaticMarkup(imKopf === null ? kind : h(AppleStilImKopf.Provider, {value: imKopf}, kind));
+  }
+  export function as(imKopf) {
+    const kind = h(AppleSeite, {seite: 'partner'});
+    return renderToStaticMarkup(imKopf === null ? kind : h(AppleStilImKopf.Provider, {value: imKopf}, kind));
+  }`);
+
+test('#172 rechtsseiteStilKopf: nur gelistete Route mit appleSeite.an liefert beide Stylesheets, in alter Reihenfolge', () => {
+  const an = {seite: 'agb', an: true};
+  assert.deepEqual(KOPF.rechtsseiteStilKopf([{id: 'root', data: {}}, {id: 'routes/pages.agb', data: {appleSeite: an}}]),
+    ['/assets/rechtsseite-apple.css', '/assets/apple-seite.css']);
+  assert.deepEqual(KOPF.rechtsseiteStilKopf([{id: 'routes/policies', data: {appleSeite: {seite: 'policies', an: true}}}, {id: 'routes/policies.$handle', data: {}}]).length, 2);
+  // C: Schalter aus, Seite unbekannt (seite null), fremde Route, keine Daten, keine Matches
+  assert.deepEqual(KOPF.rechtsseiteStilKopf([{id: 'routes/pages.agb', data: {appleSeite: {seite: 'agb', an: false}}}]), []);
+  assert.deepEqual(KOPF.rechtsseiteStilKopf([{id: 'routes/pages.$handle', data: {appleSeite: {seite: null, an: true}}}]), []);
+  assert.deepEqual(KOPF.rechtsseiteStilKopf([{id: 'routes/pages.partner-details', data: {appleSeite: an}}]), []);
+  assert.deepEqual(KOPF.rechtsseiteStilKopf([{id: 'routes/pages.agb'}]), []);
+  assert.deepEqual(KOPF.rechtsseiteStilKopf(undefined), []);
+});
+
+test('#172 Body-Links fallen nur weg, wenn Layout das CSS im Kopf meldet', () => {
+  const an = {seite: 'agb', an: true};
+  for (const ohneProvider of [null, false]) {
+    const html = KOPF.rs(ohneProvider, an);
+    assert.match(html, /<link rel="stylesheet" href="\/assets\/rechtsseite-apple\.css"\/><link rel="stylesheet" href="\/assets\/apple-seite\.css"\/>/);
+    assert.match(KOPF.as(ohneProvider), /<link rel="stylesheet" href="\/assets\/apple-seite\.css"/);
+  }
+  const kopf = KOPF.rs(true, an);
+  assert.doesNotMatch(kopf, /<link/);
+  assert.match(kopf, /data-apple-seite="agb"/);
+  assert.match(kopf, /class="rs-doc"/);
+  assert.doesNotMatch(KOPF.as(true), /<link/);
+  // C bleibt C, mit und ohne Meldung: kein Marker, kein Link, dasselbe Dokument
+  assert.equal(KOPF.rs(true, {seite: 'agb', an: false}), KOPF.rs(null, null));
+  assert.doesNotMatch(KOPF.rs(null, null), /<link|data-apple-seite/);
+});
+
+test('#172 jede Route mit <Rechtsseite apple=…> steht in RECHTSSEITEN_ROUTEN', async () => {
+  const {readdirSync} = await import('node:fs');
+  const routen = readdirSync(join(APP, 'routes')).filter((f) => /\.jsx$/.test(f) && /<Rechtsseite[^>]*\bapple=/.test(readFileSync(join(APP, 'routes', f), 'utf8')));
+  assert.ok(routen.length >= 6, `zu wenige Rechtsseiten-Routen gefunden: ${routen}`);
+  for (const f of routen) {
+    assert.ok(KOPF.RECHTSSEITEN_ROUTEN.includes('routes/' + f.replace(/\.jsx$/, '')), `${f} fehlt in RECHTSSEITEN_ROUTEN (apple-seite/stil-kopf.js)`);
+  }
+});
+
+test('#172 root.jsx setzt die Kopf-Links nach <Links /> und stellt den Provider um die Seite', () => {
+  const root = readFileSync(join(APP, 'root.jsx'), 'utf8');
+  assert.match(root, /<Links \/>\s*\{rechtsseitenStil\.map\(/);
+  assert.match(root, /<AppleStilImKopf\.Provider value=\{rechtsseitenStil\.length > 0\}>/);
+  assert.doesNotMatch(root, /from '\.\/components\/(Rechtsseite|apple-seite\/AppleSeite)'/);
+});
