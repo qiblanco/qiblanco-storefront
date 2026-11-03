@@ -34,7 +34,7 @@ const lies = (rel) => ohneKommentare(readFileSync(new URL(rel, import.meta.url),
 
 test('ImgixVideo holt nach und spielt auf Apple-Geräten natives HLS, mit mp4-Rückfall', () => {
   const c = lies('./ImgixVideo.jsx');
-  assert.match(c, /useVideoNachholen\(videoRef\)/);
+  assert.match(c, /useVideoNachholen\(videoRef[,)]/);
   // natives HLS VOR hls.js, sobald Apple + canPlayType
   assert.ok(c.indexOf('appleNativHls(video)') < c.indexOf('Hls.isSupported()'));
   assert.match(c, /setTimeout\(aufMp4, RUECKFALL_MS\)/);
@@ -50,4 +50,39 @@ test('useVideoNachholen: Sicht, Daten und Geste; reduce-motion bleibt Standbild'
   assert.match(h, /addEventListener\(t, beiGeste, \{capture: true, passive: true\}\)/);
   assert.match(h, /'playing', beiLaeuft/);
   assert.match(h, /spieleSicher\(video\)/);
+});
+
+// Apple-Upgrade 01.11.2026 (useFilmDekoder.js): jede 360-Drehung dreht nach
+// der Ablehnung den dekodierten Film, ohne Tippen.
+test('useVideoNachholen: meldet die Ablehnung und ruht, solange der Dekoder zeigt', () => {
+  const c = lies('./video360-ersatzbild.jsx');
+  const h = c.slice(c.indexOf('export function useVideoNachholen'));
+  assert.match(h, /optRef\.current\?\.gesperrt\?\.\(\)/);
+  assert.ok(h.indexOf('gestenAn();') < h.indexOf('beiAbgelehnt?.()'));
+});
+
+test('ImgixVideo: Dekoder nur bei einer 360-Drehung (mit Ersatzbild)', () => {
+  const c = lies('./ImgixVideo.jsx');
+  assert.match(c, /useFilmDekoder\(videoRef, mitErsatz \? videoQuellen\(videoPath\)\.mp4 : null, mitErsatz\)/);
+  assert.match(c, /beiAbgelehnt: dekoder\.abgelehnt, gesperrt: dekoder\.zeigt/);
+  assert.match(c, /mitErsatz && \(\s*<canvas/);
+});
+
+test('Produkt360Video: Ablehnung startet den Dekoder, der Tipp-Weg ruht danach', () => {
+  const c = lies('./Produkt360Video.jsx');
+  const ab = c.slice(c.indexOf('const abgelehnt = () =>'));
+  assert.match(ab.slice(0, 200), /dekoderRef\.current\.abgelehnt\(\)/);
+  assert.match(c, /if \(dekoderRef\.current\.zeigt\(\)\) return;\s*starte\(\);/);
+  assert.match(c, /<canvas[\s\S]*data-qb-dekoder="aus"/);
+});
+
+test('useFilmDekoder: nur nach Ablehnung, nur mit WebCodecs, nie bei reduzierter Bewegung', () => {
+  const c = lies('./useFilmDekoder.js');
+  const ab = c.slice(c.indexOf('const abgelehnt = useCallback'));
+  assert.match(ab, /ruheGewollt\(\)\) return;/);
+  assert.match(ab, /typeof window\.VideoDecoder !== 'function'\) return;/);
+  // Startet der Film doch, bevor das erste Bild da ist, gewinnt der Film.
+  assert.match(ab, /if \(!v\.paused\) \{\s*stoppen\(\);/);
+  assert.match(c, /'playing', beiFilm/);
+  assert.doesNotMatch(c, /<img|bildfolge/i);
 });
