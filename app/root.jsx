@@ -141,6 +141,10 @@ import {KassenRueckkehrLeiste} from './components/KassenRueckkehrLeiste';
 import {KaufknopfChatSignal} from './components/KaufknopfChatSignal';
 import {Einwilligungshinweis} from './components/Einwilligungshinweis';
 import {
+  AppleStilImKopf,
+  rechtsseiteStilKopf,
+} from './components/apple-seite/stil-kopf';
+import {
   cookieAusHeader,
   leseEinwilligung,
   motorFuer,
@@ -571,6 +575,17 @@ export function Layout({children}) {
   // sondern nicht gerendert (auch der Loader-Tag fehlt im HTML). Merkmal aus
   // den Matches wie salesbotWidget oben, kein Pfad hier.
   const filmSeite = istFilmSeite(matches);
+  // APPLE-RECHTSSEITE: TOKEN-CSS IM KOPF (Flanke #172, Job 20261029-GROSSJOB-
+  // alle-shop-seiten-apple-niveau-ausser-seo-geo-s12-b172). Die Rechtsseiten
+  // luden rechtsseite-apple.css und apple-seite.css als zwei <link> im Körper,
+  // weil links() einer Route die Loaderdaten (Schalter A/C) nicht kennt. Die
+  // Matches kennen sie. Gemessen an /pages/agb: Kopf gegen Körper −40 ms LCP
+  // nach Dokumentende (Mobilprofil, 13 von 16 Runden schneller); an einer
+  // Nicht-Rechtsseite (partner-details) ohne Wirkung, darum nur diese Routen
+  // (Liste und Bedingung in components/apple-seite/stil-kopf.js). C-Seiten und alle
+  // übrigen A-Seiten: leere Liste, HTML unverändert. Die Links stehen NACH
+  // <Links />, also an derselben Stelle der Kaskade wie vorher im Körper.
+  const rechtsseitenStil = rechtsseiteStilKopf(matches);
 
   // ── HYDRATIONS-SIGNAL ────────────────────────────────────────────────────
   // Dieser Effekt läuft NACH dem Hydration-Commit — das ist seine Definition,
@@ -701,6 +716,9 @@ export function Layout({children}) {
         )}
         {metaKopf}
         <Links />
+        {rechtsseitenStil.map((href) => (
+          <link key={href} rel="stylesheet" href={href} />
+        ))}
       </head>
       <body>
         {einwilligungEigen && (
@@ -982,13 +1000,15 @@ export function Layout({children}) {
             Bedingung aus demselben Grund wie DialogSignal. */}
         <KaufknopfChatSignal />
         <LoadingBar />
-        {data ? (
-          <AnalytikNachHydration data={data} filmSeite={filmSeite}>
-            {children}
-          </AnalytikNachHydration>
-        ) : (
-          children
-        )}
+        <AppleStilImKopf.Provider value={rechtsseitenStil.length > 0}>
+          {data ? (
+            <AnalytikNachHydration data={data} filmSeite={filmSeite}>
+              {children}
+            </AnalytikNachHydration>
+          ) : (
+            children
+          )}
+        </AppleStilImKopf.Provider>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
