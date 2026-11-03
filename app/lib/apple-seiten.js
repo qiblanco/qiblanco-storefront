@@ -91,7 +91,7 @@ export const APPLE_SEITEN = Object.freeze({
 
   // ---- s08 · Service, Formulare, Kollektionen, Rechtsseiten ----
   'cart': {pfad: '/cart', schalter: 'APPLE_SEITE_CART', standard: 'off'},
-  'collections': {pfad: '/collections', schalter: 'APPLE_SEITE_COLLECTIONS', standard: 'on'},
+  'collections': {pfad: '/collections', schalter: 'APPLE_SEITE_COLLECTIONS', standard: 'off'},
   'collections-all': {pfad: '/collections/all', schalter: 'APPLE_SEITE_COLLECTIONS_ALL', standard: 'on'},
   'collections-products': {pfad: '/collections/products', schalter: 'APPLE_SEITE_COLLECTIONS_PRODUCTS', standard: 'off'},
   'agb': {pfad: '/pages/agb', schalter: 'APPLE_SEITE_AGB', standard: 'on'},
@@ -120,7 +120,7 @@ export const APPLE_SEITEN = Object.freeze({
   'products-sprechstunde-mit-christian': {pfad: '/products/sprechstunde-mit-christian', schalter: 'APPLE_SEITE_PRODUCTS_SPRECHSTUNDE_MIT_CHRISTIAN', standard: 'off'},
   'search': {pfad: '/search', schalter: 'APPLE_SEITE_SEARCH', standard: 'on'},
   'widerruf': {pfad: '/widerruf', schalter: 'APPLE_SEITE_WIDERRUF', standard: 'on'},
-  'widerruf-bestaetigen': {pfad: '/widerruf/bestaetigen', schalter: 'APPLE_SEITE_WIDERRUF_BESTAETIGEN', standard: 'on'},
+  'widerruf-bestaetigen': {pfad: '/widerruf/bestaetigen', schalter: 'APPLE_SEITE_WIDERRUF_BESTAETIGEN', standard: 'off'},
 });
 for (const eintrag of Object.values(APPLE_SEITEN)) Object.freeze(eintrag);
 
