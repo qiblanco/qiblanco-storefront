@@ -519,7 +519,7 @@ function SignatureSection() {
 }
 
 /* ───────── Final CTA: klarer nächster Schritt in drei Schritten ───────── */
-function FinalCTA() {
+function FinalCTA({abschlussText}) {
   const {preisLabelVon, compareLabelVon} = useLpPreis();
   const {data} = useLp();
   const product = findLp(data, 'qione-2-pro');
@@ -584,7 +584,7 @@ function FinalCTA() {
             className="lp-vp-btn lp-vp-btn--primary lp-vp-btn--lg"
             href={produktLink('qione-2-pro', BLOCK_LP, 'kauf')}
           >
-            Jetzt QiOne® 2 Pro ansehen
+            {abschlussText}
           </a>
           <ul className="lp-vp-final-cta__trust">
             <li>0 % Finanzierung über Klarna und PayPal</li>
@@ -598,7 +598,7 @@ function FinalCTA() {
 }
 
 /* ───────── Root ───────── */
-export function Partner({products}) {
+export function Partner({products, abschlussText = 'Jetzt QiOne® 2 Pro ansehen'}) {
   const data = {products: products || []};
 
   return (
@@ -613,7 +613,7 @@ export function Partner({products}) {
         <GarantieSection />
         <ProdukteSection />
         <SignatureSection />
-        <FinalCTA />
+        <FinalCTA abschlussText={abschlussText} />
       </div>
     </LiveDataCtx.Provider>
   );
