@@ -38,8 +38,9 @@ test('Grundsound +3 dB, Master und KLAENGE (B/C) unverändert', () => {
   assert.match(t, /grundsound: `\$\{CDN\}grundsound-14lufs\.mp3\?v=1793272271`/);
 });
 
-// NACHTRAG 03.11.2026 (Job 20261103-prio1-qi-alpha-lp-google-ai-weg-peak-
-// sounds-20-prozent-ueber-grundton), Christian und Anna: Grundsound bleibt,
+// NACHTRAG 03.11.2026, Job
+// 20261103-prio1-qi-alpha-lp-google-ai-weg-peak-sounds-20-prozent-ueber-grundton
+// Christian und Anna: Grundsound bleibt,
 // Peaks 20 % lauter als der Grundsound. ROT VOR GRÜN: auf origin/main
 // 47664891 gibt es AKZENTE_LAUT nicht, A spielt KLAENGE (Faktor 1,13 bis 1,59).
 // Lautheit der -14-LUFS-Dateien, gemessen auf ax41 (ffmpeg ebur128, Jobordner
