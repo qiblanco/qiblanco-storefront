@@ -88,33 +88,41 @@ test('Kurs-Lektionsbilder: schärfere Datei, Anzeigebreite gleich, kein srcset (
     scharfeLektionsbilder(`<p>Text</p><img style="float: left" src="${cdn}Christian_480x480.webp?v=1733929584" width="233" height="298">`),
     `<p>Text</p><img style="float: left" src="${cdn}Christian.webp?v=1733929584&amp;width=466" width="233" height="298">`,
   );
-  // Ohne width-Attribut gab die alte Datei die Breite vor: sie wird als Attribut gesetzt
-  assert.equal(
-    scharfeLektionsbilder(`<img src="${cdn}Christian-Bauer-290x300_1_240x240.webp?v=2">`),
-    `<img width="232" src="${cdn}Christian-Bauer-290x300_1.webp?v=2&amp;width=464">`,
-  );
+  // Ohne width-Attribut gab die alte Datei die Breite vor: Maße aus der Tabelle
   assert.equal(
     scharfeLektionsbilder(`<img src="${cdn}Kreislauf_Biohacking.png_1_480x480.webp?v=3" style="display: block">`),
-    `<img width="480" src="${cdn}Kreislauf_Biohacking.png_1.webp?v=3&amp;width=960" style="display: block">`,
+    `<img width="480" height="480" src="${cdn}Kreislauf_Biohacking.png_1.webp?v=3&amp;width=960" style="display: block">`,
   );
-  // Füllt die Spalte: Datei breiter als die Spalte, kein width-Attribut
+  // Füllt die Spalte: Datei breiter als die Spalte, lazy, weil weit unter der ersten Ansicht
   assert.equal(
     scharfeLektionsbilder(`<img src="${cdn}qiblanco-com-qione-2-pro-transparent_1.webp?v=166659147">`),
-    `<img src="${cdn}QiOne2Pro_01_transparent.png?v=1683116991&amp;width=1232">`,
+    `<img width="1120" height="1120" loading="lazy" src="${cdn}QiOne2Pro_01_transparent.png?v=1683116991&amp;width=1120">`,
   );
-  // data-mce-src bleibt, ein "src=" im alt-Wert auch
-  const mce = scharfeLektionsbilder(`<img alt="a src=b width=9" data-mce-src="${cdn}x.webp" src="${cdn}Christian_480x480.webp?v=1" width="233">`);
-  assert.equal(mce, `<img alt="a src=b width=9" data-mce-src="${cdn}x.webp" src="${cdn}Christian.webp?v=1&amp;width=466" width="233">`);
-  // Kein srcset in keiner Form; byte-gleich bleiben: unbekannte Datei (auch mit Größen-Namen), fremder Host,
-  // vorhandenes srcset, width nicht numerisch, width nur im alt-Wert bei Tabelleneintrag ohne Anzeige, Text ohne Bild
+  // Bereits ein width-Attribut: das bleibt maßgeblich, auch ohne Leerzeichen davor
+  assert.equal(
+    scharfeLektionsbilder(`<img alt="a"width="100" src="${cdn}Kreislauf_Biohacking.png_1_480x480.webp?v=3">`),
+    `<img alt="a"width="100" src="${cdn}Kreislauf_Biohacking.png_1.webp?v=3&amp;width=200">`,
+  );
+  // data-mce-src bleibt, ein "src=" im alt-Wert auch, ein ">" im alt-Wert beendet den Tag nicht
+  assert.equal(
+    scharfeLektionsbilder(`<img alt="1 > 0 src=b width=9" data-mce-src="${cdn}x.webp" src="${cdn}Christian_480x480.webp?v=1" width="233">`),
+    `<img alt="1 > 0 src=b width=9" data-mce-src="${cdn}x.webp" src="${cdn}Christian.webp?v=1&amp;width=466" width="233">`,
+  );
+  // Byte-gleich bleiben: unbekannte Datei (auch mit Größen-Namen), fremder Host, vorhandenes srcset, width nicht positiv-numerisch,
+  // height ohne width, Tabelleneintrag ohne Breite, img im Attributwert, anderer Tagname, Text ohne Bild
   for (const roh of [
     `<img src="${cdn}chlorella_algen-1024x576.jpg_1.webp?v=1">`,
+    `<img src="${cdn}Christian-Bauer-290x300_1_240x240.webp?v=2">`,
     `<img src="${cdn}banner_1920x1080.jpg?v=1">`,
     '<img src="https://i.ytimg.com/vi/x/hqdefault.jpg">',
     `<img src="${cdn}Christian_480x480.webp" srcset="${cdn}Christian_480x480.webp 1x">`,
-    `<img src="${cdn}Christian_480x480.webp?v=1" width="100%">`,
+    `<img src="${cdn}Kreislauf_Biohacking.png_1_480x480.webp?v=1" width="100%">`,
+    `<img alt="a>b" src="${cdn}Kreislauf_Biohacking.png_1_480x480.webp?v=1" width="0">`,
+    `<img src="${cdn}Kreislauf_Biohacking.png_1_480x480.webp?v=1" height="50">`,
     `<img alt="width=233" src="${cdn}Christian_480x480.webp?v=1">`,
-    `<img src="https://example.com/s/files/files/Christian_480x480.webp">`,
+    '<img src="https://example.com/s/files/files/Christian_480x480.webp">',
+    `<a title="<img src='${cdn}Kreislauf_Biohacking.png_1_480x480.webp'>">x</a>`,
+    `<img-foo src="${cdn}Kreislauf_Biohacking.png_1_480x480.webp">`,
     '<p>ohne Bild</p>',
     '',
   ]) assert.equal(scharfeLektionsbilder(roh), roh);
