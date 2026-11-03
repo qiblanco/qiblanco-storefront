@@ -1,5 +1,7 @@
 import {useLoaderData} from 'react-router';
-import {MmZellstudienEhrlich} from '~/components/campaign/MmZellstudienEhrlich';
+import {MmZellstudienEhrlich, ZELL_SEKTIONEN_A} from '~/components/campaign/MmZellstudienEhrlich';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {LpApple} from '~/components/apple-seite/lp/LpApple';
 import mmStyles from '~/styles/mm-lp.css?url';
 import {mmLadeProdukte} from '~/components/campaign/mmProducts';
 
@@ -30,11 +32,14 @@ export const meta = () => [
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
 export async function loader({context}) {
-  return mmLadeProdukte(context);
+  // APPLE-FASSUNG (s07-r8): Schalter in app/lib/apple-seiten.js, aus = C unverändert.
+  const appleSeite = appleSeiteLaden(context, appleSeiteFuerPfad('/pages/zellstudien-ehrlich'));
+  return {...(await mmLadeProdukte(context)), appleSeite};
 }
 
 export default function ZellstudienEhrlichRoute() {
-  const {products} = useLoaderData();
+  const {products, appleSeite} = useLoaderData();
+  if (appleSeite?.an) return <LpApple seite={appleSeite.seite} sektionen={ZELL_SEKTIONEN_A} />;
   return <MmZellstudienEhrlich products={products} />;
 }
 
