@@ -32,6 +32,9 @@
   display: grid;
   gap: var(--as-s-1);
 }
+[data-apple-seite='webinar-die-nacht-entscheidet'] .as-nw-sprecher-bild {
+  max-width: 560px;
+}
 [data-apple-seite='webinar-die-nacht-entscheidet'] .as-nw-anmeldung {
   scroll-margin-top: var(--as-s-12);
 }
