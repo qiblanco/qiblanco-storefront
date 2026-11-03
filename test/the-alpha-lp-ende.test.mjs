@@ -94,7 +94,8 @@ test('Wörterbuch: Wortlaut unverändert, Fettungen der Vorlage', () => {
   assert.ok(text[1].endsWith('die positive Erlebnisse, Erfolg und gesunde Beziehungen wie ein Magnet anzieht.'));
   const fett = wb.bedeutungen.flat().filter((t) => t.fett).map((t) => t.text);
   assert.ok(fett.includes('voller Lebensenergie, Freude, innerem Frieden und Dankbarkeit'));
-  assert.equal(wb.quelle, 'Google AI');
+  // Christian 03.11.2026: „Mach Google AI weg“, die Quellenzeile entfällt.
+  assert.equal(wb.quelle, undefined);
 });
 
 test('Schluss-Szene ohne Preis und Detailzeile, kein zweiter Knopf (A, B, C)', () => {
@@ -192,4 +193,17 @@ test('Ton als Standard: Start nur mit Aktivierungsgeste, Schalter rechts unten',
   assert.match(t, /export function TapTon\(\{wurzel, standard = 'fenster'\}\)/);
   const css = lies('app/styles/the-alpha-premium.css');
   assert.match(css, /\.tap-seite\[data-tap-ton-standard='an'\] \.tap-ton-schalter \{\s*left: auto;\s*right: calc\(env\(safe-area-inset-right, 0px\) \+ 20px\);/);
+});
+
+test('Wörterbuch ohne Quelle: keine leere Zeile, kein leerer Scrollschritt', () => {
+  // Christian 03.11.2026: „Mach Google AI weg“. ROT VOR GRÜN: auf origin/main
+  // 47664891 rendert TapWoerterbuch die Quelle immer und zählt sie mit.
+  const src = lies('app/components/campaign/TheAlphaPremium.jsx');
+  const wb = src.slice(src.indexOf('export function TapWoerterbuch'), src.indexOf('export function TapVollbild'));
+  assert.match(wb, /'--tap-schritte': eintrag\.bedeutungen\.length \+ \(eintrag\.quelle \? 1 : 0\)/);
+  assert.match(wb, /\{eintrag\.quelle \? \(\s*<p className="tap-wb-quelle"/);
+  for (const f of ['TheAlpha.jsx', 'TheAlphaVarianteB.jsx', 'TheAlphaVarianteC.jsx', 'the-alpha-daten.js']) {
+    const code = lies(`app/components/campaign/${f}`).replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '');
+    assert.doesNotMatch(code, /Google AI/, `${f}: „Google AI“ im Code`);
+  }
 });
