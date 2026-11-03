@@ -63,7 +63,7 @@ export const APPLE_SEITEN = Object.freeze({
 
   // ---- s07 · übrige Landingpages ----
   'e-smog-schutz': {pfad: '/pages/E-Smog-Schutz', schalter: 'APPLE_SEITE_E_SMOG_SCHUTZ', standard: 'off'},
-  'das-20-tage-versprechen': {pfad: '/pages/das-20-tage-versprechen', schalter: 'APPLE_SEITE_DAS_20_TAGE_VERSPRECHEN', standard: 'on'},
+  'das-20-tage-versprechen': {pfad: '/pages/das-20-tage-versprechen', schalter: 'APPLE_SEITE_DAS_20_TAGE_VERSPRECHEN', standard: 'off'},
   'das-beispiel': {pfad: '/pages/das-beispiel', schalter: 'APPLE_SEITE_DAS_BEISPIEL', standard: 'on'},
   'e-smog': {pfad: '/pages/e-smog', schalter: 'APPLE_SEITE_E_SMOG', standard: 'on'},
   'entgiftung': {pfad: '/pages/entgiftung', schalter: 'APPLE_SEITE_ENTGIFTUNG', standard: 'on'},
@@ -87,7 +87,7 @@ export const APPLE_SEITEN = Object.freeze({
   'tiefer-schlaf': {pfad: '/pages/tiefer-schlaf', schalter: 'APPLE_SEITE_TIEFER_SCHLAF', standard: 'on'},
   'vitamine-mineralien': {pfad: '/pages/vitamine-mineralien', schalter: 'APPLE_SEITE_VITAMINE_MINERALIEN', standard: 'on'},
   'webinar-die-nacht-entscheidet': {pfad: '/pages/webinar-die-nacht-entscheidet', schalter: 'APPLE_SEITE_WEBINAR_DIE_NACHT_ENTSCHEIDET', standard: 'on'},
-  'wir-machen-ihn-auf': {pfad: '/pages/wir-machen-ihn-auf', schalter: 'APPLE_SEITE_WIR_MACHEN_IHN_AUF', standard: 'on'},
+  'wir-machen-ihn-auf': {pfad: '/pages/wir-machen-ihn-auf', schalter: 'APPLE_SEITE_WIR_MACHEN_IHN_AUF', standard: 'off'},
   'zellstudien-ehrlich': {pfad: '/pages/zellstudien-ehrlich', schalter: 'APPLE_SEITE_ZELLSTUDIEN_EHRLICH', standard: 'on'},
 
   // ---- s08 · Service, Formulare, Kollektionen, Rechtsseiten ----
