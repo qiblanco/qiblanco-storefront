@@ -395,3 +395,30 @@ test('jede Sticky-Kaufleiste trägt data-qb-chat-weicht (s03-r2, Christian 26.10
   const ohne = leisten.filter((p) => !readFileSync(p, 'utf8').includes("data-qb-chat-weicht={sichtbar ? '' : undefined}"));
   assert.deepEqual(ohne, []);
 });
+
+test('Träger (WebKit): die Ruhelage zieht iframe- UND Träger-Verschiebung ab', async () => {
+  const {verschiebungKetteY, ruhelage, TRAEGER_ID} = await import('../app/lib/kaufknopf-chat.js');
+  assert.equal(TRAEGER_ID, 'qiblanco-salesbot-widget-traeger');
+  // ohne Träger (Blink): wie verschiebungY allein
+  assert.equal(verschiebungKetteY(['matrix(1, 0, 0, 1, 0, -31.5)', 'none']), -31.5);
+  // mit Träger: iframe unverschoben, Träger -64 (Endlage des Rutschens, gemessen 03.11.2026)
+  assert.equal(verschiebungKetteY(['none', 'matrix(1, 0, 0, 1, 0, -64)']), -64);
+  assert.equal(verschiebungKetteY([undefined, 'matrix(kaputt)']), 0);
+  assert.equal(verschiebungKetteY(null), 0);
+  const r = ruhelage({left: 309, top: 699, right: 383, bottom: 773}, verschiebungKetteY(['none', 'matrix(1, 0, 0, 1, 0, -64)']));
+  assert.deepEqual(r, KUGEL);
+});
+
+test('Träger: CSS-Hälfte nie ohne JS-Hälfte (sonst sinkt Anna auf die Leiste)', async () => {
+  const {readFileSync} = await import('node:fs');
+  const {HUB_ATTRIBUT, RAHMEN_ID, TRAEGER_ID} = await import('../app/lib/kaufknopf-chat.js');
+  const css = readFileSync(new URL('../app/styles/app.css', import.meta.url), 'utf8');
+  assert.match(css, new RegExp(`html\\[${HUB_ATTRIBUT}\\]\\s*#${TRAEGER_ID}\\s*\\{[^}]*transform:\\s*translate3d`));
+  assert.match(css, new RegExp(`#${TRAEGER_ID}\\s+#${RAHMEN_ID}\\s*\\{[^}]*transform:\\s*none\\s*!important`));
+  const komponente = readFileSync(
+    new URL('../app/components/KaufknopfChatSignal.jsx', import.meta.url),
+    'utf8',
+  );
+  assert.match(komponente, /closest\(`#\$\{TRAEGER_ID\}`\)/);
+  assert.match(komponente, /verschiebungKetteY\(/);
+});

@@ -312,6 +312,30 @@ export function ruhelage(rect, ty) {
 }
 
 /**
+ * Der Träger des Loaders (qi-salesbot, Job 20261103-folge-anna-shop-verschiebt-
+ * traeger-webkit): in WebKit mit Zuschnitt legt der Loader um die Hülle des
+ * Rahmens ein div über das ganze Fenster. Ein verschobenes iframe malt in
+ * WebKit keine clip-path, Annas Blasen über der Leiste blieben unsichtbar.
+ * Darum verschiebt app.css dann den Träger statt des iframe. In Blink und
+ * Gecko gibt es ihn nicht, dort gilt die Regel am iframe unverändert.
+ */
+export const TRAEGER_ID = 'qiblanco-salesbot-widget-traeger';
+
+/**
+ * Senkrechte Verschiebung über die Kette iframe › Träger: die Summe der
+ * berechneten transforms. Zieht die Ruhelage nur die des iframe ab, hält sie
+ * den verschobenen Träger für die Ruhe, rechnet Hub 0 und nimmt das Signal
+ * zurück: Anna sinkt auf die Kaufleiste (gemessen 03.11.2026, WebKit,
+ * qibracelet, Signal nach 3,5–6,6 s zurückgenommen).
+ *
+ * @param {Array<string|undefined>} transforms
+ * @returns {number}
+ */
+export function verschiebungKetteY(transforms) {
+  return (transforms || []).reduce((summe, t) => summe + verschiebungY(t), 0);
+}
+
+/**
  * Wie weit rutscht das geschlossene Widget nach oben? Reine Entscheidung.
  *
  * @param {{

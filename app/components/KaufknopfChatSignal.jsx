@@ -18,8 +18,9 @@ import {
   PFEIL_SELEKTOR,
   rahmenOffen,
   ruhelage,
+  TRAEGER_ID,
   UEBERDECKUNG_ATTRIBUT,
-  verschiebungY,
+  verschiebungKetteY,
 } from '~/lib/kaufknopf-chat';
 
 /**
@@ -206,11 +207,16 @@ export function KaufknopfChatSignal() {
       const angedockt = wurzel.classList.contains(DOCK_KLASSE);
       const fensterHoehe = window.innerHeight;
       // Ruhelage = gemessenes Rechteck ohne die eigene Verschiebung (die
-      // Falle getBoundingClientRect, lib/kaufknopf-chat.js).
+      // Falle getBoundingClientRect, lib/kaufknopf-chat.js). In WebKit steckt
+      // die Verschiebung im Träger um das iframe (TRAEGER_ID): beide abziehen.
+      const traeger = rahmen ? rahmen.closest(`#${TRAEGER_ID}`) : null;
       const ruhe = rahmen
         ? ruhelage(
             rahmen.getBoundingClientRect(),
-            verschiebungY(window.getComputedStyle(rahmen).transform),
+            verschiebungKetteY([
+              window.getComputedStyle(rahmen).transform,
+              traeger ? window.getComputedStyle(traeger).transform : 'none',
+            ]),
           )
         : null;
       const leisten = [];
