@@ -4,6 +4,11 @@ import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {InfoSlider} from '~/components/index-components/InfoSlider';
 import {Studien as LpStudien} from '~/components/reusables/Studien';
 import {ScrollScrubVideo} from '~/components/reusables/ScrollScrubVideo';
+// Mikroskop-Film: Faststart-MP4 und Vorschaubild aus EINER Quelle (Apple-Fassung
+// der Schlaf-Seite). Vorher die .mov ohne Faststart und ohne Poster: iPhone
+// ohne Geste und im Stromsparmodus zeigte ein schwarzes Feld (webkit-animationen
+// live 03.11.2026).
+import {MIKROSKOP} from '~/components/apple-seite/schlaf-zellen-schutz/szs-daten';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {BLOCK_LP, produktLink} from '~/components/reusables/blockLinks';
 import {fallbackPreis} from '~/lib/campaign-fallback-prices';
@@ -351,8 +356,10 @@ function ScienceSection() {
           animationen-capability; SHOW IT statt Behauptung) */}
       <ScrollScrubVideo
         dataSection="lp-d-mikroskop-video"
-        srcDesktop="https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov"
-        srcMobile="https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov"
+        srcDesktop={MIKROSKOP.srcDesktop}
+        srcMobile={MIKROSKOP.srcMobile}
+        posterDesktop={MIKROSKOP.posterDesktop}
+        posterMobile={MIKROSKOP.posterMobile}
         overlayStart={{
           titel: 'Zellbiologisch geprüft',
           text: 'Entdecke die Effekte auf Zellebene.',
