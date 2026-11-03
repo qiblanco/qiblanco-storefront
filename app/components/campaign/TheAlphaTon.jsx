@@ -122,8 +122,8 @@ const PEGEL_LAUT = {master: 1, bett: 1.13, geduckt: 0.226};
 // gegen die integrierte Lautheit des Grundsounds, beide mit Gain. Vorher lagen
 // sie beim 1,13- bis 1,59-Fachen (bam +1,0 dB bis glanz +4,0 dB). Grundsound,
 // Master, Dateien und KLAENGE (Fassungen B/C) bleiben exakt. Messung im
-// Jobordner des Auftrags vom 03.11.2026, ton/vorher-20261103.json:
-// 20261103-prio1-qi-alpha-lp-google-ai-weg-peak-sounds-20-prozent-ueber-grundton
+// Jobordner des Auftrags vom 03.11.2026 (Google AI weg, Peaks 1,2-fach),
+// Datei ton/vorher-20261103.json.
 const AKZENTE_LAUT = {gong: 0.66, klang: 0.59, bam: 0.8, glanz: 0.75, tief: 0.75, schluss: 0.75};
 const SPEICHER = 'tap-ton'; // 'an' | 'aus' | 'gesehen'
 // Ereignisse, die Browser als Nutzer-Aktivierung zählen (HTML: „activation
