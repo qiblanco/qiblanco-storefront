@@ -98,7 +98,7 @@ export const APPLE_SEITEN = Object.freeze({
   'cookie-erklaerung': {pfad: '/pages/cookie-erklaerung', schalter: 'APPLE_SEITE_COOKIE_ERKLAERUNG', standard: 'on'},
   'datenschutz': {pfad: '/pages/datenschutz', schalter: 'APPLE_SEITE_DATENSCHUTZ', standard: 'on'},
   'erinnerung-erfolgreich': {pfad: '/pages/erinnerung-erfolgreich', schalter: 'APPLE_SEITE_ERINNERUNG_ERFOLGREICH', standard: 'off'},
-  'impressum': {pfad: '/pages/impressum', schalter: 'APPLE_SEITE_IMPRESSUM', standard: 'off'},
+  'impressum': {pfad: '/pages/impressum', schalter: 'APPLE_SEITE_IMPRESSUM', standard: 'on'},
   'live': {pfad: '/pages/live', schalter: 'APPLE_SEITE_LIVE', standard: 'on'},
   'partner': {pfad: '/pages/partner', schalter: 'APPLE_SEITE_PARTNER', standard: 'on'},
   'partner-beispielseite': {pfad: '/pages/partner-beispielseite', schalter: 'APPLE_SEITE_PARTNER_BEISPIELSEITE', standard: 'on'},
