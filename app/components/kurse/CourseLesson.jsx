@@ -1,6 +1,9 @@
 import {Link} from 'react-router';
 import {ChevronRight, ChevronLeft} from 'lucide-react';
 import {QiOneProductPricing} from '~/components/campaign/QiOneZellschutz';
+import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
+import {CmsHtmlMitVideos} from '~/components/reusables/CmsHtmlMitVideos';
+import {cmsYoutubeUmwandeln, zerlegeEinbettung} from '~/lib/youtube-einbettung';
 
 /**
  * Shared layout for course lesson pages.
@@ -27,7 +30,22 @@ export function CourseLesson({
   videoEmbed,
   products,
 }) {
-  const preparedBody = prepareCourseBody(body, Boolean(videoEmbed));
+  /*
+   * YOUTUBE VOR DER WAHL (Auftrag einwilligung-scanner-20261023T144303Z-s02,
+   * 2026-11-03). Bis hierher stand das Lektionsvideo als `<iframe>` im
+   * Server-HTML und lud youtube.com samt Cookies und Google-Werbe-Hosts vor
+   * jeder Wahl im Einwilligungshinweis. Der Seitentext aus dem Admin trug
+   * dasselbe Video ein zweites Mal. Jetzt: das Lektionsvideo läuft über die
+   * Fassade (`YoutubeTimestamp`, ein Tipp spielt es ab, auch vor der Wahl),
+   * das Duplikat im Seitentext fällt weg, und jedes ANDERE YouTube-iframe
+   * im Seitentext wird beim Rendern ebenfalls zur Fassade. Ein
+   * Nicht-YouTube-`videoEmbed` bleibt das iframe von vorher.
+   */
+  const lektionsVideo = zerlegeEinbettung(videoEmbed);
+  const {html: preparedBody} = cmsYoutubeUmwandeln(
+    prepareCourseBody(body, Boolean(videoEmbed)),
+    {ohneVideoId: lektionsVideo?.videoId || '', ohneStart: lektionsVideo?.start || 0},
+  );
   const hasProducts = Boolean(products?.length);
 
   return (
@@ -45,7 +63,20 @@ export function CourseLesson({
 
         <h1>{title}</h1>
 
-        {videoEmbed && (
+        {lektionsVideo ? (
+          <div className="course-lesson__video">
+            <YoutubeTimestamp
+              videoId={lektionsVideo.videoId}
+              startSeconds={lektionsVideo.start}
+              titel={title}
+              zusatzParameter={lektionsVideo.zusatz}
+              sizes="(min-width: 860px) 800px, 94vw"
+              noscriptFallback
+            />
+          </div>
+        ) : null}
+
+        {videoEmbed && !lektionsVideo && (
           <div className="course-lesson__video">
             <iframe
               src={videoEmbed}
@@ -58,10 +89,7 @@ export function CourseLesson({
           </div>
         )}
 
-        <div
-          className="course-lesson-body"
-          dangerouslySetInnerHTML={{__html: preparedBody}}
-        />
+        <CmsHtmlMitVideos className="course-lesson-body" html={preparedBody} />
 
         <div
           className={`course-lesson__nav ${
