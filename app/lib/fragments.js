@@ -206,7 +206,9 @@ export const HEADER_QUERY = `#graphql
   fragment Shop on Shop {
     id
     name
-    description
+    # Kein description (03.11.2026): der Storefront liest shop.description
+    # nirgends. Shopify hat für das Feld keine Admin-Mutation, deshalb wird
+    # der alte Shoptext nicht mehr in jedes Seiten-JSON geladen.
     primaryDomain {
       url
     }
