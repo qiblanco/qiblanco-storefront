@@ -87,7 +87,7 @@ export const APPLE_SEITEN = Object.freeze({
   'vitamine-mineralien': {pfad: '/pages/vitamine-mineralien', schalter: 'APPLE_SEITE_VITAMINE_MINERALIEN', standard: 'on'},
   'webinar-die-nacht-entscheidet': {pfad: '/pages/webinar-die-nacht-entscheidet', schalter: 'APPLE_SEITE_WEBINAR_DIE_NACHT_ENTSCHEIDET', standard: 'on'},
   'wir-machen-ihn-auf': {pfad: '/pages/wir-machen-ihn-auf', schalter: 'APPLE_SEITE_WIR_MACHEN_IHN_AUF', standard: 'on'},
-  'zellstudien-ehrlich': {pfad: '/pages/zellstudien-ehrlich', schalter: 'APPLE_SEITE_ZELLSTUDIEN_EHRLICH', standard: 'off'},
+  'zellstudien-ehrlich': {pfad: '/pages/zellstudien-ehrlich', schalter: 'APPLE_SEITE_ZELLSTUDIEN_EHRLICH', standard: 'on'},
 
   // ---- s08 · Service, Formulare, Kollektionen, Rechtsseiten ----
   'cart': {pfad: '/cart', schalter: 'APPLE_SEITE_CART', standard: 'off'},
