@@ -1,4 +1,4 @@
-import {useLoaderData} from 'react-router';
+import {data as mitHeadern, useLoaderData} from 'react-router';
 import {redirect} from 'react-router';
 import {
   getSelectedProductOptions,
@@ -38,6 +38,11 @@ import {appleSeiteLaden, appleSeiteFuerPfad} from '~/lib/apple-seiten';
 import {AppleSeite} from '~/components/apple-seite/AppleSeite';
 import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
 import produktAppleStyles from '~/styles/produkt-apple.css?url';
+import {Bf2026AngebotSeite} from '~/components/black-friday-2026/Bf2026Seiten';
+import {bf2026Modus, getBf2026AngebotByHandle} from '~/data/black-friday-2026';
+import {bf2026HeaderAusLoader, bf2026Meta} from '~/lib/bf2026-meta';
+import {bf2026AngebotLaden} from '~/lib/bf2026-seiten.server';
+import {noindexHeader} from '~/lib/seo';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
@@ -46,6 +51,8 @@ export function links() {
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
+  if (data?.bf2026) return bf2026Meta(data.bf2026);
+
   if (data?.campaignDeal) {
     return [
       {title: `${data.campaignDeal.displayTitle} - 10 Jahre Jubiläums Sale`},
@@ -164,6 +171,8 @@ function kuerzeBeschreibung(text) {
   return `${(grenze > 80 ? schnitt.slice(0, grenze) : schnitt).trim()}…`;
 }
 
+export const headers = bf2026HeaderAusLoader;
+
 /**
  * @param {LoaderFunctionArgs} args
  */
@@ -175,6 +184,19 @@ export async function loader(args) {
   // Liste führt app/lib/zusammenlegungen.js.
   const alterPfad = `/products/${args.params.handle}`;
   if (zusammenlegungFuer(alterPfad)) leiteUm(args.request, alterPfad);
+
+  // BLACK FRIDAY 2026 (Schalter BF2026_SEITEN, app/data/black-friday-2026.js):
+  // die vier alten URLs zeigen das neue Angebot, gekauft werden die
+  // Einzelprodukte. Bei off (Standard) fällt alles auf den heutigen Code durch.
+  const bf2026Angebot = getBf2026AngebotByHandle(args.params.handle);
+  const bf2026Stellung = bf2026Modus(args.context.env);
+  if (bf2026Angebot && bf2026Stellung !== 'off') {
+    const bf2026 = await bf2026AngebotLaden(args, bf2026Stellung, bf2026Angebot);
+    return mitHeadern(
+      {bf2026},
+      bf2026Stellung === 'vorschau' ? {headers: noindexHeader()} : undefined,
+    );
+  }
 
   const campaignDeal = getTenYearsDealByHandle(args.params.handle);
 
@@ -293,7 +315,9 @@ function RenderProductPage({product}) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, campaignDeal, appleSeite} = useLoaderData();
+  const {product, campaignDeal, appleSeite, bf2026} = useLoaderData();
+
+  if (bf2026) return <Bf2026AngebotSeite seite={bf2026} />;
 
   if (campaignDeal) {
     return <TenYearsDealPage deal={campaignDeal} />;

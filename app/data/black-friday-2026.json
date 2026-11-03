@@ -1,0 +1,80 @@
+{
+  "schema": "bf2026-angebote/1",
+  "stand_utc": "2026-11-03T12:55:00Z",
+  "quelle": "KONZEPT.md §2. Startwerte = dieselben Rabatt-Euro wie Black Friday 2025 (REFERENZ-black-friday-2025.md), angewandt auf die Preise vom 03.11.2026 (Admin-API gelesen). Diese Datei ist die EINE Quelle fuer Seite und Rabatte (Regel K1): app/data/black-friday-2026.json im Storefront-Zweig ist eine byte-gleiche Kopie, die Shopify-Rabatte werden aus genau diesen Zahlen angelegt.",
+  "status": "startwerte_unbestaetigt",
+  "bestaetigt_von": null,
+  "bestaetigt_beleg": null,
+  "shop": "dach",
+  "waehrung": "EUR",
+  "fenster": {
+    "start_utc": "2026-11-26T23:00:00Z",
+    "ende_utc": "2026-11-30T22:59:59Z",
+    "zeitzone_anzeige": "Europe/Berlin",
+    "text_de": "Freitag, 27. November, 0 Uhr, bis Montag, 30. November, 23:59 Uhr"
+  },
+  "el_parameter": "BF2026",
+  "landing": {"pfad": "/pages/bf-deals", "handle": "bf-deals"},
+  "angebote": [
+    {
+      "key": "qihome",
+      "titel": "QiHome® Air",
+      "url_handle": "56huz67dds",
+      "artikel": [{"produkt": "qihome-air", "menge": 1}],
+      "preis_heute_eur": 4983.00,
+      "rabatt_eur": 400.00,
+      "rabatt_art": "je_stueck",
+      "bf_preis_eur": 4583.00,
+      "bf2025_preis_eur": 4583.00
+    },
+    {
+      "key": "qibracelet",
+      "titel": "QiBracelet®",
+      "url_handle": "687ghgf4ed",
+      "artikel": [{"produkt": "qibracelet", "menge": 1}],
+      "preis_heute_eur": 1578.00,
+      "rabatt_eur": 200.00,
+      "rabatt_art": "je_stueck",
+      "bf_preis_eur": 1378.00,
+      "bf2025_preis_eur": 1378.00
+    },
+    {
+      "key": "qione-2x",
+      "titel": "2× QiOne® 2 Pro",
+      "url_handle": "jhsdhze783",
+      "artikel": [{"produkt": "qione-2-pro", "menge": 2}],
+      "preis_heute_eur": 2174.00,
+      "rabatt_eur": 500.00,
+      "rabatt_art": "je_bestellung",
+      "regel": "Mindestmenge 2 von qione-2-pro, Festbetrag einmal je Bestellung",
+      "bf_preis_eur": 1674.00,
+      "bf2025_preis_eur": 1976.00,
+      "vergleich": {"dauer_bundle_handle": "8kendiw34hd", "dauer_bundle_preis_eur": 1699.00}
+    },
+    {
+      "key": "qione-kette",
+      "titel": "QiOne® 2 Pro + Kette",
+      "url_handle": "734husd8hh",
+      "artikel": [{"produkt": "qione-2-pro", "menge": 1}, {"produkt": "qione-kette", "menge": 1}],
+      "preis_heute_eur": 1181.00,
+      "rabatt_eur": 250.00,
+      "rabatt_art": "je_bestellung",
+      "regel": "berechtigt qione-2-pro + qione-kette, Mindestwert der berechtigten Artikel 1181 EUR, Festbetrag einmal je Bestellung (Kandidat; der Warenkorb-Test entscheidet)",
+      "bf_preis_eur": 931.00,
+      "bf2025_preis_eur": 1082.00,
+      "vergleich": {"dauer_bundle_handle": "pjdz538hgs0", "dauer_bundle_preis_eur": 929.00}
+    }
+  ],
+  "nicht_im_angebot": [
+    "qi-alpha: Nachtrag M1C 03.11., Christian: exklusives Produkt, nie im Sale. Kein Rabatt, keine Erwaehnung.",
+    "Bundle-Produkte: Christian 03.11.: keine Bundles mehr, der QiOne bleibt eigenstaendiges Produkt."
+  ],
+  "offen_fuer_elina": [
+    "Rabatthoehen a-d (Startwerte oben)",
+    "Zeitraum 27.11. 0 Uhr bis 30.11. 23:59 Uhr",
+    "Englisch-Shop ja/nein",
+    "Crystal Cacao als 5. Angebot (2025: 50 %)",
+    "Dauer-Bundles 8kendiw34hd (1.699 EUR) und pjdz538hgs0 (929 EUR) zum 27.11. aus dem Sortiment (Bundle-Abkehr Stufe 8)",
+    "Freigabe der Rabatte auf den QiOne 2 Pro (c, d): ihre Sperre EL-20260724-e4ed4ef7 verlangt ihren ausdruecklichen Auftrag fuer genau diesen Schritt"
+  ]
+}
