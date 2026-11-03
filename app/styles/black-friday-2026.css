@@ -13,8 +13,13 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--as-s-1);
 }
-/* Das freigestellte Bild bekommt dieselbe Kachel wie die drei anderen. */
-[data-apple-seite='bf-deals'] .bf-szene .as-bild {
+/* Jedes Produktbild auf derselben quadratischen Kachel: das freigestellte 2×-Bild
+   ist nicht quadratisch und setzte sonst Kartentitel und Kachelkante höher. */
+[data-apple-seite='bf-deals'] .bf-szene .as-bild,
+[data-apple-seite='bf-deals'] .bf-karte-bild .as-bild,
+[data-apple-seite='bf-deals'] .bf-kopf-bild .as-bild {
+  aspect-ratio: 1;
+  object-fit: contain;
   background: var(--as-flaeche);
 }
 @media (min-width: 750px) {
@@ -229,6 +234,7 @@
 [data-apple-seite='bf-deals'] .bf-kauf .bf-knopf,
 [data-apple-seite='bf-deals'] .bf-kauf > .as-knopf {
   width: 100%;
+  max-width: none;
   min-height: var(--as-tippziel);
 }
 

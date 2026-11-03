@@ -27,7 +27,7 @@ export const BF2026_BILDER = {
     url: `${CDN}/files/2xQiOne2Profreistehend_1.png?v=1731614283`,
     alt: 'Zwei QiOne® 2 Pro nebeneinander',
     breite: 2056,
-    hoehe: 2056,
+    hoehe: 1773,
   },
   'qione-kette': {
     url: `${CDN}/products/necklace_01.png?v=1698259307`,
