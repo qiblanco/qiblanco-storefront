@@ -133,7 +133,9 @@ test('Tabelle: drei Experimente, Salz = id, Anteile Start 50 (mobil und Desktop)
   // Shopseite beendet 21.10.2026 (Aussichtslosigkeit, A bleibt): Code-Schalter aus, Zeile bleibt als Beleg
   assert.equal(q.aktiv, false);
   assert.equal(AUSGELIEFERT[PB].aktiv, false);
-  assert.deepEqual(Object.keys(AUSGELIEFERT).filter((id) => AUSGELIEFERT[id].aktiv), []);
+  // A/B-Pause: aktiv ist nur noch the-alpha-abc-e1, und die ruhend 0/0 (lenkt niemanden um, nur Pins; eigener Test unten).
+  assert.deepEqual(Object.keys(AUSGELIEFERT).filter((id) => AUSGELIEFERT[id].aktiv), [TA]);
+  assert.equal(AUSGELIEFERT[TA].anteil_prozent + AUSGELIEFERT[TA].anteil_prozent_c, 0);
   assert.equal(s.pin_param, 'start_exp');
   assert.equal(q.pin_param, 'shop_exp');
   assert.equal(s.env_kill, 'EXP_START_MODE');
