@@ -90,7 +90,7 @@ export const APPLE_SEITEN = Object.freeze({
   'zellstudien-ehrlich': {pfad: '/pages/zellstudien-ehrlich', schalter: 'APPLE_SEITE_ZELLSTUDIEN_EHRLICH', standard: 'on'},
 
   // ---- s08 · Service, Formulare, Kollektionen, Rechtsseiten ----
-  'cart': {pfad: '/cart', schalter: 'APPLE_SEITE_CART', standard: 'off'},
+  'cart': {pfad: '/cart', schalter: 'APPLE_SEITE_CART', standard: 'on'},
   'collections': {pfad: '/collections', schalter: 'APPLE_SEITE_COLLECTIONS', standard: 'on'},
   'collections-all': {pfad: '/collections/all', schalter: 'APPLE_SEITE_COLLECTIONS_ALL', standard: 'on'},
   'collections-products': {pfad: '/collections/products', schalter: 'APPLE_SEITE_COLLECTIONS_PRODUCTS', standard: 'off'},
