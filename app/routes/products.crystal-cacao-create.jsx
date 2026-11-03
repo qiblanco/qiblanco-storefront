@@ -12,7 +12,7 @@ import {
 import {ProductImage} from '~/components/ProductImage';
 import {CacaoProductForm} from '~/components/CacaoProductForm';
 import {CacaoPriceDisplay} from '~/components/CacaoPriceDisplay';
-import {CacaoLeistenPreis} from '~/components/CacaoLeistenPreis';
+import {CacaoLeistenPreis} from '~/components/product-pages/CacaoLeistenPreis';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import kakaoCreateSeiteStyles from '~/styles/kakao-create-seite.css?url';

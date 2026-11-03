@@ -1,4 +1,4 @@
-import {cacaoPricing} from './CacaoProductForm';
+import {cacaoPricing} from '~/components/CacaoProductForm';
 import {useMarktLand} from '~/lib/markt-land';
 
 /**
