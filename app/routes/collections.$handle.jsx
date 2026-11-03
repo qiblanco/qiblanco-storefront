@@ -19,6 +19,10 @@ import {
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import {istVorlageOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
 import {kollektionSignale, teilbild} from '~/lib/kollektion-seo';
+import {appleSeiteLaden, appleSeiteFuerPfad} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import kollektionAppleStyles from '~/styles/kollektion-apple.css?url';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -147,7 +151,15 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  const payload = {...deferredData, ...criticalData};
+  // Apple-Fassung nur für Kollektionen mit eigener Zeile in app/lib/apple-seiten.js.
+  const payload = {
+    ...deferredData,
+    ...criticalData,
+    appleSeite: appleSeiteLaden(
+      args.context,
+      appleSeiteFuerPfad(`/collections/${args.params?.handle}`),
+    ),
+  };
 
   // Zweite Hälfte des noindex-Doppelgates (Hausmuster D-006): greift auch bei
   // einem Bot, der den HTML-head nicht parst. `data()` greift NUR im
@@ -256,8 +268,20 @@ function loadDeferredData({context}) {
 
 export default function Collection() {
   /** @type {LoaderReturnData} */
-  const {collection} = useLoaderData();
+  const {collection, appleSeite} = useLoaderData();
+  if (!appleSeite?.an || !appleSeite.seite) return <KollektionInhalt collection={collection} />;
+  return (
+    <>
+      <link rel="stylesheet" href={kollektionAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        <KollektionInhalt collection={collection} />
+        <AppleAnna />
+      </AppleSeite>
+    </>
+  );
+}
 
+function KollektionInhalt({collection}) {
   return (
     <div className="collection">
       <h1>{collection.title}</h1>

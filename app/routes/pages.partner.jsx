@@ -2,6 +2,10 @@ import {useLoaderData} from 'react-router';
 import {Partner} from '~/components/campaign/Partner';
 import lpTokenStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import partnerStyles from '~/styles/partner.css?url';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import partnerAppleStyles from '~/styles/partner-apple.css?url';
 
 /**
  * Partner-/Empfehlungs-Landingpage /pages/partner (Grossjob
@@ -53,7 +57,12 @@ export const headers = () => ({
   'Cache-Control': 'no-store',
 });
 
-export async function loader({context}) {
+export async function loader(args) {
+  const daten = await seitenDaten(args);
+  return {...daten, appleSeite: appleSeiteLaden(args.context, 'partner')};
+}
+
+async function seitenDaten({context}) {
   let data;
   try {
     data = await context.storefront.query(PARTNER_PRODUCTS_QUERY, {
@@ -82,8 +91,18 @@ export async function loader({context}) {
 }
 
 export default function PartnerRoute() {
-  const {products} = useLoaderData();
-  return <Partner products={products} />;
+  const {products, appleSeite} = useLoaderData();
+  if (!appleSeite?.an || !appleSeite.seite) return <Partner products={products} />;
+  return (
+    <>
+      <link rel="stylesheet" href={partnerAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        {/* Ein Ziel, eine Beschriftung: dieselbe Zeile wie die Produktkachel. */}
+        <Partner products={products} abschlussText="Jetzt risikofrei testen" />
+        <AppleAnna />
+      </AppleSeite>
+    </>
+  );
 }
 
 const PARTNER_PRODUCTS_QUERY = `#graphql

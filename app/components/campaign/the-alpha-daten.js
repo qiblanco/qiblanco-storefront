@@ -178,6 +178,8 @@ export const THE_ALPHA_ABSCHNITTE = [
  * anfängt“; Quelle: „ich habe das aus Google AI rauskopiert … die richtige
  * Quelle wäre Google AI“. Wortlaut wie THE_ALPHA_KOPF.absaetze, nur in
  * Wörterbuch-Form gesetzt (Lemma, Lautschrift, Wortart, 1., 2.).
+ * NACHTRAG 03.11.2026 (Christian, Wunsch von Anna): die Quelle „Google AI“
+ * unter dem Eintrag ist weg; Feld `quelle` ist optional.
  */
 export const THE_ALPHA_WOERTERBUCH = {
   lemma: 'Ultra High Vibe Mode',
@@ -202,7 +204,8 @@ export const THE_ALPHA_WOERTERBUCH = {
       {text: 'Erlebnisse, Erfolg und gesunde Beziehungen wie ein Magnet anzieht.', fett: true},
     ],
   ],
-  quelle: 'Google AI',
+  // Ohne Quellenzeile (Christian 03.11.2026: „Mach Google AI weg“). Steht hier
+  // wieder eine Quelle, zeigt TapWoerterbuch sie als eigenen Scrollschritt.
 };
 
 /** Seitenansicht mit Etikett, danach poppt der Name auf Schwarz auf

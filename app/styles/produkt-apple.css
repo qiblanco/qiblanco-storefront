@@ -1,0 +1,67 @@
+/*
+ * APPLE-FASSUNG /products/sprechstunde-mit-christian (Grossjob 20261029-GROSSJOB-
+ * alle-shop-seiten-apple-niveau-ausser-seo-geo, s12-r4). Lädt nur mit Schalter an, und
+ * der Schalter gilt nur für Produkte mit eigener Zeile in app/lib/apple-seiten.js. Die
+ * Standard-PDP aller übrigen Produkte bleibt unberührt, Kaufformular und Preislogik auch.
+ * Skala 14 · 17 · 21 · 24 · H1 28 (Handy, reset.css) / 40.
+ */
+[data-apple-seite^='products-'] .product {
+  max-width: var(--as-breite);
+  margin: var(--as-s-8) auto;
+  padding-inline: var(--as-s-3);
+  align-items: start;
+}
+[data-apple-seite^='products-'] .product h1:where(:not(#ccsp *)) {
+  font-size: var(--as-fs-7);
+  line-height: 1.1;
+  color: var(--as-tinte);
+  text-shadow: none;
+  margin-bottom: var(--as-s-2) !important;
+}
+@media (max-width: 767px) {
+  [data-apple-seite^='products-'] .product h1:where(:not(#ccsp *)) {
+    font-size: var(--as-fs-6);
+  }
+}
+[data-apple-seite^='products-'] .product-main :where(p, li),
+[data-apple-seite^='products-'] .ProductDescription {
+  font-size: var(--as-fs-3);
+  line-height: 1.5;
+  color: var(--as-tinte);
+}
+[data-apple-seite^='products-'] .product .product-price,
+[data-apple-seite^='products-'] .product-price div {
+  font-size: var(--as-fs-5) !important;
+  color: var(--as-tinte);
+}
+[data-apple-seite^='products-'] .product-image img {
+  border-radius: var(--as-radius);
+}
+[data-apple-seite^='products-'] .as-anna .as-absatz {
+  font-size: var(--as-fs-3);
+}
+/* Bewertungs-Widget im einen Akzent: Punkte in Gold, Links in der Gold-Tinte, Überschrift
+   ohne den Schatten aus reset.css. Die Bewertungen selbst bleiben unverändert. */
+[data-apple-seite^='products-'] [class*='bg-[#4285f4]'] {
+  background: var(--as-gold);
+}
+[data-apple-seite^='products-'] [class*='text-[#1565c0]'] {
+  color: var(--as-gold-tinte);
+}
+[data-apple-seite^='products-'] :where(h2, h3) {
+  color: var(--as-tinte);
+  text-shadow: none;
+}
+
+/* Kopf am Desktop (shop-tor D4, s12-r5): höchstens drei Schriftstärken und Luft
+   zwischen Nutzerzeile und Preis. Wortlaut und Reihenfolge bleiben. */
+[data-apple-seite^='products-'] .product .sterne-sprung.product-rating > span:last-child {
+  font-size: var(--as-fs-2);
+  font-weight: 400;
+}
+[data-apple-seite^='products-'] .product-main > p.mt-2 {
+  margin-bottom: var(--as-s-2);
+}
+[data-apple-seite^='products-'] .product-main > p.mt-2 b {
+  font-weight: 600;
+}

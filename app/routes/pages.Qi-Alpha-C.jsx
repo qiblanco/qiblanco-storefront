@@ -1,5 +1,6 @@
 import {redirect} from 'react-router';
 import TheAlphaVarianteB from '~/components/campaign/TheAlphaVarianteB';
+import {TheAlphaArm} from '~/components/campaign/TheAlphaArm';
 import {THE_ALPHA_LIVE_ANMELDUNG_STIL} from '~/components/campaign/TheAlphaLiveAnmeldung';
 import {canonicalLink} from '~/lib/seo';
 import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
@@ -86,7 +87,13 @@ export async function loader({request}) {
 }
 
 export default function TheAlphaCRoute() {
-  return <TheAlphaVarianteB />;
+  // A/B/C-TEST the-alpha-abc-e1 (s07): Arm B meldet sich und merkt sich für die Bestellung.
+  return (
+    <>
+      <TheAlphaArm arm="b" />
+      <TheAlphaVarianteB />
+    </>
+  );
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */

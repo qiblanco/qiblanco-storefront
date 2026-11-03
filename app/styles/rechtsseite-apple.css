@@ -88,3 +88,13 @@ body:has(.as-seite .rs-doc) footer {
 .as-seite .rs-doc h3 {
   letter-spacing: -0.01em;
 }
+
+/* Bestätigungsseite Superhuman-Kurs: das Porträt und die Anleitungsbilder stehen auf der
+   Spaltenmitte (Regel D2 im shop-tor), die Bildunterschrift folgt dem Porträt. */
+[data-apple-seite='superhuman-kurs-bestatigung'] .rs-doc__rumpf img {
+  display: block;
+  margin-inline: auto;
+}
+[data-apple-seite='superhuman-kurs-bestatigung'] .rs-doc__rumpf .grid__item:has(> img) {
+  text-align: center;
+}
