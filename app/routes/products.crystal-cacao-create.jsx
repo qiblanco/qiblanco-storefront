@@ -12,11 +12,15 @@ import {
 import {ProductImage} from '~/components/ProductImage';
 import {CacaoProductForm} from '~/components/CacaoProductForm';
 import {CacaoPriceDisplay} from '~/components/CacaoPriceDisplay';
+import {CacaoLeistenPreis} from '~/components/product-pages/CacaoLeistenPreis';
+import {Kaufleiste} from '~/components/reusables/Kaufleiste';
+import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
+import kakaoCreateSeiteStyles from '~/styles/kakao-create-seite.css?url';
 import {ladeStaffelKasse} from '~/lib/cacao-pricing';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import Create from '~/components/product-pages/Create';
 import LazyImage from '~/components/reusables/LazyImage';
 
@@ -42,11 +46,13 @@ import {FAQ_CACAO} from '~/data/product-faqs';
 export function links() {
   return [
     {rel: 'stylesheet', href: igStyles},
+    {rel: 'stylesheet', href: kaufleisteStyles},
     // Sortenvergleich + Kundenfragen (Amazon-Stil, s03, 30.09.2026). Beide
     // Schalter aus (amazonstil-daten.js): kein Stylesheet, Seite wie vorher.
     ...(sortenStilAn('crystal-cacao-create') ? [{rel: 'stylesheet', href: amazonstilStyles}] : []),
     // Kakao-Tiefe unter dem Amazon-Bereich (reusables/KakaoTiefe.jsx).
     {rel: 'stylesheet', href: kakaoTiefeStyles},
+    {rel: 'stylesheet', href: kakaoCreateSeiteStyles},
   ];
 }
 
@@ -180,6 +186,7 @@ export default function Product() {
   // 2026-08-30 ("Du musst kein Dreierpack nehmen"). Die Staffel 2x/3x bleibt
   // eine Auswahl entfernt. Job rtbefund-kopfpreis-vs-kaufmenge-wache-20260924.
   const [quantity, setQuantity] = useState('1');
+  const kaufbox = useRef(null);
   // Kundenfragen oben, der Rest bleibt in der FAQ unten (Regel und
   // Reihenfolge in amazonstil-daten.js). Schalter aus: oben leer, unten die
   // volle Liste, Seite wie vorher.
@@ -199,7 +206,7 @@ export default function Product() {
         <h2 className="kk-h2 kk-h2--hero">Fokus. High Performance.</h2>
         <h3 className="kk-lead">High Performance Cacao</h3>
       </div>
-      <div className="product">
+      <div className="product" ref={kaufbox}>
         <div className="ProductImages">
           <div className="ProductImageWrapperSticky">
           <ProductImage image={featuredImage} />
@@ -274,6 +281,24 @@ export default function Product() {
           }}
         />
       </div>
+      {/* Klebende Kaufleiste mobil (reusables/Kaufleiste.jsx). Betrag und Menge
+          aus demselben Zustand wie die Kaufbox: eine Rechnung, zwei Anzeigen,
+          dieselben Warenkorbzeilen. Rückweg: diese eine Stelle entfernen. */}
+      <Kaufleiste
+        kaufbox={kaufbox}
+        preis={{handle: product.handle}}
+        preisAnzeige={
+          <CacaoLeistenPreis
+            quantity={quantity}
+            selectedVariant={selectedVariant}
+            handle={product.handle}
+            staffelKasse={staffelKasse}
+          />
+        }
+        selectedVariant={selectedVariant}
+        productOptions={productOptions}
+        quantity={parseInt(quantity, 10)}
+      />
       {/*
         DIE INSTAGRAM-STIMMEN — WEIT OBEN: unmittelbar nach dem Kaufblock
         (Bilder, Preis, Varianten, Kaufknopf) und VOR dem langen Inhaltsteil.

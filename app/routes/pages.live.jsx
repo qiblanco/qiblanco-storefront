@@ -152,17 +152,19 @@ const ALLE_EINGEKLAPPT_AN = true;
 const SPEZIAL_AN = true;
 
 /**
- * Standbild aus der Coming-Home-Aufnahme vom 11.10.2026 (Zoom, Sekunde 6,5),
- * Shopify Files (gid://shopify/MediaImage/77476314939660). Die Quelle hat
- * 640 x 320 Pixel nach dem Zuschnitt, abgelegt in doppelter Größe; das CDN
- * liefert je Breite WebP oder AVIF nach dem Accept-Kopf.
+ * Foto von Christian und Anna (Christian 03.11.2026: „ein schoeneres foto von
+ * uns zwein von google drive suchen lassen und ersetzen“). Quelle: Google
+ * Drive, QB - Marketing & PR/QB - Bild und Video/Anna&Christian Bilder/
+ * DSC05954.jpeg (5304 x 7952), auf 2:1 zugeschnitten, 2560 x 1280, sRGB.
+ * Shopify Files (gid://shopify/MediaImage/77542954959116); das CDN liefert je
+ * Breite WebP oder AVIF nach dem Accept-Kopf. Vorher: Zoom-Standbild
+ * coming-home-live-anna-christian.jpg?v=1792652402 (MediaImage/77476314939660).
  */
 const BILD =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/' +
-  'coming-home-live-anna-christian.jpg?v=1792652402';
-const BILD_BREITEN = [480, 640, 960, 1280];
-const BILD_ALT =
-  'Anna und Christian lachen in die Kamera, Standbild aus dem Coming-Home-Call auf Zoom';
+  'coming-home-live-anna-christian-2026-11.jpg?v=1793702644';
+const BILD_BREITEN = [480, 640, 960, 1280, 1600, 1920];
+const BILD_ALT = 'Christian und Anna Bauer – Coming Home';
 
 /** Blog des Nahtvertrags N3; muss dem Server-Modul gleichen (Loader prueft). */
 const BLOG_HANDLE = 'coming-home';
@@ -552,7 +554,7 @@ function KopfApple() {
           className="as-bild"
           src={bildQuelle(960)}
           srcSet={BILD_BREITEN.map((b) => `${bildQuelle(b)} ${b}w`).join(', ')}
-          sizes="(min-width: 750px) 640px, calc(100vw - 32px)"
+          sizes="(min-width: 750px) 680px, calc(100vw - 32px)"
           width="1280"
           height="640"
           alt={BILD_ALT}

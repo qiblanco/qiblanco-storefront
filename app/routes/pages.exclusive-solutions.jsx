@@ -1,5 +1,7 @@
 import {useLoaderData} from 'react-router';
 import {ExclusiveSolutions} from '~/components/campaign/ExclusiveSolutions';
+import {ExclusiveSolutionsApple} from '~/components/apple-seite/lp/ExclusiveSolutionsApple';
+import {appleSeiteLaden, appleSeiteFuerPfad} from '~/lib/apple-seiten';
 import exclusiveSolutionsStyles from '~/styles/exclusive-solutions.css?url';
 
 export function links() {
@@ -17,6 +19,7 @@ export const meta = () => [
 ];
 
 export async function loader({context}) {
+  const appleSeite = appleSeiteLaden(context, appleSeiteFuerPfad('/pages/exclusive-solutions'));
   // Bewusst KEINE Shopify-Bundle-Produkte mehr: Die Pakete werden aus den
   // Einzelprodukten zusammengesetzt (jede Komponente = eigenes Line Item),
   // der Paketpreis entsteht über einen automatisch angewendeten
@@ -35,10 +38,11 @@ export async function loader({context}) {
       '[preis-fallback] Exclusive-Query fehlgeschlagen:',
       fehler?.message || fehler,
     );
-    return {products: []};
+    return {products: [], appleSeite};
   }
 
   return {
+    appleSeite,
     products: [data.qihomeAir, data.qione2Pro, data.qibracelet, data.qioneKette]
       .filter(Boolean)
       .map((product) => ({
@@ -49,7 +53,8 @@ export async function loader({context}) {
 }
 
 export default function ExclusiveSolutionsRoute() {
-  const {products} = useLoaderData();
+  const {products, appleSeite} = useLoaderData();
+  if (appleSeite?.an) return <ExclusiveSolutionsApple seite={appleSeite.seite} products={products} />;
   return <ExclusiveSolutions products={products} />;
 }
 

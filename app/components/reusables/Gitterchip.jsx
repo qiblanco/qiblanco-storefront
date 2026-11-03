@@ -7,8 +7,8 @@ export function Gitterchip(){
                 <img width={300} src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/QiOne2Pro_04.jpg_1.webp?v=1670947919" alt="Querschnitt des QiOne® 2 Pro mit dem eingelassenen goldfarbenen Gitterchip®" />
             </div>
             <div className="mb-3 mt-2 text-center"><small><strong>22,61 mm³ Leistungsvolumen, (rechts: Querschnitt des QiOne® 2 Pro)</strong></small></div>
-            <h3>Vererbbar</h3>
-            <p>Das neue Herstellungsverfahren ermöglicht eine Lebensdauer von Jahrzehnten. Somit ist der QiOne® 2 Pro nicht nur etwas für dich, sondern für die ganze Familie! Intensive Zeiten erfordern intensive Lösungen.</p>
+            <h3>Robust</h3>
+            <p>Das neue Herstellungsverfahren ermöglicht eine Lebensdauer von Jahrzehnten. Verschleißteile gibt es keine. Intensive Zeiten erfordern intensive Lösungen.</p>
             <h3 className="mt-3">Für jeden Einsatzort</h3>
             <p>Du kannst den QiOne® 2 Pro mit in die Sauna oder ins Schwimmbad nehmen, denn er ist beständig gegen Hitze & Chlor. Du darfst ihn beim Sport tragen – Schweiß macht ihm nichts mehr aus. Wenn du ihn mal in der Sonne vergisst, macht das nichts. Ideal für jede Situation.</p>
             <h3 className="mt-3">Im idealen Preis-Leistungs-Verhältnis</h3>

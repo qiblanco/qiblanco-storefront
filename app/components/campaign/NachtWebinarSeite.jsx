@@ -28,7 +28,7 @@ import {kalenderErlaubt, leadSenden, nutzlast, terminAus, terminText, utmContent
 const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
 // Personenkarten: mobil volle Spalte (bis 568 px bei 600), ab 768 halbe Breite der 1080er Spalte.
 const PERSON_SIZES = '(max-width: 767px) calc(100vw - 32px), (max-width: 1127px) calc(50vw - 40px), 524px';
-const FOTO = {
+export const FOTO = {
   christian: {src: `${CDN}Christian.jpg?v=1668985845`, b: 1200, h: 1535, alt: 'Christian, Gründer von Qi Blanco'},
   dartsch: {src: `${CDN}webinar-nacht-dartsch-portraet.jpg?v=1792770671`, b: 1132, h: 1400,
     alt: 'Prof. Dr. Peter C. Dartsch am Mikroskop', vermerk: 'Foto: Dartsch Scientific'},
@@ -36,28 +36,28 @@ const FOTO = {
     alt: 'Prof. Dr. Dr. Harald Walach', vermerk: 'Foto: Anja Jahn'},
 };
 
-const VERSPRECHEN =
+export const VERSPRECHEN =
   'In einer Stunde verstehst du, was dein Körper nachts erneuert, was Funk damit zu tun haben kann ' +
   'und warum Wasser die Hauptrolle spielt. Du nimmst drei Handgriffe für dein Schlafzimmer mit und ' +
   'kannst Christian live fragen.';
-const FUER_DICH = [
+export const FUER_DICH = [
   'du zuhause schon gegen Funk vorgesorgt hast und wissen willst, was nachts noch zählt.',
   'du verstehen willst, was in deinem Körper passiert, statt einfach etwas zu glauben.',
   'du deine Frage lieber persönlich stellst, und zwar jemandem, der die Technik versteht.',
 ];
-const MITNEHMEN = [
+export const MITNEHMEN = [
   'Was dein Gehirn nachts macht',
   'Was Funk damit zu tun haben kann',
   'Warum Wasser die Hauptrolle spielt',
   'Drei Handgriffe für heute Abend',
 ];
-const ERFAHRUNGEN = [
+export const ERFAHRUNGEN = [
   ['Marion, Coach und Sängerin', 'Marion schläft durch und wacht ausgeruht auf. Nach ihren Auftritten fällt sie ' +
     'nicht mehr in ein Erschöpfungsloch. Ihre Bedingung: mindestens zwei Liter Wasser am Tag.'],
   ['Andreas, trägt das QiBracelet', 'Beim ersten Anlegen hat Andreas nichts gespürt. Nach zweieinhalb Monaten ' +
     'merkte er weniger Erschöpfung, mehr Energie am Morgen und besseren Schlaf.'],
 ];
-const FRAGEN = [
+export const FRAGEN = [
   ['Gibt es eine Aufzeichnung?', 'Nein. Christian ist immer live, weil er mit dir sprechen will. ' +
     'Deine Fragen beantwortet er direkt im Webinar.'],
   ['Kostet das Webinar etwas?', 'Nein, es ist kostenlos.'],
@@ -95,7 +95,7 @@ function kalenderLaden(termin) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-function KalenderKnopf({termin}) {
+export function KalenderKnopf({termin}) {
   return (
     <button className="wn-knopf wn-knopf-zweit" type="button" onClick={() => kalenderLaden(termin)}>
       In den Kalender eintragen
@@ -112,7 +112,7 @@ function eventId() {
 }
 
 /** Das Formular. Texte, Termin und Einwilligung stammen aus /w (lage). */
-function Anmeldung({lage, versatz, setLage}) {
+export function Anmeldung({lage, versatz, setLage}) {
   const kennung = useId();
   const angezeigt = useRef(0);
   const [stand, setStand] = useState('bereit');
@@ -233,8 +233,8 @@ function Anmeldung({lage, versatz, setLage}) {
   );
 }
 
-/** @param {{daten: {anzeige: object|null, weg: string, stand: string, bestaetigt: boolean}}} props */
-export function NachtWebinarSeite({daten}) {
+/** Formularlage aus dem Loader, im Browser frisch aus /w (auch für die Apple-Fassung). */
+export function useWebinarLage(daten) {
   const [lage, setLage] = useState({anzeige: daten.anzeige, weg: daten.weg});
   const versatz = useRef(0);
   const termin = terminAus(lage.anzeige);
@@ -255,6 +255,13 @@ export function NachtWebinarSeite({daten}) {
       aktiv = false;
     };
   }, [daten.stand]);
+
+  return {lage, setLage, versatz, termin};
+}
+
+/** @param {{daten: {anzeige: object|null, weg: string, stand: string, bestaetigt: boolean}}} props */
+export function NachtWebinarSeite({daten}) {
+  const {lage, setLage, versatz, termin} = useWebinarLage(daten);
 
   return (
     <div className="wn" data-webinar={THEMA} data-webinar-seite="anmeldung">

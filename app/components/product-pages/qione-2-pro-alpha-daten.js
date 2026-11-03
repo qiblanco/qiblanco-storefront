@@ -38,8 +38,12 @@ export const PRODUKT = {
   claim: 'Lifetime Wearable',
   kurzzeile: '2. Generation · 8× so viel Leistungsvolumen wie der QiOne® 1',
   // Elinas Kernpunkte (EL-20261027-c05a2273, „von Elina entschieden“).
+  // Punkt 1 seit 02.11.2026 (Christian: „statt persönliches Wachstum mal
+  // gesteigerte Zellleistung“), Job 20261102-prio2-startseite-qione-header-
+  // leistung-statt-vererben-pr-manager. Reihenfolge Zelle · Schutz · Quantenfeld;
+  // Zeichen 'kraft' (Blitz) aus den Faktenkacheln der Vorlage.
   punkte: [
-    {zeichen: 'wachstum', text: 'Persönliches Wachstum'},
+    {zeichen: 'kraft', text: 'Gesteigerte Zellleistung'},
     {zeichen: 'schutz', text: 'Schutz vor E-Smog, 5G & 6G'},
     {zeichen: 'quantenfeld', text: 'Gesteigerte Anbindung zum Quantenfeld'},
   ],
@@ -154,10 +158,10 @@ export const FAKTEN = {
   ueberschrift: null,
   kacheln: [
     {
-      icon: 'generationen',
+      icon: 'dauer',
       zahl: 'Jahrzehnte',
-      titel: 'Vererbbar',
-      satz: 'Erst trägst du ihn. Dann die nächste Generation.',
+      titel: 'Robust',
+      satz: 'Kein Akku, keine Elektronik. Nichts, das leer wird.',
     },
     {
       icon: 'wellen',
@@ -319,7 +323,7 @@ export const FAQ = {
     },
     {
       f: 'Wie lange hält der QiOne® 2 Pro?',
-      a: 'Jahrzehnte. Ohne Akku und ohne Elektronik gibt es nichts, das leer wird. Du trägst ihn, solange du willst, und vererbst ihn dann.',
+      a: 'Jahrzehnte. Ohne Akku und ohne Elektronik gibt es nichts, das leer wird. Du trägst ihn, solange du willst.',
     },
     {
       f: 'Wie funktioniert der QiOne®?',

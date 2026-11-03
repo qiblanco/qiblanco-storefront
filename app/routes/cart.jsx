@@ -19,6 +19,10 @@ import {
 import {noindexMeta} from '~/lib/seo';
 import {bindeRatenanteil} from '~/lib/qi-alpha-teilzahlung';
 import {bindeHealWorldGeschenk} from '~/lib/heal-world-geschenk.server';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import warenkorbAppleStyles from '~/styles/warenkorb-apple.css?url';
 
 /**
  * Route-gebundenes Stylesheet (Muster mm-lp.css): die vier Regeln von
@@ -218,13 +222,33 @@ export async function action({request, context}) {
  * @param {LoaderFunctionArgs}
  */
 export async function loader({context}) {
-  const {cart} = context;
-  return await cart.get();
+  // Apple-Fassung (Grossjob apple-niveau s12-r5): der Loader liefert den
+  // Warenkorb jetzt als Feld `cart` neben `appleSeite`. Gelesen wird er nur
+  // hier: alle useRouteLoaderData-Leser im Repo lesen 'root', die
+  // CartForm-Fetcher lesen die action (unverändert `{cart, errors, …}`).
+  const cart = await context.cart.get();
+  return {cart, appleSeite: appleSeiteLaden(context, 'cart')};
 }
 
 export default function Cart() {
   /** @type {LoaderReturnData} */
-  const cart = useLoaderData();
+  const {cart, appleSeite} = useLoaderData() ?? {};
+  if (!appleSeite?.an || !appleSeite.seite) return <WarenkorbSeite cart={cart} />;
+  // Nur Typografie und Farbe der SEITE (warenkorb-apple.css, Scope
+  // [data-apple-seite='cart']). Der Drawer liegt außerhalb dieses Scopes und
+  // bleibt unberührt, Zeilen, Summe und Kassenknopf sind dieselben wie in C.
+  return (
+    <>
+      <link rel="stylesheet" href={warenkorbAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        <WarenkorbSeite cart={cart} />
+        <AppleAnna />
+      </AppleSeite>
+    </>
+  );
+}
+
+function WarenkorbSeite({cart}) {
 
   // `.cart` ist der SEITENRAHMEN (Shop-Breite, Seitenabstand), `.cart-page-inner`
   // die INHALTSSPALTE in Drawer-Geometrie. Zwei Ebenen, weil beides verschiedene

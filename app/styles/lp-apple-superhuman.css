@@ -87,3 +87,13 @@
   color: var(--as-tinte) !important;
   cursor: pointer;
 }
+
+/* Christians Foto (Datei 1200 px) steht unter 1024 px einspaltig. Ohne Deckel
+   wurde es auf dem Tablet bis 836 CSS-px breit und auf 2x-Bildschirmen
+   hochskaliert (Gate 12 bild-aufloesung, s07-r12). Gleicher Deckel wie das
+   Sprecherbild der Webinar-Seite. */
+@media (max-width: 1023px) {
+  [data-apple-seite='superhuman'] .as-kapitel-bild {
+    max-width: 560px;
+  }
+}

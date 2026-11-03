@@ -1,0 +1,26 @@
+/*
+ * crystal-spiegel-rahmen.css — Regeln der Hülle um den Crystal-Spiegel, für das,
+ * was außerhalb von #ccsp liegt. Gelinkt in spiegelStile() (SpiegelRahmen.jsx),
+ * wirkt also nur auf Spiegel-Seiten.
+ *
+ * WARUM NICHT IN CRYSTALS kakao-seiten.css: crystal hält dem Fuß mit
+ * `body:has(.cc-kaufleiste:not([hidden])) {padding-bottom}` Platz frei. Der
+ * Spiegel-Erzeuger (scope_css) macht aus `body` die Wurzel #ccsp, das Polster
+ * sitzt hier also ÜBER qiblancos Fuß (body > footer, #ccsp steht in main): ein
+ * leerer Streifen über dem Fuß, und am Seitenende lagen Impressum, Datenschutz,
+ * AGB und Widerruf unter der Leiste. Jede Regel des Spiegels beginnt mit #ccsp
+ * und erreicht den Fuß nie; auch die --cc-*-Tokens gelten dort nicht.
+ *
+ * Darum hier an der Hülle: das Polster wandert vom Rahmen an den Fuß. 16 Stufen
+ * des 8pt-Rasters = 128 px über der Leiste (121 px bei einer Preiszeile), wie
+ * beim Vorbild body:has(.pd-kaufleiste…) footer in produkt-details-apple.css.
+ * Das !important schlägt die gestufte Spezifität des Spiegels (8 × #ccsp).
+ */
+@media screen and (max-width: 749px) {
+  body:has(#ccsp .cc-kaufleiste:not([hidden])) footer {
+    padding-bottom: calc(var(--qb-ref-raster, 8px) * 16 + env(safe-area-inset-bottom));
+  }
+  body:has(#ccsp .cc-kaufleiste:not([hidden])) #ccsp {
+    padding-bottom: 0 !important;
+  }
+}

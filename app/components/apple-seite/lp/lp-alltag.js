@@ -37,10 +37,9 @@ export const ALLTAG_SEKTIONEN = Object.freeze([
   {
     art: 'band',
     etikett: 'Über Jahrzehnte',
-    titel: 'Einmal kaufen. Weitergeben.',
+    titel: 'Einmal kaufen. Für ein Leben gebaut.',
     text: [
       'Das Gold-Gitter ist fest und passiv. Verschleißteile gibt es keine.',
-      'Erst trägst du ihn. Dann die nächste Generation.',
     ],
     bild: BILD.hand,
   },

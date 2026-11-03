@@ -38,6 +38,13 @@ import {
  *    Ereignis add_to_cart entsteht routenunabhängig aus Hydrogens
  *    product_added_to_cart; beide Knöpfe lösen es gleich aus.
  *
+ * KAKAO-MENGENSTAFFEL (`preisAnzeige`, /products/crystal-cacao-create): dort
+ * hängt der Preis an der gewählten Packungszahl, ProductPrice kennt nur den
+ * Einzelpreis. Eine Leiste mit dem Preis einer Packung und 3 Packungen im
+ * Warenkorb wäre ein falscher Preis. Die Aufrufstelle reicht deshalb die
+ * Anzeige herein (CacaoLeistenPreis, dieselbe Rechnung wie CacaoPriceDisplay)
+ * und mit `quantity` die Menge der Kaufbox.
+ *
  * MEHRERE VARIANTEN (qibracelet S/M/L, qione-kette XS..XL): der Knopf führt
  * zur Variantenwahl der Kaufbox („Größe wählen“), statt die Größe zu kaufen,
  * die die Seite beim Laden selbst vorgewählt hat. Erst wenn der Kunde in
@@ -107,6 +114,7 @@ const MOBIL_MEDIA = '(max-width: 749px)';
  * @param {{
  *   kaufbox: {current: HTMLElement | null},
  *   preis: {handle?: string, price?: any, compareAtPrice?: any},
+ *   preisAnzeige?: import('react').ReactNode,
  *   selectedVariant: any,
  *   productOptions: Array<any>,
  *   quantity?: number,
@@ -117,6 +125,7 @@ const MOBIL_MEDIA = '(max-width: 749px)';
 export function Kaufleiste({
   kaufbox,
   preis,
+  preisAnzeige = null,
   selectedVariant,
   productOptions,
   quantity = 1,
@@ -207,11 +216,13 @@ export function Kaufleiste({
             <div className="qb-kaufleiste__nutzen">{anzeige.nutzen}</div>
           ) : (
             <div className="qb-kaufleiste__preis">
-              <ProductPrice
-                handle={preis?.handle}
-                price={preis?.price}
-                compareAtPrice={preis?.compareAtPrice}
-              />
+              {preisAnzeige ?? (
+                <ProductPrice
+                  handle={preis?.handle}
+                  price={preis?.price}
+                  compareAtPrice={preis?.compareAtPrice}
+                />
+              )}
             </div>
           )}
           {ziel === 'variantenwahl' ? (

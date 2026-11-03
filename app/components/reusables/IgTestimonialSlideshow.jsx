@@ -3,6 +3,7 @@ import {useDragSwipe} from './useDragSwipe';
 import {IG_TESTIMONIALS} from '~/data/ig-testimonials';
 import {YT_NUTZER_VIDEOS} from '~/data/yt-nutzer-videos';
 import {nutzerVideoReihe} from '~/lib/nutzer-video-reihe';
+import {reiheErstJedePerson} from '~/lib/reihe-erst-jede-person';
 import {YoutubeTimestamp} from './YoutubeTimestamp';
 
 /*
@@ -668,7 +669,10 @@ export function IgTestimonialSlideshow({
     const OHNE_VORN = Number.MAX_SAFE_INTEGER;
     const vornRang = (t) => (Number.isInteger(t.vorn) ? t.vorn : OHNE_VORN);
     const ansEndeRang = (t) => (t.ansEnde === true ? 1 : 0);
-    return [...meine].sort((a, b) => {
+    /* Darüber die Runden-Regel aller Slider (Christian 02.11.2026): erst jede
+     * Person einmal in dieser Reihenfolge, dann die Wiederholungen, nie
+     * dieselbe Person nebeneinander. Ohne Wiederholung ein No-Op. */
+    return reiheErstJedePerson([...meine].sort((a, b) => {
       const v = vornRang(a) - vornRang(b);
       if (v !== 0) return v;
       const e = ansEndeRang(a) - ansEndeRang(b);
@@ -676,7 +680,7 @@ export function IgTestimonialSlideshow({
       const s = (STUFEN_RANG[a.stufe] ?? 9) - (STUFEN_RANG[b.stufe] ?? 9);
       if (s !== 0) return s;
       return (sprachRang[a.sprache] ?? 9) - (sprachRang[b.sprache] ?? 9);
-    });
+    }));
   }, [eintraege, produkt, sprachRang]);
 
   /* Die YouTube-Kacheln dieses Produkts, an ihrer `vorn`-Stelle in die

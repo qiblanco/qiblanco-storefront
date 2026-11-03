@@ -1,5 +1,10 @@
 import partnerBeispielseiteStyles from '~/styles/partner-beispielseite.css?url';
+import {useLoaderData} from 'react-router';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import partnerAppleStyles from '~/styles/partner-apple.css?url';
 
 /**
  * /pages/partner-beispielseite: „So kann eine Erfahrungsseite aufgebaut sein“.
@@ -412,7 +417,25 @@ function Baustein({baustein, nummer}) {
   );
 }
 
+export function loader({context}) {
+  return {appleSeite: appleSeiteLaden(context, 'partner-beispielseite')};
+}
+
 export default function PartnerBeispielseite() {
+  const {appleSeite} = useLoaderData() ?? {};
+  if (!appleSeite?.an || !appleSeite.seite) return <BeispielseiteInhalt />;
+  return (
+    <>
+      <link rel="stylesheet" href={partnerAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        <BeispielseiteInhalt />
+        <AppleAnna />
+      </AppleSeite>
+    </>
+  );
+}
+
+function BeispielseiteInhalt() {
   return (
     <div className="pbs">
       <section className="pbs__kopf" aria-labelledby="pbs-titel">

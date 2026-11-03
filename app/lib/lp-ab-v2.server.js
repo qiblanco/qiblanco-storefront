@@ -252,8 +252,11 @@ export const E2 = Object.freeze({
   anteil_prozent: 15,
 });
 
-/** Code-Schalter von B2; false = kein Besucher auf B2. */
-export const E2_AKTIV = true;
+/**
+ * Code-Schalter von B2; false = kein Besucher auf B2. Beendet 02.11.2026 (A/B-Pause,
+ * Christian 01.11., lp-manager/config/ab-pause.json), A bleibt. Route bleibt per Bestand.
+ */
+export const E2_AKTIV = false;
 
 /**
  * B2 läuft nur, wenn der Code-Schalter steht, die Env ihn nicht abschaltet
@@ -281,8 +284,8 @@ export function experimentB2Aktiv(env, codeSchalter = E2_AKTIV, e1 = E1, e2 = E2
  * schon den Sticky-Arm GS-127 meint).
  *
  * ENTSCHEIDE, je begründet:
- *  - SCHARF SEIT DEM MERGE VOM 28.10.2026: E3_AKTIV und E4_AKTIV stehen auf
- *    true. Bedingung war, dass das Sim-Tor die Fassung je Gerät bestanden hat
+ *  - SCHARF VOM MERGE AM 28.10.2026 BIS 02.11.2026 (A/B-Pause): E3_AKTIV und
+ *    E4_AKTIV standen auf true. Bedingung war, dass das Sim-Tor die Fassung je Gerät bestanden hat
  *    (heatmap-manager kreislauf start-freigabe <id> exit 0, beide am
  *    2026-10-28T05:20Z) und B von szs-e1-gs050 sein Urteil hat (20.10.).
  *    Zurück: Schalter auf false (PR) oder Env-Kill unten.
@@ -329,9 +332,12 @@ export const E4 = Object.freeze({
   anteil_prozent: 15,
 });
 
-/** Code-Schalter der Kurz-Arme; false = kein Besucher auf K50 bzw. K25. */
-export const E3_AKTIV = true;
-export const E4_AKTIV = true;
+/**
+ * Code-Schalter der Kurz-Arme; false = kein Besucher auf K50 bzw. K25. Beide beendet
+ * 02.11.2026 (A/B-Pause, Christian 01.11., lp-manager/config/ab-pause.json), A bleibt.
+ */
+export const E3_AKTIV = false;
+export const E4_AKTIV = false;
 
 /**
  * Ein Kurz-Arm läuft nur, wenn sein Code-Schalter steht, die Env ihn nicht

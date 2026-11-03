@@ -263,6 +263,89 @@ test('Hochrutschen: Zielrechteck deckt den Knopf der Leiste nicht, die Ruhelage 
   assert.equal(lage(verschoben(KUGEL, hub)), false);
 });
 
+// ─── #80 (01.11.2026): ausweichen auch vor Knöpfen im Seiteninhalt ──────────
+// Gemessen live 31.10.2026 ~23:50Z, /pages/start-b, 390x844: Blasenrahmen
+// [85,649, 298x188] über dem Hero-Knopf, iframe ab dem Laden visibility:hidden.
+// Die Knopf-Lage ist eine Rechenlage in dieser Zone, kein Messwert.
+const BLASE_START_B = {left: 85, top: 649, right: 383, bottom: 837};
+const HERO_KNOPF = {left: 16, top: 700, right: 374, bottom: 756};
+const ruhig = {leisten: [], pfeile: [], fensterHoehe: 844, angedockt: false};
+
+test('ausweichStrecke: die Blase rutscht über den Hero-Knopf, statt zu verschwinden', async () => {
+  const {ausweichStrecke, verschoben, ueberdecktKaufknopf} = await import('../app/lib/kaufknopf-chat.js');
+  const vorher = ueberdecktKaufknopf({rahmen: BLASE_START_B, knoepfe: [HERO_KNOPF], fensterHoehe: 844,
+    angedockt: false, beruehrt: false});
+  assert.equal(vorher, true, 'Stand vor #80: Ausblenden');
+  const {hub, frei} = ausweichStrecke({...ruhig, ruhe: BLASE_START_B, knoepfe: [HERO_KNOPF]});
+  assert.equal(frei, true);
+  assert.equal(hub, 837 - 700 + ABSTAND_PX);
+  assert.equal(ueberdecktKaufknopf({rahmen: verschoben(BLASE_START_B, hub), knoepfe: [HERO_KNOPF],
+    fensterHoehe: 844, angedockt: false, beruehrt: false}), false);
+});
+
+test('ausweichStrecke: ohne Hindernis Ruhelage, ohne Leiste zählen Slider-Pfeile nicht', async () => {
+  const {ausweichStrecke} = await import('../app/lib/kaufknopf-chat.js');
+  assert.deepEqual(ausweichStrecke({...ruhig, ruhe: KUGEL, knoepfe: []}), {hub: 0, frei: true});
+  // Schnitt von OEFFENTLICH_KNOPF_VORFILTER unverändert: in der Ruhelage weicht der Chat nur Kaufknöpfen
+  const pfeil = {left: 330, top: 770, right: 370, bottom: 810};
+  assert.deepEqual(ausweichStrecke({...ruhig, ruhe: KUGEL, knoepfe: [], pfeile: [pfeil]}), {hub: 0, frei: true});
+  // Knopf links neben der Kugel verdrängt nichts
+  assert.deepEqual(ausweichStrecke({...ruhig, ruhe: KUGEL, knoepfe: [{left: 16, top: 770, right: 290, bottom: 826}]}),
+    {hub: 0, frei: true});
+});
+
+test('ausweichStrecke: über der Leiste hüpft die Kugel auch über die Slider-Pfeile (qione-2-pro-b@412)', async () => {
+  const {ausweichStrecke, chatHub, verschoben} = await import('../app/lib/kaufknopf-chat.js');
+  const basis = chatHub({ruhe: KUGEL, leisten: [LEISTE], fensterHoehe: 844, angedockt: false, an: true});
+  const ziel = verschoben(KUGEL, basis);
+  // Pfeil genau unter der hochgerutschten Kugel (s05-Nachtrag: zwei runde Pfeile unter der Kugel)
+  const pfeil = {left: 334, top: ziel.top + 10, right: 374, bottom: ziel.top + 50};
+  const {hub, frei} = ausweichStrecke({...ruhig, ruhe: KUGEL, leisten: [LEISTE], knoepfe: [LEISTEN_KNOPF],
+    pfeile: [pfeil]});
+  assert.equal(frei, true);
+  assert.equal(hub, Math.ceil(KUGEL.bottom - pfeil.top + ABSTAND_PX));
+  assert.ok(hub > basis);
+  // ohne Pfeil bleibt es beim Hub der Leiste (die Kaufleiste behält ihren Weg)
+  assert.deepEqual(ausweichStrecke({...ruhig, ruhe: KUGEL, leisten: [LEISTE], knoepfe: [LEISTEN_KNOPF]}),
+    {hub: basis, frei: true});
+});
+
+test('ausweichStrecke: die kleinste freie Strecke, auch über zwei Knöpfe', async () => {
+  const {ausweichStrecke} = await import('../app/lib/kaufknopf-chat.js');
+  const unten = {left: 16, top: 790, right: 374, bottom: 846};
+  const darueber = {left: 16, top: 700, right: 374, bottom: 756};
+  const {hub, frei} = ausweichStrecke({...ruhig, ruhe: KUGEL, knoepfe: [unten, darueber]});
+  assert.equal(frei, true);
+  // über den unteren allein (837-790+8=55) läge die Kugel auf dem oberen
+  assert.equal(hub, 837 - 700 + ABSTAND_PX);
+});
+
+test('ausweichStrecke: Rückfall nur, wenn keine Strecke frei ist; Schalter aus = Stand vor #80', async () => {
+  const {ausweichStrecke, RAND_PX} = await import('../app/lib/kaufknopf-chat.js');
+  // Knöpfe bis an den Seitenkopf: jede Strecke deckt einen oder ragt über den Rand
+  const stapel = [];
+  for (let y = 0; y < 844; y += 60) stapel.push({left: 16, top: y, right: 374, bottom: y + 56});
+  const r = ausweichStrecke({...ruhig, ruhe: KUGEL, knoepfe: stapel});
+  assert.equal(r.frei, false);
+  assert.ok(KUGEL.top - r.hub >= RAND_PX);
+  const aus = ausweichStrecke({...ruhig, ruhe: BLASE_START_B, knoepfe: [HERO_KNOPF], ausweichen: false});
+  assert.deepEqual(aus, {hub: 0, frei: false});
+  // offener Chat und angedockt: nie Rückfall, nie Verschiebung
+  const offen = {left: 8, top: 60, right: 382, bottom: 836};
+  assert.deepEqual(ausweichStrecke({...ruhig, ruhe: offen, knoepfe: [HERO_KNOPF]}), {hub: 0, frei: true});
+  assert.deepEqual(ausweichStrecke({...ruhig, ruhe: KUGEL, knoepfe: [HERO_KNOPF], angedockt: true}),
+    {hub: 0, frei: true});
+  assert.deepEqual(ausweichStrecke({...ruhig, ruhe: null, knoepfe: [HERO_KNOPF]}), {hub: 0, frei: true});
+});
+
+test('ausweichStrecke: Desktop 1280 (Job 20260926), die Blase weicht dem Warenkorb-Knopf nach oben', async () => {
+  const {ausweichStrecke, verschoben, ueberdecktKaufknopf} = await import('../app/lib/kaufknopf-chat.js');
+  const {hub, frei} = ausweichStrecke({leisten: [], pfeile: [], fensterHoehe: 800, angedockt: false,
+    ruhe: RAHMEN_1280, knoepfe: [KNOPF_1280]});
+  assert.equal(frei, true);
+  assert.equal(ueberdecktKaufknopf(lage({rahmen: verschoben(RAHMEN_1280, hub)})), false);
+});
+
 test('verschiebungY/ruhelage: Zwischenwert des Übergangs wird herausgerechnet', async () => {
   const {verschiebungY, ruhelage} = await import('../app/lib/kaufknopf-chat.js');
   assert.equal(verschiebungY('none'), 0);

@@ -9,6 +9,10 @@ import {
 } from '~/lib/seo';
 import {istVorlageOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
 import {kollektionSignale, teilbild} from '~/lib/kollektion-seo';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import kollektionAppleStyles from '~/styles/kollektion-apple.css?url';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -96,7 +100,11 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  return {
+    ...deferredData,
+    ...criticalData,
+    appleSeite: appleSeiteLaden(args.context, 'collections-all'),
+  };
 }
 
 /**
@@ -136,6 +144,20 @@ function loadDeferredData({context}) {
 }
 
 export default function Collection() {
+  const {appleSeite} = useLoaderData();
+  if (!appleSeite?.an || !appleSeite.seite) return <AlleProdukteInhalt />;
+  return (
+    <>
+      <link rel="stylesheet" href={kollektionAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        <AlleProdukteInhalt />
+        <AppleAnna />
+      </AppleSeite>
+    </>
+  );
+}
+
+function AlleProdukteInhalt() {
   /** @type {LoaderReturnData} */
   const {products} = useLoaderData();
 

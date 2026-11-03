@@ -90,22 +90,31 @@ export const MODELLE = Object.freeze({
   ],
 });
 
+/*
+ * KOPF und FAKTEN seit 02.11.2026: Leistung statt Vererben (Christian: „Jeder
+ * kauft doch den QiOne, um Leistungssteigerung zu erfahren … Gesteigerte
+ * Zellleistung, Schutz für 5G und 6G und Anbindung ans Quantenfeld“). Wortlaut
+ * vom PR-Manager frei: claude-jobs/20261102-prio2-startseite-qione-header-
+ * leistung-statt-vererben-pr-manager/pr/pr-manager-urteil.md (Variante B mit
+ * Ersatztexten, K3 nach dem Sicht-Tor-Nachtrag 768 px). Vorher: „Tragbares Hightech mit messbaren Effekten auf
+ * Zellebene“ / „Einmal kaufen. An die Familie weitergeben.“
+ */
 const KOPF = {
   art: 'hero',
   overline: 'QiOne® 2 Pro',
-  titel: 'Tragbares Hightech mit messbaren Effekten auf Zellebene',
-  unter: 'Schutz vor E-Smog, 5G und 6G. Gebaut für Jahrzehnte.',
+  titel: 'Deine Zellen. Auf voller Leistung.',
+  unter: 'Mehr Energie, tieferer Schlaf und Schutz vor E-Smog.',
   bild: BILD.qione,
   cta: {text: 'Jetzt kaufen', href: KAUFSEITE},
 };
 
 const FAKTEN = {
   art: 'fakten',
-  titel: 'Einmal kaufen. An die Familie weitergeben.',
+  titel: 'Das Wearable, das wirkt.',
   kacheln: [
-    {zahl: 'Jahrzehnte', titel: 'Vererbbar', satz: 'Erst trägst du ihn. Dann die nächste Generation.'},
-    {zahl: '8×', titel: 'Leistungsvolumen', satz: 'Achtmal so viel wie der QiOne® 1.'},
-    {zahl: '750er', titel: 'Gold im Gitterchip®', satz: 'In Bayern gefertigt. Von Goldschmieden von Hand vollendet.'},
+    {zahl: 'Zelle', titel: 'Gesteigerte Zellleistung', satz: '8× so viel Leistungsvolumen wie der QiOne® 1.'},
+    {zahl: '5G & 6G', titel: 'Heute und morgen geschützt', satz: 'Tag und Nacht, ohne Batterie.'},
+    {zahl: 'Qi', titel: 'Gesteigerte Anbindung ans Quantenfeld', satz: 'Über den Gitterchip® aus 750er Gold.'},
   ],
 };
 

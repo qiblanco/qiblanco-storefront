@@ -1,4 +1,4 @@
-import {data} from 'react-router';
+import {data, useLoaderData} from 'react-router';
 import {
   Form,
   Link,
@@ -6,6 +6,9 @@ import {
 } from 'react-router';
 import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
+import {appleSeiteLaden, appleSeiteFuerPfad} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import widerrufAppleStyles from '~/styles/widerruf-apple.css?url';
 import {
   WITHDRAWAL_HONEYPOT_FIELD,
   getWithdrawalProductLabel,
@@ -80,8 +83,8 @@ export const meta = () => [
  */
 export const headers = () => noindexHeader();
 
-export function loader() {
-  return {};
+export function loader({context}) {
+  return {appleSeite: appleSeiteLaden(context, appleSeiteFuerPfad('/widerruf/bestaetigen'))};
 }
 
 /**
@@ -187,6 +190,19 @@ export async function action({request, context}) {
  */
 
 export default function WithdrawalConfirmPage() {
+  const {appleSeite} = useLoaderData() ?? {};
+  if (!appleSeite?.an || !appleSeite.seite) return <BestaetigungInhalt />;
+  return (
+    <>
+      <link rel="stylesheet" href={widerrufAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        <BestaetigungInhalt />
+      </AppleSeite>
+    </>
+  );
+}
+
+function BestaetigungInhalt() {
   const actionData = useAktionsergebnisUeberRevalidierung();
   const navigation = useNavigation();
   const submitting = navigation.state !== 'idle';

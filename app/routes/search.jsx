@@ -6,6 +6,10 @@ import {getEmptyPredictiveSearchResult} from '~/lib/search';
 import {ohneAusgeschlossene} from '~/lib/such-ausschluss';
 import {noindexMeta, noindexHeader} from '~/lib/seo';
 import sucheStyles from '~/styles/suche.css?url';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import sucheAppleStyles from '~/styles/suche-apple.css?url';
 
 /**
  * Scope-CSS der Suchflaeche (Token-Satz: Typo-Skala 1.25, 8pt-Grid,
@@ -67,7 +71,9 @@ export async function loader({request, context}) {
     return {term: '', result: null, error: error.message};
   });
 
-  return await searchPromise;
+  const ergebnis = await searchPromise;
+  if (isPredictive) return ergebnis;
+  return {...ergebnis, appleSeite: appleSeiteLaden(context, 'search')};
 }
 
 /**
@@ -75,9 +81,23 @@ export async function loader({request, context}) {
  */
 export default function SearchPage() {
   /** @type {LoaderReturnData} */
-  const {type, term, result, error} = useLoaderData();
+  const {type, term, result, error, appleSeite} = useLoaderData();
   if (type === 'predictive') return null;
 
+  const inhalt = <SucheInhalt term={term} result={result} error={error} />;
+  if (!appleSeite?.an || !appleSeite.seite) return inhalt;
+  return (
+    <>
+      <link rel="stylesheet" href={sucheAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        {inhalt}
+        <AppleAnna />
+      </AppleSeite>
+    </>
+  );
+}
+
+function SucheInhalt({term, result, error}) {
   return (
     <div className="search">
       <section className="search__inhalt" aria-labelledby="suche-titel">
