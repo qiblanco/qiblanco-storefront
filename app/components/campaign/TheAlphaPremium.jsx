@@ -591,7 +591,9 @@ export function TapTitelkarte({titel = THE_ALPHA_KOPF.titel, untertitel = THE_AL
  * Fiction (cremeweiße Serifenschrift auf Schwarz, Quelle unten rechts).
  * Christian 27.10. (Z288/Z289, Z296–Z298): zuerst der Begriff, darunter die
  * Aussprache; beim Scrollen Punkt 1 als eigener Absatz, dann Punkt 2 mit
- * sichtbarem Abstand, dann die Quelle. Wichtige Wörter fett wie im Original. */
+ * sichtbarem Abstand, dann die Quelle. Wichtige Wörter fett wie im Original.
+ * Ohne `quelle` (Christian 03.11.2026: „Mach Google AI weg“) entfällt die
+ * Zeile samt ihrem Scrollschritt, sonst bliebe ein Schritt ohne Inhalt. */
 export function TapWoerterbuch({eintrag = THE_ALPHA_WOERTERBUCH}) {
   const teile = (b) =>
     (Array.isArray(b) ? b : [{text: b}]).map((t, i) =>
@@ -605,7 +607,7 @@ export function TapWoerterbuch({eintrag = THE_ALPHA_WOERTERBUCH}) {
       data-tap-szene=""
       data-tap-scrub=""
       data-tap-scrub-start="1"
-      style={{'--tap-schritte': eintrag.bedeutungen.length + 1}}
+      style={{'--tap-schritte': eintrag.bedeutungen.length + (eintrag.quelle ? 1 : 0)}}
     >
       <div className="tap-wb-bild tap-scrub-bild">
         <div className="tap-wb-blatt">
@@ -621,9 +623,11 @@ export function TapWoerterbuch({eintrag = THE_ALPHA_WOERTERBUCH}) {
               <b>{i + 1}.</b> {teile(b)}
             </p>
           ))}
-          <p className="tap-wb-quelle" data-tap-schritt="">
-            {eintrag.quelle}
-          </p>
+          {eintrag.quelle ? (
+            <p className="tap-wb-quelle" data-tap-schritt="">
+              {eintrag.quelle}
+            </p>
+          ) : null}
         </div>
       </div>
       <span className="tap-buehne-marke" data-tap-marke="" data-tap-ton="klang" aria-hidden="true" />
