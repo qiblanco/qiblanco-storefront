@@ -1,4 +1,4 @@
-import {Form} from 'react-router';
+import {Form, useLoaderData} from 'react-router';
 import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
@@ -7,6 +7,10 @@ import {
   WITHDRAWAL_PRODUCTS,
   validateWithdrawalFormData,
 } from '~/lib/withdrawal';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import widerrufAppleStyles from '~/styles/widerruf-apple.css?url';
 
 const PFAD = '/widerruf';
 const TITEL = 'Vertrag widerrufen | Qi Blanco';
@@ -38,8 +42,8 @@ export const meta = () => [
   ...seitenSignale({pfad: PFAD, titel: TITEL, beschreibung: BESCHREIBUNG}),
 ];
 
-export function loader() {
-  return {};
+export function loader({context}) {
+  return {appleSeite: appleSeiteLaden(context, 'widerruf')};
 }
 
 /**
@@ -77,6 +81,20 @@ export async function action({request}) {
 }
 
 export default function WithdrawalPage() {
+  const {appleSeite} = useLoaderData() ?? {};
+  if (!appleSeite?.an || !appleSeite.seite) return <WiderrufInhalt />;
+  return (
+    <>
+      <link rel="stylesheet" href={widerrufAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        <WiderrufInhalt />
+        <AppleAnna />
+      </AppleSeite>
+    </>
+  );
+}
+
+function WiderrufInhalt() {
   // Über die Revalidierung der Cookie-Wahl gehalten: sonst setzt React die
   // noch unberührten Felder auf den leeren defaultValue zurück.
   const werte = useAktionsergebnisUeberRevalidierung()?.werte || {};

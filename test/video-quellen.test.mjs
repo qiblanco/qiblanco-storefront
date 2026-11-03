@@ -110,7 +110,8 @@ test('Stufendeckel greift nur auf der Shopify-Quelle (imgix-Kappung: 402 auf kle
   assert.ok(basis && !/capLevel/.test(basis[1]), 'Deckel in der Basis: gilt dann auch für imgix');
   assert.match(
     jsx,
-    /new Hls\(\s*quelle === 'shopify' \? \{\.\.\.HLS_KONFIG, \.\.\.HLS_STUFENDECKEL\} : HLS_KONFIG,?\s*\)/,
+    // Der Leitungs-Deckel (3G, leitung.js) sitzt im selben Shopify-Zweig.
+    /new Hls\(\s*quelle === 'shopify'\s*\?\s*\{\s*\.\.\.HLS_KONFIG,\s*\.\.\.HLS_STUFENDECKEL,?\s*(\.\.\.\(stufe === 'langsam' \? HLS_STUFENDECKEL_LANGSAM : \{\}\),?\s*)?\}\s*:\s*HLS_KONFIG,?\s*\)/,
     'Hls-Konstruktor koppelt den Deckel nicht an die Quelle',
   );
 });

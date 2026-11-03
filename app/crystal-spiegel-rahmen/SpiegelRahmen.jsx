@@ -36,10 +36,11 @@ import {NavLink, useLocation} from 'react-router';
 import {KAKAO_MENUE, sorteZuPfad} from '~/crystal-spiegel/lib/kakao-zone';
 import {SPIEGEL_STILE, SPIEGEL_WURZEL_ID} from '~/crystal-spiegel/stile';
 import {SPIEGEL_SEITEN, zuCrystal} from './pfade';
+import rahmenStil from '~/styles/crystal-spiegel-rahmen.css?url';
 
-/** Stylesheets des Spiegels: crystals Wurzel-Stylesheets, gescoped. */
+/** Stylesheets des Spiegels: crystals Wurzel-Stylesheets, gescoped, dazu die Regeln der Hülle. */
 export function spiegelStile() {
-  return SPIEGEL_STILE.map((href) => ({rel: 'stylesheet', href}));
+  return [...SPIEGEL_STILE, rahmenStil].map((href) => ({rel: 'stylesheet', href}));
 }
 
 /** Die Reiter: Menüpunkte von crystal-cacao.com, deren Ziel gespiegelt ist. */

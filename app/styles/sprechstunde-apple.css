@@ -1,0 +1,55 @@
+/*
+ * APPLE-FASSUNG /pages/sprechstunde (Grossjob 20261029-GROSSJOB-alle-shop-
+ * seiten-apple-niveau-ausser-seo-geo, s12-r4). Lädt nur mit Schalter an.
+ * Kaufweg, Formular, Inhalt und Reihenfolge bleiben die aus C
+ * (components/campaign/SprechstundeSeite.jsx). Die sp-Tokens aus sprechstunde.css
+ * zeigen im Apple-Scope auf --as-*: dieselbe Tinte, dasselbe Grau, dieselbe
+ * Fläche, dieselbe Skala, derselbe Radius wie auf den Apple-Kaufseiten.
+ *
+ * Skala 14 · 17 · 21 · 24 (EIN H2-Stil) · H1 28 (Handy, reset.css) / 40,
+ * Tageszahl 28.
+ */
+[data-apple-seite='sprechstunde'] .sp {
+  --sp-font: inherit;
+  --sp-fs-xs: var(--as-fs-2);
+  --sp-fs-base: var(--as-fs-3);
+  --sp-fs-md: var(--as-fs-3);
+  --sp-fs-lg: var(--as-fs-4);
+  --sp-fs-h2: var(--as-fs-5);
+  --sp-fs-xl: var(--as-fs-6);
+  --sp-fs-h1: var(--as-fs-7);
+
+  --sp-s1: var(--as-s-1);
+  --sp-s2: var(--as-s-2);
+  --sp-s3: var(--as-s-3);
+  --sp-s4: var(--as-s-4);
+  --sp-s6: var(--as-s-6);
+  --sp-s8: var(--as-s-8);
+  --sp-s12: var(--as-s-12);
+
+  --sp-grund: var(--as-weiss);
+  --sp-flaeche: var(--as-flaeche);
+  --sp-dunkel: var(--as-band);
+  --sp-text: var(--as-tinte);
+  --sp-text-hell: var(--as-weiss);
+  --sp-muted: var(--as-grau);
+  --sp-akzent: var(--as-gold);
+  --sp-linie: var(--as-linie);
+  --sp-r1: var(--as-s-1);
+  --sp-r2: var(--as-radius);
+  --sp-breite: var(--as-breite);
+  --sp-breite-schmal: var(--as-text-breite);
+  --sp-mass: var(--as-text-breite);
+  --sp-tipp: var(--as-tippziel);
+
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-apple-seite='sprechstunde'] .sp :where(h1, h2, h3) {
+  text-shadow: none;
+}
+
+[data-apple-seite='sprechstunde'] .as-anna .as-absatz {
+  font-size: var(--as-fs-3);
+}

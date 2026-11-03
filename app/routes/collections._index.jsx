@@ -4,6 +4,10 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {absoluteCanonical, canonicalLink, istNichtIndexierbareKollektion}
   from '~/lib/seo';
 import {kollektionSignale} from '~/lib/kollektion-seo';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import kollektionAppleStyles from '~/styles/kollektion-apple.css?url';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -50,7 +54,11 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  return {
+    ...deferredData,
+    ...criticalData,
+    appleSeite: appleSeiteLaden(args.context, 'collections'),
+  };
 }
 
 /**
@@ -113,6 +121,20 @@ function loadDeferredData({context}) {
 }
 
 export default function Collections() {
+  const {appleSeite} = useLoaderData();
+  if (!appleSeite?.an || !appleSeite.seite) return <KollektionenInhalt />;
+  return (
+    <>
+      <link rel="stylesheet" href={kollektionAppleStyles} />
+      <AppleSeite seite={appleSeite.seite}>
+        <KollektionenInhalt />
+        <AppleAnna />
+      </AppleSeite>
+    </>
+  );
+}
+
+function KollektionenInhalt() {
   /** @type {LoaderReturnData} */
   const {collections} = useLoaderData();
 

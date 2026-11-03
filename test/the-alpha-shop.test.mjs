@@ -456,6 +456,7 @@ test('Funnel-Kopf: nur /products/qi-alpha, nicht B-Fassung, Wunschnummer oder Ke
     '/products/qi-alpha-b',
     '/products/qi-alpha-wunschnummer',
     '/products/qi-alpha-goldkette',
+    '/products/qi-alpha-stahlkette',
     '/products/qi-alpha-reserviert',
     '/products/qi-alpha-reserviert/kurz',
     '/products/qione-2-pro',

@@ -239,7 +239,7 @@ export const QIONE_2_PRO_DETAILS = Object.freeze([
     art: 'fakten',
     titel: 'Gebaut für ein ganzes Leben.',
     kacheln: [
-      {zahl: 'Jahrzehnte', titel: 'Vererbbar', satz: 'Erst trägst du ihn. Dann die nächste Generation.'},
+      {zahl: 'Jahrzehnte', titel: 'Robust', satz: 'Kein Akku, keine Elektronik. Nichts, das leer wird.'},
       {zahl: 'Wasserfest', titel: 'Überall mit dir', satz: 'Sauna, Meer, Chlor, Schweiß, Sonne. Er bleibt dran.'},
       {zahl: '8×', titel: 'Leistungsvolumen', satz: 'Achtmal so viel wie der QiOne® 1.'},
     ],
@@ -273,7 +273,7 @@ export const QIONE_2_PRO_DETAILS = Object.freeze([
       },
       {
         f: 'Wie lange hält der QiOne® 2 Pro?',
-        a: 'Jahrzehnte. Ohne Akku und ohne Elektronik gibt es nichts, das leer wird. Du trägst ihn, solange du willst, und vererbst ihn dann.',
+        a: 'Jahrzehnte. Ohne Akku und ohne Elektronik gibt es nichts, das leer wird. Du trägst ihn, solange du willst.',
       },
       {
         f: 'Kann ich ihn zurückgeben, wenn er nicht zu mir passt?',

@@ -30,6 +30,9 @@ export const KONFIGURATOR_SCHALTER = Object.freeze({
   qibracelet: 'KONFIGURATOR_QIBRACELET',
   // s13 (Christian Zx 29.10.2026): weitere Shop-Seiten im Apple-Stil.
   'qione-kette': 'KONFIGURATOR_QIONE_KETTE',
+  // s13-r3: die zwei Angebotsseiten (Ziel verschickter Angebotslinks, noindex).
+  pjdz538hgs0: 'KONFIGURATOR_PJDZ538HGS0',
+  '8kendiw34hd': 'KONFIGURATOR_8KENDIW34HD',
 });
 
 /** true nur, wenn der Schalter des Produkts genau 'on' ist (Default AUS). */
@@ -64,7 +67,8 @@ export async function ladeProduktSeite({context, request}, {handle, query, daten
     ladeVergleichsPreise(storefront),
     // Ketten-Kacheln des Konfigurators. FAIL-SOFT: scheitert die Abfrage,
     // entfällt nur der Schritt, der Kauf des Geräts bleibt heil.
-    konfigurator && daten?.KETTE ? ladeAlphaKetten(storefront, daten) : null,
+    // KETTE_IM_SET (s13-r3): die Kette liegt bei, geladen werden ihre Längen.
+    konfigurator && (daten?.KETTE || daten?.KETTE_IM_SET) ? ladeAlphaKetten(storefront, daten) : null,
   ]);
 
   if (!product?.id) {
