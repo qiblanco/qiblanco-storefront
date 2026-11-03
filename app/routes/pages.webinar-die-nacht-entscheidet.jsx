@@ -1,6 +1,8 @@
 import {useLoaderData} from 'react-router';
 import {ANMELDE_ENDPUNKT} from '~/components/reusables/Anmeldeweiche';
 import {NachtWebinarSeite} from '~/components/campaign/NachtWebinarSeite';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {NachtWebinarApple} from '~/components/apple-seite/lp/NachtWebinarApple';
 import {FORMULAR} from '~/components/campaign/nacht-webinar';
 import nachtStyles from '~/styles/webinar-nacht.css?url';
 
@@ -67,7 +69,9 @@ async function holeWegeServer(holer = fetch, ms = WARTE_MS) {
   }
 }
 
-export async function loader({request}) {
+export async function loader({request, context}) {
+  // APPLE-FASSUNG (s07-r8): Schalter in app/lib/apple-seiten.js, aus = C unverändert.
+  const appleSeite = appleSeiteLaden(context, appleSeiteFuerPfad('/pages/webinar-die-nacht-entscheidet'));
   const wege = await holeWegeServer();
   const bestaetigt = new URL(request.url).searchParams.get('angemeldet') === 'bestaetigt';
   return {
@@ -75,10 +79,12 @@ export async function loader({request}) {
     weg: wege ? String(wege.formulare[FORMULAR] || 'aus') : 'aus',
     stand: wege ? String(wege.stand || '') : '',
     bestaetigt,
+    appleSeite,
   };
 }
 
 export default function WebinarDieNachtEntscheidet() {
   const daten = useLoaderData();
+  if (daten.appleSeite?.an) return <NachtWebinarApple seite={daten.appleSeite.seite} daten={daten} />;
   return <NachtWebinarSeite daten={daten} />;
 }

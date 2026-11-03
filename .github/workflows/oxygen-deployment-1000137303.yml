@@ -150,6 +150,10 @@ jobs:
           KONFIGURATOR_QIBRACELET: ${{ github.ref_name == 'main' && 'on' || '' }}
           # s13 (Christian Zx 29.10.2026): Kette im Apple-Stil; '' = heutige Seite (Rueckweg).
           KONFIGURATOR_QIONE_KETTE: ${{ github.ref_name == 'main' && 'on' || '' }}
+          # s13-r3 (Christian Zx 29.10.2026): die zwei Angebotsseiten im Apple-Stil.
+          # Ohne C-Route: '' = heutige Seite (eigene Route, Kopie der Sammelroute).
+          KONFIGURATOR_PJDZ538HGS0: ${{ github.ref_name == 'main' && 'on' || '' }}
+          KONFIGURATOR_8KENDIW34HD: ${{ github.ref_name == 'main' && 'on' || '' }}
         run: |
           {
             printf 'SESSION_SECRET=%s\n' "$SESSION_SECRET"
@@ -179,6 +183,8 @@ jobs:
             printf 'KONFIGURATOR_QIHOME_AIR=%s\n' "$KONFIGURATOR_QIHOME_AIR"
             printf 'KONFIGURATOR_QIBRACELET=%s\n' "$KONFIGURATOR_QIBRACELET"
             printf 'KONFIGURATOR_QIONE_KETTE=%s\n' "$KONFIGURATOR_QIONE_KETTE"
+            printf 'KONFIGURATOR_PJDZ538HGS0=%s\n' "$KONFIGURATOR_PJDZ538HGS0"
+            printf 'KONFIGURATOR_8KENDIW34HD=%s\n' "$KONFIGURATOR_8KENDIW34HD"
           } > "$RUNNER_TEMP/oxygen.env"
           echo "OXYGEN_ENV_FILE=$RUNNER_TEMP/oxygen.env" >> "$GITHUB_ENV"
 

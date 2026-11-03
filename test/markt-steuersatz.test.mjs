@@ -40,7 +40,7 @@ import {setzePreismodus} from '../app/lib/preismodus.js';
 // 2026-10-09). Seit dem Kipp ist PREISMODUS_VORGABE 'brutto'; der Netto-Pfad
 // bleibt als Rueckbau-Weg im Code und wird hier gepinnt. Brutto: preismodus.test.mjs.
 setzePreismodus('netto');
-import {readFileSync, readdirSync, statSync} from 'node:fs';
+import {readFileSync, readdirSync} from 'node:fs';
 import {join} from 'node:path';
 
 import {
@@ -239,14 +239,30 @@ const KANON_DATEIEN = new Set([
   'app/lib/produkt-schema.js',
 ]);
 
+// Die Suite läuft parallel, und Nachbartests legen Wegwerf-Dateien unter
+// app/ an und löschen sie wieder (google-reviews-ausschluss.test.mjs:
+// app/lib/.test-googleRating-server-<pid>.mjs). Eine Datei, die zwischen
+// readdir und dem Lesen verschwindet, ist KEIN Aufrufer und kein Befund --
+// am 2026-11-01 machte genau das diesen Arm unter Last rot (ENOENT, stat),
+// und der Gate-Cache hielt das Rot für den Tag. Darum: Dateityp aus dem
+// Verzeichniseintrag (kein zweites stat) und ENOENT beim Lesen -> Restbericht.
 function quellDateien(wurzel) {
   const raus = [];
-  for (const e of readdirSync(wurzel)) {
-    const p = join(wurzel, e);
-    if (statSync(p).isDirectory()) raus.push(...quellDateien(p));
-    else if (/\.(jsx?|mjs)$/.test(e)) raus.push(p);
+  for (const e of readdirSync(wurzel, {withFileTypes: true})) {
+    const p = join(wurzel, e.name);
+    if (e.isDirectory()) raus.push(...quellDateien(p));
+    else if (e.isFile() && /\.(jsx?|mjs)$/.test(e.name)) raus.push(p);
   }
   return raus;
+}
+
+function liesOderVerschwunden(datei) {
+  try {
+    return readFileSync(datei, 'utf8');
+  } catch (err) {
+    if (err && err.code === 'ENOENT') return null;
+    throw err;
+  }
 }
 
 /** Argumente eines Aufrufs -- klammerbalanciert, damit `f(g(a,b), c)` als 2 zählt. */
@@ -294,7 +310,12 @@ test('(C) jeder Aufruf des Steuer-Kanons gibt ein Markt-Land mit', () => {
       rest.push(`${rel}: Kanon-Definition selbst (Pruefgegenstand, kein Aufrufer)`);
       continue;
     }
-    const quelle = ohneKommentare(readFileSync(datei, 'utf8'));
+    const roh = liesOderVerschwunden(datei);
+    if (roh === null) {
+      rest.push(`${rel}: verschwand während des Laufs (Wegwerf-Datei eines Nachbartests)`);
+      continue;
+    }
+    const quelle = ohneKommentare(roh);
     for (const [name, mindest] of Object.entries(MINDEST_ARGUMENTE)) {
       const re = new RegExp(`\\b${name}\\s*\\(`, 'g');
       let m;

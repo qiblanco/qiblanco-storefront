@@ -213,3 +213,45 @@ test('boxKacheln: nur Teile mit Name und Bild, nie eine Textzeile', () => {
   assert.deepEqual(L.boxKacheln([{name: 'Ohne Bild'}]), []);
   assert.deepEqual(L.boxKacheln(null), []);
 });
+
+test('Kette im Set (s13-r3): alle Längen mit Lieferbarkeit, Vorwahl, Zeilenattribut', () => {
+  const kette = {
+    variants: {
+      nodes: [
+        v('k60', 'L - 60 cm', []),
+        v('k40', 'XS - 40 cm', []),
+        v('k50', 'M - 50 cm', [], false),
+        v('k75', 'XL - 75 cm', [], false),
+        v('k45', 'S - 45cm', []),
+      ],
+    },
+  };
+  const k = L.laengenKacheln(kette);
+  assert.deepEqual(k.map((x) => x.cm), [40, 45, 50, 60, 75]);
+  assert.deepEqual(k.filter((x) => !x.verfuegbar).map((x) => x.cm), [50, 75]);
+  assert.equal(L.startLaenge(k, 60), 60);
+  // gewünschte Länge ausverkauft: die erste lieferbare
+  assert.equal(L.startLaenge(k, 50), 40);
+  assert.equal(L.startLaenge([], 60), null);
+  assert.deepEqual(L.laengenAttribut(60), [{key: 'Kettenlänge', value: '60 cm'}]);
+  assert.equal(L.laengenAttribut(null), null);
+  const z = L.warenkorbZeilen(EINS, null, L.laengenAttribut(45));
+  assert.deepEqual(z[0].attributes, [{key: 'Kettenlänge', value: '45 cm'}]);
+  // ohne Attribut: Zeile wie bisher, kein leeres Feld
+  assert.equal('attributes' in L.warenkorbZeilen(EINS)[0], false);
+});
+
+test('Kette im Set (s13-r3): ohne Kettendaten die Längen der Datenstelle, alle wählbar', () => {
+  // Abfrage gescheitert oder Kette im Markt nicht veröffentlicht: das Set
+  // darf nicht ohne Längenwahl in den Warenkorb.
+  for (const leer of [null, {variants: {nodes: []}}]) {
+    const k = L.laengenKacheln(leer, ['75', '40', '60']);
+    assert.deepEqual(k.map((x) => x.cm), [40, 60, 75]);
+    assert.ok(k.every((x) => x.verfuegbar));
+    assert.equal(L.startLaenge(k, 60), 60);
+  }
+  // Live-Daten gewinnen, die Ersatzliste greift dann nicht.
+  const live = {variants: {nodes: [v('k45', 'S - 45cm', [], false)]}};
+  assert.deepEqual(L.laengenKacheln(live, ['60']).map((x) => [x.cm, x.verfuegbar]), [[45, false]]);
+  assert.deepEqual(L.laengenKacheln(null), []);
+});

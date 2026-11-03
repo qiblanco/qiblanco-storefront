@@ -1,8 +1,8 @@
 import {useEffect} from 'react';
 import {
   AUSWEICH_SELEKTOR,
+  ausweichStrecke,
   BEREIT_ATTRIBUT,
-  chatHub,
   DOCK_KLASSE,
   HUB_ATTRIBUT,
   HUB_VARIABLE,
@@ -19,9 +19,7 @@ import {
   rahmenOffen,
   ruhelage,
   UEBERDECKUNG_ATTRIBUT,
-  ueberdecktKaufknopf,
   verschiebungY,
-  verschoben,
 } from '~/lib/kaufknopf-chat';
 
 /**
@@ -116,6 +114,18 @@ import {
  * gegen das gemessene Rechteck: das enthält die Transformation und läge
  * mitten im Übergang noch über dem Knopf der Leiste. Regel, Falle und
  * Rückweg: lib/kaufknopf-chat.js, chatHub.
+ *
+ * UND AUCH VOR KNÖPFEN IM SEITENINHALT WEICHT ES AUS, STATT ZU VERSCHWINDEN
+ * (Folgeauftrag 20261101-anna-weicht-inhalts-kaufknoepfen-aus-statt-
+ * unsichtbar, Übergabe #80). Gemessen 31.10.2026 auf /pages/start-b, 390x844:
+ * die Einladungsblase deckte den Hero-Knopf, das iframe stand ab dem Laden auf
+ * visibility:hidden, der Kunde sah Anna dort nie. Seitdem rutscht das
+ * geschlossene Widget um die kleinste Strecke hoch, deren Ziellage keinen
+ * Kaufknopf mehr deckt (lib/kaufknopf-chat.js, ausweichStrecke); dieselbe
+ * Verschiebung wie über der Leiste, dieselbe Regel in app.css. Die
+ * Unterdrückung oben (data-chat-deckt-kaufknopf) bleibt nur der Rückfall, wenn
+ * keine Strecke frei ist. Die Auflösung „nach unten“ in den Absätzen davor
+ * beschreibt also den Stand bis 01.11.2026. Rückweg: AUSWEICHEN_AN = false.
  */
 
 // Modulweit statt je Effekt: der Rahmen überlebt Client-Navigationen (er hängt
@@ -209,25 +219,31 @@ export function KaufknopfChatSignal() {
           leisten.push(l.getBoundingClientRect());
         });
       }
-      const hub = chatHub({ruhe, leisten, fensterHoehe, angedockt});
       const offen = rahmenOffen({rahmen: ruhe, fensterHoehe, angedockt});
       const knoepfe = rahmen ? knopfRechtecke() : [];
       // Hochgerutscht deckt die Kugel auch keine Slider-Pfeile (lib, PFEIL_SELEKTOR).
-      if (hub > 0) {
+      const pfeile = [];
+      if (rahmen) {
         document.querySelectorAll(PFEIL_SELEKTOR).forEach((b) => {
           const r = b.getBoundingClientRect();
           if (r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < fensterHoehe) {
-            knoepfe.push(r);
+            pfeile.push(r);
           }
         });
       }
-      const unterdruecken = ueberdecktKaufknopf({
-        rahmen: verschoben(ruhe, hub),
+      // Ausweichen statt Verschwinden (lib, ausweichStrecke): die kleinste
+      // Strecke nach oben, deren Ziellage nichts deckt. frei=false ist der
+      // Rückfall: dann blendet das Signal wie vor #80 aus (offen, angedockt
+      // und ohne Rahmen ist frei immer true, wer den Chat berührt hat, behält ihn).
+      const {hub, frei} = ausweichStrecke({
+        ruhe,
+        leisten,
         knoepfe,
+        pfeile,
         fensterHoehe,
         angedockt,
-        beruehrt: chatBeruehrt,
       });
+      const unterdruecken = !frei && !chatBeruehrt;
       // Strecke vor dem Attribut: im selben synchronen Schritt, ohne Bild
       // dazwischen. Ohne Verschiebung bleibt keine Variable stehen.
       const hubWert = hub > 0 ? `${hub}px` : '';

@@ -1,0 +1,94 @@
+/*
+ * APPLE-FASSUNG /search (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-
+ * niveau-ausser-seo-geo, s12-r4). Lädt nur mit Schalter an. Suchfeld, Treffer
+ * und Wortlaut bleiben die aus C. Die qs-Tokens aus suche.css zeigen im
+ * Apple-Scope auf --as-*. Skala 14 · 17 · 21 · 24 · H1 28 (Handy) / 40.
+ */
+[data-apple-seite='search'] .search {
+  --qs-t-50: var(--as-fs-2);
+  --qs-t-100: var(--as-fs-3);
+  --qs-t-200: var(--as-fs-4);
+  --qs-t-300: var(--as-fs-5);
+  --qs-t-400: var(--as-fs-7);
+  --qs-t-500: var(--as-fs-7);
+
+  --qs-s-1: var(--as-s-1);
+  --qs-s-2: var(--as-s-2);
+  --qs-s-3: var(--as-s-3);
+  --qs-s-4: var(--as-s-4);
+  --qs-s-6: var(--as-s-6);
+  --qs-s-8: var(--as-s-8);
+  --qs-s-12: var(--as-s-12);
+
+  --qs-r-1: var(--as-s-1);
+  --qs-r-2: var(--as-radius);
+
+  --qs-grund: var(--as-weiss);
+  --qs-flaeche: var(--as-flaeche);
+  --qs-text: var(--as-tinte);
+  --qs-muted: var(--as-grau);
+  --qs-linie: var(--as-linie);
+
+  /* Die Anna-Kachel steht darunter, die Seite braucht keine Mindesthöhe mehr. */
+  min-height: 0;
+}
+
+[data-apple-seite='search'] .search :where(h1, h2, h3) {
+  color: var(--as-tinte);
+  text-shadow: none;
+}
+[data-apple-seite='search'] .search h1 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+[data-apple-seite='search'] .search__inhalt {
+  max-width: var(--as-text-breite);
+  padding: var(--as-s-8) var(--as-s-2);
+}
+@media (min-width: 750px) {
+  [data-apple-seite='search'] .search__inhalt {
+    padding-block: var(--as-s-12);
+  }
+}
+[data-apple-seite='search'] .search__kicker {
+  color: var(--as-gold-tinte);
+  font-size: var(--as-fs-2);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+[data-apple-seite='search'] .search__lead {
+  font-size: var(--as-fs-3);
+  line-height: 1.5;
+}
+[data-apple-seite='search'] .search__leer p {
+  font-size: var(--as-fs-3);
+  line-height: 1.5;
+}
+[data-apple-seite='search'] .search__feld {
+  background: var(--as-weiss);
+  min-height: var(--as-tippziel);
+  padding: var(--as-s-1) var(--as-s-2);
+}
+[data-apple-seite='search'] .search__knopf {
+  background: var(--as-gold);
+  border-radius: var(--as-s-1);
+  font-size: var(--as-fs-3);
+  font-weight: 600;
+  min-height: var(--as-tippziel);
+  padding: var(--as-s-1) var(--as-s-3);
+}
+[data-apple-seite='search'] .as-anna {
+  margin-inline: auto;
+  max-width: var(--as-text-breite);
+}
+[data-apple-seite='search'] .search__feld,
+[data-apple-seite='search'] .search__knopf {
+  height: var(--as-tippziel);
+  padding-block: 0;
+}
+
+[data-apple-seite='search'] .as-anna .as-absatz {
+  font-size: var(--as-fs-3);
+}

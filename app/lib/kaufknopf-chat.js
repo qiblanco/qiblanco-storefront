@@ -352,3 +352,108 @@ export function rahmenOffen({rahmen, fensterHoehe, angedockt}) {
   if (!rahmen) return false;
   return rahmen.bottom - rahmen.top > fensterHoehe * GESCHLOSSEN_MAX_ANTEIL + 1;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * DAS GESICHT WEICHT AUCH KNÖPFEN IM SEITENINHALT AUS (Folgeauftrag
+ * 20261101-anna-weicht-inhalts-kaufknoepfen-aus-statt-unsichtbar, Übergabe
+ * #80 des Grossjobs vom 25.10.2026; dieselbe Christian-Zeile wie oben).
+ *
+ * Bis hier galt das Hochrutschen nur für die Kaufleiste. Deckte die Kugel
+ * oder die Einladungsblase einen Kaufknopf IM SEITENINHALT, blendete
+ * ueberdecktKaufknopf sie aus. Gemessen im Merge s05 (31.10.2026 ~23:50Z):
+ * auf /pages/start-b bei 390x844 stand das iframe ab dem Laden auf
+ * visibility:hidden, weil die Blase [85,649, 298x188] den Hero-Knopf deckte,
+ * und blieb es auch nach dem Scrollen. Der Kunde sah Anna dort nie. Auf
+ * /products/qione-2-pro-b bei 412 verschwand die hochgerutschte Kugel über
+ * den Slider-Pfeilen.
+ *
+ * Die stehende Regel (design-meister web-soll.yaml overlay_ordnung, seit
+ * 31.10.): das kleinere Element weicht per transform aus, es verschwindet
+ * nicht. Deshalb rutscht das geschlossene Widget jetzt so weit hoch, bis
+ * seine Ziellage keinen Kaufknopf (und hochgerutscht keinen Slider-Pfeil)
+ * mehr deckt. Die Strecke ist die KLEINSTE, die frei ist: Kandidaten sind
+ * der Hub der Leiste und je Hindernis „Unterkante ABSTAND_PX über seiner
+ * Oberkante“. Nur nach oben, wie Christian es gesagt hat; nach unten ist
+ * unter der Kugel kaum Platz (74 px bis zur Fensterkante, darunter die
+ * Browserleiste).
+ *
+ * Ausblenden bleibt nur als letzter Rückfall: wenn keine Strecke frei ist,
+ * ohne dass der Rahmen oben aus dem Fenster ragt (RAND_PX). Das braucht
+ * einen Stapel von Knöpfen bis fast an den Seitenkopf.
+ *
+ * RÜCKWEG: AUSWEICHEN_AN = false. Dann gilt wieder chatHub allein (nur die
+ * Leiste) und das Ausblenden über Inhalts-Knöpfen, Stand vor diesem Bau.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Code-Schalter des Ausweichens vor Inhalts-Knöpfen. false = Stand vor #80. */
+export const AUSWEICHEN_AN = true;
+
+/** So nah darf der hochgerutschte Rahmen der Oberkante des Fensters kommen. */
+export const RAND_PX = 8;
+
+/** Überschneidet der Rahmen ein Hindernis (mit ABSTAND_PX Luft)? */
+function deckt(rahmen, k) {
+  return (
+    k.right > k.left &&
+    k.bottom > k.top &&
+    k.left < rahmen.right + ABSTAND_PX &&
+    k.right > rahmen.left - ABSTAND_PX &&
+    k.top < rahmen.bottom + ABSTAND_PX &&
+    k.bottom > rahmen.top - ABSTAND_PX
+  );
+}
+
+/**
+ * Wohin weicht das geschlossene Widget aus? Reine Entscheidung, ohne DOM.
+ *
+ * @param {{
+ *   ruhe: {left:number, top:number, right:number, bottom:number} | null,
+ *   leisten: Array<{left:number, top:number, right:number, bottom:number}>,
+ *   knoepfe: Array<{left:number, top:number, right:number, bottom:number}>,
+ *   pfeile?: Array<{left:number, top:number, right:number, bottom:number}>,
+ *   fensterHoehe: number,
+ *   angedockt: boolean,
+ *   an?: boolean,
+ *   ausweichen?: boolean,
+ * }} lage
+ * @returns {{hub: number, frei: boolean}} hub = px nach oben (0 = Ruhelage);
+ *   frei = false heißt: keine Strecke ist frei, der Rückfall blendet aus.
+ */
+export function ausweichStrecke({
+  ruhe,
+  leisten,
+  knoepfe,
+  pfeile = [],
+  fensterHoehe,
+  angedockt,
+  an = HOCHRUTSCHEN_AN,
+  ausweichen = AUSWEICHEN_AN,
+}) {
+  const basis = chatHub({ruhe, leisten, fensterHoehe, angedockt, an});
+  // Offen, angedockt oder ohne Rahmen: nichts zu entscheiden (ueberdecktKaufknopf
+  // blendet dort ebenfalls nie aus).
+  if (!ruhe || rahmenOffen({rahmen: ruhe, fensterHoehe, angedockt})) {
+    return {hub: basis, frei: true};
+  }
+  if (!(ruhe.bottom > ruhe.top && ruhe.right > ruhe.left)) {
+    return {hub: basis, frei: true};
+  }
+  const hindernisse = (hub) => (hub > 0 ? [...knoepfe, ...pfeile] : knoepfe);
+  const frei = (hub) =>
+    !hindernisse(hub).some((k) => deckt(verschoben(ruhe, hub), k));
+  if (!an || !ausweichen) return {hub: basis, frei: frei(basis)};
+  const hoechstens = Math.floor(ruhe.top - RAND_PX);
+  const kandidaten = [basis];
+  for (const k of [...knoepfe, ...pfeile]) {
+    if (!(k.bottom > k.top && k.right > k.left)) continue;
+    // Nur, was waagrecht unter dem Rahmen liegt, kann ihn verdrängen.
+    if (k.right <= ruhe.left - ABSTAND_PX || k.left >= ruhe.right + ABSTAND_PX) continue;
+    const hub = Math.ceil(ruhe.bottom - k.top + ABSTAND_PX);
+    if (hub > basis && hub <= hoechstens) kandidaten.push(hub);
+  }
+  kandidaten.sort((a, b) => a - b);
+  for (const hub of kandidaten) {
+    if (frei(hub)) return {hub, frei: true};
+  }
+  return {hub: basis, frei: false};
+}

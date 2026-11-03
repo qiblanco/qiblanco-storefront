@@ -88,6 +88,7 @@ const PFLICHT = [
 const NACHBARN = [
   '/products/qi-alpha-goldkette',
   '/products/qi-alpha-wunschnummer',
+  '/products/qi-alpha-stahlkette',
   '/products/qi-master-goldkette',
   '/products/qi-master-wunschnummer',
   '/pages/qi-alpha-b-test',

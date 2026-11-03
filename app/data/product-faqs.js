@@ -86,7 +86,7 @@ export const FAQ_QI_MASTER = [
   },
   {
     q: 'Was unterscheidet den Qi Alpha® vom QiOne® 2 Pro?',
-    a: 'Der Qi Alpha® ist der QiOne mit Diamanten: Er trägt denselben Gitterchip® der zweiten Generation wie der QiOne® 2 Pro – dazu echte Diamanten und eine Iris mit 64 Strichen rund um das Auge, 32 lange und 32 kurze. Für den Gitterchip® kommt eine eigene spezielle 750er Goldlegierung zum Einsatz. Jeder Qi Alpha® ist nummeriert.',
+    a: 'Der Qi Alpha® trägt denselben Gitterchip® der zweiten Generation wie der QiOne® 2 Pro – dazu \u201eThe One Eye\u201c, einen echten Naturdiamanten, und eine Iris mit 64 Strichen rund um das Auge, 32 lange und 32 kurze. Für den Gitterchip® kommt eine eigene spezielle 750er Goldlegierung zum Einsatz. Jeder Qi Alpha® ist nummeriert.',
   },
   {
     q: 'Wie funktioniert der Gitterchip®?',
@@ -94,7 +94,7 @@ export const FAQ_QI_MASTER = [
     flag: 'eso-buzzword',
   },
   {
-    q: 'Warum sind Diamanten im Qi Alpha®?',
+    q: 'Warum sitzt ein Diamant im Qi Alpha®?',
     a: 'Ein Diamant ist reiner Kohlenstoff – dasselbe Element, das jede Zelle deines Körpers aufbaut. In der Literatur wird dieser Zusammenhang beschrieben (Michael König, 2011); dass sich damit im Schmuckstück Frequenzen erzeugen lassen, die dem Schwingungsbereich menschlicher Zellen näher liegen, ist unsere Deutung.',
   },
   {

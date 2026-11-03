@@ -1,0 +1,156 @@
+/*
+ * APPLE-FASSUNG /widerruf und /widerruf/bestaetigen (Grossjob 20261029-
+ * GROSSJOB-alle-shop-seiten-apple-niveau-ausser-seo-geo, s12-r4). Lädt nur mit
+ * Schalter an. Formular, Felder, Reihenfolge und Wortlaut bleiben die aus C;
+ * hier ändert sich nur die Gestalt, nur mit --as-*-Tokens (BAUKASTEN §2).
+ * Skala wie rechtsseite-apple.css: 14 · 17 · 21 · 24 · H1 28 (Handy) / 40.
+ */
+[data-apple-seite^='widerruf'] .withdrawal-page {
+  --qw-t-50: var(--as-fs-2);
+  --qw-t-100: var(--as-fs-3);
+  --qw-t-200: var(--as-fs-4);
+  --qw-t-300: var(--as-fs-5);
+  --qw-t-400: var(--as-fs-7);
+  --qw-t-500: var(--as-fs-7);
+
+  color: var(--as-tinte);
+  max-width: var(--as-text-breite);
+  padding: var(--as-s-8) var(--as-s-2);
+}
+@media (min-width: 750px) {
+  [data-apple-seite^='widerruf'] .withdrawal-page {
+    padding-block: var(--as-s-12);
+  }
+}
+
+[data-apple-seite^='widerruf'] .withdrawal-page :where(h1, h2, h3) {
+  color: var(--as-tinte);
+  text-shadow: none;
+}
+[data-apple-seite^='widerruf'] .withdrawal-page h1 {
+  font-size: var(--as-fs-7);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin-bottom: var(--as-s-2);
+}
+[data-apple-seite^='widerruf'] .withdrawal-page h2 {
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: var(--as-s-1);
+}
+:where([data-apple-seite^='widerruf'] .withdrawal-page) p,
+:where([data-apple-seite^='widerruf'] .withdrawal-page) li,
+:where([data-apple-seite^='widerruf'] .withdrawal-page) dt,
+:where([data-apple-seite^='widerruf'] .withdrawal-page) dd {
+  font-size: var(--as-fs-3);
+}
+[data-apple-seite^='widerruf'] .withdrawal-hero {
+  margin-bottom: var(--as-s-6);
+}
+[data-apple-seite^='widerruf'] .withdrawal-hero p,
+[data-apple-seite^='widerruf'] .withdrawal-panel p {
+  color: var(--as-grau);
+  font-size: var(--as-fs-3);
+  line-height: 1.5;
+}
+[data-apple-seite^='widerruf'] .withdrawal-page p.withdrawal-kicker {
+  color: var(--as-gold-tinte);
+  font-size: var(--as-fs-2);
+  font-weight: 600;
+  letter-spacing: 0;
+  margin-bottom: var(--as-s-1);
+  text-transform: none;
+}
+
+/* Fläche statt Rahmen: eine Karte im Ton der Kaufseiten. */
+[data-apple-seite^='widerruf'] .withdrawal-panel {
+  background: var(--as-flaeche);
+  border: 0;
+  border-radius: var(--as-radius);
+  padding: var(--as-s-3);
+}
+@media (min-width: 750px) {
+  [data-apple-seite^='widerruf'] .withdrawal-panel {
+    padding: var(--as-s-6);
+  }
+}
+[data-apple-seite^='widerruf'] .withdrawal-panel--success {
+  background: var(--as-flaeche);
+}
+
+[data-apple-seite^='widerruf'] .withdrawal-form {
+  gap: var(--as-s-3);
+  margin-top: var(--as-s-3);
+}
+[data-apple-seite^='widerruf'] .withdrawal-form label {
+  gap: var(--as-s-1);
+}
+[data-apple-seite^='widerruf'] .withdrawal-form span {
+  font-size: var(--as-fs-2);
+  font-weight: 600;
+}
+[data-apple-seite^='widerruf'] .withdrawal-form input,
+[data-apple-seite^='widerruf'] .withdrawal-form select {
+  background: var(--as-weiss);
+  border: var(--as-strich) solid var(--as-linie);
+  border-radius: var(--as-s-1);
+  color: var(--as-tinte);
+  font-size: var(--as-fs-3);
+  max-width: none;
+  min-height: var(--as-tippziel);
+  padding: var(--as-s-1) var(--as-s-2);
+}
+[data-apple-seite^='widerruf'] .withdrawal-form input:focus-visible,
+[data-apple-seite^='widerruf'] .withdrawal-form select:focus-visible {
+  outline: var(--as-strich-stark) solid var(--as-tinte);
+  outline-offset: var(--as-strich);
+}
+
+/* Der Knopf ist die eine Handlung. Tinte wie C, kein Gold: hier wird nichts
+   verkauft. */
+[data-apple-seite^='widerruf'] .withdrawal-button {
+  background: var(--as-tinte);
+  border: var(--as-strich) solid var(--as-tinte);
+  color: var(--as-weiss);
+  font-size: var(--as-fs-3);
+  font-weight: 600;
+  min-height: var(--as-tippziel);
+  padding: var(--as-s-1) var(--as-s-3);
+}
+[data-apple-seite^='widerruf'] .withdrawal-button--secondary {
+  background: transparent;
+  color: var(--as-tinte);
+}
+[data-apple-seite^='widerruf'] .withdrawal-actions {
+  gap: var(--as-s-2);
+  margin-top: var(--as-s-3);
+}
+[data-apple-seite^='widerruf'] .withdrawal-text-link {
+  color: var(--as-tinte);
+  font-size: var(--as-fs-3);
+  font-weight: 600;
+}
+[data-apple-seite^='widerruf'] .withdrawal-summary {
+  border-top: var(--as-strich) solid var(--as-linie);
+  margin-top: var(--as-s-3);
+}
+[data-apple-seite^='widerruf'] .withdrawal-summary div {
+  border-bottom: var(--as-strich) solid var(--as-linie);
+  gap: var(--as-s-2);
+  padding-block: var(--as-s-2);
+}
+[data-apple-seite^='widerruf'] .withdrawal-summary dt {
+  font-weight: 600;
+}
+
+/* Anna unter dem Formular in derselben Spalte. */
+[data-apple-seite^='widerruf'] .as-anna {
+  margin-inline: auto;
+  max-width: var(--as-text-breite);
+}
+
+[data-apple-seite^='widerruf'] .as-anna .as-absatz {
+  font-size: var(--as-fs-3);
+}

@@ -1,0 +1,161 @@
+/*
+ * APPLE-FASSUNG /pages/exclusive-solutions (s07-r8). exclusive-solutions.css
+ * lädt die Route weiter für die Paket-Karten; hier zeigen ihre Flächen, Linien,
+ * Schrift und Knöpfe auf --as-*. Bündel, Preise und Warenkorb bleiben aus C.
+ */
+[data-apple-seite='exclusive-solutions'] .as-ex-video {
+  max-width: 640px;
+  margin-top: var(--as-s-3);
+  border-radius: var(--as-radius);
+  overflow: hidden;
+}
+[data-apple-seite='exclusive-solutions'] .as-ex-absatz {
+  max-width: var(--as-text-breite);
+}
+
+[data-apple-seite='exclusive-solutions'] .ghx-section {
+  background: var(--as-flaeche);
+  font-family: inherit;
+  color: var(--as-tinte);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pakete__head .ghx-pill {
+  display: none;
+}
+[data-apple-seite='exclusive-solutions'] .ghx-h2 {
+  font-family: inherit;
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--as-tinte);
+  text-align: left;
+}
+@media (min-width: 750px) {
+  [data-apple-seite='exclusive-solutions'] .ghx-h2 {
+    font-size: var(--as-fs-7);
+  }
+}
+[data-apple-seite='exclusive-solutions'] .ghx-sub,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__lead,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__fineprint,
+[data-apple-seite='exclusive-solutions'] .ghx-pakete__footnote {
+  font-family: inherit;
+  color: var(--as-grau);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-sub {
+  font-size: var(--as-fs-3);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__lead,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__fineprint,
+[data-apple-seite='exclusive-solutions'] .ghx-pakete__footnote {
+  font-size: var(--as-fs-2);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak {
+  background: var(--as-weiss);
+  border: var(--as-strich) solid var(--as-linie);
+  border-radius: var(--as-radius);
+  box-shadow: none;
+  padding: var(--as-s-4) var(--as-s-3);
+  transform: none;
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak--featured {
+  border: var(--as-strich-stark) solid var(--as-gold);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak * {
+  font-family: inherit;
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__price {
+  font-size: var(--as-fs-7);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--as-tinte);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__cta {
+  min-height: var(--as-tippziel);
+  border-radius: var(--as-tippziel);
+  border: var(--as-strich) solid var(--as-tinte);
+  background: var(--as-weiss);
+  color: var(--as-tinte);
+  font-size: var(--as-fs-3);
+  font-weight: 600;
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__cta--gold {
+  border-color: var(--as-gold);
+  background: var(--as-gold);
+  color: var(--as-tinte);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__size {
+  min-height: var(--as-tippziel);
+  border-radius: var(--as-radius);
+  border-color: var(--as-linie);
+  font-size: var(--as-fs-2);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pakete__head {
+  text-align: left;
+  margin-inline: 0;
+  max-width: none;
+}
+[data-apple-seite='exclusive-solutions'] #pakete .ghx-inner {
+  max-width: var(--as-breite);
+}
+
+/* Paket-Karte: eine Skala, ein Gold, keine zweite Warnfarbe. */
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-label,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-text,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__save,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__size,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare-label,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare-value,
+[data-apple-seite='exclusive-solutions'] .ghx-toast,
+[data-apple-seite='exclusive-solutions'] .ghx-toast * {
+  font-size: var(--as-fs-2);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-label,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__size,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare-label {
+  color: var(--as-tinte);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__compare-value {
+  color: var(--as-grau);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__save {
+  background: var(--as-flaeche);
+  color: var(--as-tinte);
+  font-weight: 600;
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item::before {
+  background: var(--as-gold);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__divider {
+  background: none;
+  border-top: var(--as-strich) solid var(--as-linie);
+}
+[data-apple-seite='exclusive-solutions'] .as-ex-video .YoutubeTimestamp {
+  background: var(--as-flaeche);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__size:hover,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__size:focus {
+  border-color: var(--as-gold);
+  background-color: var(--as-weiss);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-label--button:hover .ghx-pak__item-text,
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-label--button:focus-visible .ghx-pak__item-text {
+  color: var(--as-gold-tinte);
+  border-bottom-color: var(--as-gold);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__item-text {
+  border-bottom-color: var(--as-linie);
+}
+[data-apple-seite='exclusive-solutions'] .ghx-pak__cta:hover {
+  border-color: var(--as-gold);
+  color: var(--as-tinte);
+}
+@media (max-width: 767px) {
+  [data-apple-seite='exclusive-solutions'] .ghx-pak__size {
+    font-size: var(--as-fs-3);
+  }
+}
