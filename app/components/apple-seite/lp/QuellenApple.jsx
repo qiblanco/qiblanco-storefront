@@ -9,9 +9,9 @@ import {KursApple} from './KursApple';
  * Lesefassung (KursApple: Lesebreite, Typo-Skala, ein Bild-Radius), der Weg
  * zurück in die Fachartikel als Knopf (Kurs-Navigation, kein zweiter H2-Stil)
  * und Anna am Ende.
- * s07-r5: Vorspann gestrichen. Der Richter (menschlichkeit/bin/pruefen
- * --ki-klang --richter) verwarf ihn 3 von 3 (erklärt, wie die Seite gebaut
- * ist); h1 „Quellen“ und die Liste tragen die Seite allein.
+ * s07-r5: Vorspann gestrichen. Der KI-Klang-Richter aus menschlichkeit/
+ * verwarf ihn 3 von 3 (erklärt, wie die Seite gebaut ist); h1 „Quellen“
+ * und die Liste tragen die Seite allein.
  *   return appleSeite?.an ? <QuellenApple seite={appleSeite.seite} quellen={QUELLEN} /> : <C />;
  */
 
