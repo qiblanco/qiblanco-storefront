@@ -34,8 +34,9 @@ function Sprecher() {
         <h2 className="as-h2">Christian</h2>
       </header>
       <div className="as-kapitel-raster">
-        <figure className="as-kapitel-bild">
-          <AsBild bild={bildVon(FOTO.christian)} sizes="(min-width: 1024px) 560px, 100vw" />
+        {/* Die Quelle ist 1200 px breit: höchstens 560 px Fläche, damit sie bei 2x scharf bleibt (Gate 12 bild-aufloesung, s07-r11). */}
+        <figure className="as-kapitel-bild as-nw-sprecher-bild">
+          <AsBild bild={bildVon(FOTO.christian)} sizes="(min-width: 600px) 560px, 100vw" />
         </figure>
         <div className="as-kapitel-text">
           <p className="as-absatz">Christian, Diplom-Ingenieur und Gründer von Qi Blanco.</p>
