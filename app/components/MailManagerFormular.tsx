@@ -27,7 +27,7 @@ export type MmKlassen = Partial<Record<
   'form' | 'titel' | 'hinweis' | 'feld' | 'label' | 'input' | 'knopf' | 'einwilligung' | 'meldung' | 'danke', string>>;
 type Antwort = {ok: boolean; status?: string; fehler?: string; text?: string; weiter?: string};
 
-const FEHLER = {"de": {"fehler": "Das hat gerade nicht geklappt. Bitte versuch es in ein paar Minuten noch einmal.", "adresse": "Bitte gib eine gültige E-Mail-Adresse ein.", "pflicht": "Bitte fülle alle Pflichtfelder aus.", "veraltet": "Der Einwilligungstext wurde gerade aktualisiert. Bitte lade die Seite neu.", "unbekannt": "Dieses Formular nimmt gerade keine Anmeldungen an.", "bremse": "Gerade kommen sehr viele Anmeldungen. Bitte versuch es in ein paar Minuten noch einmal."}, "en": {"fehler": "Something went wrong. Please try again in a few minutes.", "adresse": "Please enter a valid email address.", "pflicht": "Please fill in all required fields.", "veraltet": "The consent text was just updated. Please reload the page.", "unbekannt": "This form is not accepting signups right now.", "bremse": "We are getting a lot of signups right now. Please try again in a few minutes."}} as const;
+const FEHLER = {"de": {"fehler": "Deine Anmeldung ist gerade nicht bei uns angekommen. Das liegt an uns, nicht an deiner Adresse. Bitte versuch es in ein paar Minuten noch einmal.", "adresse": "Bitte prüfe deine E-Mail-Adresse. So wie sie dort steht, können wir dir keine Mail schicken.", "pflicht": "Bitte fülle alle Pflichtfelder aus.", "veraltet": "Der Einwilligungstext wurde gerade aktualisiert. Bitte lade die Seite neu.", "unbekannt": "Dieses Formular nimmt gerade keine Anmeldungen an.", "bremse": "Gerade kommen sehr viele Anmeldungen. Bitte versuch es in ein paar Minuten noch einmal."}, "en": {"fehler": "Your signup did not reach us just now. This is on our side, not your address. Please try again in a few minutes.", "adresse": "Please check your email address. We cannot send a message to it as written.", "pflicht": "Please fill in all required fields.", "veraltet": "The consent text was just updated. Please reload the page.", "unbekannt": "This form is not accepting signups right now.", "bremse": "We are getting a lot of signups right now. Please try again in a few minutes."}} as const;
 
 export function MailManagerFormular({
   konfig, className, klassen = {}, aktion = '/api/mm-formular', style,
@@ -103,4 +103,3 @@ export function MailManagerFormular({
     </fetcher.Form>
   );
 }
-
