@@ -1,5 +1,7 @@
 import {redirect} from 'react-router';
 import TheAlpha from '~/components/campaign/TheAlpha';
+import {TheAlphaArm} from '~/components/campaign/TheAlphaArm';
+import {entscheideSeitenExperiment} from '~/lib/experiment-weiche.server';
 import {canonicalLink} from '~/lib/seo';
 import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
 
@@ -23,8 +25,14 @@ import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
  * Sitemap über NUR_ROUTE_SEITEN in lib/seo.js. Die Testarme -B und -C stehen in
  * lib/vorschau-noindex.js.
  *
- * TRACKING: kein Pixel-Code hier (0-Pixel-Regel). Die A/B/C-Weiche kommt in
- * s07 über lib/experiment-weiche.server.js in diesen Loader.
+ * TRACKING: kein Pixel-Code hier (0-Pixel-Regel). A/B/C-TEST the-alpha-abc-e1
+ * (s07, Christian Z5): der Loader teilt per 302 auf B (/pages/Qi-Alpha-C) und
+ * C (/pages/Qi-Alpha-B), stabil je Besucher, Regeln in
+ * lib/experiment-weiche.server.js (Bots, eigener Verkehr und Rückkehr aus der
+ * Kasse sehen A; Pin ?shop_exp=a|b|c für Messwerkzeuge; Kill Env
+ * EXP_THE_ALPHA_MODE=off). Solange die Zeile ruhend 0/0 steht, lenken nur die
+ * Pins. TheAlphaArm meldet den Arm an den Receiver und legt ihn für die
+ * Bestellung ins Cookie qb_ab_the_alpha_abc.
  */
 
 /*
@@ -62,12 +70,15 @@ export const meta = () => [
 ];
 
 /** @param {LoaderFunctionArgs} args */
-export async function loader({request}) {
+export async function loader({request, context}) {
   const url = new URL(request.url);
   const pfad = url.pathname.replace(/\/+$/, '');
   if (pfad !== KANON_PFAD) {
     throw redirect(`${KANON_PFAD}${url.search}`, 301);
   }
+  // A/B/C-TEST the-alpha-abc-e1: vor jedem await, Ziel B oder C, sonst rendert A.
+  const exp = entscheideSeitenExperiment(request, context?.env, 'the-alpha-abc-e1');
+  if (exp) throw redirect(exp.ziel, {status: 302, headers: {'Cache-Control': 'no-store'}});
   return {};
 }
 
@@ -77,7 +88,13 @@ export default function TheAlphaRoute() {
   // „Nur die Links-Leiste“, „Sodass der Kunde nur noch als nächstes den roten
   // Knopf drücken kann.“). Die Rechtszeile vom 30.10. (Elina,
   // EL-20261030-ae569366) bleibt auf der Kaufseite /products/qi-alpha.
-  return <TheAlpha />;
+  // A/B/C-TEST the-alpha-abc-e1 (s07): Arm A meldet sich und merkt sich für die Bestellung.
+  return (
+    <>
+      <TheAlphaArm arm="a" />
+      <TheAlpha />
+    </>
+  );
 }
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
