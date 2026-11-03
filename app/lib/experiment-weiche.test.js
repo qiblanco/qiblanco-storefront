@@ -642,3 +642,17 @@ test('the-alpha-abc-e1: Kill per Env off und Code-Schalter; ohne IP A; POST nie'
   // Kill der anderen Experimente lässt diesen laufen
   assert.equal(armTA(c, {env: {EXP_START_MODE: 'off', EXP_PB_MODE: 'off'}}), 'c');
 });
+
+test('Naht: der Loader von A ruft die Weiche vor jedem await und wirft direkt danach den 302; B und C stempeln ihren Arm', () => {
+  const lade = (p) => readFileSync(new URL(`../routes/${p}`, import.meta.url), 'utf8');
+  const a = lade('pages.Qi-Alpha.jsx');
+  const rumpf = a.slice(a.indexOf('export async function loader'));
+  const ruf = rumpf.indexOf("entscheideSeitenExperiment(request, context?.env, 'the-alpha-abc-e1')");
+  assert.ok(ruf > 0, 'Weiche fehlt im Loader von A');
+  const erstesAwait = rumpf.indexOf('await ');
+  assert.ok(erstesAwait === -1 || erstesAwait > ruf);
+  assert.match(rumpf.slice(ruf, ruf + 200), /throw redirect\(exp\.ziel, \{status: 302/);
+  assert.match(a, /<TheAlphaArm arm="a" \/>/);
+  assert.match(lade('pages.Qi-Alpha-C.jsx'), /<TheAlphaArm arm="b" \/>/);
+  assert.match(lade('pages.Qi-Alpha-B.jsx'), /<TheAlphaArm arm="c" \/>/);
+});
