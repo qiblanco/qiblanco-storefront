@@ -14,10 +14,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {
-  SEITEN_EXPERIMENTE,
+  SEITEN_EXPERIMENTE as AUSGELIEFERT,
   SUCH_UND_VORSCHAU_CRAWLER,
   anteilProzentFuer,
-  entscheideSeitenExperiment,
+  entscheideSeitenExperiment as entscheideEcht,
   geraeteKlasse,
   istSuchOderVorschauCrawler,
   seitenExperimentAktiv,
@@ -29,9 +29,18 @@ const START = 'start-e1-gs081';
 const SHOP = 'q2p-e1-gs080';
 const PB = 'pb-e1-gs107';
 const ALLE = [START, SHOP, PB];
-// Laufende Experimente (Code-Schalter aktiv). q2p-e1-gs080 ist seit 21.10.2026 beendet (s09, A bleibt): es fällt aus
-// den Anteils-, Pin- und Kill-Tests heraus und hat einen eigenen Test unten.
-const LAUFEND = ALLE.filter((id) => SEITEN_EXPERIMENTE[id].aktiv);
+// A/B-Pause (Christian 01.11.2026): Start und Beratung sind seit 02.11.2026 im Code aus. Die Mechanik der Weiche bleibt
+// gepinnt geprüft: die Tests unten fahren beide mit Schalter an (Erwartung gepinnt, nicht aus dem laufenden Schalter).
+// Was der ausgelieferte Schalter bewirkt, prüft der eigene Test „A/B-Pause". q2p-e1-gs080 ist seit 21.10.2026 beendet
+// (s09, A bleibt): es fällt aus den Anteils-, Pin- und Kill-Tests heraus und hat einen eigenen Test unten.
+const SEITEN_EXPERIMENTE = Object.freeze({
+  ...AUSGELIEFERT,
+  [START]: {...AUSGELIEFERT[START], aktiv: true},
+  [PB]: {...AUSGELIEFERT[PB], aktiv: true},
+});
+const entscheideSeitenExperiment = (request, env, id, tabelle = SEITEN_EXPERIMENTE) =>
+  entscheideEcht(request, env, id, tabelle);
+const LAUFEND = [START, PB];
 const IPHONE =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1';
 const ANDROID =
@@ -107,7 +116,7 @@ test('Tabelle: drei Experimente, Salz = id, Anteile Start 50 (mobil und Desktop)
   assert.equal(q.pfad_b, '/pages/qione-2-pro-b');
   // Startseite: 15 % ab Start, Desktop 50 % seit 18.10. (s06), mobil und Tablet 50 % seit 21.10. (s09, Regel #52)
   assert.equal(s.anteil_prozent, 50);
-  assert.equal(s.aktiv, true);
+  assert.equal(AUSGELIEFERT[START].aktiv, false);
   // Eigener Desktop-Anteil nur auf der Startseite (s06, Anhebungsregel #52 je Gerät); Shop und Beratung ohne
   assert.equal(s.anteil_prozent_desktop, 50);
   assert.equal(s.env_kill_desktop, 'EXP_START_DESKTOP_MODE');
@@ -119,8 +128,8 @@ test('Tabelle: drei Experimente, Salz = id, Anteile Start 50 (mobil und Desktop)
   assert.ok([15, 50].includes(q.anteil_prozent), `Shop-Anteil ${q.anteil_prozent} liegt nicht auf der Rampe 15/50`);
   // Shopseite beendet 21.10.2026 (Aussichtslosigkeit, A bleibt): Code-Schalter aus, Zeile bleibt als Beleg
   assert.equal(q.aktiv, false);
-  assert.equal(k.aktiv, true);
-  assert.deepEqual(LAUFEND.sort(), [PB, START].sort());
+  assert.equal(AUSGELIEFERT[PB].aktiv, false);
+  assert.deepEqual(Object.keys(AUSGELIEFERT).filter((id) => AUSGELIEFERT[id].aktiv), []);
   assert.equal(s.pin_param, 'start_exp');
   assert.equal(q.pin_param, 'shop_exp');
   assert.equal(s.env_kill, 'EXP_START_MODE');
@@ -451,6 +460,16 @@ test('Shopseite q2p-e1-gs080 beendet (21.10.2026, s09): niemand sieht B, auch ni
   // der geteilte Pin shop_exp wirkt auf der Beratung weiter
   assert.ok(entscheideSeitenExperiment(req('/pages/produktberatung?shop_exp=b', intern), {}, PB));
   assert.ok(einBBesucher(START));
+});
+
+test('A/B-Pause (02.11.2026): ausgelieferte Tabelle lenkt niemanden um, auch nicht per Pin', () => {
+  for (const id of [START, PB]) {
+    const exp = AUSGELIEFERT[id];
+    assert.equal(POP.filter((b) => entscheideEcht(req(exp.pfad_a, b), {}, id) !== null).length, 0, id);
+    assert.equal(entscheideEcht(req(`${exp.pfad_a}?${exp.pin_param}=b`), {}, id), null, id);
+    // Positivkontrolle: dieselbe Zeile mit Schalter an lenkt per Pin um (der Test sähe sonst nichts)
+    assert.ok(entscheideSeitenExperiment(req(`${exp.pfad_a}?${exp.pin_param}=b`), {}, id));
+  }
 });
 
 test('Naht: geraeteKlasse ist zeichengleich mit der Zählung in entry.server.jsx', () => {

@@ -5,10 +5,9 @@
  * Rookie-Seite sahen. SSoT des Verhaltens: claude-jobs/<job>/KONZEPT.md
  * Abschnitt 2 und 7.
  *
- *   GET /            -> Loader _index.jsx           -> 302 /pages/start-b       (50 %)
+ *   GET /            -> beendet 02.11.2026 (aktiv: false, A/B-Pause), alle sehen A
  *   GET /pages/qione-2-pro -> beendet 21.10.2026 (aktiv: false), alle sehen A
- *   GET /pages/produktberatung -> Loader pages.produktberatung.jsx
- *                                 -> 302 /pages/produktberatung-b       (50 %)
+ *   GET /pages/produktberatung -> beendet 02.11.2026 (aktiv: false, A/B-Pause), alle sehen A
  *
  * SHOPSEITE SEIT 14.10.2026 AUF 50 % (Fix-Segment s08 desselben Grossjobs;
  * Entscheidung Coworker A 07.10. im Auftrag Christians: nach 7 Tagen ohne
@@ -124,7 +123,7 @@ export const SEITEN_EXPERIMENTE = Object.freeze({
     env_kill: 'EXP_START_MODE',
     env_kill_desktop: 'EXP_START_DESKTOP_MODE',
     marker: 's',
-    aktiv: true,
+    aktiv: false, // beendet 02.11.2026 (A/B-Pause, Christian 01.11.), A bleibt, Zeile bleibt als Beleg
   }),
   'q2p-e1-gs080': Object.freeze({
     id: 'q2p-e1-gs080',
@@ -148,7 +147,7 @@ export const SEITEN_EXPERIMENTE = Object.freeze({
     pin_param: 'shop_exp',
     env_kill: 'EXP_PB_MODE',
     marker: 'k',
-    aktiv: true,
+    aktiv: false, // beendet 02.11.2026 (A/B-Pause, Christian 01.11.), A bleibt, Zeile bleibt als Beleg
   }),
 });
 
