@@ -2871,61 +2871,6 @@ footer.footer :focus-visible {
   width: 100%;
 }
 
-/* Lektionsvideo und Videos im Seitentext über die Fassade (Auftrag
-   einwilligung-scanner-20261023T144303Z-s02): dieselbe Fläche, derselbe
-   Radius wie das abgelöste iframe. */
-.course-lesson__video .YoutubeTimestamp {
-  border-radius: 16px;
-  height: 100%;
-  inset: 0;
-  position: absolute;
-}
-
-.qb-yt-cms {
-  aspect-ratio: 16 / 9;
-  border-radius: 16px;
-  display: block;
-  margin: 1.5rem 0;
-  max-width: 800px;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-}
-
-.qb-yt-cms .YoutubeTimestamp {
-  border-radius: 16px;
-  height: 100%;
-}
-
-.qb-yt-cms__vorab {
-  background: #000;
-  display: grid;
-  inset: 0;
-  place-items: center;
-  position: absolute;
-}
-
-.qb-yt-cms__vorab img {
-  height: 100%;
-  inset: 0;
-  object-fit: cover;
-  position: absolute;
-  width: 100%;
-}
-
-.qb-yt-cms__play {
-  background: rgba(0, 0, 0, 0.55);
-  border-radius: 50%;
-  color: #fff;
-  display: grid;
-  font-size: 1.6rem;
-  height: 64px;
-  padding-left: 5px;
-  place-items: center;
-  position: relative;
-  width: 64px;
-}
-
 .course-lesson-body,
 .course-lesson-body * {
   text-align: left !important;

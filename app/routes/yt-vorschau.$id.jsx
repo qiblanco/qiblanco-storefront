@@ -81,7 +81,7 @@ export async function loader({params, request, context}) {
   }
   if (!antwort.ok) return fehlt();
   const typ = antwort.headers.get('Content-Type') || 'image/jpeg';
-  if (!typ.startsWith('image/')) return fehlt(502);
+  if (!/^image\/(jpeg|webp)\b/.test(typ)) return fehlt(502);
   const rumpf = await antwort.arrayBuffer();
   if (!rumpf.byteLength || rumpf.byteLength > MAX_BYTES) return fehlt(502);
 

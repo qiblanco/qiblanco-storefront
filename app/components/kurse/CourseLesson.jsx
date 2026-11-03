@@ -44,7 +44,7 @@ export function CourseLesson({
   const lektionsVideo = zerlegeEinbettung(videoEmbed);
   const {html: preparedBody} = cmsYoutubeUmwandeln(
     prepareCourseBody(body, Boolean(videoEmbed)),
-    {ohneVideoId: lektionsVideo?.videoId || ''},
+    {ohneVideoId: lektionsVideo?.videoId || '', ohneStart: lektionsVideo?.start || 0},
   );
   const hasProducts = Boolean(products?.length);
 

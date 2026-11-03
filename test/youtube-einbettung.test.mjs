@@ -120,3 +120,38 @@ describe('cmsYoutubeUmwandeln', () => {
     assert.ok(!/onload="/.test(html));
   });
 });
+
+/* Fälle des adversarialen Zweitprüfers (K3, P2), 2026-11-03. */
+describe('Randfälle aus der Gegenprüfung', () => {
+  it('src= in einem anderen Attributwert oder x-src täuscht nicht', () => {
+    const roh =
+      '<iframe title="Quelle: src=Quellen" x-src="nix" class="video-src=x" ' +
+      'src="https://www.youtube.com/embed/p0FoQgQ3t6E"></iframe>';
+    assert.equal(zaehleYoutubeIframes(cmsYoutubeUmwandeln(roh).html), 0);
+  });
+  it('> im Attributwert vor src bricht die Erkennung nicht', () => {
+    const roh = '<iframe title="a > b" src="https://www.youtube.com/embed/p0FoQgQ3t6E"></iframe>';
+    const {html, videos} = cmsYoutubeUmwandeln(roh);
+    assert.equal(videos.length, 1);
+    assert.ok(!/youtube\.com\/embed/.test(html));
+  });
+  it('m.youtube.com und führendes Leerzeichen werden erkannt', () => {
+    assert.equal(zerlegeEinbettung(' https://m.youtube.com/embed/p0FoQgQ3t6E').videoId, 'p0FoQgQ3t6E');
+  });
+  it('videoseries und live_stream sind keine Kennung', () => {
+    assert.equal(zerlegeEinbettung('https://www.youtube.com/embed/videoseries?list=PLx'), null);
+    assert.equal(vorschauUrl('live_stream'), '');
+  });
+  it('Kapitelsprung desselben Videos bleibt als Fassade', () => {
+    const roh = '<p><iframe src="https://www.youtube.com/embed/p0FoQgQ3t6E?start=600"></iframe></p>';
+    const {videos, entfernt} = cmsYoutubeUmwandeln(roh, {ohneVideoId: 'p0FoQgQ3t6E', ohneStart: 0});
+    assert.equal(entfernt, 0);
+    assert.equal(videos[0].start, 600);
+  });
+  it('Titel wird nicht doppelt kodiert', () => {
+    const roh = '<iframe src="https://www.youtube.com/embed/p0FoQgQ3t6E" title="Tom &amp; Jerry"></iframe>';
+    const {html, videos} = cmsYoutubeUmwandeln(roh);
+    assert.equal(videos[0].titel, 'Tom & Jerry');
+    assert.ok(html.includes('data-titel="Tom &amp; Jerry"'));
+  });
+});

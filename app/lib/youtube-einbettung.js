@@ -36,8 +36,12 @@ export const VORSCHAU_DATEIEN = ['maxresdefault', 'sddefault', 'hqdefault', 'mqd
 /** Pfad der Ressourcen-Route (gleiche Herkunft). */
 export const VORSCHAU_PFAD = '/yt-vorschau';
 
+/* Pfadnamen von YouTube, die zufällig 11 Zeichen haben, aber kein Video sind
+ * (Wiedergabeliste, Livestream eines Kanals). */
+const KEINE_KENNUNG = new Set(['videoseries', 'live_stream']);
+
 export function istYoutubeId(id) {
-  return typeof id === 'string' && YT_ID_MUSTER.test(id);
+  return typeof id === 'string' && YT_ID_MUSTER.test(id) && !KEINE_KENNUNG.has(id);
 }
 
 /**
@@ -75,11 +79,11 @@ export function posterGleicherHerkunft(url) {
  * fallen raus: die Fassade setzt sie selbst.
  */
 export function zerlegeEinbettung(src) {
-  const text = String(src || '').replace(/&amp;/g, '&');
+  const text = String(src || '').trim().replace(/&amp;/g, '&');
   const kennung = text.match(
-    /^(?:https?:)?\/\/(?:www\.)?youtube(?:-nocookie)?\.com\/embed\/([A-Za-z0-9_-]{11})(?=[?#/]|$)/i,
+    /^(?:https?:)?\/\/(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/embed\/([A-Za-z0-9_-]{11})(?=[?#/&]|$)/i,
   );
-  if (!kennung) return null;
+  if (!kennung || !istYoutubeId(kennung[1])) return null;
   const zeit = text.match(/[?&](?:start|t)=(\d+)/);
   const frage = text.indexOf('?');
   const zusatz =
@@ -124,11 +128,28 @@ export function zerlegeEinbettung(src) {
  * Ist es DASSELBE Video wie das verwaltete Lektionsvideo, fällt das iframe
  * ersatzlos weg (Duplikat), samt einer Hülle, die nur dieses iframe trug.
  */
-const IFRAME_MUSTER = /<iframe\b([^>]*)>[\s\S]*?<\/iframe>/gi;
+const IFRAME_MUSTER = /<iframe\b((?:[^>"']|"[^"]*"|'[^']*')*)>[\s\S]*?<\/iframe>/gi;
 
+/* Liest ein Attribut. Der Name muss nach Leerraum stehen: `x-src=` oder ein
+ * `src=` mitten in einem anderen Attributwert zählt nicht. Werte in
+ * Anführungszeichen werden als Ganzes übersprungen. Zeichenreferenzen werden
+ * aufgelöst, damit `htmlAttr` sie nicht doppelt kodiert. */
 function attribut(attrs, name) {
-  const m = attrs.match(new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, 'i'));
-  return m ? (m[1] ?? m[2] ?? m[3] ?? '') : '';
+  const re = /\s([A-Za-z_:][-A-Za-z0-9_:.]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+)))?/g;
+  let m;
+  while ((m = re.exec(` ${attrs}`)) !== null) {
+    if (m[1].toLowerCase() === name) return entschluesseln(m[2] ?? m[3] ?? m[4] ?? '');
+  }
+  return '';
+}
+
+function entschluesseln(text) {
+  return String(text)
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
 }
 
 function htmlAttr(text) {
@@ -142,18 +163,31 @@ function htmlAttr(text) {
 /** Marker-Attribut, an dem `CmsHtmlMitVideos` seine Platzhalter findet. */
 export const PLATZHALTER_ATTR = 'data-qb-yt-platzhalter';
 
+/* Die Gestalt des Platzhalters steht INLINE: er lebt im fremden Seitentext,
+ * und ein Eintrag im globalen Stylesheet hätte jede Seite des Ladens berührt.
+ * Nach dem Hydrieren bringt die Fassade ihre eigene Gestalt mit. */
+const PLATZHALTER_STIL =
+  'display:block;position:relative;width:100%;max-width:800px;margin:1.5rem 0;aspect-ratio:16/9;' +
+  'border-radius:12px;overflow:hidden';
+const VORAB_STIL = 'position:absolute;inset:0;display:grid;place-items:center;background:#000';
+const BILD_STIL = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+const PLAY_STIL =
+  'position:relative;display:grid;place-items:center;width:64px;height:64px;border-radius:50%;' +
+  'background:rgba(0,0,0,0.55);color:#fff;font-size:1.6rem;padding-left:5px';
+
 function platzhalterHtml({videoId, start, zusatz}, titel) {
   const watch =
     `https://www.youtube.com/watch?v=${videoId}` + (start > 0 ? `&amp;t=${start}s` : '');
   const name = titel || 'Video';
   return (
     `<span class="qb-yt-cms" ${PLATZHALTER_ATTR}="${videoId}" data-start="${start}"` +
-    ` data-zusatz="${htmlAttr(zusatz)}" data-titel="${htmlAttr(name)}">` +
+    ` data-zusatz="${htmlAttr(zusatz)}" data-titel="${htmlAttr(name)}"` +
+    ` style="${PLATZHALTER_STIL}">` +
     `<a class="qb-yt-cms__vorab" href="${watch}" target="_blank" rel="noopener noreferrer"` +
-    ` aria-label="Video auf YouTube ansehen (neuer Tab): ${htmlAttr(name)}">` +
+    ` aria-label="Video auf YouTube ansehen (neuer Tab): ${htmlAttr(name)}" style="${VORAB_STIL}">` +
     `<img src="${vorschauUrl(videoId, 'hqdefault')}" alt="" role="presentation"` +
-    ` width="480" height="360" loading="lazy" decoding="async"/>` +
-    `<span class="qb-yt-cms__play" aria-hidden="true">▶</span></a></span>`
+    ` width="480" height="360" loading="lazy" decoding="async" style="${BILD_STIL}"/>` +
+    `<span class="qb-yt-cms__play" aria-hidden="true" style="${PLAY_STIL}">▶</span></a></span>`
   );
 }
 
@@ -168,12 +202,13 @@ const DUPLIKAT_MARKE = '<!--qb-yt-duplikat-->';
 
 /**
  * @param {string} html  Seitentext aus dem Shopify-Admin
- * @param {{ohneVideoId?: string}} [optionen]  Kennung des verwalteten
- *   Lektionsvideos: dieses Video fällt als Duplikat weg.
+ * @param {{ohneVideoId?: string, ohneStart?: number}} [optionen]  Kennung und
+ *   Startsekunde des verwalteten Lektionsvideos: dasselbe Video an derselben
+ *   Stelle fällt als Duplikat weg. Ein Kapitelsprung (anderer Start) bleibt.
  * @returns {{html: string, videos: Array<{videoId:string,start:number,zusatz:string,titel:string}>, entfernt: number}}
  */
 export function cmsYoutubeUmwandeln(html, optionen = {}) {
-  const {ohneVideoId = ''} = optionen;
+  const {ohneVideoId = '', ohneStart = 0} = optionen;
   const videos = [];
   let entfernt = 0;
   let aus = String(html || '').replace(IFRAME_MUSTER, (ganz, attrs) => {
@@ -181,7 +216,7 @@ export function cmsYoutubeUmwandeln(html, optionen = {}) {
     const lazy = attribut(attrs, 'data-src') || '';
     const teile = zerlegeEinbettung(quelle) || zerlegeEinbettung(lazy);
     if (!teile) return ganz;
-    if (ohneVideoId && teile.videoId === ohneVideoId) {
+    if (ohneVideoId && teile.videoId === ohneVideoId && teile.start === ohneStart) {
       entfernt += 1;
       return DUPLIKAT_MARKE;
     }
