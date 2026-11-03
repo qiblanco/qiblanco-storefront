@@ -12,7 +12,7 @@
  * Die drei Knöpfe stehen wörtlich so, wie Christian sie am 22.09. vorgegeben
  * hat: Cookies einstellen · Notwendige Cookies akzeptieren · Alle akzeptieren.
  */
-export const EINWILLIGUNG_FASSUNG = '1.0';
+export const EINWILLIGUNG_FASSUNG = '2.0';
 
 export const TEXTE = {
   de: {
@@ -28,8 +28,8 @@ export const TEXTE = {
     kategorien: {
       necessary: ['Notwendig', 'Warenkorb, Kasse, Sicherheit und deine Cookie-Wahl. Immer aktiv.'],
       preferences: ['Präferenzen', 'Merkt sich Einstellungen wie Sprache und Region.'],
-      statistics: ['Statistik', 'Zeigt uns, welche Seiten und Inhalte genutzt werden (Google Analytics, Microsoft Clarity).'],
-      marketing: ['Marketing', 'Misst, welche Werbung wirkt, und zeigt dir passendere Anzeigen (Meta, Google Ads, UpPromote).'],
+      statistics: ['Statistik', 'Zeigt uns, welche Seiten und Inhalte genutzt werden. Anbieter: Google Analytics, Google Tag Manager, Hotjar, Microsoft Clarity, Shopify, Qi Blanco (eigene Messung).'],
+      marketing: ['Marketing', 'Misst, welche Werbung wirkt, und zeigt dir passendere Anzeigen. Anbieter: Meta, Google Ads, Microsoft Advertising, TikTok, Taboola, YouTube (Google), UpPromote, Shopify, Qi Blanco (eigene Messung).'],
     },
     speichern: 'Auswahl speichern',
     zu: 'Schließen',
@@ -50,8 +50,8 @@ export const TEXTE = {
     kategorien: {
       necessary: ['Necessary', 'Cart, checkout, security and your cookie choice. Always on.'],
       preferences: ['Preferences', 'Remembers settings such as language and region.'],
-      statistics: ['Statistics', 'Shows us which pages and content are used (Google Analytics, Microsoft Clarity).'],
-      marketing: ['Marketing', 'Measures which ads work and shows you more relevant ads (Meta, Google Ads, UpPromote).'],
+      statistics: ['Statistics', 'Shows us which pages and content are used. Providers: Google Analytics, Google Tag Manager, Hotjar, Microsoft Clarity, Shopify, Qi Blanco (own measurement).'],
+      marketing: ['Marketing', 'Measures which ads work and shows you more relevant ads. Providers: Meta, Google Ads, Microsoft Advertising, TikTok, Taboola, YouTube (Google), UpPromote, Shopify, Qi Blanco (own measurement).'],
     },
     speichern: 'Save selection',
     zu: 'Close',
