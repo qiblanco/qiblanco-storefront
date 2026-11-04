@@ -65,14 +65,14 @@ export const APPLE_SEITEN = Object.freeze({
   'e-smog-schutz': {pfad: '/pages/E-Smog-Schutz', schalter: 'APPLE_SEITE_E_SMOG_SCHUTZ', standard: 'off'},
   'das-20-tage-versprechen': {pfad: '/pages/das-20-tage-versprechen', schalter: 'APPLE_SEITE_DAS_20_TAGE_VERSPRECHEN', standard: 'on'},
   'das-beispiel': {pfad: '/pages/das-beispiel', schalter: 'APPLE_SEITE_DAS_BEISPIEL', standard: 'on'},
-  'e-smog': {pfad: '/pages/e-smog', schalter: 'APPLE_SEITE_E_SMOG', standard: 'off'},
+  'e-smog': {pfad: '/pages/e-smog', schalter: 'APPLE_SEITE_E_SMOG', standard: 'on'},
   'entgiftung': {pfad: '/pages/entgiftung', schalter: 'APPLE_SEITE_ENTGIFTUNG', standard: 'on'},
   'exclusive-solutions': {pfad: '/pages/exclusive-solutions', schalter: 'APPLE_SEITE_EXCLUSIVE_SOLUTIONS', standard: 'on'},
   // forschung: bewusst ohne Zeile. Die Seite ist versteckt, test/forschung-seite.test.mjs
   // verbietet jede Nennung ihres Pfads unter app/. s07 entscheidet und zieht den Test mit.
   'haelt-das-mein-leben-aus': {pfad: '/pages/haelt-das-mein-leben-aus', schalter: 'APPLE_SEITE_HAELT_DAS_MEIN_LEBEN_AUS', standard: 'on'},
   'kette-oder-armband': {pfad: '/pages/kette-oder-armband', schalter: 'APPLE_SEITE_KETTE_ODER_ARMBAND', standard: 'on'},
-  'kohaerentes-wasser': {pfad: '/pages/kohaerentes-wasser', schalter: 'APPLE_SEITE_KOHAERENTES_WASSER', standard: 'off'},
+  'kohaerentes-wasser': {pfad: '/pages/kohaerentes-wasser', schalter: 'APPLE_SEITE_KOHAERENTES_WASSER', standard: 'on'},
   'menschen-alltag': {pfad: '/pages/menschen-alltag', schalter: 'APPLE_SEITE_MENSCHEN_ALLTAG', standard: 'off'},
   'mentales-setting': {pfad: '/pages/mentales-setting', schalter: 'APPLE_SEITE_MENTALES_SETTING', standard: 'on'},
   'podcasts': {pfad: '/pages/podcasts', schalter: 'APPLE_SEITE_PODCASTS', standard: 'on'},
