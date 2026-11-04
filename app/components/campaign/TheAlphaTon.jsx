@@ -149,9 +149,10 @@ const KLAENGE = {
   schluss: 0.85,
 };
 const FENSTER_ZU_MS = 6000; // unbeachtet schließt das Fenster von selbst
-// Beim Erstbesuch liegt der Cookie-Hinweis modal über der Seite. Ginge das
-// Fenster sofort auf, liefe es unsichtbar darunter ab (live gemessen 27.10.,
-// s09). Es wartet deshalb, bis die Cookie-Frage beantwortet ist.
+// Beim Erstbesuch liegt der Cookie-Hinweis über der Seite (der eigene Hinweis
+// ist nicht modal, die Seite bleibt bedienbar). Ginge das Fenster sofort auf,
+// liefe es unsichtbar darunter ab (live gemessen 27.10., s09). Es wartet
+// deshalb, bis die Cookie-Frage beantwortet ist.
 const NACH_HINWEIS_MS = 400; // Atempause, nachdem der Hinweis zugeht
 const OHNE_HINWEIS_MS = 5000; // kein Hinweis zu sehen: dann trotzdem auf
 // Cookiebot (Rückweg) und der eigene Hinweis samt Einstellungs-Dialog.
@@ -176,6 +177,13 @@ function hinweisGeladen() {
 // Ist der Hinweis geladen, entscheidet er: seit Fassung 2.0 fragt der eigene
 // Hinweis eine Wahl der Fassung 1 neu, das alte Cookie bleibt dabei liegen
 // (hasResponse false). Nur ohne geladenen Hinweis zählt das Cookie.
+// Das Hinweis-Skript ist defer: solange das Dokument nicht fertig ist, kann es
+// noch kommen. Nicht `interactive`: das steht vor den defer-Skripten an (live
+// 135 ms, Skript 7880 ms bei langsamem Netz).
+function hinweisKommtNichtMehr() {
+  return !hinweisGeladen() && document.readyState === 'complete';
+}
+
 function einwilligungBeantwortet() {
   if (hinweisGeladen()) return window.Cookiebot.hasResponse;
   return /(?:^|;\s*)CookieConsent=/.test(document.cookie);
@@ -191,12 +199,17 @@ function hinweisSichtbar() {
   });
 }
 
+function fensterAusserhalb(oben) {
+  return oben < 0;
+}
+
 /**
  * Ruft `los` auf, sobald die Cookie-Frage beantwortet ist (beide Motoren,
  * Cookiebot und der eigene Hinweis, feuern die Cookiebot-Ereignisse). Ist nach
- * OHNE_HINWEIS_MS kein Hinweis zu sehen oder keiner geladen (Skript blockiert:
- * der eigene Banner steht dann im Server-HTML, lässt sich aber nicht
- * schließen), geht es trotzdem los. Gibt die Aufräum-Funktion zurück.
+ * OHNE_HINWEIS_MS kein Hinweis zu sehen oder ist das Dokument fertig und keiner
+ * geladen (Skript blockiert: der eigene Banner steht dann im Server-HTML, lässt
+ * sich aber nicht schließen), geht es trotzdem los. Gibt die Aufräum-Funktion
+ * zurück.
  */
 function nachEinwilligung(los) {
   if (einwilligungBeantwortet() && !hinweisSichtbar()) {
@@ -223,7 +236,7 @@ function nachEinwilligung(los) {
     pause = window.setTimeout(ende, NACH_HINWEIS_MS);
   };
   const pruefe = () => {
-    if (!hinweisSichtbar() || !hinweisGeladen()) ende();
+    if (!hinweisSichtbar() || hinweisKommtNichtMehr()) ende();
     else notfall = window.setTimeout(pruefe, 1000);
   };
   notfall = window.setTimeout(pruefe, OHNE_HINWEIS_MS);
@@ -884,7 +897,12 @@ export function TapTon({wurzel, standard = 'fenster'}) {
         if (titel && buehne) {
           const t = titel.getBoundingClientRect().top;
           const b = buehne.getBoundingClientRect().top;
-          setOben(Math.round(Math.max(b + 24, t - 64 - 48)));
+          const oben = Math.round(Math.max(b + 24, t - 64 - 48));
+          // Weitergescrollt, bevor die Cookie-Frage beantwortet war: das Fenster
+          // läge außerhalb des Bildes und gälte danach als gesehen. Lieber nicht
+          // öffnen und nichts merken, der nächste Besuch fragt wieder.
+          if (fensterAusserhalb(oben)) return;
+          setOben(oben);
         }
         setFenster('auf');
         zuTimer = window.setTimeout(() => {

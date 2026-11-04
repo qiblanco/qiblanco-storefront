@@ -130,9 +130,9 @@ const ende = QUELLE.indexOf('function lies()');
 assert.ok(anfang > 0 && ende > anfang, 'Ausschnitt nachEinwilligung in TheAlphaTon.jsx nicht gefunden');
 const AUSSCHNITT =
   QUELLE.slice(anfang, ende) +
-  '\nglobalThis.__ton = {nachEinwilligung};\n';
+  '\nglobalThis.__ton = {nachEinwilligung, fensterAusserhalb};\n';
 
-function welt({cookie: cookieWert = '', banner = 'sichtbar', dialog = 'zu', cookiebot} = {}) {
+function welt({cookie: cookieWert = '', banner = 'sichtbar', dialog = 'zu', cookiebot, readyState = 'complete'} = {}) {
   let uhr = 0;
   let naechsteId = 1;
   const timer = new Map();
@@ -141,6 +141,8 @@ function welt({cookie: cookieWert = '', banner = 'sichtbar', dialog = 'zu', cook
   const elemente = {
     'qb-einwilligung': banner ? element(banner) : null,
     'qb-einwilligung-dialog': element(dialog === 'offen' ? 'sichtbar' : 'verborgen'),
+    cookiebanner: null,
+    CybotCookiebotDialog: null,
   };
   const sichtbar = (el) => el.zustand === 'sichtbar';
   const fenster = {
@@ -167,6 +169,7 @@ function welt({cookie: cookieWert = '', banner = 'sichtbar', dialog = 'zu', cook
   };
   fenster.document = {
     cookie: cookieWert,
+    readyState,
     getElementById: (id) => {
       const el = elemente[id];
       if (!el) return null;
@@ -289,6 +292,101 @@ test('B5 gültige Wahl der Fassung 2.0, Hinweis zu: das Fenster geht sofort auf 
   let auf = 0;
   w.ton.nachEinwilligung(() => auf++);
   assert.equal(auf, 1);
+});
+
+test('B9 Hinweis-Skript später als die Notfrist (Dokument nicht fertig): das Fenster wartet auf das Skript', () => {
+  const w = welt({cookie: cookie({qbv: '1.0'}), cookiebot: undefined, readyState: 'interactive'});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  w.vergehe(8_000);
+  assert.equal(auf, 0, 'über dem stehenden Banner aufgegangen');
+  w.fenster.Cookiebot = {hasResponse: false};
+  w.fenster.document.readyState = 'complete';
+  w.vergehe(15_000);
+  assert.equal(auf, 0, 'das Skript ist da und der Hinweis steht');
+  w.fenster.Cookiebot.hasResponse = true;
+  w.elemente['qb-einwilligung'].zustand = 'verborgen';
+  w.feuere('CookiebotOnConsentReady');
+  w.vergehe(400);
+  assert.equal(auf, 1);
+});
+
+test('B10 Dokument wird fertig, Skript kam nie: das Fenster geht dann auf, nicht erst nie', () => {
+  const w = welt({cookie: cookie({qbv: '1.0'}), cookiebot: undefined, readyState: 'interactive'});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  w.vergehe(8_000);
+  assert.equal(auf, 0);
+  w.fenster.document.readyState = 'complete';
+  w.vergehe(1_000);
+  assert.equal(auf, 1);
+});
+
+test('B11 Hinweis ohne Ereignis zu (Skript geladen): die Abfrage öffnet das Fenster genau einmal', () => {
+  const w = welt({cookie: cookie({qbv: '1.0'}), cookiebot: {hasResponse: false}});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  w.vergehe(7_000);
+  assert.equal(auf, 0);
+  w.elemente['qb-einwilligung'].zustand = 'verborgen';
+  w.vergehe(1_000);
+  assert.equal(auf, 1, 'die Abfrage muss weiterlaufen und dann öffnen');
+  w.fenster.Cookiebot.hasResponse = true;
+  w.feuere('CookiebotOnAccept');
+  w.vergehe(5_000);
+  assert.equal(auf, 1, 'Ereignis danach öffnet nicht ein zweites Mal');
+});
+
+test('B15 Wahl kurz vor der Abfrage: Atempause und Abfrage öffnen das Fenster zusammen nur einmal', () => {
+  const w = welt({cookie: cookie({qbv: '1.0'}), cookiebot: {hasResponse: false}});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  w.vergehe(4_800);
+  w.fenster.Cookiebot.hasResponse = true;
+  w.elemente['qb-einwilligung'].zustand = 'verborgen';
+  w.feuere('CookiebotOnAccept');
+  w.vergehe(1_000);
+  assert.equal(auf, 1);
+});
+
+test('B12 Seitenwechsel: nach dem Aufräumen öffnet weder Abfrage noch Ereignis noch Atempause', () => {
+  const w = welt({cookie: cookie({qbv: '1.0'}), cookiebot: {hasResponse: false}});
+  let auf = 0;
+  const weg = w.ton.nachEinwilligung(() => auf++);
+  w.fenster.Cookiebot.hasResponse = true;
+  w.feuere('CookiebotOnAccept'); // Atempause läuft
+  w.elemente['qb-einwilligung'].zustand = 'verborgen';
+  weg();
+  w.vergehe(20_000);
+  w.feuere('CookiebotOnAccept');
+  w.vergehe(20_000);
+  assert.equal(auf, 0);
+});
+
+test('B13 Motor cookiebot: dessen Dialog hält das Fenster wie der eigene Hinweis', () => {
+  for (const id of ['cookiebanner', 'CybotCookiebotDialog']) {
+    const w = welt({banner: null, cookiebot: {hasResponse: false}});
+    w.elemente[id] = {zustand: 'sichtbar'};
+    let auf = 0;
+    w.ton.nachEinwilligung(() => auf++);
+    w.vergehe(15_000);
+    assert.equal(auf, 0, id);
+  }
+});
+
+test('B14 oberhalb des Bildes öffnet das Fenster nicht, oben im Bild schon', () => {
+  const w = welt();
+  assert.equal(w.ton.fensterAusserhalb(-2591), true);
+  assert.equal(w.ton.fensterAusserhalb(-1), true);
+  assert.equal(w.ton.fensterAusserhalb(0), false);
+  assert.equal(w.ton.fensterAusserhalb(84), false);
+});
+
+test('B14b das Fenster-Öffnen fragt fensterAusserhalb, bevor es Position oder Zustand setzt', () => {
+  const stelle = QUELLE.indexOf('if (fensterAusserhalb(oben)) return;');
+  assert.ok(stelle > 0, 'Aufruf fehlt');
+  const setz = QUELLE.indexOf("setFenster('auf');", QUELLE.lastIndexOf('warteHinweis = nachEinwilligung', stelle));
+  assert.ok(stelle < QUELLE.indexOf('setOben(oben);') && stelle < setz, 'Prüfung kommt zu spät');
 });
 
 test('B6 Hinweis-Skript blockiert (kein Banner, kein Cookiebot): nach der Notfrist trotzdem auf', () => {
