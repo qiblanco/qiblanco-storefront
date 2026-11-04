@@ -53,6 +53,14 @@
   }
 }
 
+/* Der Seitengrund hinter dem Kopf folgt dem Apple-Weiß statt dem Creme aus
+   uebersicht.css: .as-seite beginnt bei y=104 hinter dem transparenten Kopf, sonst
+   läuft dort eine Kante durchs Logo (F-441, 04.11.2026). Der Wert steht aus:
+   --as-weiss sitzt auf .as-seite und ist am body nicht vererbt. */
+body:has([data-apple-seite='uebersicht'] .ue) {
+  background: white;
+}
+
 /* HAUS-GRUNDREGELN IM SCOPE NEUTRALISIEREN (Falle s04, wie service-apple.css):
    reset.css setzt p, li auf 1,2rem und Schatten auf jede Überschrift. */
 :where([data-apple-seite='uebersicht'] .ue) p,
