@@ -33,6 +33,9 @@
   --tap-fs-zahl: 2.441rem;   /* 39,06 */
   --tap-fs-h2: 2.441rem;     /* 39,06 */
   --tap-fs-zeile: 1.25rem;   /* 20 */
+  /* Zeilen unter den Kapitel-Titeln (Typo-Prüfung Z315–Z319, 04.11.2026):
+     am Handy wie bisher, ab 768 px eine Stufe über --tap-fs-zeile. */
+  --tap-fs-kapitel: 1.25rem; /* 20 */
   --tap-fs-unter: 1.25rem;   /* 20 */
   --tap-fs-wb: 1.25rem;      /* 20 */
   --tap-fs-marke: 2.441rem;  /* 39,06 */
@@ -117,6 +120,7 @@
     --tap-fs-zahl: 3.815rem;   /* 61,04 */
     --tap-fs-h2: 3.815rem;     /* 61,04 */
     --tap-fs-zeile: 1.5625rem; /* 25 */
+    --tap-fs-kapitel: 1.953rem; /* 31,25 */
     --tap-fs-unter: 1.5625rem; /* 25 */
     --tap-fs-wb: 1.5625rem;    /* 25 */
     --tap-fs-marke: 4.768rem;  /* 76,29 */
@@ -131,7 +135,11 @@
   .tap-seite {
     --tap-fs-hero: 7.451rem;   /* 119,2 */
     --tap-fs-zahl: 4.768rem;   /* 76,29 */
-    --tap-fs-h2: 4.768rem;     /* 76,29 */
+    /* Kapitel-Titel bleiben bei 61,04 (Typo-Prüfung Z315–Z319, 04.11.2026):
+       mit 76 px standen Titel und Zeilen drei Stufen auseinander und fielen
+       am Desktop als Block auseinander (Rubrik stimmig_typo 78, Challenger
+       blind: Zeilen „wie eine Fußnote“). Titel 61,04 und Zeilen 31,25 sind
+       eine Einheit; der Seitentitel bleibt die größte Schrift (Z10). */
     /* „Qi Alpha®“ ist nach dem Titel die zweitgrößte Schrift (Challenger
        26.10.: am Höhepunkt muss der Name tragen), der Titel bleibt größer. */
     --tap-fs-marke: 5.96rem;   /* 95,37 */
@@ -483,7 +491,7 @@ html:has(main[data-film-seite]) {
 }
 
 .tap-zeilen li {
-  font-size: var(--tap-fs-zeile);
+  font-size: var(--tap-fs-kapitel);
   font-weight: 400;
   line-height: 1.5;
   color: var(--tap-leise);
