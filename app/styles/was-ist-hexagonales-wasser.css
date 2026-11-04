@@ -14,11 +14,12 @@
 /* ─── Kopf: zwei Achsen, ein Rhythmus ────────────────────────────────────────
    Shop-Tor D4 maß den Kopf am Desktop mit 93 (Soll 95, Job 20261103-medien-
    apple-rest-partner-schlaf-mikroskop-hexagonal-s04): drei linke Kanten
-   (Spalte 180, Inhalt 204, Kurzfassung 207) und sechs Abstandsstufen.
-   1. EIN EINZUG: alles Eingerückte steht eine Stufe --kw-s3 von der Spalte.
-      Die Kurzfassung zählt ihre Goldlinie (--hw-strich) zum Einzug, ihr Text
-      fluchtet so mit den Einträgen der Inhaltsliste (deren padding-left ist
-      --kw-s3).
+   (Spalte 180, Inhalt 204, Kurzfassung 207 am Desktop) und sechs Abstandsstufen.
+   1. EIN EINZUG: alles Eingerückte fluchtet mit dem Text der Kurzfassung,
+      also Goldlinie (--hw-strich) plus --kw-s3. Die Einträge der
+      Inhaltsliste rücken dafür um die Linie weiter ein. Die Kurzfassung
+      selbst bleibt unberührt: ihr Umbruch und damit die Lage der
+      Zitatmarken ändert sich nicht.
    2. EIN SCHLUSS: der Kopf endet mit der Meta-Zeile ohne eigenen Unterrand,
       darunter --kw-s3 bis zur Linie und --kw-s3 bis „Inhalt“, so wie die
       Kurzfassung oben und unten --kw-s3 Luft hat. Kein neuer Abstand. */
@@ -26,8 +27,8 @@
   --hw-strich: 3px; /* = border-left der .kw-kurz */
 }
 
-.hw .kw-kurz {
-  padding-left: calc(var(--kw-s3) - var(--hw-strich));
+.hw .kw-inhalt ol {
+  padding-left: calc(var(--kw-s3) + var(--hw-strich));
 }
 
 .hw .kw-kopf {
