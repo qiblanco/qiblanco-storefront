@@ -2,8 +2,7 @@
  * TEXTE DER BLACK-FRIDAY-SEITEN 2026 (s04, Entwurf: s04/texte.md im Job-Ordner).
  * Beträge und Daten stehen hier nicht, sie kommen aus data/black-friday-2026.js.
  * Sätze mit Marke FREIGEGEBEN stehen wortgleich auf den live Apple-Kaufseiten.
- * Neue Sätze: christian-fassung, pr-manager chef, pruefen --ki-klang, stimme,
- * stil-pruefe. Keine Rechtshinweise.
+ * Neue Sätze durchlaufen die Textprüfkette (s04/texte.md). Keine Rechtshinweise.
  */
 import {bf2026Zeitpunkt, BF2026, bf2026Zeitraum} from '../../data/black-friday-2026.js';
 

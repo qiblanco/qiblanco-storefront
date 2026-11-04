@@ -1,9 +1,9 @@
 // BLACK FRIDAY 2026 (Grossjob 20261103-prio6-black-friday-2026-…, s04), ohne Vite:
 //   node --test test/black-friday-2026.test.mjs
 // Drei Teile: (1) Regeln app/data/black-friday-2026.js, (2) Durchsetzer im Quelltext
-// (Schalter vor dem Zehn-Jahre-Zaun, Zehn-Jahre-Zaun unberuehrt, kein Bundle, kein Qi
-// Alpha), (3) Server-Render der Uhr ueber esbuild.
-// BF2026_REGELN zeigt fuer die Mutationsmatrix auf eine Kopie; jeder Mutant muss rot werden.
+// (Schalter vor dem Zehn-Jahre-Zaun, Zehn-Jahre-Zaun unberührt, kein Bundle, kein Qi
+// Alpha), (3) Server-Render der Uhr über esbuild.
+// BF2026_REGELN zeigt für die Mutationsmatrix auf eine Kopie; jeder Mutant muss rot werden.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
