@@ -20,6 +20,13 @@ import {motorFuer} from '~/lib/einwilligung-schalter';
  * Unterabfrage an das Dokument (storefront.setCollectedSubrequestHeaders), darunter
  * _shopify_analytics/_marketing. Ob das passiert, hängt an der Cache-Lage, nicht an der Seite.
  *
+ * GEMESSEN AM 2026-11-04 (claude-jobs/einwilligung-scanner-20261023T144303Z-s03-r2/, vor dem Deploy):
+ * Shopify meldet jetzt analyticsProcessingAllowed() false und shouldShowBanner() true; die
+ * consentPolicy des Ladens verlangt Einwilligung nur in EU/EWR und GB, nicht in CH. Weg 1 bis 3
+ * schweigen damit in der EU auch ohne dieses Tor. Es bleibt nötig für CH (unsere Regel zählt CH
+ * zum strengen Boden), für Weg 4 (das Dokument setzt _shopify_analytics/_marketing weiter mit 365
+ * Tagen, nur ein Browser-Abruf löscht sie danach) und gegen ein erneutes Umstellen bei Shopify.
+ *
  * DAS TOR: in Regionen mit Einwilligungspflicht bekommt der Provider `shop` erst nach einer
  * Wahl (gleich welcher), und `canTrack` folgt der Kategorie Statistik. Vor der Wahl wird
  * Shopify-Analytik also gar nicht geladen; es wird keine Wahl vorgetäuscht, kein
@@ -33,7 +40,8 @@ import {motorFuer} from '~/lib/einwilligung-schalter';
  * zwei Stellen (Dokument und Browser-Proxy storefront.forward) _shopify_analytics und
  * _shopify_marketing heraus, solange das CookieConsent-Cookie der Anfrage die Kategorie nicht
  * erlaubt. Gelesen wie in /qb-einwilligung.js (leseCookie): abgelaufen oder ältere Hauptnummer
- * der Fassung zählt als keine Wahl. _shopify_essential und alle anderen Zeilen bleiben.
+ * der Fassung zählt als keine Wahl; die Fassung prüft nur der Motor 'eigen' (motorFuer wie in
+ * root.jsx). _shopify_essential und alle anderen Zeilen bleiben.
  *
  * Rückweg: in root.jsx `shop={hydriert ? data.shop : null}` und ohne `canTrack` (Stand
  * vor diesem Commit) und in lib/context.js den Aufruf shopifyServerTorEinbauen entfernen,
