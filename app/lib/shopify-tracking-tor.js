@@ -1,6 +1,7 @@
-import {useEffect, useState} from 'react';
+import {startTransition, useEffect, useState} from 'react';
 import {buyerCountry, policyForCountry} from '~/lib/consent-policy';
 import {EINWILLIGUNG_FASSUNG} from '~/lib/einwilligung-texte';
+import {motorFuer} from '~/lib/einwilligung-schalter';
 
 /**
  * Tor für Hydrogens Shopify-Analytik (Auftrag einwilligung-scanner-20261023T144303Z, Segment s03).
@@ -113,8 +114,12 @@ export function useShopifyTrackingTor() {
       } catch {
         s = ZU;
       }
-      setStand((alt) =>
-        alt.montieren === s.montieren && alt.tracken === s.tracken ? alt : s,
+      // In einer Transition wie setHydriert in root.jsx: ein Wechsel von `shop` während
+      // noch Suspense-Grenzen streamen, darf keinen Hydrationsfehler auslösen.
+      startTransition(() =>
+        setStand((alt) =>
+          alt.montieren === s.montieren && alt.tracken === s.tracken ? alt : s,
+        ),
       );
     };
     neu();
@@ -137,12 +142,14 @@ function hauptnummer(v) {
 
 /**
  * Die gültige Wahl aus dem Cookie-Kopf einer Anfrage, oder null (keine, abgelaufen, alte Fassung).
- * Dieselben Regeln wie leseCookie() in /qb-einwilligung.js.
+ * Dieselben Regeln wie leseCookie() in /qb-einwilligung.js. Die Fassung prüft nur der Motor
+ * 'eigen'; ein echtes Cookiebot-Cookie (Rückweg-Motor) trägt kein qbv und erneuert sich selbst.
  * @param {string | null | undefined} cookieKopf
  * @param {number} [jetzt]
+ * @param {{fassung?: boolean}} [optionen]
  * @returns {{statistics: boolean, marketing: boolean} | null}
  */
-export function wahlAusCookie(cookieKopf, jetzt = Date.now()) {
+export function wahlAusCookie(cookieKopf, jetzt = Date.now(), {fassung = true} = {}) {
   const m = String(cookieKopf || '').match(/(?:^|;\s*)CookieConsent=([^;]*)/);
   if (!m) return null;
   let s = m[1];
@@ -160,7 +167,7 @@ export function wahlAusCookie(cookieKopf, jetzt = Date.now()) {
   if (marketing === null || !utc) return null;
   if (jetzt - Number(utc[1]) > JAHR_MS) return null;
   const qbv = s.match(/(?:^|[,{])\s*qbv\s*:\s*'([^']*)'/);
-  if ((qbv ? hauptnummer(qbv[1]) : 1) < hauptnummer(EINWILLIGUNG_FASSUNG)) return null;
+  if (fassung && (qbv ? hauptnummer(qbv[1]) : 1) < hauptnummer(EINWILLIGUNG_FASSUNG)) return null;
   return {statistics: bool('statistics') === true, marketing};
 }
 
@@ -170,7 +177,9 @@ export function wahlAusCookie(cookieKopf, jetzt = Date.now()) {
  * @param {Record<string, string | undefined>} env
  */
 export function shopifyServerErlaubt(request, env) {
-  const wahl = wahlAusCookie(request.headers.get('Cookie'));
+  const kopf = request.headers.get('Cookie');
+  const {motor} = motorFuer(request.url, kopf);
+  const wahl = wahlAusCookie(kopf, Date.now(), {fassung: motor === 'eigen'});
   if (policyForCountry(buyerCountry(request), env) === 'optout') {
     return {
       _shopify_analytics: !wahl || wahl.statistics,
