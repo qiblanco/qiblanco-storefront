@@ -19,6 +19,13 @@ import {
   DEFAULT_ZUTEILUNG,
 } from '../app/lib/go-router-logic.js';
 
+// Echtes Cookie des eigenen Hinweises, Fassung 2.0 (public/qb-einwilligung.js schreibeCookie).
+// Seit Fassung 2.0 zählt eine Wahl ohne qbv oder mit qbv '1.x' nicht mehr als Zustimmung.
+const EIN_JA =
+  'CookieConsent={stamp:%27x%27,necessary:true,preferences:false,statistics:false,marketing:true,method:%27explicit%27,ver:1,utc:' +
+  Date.now() +
+  ',region:%27de%27,qbv:%272.0%27}';
+
 function req(query, {cookie} = {}) {
   const headers = new Headers();
   if (cookie) headers.set('Cookie', cookie);
@@ -207,7 +214,7 @@ test('Profil-Rotation waehlt naechste ungesehene Perspektive bei vorhandenem Con
   const zuteilung = {...ZUTEILUNG_HERKUNFT, modus: 'herkunft+profil', herkunft: {}};
   const r = await handleGoRequest({
     request: req('', {
-      cookie: 'qb_lp_hist=A%3AC; CookieConsent=marketing=true%2Cstatistics=true',
+      cookie: 'qb_lp_hist=A%3AC; ' + EIN_JA,
     }),
     env: {ROTATION_MODE: 'on'},
     fetchImpl: jsonFetch(zuteilung),
@@ -223,7 +230,7 @@ test('Profil-Rotation waehlt naechste ungesehene Perspektive bei vorhandenem Con
 test('Profil-Rotation OHNE Cookie (erster Besuch) faellt auf Bandit/Default zurueck, kein p', async () => {
   const zuteilung = {...ZUTEILUNG_HERKUNFT, modus: 'herkunft+profil', herkunft: {}};
   const r = await handleGoRequest({
-    request: req('', {cookie: 'CookieConsent=marketing=true'}),
+    request: req('', {cookie: EIN_JA}),
     env: {ROTATION_MODE: 'on'},
     fetchImpl: jsonFetch(zuteilung),
   });
@@ -245,7 +252,7 @@ test('Herkunft schlaegt Profil-Rotation IMMER (Kap. 4.5)', async () => {
   const zuteilung = {...ZUTEILUNG_HERKUNFT, modus: 'herkunft+profil'};
   const r = await handleGoRequest({
     request: req('?utm_content=999', {
-      cookie: 'qb_lp_hist=B; CookieConsent=marketing=true',
+      cookie: 'qb_lp_hist=B; ' + EIN_JA,
     }),
     env: {ROTATION_MODE: 'on'},
     fetchImpl: jsonFetch(zuteilung),
@@ -257,7 +264,7 @@ test('Herkunft schlaegt Profil-Rotation IMMER (Kap. 4.5)', async () => {
 test('modus=voll: alle Perspektiven gesehen faellt zu Bandit durch (kein 5. Grund-Code)', async () => {
   const zuteilung = {...ZUTEILUNG_HERKUNFT, modus: 'voll', herkunft: {}, bandit: {A: 1}};
   const r = await handleGoRequest({
-    request: req('', {cookie: 'qb_lp_hist=A%3AB%3AC%3AD; CookieConsent=marketing=true'}),
+    request: req('', {cookie: 'qb_lp_hist=A%3AB%3AC%3AD; ' + EIN_JA}),
     env: {ROTATION_MODE: 'on'},
     fetchImpl: jsonFetch(zuteilung),
   });
@@ -307,7 +314,13 @@ test('serialisiereHistCookie: nur Kuerzel, httpOnly+SameSite=Lax+90-Tage-MaxAge'
 test('hatMarketingConsent: erkennt Cookiebot marketing=true, sonst false', () => {
   assert.equal(hatMarketingConsent(undefined), false);
   assert.equal(hatMarketingConsent('CookieConsent=necessary=true%2Cmarketing=false'), false);
-  assert.equal(hatMarketingConsent('CookieConsent=necessary=true%2Cmarketing=true'), true);
+  assert.equal(hatMarketingConsent(EIN_JA), true);
+  assert.equal(hatMarketingConsent(EIN_JA.replace('marketing:true', 'marketing:false')), false);
+  // Motor 'cookiebot' (Rückweg): Lesart wie vor Fassung 2.0.
+  assert.equal(
+    hatMarketingConsent('CookieConsent=necessary=true%2Cmarketing=true; qb_einwilligung_motor=cookiebot'),
+    true,
+  );
 });
 
 test('kaskadeEntscheiden: modus=herkunft ignoriert Bandit-Feld komplett (Tiefe 1)', () => {
