@@ -60,7 +60,11 @@ test('shopifyTorStand: Einwilligungsregion montiert erst nach der Wahl', () => {
   assert.deepEqual(tor.shopifyTorStand(fenster({})), {montieren: false, tracken: false});
   assert.deepEqual(tor.shopifyTorStand(fenster({cb: {hasResponse: false, consent: {statistics: true}}})), {montieren: false, tracken: false});
   assert.deepEqual(tor.shopifyTorStand(fenster({cb: {hasResponse: true, consent: {statistics: false}}})), {montieren: true, tracken: false});
-  assert.deepEqual(tor.shopifyTorStand(fenster({cb: {hasResponse: true, consent: {statistics: true}}})), {montieren: true, tracken: true});
+  // Wahl mit Statistik: zählen erst, wenn Shopify die Wahl übernommen hat (Messung 2026-11-04:
+  // sonst verwirft Hydrogen das page_viewed der Seite, auf der gewählt wurde).
+  assert.deepEqual(tor.shopifyTorStand(fenster({cb: {hasResponse: true, consent: {statistics: true}}})), {montieren: true, tracken: false});
+  assert.deepEqual(tor.shopifyTorStand(fenster({cb: {hasResponse: true, consent: {statistics: true}}, apa: false})), {montieren: true, tracken: false});
+  assert.deepEqual(tor.shopifyTorStand(fenster({cb: {hasResponse: true, consent: {statistics: true}}, apa: true})), {montieren: true, tracken: true});
   // Region strikt gelistet -> consent
   assert.deepEqual(tor.shopifyTorStand(fenster({strikt: 'DE,AT', region: 'DE'})), {montieren: false, tracken: false});
 });
@@ -73,6 +77,14 @@ test('shopifyTorStand: optout-Region wie vorher, Shopifys eigene Ablehnung zähl
   assert.deepEqual(
     tor.shopifyTorStand(fenster({...o, apa: true, cb: {hasResponse: true, consent: {statistics: false}}})),
     {montieren: true, tracken: false},
+  );
+  assert.deepEqual(
+    tor.shopifyTorStand(fenster({...o, cb: {hasResponse: true, consent: {statistics: true}}})),
+    {montieren: true, tracken: false},
+  );
+  assert.deepEqual(
+    tor.shopifyTorStand(fenster({...o, apa: true, cb: {hasResponse: true, consent: {statistics: true}}})),
+    {montieren: true, tracken: true},
   );
 });
 

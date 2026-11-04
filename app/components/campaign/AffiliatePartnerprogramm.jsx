@@ -78,7 +78,9 @@
  * geteilte Datei affiliate-partnerprogramm.css bleibt unberührt, weil
  * /pages/partner-details sie ebenfalls lädt.
  */
+import {useEffect, useRef, useState} from 'react';
 import {CdnBild} from '~/components/reusables/CdnBild';
+import {useBewegungImBild} from '~/components/reusables/useBewegungImBild';
 import {claim} from '~/lib/claims';
 
 const FORMULAR = 'https://aff.revolution.qiblanco.com/register';
@@ -507,9 +509,28 @@ const SCHRITTE = [
 ];
 
 /* ───────── Hero: Menschen zuerst, die Zahlen gleich dahinter ───────── */
+/* Das Hero-Bild taucht einmal auf. Auf dem Handy liegt es unter der Falz, und
+   das Auftauchen war vorbei, bevor jemand hinscrollte (webkit-animationen,
+   live 03.11.2026: „ungesehen“ in iPhone Safari, Chrome und Stromsparmodus).
+   Liegt es beim Laden unter der Falz, wartet es, bis der Leser es erreicht
+   (useBewegungImBild). Liegt es im ersten Bild (Desktop), bleibt alles wie
+   bisher: kein zweites Auftauchen nach dem Laden. */
+const HERO_BILD = '.lp-pw-hero__bild';
+const KEINE_AUSWAHL = ':not(*)';
+
 function Hero() {
+  const kopf = useRef(null);
+  const [wartend, setWartend] = useState(KEINE_AUSWAHL);
+  useEffect(() => {
+    const bild = kopf.current && kopf.current.querySelector(HERO_BILD);
+    if (bild && bild.getBoundingClientRect().top > window.innerHeight * 0.75) {
+      setWartend(HERO_BILD);
+    }
+  }, []);
+  useBewegungImBild(kopf, wartend);
   return (
     <section
+      ref={kopf}
       className="lp-a-hero"
       aria-labelledby="lp-pw-hero-title"
       data-section="lp-pw-hero"

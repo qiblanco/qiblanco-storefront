@@ -116,7 +116,12 @@ const PERSONENBEZOGEN = [
 
 const UA_META =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 [FBAN/FBIOS;FBDV/iPhone14,3]';
-const COOKIE_CONSENT_JA = 'CookieConsent={stamp:%27x%27,marketing:true}';
+// Echtes Cookie des eigenen Hinweises, Fassung 2.0 (public/qb-einwilligung.js schreibeCookie).
+// Seit Fassung 2.0 zählt eine Wahl ohne qbv oder mit qbv '1.x' nicht mehr als Zustimmung.
+const COOKIE_CONSENT_JA =
+  'CookieConsent={stamp:%27x%27,necessary:true,preferences:false,statistics:false,marketing:true,method:%27explicit%27,ver:1,utc:' +
+  Date.now() +
+  ',region:%27de%27,qbv:%272.0%27}';
 const COOKIE_CONSENT_NEIN = 'CookieConsent={stamp:%27x%27,marketing:false}';
 // Ein voll bestueckter Besucher: Klick-ID in der URL, Identitaets-Cookies da.
 const GCL_AW = 'GCL.1760000000.TESTGCLIDausCookie';
