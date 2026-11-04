@@ -11,6 +11,33 @@
    Info-Seite (--kw-*) oder der Wurzel (--qb-*); kein freier Wert.
    ========================================================================== */
 
+/* ─── Kopf: zwei Achsen, ein Rhythmus ────────────────────────────────────────
+   Shop-Tor D4 maß den Kopf am Desktop mit 93 (Soll 95, Job 20261103-medien-
+   apple-rest-partner-schlaf-mikroskop-hexagonal-s04): drei linke Kanten
+   (Spalte 180, Inhalt 204, Kurzfassung 207) und sechs Abstandsstufen.
+   1. EIN EINZUG: alles Eingerückte steht eine Stufe --kw-s3 von der Spalte.
+      Die Kurzfassung zählt ihre Goldlinie (--hw-strich) zum Einzug, ihr Text
+      fluchtet so mit den Einträgen der Inhaltsliste (deren padding-left ist
+      --kw-s3).
+   2. EIN SCHLUSS: der Kopf endet mit der Meta-Zeile ohne eigenen Unterrand,
+      darunter --kw-s3 bis zur Linie und --kw-s3 bis „Inhalt“, so wie die
+      Kurzfassung oben und unten --kw-s3 Luft hat. Kein neuer Abstand. */
+.hw {
+  --hw-strich: 3px; /* = border-left der .kw-kurz */
+}
+
+.hw .kw-kurz {
+  padding-left: calc(var(--kw-s3) - var(--hw-strich));
+}
+
+.hw .kw-kopf {
+  padding-bottom: var(--kw-s3);
+}
+
+.hw .kw-kopf .kw-meta {
+  margin-bottom: 0;
+}
+
 .hw-abgrenzung__rahmen {
   max-width: var(--kw-breite);
 }
@@ -26,7 +53,7 @@
 }
 
 .hw-abgrenzung__tabelle tbody tr:first-child th {
-  box-shadow: inset 3px 0 0 var(--qb-akzent);
+  box-shadow: inset var(--hw-strich) 0 0 var(--qb-akzent);
   padding-left: var(--kw-s1);
 }
 
