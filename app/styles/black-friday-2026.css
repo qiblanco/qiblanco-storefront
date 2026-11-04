@@ -358,6 +358,10 @@
   font-size: var(--as-fs-2);
   color: var(--as-grau);
 }
+/* reset.css setzt li auf 19,2 px: die Größe des ul käme sonst nicht an. */
+[data-apple-seite='bf-deals'] .bf-vertrauen li {
+  font-size: var(--as-fs-2);
+}
 [data-apple-seite='bf-deals'] .bf-ueberblick {
   padding-top: var(--as-s-4);
 }
