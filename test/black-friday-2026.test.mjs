@@ -243,8 +243,6 @@ test('Das CSS nimmt nur Token: keine freien Farben, keine Schriftgrößen außer
   const css = lies('app/styles/black-friday-2026.css').replace(/\/\*[\s\S]*?\*\//g, '');
   assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b|rgb\(|hsl\(/i);
   for (const m of css.matchAll(/font-size:\s*([^;]+);/g)) {
-    // Die Ziffern der Grafik stehen im SVG-Raster (viewBox), nicht auf der Skala.
-    if (m[1].trim() === '16px') continue;
     assert.match(m[1].trim(), /^var\(--as-fs-[1-8]\)$/, m[1]);
   }
   assert.doesNotMatch(css, /animation|@keyframes|blink/i);
