@@ -10,8 +10,8 @@
 //   A. die Server-Leser (checkout-tracking, consent-policy, go-router) lasen die alte
 //      Wahl weiter als Zustimmung — der Browser hielt sie für offen;
 //   B. das Ton-Fenster (TheAlphaTon.jsx) ging sofort auf, während der Hinweis stand.
-// Dieser Stand trägt Teil A (Server-Leser) und Teil C (Parität mit dem Hinweis);
-// Teil B (Ton-Fenster) folgt mit der Komponente, sobald das Mobil-Tor für Qi Alpha frei ist.
+// Teil B führt den echten Quelltext der Komponente aus (Ausschnitt per vm), mit
+// nachgebautem window/document, damit die Probe am Verhalten misst und nicht an Literalen.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {registerHooks} from 'node:module';
@@ -116,6 +116,189 @@ test('A4 Motor cookiebot (Rückweg): Cookiebot prüft selbst, Lesart wie vor Fas
   assert.equal(hasCookiebotMarketingConsent(c), true);
   assert.equal(consentStateFromCookies(c), 'granted');
   assert.equal(hatMarketingConsent(c), true);
+});
+
+// ---------------------------------------------------------------------------
+// Teil B: das Ton-Fenster wartet auf den Hinweis
+// ---------------------------------------------------------------------------
+const QUELLE = readFileSync(
+  new URL('../app/components/campaign/TheAlphaTon.jsx', import.meta.url),
+  'utf8',
+);
+const anfang = QUELLE.indexOf('const NACH_HINWEIS_MS');
+const ende = QUELLE.indexOf('function lies()');
+assert.ok(anfang > 0 && ende > anfang, 'Ausschnitt nachEinwilligung in TheAlphaTon.jsx nicht gefunden');
+const AUSSCHNITT =
+  QUELLE.slice(anfang, ende) +
+  '\nglobalThis.__ton = {nachEinwilligung};\n';
+
+function welt({cookie: cookieWert = '', banner = 'sichtbar', dialog = 'zu', cookiebot} = {}) {
+  let uhr = 0;
+  let naechsteId = 1;
+  const timer = new Map();
+  const hoerer = new Map();
+  const element = (zustand) => ({zustand});
+  const elemente = {
+    'qb-einwilligung': banner ? element(banner) : null,
+    'qb-einwilligung-dialog': element(dialog === 'offen' ? 'sichtbar' : 'verborgen'),
+  };
+  const sichtbar = (el) => el.zustand === 'sichtbar';
+  const fenster = {
+    setTimeout(fn, ms) {
+      const id = naechsteId++;
+      timer.set(id, {fn, um: uhr + ms});
+      return id;
+    },
+    clearTimeout(id) {
+      timer.delete(id);
+    },
+    addEventListener(n, fn) {
+      if (!hoerer.has(n)) hoerer.set(n, new Set());
+      hoerer.get(n).add(fn);
+    },
+    removeEventListener(n, fn) {
+      hoerer.get(n)?.delete(fn);
+    },
+    getComputedStyle: (el) => ({
+      display: sichtbar(el) ? 'block' : 'none',
+      visibility: 'visible',
+    }),
+    Cookiebot: cookiebot,
+  };
+  fenster.document = {
+    cookie: cookieWert,
+    getElementById: (id) => {
+      const el = elemente[id];
+      if (!el) return null;
+      return {
+        getBoundingClientRect: () =>
+          sichtbar(el) ? {width: 390, height: 120} : {width: 0, height: 0},
+        _el: el,
+      };
+    },
+  };
+  // getComputedStyle bekommt das Objekt aus getElementById.
+  const roh = fenster.getComputedStyle;
+  fenster.getComputedStyle = (h) => roh(h._el);
+  fenster.window = fenster;
+  const ctx = vm.createContext(fenster);
+  vm.runInContext(AUSSCHNITT, ctx);
+  return {
+    ton: ctx.__ton,
+    fenster,
+    elemente,
+    vergehe(ms) {
+      const ziel = uhr + ms;
+      for (;;) {
+        const faellig = [...timer.entries()]
+          .filter(([, t]) => t.um <= ziel)
+          .sort((a, b) => a[1].um - b[1].um)[0];
+        if (!faellig) break;
+        timer.delete(faellig[0]);
+        uhr = faellig[1].um;
+        faellig[1].fn();
+      }
+      uhr = ziel;
+    },
+    feuere(n) {
+      for (const fn of [...(hoerer.get(n) || [])]) fn();
+    },
+  };
+}
+
+test('B1 Bestandsbesucher mit Wahl der Fassung 1: Fenster wartet, bis der Hinweis zu ist', () => {
+  const w = welt({cookie: cookie({qbv: ''}), cookiebot: {hasResponse: false}});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  assert.equal(auf, 0, 'Fenster ging sofort auf, während #qb-einwilligung unten steht');
+  w.vergehe(15_000);
+  assert.equal(auf, 0, 'Fenster ging nach Ablauf der Notfrist auf, obwohl der Hinweis steht');
+  // Besucher wählt neu: der Hinweis setzt hasResponse, versteckt sich, feuert Accept.
+  w.fenster.Cookiebot.hasResponse = true;
+  w.elemente['qb-einwilligung'].zustand = 'verborgen';
+  w.feuere('CookiebotOnConsentReady');
+  w.feuere('CookiebotOnAccept');
+  w.vergehe(1_000);
+  assert.equal(auf, 1, 'nach der neuen Wahl muss das Fenster genau einmal aufgehen');
+});
+
+test('B1b Wahl innerhalb der Notfrist: das Fenster kommt über das Ereignis nach 400 ms, nicht erst über die Abfrage', () => {
+  const w = welt({cookie: cookie({qbv: ''}), cookiebot: {hasResponse: false}});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  w.vergehe(1_000);
+  // Ein Ereignis ohne Antwort (hasResponse false) öffnet nichts.
+  w.feuere('CookiebotOnConsentReady');
+  w.vergehe(1_000);
+  assert.equal(auf, 0, 'Ereignis ohne gültige Antwort darf das Fenster nicht öffnen');
+  w.fenster.Cookiebot.hasResponse = true;
+  w.elemente['qb-einwilligung'].zustand = 'verborgen';
+  w.feuere('CookiebotOnAccept');
+  w.vergehe(300);
+  assert.equal(auf, 0, 'Atempause NACH_HINWEIS_MS fehlt');
+  w.vergehe(200);
+  assert.equal(auf, 1, 'nach der Wahl in den ersten 5 s muss das Fenster binnen 500 ms aufgehen');
+});
+
+test('B2 Hinweis-Skript lädt spät, altes Cookie: der sichtbare Banner hält das Fenster', () => {
+  const w = welt({cookie: cookie({qbv: '1.0'}), cookiebot: undefined});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  w.vergehe(1_000);
+  w.fenster.Cookiebot = {hasResponse: false}; // qb-einwilligung.js ist da
+  w.vergehe(15_000);
+  assert.equal(auf, 0);
+});
+
+test('B7 Hinweis-Skript lädt nie (Banner steht tot im Server-HTML): nach der Notfrist trotzdem auf', () => {
+  const w = welt({cookie: cookie({qbv: '1.0'}), cookiebot: undefined});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  w.vergehe(4_000);
+  assert.equal(auf, 0);
+  w.vergehe(2_000);
+  assert.equal(auf, 1);
+});
+
+test('B8 Motor cookiebot vor uc.js: window.Cookiebot ist das <script id="Cookiebot">, gültiges Cookie zählt', () => {
+  const skript = {tagName: 'SCRIPT', id: 'Cookiebot'}; // benannter Zugriff, kein hasResponse
+  const w = welt({cookie: cookie({qbv: ''}), banner: null, cookiebot: skript});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  assert.equal(auf, 1, 'Bestandsbesucher im Rückweg-Motor: Fenster sofort wie vor Fassung 2.0');
+});
+
+test('B3 Erstbesuch ohne Cookie: das Fenster wartet auch nach der Notfrist', () => {
+  const w = welt({cookiebot: {hasResponse: false}});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  w.vergehe(15_000);
+  assert.equal(auf, 0);
+});
+
+test('B4 Einstellungs-Dialog offen (Banner verborgen): das Fenster wartet', () => {
+  const w = welt({banner: 'verborgen', dialog: 'offen', cookiebot: {hasResponse: false}});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  w.vergehe(15_000);
+  assert.equal(auf, 0);
+});
+
+test('B5 gültige Wahl der Fassung 2.0, Hinweis zu: das Fenster geht sofort auf (Positiv-Kontrolle)', () => {
+  const w = welt({cookie: cookie(), banner: 'verborgen', cookiebot: {hasResponse: true}});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  assert.equal(auf, 1);
+});
+
+test('B6 Hinweis-Skript blockiert (kein Banner, kein Cookiebot): nach der Notfrist trotzdem auf', () => {
+  const w = welt({banner: null, cookiebot: undefined});
+  let auf = 0;
+  w.ton.nachEinwilligung(() => auf++);
+  w.vergehe(4_000);
+  assert.equal(auf, 0);
+  w.vergehe(2_000);
+  assert.equal(auf, 1);
 });
 
 // ---------------------------------------------------------------------------

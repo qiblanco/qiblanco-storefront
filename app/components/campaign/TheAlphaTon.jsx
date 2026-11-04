@@ -154,16 +154,31 @@ const FENSTER_ZU_MS = 6000; // unbeachtet schließt das Fenster von selbst
 // s09). Es wartet deshalb, bis die Cookie-Frage beantwortet ist.
 const NACH_HINWEIS_MS = 400; // Atempause, nachdem der Hinweis zugeht
 const OHNE_HINWEIS_MS = 5000; // kein Hinweis zu sehen: dann trotzdem auf
-const HINWEIS_IDS = ['cookiebanner', 'CybotCookiebotDialog'];
+// Cookiebot (Rückweg) und der eigene Hinweis samt Einstellungs-Dialog.
+const HINWEIS_IDS = [
+  'cookiebanner',
+  'CybotCookiebotDialog',
+  'qb-einwilligung',
+  'qb-einwilligung-dialog',
+];
 const EINWILLIGUNG_EREIGNISSE = [
   'CookiebotOnAccept',
   'CookiebotOnDecline',
   'CookiebotOnConsentReady',
 ];
 
+// Geladen heißt: ein Objekt mit booleschem hasResponse (Cookiebot oder der
+// eigene Hinweis). Vor uc.js ist window.Cookiebot das <script id="Cookiebot">.
+function hinweisGeladen() {
+  return typeof window.Cookiebot?.hasResponse === 'boolean';
+}
+
+// Ist der Hinweis geladen, entscheidet er: seit Fassung 2.0 fragt der eigene
+// Hinweis eine Wahl der Fassung 1 neu, das alte Cookie bleibt dabei liegen
+// (hasResponse false). Nur ohne geladenen Hinweis zählt das Cookie.
 function einwilligungBeantwortet() {
-  if (/(?:^|;\s*)CookieConsent=/.test(document.cookie)) return true;
-  return Boolean(window.Cookiebot && window.Cookiebot.hasResponse);
+  if (hinweisGeladen()) return window.Cookiebot.hasResponse;
+  return /(?:^|;\s*)CookieConsent=/.test(document.cookie);
 }
 
 function hinweisSichtbar() {
@@ -179,8 +194,9 @@ function hinweisSichtbar() {
 /**
  * Ruft `los` auf, sobald die Cookie-Frage beantwortet ist (beide Motoren,
  * Cookiebot und der eigene Hinweis, feuern die Cookiebot-Ereignisse). Ist nach
- * OHNE_HINWEIS_MS kein Hinweis zu sehen (Skript blockiert), geht es trotzdem
- * los. Gibt die Aufräum-Funktion zurück.
+ * OHNE_HINWEIS_MS kein Hinweis zu sehen oder keiner geladen (Skript blockiert:
+ * der eigene Banner steht dann im Server-HTML, lässt sich aber nicht
+ * schließen), geht es trotzdem los. Gibt die Aufräum-Funktion zurück.
  */
 function nachEinwilligung(los) {
   if (einwilligungBeantwortet() && !hinweisSichtbar()) {
@@ -207,7 +223,7 @@ function nachEinwilligung(los) {
     pause = window.setTimeout(ende, NACH_HINWEIS_MS);
   };
   const pruefe = () => {
-    if (!hinweisSichtbar()) ende();
+    if (!hinweisSichtbar() || !hinweisGeladen()) ende();
     else notfall = window.setTimeout(pruefe, 1000);
   };
   notfall = window.setTimeout(pruefe, OHNE_HINWEIS_MS);
