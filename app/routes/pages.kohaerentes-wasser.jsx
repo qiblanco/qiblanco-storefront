@@ -61,12 +61,14 @@ export default function KohaerentesWasserPage() {
           Titel, H1 und strukturierte Daten zu „kohärentes Wasser"; dieser
           Verweis sagt Besuchern und Suchmaschinen, wo die Hauptseite steht.
           Bewusst HIER und nicht in CourseLesson.jsx: das Bauteil teilen zehn
-          Lektionen, und nur diese eine bekommt den Hinweis. */}
+          Lektionen, und nur diese eine bekommt den Hinweis.
+          Apple-Fassung: .as-seite beginnt bei y=104 hinter dem transparenten
+          Kopf, mit 24px lief die Fläche des Hinweises in die Kopfzone (F-441). */}
       <div className="NormalSectionSize">
         <p
           data-kurs-vertiefung=""
           style={{
-            margin: '24px 0 0',
+            margin: appleSeite?.an ? 'var(--as-s-8) 0 0' : '24px 0 0',
             padding: '12px 16px',
             background: 'var(--qb-flaeche)',
             borderLeft: '3px solid var(--qb-akzent-kauf)',
