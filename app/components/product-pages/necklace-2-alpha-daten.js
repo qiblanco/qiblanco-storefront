@@ -6,6 +6,9 @@
  *
  * Wortlaut Christian: „Logo auf dem Verschluss“, „6-fache Laserung am
  * Verschluss“, „sehr stabil“, „sehr langlebig“, „ideal für den Qi Alpha“.
+ * Beilage: Dem Qi Alpha® liegt ein Necklace 2 in 60 cm bei, das Material dieser
+ * Beilage ist nicht genannt und steht darum nicht hier. Necklace 1 (bisherige
+ * QiOne-Kette) hat weder Logo noch Laserung.
  * Durchmesser und Stahlsorte stehen hier nicht: sie sind für diese Kette nicht
  * genannt. PREISE und Längen kommen aus Shopify.
  */
@@ -24,9 +27,10 @@ export const PRODUKT = {
     {zeichen: 'schutz', text: '6-fache Laserung am Verschluss'},
     {zeichen: 'material', text: 'Sehr stabil und sehr langlebig'},
     {zeichen: 'wellen', text: 'Ideal für den Qi Alpha®, passt auch zum QiOne®'},
+    {zeichen: 'material', text: 'Liegt dem Qi Alpha® in 60 cm bei'},
   ],
   vergleichLink: null,
-  herkunft: ['Designed and made in Germany.'],
+  herkunft: ['Designed in Germany.', 'Made in Germany.'],
 };
 
 const LAENGEN = {
@@ -132,9 +136,9 @@ export const FAKTEN = {
     },
     {
       icon: 'wellen',
-      zahl: '2',
-      titel: 'Metalle zur Wahl',
-      satz: '750er ethisches Vollgold oder Chirurgenstahl.',
+      zahl: 'Neu',
+      titel: 'Der Unterschied zum Necklace 1',
+      satz: 'Necklace 2 hat Logo und 6-fache Laserung am Verschluss. Necklace 1 hat beides nicht.',
     },
   ],
 };
@@ -158,6 +162,14 @@ export const FAQ = {
     {
       f: 'Welche Längen gibt es?',
       a: 'In 750er ethischem Vollgold 45, 50 und 60 cm. In Chirurgenstahl 40, 45, 50, 60 und 75 cm.',
+    },
+    {
+      f: 'Was unterscheidet Necklace 2 vom Necklace 1?',
+      a: 'Necklace 2 trägt das Qi-Alpha-Logo und die 6-fache Laserung am Verschluss, in beiden Metallen. Necklace 1 ist das bisherige Necklace für QiOne®, es hat weder Logo noch Laserung.',
+    },
+    {
+      f: 'Liegt die Kette meinem Qi Alpha® bei?',
+      a: 'Ja. Dem Qi Alpha® liegt ein Necklace 2 in 60 cm bei.',
     },
     {
       f: 'Passt die Kette auch an meinen QiOne®?',

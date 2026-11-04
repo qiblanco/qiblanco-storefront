@@ -8,8 +8,8 @@ export const NECKLACE_2_ENTWURF = {
  "title": "Necklace 2 für den Qi Alpha® und QiOne®",
  "vendor": "Qi Blanco - Frequency Technology",
  "handle": "necklace-2",
- "descriptionHtml": "<p>Die Kette mit dem Qi-Alpha-Logo auf dem Verschluss. Sechsfach gelasert am Verschluss, sehr stabil und sehr langlebig. Ideal für den Qi Alpha®, passt auch zum QiOne®.</p><p>750er ethisches Vollgold: lieferbar ab Januar 2027. Chirurgenstahl: lieferbar ab 1. Quartal 2027.</p><p>Designed and made in Germany.</p>",
- "description": "Die Kette mit dem Qi-Alpha-Logo auf dem Verschluss. Sechsfach gelasert am Verschluss, sehr stabil und sehr langlebig. Ideal für den Qi Alpha®, passt auch zum QiOne®.750er ethisches Vollgold: lieferbar ab Januar 2027. Chirurgenstahl: lieferbar ab 1. Quartal 2027.Designed and made in Germany.",
+ "descriptionHtml": "<p>Die Kette mit dem Qi-Alpha-Logo auf dem Verschluss. Sechsfach gelasert am Verschluss, sehr stabil und sehr langlebig. Ideal für den Qi Alpha®, passt auch zum QiOne®. Dem Qi Alpha® liegt ein Necklace 2 in 60 cm bei.</p><p>Necklace 1, das bisherige Necklace für QiOne®, hat weder Logo noch Laserung.</p><p>750er ethisches Vollgold: lieferbar ab Januar 2027. Chirurgenstahl: lieferbar ab 1. Quartal 2027.</p><p>Designed in Germany. Made in Germany.</p>",
+ "description": "Die Kette mit dem Qi-Alpha-Logo auf dem Verschluss. Sechsfach gelasert am Verschluss, sehr stabil und sehr langlebig. Ideal für den Qi Alpha®, passt auch zum QiOne®. Dem Qi Alpha® liegt ein Necklace 2 in 60 cm bei.Necklace 1, das bisherige Necklace für QiOne®, hat weder Logo noch Laserung.750er ethisches Vollgold: lieferbar ab Januar 2027. Chirurgenstahl: lieferbar ab 1. Quartal 2027.Designed in Germany. Made in Germany.",
  "images": {
   "nodes": [
    {
