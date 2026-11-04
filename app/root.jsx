@@ -1096,6 +1096,10 @@ function AnalytikNachHydration({data, filmSeite = false, children}) {
   // _shopify_analytics/_marketing noch _shopify_y/_s noch monorail vor der Wahl.
   // Begründung, Region-Regel und Rückweg in lib/shopify-tracking-tor.js.
   const shopifyTor = useShopifyTrackingTor();
+  // Neue Identität, sobald `tracken` wechselt: der Provider bewertet `publish` nur neu, wenn sich
+  // eine seiner Abhängigkeiten ändert. So gehen die Ansichten der Seite, auf der gewählt wurde,
+  // einmal nach, statt verloren zu gehen (gemessen 2026-11-04, lib/shopify-tracking-tor.js).
+  const torDaten = useMemo(() => ({}), [shopifyTor.tracken]);
 
   const seitengeruest = useMemo(
     () =>
@@ -1118,6 +1122,7 @@ function AnalytikNachHydration({data, filmSeite = false, children}) {
       shop={hydriert && shopifyTor.montieren ? data.shop : null}
       consent={data.consent}
       canTrack={shopifyDarfTracken}
+      customData={torDaten}
     >
       {/*
         EU-Gewaehrleistungs-Mitteilung (VO (EU) 2025/1960, ab
