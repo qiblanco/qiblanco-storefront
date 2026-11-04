@@ -64,7 +64,7 @@ export const APPLE_SEITEN = Object.freeze({
   // ---- s07 · übrige Landingpages ----
   'e-smog-schutz': {pfad: '/pages/E-Smog-Schutz', schalter: 'APPLE_SEITE_E_SMOG_SCHUTZ', standard: 'off'},
   'das-20-tage-versprechen': {pfad: '/pages/das-20-tage-versprechen', schalter: 'APPLE_SEITE_DAS_20_TAGE_VERSPRECHEN', standard: 'on'},
-  'das-beispiel': {pfad: '/pages/das-beispiel', schalter: 'APPLE_SEITE_DAS_BEISPIEL', standard: 'on'},
+  'das-beispiel': {pfad: '/pages/das-beispiel', schalter: 'APPLE_SEITE_DAS_BEISPIEL', standard: 'off'},
   'e-smog': {pfad: '/pages/e-smog', schalter: 'APPLE_SEITE_E_SMOG', standard: 'on'},
   'entgiftung': {pfad: '/pages/entgiftung', schalter: 'APPLE_SEITE_ENTGIFTUNG', standard: 'on'},
   'exclusive-solutions': {pfad: '/pages/exclusive-solutions', schalter: 'APPLE_SEITE_EXCLUSIVE_SOLUTIONS', standard: 'on'},
@@ -74,7 +74,7 @@ export const APPLE_SEITEN = Object.freeze({
   'kette-oder-armband': {pfad: '/pages/kette-oder-armband', schalter: 'APPLE_SEITE_KETTE_ODER_ARMBAND', standard: 'on'},
   'kohaerentes-wasser': {pfad: '/pages/kohaerentes-wasser', schalter: 'APPLE_SEITE_KOHAERENTES_WASSER', standard: 'on'},
   'menschen-alltag': {pfad: '/pages/menschen-alltag', schalter: 'APPLE_SEITE_MENSCHEN_ALLTAG', standard: 'off'},
-  'mentales-setting': {pfad: '/pages/mentales-setting', schalter: 'APPLE_SEITE_MENTALES_SETTING', standard: 'on'},
+  'mentales-setting': {pfad: '/pages/mentales-setting', schalter: 'APPLE_SEITE_MENTALES_SETTING', standard: 'off'},
   'podcasts': {pfad: '/pages/podcasts', schalter: 'APPLE_SEITE_PODCASTS', standard: 'on'},
   'pages-podcasts-seite-2': {pfad: '/pages/podcasts/seite-2', schalter: 'APPLE_SEITE_PAGES_PODCASTS_SEITE_2', standard: 'on'},
   'pages-podcasts-seite-3': {pfad: '/pages/podcasts/seite-3', schalter: 'APPLE_SEITE_PAGES_PODCASTS_SEITE_3', standard: 'on'},
