@@ -200,6 +200,8 @@ test('keine andere Datei unter app/ verlinkt die Seite', () => {
     'app/data/forschung-seite.js',
     'app/components/campaign/ForschungSeite.jsx',
     'app/components/campaign/FoGrafiken.jsx',
+    // Schalter-Tabelle der Apple-Fassungen: nennt den Pfad, rendert keinen Link.
+    'app/lib/apple-seiten.js',
   ]);
   const treffer = [];
   const lauf = (rel) => {

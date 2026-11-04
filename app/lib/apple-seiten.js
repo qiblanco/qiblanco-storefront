@@ -68,8 +68,9 @@ export const APPLE_SEITEN = Object.freeze({
   'e-smog': {pfad: '/pages/e-smog', schalter: 'APPLE_SEITE_E_SMOG', standard: 'on'},
   'entgiftung': {pfad: '/pages/entgiftung', schalter: 'APPLE_SEITE_ENTGIFTUNG', standard: 'on'},
   'exclusive-solutions': {pfad: '/pages/exclusive-solutions', schalter: 'APPLE_SEITE_EXCLUSIVE_SOLUTIONS', standard: 'on'},
-  // forschung: bewusst ohne Zeile. Die Seite ist versteckt, test/forschung-seite.test.mjs
-  // verbietet jede Nennung ihres Pfads unter app/. s07 entscheidet und zieht den Test mit.
+  // forschung bleibt versteckt: diese Zeile rendert keinen Link, test/forschung-seite.test.mjs
+  // führt die Datei deshalb bei den eigenen Dateien.
+  'forschung': {pfad: '/pages/forschung', schalter: 'APPLE_SEITE_FORSCHUNG', standard: 'off'},
   'haelt-das-mein-leben-aus': {pfad: '/pages/haelt-das-mein-leben-aus', schalter: 'APPLE_SEITE_HAELT_DAS_MEIN_LEBEN_AUS', standard: 'on'},
   'kette-oder-armband': {pfad: '/pages/kette-oder-armband', schalter: 'APPLE_SEITE_KETTE_ODER_ARMBAND', standard: 'on'},
   'kohaerentes-wasser': {pfad: '/pages/kohaerentes-wasser', schalter: 'APPLE_SEITE_KOHAERENTES_WASSER', standard: 'on'},
