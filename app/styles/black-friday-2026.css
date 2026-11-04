@@ -4,6 +4,13 @@
  * Blinken. Die Uhr steht auf festen Breiten mit tabular-nums, damit nichts springt.
  */
 
+/* ---- Skala ---------------------------------------------------------------- */
+/* Fließtext auf --as-fs-3: reset.css setzt p sonst auf 19,2 px, eine Größe neben
+   der Skala (Rubrik: 11 Schriftgrößen, Soll höchstens 9). */
+[data-apple-seite='bf-deals'] :is(.as-absatz, .as-kachel-satz, .as-faq-antwort, .as-faq-antwort p, .bf-preis-zeile, .bf-preis-zusatz) {
+  font-size: var(--as-fs-3);
+}
+
 /* ---- Hero ----------------------------------------------------------------- */
 [data-apple-seite='bf-deals'] .bf-hero {
   padding-bottom: var(--as-s-6);
@@ -122,7 +129,7 @@
 }
 [data-apple-seite='bf-deals'] .bf-karte-titel {
   margin: 0;
-  font-size: var(--as-fs-5);
+  font-size: var(--as-fs-4);
   font-weight: 600;
   line-height: 1.2;
 }
@@ -279,7 +286,7 @@
   stroke-width: 2;
 }
 [data-apple-seite='bf-deals'] .bf-marke {
-  font-size: 16px;
+  font-size: var(--as-fs-3);
   font-weight: 600;
   fill: var(--as-tinte);
   text-anchor: middle;
@@ -306,7 +313,7 @@
   font-variant-numeric: tabular-nums;
 }
 [data-apple-seite='bf-deals'] .bf-stufe-satz {
-  font-size: var(--as-fs-5);
+  font-size: var(--as-fs-4);
   font-weight: 600;
   line-height: 1.25;
 }

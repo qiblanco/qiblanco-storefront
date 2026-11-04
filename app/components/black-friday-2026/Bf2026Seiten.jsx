@@ -120,11 +120,11 @@ function Bf2026Angebote({produkte}) {
   );
 }
 
-function Bf2026Schluss({ziel = '#angebote'}) {
+function Bf2026Schluss({ziel = '#angebote', hell = false}) {
   const {phase} = useBf2026Zeit();
   const schluss = BF2026_SCHLUSS[phase];
   if (!schluss) return null;
-  return <AppleCtaBand titel={schluss.titel} cta={{text: schluss.knopf, href: ziel}} />;
+  return <AppleCtaBand titel={schluss.titel} cta={{text: schluss.knopf, href: ziel}} hell={hell} />;
 }
 
 /* ---- Landingpage ---------------------------------------------------------- */
@@ -139,7 +139,8 @@ export function Bf2026Landing({seite}) {
         <Bf2026Leistung />
         <AppleFakten {...BF2026_SO_GEHT_ES} />
         <AppleFaq {...BF2026_FAQ_LANDING} />
-        <Bf2026Schluss />
+        {/* hell: die Landingpage hat mit dem Hero schon ihre eine dunkle Fläche. */}
+        <Bf2026Schluss hell />
         <AppleAnna />
       </AppleSeite>
     </Bf2026Zeit>
