@@ -21,7 +21,7 @@ registerHooks({
 const tor = await import('../app/lib/shopify-tracking-tor.js');
 const {EINWILLIGUNG_FASSUNG} = await import('../app/lib/einwilligung-texte.js');
 // Fixturen folgen der laufenden Fassung (Fassung 2.0 kam mit #1308): eine Wahl
-// gilt nur ab deren Hauptnummer, eine aeltere zaehlt als keine Wahl.
+// gilt nur ab deren Hauptnummer, eine ältere zählt als keine Wahl.
 const HAUPT = Number(String(EINWILLIGUNG_FASSUNG).split('.')[0]);
 const AKTUELL = EINWILLIGUNG_FASSUNG;
 const VORHER = `${HAUPT - 1}.9`;
@@ -51,7 +51,7 @@ test('wahlAusCookie: gültige Wahl, keine, abgelaufen, alte Fassung', () => {
   assert.equal(tor.wahlAusCookie('andere=1', JETZT), null);
   assert.equal(tor.wahlAusCookie(wahl({s: true, m: true, utc: JETZT - 366 * 86400000}), JETZT), null);
   assert.equal(tor.wahlAusCookie(wahl({s: true, m: true, qbv: VORHER}), JETZT), null);
-  // ohne qbv gilt Fassung 1: unter einer spaeteren Hauptnummer keine Wahl
+  // ohne qbv gilt Fassung 1: unter einer späteren Hauptnummer keine Wahl
   assert.equal(tor.wahlAusCookie(wahl({s: true, m: true, qbv: null}), JETZT), HAUPT > 1 ? null : {statistics: true, marketing: true});
   assert.deepEqual(tor.wahlAusCookie(wahl({s: false, m: true, qbv: `${HAUPT}.2`}), JETZT), {statistics: false, marketing: true});
 });
