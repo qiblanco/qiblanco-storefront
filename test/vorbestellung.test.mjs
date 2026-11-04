@@ -256,3 +256,22 @@ test('CartLineItem: Titel aus addonZeile, zweite Zeile klein darunter statt „N
   // der Wortlaut steht in den libs, nicht in der Komponente
   assert.doesNotMatch(src, /Vorbestellung · Versand|Qi Alpha®/);
 });
+
+test('Necklace 2: Termin je Material in Zeile und Lieferhinweis, ohne Material kein Eintrag', () => {
+  const zeile = (material) => ({
+    merchandise: {
+      product: {handle: 'necklace-2', title: 'Necklace 2'},
+      selectedOptions: [
+        {name: 'Material', value: material},
+        {name: 'Länge', value: '60 cm'},
+      ],
+    },
+  });
+  const gold = zeile('750er ethisches Vollgold');
+  const stahl = zeile('Chirurgenstahl');
+  assert.match(warenkorbUnterzeile(gold), /60 cm · Vorbestellung, lieferbar ab Januar 2027/);
+  assert.match(warenkorbUnterzeile(stahl), /lieferbar ab 1\. Quartal 2027/);
+  assert.equal(versandhinweisFürLinien([gold]), 'Lieferbar für Dich: ab Januar 2027');
+  assert.equal(versandhinweisFürLinien([stahl]), 'Lieferbar für Dich: ab 1. Quartal 2027');
+  assert.equal(versandhinweisFürLinien([zeile('Silber')]), STANDARD_VERSANDHINWEIS);
+});

@@ -255,3 +255,35 @@ test('Kette im Set (s13-r3): ohne Kettendaten die Längen der Datenstelle, alle 
   assert.deepEqual(L.laengenKacheln(live, ['60']).map((x) => [x.cm, x.verfuegbar]), [[45, false]]);
   assert.deepEqual(L.laengenKacheln(null), []);
 });
+
+test('Stufen-Wahl (Necklace 2): nur vorhandene Längen je Material, ungültige Länge springt auf Vorwahl', () => {
+  const v = (m, l, preis) => ({
+    id: `${m}-${l}`,
+    availableForSale: true,
+    price: {amount: preis, currencyCode: 'EUR'},
+    selectedOptions: [
+      {name: 'Material', value: m},
+      {name: 'Länge', value: l},
+    ],
+  });
+  const product = {
+    options: [
+      {name: 'Material', optionValues: [{name: 'Gold'}, {name: 'Stahl'}]},
+      {name: 'Länge', optionValues: ['40 cm', '45 cm', '60 cm'].map((name) => ({name}))},
+    ],
+    variants: {nodes: [v('Gold', '45 cm', '4379'), v('Gold', '60 cm', '4979'), v('Stahl', '40 cm', '199'), v('Stahl', '45 cm', '199'), v('Stahl', '60 cm', '199')]},
+  };
+  const stufen = [{option: 'Material'}, {option: 'Länge', vorwahl: '60 cm'}];
+  assert.deepEqual(
+    L.stufenWerte(product, 'Länge', {Material: 'Gold'}, ['Material']).map((w) => w.name),
+    ['45 cm', '60 cm'],
+  );
+  assert.deepEqual(
+    L.stufenWerte(product, 'Länge', {Material: 'Stahl'}, ['Material']).map((w) => w.name),
+    ['40 cm', '45 cm', '60 cm'],
+  );
+  // 40 cm gibt es in Gold nicht: Wechsel springt auf die Vorwahl, nie auf eine leere Wahl.
+  assert.deepEqual(L.stufenWahl(product, stufen, {Material: 'Stahl', 'Länge': '40 cm'}, 'Material', 'Gold'), {Material: 'Gold', 'Länge': '60 cm'});
+  // 45 cm gibt es in beiden: bleibt stehen.
+  assert.deepEqual(L.stufenWahl(product, stufen, {Material: 'Stahl', 'Länge': '45 cm'}, 'Material', 'Gold'), {Material: 'Gold', 'Länge': '45 cm'});
+});

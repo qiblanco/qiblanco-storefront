@@ -24,6 +24,8 @@ import {
   schrittAbschnitt,
   startLaenge,
   startWahl,
+  stufenWahl,
+  stufenWerte,
   variantenOptionen,
   varianteZurWahl,
   warenkorbZeilen,
@@ -153,6 +155,8 @@ export function AlphaVorlage({
   slots = {},
   vertrauen = null,
   videoKachel = null,
+  // Vorschau eines Entwurfs: Shopify nimmt ihn noch nicht in den Warenkorb.
+  kaufErstNachFreigabe = false,
 }) {
   const {PRODUKT, BAND, VARIANTE, KETTE, KETTE_GOLD, BEZAHLART, ZUSAMMENFASSUNG, BOX} =
     daten;
@@ -163,14 +167,19 @@ export function AlphaVorlage({
   const handle = product.handle;
 
   const optionen = variantenOptionen(product);
-  const [wahl, setWahl] = useState(() => startWahl(product));
+  const STUFEN = VARIANTE?.stufen ?? null;
+  const [wahl, setWahl] = useState(() => ({...startWahl(product), ...(VARIANTE?.start ?? {})}));
   const variante = varianteZurWahl(product, wahl);
   const waehrung =
     variante?.price?.currencyCode ||
     product.selectedOrFirstAvailableVariant?.price?.currencyCode ||
     'EUR';
 
-  const bilder = product?.images?.nodes ?? [];
+  const bilder = (product?.images?.nodes ?? []).filter(
+    (b) => !VARIANTE?.bildZurWahl || VARIANTE.bildZurWahl(b, wahl),
+  );
+  // Gilt für die Wahl der ersten Stufe (Liefertext, Zusammenfassung, Warenkorb).
+  const stufeEins = STUFEN?.[0]?.werte?.[wahl[STUFEN?.[0]?.option]] ?? null;
   const band = bandQuelle(BAND);
   const [bild, setBild] = useState(0);
   const grossesBild = bilder[bild] ?? bilder[0];
@@ -221,7 +230,11 @@ export function AlphaVorlage({
     waehrung,
     land,
   });
-  const linien = warenkorbZeilen(variante, kette, laengenAttribut(laenge?.cm));
+  const linien = warenkorbZeilen(
+    variante,
+    kette,
+    stufeEins?.zeilenAttribute ?? laengenAttribut(laenge?.cm),
+  );
   // Kette im Set: ohne lieferbare Länge kein Kauf (nie eine Länge versprechen,
   // die nicht da ist).
   const kaufbar = linien.length > 0 && (!laengen.length || Boolean(laenge));
@@ -229,7 +242,9 @@ export function AlphaVorlage({
     kette?.art === 'gold' && KETTE_GOLD?.bilder ? KETTE_GOLD.bilder : KETTE?.bilder ?? [];
   const setBilder = KETTE_IM_SET?.bilder ?? [];
   const boxBilder = boxKacheln(BOX?.kacheln);
-  const erster = optionen.length
+  const erster = STUFEN
+    ? STUFEN[0].name
+    : optionen.length
     ? 'variante'
     : laengen.length
       ? 'laenge'
@@ -240,8 +255,16 @@ export function AlphaVorlage({
   // Der eine Kaufknopf: in der Zusammenfassung und, mobil nach ihr, in der
   // Schlussleiste (dieselben Zeilen, dieselbe Beschriftung).
   const kaufknopf = (
-    <AddToCartButton disabled={!kaufbar} onClick={() => open('cart')} lines={linien}>
-      {kaufbar ? ZUSAMMENFASSUNG.knopf : 'Ausverkauft'}
+    <AddToCartButton
+      disabled={!kaufbar || kaufErstNachFreigabe}
+      onClick={() => open('cart')}
+      lines={linien}
+    >
+      {kaufErstNachFreigabe
+        ? 'Vorschau: kaufbar nach Freigabe'
+        : kaufbar
+        ? ZUSAMMENFASSUNG.knopf
+        : 'Ausverkauft'}
     </AddToCartButton>
   );
 
@@ -377,6 +400,11 @@ export function AlphaVorlage({
                 ) : null}
               </p>
             ) : null}
+            {stufeEins?.liefertext ? (
+              <p className="tas-edition" data-av-lieferbar="">
+                {stufeEins.liefertext}
+              </p>
+            ) : null}
             <p className="tas-herkunft">
               {PRODUKT.herkunft.map((z) => (
                 <span key={z}>{z} </span>
@@ -384,7 +412,55 @@ export function AlphaVorlage({
             </p>
           </section>
 
-          {optionen.length ? (
+          {(STUFEN ?? []).map((stufe, i) => {
+            const vorherige = STUFEN.slice(0, i).map((x) => x.option);
+            const werte = stufenWerte(product, stufe.option, wahl, vorherige);
+            // Karte der ersten Stufe: „ab“-Preis über alle Längen dieses Materials.
+            const preiseJe = (w) =>
+              stufenWerte(product, STUFEN[1]?.option, {[stufe.option]: w.name}, [stufe.option]).map(
+                (x) => preis(x.variante.price, handle),
+              );
+            return (
+              <Schritt
+                key={stufe.name}
+                name={stufe.name}
+                erster={erster === stufe.name}
+                auszeichnung={stufe.auszeichnung}
+                titel={stufe.titel}
+              >
+                {stufe.anleitung ? <p className="av-anleitung">{stufe.anleitung}</p> : null}
+                <div className="tas-karten" role="radiogroup" aria-label={stufe.option}>
+                  {werte.map((w) => {
+                    const einzeln = stufe.werte?.[w.name] ?? {};
+                    const alle = i === 0 ? preiseJe(w) : [];
+                    return (
+                      <Karte
+                        key={w.name}
+                        an={wahl[stufe.option] === w.name}
+                        aus={!w.verfuegbar}
+                        onClick={() => setWahl(stufenWahl(product, STUFEN, wahl, stufe.option, w.name))}
+                        titel={einzeln.name ?? w.name}
+                        preis={
+                          i === 0
+                            ? `${new Set(alle).size > 1 ? 'ab ' : ''}${betragText(Math.min(...alle), waehrung)}`
+                            : betragText(preis(w.variante.price, handle), waehrung)
+                        }
+                        text={einzeln.zeile ?? null}
+                        data={{'data-av-variante': w.name}}
+                      />
+                    );
+                  })}
+                </div>
+                {stufe.grenzregel ? (
+                  <p className="av-grenzregel" data-av-grenzregel="">
+                    {stufe.grenzregel}
+                  </p>
+                ) : null}
+              </Schritt>
+            );
+          })}
+
+          {optionen.length && !STUFEN ? (
             <Schritt
               name="variante"
               erster={erster === 'variante'}
@@ -598,7 +674,7 @@ export function AlphaVorlage({
         </div>
         <div className="tas-summe-kasse">
           <ul className="tas-versand">
-            {(ZUSAMMENFASSUNG.zeilen ?? []).map((z) => (
+            {(stufeEins?.zusammenfassung ?? ZUSAMMENFASSUNG.zeilen ?? []).map((z) => (
               <li key={z}>{mitMarkeR(z)}</li>
             ))}
           </ul>
@@ -622,11 +698,11 @@ export function AlphaVorlage({
             {BOX.titel}
           </h2>
           <div className="tas-box-flaeche">
-            {bilder[0] ? (
+            {bilder[BOX.bild ?? 0] ? (
               <figure className="tas-box-teil">
                 <img
-                  src={mitBreite(bilder[0].url, 600)}
-                  alt={bilder[0].altText || product.title}
+                  src={mitBreite(bilder[BOX.bild ?? 0].url, 600)}
+                  alt={bilder[BOX.bild ?? 0].altText || product.title}
                   width="300"
                   height="300"
                   loading="lazy"
