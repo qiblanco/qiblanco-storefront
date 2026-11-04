@@ -248,6 +248,14 @@ test('Das CSS nimmt nur Token: keine freien Farben, keine Schriftgrößen außer
   assert.doesNotMatch(css, /animation|@keyframes|blink/i);
 });
 
+test('Schlussband der Angebotsseite: eigener Kaufknopf, teilt die Wahl, ohne zweite Messmarke', () => {
+  const seiten = lies('app/components/black-friday-2026/Bf2026Seiten.jsx');
+  const kauf = lies('app/components/black-friday-2026/Bf2026Kauf.jsx');
+  assert.match(seiten, /<Bf2026Knopf angebot=\{angebot\} produkte=\{produkte\} wahl=\{wahl\} marke=\{false\} \/>/);
+  assert.match(seiten, /wahl=\{wahl\}\s+setWahl=\{setWahl\}/);
+  assert.match(kauf, /data-bf-kaufen=\{marke \? angebot\.key : undefined\}/);
+});
+
 /* ---- Server-Render -------------------------------------------------------- */
 
 async function uhrModul() {

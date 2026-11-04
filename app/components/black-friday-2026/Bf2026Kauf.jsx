@@ -31,7 +31,7 @@ function vorwahl(handle) {
   return handle === 'qione-kette' ? (v) => laengeCm(v?.title) === KETTE_VORWAHL_CM : null;
 }
 
-function startWahl(angebot, produkte) {
+export function bf2026StartWahl(angebot, produkte) {
   const wahl = {};
   for (const {produkt} of angebot.artikel) {
     wahl[produkt] = bf2026StartVariante(produkte?.[produkt], vorwahl(produkt));
@@ -103,12 +103,44 @@ function istPreis(angebot, produkte, wahl, land) {
   return {betrag, waehrung};
 }
 
-/** Preiszeile, Variantenwahl und der eine Knopf eines Angebots. */
-export function Bf2026Kauf({angebot, produkte, normalerName}) {
+/**
+ * Der Knopf eines Angebots. `marke` (Messvertrag s04): nur der eine Knopf im
+ * Kaufblock trägt data-bf-kaufen, der Knopf im Schlussband teilt sich die Wahl.
+ */
+export function Bf2026Knopf({angebot, produkte, wahl, marke = true}) {
+  const {open} = useAside();
+  const zeilen = bf2026Zeilen(angebot, produkte, wahl);
+  const geladen = angebot.artikel.every(({produkt}) => produkte?.[produkt]);
+  const kaufbar = zeilen.length > 0;
+  const knopf = kaufbar ? 'In den Warenkorb' : geladen ? 'Ausverkauft' : 'Gerade nicht verfügbar';
+  return (
+    <CartForm route="/cart" inputs={{lines: zeilen}} action={CartForm.ACTIONS.LinesAdd}>
+      {(fetcher) => (
+        <button
+          className="btn--primary as-knopf bf-knopf"
+          data-qb-kaufknopf=""
+          data-bf-kaufen={marke ? angebot.key : undefined}
+          type="submit"
+          onClick={() => open('cart')}
+          disabled={!kaufbar || fetcher.state !== 'idle'}
+        >
+          {knopf}
+        </button>
+      )}
+    </CartForm>
+  );
+}
+
+/**
+ * Preiszeile, Variantenwahl und Knopf eines Angebots. Die Wahl steht hier, außer
+ * die Angebotsseite reicht ihre eigene herein (sie teilt sie mit dem Schlussband).
+ */
+export function Bf2026Kauf({angebot, produkte, normalerName, wahl: wahlAussen, setWahl: setWahlAussen}) {
   const {phase} = useBf2026Zeit();
   const land = useMarktLand();
-  const {open} = useAside();
-  const [wahl, setWahl] = useState(() => startWahl(angebot, produkte));
+  const [wahlInnen, setWahlInnen] = useState(() => bf2026StartWahl(angebot, produkte));
+  const wahl = wahlAussen ?? wahlInnen;
+  const setWahl = setWahlAussen ?? setWahlInnen;
 
   if (phase === 'vorbei') {
     return (
@@ -120,29 +152,12 @@ export function Bf2026Kauf({angebot, produkte, normalerName}) {
     );
   }
 
-  const zeilen = bf2026Zeilen(angebot, produkte, wahl);
-  const geladen = angebot.artikel.every(({produkt}) => produkte?.[produkt]);
   const stand = bf2026PreisStand(angebot, phase, istPreis(angebot, produkte, wahl, land));
-  const kaufbar = zeilen.length > 0;
-  const knopf = kaufbar ? 'In den Warenkorb' : geladen ? 'Ausverkauft' : 'Gerade nicht verfügbar';
   return (
     <div className="bf-kauf">
       <Preis stand={stand} />
       <Variantenwahl angebot={angebot} produkte={produkte} wahl={wahl} setWahl={setWahl} />
-      <CartForm route="/cart" inputs={{lines: zeilen}} action={CartForm.ACTIONS.LinesAdd}>
-        {(fetcher) => (
-          <button
-            className="btn--primary as-knopf bf-knopf"
-            data-qb-kaufknopf=""
-            data-bf-kaufen={angebot.key}
-            type="submit"
-            onClick={() => open('cart')}
-            disabled={!kaufbar || fetcher.state !== 'idle'}
-          >
-            {knopf}
-          </button>
-        )}
-      </CartForm>
+      <Bf2026Knopf angebot={angebot} produkte={produkte} wahl={wahl} />
     </div>
   );
 }

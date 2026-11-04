@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {Analytics} from '@shopify/hydrogen';
 import {AppleSeite} from '~/components/apple-seite/AppleSeite';
 import {
@@ -11,7 +12,7 @@ import {
 import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {BF2026, bf2026Link} from '~/data/black-friday-2026';
 import bf2026Styles from '~/styles/black-friday-2026.css?url';
-import {Bf2026Kauf} from './Bf2026Kauf';
+import {Bf2026Kauf, Bf2026Knopf, bf2026StartWahl} from './Bf2026Kauf';
 import {Bf2026Leistung} from './Bf2026Leistung';
 import {Bf2026Countdown, Bf2026Zeit, useBf2026Zeit} from './Bf2026Uhr';
 import {
@@ -120,11 +121,11 @@ function Bf2026Angebote({produkte}) {
   );
 }
 
-function Bf2026Schluss({ziel = '#angebote', hell = false}) {
+function Bf2026Schluss() {
   const {phase} = useBf2026Zeit();
   const schluss = BF2026_SCHLUSS[phase];
   if (!schluss) return null;
-  return <AppleCtaBand titel={schluss.titel} cta={{text: schluss.knopf, href: ziel}} hell={hell} />;
+  return <AppleCtaBand titel={schluss.titel} cta={{text: schluss.knopf, href: '#angebote'}} hell />;
 }
 
 /* ---- Landingpage ---------------------------------------------------------- */
@@ -140,7 +141,7 @@ export function Bf2026Landing({seite}) {
         <AppleFakten {...BF2026_SO_GEHT_ES} />
         <AppleFaq {...BF2026_FAQ_LANDING} />
         {/* hell: die Landingpage hat mit dem Hero schon ihre eine dunkle Fläche. */}
-        <Bf2026Schluss hell />
+        <Bf2026Schluss />
         <AppleAnna />
       </AppleSeite>
     </Bf2026Zeit>
@@ -149,7 +150,7 @@ export function Bf2026Landing({seite}) {
 
 /* ---- Angebotsseite -------------------------------------------------------- */
 
-function Bf2026AngebotKopf({angebot, inhalt, produkte}) {
+function Bf2026AngebotKopf({angebot, inhalt, produkte, wahl, setWahl}) {
   return (
     <section className="bf-kopf" data-section="as-hero">
       <div className="bf-kopf-text">
@@ -165,7 +166,13 @@ function Bf2026AngebotKopf({angebot, inhalt, produkte}) {
         />
       </figure>
       <div className="bf-kopf-kauf">
-        <Bf2026Kauf angebot={angebot} produkte={produkte} normalerName={NORMALER_NAME[angebot.key]} />
+        <Bf2026Kauf
+          angebot={angebot}
+          produkte={produkte}
+          normalerName={NORMALER_NAME[angebot.key]}
+          wahl={wahl}
+          setWahl={setWahl}
+        />
         {inhalt.vertrauen?.length ? (
           <ul className="bf-vertrauen">
             {inhalt.vertrauen.map((z) => (
@@ -179,8 +186,29 @@ function Bf2026AngebotKopf({angebot, inhalt, produkte}) {
   );
 }
 
+/**
+ * Schlussband der Angebotsseite: wer bis unten liest, kauft von hier aus, mit der
+ * Wahl aus dem Kaufblock. Nach dem Ende bleibt nur der Weg zur normalen Seite oben.
+ */
+function Bf2026AngebotSchluss({angebot, produkte, wahl}) {
+  const {phase} = useBf2026Zeit();
+  const schluss = BF2026_SCHLUSS[phase];
+  if (!schluss) return null;
+  return (
+    <section className="as-cta-band as-dunkel" data-section="as-cta">
+      <div className="as-cta-innen">
+        <h2 className="as-h2">{schluss.titel}</h2>
+        <div className="as-knoepfe" data-bf-schluss="">
+          <Bf2026Knopf angebot={angebot} produkte={produkte} wahl={wahl} marke={false} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function Bf2026AngebotSeite({seite}) {
   const {angebot, inhalt, produkte} = seite;
+  const [wahl, setWahl] = useState(() => bf2026StartWahl(angebot, produkte));
   const haupt = produkte?.[angebot.artikel[0].produkt];
   const ersteVariante = haupt?.variants?.nodes?.[0];
   const ueberblick = bf2026Link(BF2026.landing.pfad, seite.gepinnt);
@@ -188,14 +216,14 @@ export function Bf2026AngebotSeite({seite}) {
     <Bf2026Zeit jetztMs={seite.jetztMs} gepinnt={seite.gepinnt}>
       <link rel="stylesheet" href={bf2026Styles} />
       <AppleSeite seite={SEITE}>
-        <Bf2026AngebotKopf angebot={angebot} inhalt={inhalt} produkte={produkte} />
+        <Bf2026AngebotKopf angebot={angebot} inhalt={inhalt} produkte={produkte} wahl={wahl} setWahl={setWahl} />
         <Bf2026Leistung />
         {inhalt.baender.map((b, i) => (
           <AppleBildBand key={b.titel} index={i} {...b} />
         ))}
         <AppleFakten {...BF2026_SO_GEHT_ES} />
         <AppleFaq titel={inhalt.faqTitel} fragen={[...BF2026_FRAGEN_AKTION, ...inhalt.fragen]} />
-        <Bf2026Schluss ziel={ueberblick} />
+        <Bf2026AngebotSchluss angebot={angebot} produkte={produkte} wahl={wahl} />
         <section className="as-sektion bf-ueberblick">
           <a className="as-link" href={ueberblick}>
             {BF2026_ZUM_UEBERBLICK}
