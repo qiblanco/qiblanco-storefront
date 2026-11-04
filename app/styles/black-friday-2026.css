@@ -247,6 +247,66 @@
   min-height: var(--as-tippziel);
 }
 
+/* ---- Kaufleiste, nur Handy (Bauform wie .pd-kaufleiste) -------------------- */
+[data-apple-seite='bf-deals'] .bf-leiste {
+  display: none;
+}
+[data-apple-seite='bf-deals'] > :nth-last-child(2):has(+ .bf-leiste) {
+  margin-bottom: var(--as-s-8);
+}
+[data-apple-seite='bf-deals'] > .bf-leiste:last-child {
+  margin-bottom: 0;
+}
+@media screen and (max-width: 749px) {
+  [data-apple-seite='bf-deals'] .bf-leiste {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: var(--z-kopf);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--as-s-2);
+    padding: var(--as-s-1) var(--as-s-2) max(var(--as-s-1), env(safe-area-inset-bottom));
+    background: var(--as-weiss);
+    border-top: var(--as-strich) solid var(--as-linie);
+    visibility: hidden;
+    transform: translateY(100%);
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste--sichtbar {
+    visibility: visible;
+    transform: none;
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste-auswahl {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-width: 0;
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste-name {
+    font-size: var(--as-fs-2);
+    font-weight: 600;
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste-preis {
+    font-size: var(--as-fs-3);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste form {
+    flex: none;
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste .bf-knopf {
+    min-width: 0;
+    min-height: var(--as-tippziel);
+    margin: 0;
+    padding: calc(var(--as-s-1) * 1.5) var(--as-s-3);
+  }
+  /* Der Fuß liegt außerhalb von .as-seite: Polster wie bei .pd-kaufleiste, damit
+     Impressum, Datenschutz und Widerruf frei bleiben. */
+  body:has(.bf-leiste) footer {
+    padding-bottom: calc(var(--qb-ref-raster, 8px) * 9 + env(safe-area-inset-bottom));
+  }
+}
+
 /* ---- Leistungsgrafik ------------------------------------------------------ */
 [data-apple-seite='bf-deals'] .bf-leistung-raster {
   display: grid;

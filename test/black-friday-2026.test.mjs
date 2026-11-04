@@ -254,6 +254,11 @@ test('Schlussband der Angebotsseite: eigener Kaufknopf, teilt die Wahl, ohne zwe
   assert.match(seiten, /<Bf2026Knopf angebot=\{angebot\} produkte=\{produkte\} wahl=\{wahl\} marke=\{false\} \/>/);
   assert.match(seiten, /wahl=\{wahl\}\s+setWahl=\{setWahl\}/);
   assert.match(kauf, /data-bf-kaufen=\{marke \? angebot\.key : undefined\}/);
+  // Die Kaufleiste zeigt den Preis der Aktion und trägt keine zweite Messmarke.
+  assert.match(seiten, /<Bf2026Kaufleiste angebot=\{angebot\} produkte=\{produkte\} wahl=\{wahl\} \/>/);
+  const leiste = kauf.slice(kauf.indexOf('export function Bf2026Kaufleiste'));
+  assert.match(leiste, /bf2026PreisStand/);
+  assert.match(leiste, /marke=\{false\}/);
 });
 
 /* ---- Server-Render -------------------------------------------------------- */

@@ -12,7 +12,7 @@ import {
 import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {BF2026, bf2026Link} from '~/data/black-friday-2026';
 import bf2026Styles from '~/styles/black-friday-2026.css?url';
-import {Bf2026Kauf, Bf2026Knopf, bf2026StartWahl} from './Bf2026Kauf';
+import {Bf2026Kauf, Bf2026Kaufleiste, Bf2026Knopf, bf2026StartWahl} from './Bf2026Kauf';
 import {Bf2026Leistung} from './Bf2026Leistung';
 import {Bf2026Countdown, Bf2026Zeit, useBf2026Zeit} from './Bf2026Uhr';
 import {
@@ -230,6 +230,7 @@ export function Bf2026AngebotSeite({seite}) {
           </a>
         </section>
         <AppleAnna />
+        <Bf2026Kaufleiste angebot={angebot} produkte={produkte} wahl={wahl} />
       </AppleSeite>
       {haupt && ersteVariante ? (
         <Analytics.ProductView

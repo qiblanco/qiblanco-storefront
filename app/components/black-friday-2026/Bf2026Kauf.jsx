@@ -3,6 +3,7 @@ import {CartForm} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {laengeCm} from '~/components/product-pages/alpha-vorlage-logik';
+import {useKaufleisteSicht} from '~/lib/kaufleiste-sicht';
 import {useMarktLand} from '~/lib/markt-land';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
 import {
@@ -12,6 +13,7 @@ import {
   bf2026Varianten,
   bf2026Zeilen,
 } from '~/data/black-friday-2026';
+import {detailKaufleisteSichtbar} from '~/components/apple-seite/produkt-details/detail-kaufleiste-lage';
 import {useBf2026Zeit} from './Bf2026Uhr';
 
 /*
@@ -158,6 +160,51 @@ export function Bf2026Kauf({angebot, produkte, normalerName, wahl: wahlAussen, s
       <Preis stand={stand} />
       <Variantenwahl angebot={angebot} produkte={produkte} wahl={wahl} setWahl={setWahl} />
       <Bf2026Knopf angebot={angebot} produkte={produkte} wahl={wahl} />
+    </div>
+  );
+}
+
+/**
+ * KAUFLEISTE, nur Handy, von nach dem Kopf bis zum Seitenende (Geräteprobe: am
+ * Ende steht mobil der lange Fuß, ohne Leiste kein Kaufknopf im Bild). Mechanik
+ * wie DetailKaufleiste. Die wäre hier falsch: sie führt auf die Kaufseite und
+ * zeigt keinen BF-Preis. Inhalt nur im sichtbaren Zustand im DOM, data-bf-kaufen
+ * bleibt am einen Knopf des Kaufblocks.
+ */
+export function Bf2026Kaufleiste({angebot, produkte, wahl}) {
+  const {phase} = useBf2026Zeit();
+  const land = useMarktLand();
+  const sichtbar = useKaufleisteSicht(
+    () => {
+      const kopf = document.querySelector("[data-apple-seite='bf-deals'] [data-section='as-hero']");
+      if (!kopf) return null;
+      return {kopf, knoepfe: Array.from(document.querySelectorAll('[data-bf-kaufen], [data-bf-schluss] [data-qb-kaufknopf]'))};
+    },
+    (lage) => {
+      const mobil = typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 749px)').matches;
+      return detailKaufleisteSichtbar({geraetAn: mobil, kopf: lage.kopf, knoepfe: lage.knoepfe});
+    },
+    [],
+  );
+  if (phase === 'vorbei') return null;
+  const stand = bf2026PreisStand(angebot, phase, istPreis(angebot, produkte, wahl, land));
+  const zeile = stand.preis ?? stand.zeile ?? null;
+  return (
+    <div
+      className={`bf-leiste${sichtbar ? ' bf-leiste--sichtbar' : ''}`}
+      data-section="bf-kaufleiste"
+      data-qb-chat-weicht={sichtbar ? '' : undefined}
+      aria-hidden={sichtbar ? undefined : 'true'}
+    >
+      {sichtbar && (
+        <>
+          <p className="bf-leiste-auswahl">
+            <span className="bf-leiste-name">{mitMarkeR(angebot.titel)}</span>
+            {zeile ? <span className="bf-leiste-preis">{zeile}</span> : null}
+          </p>
+          <Bf2026Knopf angebot={angebot} produkte={produkte} wahl={wahl} marke={false} />
+        </>
+      )}
     </div>
   );
 }
