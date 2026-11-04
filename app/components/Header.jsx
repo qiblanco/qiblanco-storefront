@@ -3,7 +3,7 @@
 import {Suspense, useState, useEffect, useRef, useCallback} from 'react';
 import {CdnBild} from './reusables/CdnBild';
 import {createPortal} from 'react-dom';
-import {Await, NavLink, useAsyncValue, Link, useLocation, useRouteLoaderData} from 'react-router';
+import {Await, NavLink, useAsyncValue, Link, useLocation, useMatches, useRouteLoaderData} from 'react-router';
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
@@ -352,12 +352,17 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   const {pathname} = useLocation();
   const qiAlphaFrei = useQiAlphaFreigeschaltet();
   const leistenWahl = useRouteLoaderData('root')?.qiAlphaFreischaltung;
-  const leiste = bannerVariante({
-    pathname,
-    freigeschaltet: qiAlphaFrei,
-    wahl: leistenWahl?.wahl,
-    appleSeiten: leistenWahl?.appleSeiten,
-  });
+  // Black Friday 2026: keine Sterne, keine Nutzerzahl auf den BF-Seiten. Der
+  // Loader liefert bf2026 nur bei Schalter vorschau|on, bei off bleibt alles wie heute.
+  const bf2026Seite = useMatches().some((m) => m.data?.bf2026);
+  const leiste = bf2026Seite
+    ? 'keine'
+    : bannerVariante({
+        pathname,
+        freigeschaltet: qiAlphaFrei,
+        wahl: leistenWahl?.wahl,
+        appleSeiten: leistenWahl?.appleSeiten,
+      });
   const leistenAttr = {
     'data-kopfleiste-wahl': leistenWahl?.wahl,
     'data-kopfleiste-quelle': leistenWahl?.quelle,
@@ -412,7 +417,9 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
     <header
       className={`header-wrapper KopfHaftet ${hidden ? 'header--hidden' : ''}`}
       data-scroll-dir={richtung}
-      data-kopfleiste-aus={leiste === 'keine' ? leistenWahl?.appleQuelle || 'vorgabe' : undefined}
+      data-kopfleiste-aus={
+        bf2026Seite ? 'black-friday' : leiste === 'keine' ? leistenWahl?.appleQuelle || 'vorgabe' : undefined
+      }
     >
       {leiste === 'keine' ? null : leiste === 'qi-alpha' ? (
         <AnnouncementBanner
