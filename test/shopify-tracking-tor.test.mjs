@@ -19,6 +19,12 @@ registerHooks({
 });
 
 const tor = await import('../app/lib/shopify-tracking-tor.js');
+const {EINWILLIGUNG_FASSUNG} = await import('../app/lib/einwilligung-texte.js');
+// Fixturen folgen der laufenden Fassung (Fassung 2.0 kam mit #1308): eine Wahl
+// gilt nur ab deren Hauptnummer, eine aeltere zaehlt als keine Wahl.
+const HAUPT = Number(String(EINWILLIGUNG_FASSUNG).split('.')[0]);
+const AKTUELL = EINWILLIGUNG_FASSUNG;
+const VORHER = `${HAUPT - 1}.9`;
 
 const JETZT = Date.parse('2026-11-01T12:00:00Z');
 const wahl = (o) =>
@@ -26,7 +32,7 @@ const wahl = (o) =>
   encodeURIComponent(
     `{stamp:'x',necessary:true,preferences:${o.p ?? false},statistics:${o.s},marketing:${o.m},` +
       `method:'explicit',ver:1,utc:${o.utc ?? JETZT - 1000},region:'de'` +
-      (o.qbv ? `,qbv:'${o.qbv}'` : '') +
+      (o.qbv === null ? '' : `,qbv:'${o.qbv ?? AKTUELL}'`) +
       '}',
   );
 
@@ -44,8 +50,10 @@ test('wahlAusCookie: gültige Wahl, keine, abgelaufen, alte Fassung', () => {
   assert.equal(tor.wahlAusCookie('', JETZT), null);
   assert.equal(tor.wahlAusCookie('andere=1', JETZT), null);
   assert.equal(tor.wahlAusCookie(wahl({s: true, m: true, utc: JETZT - 366 * 86400000}), JETZT), null);
-  assert.equal(tor.wahlAusCookie(wahl({s: true, m: true, qbv: '0.9'}), JETZT), null);
-  assert.deepEqual(tor.wahlAusCookie(wahl({s: false, m: true, qbv: '1.2'}), JETZT), {statistics: false, marketing: true});
+  assert.equal(tor.wahlAusCookie(wahl({s: true, m: true, qbv: VORHER}), JETZT), null);
+  // ohne qbv gilt Fassung 1: unter einer spaeteren Hauptnummer keine Wahl
+  assert.equal(tor.wahlAusCookie(wahl({s: true, m: true, qbv: null}), JETZT), HAUPT > 1 ? null : {statistics: true, marketing: true});
+  assert.deepEqual(tor.wahlAusCookie(wahl({s: false, m: true, qbv: `${HAUPT}.2`}), JETZT), {statistics: false, marketing: true});
 });
 
 test('shopifyTorStand: Einwilligungsregion montiert erst nach der Wahl', () => {
