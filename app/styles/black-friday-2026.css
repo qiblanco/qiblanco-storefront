@@ -225,7 +225,9 @@
 }
 
 /* ---- Knopf ---------------------------------------------------------------- */
+/* app.css begrenzt jedes form auf 400px: der Knopf füllte die Karte sonst nicht. */
 [data-apple-seite='bf-deals'] .bf-kauf form {
+  max-width: none;
   margin-top: auto;
   padding-top: var(--as-s-3);
 }

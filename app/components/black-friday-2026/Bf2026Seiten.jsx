@@ -93,7 +93,7 @@ function Bf2026Karte({angebot, produkte}) {
   return (
     <article className="bf-karte" data-bf-angebot={angebot.key} data-section={`bf-karte-${angebot.key}`}>
       <a className="bf-karte-bild" href={ziel} aria-hidden="true" tabIndex={-1}>
-        <AsBild bild={BF2026_BILDER[angebot.key]} sizes="(min-width: 750px) 560px, 100vw" />
+        <AsBild bild={BF2026_BILDER[angebot.key]} sizes="(min-width: 1200px) 560px, (min-width: 750px) 50vw, 100vw" />
       </a>
       <h3 className="bf-karte-titel">{mitMarkeR(angebot.titel)}</h3>
       <p className="as-absatz bf-karte-satz">{mitMarkeR(BF2026_KARTENSATZ[angebot.key])}</p>
