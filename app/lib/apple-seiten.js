@@ -70,7 +70,7 @@ export const APPLE_SEITEN = Object.freeze({
   'exclusive-solutions': {pfad: '/pages/exclusive-solutions', schalter: 'APPLE_SEITE_EXCLUSIVE_SOLUTIONS', standard: 'on'},
   // forschung bleibt versteckt: diese Zeile rendert keinen Link, test/forschung-seite.test.mjs
   // führt die Datei deshalb bei den eigenen Dateien.
-  'forschung': {pfad: '/pages/forschung', schalter: 'APPLE_SEITE_FORSCHUNG', standard: 'off'},
+  'forschung': {pfad: '/pages/forschung', schalter: 'APPLE_SEITE_FORSCHUNG', standard: 'on'},
   'haelt-das-mein-leben-aus': {pfad: '/pages/haelt-das-mein-leben-aus', schalter: 'APPLE_SEITE_HAELT_DAS_MEIN_LEBEN_AUS', standard: 'on'},
   'kette-oder-armband': {pfad: '/pages/kette-oder-armband', schalter: 'APPLE_SEITE_KETTE_ODER_ARMBAND', standard: 'on'},
   'kohaerentes-wasser': {pfad: '/pages/kohaerentes-wasser', schalter: 'APPLE_SEITE_KOHAERENTES_WASSER', standard: 'on'},
