@@ -53,7 +53,7 @@ export const APPLE_SEITEN = Object.freeze({
 
   // ---- s06 · genannte LPs schlaf-zellen-schutz-Familie, studien ----
   'schlaf-zellen-schutz': {pfad: '/pages/schlaf-zellen-schutz', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ', standard: 'on'},
-  'schlaf-zellen-schutz-b': {pfad: '/pages/schlaf-zellen-schutz-b', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_B', standard: 'off'},
+  'schlaf-zellen-schutz-b': {pfad: '/pages/schlaf-zellen-schutz-b', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_B', standard: 'on'},
   'schlaf-zellen-schutz-b2': {pfad: '/pages/schlaf-zellen-schutz-b2', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_B2', standard: 'on'},
   'schlaf-zellen-schutz-k25': {pfad: '/pages/schlaf-zellen-schutz-k25', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_K25', standard: 'on'},
   'schlaf-zellen-schutz-k50': {pfad: '/pages/schlaf-zellen-schutz-k50', schalter: 'APPLE_SEITE_SCHLAF_ZELLEN_SCHUTZ_K50', standard: 'on'},
