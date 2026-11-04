@@ -56,6 +56,13 @@ const EREIGNISSE = [
   'CookiebotOnLoad',
 ];
 
+/**
+ * Ereignisse am document, nach denen der Stand neu gelesen wird. Die zwei Shopify-Ereignisse
+ * (Hydrogen bzw. die Customer-Privacy-API) melden, dass Shopify die Wahl übernommen hat;
+ * erst dann darf `tracken` wahr werden (siehe shopifyTorStand).
+ */
+const DOK_EREIGNISSE = ['qb:einwilligung', 'shopifyCustomerPrivacyApiLoaded', 'visitorConsentCollected'];
+
 /** 'consent' (Einwilligungspflicht) oder 'optout'; ohne Angaben immer 'consent'. */
 export function regionPolitik(doc) {
   const de = doc && doc.documentElement;
@@ -75,11 +82,20 @@ export function regionPolitik(doc) {
  * @param {Window} win
  * @returns {{montieren: boolean, tracken: boolean}}
  *   montieren: Shopify-Analytik darf laden; tracken: sie darf zählen und Cookies setzen.
+ *
+ * Nach einer Wahl mit Statistik wird `tracken` erst wahr, wenn Shopify die Wahl übernommen hat
+ * (analyticsProcessingAllowed() true). GEMESSEN 2026-11-04 nach Merge fe861ffe28
+ * (claude-jobs/einwilligung-scanner-20261023T144303Z-s03-r2/diagnose-alle-live.json): war
+ * `tracken` schon mit dem Klick wahr, baute Hydrogen das page_viewed der Seite, auf der gewählt
+ * wurde, sobald die Privacy-API geladen war, also bevor setTrackingConsent abgeschlossen war,
+ * und verwarf es (hasUserConsent false). Der Einstieg samt Herkunft fehlte Shopify bei jedem
+ * einwilligenden Besucher. Wird `tracken` erst danach wahr, bindet der Provider `publish` neu
+ * und die Ansichten der Seite gehen einmal nach (root.jsx: customData hängt an `tracken`).
  */
 export function shopifyTorStand(win) {
   const cb = win && win.Cookiebot;
   const entschieden = Boolean(cb && cb.hasResponse && cb.consent);
-  const statistik = entschieden && cb.consent.statistics === true;
+  const statistik = entschieden && cb.consent.statistics === true && shopifyHatUebernommen(win);
   if (regionPolitik(win && win.document) === 'optout') {
     return {
       montieren: true,
@@ -87,6 +103,13 @@ export function shopifyTorStand(win) {
     };
   }
   return {montieren: entschieden, tracken: statistik};
+}
+
+/** Hat Shopify die Statistik-Einwilligung übernommen? Ohne geladene API: nein. */
+function shopifyHatUebernommen(win) {
+  const sp = win && win.Shopify && win.Shopify.customerPrivacy;
+  if (!sp || typeof sp.analyticsProcessingAllowed !== 'function') return false;
+  return sp.analyticsProcessingAllowed() === true;
 }
 
 /**
@@ -131,10 +154,10 @@ export function useShopifyTrackingTor() {
       );
     };
     neu();
-    document.addEventListener('qb:einwilligung', neu);
+    DOK_EREIGNISSE.forEach((n) => document.addEventListener(n, neu));
     EREIGNISSE.forEach((n) => window.addEventListener(n, neu));
     return () => {
-      document.removeEventListener('qb:einwilligung', neu);
+      DOK_EREIGNISSE.forEach((n) => document.removeEventListener(n, neu));
       EREIGNISSE.forEach((n) => window.removeEventListener(n, neu));
     };
   }, []);
