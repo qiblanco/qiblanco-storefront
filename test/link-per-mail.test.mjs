@@ -46,7 +46,12 @@ const UA_IG =
 const UA_SAFARI =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1';
 const UA_PROBE = UA_IG + ' QiBlancoInternal/link-per-mail';
-const JA = 'CookieConsent={stamp:%27x%27,marketing:true}';
+// Echtes Cookie des eigenen Hinweises, Fassung 2.0 (public/qb-einwilligung.js schreibeCookie).
+// Seit Fassung 2.0 zählt eine Wahl ohne qbv oder mit qbv '1.x' nicht mehr als Zustimmung.
+const JA =
+  'CookieConsent={stamp:%27x%27,necessary:true,preferences:false,statistics:false,marketing:true,method:%27explicit%27,ver:1,utc:' +
+  Date.now() +
+  ',region:%27de%27,qbv:%272.0%27}';
 const NEIN = 'CookieConsent={stamp:%27x%27,marketing:false}';
 const ANON = 'a184b103-5aa6-41be-bbf5-90d37d1b07f9';
 const CART = 'gid://shopify/Cart/hWN4abcdEFGH1234?key=0123456789abcdef';
