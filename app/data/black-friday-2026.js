@@ -138,11 +138,11 @@ export function bf2026PreisStand(angebot, phase, ist) {
   if (phase === 'vor') {
     return stimmt
       ? {zeile: `Heute ${heute}`, zusatz: `ab ${bf2026Starttag()} für ${bf}`}
-      : {zusatz: `Ab ${bf2026Starttag()} zieht der Rabatt automatisch im Warenkorb.`};
+      : {zusatz: `Ab ${bf2026Starttag()} wird der Rabatt im Warenkorb automatisch abgezogen.`};
   }
   return stimmt
     ? {preis: bf, statt: `statt ${heute}`, zusatz: `Du sparst ${betragText(angebot.rabatt_eur)}`}
-    : {zusatz: 'Der Rabatt zieht automatisch im Warenkorb.'};
+    : {zusatz: 'Der Rabatt wird im Warenkorb automatisch abgezogen.'};
 }
 
 /** Die normale Produktseite, auf die ein Angebot nach dem Ende führt. */

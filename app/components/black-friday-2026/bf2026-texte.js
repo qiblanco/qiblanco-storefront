@@ -43,15 +43,15 @@ export const BF2026_KARTENSATZ = {
   qihome: 'Ein Gerät · bis 160 m Radius · ohne Strom',
   // FREIGEGEBEN: qibracelet-alpha-daten BAND.titel
   qibracelet: 'Zellschutz für unterwegs',
-  'qione-2x': 'Einer für dich. Einer für einen Menschen, der dir nah ist.',
+  'qione-2x': 'Zwei QiOne® 2 Pro, einer für dich und einer zum Verschenken.',
   // FREIGEGEBEN: qione-2-pro-alpha-daten KETTE.titel
   'qione-kette': 'Trag ihn an seiner eigenen Kette.',
 };
 
 export const BF2026_KOPF = {
   overline: `Black Friday · ${bf2026Zeitraum()}`,
-  titel: 'Vier Angebote. Vier Tage.',
-  unter: 'Dein Rabatt steht von selbst im Warenkorb. Ohne Code.',
+  titel: 'Vier Angebote an vier Tagen.',
+  unter: 'Der Rabatt wird im Warenkorb automatisch abgezogen, du brauchst keinen Code.',
   knopf: 'Zu den Angeboten',
   vorbeiTitel: 'Black Friday ist vorbei.',
   vorbeiUnter: 'QiHome® Air, QiBracelet® und QiOne® 2 Pro findest du weiter im Shop.',
@@ -75,7 +75,7 @@ export const BF2026_LEISTUNG = {
 export const BF2026_SO_GEHT_ES = {
   titel: 'So einfach geht es.',
   kacheln: [
-    {zahl: 'Ohne Code', satz: 'Der Rabatt zieht automatisch im Warenkorb.'},
+    {zahl: 'Ohne Code', satz: 'Der Rabatt wird im Warenkorb automatisch abgezogen.'},
     // FREIGEGEBEN: qione-2-pro-alpha-daten ZUSAMMENFASSUNG.zeilen[2]
     {zahl: '20 Tage', satz: '20 Tage zu Hause testen, voller Kaufpreis zurück'},
     // FREIGEGEBEN: BEZAHLART.titel
@@ -89,7 +89,7 @@ const WANN = {
 };
 const CODE = {
   f: 'Brauche ich einen Code?',
-  a: 'Nein. Der Rabatt zieht automatisch im Warenkorb.',
+  a: 'Nein, du musst nichts eingeben.',
 };
 
 /** Fragen, die jede Seite der Aktion stellt. */
