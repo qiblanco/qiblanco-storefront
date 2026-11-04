@@ -18,7 +18,7 @@ export const PRODUKT = {
   overline: null,
   modus: null,
   name: 'Necklace 2 für den Qi Alpha® und QiOne®',
-  claim: 'Das Logo deines Qi Alpha® auf dem Verschluss.',
+  claim: 'Das Qi-Alpha-Logo auf dem Verschluss.',
   kurzzeile: '750er ethisches Vollgold oder Chirurgenstahl',
   punkte: [
     {zeichen: 'schutz', text: '6-fache Laserung am Verschluss'},

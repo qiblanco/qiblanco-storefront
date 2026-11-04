@@ -414,7 +414,11 @@ export function AlphaVorlage({
 
           {(STUFEN ?? []).map((stufe, i) => {
             const vorherige = STUFEN.slice(0, i).map((x) => x.option);
-            const werte = stufenWerte(product, stufe.option, wahl, vorherige);
+            // Reihenfolge der Daten (Längen kurz nach lang), nicht die Anlage-Folge in Shopify.
+            const reihe = Object.keys(stufe.werte ?? {});
+            const werte = stufenWerte(product, stufe.option, wahl, vorherige).sort(
+              (a, b) => reihe.indexOf(a.name) - reihe.indexOf(b.name),
+            );
             // Karte der ersten Stufe: „ab“-Preis über alle Längen dieses Materials.
             const preiseJe = (w) =>
               stufenWerte(product, STUFEN[1]?.option, {[stufe.option]: w.name}, [stufe.option]).map(
