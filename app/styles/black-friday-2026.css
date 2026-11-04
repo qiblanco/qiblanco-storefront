@@ -389,6 +389,13 @@
 [data-apple-seite='bf-deals'] .bf-kopf .as-unter {
   margin-left: 0;
 }
+/* Ohne Ankündigungsleiste steht der Kopf bei 84 px, <main> hält 104 px frei. Ein
+   Polster obendrauf ließe auf dem Handy eine weiße Lücke und schöbe den Knopf hinaus. */
+@media (max-width: 749px) {
+  [data-apple-seite='bf-deals'] .bf-kopf {
+    padding-top: 0;
+  }
+}
 @media (min-width: 750px) {
   [data-apple-seite='bf-deals'] .bf-kopf {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
