@@ -72,6 +72,9 @@ const EINZEL_CENT = {
   US: {awake: 9900, create: 9900},
 };
 const CODE = 'PARTNER10';
+// Einzelweg-Code: 36 € je Einzelpackung, auf Sets greift er nicht (ROBINKAKAO live).
+const EW = 'ROBINKAKAO';
+const EW_ABZUG_CENT = 3600;
 
 const vid = (handle) => `gid://shopify/ProductVariant/${handle}`;
 
@@ -134,7 +137,7 @@ function fakeShop({land = 'DE', mitZeilen = false, stoerung = {}} = {}) {
       }
       if (q.includes('KakaoSetZeilen(')) {
         log.push('Q:zeilen');
-        return {cart: korb ? {lines: {nodes: knoten()}} : null};
+        return {cart: korb ? {discountCodes: codes(), lines: {nodes: knoten()}} : null};
       }
       throw new Error(`unbekannte Abfrage ${q.slice(0, 60)}`);
     },
@@ -150,7 +153,29 @@ function fakeShop({land = 'DE', mitZeilen = false, stoerung = {}} = {}) {
       },
     };
   }
+  const istEw = (c) => c.trim().toUpperCase() === EW;
+  const istEinzel = (handle) => handle === A || handle === C;
+  // Wie der Warenkorb seine Codes meldet: auch ein nicht geltender bleibt liegen.
+  function codes() {
+    return (korb.codes || []).map((code) => {
+      if (istEw(code)) {
+        return {
+          code,
+          applicable: !stoerung.codeTot && korb.zeilen.some((z) => istEinzel(z.handle)),
+        };
+      }
+      const bekannt = code.toUpperCase() === CODE;
+      return {code, applicable: bekannt && korb.zeilen.some((z) => KAKAO_ZEILEN[z.handle])};
+    });
+  }
   function zeilenKosten() {
+    if (codes().some((c) => istEw(c.code) && c.applicable)) {
+      return korb.zeilen.map((z) => {
+        const brutto = preisCent(z.handle, korb.land) * z.quantity;
+        const ew = istEinzel(z.handle) ? EW_ABZUG_CENT * z.quantity : 0;
+        return {z, brutto, auto: 0, code: 0, ew, total: brutto - ew};
+      });
+    }
     const einzelN = korb.zeilen
       .filter((z) => traegtAutomatik(z.handle))
       .reduce((s, z) => s + z.quantity, 0);
@@ -162,7 +187,7 @@ function fakeShop({land = 'DE', mitZeilen = false, stoerung = {}} = {}) {
     });
   }
   function knoten() {
-    return zeilenKosten().map(({z, auto, code, total}) => ({
+    return zeilenKosten().map(({z, auto, code, ew = 0, total}) => ({
       id: z.id,
       quantity: z.quantity,
       merchandise: {id: vid(z.handle), product: {handle: z.handle}},
@@ -170,6 +195,7 @@ function fakeShop({land = 'DE', mitZeilen = false, stoerung = {}} = {}) {
       discountAllocations: [
         ...(auto ? [{discountedAmount: {amount: (auto / 100).toFixed(2)}}] : []),
         ...(code ? [{discountedAmount: {amount: (code / 100).toFixed(2)}, code: CODE}] : []),
+        ...(ew ? [{discountedAmount: {amount: (ew / 100).toFixed(2)}, code: EW}] : []),
       ],
     }));
   }
@@ -182,6 +208,7 @@ function fakeShop({land = 'DE', mitZeilen = false, stoerung = {}} = {}) {
     };
     if (mitZeilen) {
       cart.lines = {nodes: knoten()};
+      if (!stoerung.antwortOhneCodes) cart.discountCodes = codes();
       if (stoerung.antwortOhneZuteilung) {
         for (const k of cart.lines.nodes) delete k.discountAllocations;
       }
@@ -239,14 +266,26 @@ function fakeShop({land = 'DE', mitZeilen = false, stoerung = {}} = {}) {
       korb.zeilen = korb.zeilen.filter((z) => !ids.includes(z.id));
       return antwort();
     },
+    async updateDiscountCodes(liste) {
+      log.push('M:code');
+      korb.codes = [...liste];
+      korb.code = liste.some((c) => c.toUpperCase() === CODE);
+      return antwort();
+    },
   };
   return {
     cart,
     storefront,
     log,
     // Ausgangslage direkt setzen (ohne Log): [[handle, menge], …]
-    lege(zeilen, {code = false, korbLand} = {}) {
-      korb = {id: 'gid://shopify/Cart/k1', land: korbLand || land, zeilen: [], code};
+    lege(zeilen, {code = false, codes: liste, korbLand} = {}) {
+      korb = {
+        id: 'gid://shopify/Cart/k1',
+        land: korbLand || land,
+        zeilen: [],
+        code,
+        codes: liste ?? (code ? [CODE] : []),
+      };
       for (const [handle, quantity] of zeilen) {
         korb.zeilen.push({id: `gid://shopify/CartLine/L${++n}`, handle, quantity});
       }
@@ -280,6 +319,8 @@ async function aktion(shop, {laden, art, inputs, env = {}}) {
       (await cart.updateLines(
         await kakaoPackungenEingabe({storefront, inputs, cart, ...(neu ? {messung} : {})}),
       ));
+  } else if (art === 'DiscountCodesUpdate') {
+    result = await cart.updateDiscountCodes(inputs.codes);
   } else {
     result = await cart.removeLines(inputs.lineIds);
   }
@@ -307,11 +348,11 @@ function stepper(shop, handle, packungen) {
 }
 
 /** Beide Läden, gleiche Ausgangslage, gleiche Aktion. */
-async function beide({land = 'DE', vorher = [], code = false, korbLand, art, eingabe, env, stoerung}) {
+async function beide({land = 'DE', vorher = [], code = false, codes, korbLand, art, eingabe, env, stoerung}) {
   const laeufe = {};
   for (const laden of ['qiblanco', 'kakao']) {
     const shop = fakeShop({land, mitZeilen: laden === 'kakao', stoerung: stoerung && {...stoerung}});
-    if (vorher.length || korbLand) shop.lege(vorher, {code, korbLand});
+    if (vorher.length || korbLand) shop.lege(vorher, {code, codes, korbLand});
     const inputs = typeof eingabe === 'function' ? eingabe(shop) : eingabe;
     const {result, messung} = await aktion(shop, {laden, art, inputs, env});
     laeufe[laden] = {shop, result, messung, log: shop.log, stand: shop.stand()};
@@ -566,4 +607,175 @@ test('Kill-Schalter KAKAO_SET_ZEILE=off: kein Set-Schritt, auch kein Sprung', as
 
 test('Set-Tabelle: jeder Handle der Normalform ist in der einen Varianten-Abfrage', () => {
   for (const h of [...Object.values(KAKAO_SETS), A, C]) assert.ok(KAKAO_ZEILEN[h], h);
+});
+
+// --- Codes mit Einzelweg (ROBINKAKAO, Christian 05.11.2026) -------------------
+// Soll: 40 € je Packung bei jeder Menge. Rot-Arm: KAKAO_SERVER_MODUL=<Fassung davor>.
+
+const codeEingabe = (...codes) => ({codes});
+const beideGleich = (l, soll) => {
+  assert.deepEqual(l.qiblanco.stand, soll);
+  assert.deepEqual(l.kakao.stand, soll);
+};
+
+test('Einzelweg: Code liegt, zweite Packung kommt dazu -> Einzelzeile, 80 €', async () => {
+  const l = await beide({vorher: [[A, 1]], codes: [EW], art: 'LinesAdd', eingabe: {lines: [{merchandiseId: vid(A), quantity: 1}]}});
+  beideGleich(l, [`${A} x2 = 8000 EUR`]);
+});
+
+test('Einzelweg: Code liegt, 3 Packungen auf einmal -> 120 €, keine Mutation nach der Kundenaktion', async () => {
+  const l = await beide({vorher: [[C, 1]], codes: [EW], art: 'LinesUpdate', eingabe: (s) => ({lines: [{id: s.zeile(C).id, quantity: 3}]})});
+  beideGleich(l, [`${C} x3 = 12000 EUR`]);
+  assert.deepEqual(nur(l.kakao.log, 'M:'), ['M:update']);
+});
+
+test('Einzelweg: Code eingeben löst das Sorten-Set auf, groß/klein egal', async () => {
+  const l = await beide({vorher: [['bundle-3x-awake', 1]], art: 'DiscountCodesUpdate', eingabe: codeEingabe('robinKakao')});
+  beideGleich(l, [`${A} x3 = 12000 EUR`]);
+  assert.deepEqual(nur(l.kakao.log, 'Q:zeilen'), [], 'Kakao-Laden liest aus der Antwort');
+});
+
+test('Einzelweg: Code eingeben löst das gemischte Set in zwei Zeilen auf', async () => {
+  const l = await beide({vorher: [['bundle-2x-awake-1x-create', 1]], art: 'DiscountCodesUpdate', eingabe: codeEingabe(EW)});
+  beideGleich(l, [`${A} x2 = 8000 EUR`, `${C} x1 = 4000 EUR`].sort());
+});
+
+test('Einzelweg: mehrere Set-Zeilen (10 Packungen) werden eine Einzelzeile, 400 €', async () => {
+  const l = await beide({vorher: [['bundle-5x-awake', 2]], art: 'DiscountCodesUpdate', eingabe: codeEingabe(EW)});
+  beideGleich(l, [`${A} x10 = 40000 EUR`]);
+});
+
+test('Einzelweg: Stepper auf der Einzelzeile bleibt ohne Set, auch ab 4 Packungen', async () => {
+  const l = await beide({vorher: [[A, 3]], codes: [EW], art: 'LinesUpdate', eingabe: (s) => ({lines: [{id: s.zeile(A).id, quantity: 4}]})});
+  beideGleich(l, [`${A} x4 = 16000 EUR`]);
+});
+
+test('Einzelweg: Set per Stepper im Warenkorb mit Code wird Einzelzeile', async () => {
+  const l = await beide({vorher: [['bundle-3x-awake', 1]], codes: [EW], art: 'LinesUpdate', eingabe: (s) => stepper(s, 'bundle-3x-awake', 4)});
+  beideGleich(l, [`${A} x4 = 16000 EUR`]);
+});
+
+test('Einzelweg: Code entfernen legt wieder das Set', async () => {
+  const l = await beide({vorher: [[A, 3]], codes: [EW], art: 'DiscountCodesUpdate', eingabe: codeEingabe()});
+  const ohneCode = await beide({vorher: [['bundle-3x-awake', 1]], art: 'LinesUpdate', eingabe: (s) => ({lines: [{id: s.zeile('bundle-3x-awake').id, quantity: 1}]})});
+  assert.ok(l.qiblanco.shop.zeile('bundle-3x-awake'), 'Set liegt');
+  assert.ok(l.kakao.shop.zeile('bundle-3x-awake'), 'Set liegt');
+  assert.deepEqual(l.kakao.stand, ohneCode.kakao.stand);
+});
+
+test('Einzelweg: Code neben Partnercode zählt auch', async () => {
+  const l = await beide({vorher: [['bundle-3x-awake', 1]], code: true, art: 'DiscountCodesUpdate', eingabe: codeEingabe(EW, CODE)});
+  beideGleich(l, [`${A} x3 = 12000 EUR`]);
+});
+
+test('Einzelweg: Antwort ohne Codes -> genau eine Abfrage, gleiches Ergebnis', async () => {
+  const l = await beide({vorher: [['bundle-3x-awake', 1]], art: 'DiscountCodesUpdate', eingabe: codeEingabe(EW), stoerung: {antwortOhneCodes: true}});
+  beideGleich(l, [`${A} x3 = 12000 EUR`]);
+  assert.ok(nur(l.kakao.log, 'Q:zeilen').length >= 1);
+});
+
+test('Einzelweg: Mutation scheitert -> Warenkorb bleibt, kein Fehler nach außen', async () => {
+  const l = await beide({vorher: [['bundle-3x-awake', 1]], art: 'DiscountCodesUpdate', eingabe: codeEingabe(EW), stoerung: {updateScheitert: 1}});
+  for (const lauf of [l.qiblanco, l.kakao]) assert.ok(lauf.result.cart, 'Warenkorb da');
+  assert.deepEqual(l.kakao.stand, l.qiblanco.stand);
+  assert.ok(l.kakao.shop.zeile('bundle-3x-awake'), 'Set unverändert');
+});
+
+test('Toter Code auf Set: Einzelform nur kurz, am Ende liegt wieder das Set', async () => {
+  const l = await beide({vorher: [['bundle-3x-awake', 1]], art: 'DiscountCodesUpdate', eingabe: codeEingabe(EW), stoerung: {codeTot: true}});
+  assert.ok(l.qiblanco.shop.zeile('bundle-3x-awake'));
+  assert.ok(l.kakao.shop.zeile('bundle-3x-awake'));
+});
+
+test('Toter Code auf Einzelzeilen: die nächste Zeilen-Aktion legt das Set', async () => {
+  const l = await beide({vorher: [[A, 2]], codes: [EW], art: 'LinesAdd', eingabe: {lines: [{merchandiseId: vid(A), quantity: 1}]}, stoerung: {codeTot: true}});
+  assert.ok(l.qiblanco.shop.zeile('bundle-3x-awake'));
+  assert.ok(l.kakao.shop.zeile('bundle-3x-awake'));
+});
+
+test('Anderer Code: Code-Aktion ändert keine Zeile', async () => {
+  for (const [vorher, land] of [[[['bundle-3x-awake', 1]], 'DE'], [[[C, 2]], 'CH'], [[['bundle-2x-awake', 1], [ANDERES, 1]], 'DE']]) {
+    for (const code of [CODE, 'TIPPFEHLER']) {
+      const l = await beide({land, vorher, art: 'DiscountCodesUpdate', eingabe: codeEingabe(code)});
+      for (const lauf of [l.qiblanco, l.kakao]) {
+        assert.deepEqual(nur(lauf.log, 'M:'), ['M:code'], `${land} ${code}`);
+      }
+    }
+  }
+});
+
+test('Kein Code mehr auf CH-Einzelzeile: Preisschutz hält wie zuvor', async () => {
+  const l = await beide({land: 'CH', vorher: [[C, 2]], code: true, art: 'DiscountCodesUpdate', eingabe: codeEingabe()});
+  for (const lauf of [l.qiblanco, l.kakao]) {
+    assert.deepEqual(nur(lauf.log, 'M:'), ['M:code']);
+    assert.ok(lauf.shop.zeile(C));
+  }
+});
+
+test('Kill-Schalter KAKAO_SET_ZEILE=off: Code-Aktion ändert keine Zeile', async () => {
+  const l = await beide({vorher: [['bundle-3x-awake', 1]], art: 'DiscountCodesUpdate', eingabe: codeEingabe(EW), env: {KAKAO_SET_ZEILE: 'off'}});
+  assert.ok(l.kakao.shop.zeile('bundle-3x-awake'));
+  assert.deepEqual(nur(l.kakao.log, 'M:'), ['M:code']);
+});
+
+test('Einzelweg-Liste: nur ROBINKAKAO, groß/klein und Leerzeichen egal', () => {
+  assert.deepEqual(server.KAKAO_EINZELWEG_CODES, [EW]);
+  assert.equal(server.istKakaoEinzelwegCode(' robinkakao '), true);
+  for (const c of ['ROBINKAKAO2', 'hackyourbio', '', null, undefined]) {
+    assert.equal(server.istKakaoEinzelwegCode(c), false);
+  }
+});
+
+// Rauchprobe in voller Breite: ohne Einzelweg-Code derselbe Warenkorb und dieselben
+// Rundreisen wie die Fassung davor. KAKAO_SERVER_ALT=<Datei> schaltet den Vergleich an.
+test('Ohne Einzelweg-Code: jeder Warenkorb gleich wie die Fassung davor', {skip: !process.env.KAKAO_SERVER_ALT}, async () => {
+  const alt = await import(pathToFileURL(process.env.KAKAO_SERVER_ALT).href);
+  const lauf = async (modul, laden, land, je, art, partner) => {
+    const shop = fakeShop({land, mitZeilen: laden === 'kakao'});
+    const start = [];
+    if (je.awake) start.push([A, je.awake]);
+    if (je.create) start.push([C, je.create]);
+    const soll = kakaoSollZeilen(je);
+    const ausSet = art === 'plusAufSet' || (art === 'code' && !partner);
+    shop.lege(ausSet && soll ? soll.map((z) => [z.handle, z.quantity]) : start, {code: partner});
+    const neu = laden === 'kakao';
+    if (neu) modul.kakaoVariantenVorladen(shop.storefront);
+    const inputs = {lines: [{merchandiseId: vid(A), quantity: 1}]};
+    const result = art === 'code'
+      ? await shop.cart.updateDiscountCodes(partner ? [CODE] : [])
+      : await shop.cart.addLines(inputs.lines);
+    const r = await modul.legeKakaoSetZeile({
+      cart: shop.cart,
+      storefront: shop.storefront,
+      env: {},
+      action: art === 'code' ? 'DiscountCodesUpdate' : 'LinesAdd',
+      result,
+      ...(neu ? {direkt: true} : {}),
+    });
+    return {stand: shop.stand(), mut: nur(shop.log, 'M:'), ok: Boolean(r?.cart)};
+  };
+  let faelle = 0;
+  for (const land of ['DE', 'AT', 'CH', 'US']) {
+    for (let awake = 0; awake <= 8; awake += 1) {
+      for (let create = 0; create <= 8; create += 1) {
+        if (!awake && !create) continue;
+        // art code ohne Partnercode: nur aus der Normalform. Einzelzeilen ohne Code
+        // gibt es im Laden dort nicht, wo das Set zulässig ist, und dort ist das
+        // Set beim Entfernen des Einzelweg-Codes gewollt.
+        for (const art of ['plus', 'plusAufSet', 'code']) {
+          for (const partner of [false, true]) {
+            for (const laden of ['qiblanco', 'kakao']) {
+              const je = {awake, create};
+              const vorher = await lauf(alt, laden, land, je, art, partner);
+              const nachher = await lauf(server, laden, land, je, art, partner);
+              assert.deepEqual(nachher, vorher, JSON.stringify({land, je, art, partner, laden}));
+              faelle += 1;
+            }
+          }
+        }
+      }
+    }
+  }
+  assert.ok(faelle > 2000, String(faelle));
+  console.log(`Vergleichsfaelle: ${faelle}`);
 });

@@ -1,6 +1,10 @@
 import {redirect} from 'react-router';
 import {rabattlinkZiel} from '~/lib/discount-ziel';
 import {bindeHealWorldGeschenk} from '~/lib/heal-world-geschenk.server';
+import {
+  istKakaoEinzelwegCode,
+  legeKakaoSetZeile,
+} from '~/lib/kakao-set-zeile.server';
 import {bindeReservierungsCode} from '~/lib/qi-master-addons.server';
 
 /**
@@ -16,7 +20,7 @@ import {bindeReservierungsCode} from '~/lib/qi-master-addons.server';
  * @param {LoaderFunctionArgs}
  */
 export async function loader({request, context, params}) {
-  const {cart, storefront} = context;
+  const {cart, env, storefront} = context;
   const {code} = params;
 
   // Nur Pfade auf der eigenen Herkunft; Begründung in lib/discount-ziel.js.
@@ -35,12 +39,22 @@ export async function loader({request, context, params}) {
   });
   // Heal-World-Geschenk: liegt schon ein Gerät im Warenkorb, kommt die
   // Geschenk-Zeile mit Janas Code im selben Schritt (lib/heal-world-geschenk.js).
-  const result = await bindeHealWorldGeschenk({
+  const beschenkt = await bindeHealWorldGeschenk({
     cart,
     storefront,
     action: 'DiscountCodesUpdate',
     result: gesetzt,
   });
+  // Ein Code mit Einzelweg löst ein liegendes Kakao-Set auf (kakao-set-zeile.server.js).
+  const result = istKakaoEinzelwegCode(code)
+    ? await legeKakaoSetZeile({
+        cart,
+        storefront,
+        env,
+        action: 'DiscountCodesUpdate',
+        result: beschenkt,
+      })
+    : beschenkt;
   const headers = cart.setCartId(result.cart.id);
 
   // Using set-cookie on a 303 redirect will not work if the domain origin have port number (:3000)
