@@ -159,10 +159,11 @@ const ARTIKEL_PFAD_QUERY = `#graphql
  *     wörtlich wie in ~/lib/sitemap-weiterleitungen).
  *
  * WAS DIESE LISTE NICHT ENTSCHEIDET: ob `qione-1` per 301 auf
- * `qione-2-pro` zieht. Entschieden am 2026-10-07 (Coworker A im Auftrag
- * Christians): ja. Der 301 steht in products.$handle.jsx über
- * app/lib/zusammenlegungen.js; der Eintrag hier bleibt, weil eine
- * Weiterleitung ebenso wenig in die Sitemap gehört wie ein 404.
+ * `qione-2-pro` zieht. Vom 07.10. bis 05.11.2026 tat es das (Entscheidung
+ * Coworker A im Auftrag Christians, Rückweg H-b61a593538). Seitdem antwortet
+ * die Seite in Deutschland wieder selbst. Der Eintrag hier bleibt, weil er
+ * schon vor der Zusammenlegung stand: Googlebot bekommt im US-Markt 404, und
+ * ein 404 gehört nicht in die Sitemap.
  *
  * DER SCHUTZ GEGEN EINE VERALTETE LISTE liegt nicht hier, sondern am Rand:
  * homepage-bauer/shop-switch/pruefungen/probe_s02_zufahrt_produktname_sitemap.py

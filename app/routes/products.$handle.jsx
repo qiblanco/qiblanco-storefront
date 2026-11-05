@@ -169,10 +169,12 @@ function kuerzeBeschreibung(text) {
  */
 export async function loader(args) {
   // ZUSAMMENGELEGTE PRODUKTSEITEN (Job 20261007-seo-zusammenlegung-duenne-
-  // seiten-301-umsetzen): /products/qione-1 zieht per 301 auf den Nachfolger
-  // /products/qione-2-pro. Vor der Produkt-Abfrage, weil das Produkt im
-  // US-Markt nicht veröffentlicht ist und die Route sonst 404 liefert. Die
-  // Liste führt app/lib/zusammenlegungen.js.
+  // seiten-301-umsetzen): ein Produkt-Handle mit Eintrag in
+  // app/lib/zusammenlegungen.js zieht per 301 auf sein Ziel. Vor der
+  // Produkt-Abfrage, weil ein Vorgänger im US-Markt oft nicht veröffentlicht
+  // ist und die Route sonst 404 liefert. /products/qione-1 stand hier bis
+  // 05.11.2026 (Rückweg H-b61a593538) und antwortet wieder selbst; die Liste
+  // trägt heute kein Produkt.
   const alterPfad = `/products/${args.params.handle}`;
   if (zusammenlegungFuer(alterPfad)) leiteUm(args.request, alterPfad);
 

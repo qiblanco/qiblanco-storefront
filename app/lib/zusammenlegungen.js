@@ -22,7 +22,7 @@ import {redirect} from 'react-router';
  *
  * EIN TRÄGER FÜR ALLE LESER. Die Routen der Quellseiten werfen den 301 über
  * `leiteUm()`, `pages.$handle.jsx` (Shopify-Seite support-1) und
- * `products.$handle.jsx` (qione-1) fragen `zusammenlegungFuer()`, und jeder
+ * `products.$handle.jsx` (Shopify-Produkte) fragen `zusammenlegungFuer()`, und jeder
  * Link-Baustein, der eine Adresse aus einem Datenmodul rendert (Lexikon,
  * Frageseiten, FAQ-Liste), geht über `adresse()`. So zeigt kein interner Link
  * auf eine Weiterleitung, auch wenn ein Datenmodul die alte Adresse noch als
@@ -57,6 +57,12 @@ import {redirect} from 'react-router';
  *    21,1); Folgeauftrag des Wirkungskreislaufs zur Hypothese H-11352f2aff.
  *    Die übernommenen Abschnitte auf der Technologieseite bleiben stehen
  *    (pages.technologie.jsx, FrageAbschnitt; ihr Anker hängt am Slug).
+ *  - /products/qione-1 seit 05.11.2026. Die Zielseite /products/qione-2-pro
+ *    fiel am Kontrollpunkt Tag 28 ab (Impressionen zur Domain 0,47, Position
+ *    4,7 -> 8,1); Folgeauftrag des Wirkungskreislaufs zur Hypothese
+ *    H-b61a593538. Die Produktseite hat keine eigene Route: sie antwortet
+ *    wieder über products.$handle.jsx mit dem Shopify-Produkt. Auf der
+ *    Zielseite war nichts übernommen, dort bleibt alles, wie es ist.
  *
  * @type {Readonly<Record<string, {ziel: string, anker: boolean}>>}
  */
@@ -92,7 +98,6 @@ export const ZUSAMMENGELEGT = Object.freeze({
     anker: true,
   },
   '/pages/support-1': {ziel: '/pages/support', anker: false},
-  '/products/qione-1': {ziel: '/products/qione-2-pro', anker: false},
 });
 
 /**
