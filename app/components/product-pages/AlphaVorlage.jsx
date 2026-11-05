@@ -315,6 +315,7 @@ export function AlphaVorlage({
                   <img
                     src={mitBreite(b.url, 160)}
                     alt=""
+                    role="presentation"
                     width="80"
                     height="80"
                     loading="lazy"

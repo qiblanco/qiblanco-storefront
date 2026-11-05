@@ -396,6 +396,7 @@ export function TheAlphaShop({
                   <img
                     src={`${b.url}&width=160`}
                     alt=""
+                    role="presentation"
                     width="80"
                     height="80"
                     loading="lazy"
