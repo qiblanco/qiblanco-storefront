@@ -49,13 +49,22 @@
  * scroller-ki-seiten-und-faq). Trustpilot ohne Gesamtzahl und ohne „unser
  * Profil": das Profil ist nicht beansprucht (Kopf von TrustpilotStimmen.jsx).
  */
+/*
+ * DREI SÄTZE POSITIV, GEÄNDERT AM 2026-11-05 (Job 20261101-umschrift-
+ * bewertungen-f8-f9-nach-eichung-s15). Christian hat am 2026-09-28 an dieser
+ * Seite drei Sätze als „AI-Gequatsche" verworfen: „ein Erlebnis, kein
+ * Messwert" (F8) und zwei Verneinungsketten „keine um, keine, niemanden" und
+ * „keinen Gutschein, keinen Rabatt, keine Gegenleistung" (F9). Sie sagen
+ * jetzt, was ist: Wortlaut der Verfasser, freiwillig, ohne Gegenleistung.
+ * Eichfälle: homepage-bauer/src/stil_marotten.py EICHFAELLE_CHRISTIAN.
+ */
 export const BEWERTUNGEN_SEITE = {
   vorspann: 'Qi Blanco Bewertungen und Reviews',
   titel: 'Was Kundinnen und Kunden über Qi Blanco schreiben',
   antwort:
     'Die Google-Bewertungen kommen aus unserem Google-Unternehmensprofil, mit Note und Anzahl, so wie Google sie zählt. Dazu kommen Reviews von Trustpilot.',
   einleitung: [
-    'Jede Google-Rezension stammt von einem Google-Konto und ist dort öffentlich nachlesbar. Wir schreiben keine um, wir kaufen keine, und wir bezahlen niemanden für eine Bewertung.',
+    'Jede Google-Rezension stammt von einem Google-Konto und ist dort öffentlich nachlesbar. Du liest sie im Wortlaut der Person, die sie geschrieben hat.',
     'In der oberen Reihe stehen zwölf Stimmen, die wir aus den Google-Rezensionen ausgewählt haben, weil sie am genauesten beschreiben, was Menschen im Alltag gemerkt haben: bei Schlaf, Ruhe und Energie. Darunter läuft der Feed der neuesten Fünf-Sterne-Rezensionen. Alle anderen, auch die kritischen, liest du mit einem Klick auf die Note im Google-Profil.',
   ],
 
@@ -63,7 +72,7 @@ export const BEWERTUNGEN_SEITE = {
     titel: 'Woher die Bewertungen kommen',
     absaetze: [
       'Die Quelle ist das Google-Unternehmensprofil von Qi Blanco. Google prüft, dass hinter jeder Rezension ein Konto steht, zeigt sie öffentlich an und lässt uns keine löschen.',
-      'Für eine Bewertung gibt es bei uns keinen Gutschein, keinen Rabatt und keine Gegenleistung. Wer unzufrieden ist, schreibt das dort genauso wie jemand, der begeistert ist.',
+      'Wer bewertet, tut das freiwillig und ohne Gegenleistung von uns. Wer unzufrieden ist, schreibt das dort genauso wie jemand, der begeistert ist.',
       'Was du hier siehst, aktualisiert sich von selbst. Der Feed liest das Profil mehrmals täglich; eine neue Rezension erscheint ohne unser Zutun.',
     ],
   },
@@ -71,7 +80,7 @@ export const BEWERTUNGEN_SEITE = {
   grenzen: {
     titel: 'Was Bewertungen nicht zeigen',
     absaetze: [
-      'Eine Bewertung ist ein Erlebnis, kein Messwert. Was jemand gemerkt hat, sagt viel über diesen Menschen und nichts darüber, was du merken wirst.',
+      'Eine Bewertung erzählt ein persönliches Erlebnis. Was jemand gemerkt hat, sagt viel über diesen Menschen und nichts darüber, was du merken wirst.',
       'Deshalb steht neben den Stimmen der Kunden noch etwas anderes: fünf veröffentlichte Arbeiten aus dem Labor, mit Methode, Zahlen und den Grenzen, die die Autoren selbst nennen. Sie beantworten eine andere Frage als eine Rezension, und beides zusammen ergibt das Bild.',
     ],
     links: [
