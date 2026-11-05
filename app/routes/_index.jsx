@@ -224,8 +224,13 @@ async function loadCriticalData({context}) {
  * @param {LoaderFunctionArgs}
  */
 function loadDeferredData({context}) {
+  // PREIS FRISCH, nicht streichen: ohne `cache` nimmt Hydrogen CacheDefault
+  // (SWR 24 h), dann zeigt die Seite nach einer Preis- oder Kursaenderung bis
+  // zu 24 h den alten Betrag (PL 13.10.: Seite 4.861 zl, Kasse 4.847 zl).
+  // Grossjob 20261004-GROSSJOB-preisanzeige-netto-brutto-rundung-alle-shops-waehrungen s09;
+  // Probe homepage-bauer/pruefungen/probe_preisabfrage_cache_kurz.py.
   const recommendedProducts = context.storefront
-    .query(RECOMMENDED_PRODUCTS_QUERY)
+    .query(RECOMMENDED_PRODUCTS_QUERY, {cache: context.storefront.CacheShort()})
     .catch((error) => {
       // Log query errors, but don't throw them so the page can still render
       console.error(error);
