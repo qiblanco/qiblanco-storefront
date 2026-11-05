@@ -36,7 +36,7 @@ export const meta = ({data}) => {
 
 export async function loader({context, request}) {
   const {storefront} = context;
-  const {product} = await storefront.query(PRODUCT_QUERY, {
+  const {product} = await storefront.query(NECKLACE_2_QUERY, {
     cache: storefront.CacheShort(),
     variables: {handle: 'necklace-2', selectedOptions: getSelectedProductOptions(request)},
   });
@@ -86,7 +86,7 @@ const VARIANTE_FRAGMENT = `#graphql
   }
 `;
 
-const PRODUCT_QUERY = `#graphql
+const NECKLACE_2_QUERY = `#graphql
   query Necklace2(
     $country: CountryCode
     $handle: String!
