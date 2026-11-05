@@ -21,7 +21,7 @@ export const PRODUKT = {
   overline: null,
   modus: null,
   name: 'Necklace 2 für den Qi Alpha® und QiOne®',
-  claim: 'Das Qi-Alpha-Logo auf dem Verschluss.',
+  claim: 'Das Logo des Qi Alpha® auf dem Verschluss.',
   kurzzeile: '750er ethisches Vollgold oder Chirurgenstahl',
   punkte: [
     {zeichen: 'schutz', text: '6-fache Laserung am Verschluss'},
@@ -105,7 +105,7 @@ export const BEZAHLART = {
 
 export const ZUSAMMENFASSUNG = {
   auszeichnung: 'Dein Necklace 2.',
-  titel: 'Bereit für deinen Qi Alpha®.',
+  titel: 'Bereit für deinen Qi Alpha® oder QiOne®.',
   zeilen: ZEILEN_GEMEINSAM,
   knopf: 'Vorbestellen',
   ruecknahme: null,
@@ -165,7 +165,7 @@ export const FAQ = {
     },
     {
       f: 'Was unterscheidet Necklace 2 vom Necklace 1?',
-      a: 'Necklace 2 trägt das Qi-Alpha-Logo und die 6-fache Laserung am Verschluss, in beiden Metallen. Necklace 1 ist das bisherige Necklace für QiOne®, es hat weder Logo noch Laserung.',
+      a: 'Necklace 2 trägt das Logo des Qi Alpha® und die 6-fache Laserung am Verschluss, in beiden Metallen. Necklace 1 ist das bisherige Necklace für QiOne®, es hat weder Logo noch Laserung.',
     },
     {
       f: 'Liegt die Kette meinem Qi Alpha® bei?',
