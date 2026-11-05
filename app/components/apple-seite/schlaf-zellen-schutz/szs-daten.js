@@ -1,8 +1,9 @@
 /*
  * APPLE-FASSUNG DER ADS-LP /pages/schlaf-zellen-schutz UND IHRER TESTARME
  * (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-ausser-seo-geo,
- * s06). Ein Sektionssatz für alle vier Arme, die heute Verkehr bekommen:
+ * s06). Ein Sektionssatz für alle Arme:
  *   a    /pages/schlaf-zellen-schutz       Kontrolle (Champion mobil)
+ *   b    /pages/schlaf-zellen-schutz-b     szs-e6-gs082: wie A, die Stimmen direkt hinter dem Kopf
  *   b2   /pages/schlaf-zellen-schutz-b2    szs-e2-gs126: Weiter-Knöpfe 1 und 2, kein fester Knopf
  *   k50  /pages/schlaf-zellen-schutz-k50   szs-e3-gs079: ohne beide Scroll-Videos, Stimmen-Videos und Schluss
  *   k25  /pages/schlaf-zellen-schutz-k25   szs-e4-gs174: Kopf, Stimmen, Garantie, Geräte
@@ -26,11 +27,12 @@
 
 const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750';
 
-export const VARIANTEN = Object.freeze(['a', 'b2', 'k50', 'k25']);
+export const VARIANTEN = Object.freeze(['a', 'b', 'b2', 'k50', 'k25']);
 
 /** Seitenname in app/lib/apple-seiten.js je Arm. */
 export const SEITE_JE_VARIANTE = Object.freeze({
   a: 'schlaf-zellen-schutz',
+  b: 'schlaf-zellen-schutz-b',
   b2: 'schlaf-zellen-schutz-b2',
   k50: 'schlaf-zellen-schutz-k50',
   k25: 'schlaf-zellen-schutz-k25',
@@ -227,8 +229,10 @@ export const SCHLUSS = Object.freeze({
  * Root): K50 ohne beide Scroll-Videos, Video-Stimmen und Schluss; K25 nur
  * Kopf, Stimmen, Garantie und Geräte. Weiter-Knöpfe: 1 mobil in A und K50
  * (Champion szs-e1-gs050), 1 und 2 überall in B2; 6 nach dem Labor überall
- * außer K25. Fester Knopf mobil in A, K50 und K25, nicht in B2.
- * @param {'a'|'b2'|'k50'|'k25'} variante
+ * außer K25. Fester Knopf mobil in A, B, K50 und K25, nicht in B2. B (letzte
+ * A/B-Runde, Christian 01.11.2026, Hypothese GS-082) ist A mit einem Unterschied:
+ * die Stimmen stehen direkt hinter dem Kopf statt nach dem Labor.
+ * @param {'a'|'b'|'b2'|'k50'|'k25'} variante
  */
 export function teileFuer(variante) {
   const v = VARIANTEN.includes(variante) ? variante : 'a';
@@ -244,6 +248,7 @@ export function teileFuer(variante) {
     mikroskopVideo: !kurz,
     weiter6: !k25,
     stimmen: true,
+    stimmenOben: v === 'b',
     weiter2: v === 'b2',
     videos: !kurz,
     garantie: true,

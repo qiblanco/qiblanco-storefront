@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useNaeheLaden } from "../reusables/useNaeheLaden";
 
-const QUELLE_DESKTOP = "https://cdn.shopify.com/videos/c/o/v/940d16da99a2452d9aadd57b9711b037.mov";
-const QUELLE_MOBIL = "https://cdn.shopify.com/videos/c/o/v/d9d52d90d536415bbb6342ebadb2fe97.mov";
+// Dieselben Dateien wie 940d16da….mov (Desktop) und d9d52d90….mov (Mobil), ohne Neukodierung mit
+// Faststart umgepackt ('moov' vorn), damit Safari nicht bis zum Ende laden muss (Gate 31, 01.11.2026).
+// Gleiche URLs wie szs-daten.js MIKROSKOP, damit der Browser die Datei seitenübergreifend nur einmal lädt.
+const QUELLE_DESKTOP = "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/mikroskop-desktop-faststart.mp4?v=1793465730";
+const QUELLE_MOBIL = "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/mikroskop-mobil-faststart.mp4?v=1793465597";
 // Vorschaubild = Bild 0 der jeweiligen Datei, von Shopify beim Hochladen erzeugt
 // (Admin-API Video.preview, 1920x1080 bzw. 1080x1920; als WebP 19 bzw. 24 kB).
 const POSTER_DESKTOP =

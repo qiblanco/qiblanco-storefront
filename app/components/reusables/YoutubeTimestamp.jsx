@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {youtubeWatchtimeAnbinden, mitJsApi} from '~/lib/video-watchtime';
+import {youtubeWatchtimeAnbinden, mitJsApi, ladeUhr} from '~/lib/video-watchtime';
 import {VIDEO_LQIP} from '~/data/video-lqip';
+import {posterGleicherHerkunft, vorschauUrl} from '~/lib/youtube-einbettung';
 
 /*
  * YoutubeTimestamp — das wiederverwendbare Muster „YouTube-Video als
@@ -460,6 +461,10 @@ export function YoutubeTimestamp({
   const antwort = useRef(false);
   const entschieden = useRef(false);
   const widgetId = useRef(0);
+  /* Zeitpunkt des Klicks, für die Feldmessung Klick -> Bild (video-watchtime.js),
+   * gebunden an das Objekt, auf das geklickt wurde: bindet der Effekt für ein
+   * anderes Objekt neu, gilt der alte Klick nicht (Gegenprüfer 02.11.). */
+  const klickZeit = useRef(null);
   const rahmen = useRef(null);
   const schonGewaermt = useRef(false);
   const start = Math.max(0, Math.floor(startSeconds || 0));
@@ -503,6 +508,7 @@ export function YoutubeTimestamp({
       objekt,
       objektQuelle,
       widgetId: widgetId.current,
+      ladenAb: klickZeit.current && klickZeit.current.objekt === objekt ? klickZeit.current.t : null,
       onSpielt: () => entscheide('player', 'spielt'),
       onAntwort: () => {
         antwort.current = true;
@@ -625,12 +631,18 @@ export function YoutubeTimestamp({
             `&origin=${encodeURIComponent(window.location.origin)}&widgetid=${widgetId.current}`,
         )
       : '';
+  /* VORSCHAUBILD GLEICHER HERKUNFT (Auftrag einwilligung-scanner-20261023T144303Z-s02,
+   * 2026-11-03): das Poster kommt über die eigene Route `/yt-vorschau/<id>`,
+   * nicht mehr von i.ytimg.com. Vor der Wahl im Einwilligungshinweis geht
+   * damit keine Anfrage an Google; das Bild ist dasselbe. Ein `thumbnail`
+   * auf i.ytimg.com wird ebenso umgeschrieben, ein eigenes Standbild
+   * (cdn.shopify.com) bleibt, wie es ist. */
   const posterProps = thumbnail
-    ? {src: thumbnail, width: 1280, height: 720, onError: posterFehlt}
+    ? {src: posterGleicherHerkunft(thumbnail), width: 1280, height: 720, onError: posterFehlt}
     : {
-        src: `https://i.ytimg.com/vi/${videoId}/${stufenDatei}.jpg`,
+        src: vorschauUrl(videoId, stufenDatei),
         srcSet: POSTER_STUFEN.slice(posterStufe)
-          .map(([datei, breite]) => `https://i.ytimg.com/vi/${videoId}/${datei}.jpg ${breite}w`)
+          .map(([datei, breite]) => `${vorschauUrl(videoId, datei)} ${breite}w`)
           .join(', '),
         sizes,
         width: stufenBreite,
@@ -844,6 +856,7 @@ export function YoutubeTimestamp({
       {...huellenProps}
       onClick={() => {
         if (!widgetId.current) widgetId.current = naechsteWidgetId++;
+        if (klickZeit.current == null) klickZeit.current = {t: ladeUhr(), objekt};
         setLaueft(true);
       }}
       {...absichtsSignale}
@@ -876,7 +889,7 @@ export function YoutubeTimestamp({
    * nicht-nutzergesteuerter Code, keine Fremdeingabe).
    */
   const posterUrl =
-    thumbnail || `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
+    posterGleicherHerkunft(thumbnail) || vorschauUrl(videoId, 'hqdefault');
   const escape = (wert) =>
     String(wert || '').replace(/[<>&"]/g, (c) =>
       ({'<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;'}[c]),

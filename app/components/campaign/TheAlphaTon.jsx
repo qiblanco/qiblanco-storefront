@@ -115,6 +115,16 @@ const QUELLE_LAUT = {
 // gut der Hälfte der Fälle kurz über 0 dBFS gehen. Messung im Jobordner
 // 20261101-prio1-qi-alpha-lp-nur-grundsound-lauter-pings-unveraendert.
 const PEGEL_LAUT = {master: 1, bett: 1.13, geduckt: 0.226};
+// Akzente der lauten Fassung (Peaks), NACHTRAG 03.11.2026 (Christian und
+// Anna: „den Grundsound lassen in der Lautstärke“, Peaks 25 % bzw. 15 % lauter
+// als der Grundsound; Coworker BS: die Mitte, 20 %). Jeder Akzent ist hörbar
+// das 1,2-Fache des Grundsounds (+1,6 dB): Momentan-Lautheit M_max des Akzents
+// gegen die integrierte Lautheit des Grundsounds, beide mit Gain. Vorher lagen
+// sie beim 1,13- bis 1,59-Fachen (bam +1,0 dB bis glanz +4,0 dB). Grundsound,
+// Master, Dateien und KLAENGE (Fassungen B/C) bleiben exakt. Messung im
+// Jobordner des Auftrags vom 03.11.2026 (Google AI weg, Peaks 1,2-fach),
+// Datei ton/vorher-20261103.json.
+const AKZENTE_LAUT = {gong: 0.66, klang: 0.59, bam: 0.8, glanz: 0.75, tief: 0.75, schluss: 0.75};
 const SPEICHER = 'tap-ton'; // 'an' | 'aus' | 'gesehen'
 // Ereignisse, die Browser als Nutzer-Aktivierung zählen (HTML: „activation
 // triggering input event“). pointerdown zählt nur mit der Maus, darum
@@ -139,21 +149,44 @@ const KLAENGE = {
   schluss: 0.85,
 };
 const FENSTER_ZU_MS = 6000; // unbeachtet schließt das Fenster von selbst
-// Beim Erstbesuch liegt der Cookie-Hinweis modal über der Seite. Ginge das
-// Fenster sofort auf, liefe es unsichtbar darunter ab (live gemessen 27.10.,
-// s09). Es wartet deshalb, bis die Cookie-Frage beantwortet ist.
+// Beim Erstbesuch liegt der Cookie-Hinweis über der Seite (der eigene Hinweis
+// ist nicht modal, die Seite bleibt bedienbar). Ginge das Fenster sofort auf,
+// liefe es unsichtbar darunter ab (live gemessen 27.10., s09). Es wartet
+// deshalb, bis die Cookie-Frage beantwortet ist.
 const NACH_HINWEIS_MS = 400; // Atempause, nachdem der Hinweis zugeht
 const OHNE_HINWEIS_MS = 5000; // kein Hinweis zu sehen: dann trotzdem auf
-const HINWEIS_IDS = ['cookiebanner', 'CybotCookiebotDialog'];
+// Cookiebot (Rückweg) und der eigene Hinweis samt Einstellungs-Dialog.
+const HINWEIS_IDS = [
+  'cookiebanner',
+  'CybotCookiebotDialog',
+  'qb-einwilligung',
+  'qb-einwilligung-dialog',
+];
 const EINWILLIGUNG_EREIGNISSE = [
   'CookiebotOnAccept',
   'CookiebotOnDecline',
   'CookiebotOnConsentReady',
 ];
 
+// Geladen heißt: ein Objekt mit booleschem hasResponse (Cookiebot oder der
+// eigene Hinweis). Vor uc.js ist window.Cookiebot das <script id="Cookiebot">.
+function hinweisGeladen() {
+  return typeof window.Cookiebot?.hasResponse === 'boolean';
+}
+
+// Ist der Hinweis geladen, entscheidet er: seit Fassung 2.0 fragt der eigene
+// Hinweis eine Wahl der Fassung 1 neu, das alte Cookie bleibt dabei liegen
+// (hasResponse false). Nur ohne geladenen Hinweis zählt das Cookie.
+// Das Hinweis-Skript ist defer: solange das Dokument nicht fertig ist, kann es
+// noch kommen. Nicht `interactive`: das steht vor den defer-Skripten an (live
+// 135 ms, Skript 7880 ms bei langsamem Netz).
+function hinweisKommtNichtMehr() {
+  return !hinweisGeladen() && document.readyState === 'complete';
+}
+
 function einwilligungBeantwortet() {
-  if (/(?:^|;\s*)CookieConsent=/.test(document.cookie)) return true;
-  return Boolean(window.Cookiebot && window.Cookiebot.hasResponse);
+  if (hinweisGeladen()) return window.Cookiebot.hasResponse;
+  return /(?:^|;\s*)CookieConsent=/.test(document.cookie);
 }
 
 function hinweisSichtbar() {
@@ -166,11 +199,17 @@ function hinweisSichtbar() {
   });
 }
 
+function fensterAusserhalb(oben) {
+  return oben < 0;
+}
+
 /**
  * Ruft `los` auf, sobald die Cookie-Frage beantwortet ist (beide Motoren,
  * Cookiebot und der eigene Hinweis, feuern die Cookiebot-Ereignisse). Ist nach
- * OHNE_HINWEIS_MS kein Hinweis zu sehen (Skript blockiert), geht es trotzdem
- * los. Gibt die Aufräum-Funktion zurück.
+ * OHNE_HINWEIS_MS kein Hinweis zu sehen oder ist das Dokument fertig und keiner
+ * geladen (Skript blockiert: der eigene Banner steht dann im Server-HTML, lässt
+ * sich aber nicht schließen), geht es trotzdem los. Gibt die Aufräum-Funktion
+ * zurück.
  */
 function nachEinwilligung(los) {
   if (einwilligungBeantwortet() && !hinweisSichtbar()) {
@@ -197,7 +236,7 @@ function nachEinwilligung(los) {
     pause = window.setTimeout(ende, NACH_HINWEIS_MS);
   };
   const pruefe = () => {
-    if (!hinweisSichtbar()) ende();
+    if (!hinweisSichtbar() || hinweisKommtNichtMehr()) ende();
     else notfall = window.setTimeout(pruefe, 1000);
   };
   notfall = window.setTimeout(pruefe, OHNE_HINWEIS_MS);
@@ -382,7 +421,7 @@ class TonMotor {
       return;
     }
     const g = this.ctx.createGain();
-    g.gain.value = KLAENGE[name] ?? 0.7;
+    g.gain.value = (this.laut ? AKZENTE_LAUT : KLAENGE)[name] ?? 0.7;
     g.connect(this.master);
     const q = this.ctx.createBufferSource();
     q.buffer = puffer;
@@ -858,7 +897,12 @@ export function TapTon({wurzel, standard = 'fenster'}) {
         if (titel && buehne) {
           const t = titel.getBoundingClientRect().top;
           const b = buehne.getBoundingClientRect().top;
-          setOben(Math.round(Math.max(b + 24, t - 64 - 48)));
+          const oben = Math.round(Math.max(b + 24, t - 64 - 48));
+          // Weitergescrollt, bevor die Cookie-Frage beantwortet war: das Fenster
+          // läge außerhalb des Bildes und gälte danach als gesehen. Lieber nicht
+          // öffnen und nichts merken, der nächste Besuch fragt wieder.
+          if (fensterAusserhalb(oben)) return;
+          setOben(oben);
         }
         setFenster('auf');
         zuTimer = window.setTimeout(() => {

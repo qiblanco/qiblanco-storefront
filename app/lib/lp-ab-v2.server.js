@@ -252,8 +252,11 @@ export const E2 = Object.freeze({
   anteil_prozent: 15,
 });
 
-/** Code-Schalter von B2; false = kein Besucher auf B2. */
-export const E2_AKTIV = true;
+/**
+ * Code-Schalter von B2; false = kein Besucher auf B2. Beendet 02.11.2026 (A/B-Pause,
+ * Christian 01.11., lp-manager/config/ab-pause.json), A bleibt. Route bleibt per Bestand.
+ */
+export const E2_AKTIV = false;
 
 /**
  * B2 läuft nur, wenn der Code-Schalter steht, die Env ihn nicht abschaltet
@@ -281,8 +284,8 @@ export function experimentB2Aktiv(env, codeSchalter = E2_AKTIV, e1 = E1, e2 = E2
  * schon den Sticky-Arm GS-127 meint).
  *
  * ENTSCHEIDE, je begründet:
- *  - SCHARF SEIT DEM MERGE VOM 28.10.2026: E3_AKTIV und E4_AKTIV stehen auf
- *    true. Bedingung war, dass das Sim-Tor die Fassung je Gerät bestanden hat
+ *  - SCHARF VOM MERGE AM 28.10.2026 BIS 02.11.2026 (A/B-Pause): E3_AKTIV und
+ *    E4_AKTIV standen auf true. Bedingung war, dass das Sim-Tor die Fassung je Gerät bestanden hat
  *    (heatmap-manager kreislauf start-freigabe <id> exit 0, beide am
  *    2026-10-28T05:20Z) und B von szs-e1-gs050 sein Urteil hat (20.10.).
  *    Zurück: Schalter auf false (PR) oder Env-Kill unten.
@@ -329,9 +332,12 @@ export const E4 = Object.freeze({
   anteil_prozent: 15,
 });
 
-/** Code-Schalter der Kurz-Arme; false = kein Besucher auf K50 bzw. K25. */
-export const E3_AKTIV = true;
-export const E4_AKTIV = true;
+/**
+ * Code-Schalter der Kurz-Arme; false = kein Besucher auf K50 bzw. K25. Beide beendet
+ * 02.11.2026 (A/B-Pause, Christian 01.11., lp-manager/config/ab-pause.json), A bleibt.
+ */
+export const E3_AKTIV = false;
+export const E4_AKTIV = false;
 
 /**
  * Ein Kurz-Arm läuft nur, wenn sein Code-Schalter steht, die Env ihn nicht
@@ -355,9 +361,60 @@ export function experimentKurzAktiv(
   return true;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ * LETZTE A/B-RUNDE E6 (Job 20261101-letzte-runde-b-seite-schlaf-zellen-schutz-
+ * bauen; Christian 01.11.2026: „Jetzt nochmal eine B-Seite entwerfen lassen und
+ * dann war's das"). B = Apple-Fassung von A, die Stimmen stehen direkt hinter
+ * dem Kopf (GS-082). Definition: heatmap-manager/config/experimente.yaml
+ * (szs-e6-gs082), Pause: lp-manager/config/ab-pause.json.
+ *
+ * ENTSCHEIDE, je begründet:
+ *  - E6_AKTIV FALSE BIS ZUM START: den Schalter legt der Startauftrag am
+ *    Fr 06.11. um (20261106-letzte-runde-b-seite-start-freitag-15-prozent).
+ *  - DASSELBE SALZ WIE E1, EIMER 30..44: frei neben K50 (0..14), K25 (15..29)
+ *    und B2 (85..99). Diese Besucher sahen in den alten Tests immer A, B trägt
+ *    also nichts aus K50, K25 oder B2 mit, auch wenn die alten Arme noch laufen.
+ *  - ROUTE VON B, MARKER g: E1 und E6 teilen sich /pages/schlaf-zellen-schutz-b.
+ *    Steht E1, ist E6 aus (zwei Tests auf einer Route). Die Ad-Weiche schließt
+ *    den Pfad schon aus (LP_EXP_B_PFAD). Marker g (belegt: w r h p b f v m x s
+ *    q k n z c d).
+ *  - PIN ?lp_exp=b WIE ALLE ARME: auf einen abgeschalteten Arm zeigt er A. Bis
+ *    zum Start ist B direkt unter dem Pfad zu sehen.
+ *  - KILL: E6_AKTIV = false (PR) oder Env LP_EXP_SZS_E6_MODE=off (Handgriff).
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Marker in der Ziel-URL: g = letzte Runde (unterscheidbar von allen belegten). */
+export const LP_EXP_E6_MARKER = 'g';
+
+/** Letzte Runde: Eimer [30, 45) desselben Salzes. */
+export const E6 = Object.freeze({
+  id: 'szs-e6-gs082',
+  hypothese_id: 'GS-082',
+  salz: E1.salz,
+  eimer_ab: 30,
+  anteil_prozent: 15,
+});
+
+/** Code-Schalter der letzten Runde; false = kein Besucher auf B über E6. */
+export const E6_AKTIV = false;
+
+/**
+ * E6 läuft nur, wenn sein Code-Schalter steht, die Env ihn nicht abschaltet (NUR
+ * 'off'), E1 die Route nicht belegt, es das Salz von E1 trägt und seine Eimer die
+ * von K25 und B2 nicht berühren.
+ */
+export function experimentE6Aktiv(env, codeSchalter = E6_AKTIV, e1An = experimentAktiv(env), e6 = E6, e2 = E2, e4 = E4) {
+  if (!codeSchalter || e1An) return false;
+  if (env && env.LP_EXP_SZS_E6_MODE === 'off') return false;
+  if (e6.salz !== E1.salz || !(e6.anteil_prozent > 0)) return false;
+  if (e6.eimer_ab < e4.eimer_ab + e4.anteil_prozent) return false;
+  if (e6.eimer_ab + e6.anteil_prozent > 100 - e2.anteil_prozent) return false;
+  return true;
+}
+
 /**
  * Reine Entscheidungsfunktion: {ziel, eimer, arm} wenn dieser Request
- * Variante B (arm 'b'), B2 (arm 'b2'), K50 (arm 'k50') oder K25 (arm 'k25')
+ * Variante B (arm 'b', auch über E6), B2 (arm 'b2'), K50 (arm 'k50') oder K25 (arm 'k25')
  * sehen soll, sonst null. Ohne
  * Client-IP gibt es keine stabile Zuteilung — dann A (Fail-Richtung auf den
  * Bestand). Pins: ?lp_exp=a | b | b2 | k50 | k25; ein Pin auf einen abgeschalteten Arm
@@ -370,13 +427,15 @@ export function entscheideLpExperiment(
   codeSchalterB2 = E2_AKTIV,
   codeSchalterK50 = E3_AKTIV,
   codeSchalterK25 = E4_AKTIV,
+  codeSchalterE6 = E6_AKTIV,
 ) {
   if (!request || (request.method !== 'GET' && request.method !== 'HEAD')) return null;
   const bAn = experimentAktiv(env, codeSchalter);
   const b2An = experimentB2Aktiv(env, codeSchalterB2);
   const k50An = experimentKurzAktiv(env, E3, codeSchalterK50, 'LP_EXP_SZS_K50_MODE', bAn);
   const k25An = experimentKurzAktiv(env, E4, codeSchalterK25, 'LP_EXP_SZS_K25_MODE', bAn);
-  if (!bAn && !b2An && !k50An && !k25An) return null;
+  const e6An = experimentE6Aktiv(env, codeSchalterE6, bAn);
+  if (!bAn && !b2An && !k50An && !k25An && !e6An) return null;
   const url = new URL(request.url);
   if (url.pathname.endsWith('.data')) return null;
   if (url.searchParams.has('_data')) return null;
@@ -384,9 +443,13 @@ export function entscheideLpExperiment(
   const nachB2 = () => zielUrl(LP_EXP_B2_PFAD, url.search, LP_EXP_B2_MARKER);
   const nachK50 = () => zielUrl(LP_EXP_K50_PFAD, url.search, LP_EXP_K50_MARKER);
   const nachK25 = () => zielUrl(LP_EXP_K25_PFAD, url.search, LP_EXP_K25_MARKER);
+  const nachE6 = () => zielUrl(LP_EXP_B_PFAD, url.search, LP_EXP_E6_MARKER);
   const pin = url.searchParams.get('lp_exp');
   if (pin === 'a') return null;
-  if (pin === 'b') return bAn ? {ziel: nachB(), eimer: -1, arm: 'b'} : null;
+  if (pin === 'b') {
+    if (bAn) return {ziel: nachB(), eimer: -1, arm: 'b'};
+    return e6An ? {ziel: nachE6(), eimer: -1, arm: 'b'} : null;
+  }
   if (pin === 'b2') return b2An ? {ziel: nachB2(), eimer: -1, arm: 'b2'} : null;
   if (pin === 'k50') return k50An ? {ziel: nachK50(), eimer: -1, arm: 'k50'} : null;
   if (pin === 'k25') return k25An ? {ziel: nachK25(), eimer: -1, arm: 'k25'} : null;
@@ -400,5 +463,6 @@ export function entscheideLpExperiment(
   const imArm = (e) => eimer >= e.eimer_ab && eimer < e.eimer_ab + e.anteil_prozent;
   if (k50An && imArm(E3)) return {ziel: nachK50(), eimer, arm: 'k50'};
   if (k25An && imArm(E4)) return {ziel: nachK25(), eimer, arm: 'k25'};
+  if (e6An && imArm(E6)) return {ziel: nachE6(), eimer, arm: 'b'};
   return null;
 }

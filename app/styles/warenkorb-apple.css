@@ -1,0 +1,44 @@
+/*
+ * APPLE-FASSUNG /cart (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-
+ * niveau-ausser-seo-geo, s12-r5). Lädt nur mit Schalter an (routes/cart.jsx).
+ *
+ * NUR TYPOGRAFIE UND FARBE DER SEITE. Zeilen, Summe, Kassenknopf, Reihenfolge
+ * und Layout (cart-seite.css, app.css) bleiben wie in C. Alle Regeln hängen am
+ * Scope [data-apple-seite='cart']; der Warenkorb-Drawer liegt außerhalb davon
+ * und bleibt unberührt. Skala aus --as-fs-*: 14 · 17 · 21 · 24 · H1 28 (Handy)
+ * / 40 (Desktop). Keine freien Werte.
+ */
+[data-apple-seite='cart'] .cart {
+  color: var(--as-tinte);
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-apple-seite='cart'] .cart :where(h1, h2, h3, h4) {
+  color: var(--as-tinte);
+  text-shadow: none;
+}
+[data-apple-seite='cart'] .cart h1 {
+  font-size: var(--as-fs-6);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+@media (min-width: 750px) {
+  [data-apple-seite='cart'] .cart h1 {
+    font-size: var(--as-fs-7);
+  }
+}
+
+/* Fließtext der Seite (leerer Warenkorb, Pflichtmitteilung, Zweifel-Zeile). */
+:where([data-apple-seite='cart'] .cart-page-inner) p {
+  font-size: var(--as-fs-3);
+  line-height: 1.5;
+}
+
+[data-apple-seite='cart'] .as-anna {
+  margin-inline: auto;
+  max-width: var(--as-text-breite);
+}
+[data-apple-seite='cart'] .as-anna .as-absatz {
+  font-size: var(--as-fs-3);
+}

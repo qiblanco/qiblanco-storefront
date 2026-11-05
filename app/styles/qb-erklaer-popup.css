@@ -557,9 +557,12 @@
   }
 }
 
+/* Bewegung reduzieren: angehalten wird nur, was sich bewegt — der Arm, der
+   sich weitet (Drehung). Der Gleichtakt des Verbands ist nur Opazität, er
+   atmet weiter: das ist die ruhige Variante, kein Stillstand ohne Ersatz
+   (homepage-bauer/SKILL-MEDIEN-ALLE-GERAETE.md 2.4). */
 @media (prefers-reduced-motion: reduce) {
-  .qb-mol__arme--weitet,
-  .qb-schwarm--verband > g {
+  .qb-mol__arme--weitet {
     animation: none;
     transform: none;
   }

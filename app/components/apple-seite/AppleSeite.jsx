@@ -1,4 +1,5 @@
-import appleSeiteStyles from '~/styles/apple-seite.css?url';
+import {useContext} from 'react';
+import {AppleStilImKopf, appleSeiteStyles} from './stil-kopf';
 import {APPLE_SEITE_ATTR} from '~/lib/apple-seiten';
 import {Sektion} from './AppleSektionen';
 
@@ -12,12 +13,17 @@ import {Sektion} from './AppleSektionen';
  *
  *   <AppleSeite seite="start-b" sektionen={[{art: 'hero', …}, …]} />
  *   <AppleSeite seite="start-b">{eigene Sektionen}</AppleSeite>
+ *
+ * Auf den Apple-Rechtsseiten steht das CSS im <head> (Flanke #172,
+ * ./stil-kopf.js); dann meldet Layout AppleStilImKopf und der Body-Link fällt
+ * weg. Jede andere Seite behält ihn.
  */
 export function AppleSeite({seite, sektionen = null, children = null}) {
   const attr = {[APPLE_SEITE_ATTR]: seite};
+  const imKopf = useContext(AppleStilImKopf);
   return (
     <>
-      <link rel="stylesheet" href={appleSeiteStyles} />
+      {imKopf ? null : <link rel="stylesheet" href={appleSeiteStyles} />}
       <div className="as-seite" {...attr}>
         {sektionen
           ? sektionen.map((s, i) => <Sektion key={`${s.art}-${i}`} index={i} {...s} />)

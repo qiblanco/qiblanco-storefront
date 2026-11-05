@@ -915,6 +915,13 @@ body:has(.pb) {
   --qb-sterne-gold: var(--pb-akzent);
   --shop-switch-active: color-mix(in srgb, var(--qb-akzent) 18%, transparent);
 }
+/* Apple-Fassung (beide Arme): .as-seite ist weiß und beginnt bei y=104 hinter dem
+   transparenten Kopf, der Creme-Grund oben zeichnete dort eine Kante durchs Logo
+   (F-441, 04.11.2026). Der Wert steht aus: --as-weiss sitzt auf .as-seite und ist
+   am body nicht vererbt. Ohne Apple-Schalter fehlt der Marker, dort bleibt Creme. */
+body:has([data-apple-seite^='produktberatung']) {
+  background: white;
+}
 
 body:has(.pb) img,
 body:has(.pb) picture,

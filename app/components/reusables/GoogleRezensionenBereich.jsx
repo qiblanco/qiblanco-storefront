@@ -251,8 +251,11 @@ export function scrolleZuRezensionen(ziel) {
  * der richtige Wert: der native Hash-Sprung landet sonst mit 0 px Reserve und
  * schiebt die Überschrift hinter den Kopf, sobald dieser wieder ausfährt. Die
  * Variable springt dadurch beim Scrollen nicht mehr zwischen 0 und Kopfhöhe.
+ *
+ * `anlass`: ändert sich dieser Wert, wird sofort neu gemessen (der Kopf setzt
+ * hier seine Leisten-Variante ein, siehe bannerVariante).
  */
-export function useKopfHoeheVariable() {
+export function useKopfHoeheVariable(anlass) {
   useEffect(() => {
     if (typeof document === 'undefined') return undefined;
     let offen = false;
@@ -278,7 +281,7 @@ export function useKopfHoeheVariable() {
       window.removeEventListener('resize', anfordern);
       window.removeEventListener('orientationchange', anfordern);
     };
-  }, []);
+  }, [anlass]);
 }
 
 /**

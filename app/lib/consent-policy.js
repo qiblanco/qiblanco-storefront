@@ -16,6 +16,8 @@
  *
  * Policies:
  *   'consent'  Tracking NUR nach aktiver Cookiebot-Marketing-Einwilligung.
+ *              Im Motor 'eigen' nur eine Wahl, die nach Fassung und Alter
+ *              noch gilt (hasCookiebotMarketingConsent, seit Fassung 2.0).
  *   'optout'   Tracking ab Seitenaufruf; eine AKTIV erklaerte Ablehnung im
  *              Banner wird IMMER respektiert (nie gegen erklaerten Willen).
  *

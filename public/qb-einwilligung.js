@@ -82,8 +82,10 @@
     } catch (e) {}
     return true;
   }
+  // Die API lädt erst nach der Wahl (lib/shopify-tracking-tor.js); Hydrogen meldet, wenn sie steht.
   function shopifyMitWarten() {
     if (shopify()) return;
+    d.addEventListener('shopifyCustomerPrivacyApiLoaded', function () { shopify(); }, {once: true});
     var n = 0, iv = setInterval(function () { if (shopify() || ++n > 40) clearInterval(iv); }, 250);
   }
 

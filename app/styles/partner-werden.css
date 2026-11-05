@@ -52,6 +52,11 @@
 .lp-a3 .lp-pw-hero__bild {
   animation-delay: 0.12s;
 }
+/* Unter der Falz wartet das Bild, bis der Leser es erreicht (useBewegungImBild
+   in AffiliatePartnerprogramm.jsx setzt das Attribut nur dann). */
+.lp-a3 .lp-pw-hero__bild[data-bewegung='wartet'] {
+  animation-play-state: paused;
+}
 @keyframes lp-pw-auftauchen {
   from {
     opacity: 0;
@@ -60,6 +65,14 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+@keyframes lp-pw-einblenden {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
@@ -469,8 +482,10 @@
 
 /* ─── Bewegung abschalten, wenn der Mensch das so eingestellt hat ────────── */
 @media (prefers-reduced-motion: reduce) {
+  /* Ruhige Variante statt Stillstand: nur Einblenden, keine Verschiebung
+     (SKILL-MEDIEN-ALLE-GERAETE.md 2.4). */
   .lp-a3 .lp-pw-hero__inner > * {
-    animation: none;
+    animation-name: lp-pw-einblenden;
   }
   .lp-a3 .lp-pw-karte,
   .lp-a3 .lp-pw-produkt,

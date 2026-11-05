@@ -29,6 +29,15 @@ import {NAEHE_RAND, NAEHE_RAND_BISHER, useNaeheLaden} from './useNaeheLaden';
  *    erlaubt iOS ohne Geste); lehnt iOS ab (Stromsparmodus, „Video-Vorschauen
  *    automatisch abspielen“ aus), wiederholt die erste Berührung es.
  *  - `posterDesktop`/`posterMobile` stehen, bis das erste Bild dekodiert ist.
+ *    Das poster-Attribut allein hält das nicht: play() löscht es sofort
+ *    (HTML: „show poster flag“), auch wenn noch kein Bild gemalt ist.
+ *    Gemessen 04.11.2026 in WebKit Desktop (macos-safari, /products/qione-2-
+ *    pro-b): 1 s nach dem Anhängen Poster sichtbar, ab 2 s schwarz, ab 3 s
+ *    readyState 4 und trotzdem 12 s schwarz, bis der Scrub das Video von der
+ *    Startstelle wegbewegt. Deshalb liegt das Poster zusätzlich als <img>
+ *    (Startbild) über dem Video, bis ein Seek das Video mindestens
+ *    STARTBILD_BIS_S von der Startstelle weggebracht hat. Das Poster IST das
+ *    erste Bild des Films, der Wechsel ist also unsichtbar.
  *  - `endbildDesktop`/`endbildMobile` sind der Rückfall: kann das Gerät das
  *    Video nicht abspielen (error, oder STANDBILD_NACH_MS im Bild ohne
  *    Daten) und bei reduzierter Bewegung steht das Endbild als <img> mit
@@ -41,6 +50,9 @@ import {NAEHE_RAND, NAEHE_RAND_BISHER, useNaeheLaden} from './useNaeheLaden';
  * (GOP-Seeks) oder spielen nicht ueberall (HEVC/10-bit).
  */
 const STANDBILD_NACH_MS = 4000;
+// Ab dieser Abspielstelle (Sekunden) hat der Scrub das Video von seinem ersten
+// Bild weggebracht; dann weicht das Startbild dem Video.
+const STARTBILD_BIS_S = 0.15;
 // Über dem Video, unter den Texten (z-index 1), wie das Video selbst auf
 // Fläche geschnitten. Inline, damit der Rückfall keine globale CSS braucht.
 const STANDBILD_STIL = {
@@ -77,6 +89,9 @@ export function ScrollScrubVideo({
   // 'wartet' bis Daten da sind, 'spielt' sobald ein Bild dekodiert ist,
   // 'standbild' wenn das Gerät das Video nicht abspielen kann.
   const [abspiel, setAbspiel] = useState('wartet');
+  // Startbild (Poster als <img>) steht, bis ein Seek das Video vom ersten Bild
+  // weggebracht hat. Danach bleibt es weg, auch beim Zurückscrollen.
+  const [startbildWeg, setStartbildWeg] = useState(false);
   const metadataLoadedRef = useRef(false);
   // Der Scroll-Handler wird EINMAL registriert; ein Ref trägt die aktuelle
   // Präferenz hinein, ohne den Listener neu aufzuhaengen.
@@ -160,13 +175,21 @@ export function ScrollScrubVideo({
     // Kein abspielbares Format, Netzfehler, Datei fehlt: Endbild statt Schwarz.
     const onError = () => setAbspiel('standbild');
 
+    // Erst ein abgeschlossener Seek weg von der Startstelle bringt ein neues
+    // Bild auf die Fläche; vorher deckt das Startbild das Video.
+    const onSeeked = () => {
+      if (video.currentTime >= STARTBILD_BIS_S) setStartbildWeg(true);
+    };
+
     video.addEventListener('loadedmetadata', onLoadedMetadata);
     video.addEventListener('loadeddata', onLoadedData);
     video.addEventListener('error', onError);
+    video.addEventListener('seeked', onSeeked);
     return () => {
       video.removeEventListener('loadedmetadata', onLoadedMetadata);
       video.removeEventListener('loadeddata', onLoadedData);
       video.removeEventListener('error', onError);
+      video.removeEventListener('seeked', onSeeked);
     };
   }, []);
 
@@ -330,6 +353,7 @@ export function ScrollScrubVideo({
   // Im Standbild gilt die Strecke wie bei reduzierter Bewegung: ein Bildschirm,
   // End-Text sichtbar, keine Scroll-Aufforderung ins Leere.
   const kurz = wenigerBewegung || standbild;
+  const startbild = Boolean(poster) && !standbild && !startbildWeg;
 
   return (
     <div className="ScrollScrubVideoBlock" data-section={dataSection}>
@@ -371,6 +395,17 @@ export function ScrollScrubVideo({
             poster={poster}
             preload={anhaengen ? 'auto' : 'none'}
           />
+
+          {startbild ? (
+            <img
+              className="ScrollScrubVideo-startbild"
+              src={poster}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              style={STANDBILD_STIL}
+            />
+          ) : null}
 
           {standbild ? (
             <img

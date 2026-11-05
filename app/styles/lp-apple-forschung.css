@@ -1,0 +1,63 @@
+/*
+ * APPLE-FASSUNG /pages/forschung (Grossjob 20261029-GROSSJOB-alle-shop-seiten-
+ * apple-niveau-ausser-seo-geo, s07). Muster rechtsseite-apple.css: NUR
+ * Typografie, Farbe und Fläche. Der Text bleibt aus app/data/forschung-seite.js,
+ * Reihenfolge und Elemente wie in C. Die Rollen aus forschung.css zeigen im
+ * Apple-Scope auf --as-* aus apple-seite.css. Lädt nur mit Schalter an.
+ */
+.as-seite .fo {
+  --qb-text: var(--as-tinte);
+  --qb-text-gedaempft: var(--as-grau);
+  --qb-text-h2: var(--as-fs-7);
+  --qb-text-h2-mobil: var(--as-fs-6);
+  --qb-text-h3: var(--as-fs-4);
+  --qb-text-h3-mobil: var(--as-fs-4);
+  --qb-flaeche: var(--as-flaeche);
+  --qb-radius-klein: var(--as-radius);
+  --qb-ref-fs-2: var(--as-fs-2);
+  --qb-ref-fs-3: var(--as-fs-3);
+  --qb-ref-fs-4: var(--as-fs-3);
+  --qb-ref-fs-5: var(--as-fs-4);
+  --qb-ref-fs-6: var(--as-fs-5);
+  --fo-fs-h1: var(--as-fs-6);
+  --fo-linie: var(--as-linie);
+  --fo-weiss: var(--as-weiss);
+  --fo-s1: var(--as-s-1);
+  --fo-s2: var(--as-s-2);
+  --fo-s3: var(--as-s-3);
+  --fo-s4: var(--as-s-4);
+  --fo-s6: var(--as-s-6);
+  --fo-s8: var(--as-s-8);
+  --fo-s12: var(--as-s-12);
+  --fo-breite: var(--as-breite);
+
+  background: var(--as-weiss);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.as-seite .fo :is(h1, h2, h3, h4) {
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  hyphens: manual;
+}
+
+@media (min-width: 750px) {
+  .as-seite .fo {
+    --fo-fs-h1: var(--as-fs-8);
+  }
+}
+
+/* Die acht Warums stehen auf breiten Fenstern zu zweit: die Sektion misst sonst
+   das Fünffache einer normalen Sektion. */
+@media (min-width: 1024px) {
+  .as-seite .fo .fo-warums {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--as-s-3);
+  }
+  .as-seite .fo .fo-warum__teile {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

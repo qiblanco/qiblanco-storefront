@@ -3,15 +3,18 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  APPLE_KAUFSEITEN_OHNE_LEISTE,
   QI_ALPHA_FREISCHALTUNG_MS,
   QI_ALPHA_LP,
   bannerVariante,
   freischaltungsDaten,
+  istAppleKaufseite,
   istFreigeschaltet,
   istStartseite,
   ladeLeistenWahl,
   leistenWahlZuruecksetzen,
   menueMitQiAlpha,
+  uebernehmeAppleWahl,
   uebernehmeLeistenWahl,
 } from './qi-alpha-freischaltung.js';
 
@@ -30,7 +33,7 @@ test('Banner: Qi Alpha nur auf den zwei Startseiten-Armen, sonst 4,8 Sterne', ()
     assert.equal(bannerVariante({pathname: p, freigeschaltet: true}), 'qi-alpha', p);
     assert.equal(bannerVariante({pathname: p, freigeschaltet: false}), 'bewertung', p);
   }
-  for (const p of ['/pages/Qi-Alpha', '/products/qi-alpha', '/products/qione-2-pro',
+  for (const p of ['/pages/Qi-Alpha', '/products/qi-alpha', '/products/qione-kette',
     '/collections/all', '/pages/studien', '/en', '/pages/start-a']) {
     assert.equal(bannerVariante({pathname: p, freigeschaltet: true}), 'bewertung', p);
   }
@@ -90,8 +93,63 @@ test('Metafeld-Quellen: gültig -> metafeld, danach unlesbar -> zuletzt, nie gel
 test('ladeLeistenWahl wirft nie und liest shop.metafield.value', async () => {
   leistenWahlZuruecksetzen();
   const gut = {query: async () => ({shop: {metafield: {value: 'bewertung'}}})};
-  assert.deepEqual(await ladeLeistenWahl(gut), {wahl: 'bewertung', quelle: 'metafeld'});
+  assert.deepEqual(await ladeLeistenWahl(gut),
+    {wahl: 'bewertung', quelle: 'metafeld', appleSeiten: 'keine', appleQuelle: 'vorgabe'});
   const kaputt = {query: async () => { throw new Error('netz'); }};
-  assert.deepEqual(await ladeLeistenWahl(kaputt), {wahl: 'bewertung', quelle: 'zuletzt'});
+  assert.deepEqual(await ladeLeistenWahl(kaputt),
+    {wahl: 'bewertung', quelle: 'zuletzt', appleSeiten: 'keine', appleQuelle: 'vorgabe'});
+  leistenWahlZuruecksetzen();
+});
+
+test('Apple-Kaufseiten: genau drei Pfade ohne Leiste, vor und nach der Freischaltung', () => {
+  assert.deepEqual([...APPLE_KAUFSEITEN_OHNE_LEISTE],
+    ['/products/qione-2-pro', '/products/qibracelet', '/products/qihome-air']);
+  for (const p of APPLE_KAUFSEITEN_OHNE_LEISTE) {
+    assert.equal(bannerVariante({pathname: p, freigeschaltet: true}), 'keine', p);
+    assert.equal(bannerVariante({pathname: p, freigeschaltet: false}), 'keine', p);
+    assert.equal(bannerVariante({pathname: `${p}/`, freigeschaltet: true}), 'keine', p);
+    assert.equal(bannerVariante({pathname: p.toUpperCase(), freigeschaltet: true}), 'keine', p);
+  }
+});
+
+test('Apple-Kaufseiten: Nachbarn und Startseite behalten ihre Leiste', () => {
+  for (const p of ['/products/qione-2-pro-b', '/products/qibracelet-b', '/products/qihome-air-b',
+    '/pages/qione-2-pro', '/pages/qibracelet', '/pages/qihome-air', '/products/qione-kette',
+    '/products/qi-alpha']) {
+    assert.equal(istAppleKaufseite(p), false, p);
+    assert.equal(bannerVariante({pathname: p, freigeschaltet: true}), 'bewertung', p);
+  }
+  assert.equal(bannerVariante({pathname: '/', freigeschaltet: true}), 'qi-alpha');
+  assert.equal(bannerVariante({pathname: '/', freigeschaltet: true, appleSeiten: 'keine'}), 'qi-alpha');
+});
+
+test('Apple-Wahl bewertung holt die Leiste zurück, die Startseiten-Wahl wirkt dort nicht', () => {
+  const p = '/products/qione-2-pro';
+  assert.equal(bannerVariante({pathname: p, freigeschaltet: true, appleSeiten: 'bewertung'}), 'bewertung');
+  assert.equal(bannerVariante({pathname: p, freigeschaltet: true, wahl: 'bewertung'}), 'keine');
+  assert.equal(bannerVariante({pathname: p, freigeschaltet: true, wahl: 'qi-alpha'}), 'keine');
+});
+
+test('Apple-Feld: gültig -> metafeld, unlesbar -> zuletzt, nie gelesen -> keine Leiste', () => {
+  leistenWahlZuruecksetzen();
+  assert.deepEqual(uebernehmeAppleWahl(null), {appleSeiten: 'keine', appleQuelle: 'vorgabe'});
+  assert.deepEqual(uebernehmeAppleWahl('qi-alpha'), {appleSeiten: 'keine', appleQuelle: 'vorgabe'});
+  assert.deepEqual(uebernehmeAppleWahl('bewertung'), {appleSeiten: 'bewertung', appleQuelle: 'metafeld'});
+  assert.deepEqual(uebernehmeAppleWahl(null), {appleSeiten: 'bewertung', appleQuelle: 'zuletzt'});
+  leistenWahlZuruecksetzen();
+});
+
+test('ladeLeistenWahl liest beide Felder aus einer Abfrage und wirft nie', async () => {
+  leistenWahlZuruecksetzen();
+  const fremd = {query: async () => ({shop: {
+    metafield: {value: 'bewertung'}, appleSeiten: {value: 'bewertung'},
+  }})};
+  assert.deepEqual(await ladeLeistenWahl(fremd),
+    {wahl: 'bewertung', quelle: 'metafeld', appleSeiten: 'bewertung', appleQuelle: 'metafeld'});
+  leistenWahlZuruecksetzen();
+  const kaputt = {query: async () => { throw new Error('netz'); }};
+  const r = await ladeLeistenWahl(kaputt);
+  assert.equal(r.appleSeiten, 'keine');
+  assert.equal(r.appleQuelle, 'vorgabe');
   leistenWahlZuruecksetzen();
 });

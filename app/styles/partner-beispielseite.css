@@ -194,6 +194,13 @@
 .pbs__kopf {
   background: var(--pbs-flaeche);
 }
+/* Apple-Fassung: der Kopf der Seite beginnt bei y=104 hinter dem transparenten
+   Hauskopf. Die Fläche zeichnete dort eine Kante durchs Logo (F-441, 04.11.2026),
+   Weiß setzt die Kopfzone mit Seitengrund und Hauskopf fort. --pbs-grund steht im
+   Apple-Scope auf --as-weiss (partner-apple.css). */
+[data-apple-seite='partner-beispielseite'] .pbs .pbs__kopf {
+  background: var(--pbs-grund);
+}
 
 .pbs p.pbs__vorspann {
   margin-bottom: var(--pbs-s2);

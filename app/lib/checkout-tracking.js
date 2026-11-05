@@ -1,4 +1,11 @@
 import {istInternerUserAgent} from './interner-verkehr.js';
+import {EINWILLIGUNG_FASSUNG} from './einwilligung-texte.js';
+import {
+  cookieAusHeader,
+  leseEinwilligung,
+  motorFuer,
+  wahlGilt,
+} from './einwilligung-schalter.js';
 
 export const ATTRIBUTION_STORAGE_KEY = 'qiblanco_checkout_attribution';
 export const ATTRIBUTION_COOKIE_NAME = ATTRIBUTION_STORAGE_KEY;
@@ -362,12 +369,47 @@ export function mergeCartAttributes(existingAttributes, attributionAttributes) {
 }
 
 /**
+ * Gilt für diese Anfrage der eigene Einwilligungshinweis (Motor 'eigen')?
+ * Dieselbe Reihenfolge wie im Root-Loader (Sitzungs-Cookie vor Konstante);
+ * die Query-Überschreibung setzt das Sitzungs-Cookie und gilt ab der
+ * nächsten Anfrage auch hier.
+ *
  * @param {string | null} cookieHeader
  */
-export function hasCookiebotMarketingConsent(cookieHeader) {
+export function eigenerEinwilligungsMotor(cookieHeader) {
+  return motorFuer('', cookieHeader || '').motor === 'eigen';
+}
+
+/**
+ * Marketing-Einwilligung, so gelesen wie der Hinweis, der sie eingeholt hat.
+ *
+ * Motor 'eigen': nur eine Wahl, die wahlGilt besteht — jünger als 12 Monate
+ * und Hauptnummer der Fassung mindestens EINWILLIGUNG_FASSUNG. Eine Wahl der
+ * Fassung 1 (Cookiebot-Cookie ohne qbv oder qbv '1.x') fragt der Hinweis seit
+ * Fassung 2.0 (PR #1308) neu und meldet sie im Browser als offen
+ * (public/qb-einwilligung.js leseCookie); bis zur neuen Wahl ist sie auch hier
+ * keine Zustimmung. Vorher las der Server sie weiter als ja.
+ * Motor 'cookiebot' (Rückweg): Cookiebot prüft seine Wahl selbst, Lesart wie
+ * bisher.
+ * Eine Ablehnung gilt dagegen in jeder Fassung (hasCookiebotMarketingDeclined).
+ * Gelesen wird wie im Browser: das ERSTE CookieConsent-Cookie, roh und einmal
+ * dekodiert (parseCookieHeader nähme das letzte und dekodierte doppelt; bei
+ * zwei Cookies aus verschiedenen Domains urteilten Server und Hinweis sonst
+ * über verschiedene Wahlen).
+ *
+ * @param {string | null} cookieHeader
+ * @param {number} [jetzt]
+ */
+export function hasCookiebotMarketingConsent(cookieHeader, jetzt = Date.now()) {
+  if (eigenerEinwilligungsMotor(cookieHeader)) {
+    const wahl = leseEinwilligung(cookieAusHeader(cookieHeader));
+    return Boolean(
+      wahl?.marketing && wahlGilt(wahl, EINWILLIGUNG_FASSUNG, jetzt),
+    );
+  }
+
   const cookieConsent = parseCookieHeader(cookieHeader).CookieConsent;
   if (!cookieConsent) return false;
-
   const decoded = safeDecode(cookieConsent);
   return /(?:^|[,{]\s*|["'])marketing["']?\s*:\s*true(?:[,}]|$)/i.test(
     decoded,
@@ -378,11 +420,18 @@ export function hasCookiebotMarketingConsent(cookieHeader) {
  * Aktive Ablehnung: Cookiebot-Stamp vorhanden UND marketing:false.
  * (Kein Stamp = keine Entscheidung => false; Zustimmung => false.)
  * Job 20260718: Grundlage der 'optout'-Policy — nie gegen erklaerten Willen.
+ * Darum ohne Fassungs- und Altersprüfung: auch eine Ablehnung der Fassung 1
+ * bleibt eine Ablehnung, bis der Besucher neu wählt. Im Motor 'eigen' dasselbe
+ * Cookie wie hasCookiebotMarketingConsent (das erste, wie im Browser).
  *
  * @param {string | null} cookieHeader
  */
 export function hasCookiebotMarketingDeclined(cookieHeader) {
-  const cookieConsent = parseCookieHeader(cookieHeader).CookieConsent;
+  // Muster statt leseEinwilligung: auch eine unvollständige Wahl (ohne utc)
+  // mit marketing:false bleibt eine Ablehnung.
+  const cookieConsent = eigenerEinwilligungsMotor(cookieHeader)
+    ? cookieAusHeader(cookieHeader)
+    : parseCookieHeader(cookieHeader).CookieConsent;
   if (!cookieConsent) return false;
 
   const decoded = safeDecode(cookieConsent);
@@ -940,5 +989,39 @@ export function buildOriginCartAttributes({
       bisher: bisherigerAdMarker,
     }),
   );
+  addCartAttribute(
+    attributes,
+    THE_ALPHA_VARIANTE_ATTRIBUT,
+    theAlphaVarianteAusCookie(cookieHeader ?? null),
+  );
   return attributes;
+}
+
+// ---------------------------------------------------------------------------
+// A/B/C-TEST the-alpha-abc-e1 (Grossjob 20261025-prio1-the-alpha-landingpage-
+// figma-vorlage-a-server-b-ki-c, s07; Christian Z5). Die Seite des Arms
+// (app/components/campaign/TheAlphaArm.jsx) legt ihren Buchstaben in das
+// Cookie qb_ab_the_alpha_abc; hier wird er zum Warenkorb-Attribut
+// _the_alpha_variante (Unterstrich = in der Kasse unsichtbar), damit die
+// Bestellung (note_attributes) ihrer Variante zugeordnet wird.
+//
+// WARUM HIER UND NICHT IN TRACKING_COOKIE_NAMES: der Wert ist keine Kennung
+// (ein Buchstabe a|b|c, gleich für alle Besucher eines Arms) und überquert
+// keine Domaingrenze; er geht wie consent_state und ua_class per
+// cart.updateAttributes direkt in den Shopify-Warenkorb. TRACKING_COOKIE_NAMES
+// ist die Liste der Identitäts-Cookies, die nur mit Einwilligung gelesen wird.
+// Fehlt das Cookie oder trägt es etwas anderes als a|b|c, entsteht kein
+// Attribut (kein Ersatzwert): "nicht im Test" bleibt von "Arm A" getrennt.
+export const THE_ALPHA_VARIANTE_ATTRIBUT = '_the_alpha_variante';
+export const THE_ALPHA_ARM_COOKIE = 'qb_ab_the_alpha_abc';
+
+/**
+ * @param {string | null} cookieHeader
+ * @returns {'a' | 'b' | 'c' | null}
+ */
+export function theAlphaVarianteAusCookie(cookieHeader) {
+  const wert = String(parseCookieHeader(cookieHeader)[THE_ALPHA_ARM_COOKIE] || '')
+    .trim()
+    .toLowerCase();
+  return wert === 'a' || wert === 'b' || wert === 'c' ? wert : null;
 }

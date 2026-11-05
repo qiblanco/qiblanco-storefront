@@ -1,0 +1,153 @@
+/*
+ * APPLE-FASSUNG /pages/uebersicht (Grossjob 20261029-GROSSJOB-alle-shop-
+ * seiten-apple-niveau-ausser-seo-geo, s12-r3). Lädt nur mit Schalter an
+ * (routes/pages.uebersicht.jsx). Liste, Reihenfolge und Marker bleiben wie in
+ * C, die ue-Tokens aus uebersicht.css zeigen im Apple-Scope auf --as-* aus
+ * apple-seite.css: dieselbe Tinte, dasselbe Grau, dieselbe Fläche, dieselbe
+ * Skala und derselbe Radius wie auf den Apple-Kaufseiten. Keine freien Werte.
+ * Die Pfade bleiben Monospace: sie sind die Hauptinformation der Liste.
+ */
+[data-apple-seite='uebersicht'] .ue {
+  --ue-font: inherit;
+  /* Skala aus --as-fs-*: 14 · 17 · 21 · 24 (EIN H2-Stil auf jeder Breite) ·
+     H1 28 (Handy, reset.css setzt h1 dort mit !important) / 40 (Desktop).
+     Dieselbe Leiter wie rechtsseite-apple.css (dort 100): mit H2 40 auf dem
+     Desktop stand zwischen 21 und 40 ein Sprung, den die Rubrik als wilde
+     Skala liest (s12-r3 Iteration 1). */
+  --ue-fs-xs: var(--as-fs-2);
+  --ue-fs-base: var(--as-fs-3);
+  --ue-fs-md: var(--as-fs-3);
+  --ue-fs-lg: var(--as-fs-4);
+  --ue-fs-h2: var(--as-fs-5);
+  --ue-fs-h1: var(--as-fs-7);
+
+  --ue-s1: var(--as-s-1);
+  --ue-s2: var(--as-s-2);
+  --ue-s3: var(--as-s-3);
+  --ue-s4: var(--as-s-4);
+  --ue-s6: var(--as-s-6);
+  --ue-s8: var(--as-s-8);
+  --ue-s12: var(--as-s-12);
+  --ue-takt: var(--as-s-8);
+
+  --ue-grund: var(--as-weiss);
+  --ue-flaeche: var(--as-flaeche);
+  --ue-dunkel: var(--as-band);
+  --ue-text: var(--as-tinte);
+  --ue-text-hell: var(--as-weiss);
+  --ue-muted: var(--as-grau);
+  --ue-akzent: var(--as-gold);
+  --ue-linie: var(--as-linie);
+  --ue-linie-hell: var(--as-linie);
+  --ue-r: var(--as-radius);
+  --ue-breite: var(--as-breite);
+
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (min-width: 750px) {
+  [data-apple-seite='uebersicht'] .ue {
+    --ue-fs-h1: var(--as-fs-7);
+    --ue-takt: var(--as-s-12);
+  }
+}
+
+/* Der Seitengrund hinter dem Kopf folgt dem Apple-Weiß statt dem Creme aus
+   uebersicht.css: .as-seite beginnt bei y=104 hinter dem transparenten Kopf, sonst
+   läuft dort eine Kante durchs Logo (F-441, 04.11.2026). Der Wert steht aus:
+   --as-weiss sitzt auf .as-seite und ist am body nicht vererbt. */
+body:has([data-apple-seite='uebersicht'] .ue) {
+  background: white;
+}
+
+/* HAUS-GRUNDREGELN IM SCOPE NEUTRALISIEREN (Falle s04, wie service-apple.css):
+   reset.css setzt p, li auf 1,2rem und Schatten auf jede Überschrift. */
+:where([data-apple-seite='uebersicht'] .ue) p,
+:where([data-apple-seite='uebersicht'] .ue) li {
+  font-size: var(--ue-fs-base);
+}
+[data-apple-seite='uebersicht'] .ue :where(h1, h2, h3) {
+  text-shadow: none;
+}
+
+/* Kopf hell wie die Apple-Kaufseiten, H1 groß. */
+[data-apple-seite='uebersicht'] .ue-kopf h1 {
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* Kopf hell statt dunkel (Apple-Kaufseiten): Grund weiß, H1 in Tinte, Lead
+   in Grau. Ausdrücklich gesetzt, nicht über --ue-dunkel: das Token färbt in C
+   auch den Knopftext. (s12-r3 Iteration 3: über das Token umgebogen stand die
+   H1 in Tinte auf Tinte, die Rubrik gab trotzdem 100.) */
+[data-apple-seite='uebersicht'] .ue-kopf {
+  background: var(--as-weiss);
+  color: var(--as-tinte);
+}
+[data-apple-seite='uebersicht'] .ue-kopf h1 {
+  color: var(--as-tinte);
+}
+[data-apple-seite='uebersicht'] .ue-kopf :where(.ue-lead, .ue-legende, .ue-stand) {
+  color: var(--as-grau);
+}
+
+/* EIN H2-Stil wie .as-h2 */
+[data-apple-seite='uebersicht'] .ue h2 {
+  margin-bottom: var(--as-s-2);
+  text-wrap: balance;
+}
+
+/* Sprungmarken als Pillen (Form der Apple-Kaufseiten), Tippziel 48. */
+[data-apple-seite='uebersicht'] .ue-anker {
+  border-bottom: 0;
+}
+[data-apple-seite='uebersicht'] .ue-anker-eintrag {
+  min-height: var(--as-tippziel);
+  align-items: center;
+  border-radius: var(--as-tippziel);
+  font-size: var(--as-fs-2);
+}
+
+[data-apple-seite='uebersicht'] .ue-fuss {
+  border-top: 0;
+}
+
+/* Anna am Ende in der Breite der Liste. */
+[data-apple-seite='uebersicht'] .uea-anna .as-sektion {
+  padding-top: var(--as-s-8);
+}
+
+/* „Alle … zeigen“: der Rest eines langen Bereichs. Pille wie die
+   Sprungmarken, Tippziel 48; die Liste darunter schließt ohne Doppellinie an. */
+[data-apple-seite='uebersicht'] .uea-mehr {
+  margin-top: var(--as-s-3);
+}
+[data-apple-seite='uebersicht'] .uea-mehr-knopf {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--as-tippziel);
+  padding: 0 var(--as-s-3);
+  border: var(--as-strich) solid var(--as-linie);
+  border-radius: var(--as-tippziel);
+  background: var(--as-weiss);
+  color: var(--as-tinte);
+  font-size: var(--as-fs-2);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+[data-apple-seite='uebersicht'] .uea-mehr-knopf::-webkit-details-marker {
+  display: none;
+}
+[data-apple-seite='uebersicht'] .uea-mehr-knopf:hover,
+[data-apple-seite='uebersicht'] .uea-mehr-knopf:focus-visible {
+  border-color: var(--as-gold);
+}
+[data-apple-seite='uebersicht'] .uea-mehr[open] .uea-mehr-knopf {
+  margin-bottom: var(--as-s-3);
+}
+[data-apple-seite='uebersicht'] .uea-mehr-liste {
+  border-top: 0;
+}

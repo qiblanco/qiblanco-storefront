@@ -6,6 +6,11 @@
  * Abhängigkeit). Die Remix/Oxygen-Verdrahtung liegt in go-router.server.js.
  */
 
+import {
+  eigenerEinwilligungsMotor,
+  hasCookiebotMarketingConsent,
+} from './checkout-tracking.js';
+
 export const LP_PFAD = {
   A: '/pages/schlaf-zellen-schutz',
   B: '/pages/zell-schutz',
@@ -163,9 +168,14 @@ export function serialisiereHistCookie(kuerzelListe) {
  * clientseitig fuer window.Cookiebot.consent.marketing prueft (Cookiebot-Standard-
  * cookie 'CookieConsent', serverseitig ueber den Request-Cookie-Header lesbar).
  * KEIN neuer Consent-Mechanismus — Wiederverwendung des etablierten Bestands.
+ * Im Motor 'eigen' gilt dieselbe Regel wie im Checkout-Leser und im Hinweis:
+ * eine Wahl der Fassung 1 oder älter als 12 Monate zählt nicht (seit Fassung 2.0).
  */
-export function hatMarketingConsent(cookieHeader) {
+export function hatMarketingConsent(cookieHeader, jetzt = Date.now()) {
   if (!cookieHeader) return false;
+  if (eigenerEinwilligungsMotor(cookieHeader)) {
+    return hasCookiebotMarketingConsent(cookieHeader, jetzt);
+  }
   const match = cookieHeader.match(/(?:^|;\s*)CookieConsent=([^;]*)/);
   if (!match) return false;
   let roh = '';

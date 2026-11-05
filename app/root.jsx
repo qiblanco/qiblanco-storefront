@@ -116,6 +116,10 @@ import {QpxCommerce} from './components/QpxCommerce';
 import {UpPromoteTracking} from './components/UpPromoteTracking';
 import {isQiblancoProductionHost} from '~/lib/checkout-tracking';
 import {strictRegions} from '~/lib/consent-policy';
+import {
+  shopifyDarfTracken,
+  useShopifyTrackingTor,
+} from '~/lib/shopify-tracking-tor';
 import {publicSkript} from '~/lib/public-skript';
 import {einschubWeicheQuelle} from '~/lib/einschub-weiche';
 import {
@@ -128,6 +132,7 @@ import {
   salesbotWidgetOrigin,
   istSalesbotDeutscherShop,
 } from '~/lib/salesbot-widget';
+import {qpxBasisEndpoint} from '~/components/reusables/dienst-domain';
 import {SalesbotWidget} from './components/SalesbotWidget';
 import {
   preismodusStand,
@@ -139,6 +144,10 @@ import {DialogSignal} from './components/DialogSignal';
 import {KassenRueckkehrLeiste} from './components/KassenRueckkehrLeiste';
 import {KaufknopfChatSignal} from './components/KaufknopfChatSignal';
 import {Einwilligungshinweis} from './components/Einwilligungshinweis';
+import {
+  AppleStilImKopf,
+  rechtsseiteStilKopf,
+} from './components/apple-seite/stil-kopf';
 import {
   cookieAusHeader,
   leseEinwilligung,
@@ -216,8 +225,19 @@ export async function loader(args) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
+  // Await the critical data required to render initial state of the page.
+  // Parallel statt nacheinander (Maßnahme M1 des Ladezeiten-Grossjobs, Stand
+  // 02.11.2026): an einer ruhigen Kante kostete jeder Cache-Fehlschlag einen
+  // eigenen Rundweg zur Storefront-API (DE 82 ms, TH 261 ms). Fehlerverhalten
+  // wie zuvor: die Kopfzeile darf werfen, die Bewertung fällt auf den
+  // Schnappschuss zurück, die Leiste wirft nie.
+  const [criticalData, googleRating, leistenWahl] = await Promise.all([
+    loadCriticalData(args),
+    ladeGoogleRating(args.context).catch(() => ({
+      ...GOOGLE_RATING_FALLBACK_VOLL,
+    })),
+    ladeLeistenWahl(args.context.storefront),
+  ]);
 
   const {storefront, env} = args.context;
 
@@ -248,9 +268,7 @@ export async function loader(args) {
     // (Fix v2 Punkt 5; Repair 2026-07-31): fail-safe, 6h gecacht (Reputon-
     // Feed, kein Key nötig), fällt auf 4,8/437-Schnappschuss zurück (nie
     // 500en/erfinden).
-    googleRating: await ladeGoogleRating(args.context).catch(() => ({
-      ...GOOGLE_RATING_FALLBACK_VOLL,
-    })),
+    googleRating,
     isProductionHost: isQiblancoProductionHost(args.request.url),
     // Qi-Alpha-Freischaltung 01.11.2026 10:11Z: Serverzeit dieser Antwort,
     // damit nie die Kunden-Uhr entscheidet (app/lib/qi-alpha-freischaltung.js).
@@ -261,7 +279,7 @@ export async function loader(args) {
         env,
         istProduktion: isQiblancoProductionHost(args.request.url),
       }),
-      ...(await ladeLeistenWahl(args.context.storefront)),
+      ...leistenWahl,
     },
     enableTrackingInPreview: env.PUBLIC_ENABLE_TRACKING_IN_PREVIEW === 'true',
     // Region-aware Consent-Policy (Job 20260718): Oxygen-Geo-Land + Streng-
@@ -281,7 +299,8 @@ export async function loader(args) {
     // Bewusst UNABHÄNGIG vom Cookiebot-Consent (setzt keine Cookies/kein
     // localStorage/keine persistente ID) — Go-live = diese env + Server
     // (PIXEL_BASIS_MODE=on + Caddy /b), beides Christian-Hand.
-    qpxBasisEndpoint: env.PUBLIC_QPX_BASIS_ENDPOINT || '',
+    // Eigene Domain statt sslip (components/reusables/dienst-domain.js, 2026-10-30).
+    qpxBasisEndpoint: qpxBasisEndpoint(env),
     // Eigener Sales-Chat-Assistent (s05): der Origin des Bots. Default ist
     // der in s03 scharf geschaltete Edge, `PUBLIC_SALESBOT_WIDGET_ORIGIN=off`
     // schaltet ab (lib/salesbot-widget.js). Dieser Wert sagt NUR, OB der
@@ -569,6 +588,17 @@ export function Layout({children}) {
   // sondern nicht gerendert (auch der Loader-Tag fehlt im HTML). Merkmal aus
   // den Matches wie salesbotWidget oben, kein Pfad hier.
   const filmSeite = istFilmSeite(matches);
+  // APPLE-RECHTSSEITE: TOKEN-CSS IM KOPF (Flanke #172, Job 20261029-GROSSJOB-
+  // alle-shop-seiten-apple-niveau-ausser-seo-geo-s12-b172). Die Rechtsseiten
+  // luden rechtsseite-apple.css und apple-seite.css als zwei <link> im Körper,
+  // weil links() einer Route die Loaderdaten (Schalter A/C) nicht kennt. Die
+  // Matches kennen sie. Gemessen an /pages/agb: Kopf gegen Körper −40 ms LCP
+  // nach Dokumentende (Mobilprofil, 13 von 16 Runden schneller); an einer
+  // Nicht-Rechtsseite (partner-details) ohne Wirkung, darum nur diese Routen
+  // (Liste und Bedingung in components/apple-seite/stil-kopf.js). C-Seiten und alle
+  // übrigen A-Seiten: leere Liste, HTML unverändert. Die Links stehen NACH
+  // <Links />, also an derselben Stelle der Kaskade wie vorher im Körper.
+  const rechtsseitenStil = rechtsseiteStilKopf(matches);
 
   // ── HYDRATIONS-SIGNAL ────────────────────────────────────────────────────
   // Dieser Effekt läuft NACH dem Hydration-Commit — das ist seine Definition,
@@ -699,6 +729,9 @@ export function Layout({children}) {
         )}
         {metaKopf}
         <Links />
+        {rechtsseitenStil.map((href) => (
+          <link key={href} rel="stylesheet" href={href} />
+        ))}
       </head>
       <body>
         {einwilligungEigen && (
@@ -980,13 +1013,15 @@ export function Layout({children}) {
             Bedingung aus demselben Grund wie DialogSignal. */}
         <KaufknopfChatSignal />
         <LoadingBar />
-        {data ? (
-          <AnalytikNachHydration data={data} filmSeite={filmSeite}>
-            {children}
-          </AnalytikNachHydration>
-        ) : (
-          children
-        )}
+        <AppleStilImKopf.Provider value={rechtsseitenStil.length > 0}>
+          {data ? (
+            <AnalytikNachHydration data={data} filmSeite={filmSeite}>
+              {children}
+            </AnalytikNachHydration>
+          ) : (
+            children
+          )}
+        </AppleStilImKopf.Provider>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
@@ -1056,6 +1091,15 @@ function AnalytikNachHydration({data, filmSeite = false, children}) {
   useEffect(() => {
     startTransition(() => setHydriert(true));
   }, []);
+  // Shopify-Analytik erst nach der Wahl (Einwilligungs-Scan s03, 2026-11-01):
+  // ohne `shop` montiert der Provider ShopifyAnalytics nicht, also weder
+  // _shopify_analytics/_marketing noch _shopify_y/_s noch monorail vor der Wahl.
+  // Begründung, Region-Regel und Rückweg in lib/shopify-tracking-tor.js.
+  const shopifyTor = useShopifyTrackingTor();
+  // Neue Identität, sobald `tracken` wechselt: der Provider bewertet `publish` nur neu, wenn sich
+  // eine seiner Abhängigkeiten ändert. So gehen die Ansichten der Seite, auf der gewählt wurde,
+  // einmal nach, statt verloren zu gehen (gemessen 2026-11-04, lib/shopify-tracking-tor.js).
+  const torDaten = useMemo(() => ({}), [shopifyTor.tracken]);
 
   const seitengeruest = useMemo(
     () =>
@@ -1075,8 +1119,10 @@ function AnalytikNachHydration({data, filmSeite = false, children}) {
   return (
     <Analytics.Provider
       cart={data.cart}
-      shop={hydriert ? data.shop : null}
+      shop={hydriert && shopifyTor.montieren ? data.shop : null}
       consent={data.consent}
+      canTrack={shopifyDarfTracken}
+      customData={torDaten}
     >
       {/*
         EU-Gewaehrleistungs-Mitteilung (VO (EU) 2025/1960, ab

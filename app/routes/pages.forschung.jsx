@@ -1,5 +1,9 @@
+import {useLoaderData} from 'react-router';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
 import {ForschungSeite} from '~/components/campaign/ForschungSeite';
+import {appleSeiteLaden, appleSeiteFuerPfad} from '~/lib/apple-seiten';
 import forschungStyles from '~/styles/forschung.css?url';
+import forschungAppleStyles from '~/styles/lp-apple-forschung.css?url';
 import {SEITE} from '~/data/forschung-seite';
 
 /**
@@ -54,7 +58,20 @@ export const meta = () => [
  */
 export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 
+export async function loader({context}) {
+  return {appleSeite: appleSeiteLaden(context, appleSeiteFuerPfad('/pages/forschung'))};
+}
+
 export default function ForschungRoute() {
+  const {appleSeite} = useLoaderData();
+  if (appleSeite?.an) {
+    return (
+      <AppleSeite seite={appleSeite.seite}>
+        <link rel="stylesheet" href={forschungAppleStyles} />
+        <ForschungSeite />
+      </AppleSeite>
+    );
+  }
   return <ForschungSeite />;
 }
 

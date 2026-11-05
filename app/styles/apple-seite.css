@@ -261,6 +261,21 @@
 .as-dunkel .as-etikett {
   color: var(--as-gold);
 }
+/* reset.css färbt jede h1/h2 am Element mit --color-dark, app.css den
+   Nebenknopf (.btn--secondary) samt Rahmen ebenso. Beides schlägt das geerbte
+   Weiß des Bands: gemessen 2026-11-01 live 1,8:1 (rgb(74,71,65) auf
+   rgb(30,30,30)) auf 12 der 16 Seiten mit Band. Titel und Nebenknopf erben
+   hier das Weiß. */
+.as-seite .as-dunkel :is(.as-h1, .as-h2),
+.as-seite .as-dunkel .btn--secondary {
+  color: inherit;
+}
+.as-seite .as-dunkel .btn--secondary {
+  border-color: currentColor;
+}
+.as-seite .as-dunkel .btn--secondary:hover {
+  border-color: var(--as-gold);
+}
 
 /* ---- Fakten --------------------------------------------------------------- */
 .as-kacheln {
