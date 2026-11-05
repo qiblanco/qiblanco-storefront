@@ -14,7 +14,7 @@ import {ProductImage} from '~/components/ProductImage';
 import {CacaoProductForm} from '~/crystal-spiegel/components/CacaoProductForm';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {CacaoPriceDisplay} from '~/crystal-spiegel/components/CacaoPriceDisplay';
-import {ladeStaffelKasse} from '~/lib/cacao-pricing';
+import {ladeStaffelKasse} from '~/crystal-spiegel/lib/cacao-pricing';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {useState} from 'react';
@@ -35,7 +35,7 @@ import {igVideoDescriptor} from '~/crystal-spiegel/lib/ig-video-schema';
 import amazonstilStyles from '~/crystal-spiegel/styles/amazonstil.css?url';
 import amazonstilLadenStyles from '~/crystal-spiegel/styles/amazonstil-laden.css?url';
 import {Kundenfragen, Sortenvergleich} from '~/crystal-spiegel/components/reusables/AmazonStil';
-import {ladeSortenPreise, sortenStilAn, teileFragen} from '~/components/reusables/amazonstil-daten';
+import {ladeSortenPreise, sortenStilAn, teileFragen} from '~/crystal-spiegel/components/reusables/amazonstil-daten';
 import {FAQ_CACAO} from '~/crystal-spiegel/data/product-faqs';
 
 /**

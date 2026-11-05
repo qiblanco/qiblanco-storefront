@@ -4,7 +4,7 @@ import {CdnBild} from '~/components/reusables/CdnBild';
 import {FaqListe} from '~/components/reusables/FaqListe';
 import {produktLink, BLOCK_PUBLIC} from '~/components/reusables/blockLinks';
 import {faqPageJsonLdString} from '~/lib/faq-schema';
-import {useMarktLand} from '~/lib/markt-land';
+import {useMarktLand} from '~/crystal-spiegel/lib/markt-land';
 import {cacaoPricing} from '~/crystal-spiegel/components/CacaoProductForm';
 import {
   KUNDENFRAGEN,
@@ -13,7 +13,7 @@ import {
   berichtQuelle,
   sortenSpalten,
   vergleichSpalten,
-} from '~/components/reusables/amazonstil-daten';
+} from './amazonstil-daten';
 
 /*
  * AMAZON-STIL STUFE 2 — Gerätevergleich und Kundenfragen weit oben auf

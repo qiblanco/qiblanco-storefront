@@ -3,4 +3,5 @@
 export const GESPIEGELTE_PFADE = Object.freeze([
   '/pages/crystal-cacao',
   '/products/crystal-cacao-awake',
+  '/products/crystal-cacao-create',
 ]);

@@ -1,7 +1,7 @@
 // ERZEUGT von crystal-cacao-node/bin/spiegel-nachzug aus crystal-cacao-node/repo/app/components/KachelPreis.jsx
 // NICHT VON HAND AENDERN: die Quelle ist crystal-cacao.com, Herkunft in SPIEGEL.json.
 import {cacaoPricing} from './CacaoProductForm';
-import {useMarktLand} from '~/lib/markt-land';
+import {useMarktLand} from '~/crystal-spiegel/lib/markt-land';
 
 /**
  * DER PREISBLOCK EINER SORTENKACHEL — EINE Implementierung, ZWEI Leser.

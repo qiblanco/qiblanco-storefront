@@ -138,7 +138,7 @@
 
 import {CANONICAL_ORIGIN} from './seo.js';
 import {ORG_ID, ORGANISATION} from './entity-schema.js';
-import {bruttoAnzeige} from '~/lib/markt-pricing.js';
+import {bruttoAnzeige} from './markt-pricing.js';
 import {KAKAO_KOLLEKTION} from './kakao-zone.js';
 
 /** Name der Übersicht als Brotkrumen-Stufe = ihr Seitentitel ohne Marke. */

@@ -4,7 +4,7 @@ import {useEffect, useRef, useState} from 'react';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {cacaoSizeOptions} from '~/crystal-spiegel/components/CacaoProductForm';
-import {useMarktLand} from '~/lib/markt-land';
+import {useMarktLand} from '~/crystal-spiegel/lib/markt-land';
 
 /**
  * KAUFLEISTE — mobil (bis 749 px, designstandard mobil_bis_px), klebend am
