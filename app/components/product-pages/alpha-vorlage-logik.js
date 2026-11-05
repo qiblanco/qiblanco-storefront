@@ -61,12 +61,59 @@ export function varianteZurWahl(product, wahl) {
     start,
     ...(product?.adjacentVariants ?? []),
     ...optionen.flatMap((o) => o.werte.map((w) => w.variante)),
+    // Stufen-Wahl (Necklace 2): die Abfrage liefert alle Varianten mit.
+    ...(product?.variants?.nodes ?? []),
   ].filter(Boolean);
   const passt = (v) =>
     optionen.every((o) =>
       (v.selectedOptions ?? []).some((s) => s.name === o.name && s.value === wahl?.[o.name]),
     );
   return kandidaten.find(passt) ?? null;
+}
+
+/**
+ * STUFEN-WAHL (Necklace 2, Christian 04.11.2026: „als erstes das Material
+ * auswählen … und dann die verfügbaren Längen“): die Werte einer Option, die es
+ * zur Wahl der Optionen davor wirklich gibt. Eine Kombination ohne Variante
+ * steht nicht da. Sortiert wie Shopify, je Wert die passende Variante.
+ * @returns {Array<{name: string, verfuegbar: boolean, variante: object}>}
+ */
+export function stufenWerte(product, optionName, wahl, vorherige = []) {
+  const varianten = product?.variants?.nodes ?? [];
+  const passt = (v) =>
+    vorherige.every((n) =>
+      (v.selectedOptions ?? []).some((s) => s.name === n && s.value === wahl?.[n]),
+    );
+  const option = (product?.options ?? []).find((o) => o?.name === optionName);
+  return (option?.optionValues ?? [])
+    .map((w) => {
+      const treffer = varianten.filter(
+        (v) =>
+          passt(v) &&
+          (v.selectedOptions ?? []).some((s) => s.name === optionName && s.value === w.name),
+      );
+      const variante = treffer.find((v) => v.availableForSale) ?? treffer[0] ?? null;
+      return {name: w.name, variante, verfuegbar: Boolean(variante?.availableForSale)};
+    })
+    .filter((w) => w.variante);
+}
+
+/**
+ * Neue Wahl nach einem Klick in einer Stufe: Stufen danach behalten ihren Wert,
+ * wenn es ihn weiter gibt, sonst der `vorwahl`-Wert der Stufe, sonst der erste.
+ */
+export function stufenWahl(product, stufen, wahl, optionName, wert) {
+  const neu = {...wahl, [optionName]: wert};
+  const namen = stufen.map((s) => s.option);
+  const ab = namen.indexOf(optionName) + 1;
+  stufen.slice(ab).forEach((stufe, i) => {
+    const werte = stufenWerte(product, stufe.option, neu, namen.slice(0, ab + i));
+    if (!werte.some((w) => w.name === neu[stufe.option])) {
+      neu[stufe.option] =
+        werte.find((w) => w.name === stufe.vorwahl)?.name ?? werte[0]?.name ?? null;
+    }
+  });
+  return neu;
 }
 
 /**

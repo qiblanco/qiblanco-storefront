@@ -131,6 +131,9 @@ export const PRODUKT_BESCHREIBUNGEN = {
   '/products/qione-kette':
     'Die passende Kette für deinen QiOne® 2 Pro: hochwertig verarbeitet und ' +
     'angenehm zu tragen, damit dein Anhänger überall dabei ist.',
+  '/products/necklace-2':
+    'Necklace 2 für den Qi Alpha® und QiOne®: 750er ethisches Vollgold oder Chirurgenstahl, ' +
+    'Logo des Qi Alpha® und 6-fache Laserung am Verschluss.',
   '/products/crystal-cacao-awake':
     'Crystal Cacao® Awake: Zeremonie-Kakao in Bio-Qualität (DE-ÖKO-006), sanft ' +
     'im Sortenprofil und vollmundig im Geschmack. Für deine besondere Kakao-Zeit.',

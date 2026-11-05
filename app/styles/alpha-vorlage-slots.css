@@ -276,3 +276,13 @@
 .tas-seite.av-seite .eu-gwl-dialog__fuss .eu-gwl__link:is(:hover, :focus-visible) {
   color: var(--tas-tinte);
 }
+
+/* NECKLACE 2: Kacheltitel am Desktop eine Stufe groesser (--tas-fs-4, 21 px
+   statt 17 px). Die Seite traegt sonst keine Stufe zwischen 17 und 28 px, die
+   Gestaltungs-Pruefliste meldet die Luecke als fehlende Skala. Nur diese
+   Seite; Qi Alpha und Master bleiben unberuehrt. */
+@media (min-width: 750px) {
+  .tas-seite[data-alpha-vorlage='necklace-2'] .av-kachel-titel {
+    font-size: var(--tas-fs-4);
+  }
+}

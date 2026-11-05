@@ -52,6 +52,29 @@ export const VORBESTELLUNGEN = {
   'qi-master': QI_ALPHA_VORBESTELLUNG,
 };
 
+// Necklace 2 (Christian 04.11.2026): zwei Liefertermine je Material. Die Zeile
+// nennt Material, Länge und Termin, weil sie die Liste „Name: Wert“ ersetzt.
+// Kasse und Bestellbestätigung lesen das Zeilenattribut „Lieferbar“ (Daten der
+// Seite, necklace-2-alpha-daten.js).
+const NECKLACE_2_NAME = 'Necklace 2 für den Qi Alpha® und QiOne®';
+const NECKLACE_2_TERMIN = {
+  '750er ethisches Vollgold': 'ab Januar 2027',
+  Chirurgenstahl: 'ab 1. Quartal 2027',
+};
+
+/** Eintrag der Necklace 2 zu einer Warenkorb-Zeile: Termin je Material. */
+function necklace2Eintrag(line) {
+  const opt = line?.merchandise?.selectedOptions ?? [];
+  const wert = (n) => opt.find((o) => o?.name === n)?.value;
+  const termin = NECKLACE_2_TERMIN[wert('Material')];
+  if (!termin) return null;
+  return {
+    warenkorbTitel: NECKLACE_2_NAME,
+    unterzeile: `${wert('Material')} · ${wert('Länge')} · Vorbestellung, lieferbar ${termin}`,
+    versandhinweis: `Lieferbar für Dich: ${termin}`,
+  };
+}
+
 /** Eintrag zu einem Produkt-Handle, sonst null. */
 export function vorbestellungFürHandle(handle) {
   if (!handle) return null;
@@ -60,6 +83,7 @@ export function vorbestellungFürHandle(handle) {
 
 /** Eintrag zu einer Warenkorb-Zeile, sonst null. */
 export function vorbestellungFürLinie(line) {
+  if (line?.merchandise?.product?.handle === 'necklace-2') return necklace2Eintrag(line);
   return vorbestellungFürHandle(line?.merchandise?.product?.handle);
 }
 
