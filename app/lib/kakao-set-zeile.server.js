@@ -379,13 +379,13 @@ export async function kakaoCodeAktionWirkt({cart, storefront, codes, messung}) {
  * Die zweite Sorte kam nicht in den Warenkorb, die erste steht schon auf ihrer
  * Einzelform: die Zeilen zurück auf den Stand davor, sonst fehlen Packungen.
  */
-async function einzelformZurueck({cart, storefront, cartId, zeilen, plan, messung}) {
-  const zurueck = [];
+async function einzelformAufheben({cart, storefront, cartId, zeilen, plan, messung}) {
+  const setzen = [];
   for (const z of plan.einzelform) {
     const vorher = zeilen.find((x) => x.id === z.id);
     const v = vorher && (await variante(storefront, vorher.handle, messung));
     if (!v) return null;
-    zurueck.push({id: z.id, merchandiseId: v.id, quantity: vorher.quantity});
+    setzen.push({id: z.id, merchandiseId: v.id, quantity: vorher.quantity});
   }
   const wieder = [];
   for (const id of plan.entfernen) {
@@ -395,9 +395,9 @@ async function einzelformZurueck({cart, storefront, cartId, zeilen, plan, messun
     wieder.push({merchandiseId: v.id, quantity: vorher.quantity});
   }
   let r = null;
-  if (zurueck.length) {
+  if (setzen.length) {
     zaehle(messung, 'mutationen');
-    r = await cart.updateLines(zurueck, {cartId});
+    r = await cart.updateLines(setzen, {cartId});
     if (gescheitert(r)) return null;
   }
   if (wieder.length) {
@@ -609,7 +609,7 @@ export async function legeKakaoSetZeile({
           warnen(`Einzelform (neue Zeile) gescheitert: ${JSON.stringify(r?.errors || r?.userErrors || [])}`);
           if (!einzelweg) return neu;
           return (
-            (await einzelformZurueck({cart, storefront, cartId, zeilen, plan, messung})) ?? neu
+            (await einzelformAufheben({cart, storefront, cartId, zeilen, plan, messung})) ?? neu
           );
         }
         neu = r;
