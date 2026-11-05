@@ -1,10 +1,7 @@
 import {redirect} from 'react-router';
 import {rabattlinkZiel} from '~/lib/discount-ziel';
 import {bindeHealWorldGeschenk} from '~/lib/heal-world-geschenk.server';
-import {
-  istKakaoEinzelwegCode,
-  legeKakaoSetZeile,
-} from '~/lib/kakao-set-zeile.server';
+import {istKakaoEinzelwegCode, legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
 import {bindeReservierungsCode} from '~/lib/qi-master-addons.server';
 
 /**
