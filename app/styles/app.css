@@ -952,8 +952,33 @@ html[data-chat-rutscht] #qiblanco-salesbot-widget-frame {
 html[data-chat-offen] #qiblanco-salesbot-widget-frame {
   transition: none !important;
 }
+/* DER TRAEGER (Loader in WebKit, Job 20261103-folge-anna-shop-verschiebt-
+ * traeger-webkit): gibt es #qiblanco-salesbot-widget-traeger, verschiebt der
+ * Shop ihn statt des iframe, und das iframe darin bleibt unverschoben. Ein
+ * verschobenes iframe malt in WebKit keine clip-path, Annas Blasen ueber der
+ * Leiste waeren unsichtbar; am Traeger (ganzes Fenster) malt sie und alle
+ * Anker darin gelten unveraendert. In Blink/Gecko gibt es keinen Traeger.
+ * NIE OHNE DIE JS-HAELFTE: KaufknopfChatSignal zieht fuer die Ruhelage die
+ * Verschiebung des Traegers mit ab (verschiebungKetteY), sonst haelt sie die
+ * verschobene Lage fuer Ruhe und Anna sinkt auf die Leiste.
+ * RUECKWEG: diesen Block loeschen (dann verschiebt der Shop das iframe wie
+ * vorher), oder RAHMEN_ZUSCHNITT=off im Loader (dann kein Traeger). */
+#qiblanco-salesbot-widget-traeger {
+  transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+html[data-chat-rutscht] #qiblanco-salesbot-widget-traeger {
+  transform: translate3d(0, calc(-1 * var(--qb-chat-hub, 0px)), 0) !important;
+}
+#qiblanco-salesbot-widget-traeger #qiblanco-salesbot-widget-frame {
+  transform: none !important;
+  transition: none !important;
+}
+html[data-chat-offen] #qiblanco-salesbot-widget-traeger {
+  transition: none !important;
+}
 @media (prefers-reduced-motion: reduce) {
-  #qiblanco-salesbot-widget-frame {
+  #qiblanco-salesbot-widget-frame,
+  #qiblanco-salesbot-widget-traeger {
     transition: none !important;
   }
 }
