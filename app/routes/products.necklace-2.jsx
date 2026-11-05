@@ -4,7 +4,6 @@ import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {AlphaVorlage} from '~/components/product-pages/AlphaVorlage';
 import * as ALPHA_DATEN from '~/components/product-pages/necklace-2-alpha-daten';
-import {NECKLACE_2_ENTWURF} from '~/components/product-pages/necklace-2-entwurf';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import {AlphaFaqMitRate} from '~/components/product-pages/AlphaVorlageSlots';
 import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
@@ -15,23 +14,17 @@ import faqStyles from '~/styles/the-alpha-faq.css?url';
 import alphaKetteStyles from '~/styles/alpha-kette.css?url';
 
 /*
- * Kaufseite Necklace 2 (Christian 04.11.2026). Das Produkt steht in Shopify als
- * ENTWURF und ist damit für die Storefront-API unsichtbar. Nur mit
- * NECKLACE2_VORSCHAU=on (Vorschau-Dienst, nie Oxygen) zeigt die Route den Stand
- * aus necklace-2-entwurf.js und sperrt den Kaufknopf. Ohne Schalter und ohne
- * freigegebenes Produkt: 404. Freigabe: Schalter und Entwurfsdatei entfallen.
+ * Kaufseite Necklace 2 (Christian 04.11.2026, freigegeben 05.11.2026). Ohne
+ * aktives Produkt in Shopify: 404.
  */
 export const meta = ({data}) => {
-  return [
-    ...produktMeta({
-      produkt: data?.product,
-      marktLand: data?.marktLand,
-      pfad: '/products/necklace-2',
-      titel: `${data?.product?.title ?? ''} | ${MARKE}`,
-      bildUrl: data?.product?.images?.nodes?.[0]?.url,
-    }),
-    ...(data?.vorschau ? [{name: 'robots', content: 'noindex, nofollow'}] : []),
-  ];
+  return produktMeta({
+    produkt: data?.product,
+    marktLand: data?.marktLand,
+    pfad: '/products/necklace-2',
+    titel: `${data?.product?.title ?? ''} | ${MARKE}`,
+    bildUrl: data?.product?.images?.nodes?.[0]?.url,
+  });
 };
 
 export async function loader({context, request}) {
@@ -40,18 +33,13 @@ export async function loader({context, request}) {
     cache: storefront.CacheShort(),
     variables: {handle: 'necklace-2', selectedOptions: getSelectedProductOptions(request)},
   });
-  if (product?.id) {
-    redirectIfHandleIsLocalized(request, {handle: 'necklace-2', data: product});
-    return {product, marktLand: storefront.i18n.country, vorschau: false};
-  }
-  if (context.env?.NECKLACE2_VORSCHAU === 'on') {
-    return {product: NECKLACE_2_ENTWURF, marktLand: storefront.i18n.country, vorschau: true};
-  }
-  throw new Response(null, {status: 404});
+  if (!product?.id) throw new Response(null, {status: 404});
+  redirectIfHandleIsLocalized(request, {handle: 'necklace-2', data: product});
+  return {product, marktLand: storefront.i18n.country};
 }
 
 export default function Product() {
-  const {product, vorschau} = useLoaderData();
+  const {product} = useLoaderData();
   return (
     <>
       <link rel="stylesheet" href={produktVorlageStyles} />
@@ -63,7 +51,6 @@ export default function Product() {
       <AlphaVorlage
         product={product}
         daten={ALPHA_DATEN}
-        kaufErstNachFreigabe={vorschau}
         vertrauen={<EuGewaehrleistungsHinweis />}
         slots={{faq: <AlphaFaqMitRate daten={ALPHA_DATEN.FAQ} product={product} />}}
       />
