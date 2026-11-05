@@ -60,7 +60,7 @@ test('eine Adresse ohne Eintrag ist ein Baufehler, kein stiller 200', () => {
 
 test('adresse() zeigt aufs Ziel, alles andere bleibt unverändert', () => {
   assert.equal(adresse('/pages/lexikon-energie'), '/pages/lexikon#lexikon-energie');
-  assert.equal(adresse('/products/qione-1'), '/products/qione-2-pro');
+  assert.equal(adresse('/pages/support-1'), '/pages/support');
   assert.equal(adresse('/pages/lexikon-elektrosmog'), '/pages/lexikon-elektrosmog');
 });
 
@@ -186,4 +186,15 @@ test('Rückweg: eine zurückgenommene Seite antwortet selbst, steht in der Sitem
     const kennung = merkmal || `'${von}'`;
     assert.ok(zsrc.includes(kennung), `${ziel}: Abschnitt nennt ${kennung} nicht (Anker)`);
   }
+});
+
+test('Rückweg Produktseite: /products/qione-1 antwortet selbst und bleibt aus der Sitemap', () => {
+  // H-b61a593538 (05.11.): /products/qione-2-pro fiel am Kontrollpunkt Tag 28
+  // ab. qione-1 ist ein Shopify-Produkt ohne eigene Route und ohne
+  // übernommenen Abschnitt; products.$handle.jsx fragt die Liste generisch.
+  assert.equal(zusammenlegungFuer('/products/qione-1'), undefined, 'qione-1 leitet noch um');
+  assert.equal(adresse('/products/qione-1'), '/products/qione-1');
+  // Stand vor der Zusammenlegung (seit 06.10.): im US-Markt nicht
+  // veröffentlicht, Googlebot bekäme 404, also nicht in die Sitemap.
+  assert.match(lies('app/lib/sitemap-bestand.js'), /handle: 'qione-1',/);
 });
