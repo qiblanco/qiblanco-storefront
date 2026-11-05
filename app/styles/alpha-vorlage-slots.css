@@ -276,3 +276,11 @@
 .tas-seite.av-seite .eu-gwl-dialog__fuss .eu-gwl__link:is(:hover, :focus-visible) {
   color: var(--tas-tinte);
 }
+
+/* NECKLACE 2: Fragen eine Stufe groesser (--tas-fs-4, 21 px statt 17 px am
+   Desktop). Die Seite traegt sonst keine Stufe zwischen 17 und 28 px, die
+   Gestaltungs-Pruefliste meldet die Luecke als fehlende Skala. Nur diese
+   Seite; Qi Alpha und Master bleiben unberuehrt. */
+.tas-seite[data-alpha-vorlage='necklace-2'] .taf {
+  --taf-fs-frage: var(--tas-fs-4);
+}
