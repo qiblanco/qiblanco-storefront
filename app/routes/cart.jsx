@@ -13,6 +13,7 @@ import {
 } from '~/lib/qi-master-addons.server';
 import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {
+  kakaoCodeAktionWirkt,
   kakaoPackungenEingabe,
   legeKakaoSetZeile,
 } from '~/lib/kakao-set-zeile.server';
@@ -93,6 +94,7 @@ export async function action({request, context}) {
 
   let status = 200;
   let result;
+  let kakaoCodeWirkt = false;
 
   switch (action) {
     case CartForm.ACTIONS.LinesAdd: {
@@ -126,6 +128,11 @@ export async function action({request, context}) {
       // Combine discount codes already applied on cart
       discountCodes.push(...inputs.discountCodes);
 
+      kakaoCodeWirkt = await kakaoCodeAktionWirkt({
+        cart,
+        storefront,
+        codes: discountCodes,
+      });
       result = await cart.updateDiscountCodes(discountCodes);
       break;
     }
@@ -191,7 +198,14 @@ export async function action({request, context}) {
   // 2 oder 3 Packungen einer Kakao-Sorte liegen als Set-Zeile im Warenkorb,
   // damit ein Partnercode neben dem Staffelpreis greift (Großjob 20260929
   // partnercodes x Sets, s03). Liest nach jeder Zeilen-Aktion nach.
-  result = await legeKakaoSetZeile({cart, storefront, env, action, result});
+  result = await legeKakaoSetZeile({
+    cart,
+    storefront,
+    env,
+    action,
+    result,
+    codeWirkt: kakaoCodeWirkt,
+  });
 
   result = await persistAttributionOnCartResult({cart, request, env, result});
 

@@ -208,7 +208,11 @@ function fakeShop({land = 'DE', mitZeilen = false, stoerung = {}} = {}) {
     };
     if (mitZeilen) {
       cart.lines = {nodes: knoten()};
-      if (!stoerung.antwortOhneCodes) cart.discountCodes = codes();
+      if (!stoerung.antwortOhneCodes) {
+        cart.discountCodes = stoerung.antwortOhneApplicable
+          ? codes().map(({code}) => ({code}))
+          : codes();
+      }
       if (stoerung.antwortOhneZuteilung) {
         for (const k of cart.lines.nodes) delete k.discountAllocations;
       }
@@ -240,6 +244,9 @@ function fakeShop({land = 'DE', mitZeilen = false, stoerung = {}} = {}) {
     async addLines(lines) {
       if (!korb) return this.create({lines});
       log.push('M:add');
+      if (stoerung.addScheitert && stoerung.addScheitert-- > 0) {
+        return antwort({message: 'Fehler', code: 'INVALID'});
+      }
       return antwort(anlegen(lines));
     },
     async updateLines(lines) {
@@ -308,6 +315,7 @@ async function aktion(shop, {laden, art, inputs, env = {}}) {
   const neu = laden === 'kakao';
   if (neu) server.kakaoVariantenVorladen(storefront);
   let result;
+  let codeWirkt = false;
   if (art === 'LinesAdd') {
     result = await cart.addLines(inputs.lines);
   } else if (art === 'LinesUpdate') {
@@ -320,6 +328,7 @@ async function aktion(shop, {laden, art, inputs, env = {}}) {
         await kakaoPackungenEingabe({storefront, inputs, cart, ...(neu ? {messung} : {})}),
       ));
   } else if (art === 'DiscountCodesUpdate') {
+    codeWirkt = await server.kakaoCodeAktionWirkt({cart, storefront, codes: inputs.codes});
     result = await cart.updateDiscountCodes(inputs.codes);
   } else {
     result = await cart.removeLines(inputs.lineIds);
@@ -330,6 +339,7 @@ async function aktion(shop, {laden, art, inputs, env = {}}) {
     env,
     action: art,
     result,
+    codeWirkt,
     ...(neu ? {direkt: true, messung} : {}),
   });
   return {result, messung};
@@ -681,6 +691,37 @@ test('Einzelweg: Mutation scheitert -> Warenkorb bleibt, kein Fehler nach außen
   assert.ok(l.kakao.shop.zeile('bundle-3x-awake'), 'Set unverändert');
 });
 
+test('Einzelweg: zweite Sorte kommt nicht in den Warenkorb -> das Set steht wieder, keine Packung fehlt', async () => {
+  const l = await beide({vorher: [['bundle-2x-awake-1x-create', 1]], art: 'DiscountCodesUpdate', eingabe: codeEingabe(EW), stoerung: {addScheitert: 1}});
+  for (const lauf of [l.qiblanco, l.kakao]) {
+    assert.equal(lauf.shop.zeile('bundle-2x-awake-1x-create')?.quantity, 1);
+    assert.equal(lauf.shop.zeile(A), undefined);
+    assert.ok(lauf.result.cart, 'Warenkorb da');
+  }
+});
+
+test('Einzelweg: Antwort nennt Codes ohne applicable -> nachlesen, nicht als tot werten', async () => {
+  const l = await beide({vorher: [[A, 2]], codes: [EW], art: 'LinesAdd', eingabe: {lines: [{merchandiseId: vid(A), quantity: 1}]}, stoerung: {antwortOhneApplicable: true}});
+  beideGleich(l, [`${A} x3 = 12000 EUR`]);
+  assert.ok(nur(l.kakao.log, 'Q:zeilen').length >= 1);
+});
+
+test('Ohne Einzelweg-Code davor: Entfernen ändert keine Zeile, auch nicht außerhalb der Normalform', async () => {
+  for (const vorher of [[[A, 3]], [[A, 2], [C, 1]], [['bundle-2x-awake', 1], ['crystal-cacao-angebot', 1]]]) {
+    for (const code of [false, true]) {
+      const l = await beide({vorher, code, art: 'DiscountCodesUpdate', eingabe: codeEingabe()});
+      for (const lauf of [l.qiblanco, l.kakao]) {
+        assert.deepEqual(nur(lauf.log, 'M:'), ['M:code'], JSON.stringify({vorher, code}));
+      }
+    }
+  }
+});
+
+test('Code-Eingabe ohne Einzelweg-Code: keine einzige Abfrage mehr als vorher', async () => {
+  const l = await beide({vorher: [['bundle-3x-awake', 1]], art: 'DiscountCodesUpdate', eingabe: codeEingabe(CODE)});
+  for (const lauf of [l.qiblanco, l.kakao]) assert.deepEqual(nur(lauf.log, 'Q:zeilen'), []);
+});
+
 test('Toter Code auf Set: Einzelform nur kurz, am Ende liegt wieder das Set', async () => {
   const l = await beide({vorher: [['bundle-3x-awake', 1]], art: 'DiscountCodesUpdate', eingabe: codeEingabe(EW), stoerung: {codeTot: true}});
   assert.ok(l.qiblanco.shop.zeile('bundle-3x-awake'));
@@ -736,20 +777,26 @@ test('Ohne Einzelweg-Code: jeder Warenkorb gleich wie die Fassung davor', {skip:
     if (je.awake) start.push([A, je.awake]);
     if (je.create) start.push([C, je.create]);
     const soll = kakaoSollZeilen(je);
-    const ausSet = art === 'plusAufSet' || (art === 'code' && !partner);
+    const ausSet = art === 'plusAufSet' || art === 'codeAufSet';
     shop.lege(ausSet && soll ? soll.map((z) => [z.handle, z.quantity]) : start, {code: partner});
     const neu = laden === 'kakao';
     if (neu) modul.kakaoVariantenVorladen(shop.storefront);
     const inputs = {lines: [{merchandiseId: vid(A), quantity: 1}]};
-    const result = art === 'code'
-      ? await shop.cart.updateDiscountCodes(partner ? [CODE] : [])
+    const codeArt = art === 'code' || art === 'codeAufSet';
+    const codes = partner ? [CODE] : [];
+    const codeWirkt = codeArt
+      ? await modul.kakaoCodeAktionWirkt?.({cart: shop.cart, storefront: shop.storefront, codes})
+      : false;
+    const result = codeArt
+      ? await shop.cart.updateDiscountCodes(codes)
       : await shop.cart.addLines(inputs.lines);
     const r = await modul.legeKakaoSetZeile({
       cart: shop.cart,
       storefront: shop.storefront,
       env: {},
-      action: art === 'code' ? 'DiscountCodesUpdate' : 'LinesAdd',
+      action: codeArt ? 'DiscountCodesUpdate' : 'LinesAdd',
       result,
+      codeWirkt,
       ...(neu ? {direkt: true} : {}),
     });
     return {stand: shop.stand(), mut: nur(shop.log, 'M:'), ok: Boolean(r?.cart)};
@@ -759,10 +806,7 @@ test('Ohne Einzelweg-Code: jeder Warenkorb gleich wie die Fassung davor', {skip:
     for (let awake = 0; awake <= 8; awake += 1) {
       for (let create = 0; create <= 8; create += 1) {
         if (!awake && !create) continue;
-        // art code ohne Partnercode: nur aus der Normalform. Einzelzeilen ohne Code
-        // gibt es im Laden dort nicht, wo das Set zulässig ist, und dort ist das
-        // Set beim Entfernen des Einzelweg-Codes gewollt.
-        for (const art of ['plus', 'plusAufSet', 'code']) {
+        for (const art of ['plus', 'plusAufSet', 'code', 'codeAufSet']) {
           for (const partner of [false, true]) {
             for (const laden of ['qiblanco', 'kakao']) {
               const je = {awake, create};

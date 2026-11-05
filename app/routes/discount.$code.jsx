@@ -50,6 +50,7 @@ export async function loader({request, context, params}) {
         env,
         action: 'DiscountCodesUpdate',
         result: beschenkt,
+        codeWirkt: true,
       })
     : beschenkt;
   const headers = cart.setCartId(result.cart.id);

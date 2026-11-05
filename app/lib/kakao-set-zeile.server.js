@@ -109,7 +109,8 @@ import {istBrutto} from '~/lib/preismodus';
  * er nicht (gemessen: 3x im Laden 159 € statt 120 €). Liegt er im Warenkorb,
  * bleibt die Kakao-Menge deshalb als Einzelzeilen: Schritt 1 läuft, Schritt 2
  * entfällt. Seine Eingabe löst ein liegendes Set auf, sein Entfernen legt das
- * Set wieder. Andere Codes lösen hier nichts aus, ihr Warenkorb bleibt centgleich.
+ * Set wieder. Andere Codes lösen hier nichts aus, ihr Warenkorb bleibt centgleich:
+ * eine Code-Aktion wirkt nur mit codeWirkt, das kakaoCodeAktionWirkt vorher bestimmt.
  * Gilt der Code auf den Einzelzeilen nicht (abgelaufen, deaktiviert), zählt der
  * Warenkorb wie ohne Code. Die Liste steht nur in dieser .server-Datei und
  * erreicht den Browser nie.
@@ -345,12 +346,67 @@ async function zeilenNach(storefront, result, messung) {
 async function korbNach(storefront, result, messung) {
   const zeilen = zeilenAusAntwort(result);
   const codes = result?.cart?.discountCodes;
-  if (zeilen && Array.isArray(codes)) return {zeilen, codes};
+  const codesLesbar =
+    Array.isArray(codes) && codes.every((c) => typeof c?.applicable === 'boolean');
+  if (zeilen && codesLesbar) return {zeilen, codes};
   return korbLesen(storefront, result.cart.id, messung);
 }
 
 const einzelwegCodes = (codes) => codes.filter((c) => istKakaoEinzelwegCode(c?.code));
 const einzelwegGilt = (codes) => einzelwegCodes(codes).some((c) => c.applicable);
+
+/**
+ * VOR dem Code-Update fragen: soll diese Code-Aktion die Kakao-Zeilen neu ordnen?
+ * Ja, wenn ein Code der Einzelweg-Liste dabei ist oder die Liste leer wird und
+ * vorher einer lag. Nur der zweite Fall kostet eine Abfrage, und nur beim
+ * Entfernen. Alles andere läuft wie ohne diesen Schritt.
+ * @param {{cart: any, storefront: any, codes: string[], messung?: object}} args
+ */
+export async function kakaoCodeAktionWirkt({cart, storefront, codes, messung}) {
+  if (codes.some(istKakaoEinzelwegCode)) return true;
+  const cartId = cart?.getCartId?.();
+  if (codes.length || !cartId || !storefront) return false;
+  try {
+    const korb = await korbLesen(storefront, cartId, messung);
+    return einzelwegCodes(korb.codes).length > 0;
+  } catch (fehler) {
+    warnen(`Codes vor dem Update nicht lesbar: ${fehler?.message || fehler}`);
+    return false;
+  }
+}
+
+/**
+ * Die zweite Sorte kam nicht in den Warenkorb, die erste steht schon auf ihrer
+ * Einzelform: die Zeilen zurück auf den Stand davor, sonst fehlen Packungen.
+ */
+async function einzelformZurueck({cart, storefront, cartId, zeilen, plan, messung}) {
+  const zurueck = [];
+  for (const z of plan.einzelform) {
+    const vorher = zeilen.find((x) => x.id === z.id);
+    const v = vorher && (await variante(storefront, vorher.handle, messung));
+    if (!v) return null;
+    zurueck.push({id: z.id, merchandiseId: v.id, quantity: vorher.quantity});
+  }
+  const wieder = [];
+  for (const id of plan.entfernen) {
+    const vorher = zeilen.find((x) => x.id === id);
+    const v = vorher && (await variante(storefront, vorher.handle, messung));
+    if (!v) return null;
+    wieder.push({merchandiseId: v.id, quantity: vorher.quantity});
+  }
+  let r = null;
+  if (zurueck.length) {
+    zaehle(messung, 'mutationen');
+    r = await cart.updateLines(zurueck, {cartId});
+    if (gescheitert(r)) return null;
+  }
+  if (wieder.length) {
+    zaehle(messung, 'mutationen');
+    r = await cart.addLines(wieder, {cartId});
+    if (gescheitert(r)) return null;
+  }
+  return r;
+}
 
 /**
  * Preis (Cent) des billigsten Sorten-Sets derselben Packungszahl im Markt
@@ -462,9 +518,10 @@ async function normalformDirekt({cart, storefront, cartId, zeilen, kandidat, mes
 
 /**
  * @param {{cart: any, storefront: any, env?: Record<string, string>,
- *   action: string, result: any, direkt?: boolean, messung?: object}} args
- *   action: Zeilen-Aktion oder DiscountCodesUpdate. Eine Code-Aktion wirkt nur,
- *   wenn ein Code der Einzelweg-Liste liegt oder kein Code mehr.
+ *   action: string, result: any, codeWirkt?: boolean, direkt?: boolean,
+ *   messung?: object}} args
+ *   action: Zeilen-Aktion oder DiscountCodesUpdate.
+ *   codeWirkt: Eine Code-Aktion wirkt nur damit, siehe kakaoCodeAktionWirkt.
  *   direkt: Weg 3 (Festbetrag-Anker in einer Mutation), nur auf Wunsch.
  *   messung: zählt Mutationen und Abfragen dieses Schritts mit.
  */
@@ -474,20 +531,20 @@ export async function legeKakaoSetZeile({
   env,
   action,
   result,
+  codeWirkt = false,
   direkt = false,
   messung,
 }) {
   const cartId = result?.cart?.id;
   if (!cartId || !storefront || aus(env)) return result;
   const codeAktion = action === CartForm.ACTIONS.DiscountCodesUpdate;
-  if (!ZEILEN_AKTIONEN.has(action) && !codeAktion) return result;
+  if (!ZEILEN_AKTIONEN.has(action) && !(codeAktion && codeWirkt)) return result;
 
   let neu = result;
   try {
     const korb = await korbNach(storefront, result, messung);
     let {zeilen} = korb;
     let einzelweg = einzelwegCodes(korb.codes).length > 0;
-    if (codeAktion && !einzelweg && korb.codes.length) return result;
     let plan = kakaoZeilenPlan(einzelweg ? [...zeilen, NUR_SCHRITT_1] : zeilen);
     if (einzelweg && !plan && !einzelwegGilt(korb.codes)) {
       einzelweg = false;
@@ -539,8 +596,8 @@ export async function legeKakaoSetZeile({
       if (aendern.length) {
         zaehle(messung, 'mutationen');
         const r = await cart.updateLines(aendern, {cartId});
-        if (!r?.cart || r?.errors?.length) {
-          warnen(`Einzelform gescheitert: ${JSON.stringify(r?.errors || [])}`);
+        if (gescheitert(r)) {
+          warnen(`Einzelform gescheitert: ${JSON.stringify(r?.errors || r?.userErrors || [])}`);
           return neu;
         }
         neu = r;
@@ -548,9 +605,12 @@ export async function legeKakaoSetZeile({
       if (anlegen.length) {
         zaehle(messung, 'mutationen');
         const r = await cart.addLines(anlegen, {cartId});
-        if (!r?.cart || r?.errors?.length) {
-          warnen(`Einzelform (neue Zeile) gescheitert: ${JSON.stringify(r?.errors || [])}`);
-          return neu;
+        if (gescheitert(r)) {
+          warnen(`Einzelform (neue Zeile) gescheitert: ${JSON.stringify(r?.errors || r?.userErrors || [])}`);
+          if (!einzelweg) return neu;
+          return (
+            (await einzelformZurueck({cart, storefront, cartId, zeilen, plan, messung})) ?? neu
+          );
         }
         neu = r;
       }
