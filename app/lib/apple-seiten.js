@@ -123,6 +123,9 @@ export const APPLE_SEITEN = Object.freeze({
   'search': {pfad: '/search', schalter: 'APPLE_SEITE_SEARCH', standard: 'on'},
   'widerruf': {pfad: '/widerruf', schalter: 'APPLE_SEITE_WIDERRUF', standard: 'on'},
   'widerruf-bestaetigen': {pfad: '/widerruf/bestaetigen', schalter: 'APPLE_SEITE_WIDERRUF_BESTAETIGEN', standard: 'on'},
+
+  // ---- Grossjob 20261101 crystal-cacao-apple-stil, s03 · Kakao-Kurs ----
+  'zeremonie-kakao-kurs': {pfad: '/pages/zeremonie-kakao-kurs', schalter: 'APPLE_SEITE_ZEREMONIE_KAKAO_KURS', standard: 'on'},
 });
 for (const eintrag of Object.values(APPLE_SEITEN)) Object.freeze(eintrag);
 
