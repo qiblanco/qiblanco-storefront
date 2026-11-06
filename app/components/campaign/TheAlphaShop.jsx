@@ -730,7 +730,7 @@ export function TheAlphaShop({
             {ratenGesperrt ? (
               <div
                 className="tas-hinweis"
-                data-tas-raten="je-geraet"
+                data-tas-raten="einzeln"
                 aria-live="polite"
               >
                 <p>{TEILZAHLUNG_TEXT.jeGeraet}</p>
