@@ -1,0 +1,434 @@
+/*
+ * BLACK FRIDAY 2026 (s04): nur --as-*-Token des Apple-Baukastens, Scope
+ * [data-apple-seite='bf-deals']. Ein Gold, ein Bild-Radius, kein Rot, kein
+ * Blinken. Die Uhr steht auf festen Breiten mit tabular-nums, damit nichts springt.
+ */
+
+/* ---- Skala ---------------------------------------------------------------- */
+/* Fließtext auf --as-fs-3: reset.css setzt p sonst auf 19,2 px, eine Größe neben
+   der Skala (Rubrik: 11 Schriftgrößen, Soll höchstens 9). */
+[data-apple-seite='bf-deals'] :is(.as-absatz, .as-kachel-satz, .as-faq-antwort, .as-faq-antwort p, .bf-preis-zeile, .bf-preis-zusatz) {
+  font-size: var(--as-fs-3);
+}
+
+/* ---- Hero ----------------------------------------------------------------- */
+[data-apple-seite='bf-deals'] .bf-hero {
+  padding-bottom: var(--as-s-6);
+}
+[data-apple-seite='bf-deals'] .bf-szene {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--as-s-1);
+}
+/* Jedes Produktbild auf derselben quadratischen Kachel: das freigestellte 2×-Bild
+   ist nicht quadratisch und setzte sonst Kartentitel und Kachelkante höher. */
+[data-apple-seite='bf-deals'] .bf-szene .as-bild,
+[data-apple-seite='bf-deals'] .bf-karte-bild .as-bild,
+[data-apple-seite='bf-deals'] .bf-kopf-bild .as-bild {
+  aspect-ratio: 1;
+  object-fit: contain;
+  background: var(--as-flaeche);
+}
+@media (min-width: 750px) {
+  [data-apple-seite='bf-deals'] .bf-szene {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--as-s-2);
+  }
+}
+
+/* ---- Uhr ------------------------------------------------------------------ */
+[data-apple-seite='bf-deals'] .bf-uhr {
+  margin: var(--as-s-4) auto 0;
+  text-align: center;
+}
+[data-apple-seite='bf-deals'] .bf-uhr-titel {
+  margin: 0 0 var(--as-s-2);
+  font-size: var(--as-fs-3);
+  font-weight: 600;
+}
+/* reset.css färbt jedes p mit --color-dark: auf dem Band sonst fast unsichtbar. */
+[data-apple-seite='bf-deals'] .as-dunkel .bf-uhr-titel {
+  color: var(--as-weiss);
+}
+[data-apple-seite='bf-deals'] .bf-uhr-felder {
+  display: grid;
+  grid-template-columns: repeat(4, var(--as-s-8));
+  gap: var(--as-s-1);
+  justify-content: center;
+  margin: 0;
+}
+/* Im DOM dt vor dd (HTML-Regel), sichtbar die Zahl über dem Namen. */
+[data-apple-seite='bf-deals'] .bf-uhr-feld {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: var(--as-s-1);
+}
+[data-apple-seite='bf-deals'] .bf-uhr-zahl {
+  margin: 0;
+  width: 100%;
+  padding: var(--as-s-1) 0;
+  font-size: var(--as-fs-6);
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  border-bottom: var(--as-strich-stark) solid var(--as-gold);
+}
+[data-apple-seite='bf-deals'] .bf-uhr-name {
+  font-size: var(--as-fs-1);
+  color: var(--as-grau);
+}
+[data-apple-seite='bf-deals'] .as-dunkel .bf-uhr-name,
+[data-apple-seite='bf-deals'] .as-dunkel .bf-uhr-text {
+  color: var(--as-linie);
+}
+[data-apple-seite='bf-deals'] .bf-uhr-text {
+  margin: var(--as-s-2) 0 0;
+  font-size: var(--as-fs-2);
+  color: var(--as-grau);
+}
+[data-apple-seite='bf-deals'] .bf-uhr--kompakt {
+  margin-top: var(--as-s-4);
+  padding-top: var(--as-s-3);
+  border-top: var(--as-strich) solid var(--as-linie);
+  text-align: left;
+}
+[data-apple-seite='bf-deals'] .bf-uhr--kompakt .bf-uhr-felder {
+  justify-content: start;
+}
+@media (max-width: 749.98px) {
+  /* Handy: Titel, Unterzeile, Szene, dann Uhr und Knopf (Regel des Baukastens). */
+  [data-apple-seite='bf-deals'] .bf-hero .bf-uhr,
+  [data-apple-seite='bf-deals'] .bf-hero .as-knoepfe {
+    order: 3;
+  }
+}
+
+/* ---- Karten --------------------------------------------------------------- */
+[data-apple-seite='bf-deals'] .bf-karten {
+  display: grid;
+  gap: var(--as-s-3);
+  margin-top: var(--as-s-4);
+}
+@media (min-width: 750px) {
+  [data-apple-seite='bf-deals'] .bf-karten {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+[data-apple-seite='bf-deals'] .bf-karte {
+  display: flex;
+  flex-direction: column;
+  padding: var(--as-s-3);
+  background: var(--as-flaeche);
+  border-radius: var(--as-radius);
+}
+[data-apple-seite='bf-deals'] .bf-karte-bild {
+  display: block;
+  margin-bottom: var(--as-s-3);
+}
+[data-apple-seite='bf-deals'] .bf-karte-titel {
+  margin: 0;
+  font-size: var(--as-fs-4);
+  font-weight: 600;
+  line-height: 1.2;
+}
+[data-apple-seite='bf-deals'] .bf-karte-satz {
+  margin-top: var(--as-s-1);
+}
+[data-apple-seite='bf-deals'] .bf-karte .as-link {
+  align-self: flex-start;
+}
+
+/* ---- Preis ---------------------------------------------------------------- */
+/* In der Karte: Preis oben auf einer Linie, Knopf unten auf einer Linie, auch
+   wenn nur zwei der vier Angebote eine Variantenwahl haben. */
+[data-apple-seite='bf-deals'] .bf-kauf {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding-top: var(--as-s-3);
+}
+[data-apple-seite='bf-deals'] .bf-preis-zeile {
+  margin: 0;
+  color: var(--as-grau);
+}
+[data-apple-seite='bf-deals'] .bf-preis-bf {
+  font-size: var(--as-fs-6);
+  font-weight: 600;
+  color: var(--as-tinte);
+  font-variant-numeric: tabular-nums;
+}
+[data-apple-seite='bf-deals'] .bf-preis-heute {
+  font-size: var(--as-fs-4);
+  font-weight: 600;
+  color: var(--as-tinte);
+}
+[data-apple-seite='bf-deals'] .bf-preis-zusatz {
+  margin: var(--as-s-1) 0 0;
+  font-weight: 600;
+  color: var(--as-gold-tinte);
+}
+
+/* ---- Variantenwahl -------------------------------------------------------- */
+[data-apple-seite='bf-deals'] .bf-wahl {
+  margin: var(--as-s-3) 0 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+[data-apple-seite='bf-deals'] .bf-wahl-titel {
+  padding: 0;
+  margin-bottom: var(--as-s-1);
+  font-size: var(--as-fs-2);
+  font-weight: 600;
+}
+[data-apple-seite='bf-deals'] .bf-wahl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--as-s-1);
+}
+[data-apple-seite='bf-deals'] .bf-chip {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--as-s-8);
+  min-height: var(--as-tippziel);
+  padding: var(--as-s-1) var(--as-s-2);
+  background: var(--as-weiss);
+  border: var(--as-strich) solid var(--as-linie);
+  border-radius: var(--as-s-1);
+  cursor: pointer;
+}
+[data-apple-seite='bf-deals'] .bf-chip input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+[data-apple-seite='bf-deals'] .bf-chip:has(input:checked) {
+  border: var(--as-strich-stark) solid var(--as-tinte);
+}
+[data-apple-seite='bf-deals'] .bf-chip:has(input:focus-visible) {
+  outline: var(--as-strich-stark) solid var(--as-gold-tinte);
+  outline-offset: var(--as-strich-stark);
+}
+[data-apple-seite='bf-deals'] .bf-chip[data-aus] {
+  background: var(--as-flaeche);
+  color: var(--as-grau);
+  cursor: not-allowed;
+}
+[data-apple-seite='bf-deals'] .bf-chip-text {
+  font-size: var(--as-fs-3);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+[data-apple-seite='bf-deals'] .bf-chip-aus {
+  font-size: var(--as-fs-1);
+  line-height: 1.2;
+}
+
+/* ---- Knopf ---------------------------------------------------------------- */
+/* app.css begrenzt jedes form auf 400px: der Knopf füllte die Karte sonst nicht. */
+[data-apple-seite='bf-deals'] .bf-kauf form {
+  max-width: none;
+  margin-top: auto;
+  padding-top: var(--as-s-3);
+}
+/* .bf-kauf davor: apple-seite.css lädt nach dieser Datei, .as-seite .as-knopf
+   hat dieselbe Spezifität und setzt die Breite sonst auf auto. */
+[data-apple-seite='bf-deals'] .bf-kauf .bf-knopf,
+[data-apple-seite='bf-deals'] .bf-kauf > .as-knopf {
+  width: 100%;
+  max-width: none;
+  min-height: var(--as-tippziel);
+}
+
+/* ---- Kaufleiste, nur Handy (Bauform wie .pd-kaufleiste) -------------------- */
+[data-apple-seite='bf-deals'] .bf-leiste {
+  display: none;
+}
+[data-apple-seite='bf-deals'] > :nth-last-child(2):has(+ .bf-leiste) {
+  margin-bottom: var(--as-s-8);
+}
+[data-apple-seite='bf-deals'] > .bf-leiste:last-child {
+  margin-bottom: 0;
+}
+@media screen and (max-width: 749px) {
+  [data-apple-seite='bf-deals'] .bf-leiste {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: var(--z-kopf);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--as-s-2);
+    padding: var(--as-s-1) var(--as-s-2) max(var(--as-s-1), env(safe-area-inset-bottom));
+    background: var(--as-weiss);
+    border-top: var(--as-strich) solid var(--as-linie);
+    visibility: hidden;
+    transform: translateY(100%);
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste--sichtbar {
+    visibility: visible;
+    transform: none;
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste-auswahl {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-width: 0;
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste-name {
+    font-size: var(--as-fs-2);
+    font-weight: 600;
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste-preis {
+    font-size: var(--as-fs-3);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste form {
+    flex: none;
+  }
+  [data-apple-seite='bf-deals'] .bf-leiste .bf-knopf {
+    min-width: 0;
+    min-height: var(--as-tippziel);
+    margin: 0;
+    padding: calc(var(--as-s-1) * 1.5) var(--as-s-3);
+  }
+  /* Der Fuß liegt außerhalb von .as-seite: Polster wie bei .pd-kaufleiste, damit
+     Impressum, Datenschutz und Widerruf frei bleiben. */
+  body:has(.bf-leiste) footer {
+    padding-bottom: calc(var(--qb-ref-raster, 8px) * 9 + env(safe-area-inset-bottom));
+  }
+}
+
+/* ---- Leistungsgrafik ------------------------------------------------------ */
+[data-apple-seite='bf-deals'] .bf-leistung-raster {
+  display: grid;
+  gap: var(--as-s-4);
+  align-items: center;
+  margin-top: var(--as-s-4);
+}
+@media (min-width: 750px) {
+  [data-apple-seite='bf-deals'] .bf-leistung-raster {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--as-s-8);
+  }
+}
+[data-apple-seite='bf-deals'] .bf-leistung-grafik {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+[data-apple-seite='bf-deals'] .bf-ring {
+  fill: none;
+  stroke: var(--as-gold);
+}
+[data-apple-seite='bf-deals'] .bf-ring--feld {
+  stroke-width: 1;
+  stroke-dasharray: 2 8;
+}
+[data-apple-seite='bf-deals'] .bf-ring--schutz {
+  stroke-width: 2;
+}
+[data-apple-seite='bf-deals'] .bf-kern {
+  fill: var(--as-gold);
+}
+[data-apple-seite='bf-deals'] .bf-punkt {
+  fill: var(--as-weiss);
+  stroke: var(--as-gold);
+  stroke-width: 2;
+}
+[data-apple-seite='bf-deals'] .bf-marke {
+  font-size: var(--as-fs-3);
+  font-weight: 600;
+  fill: var(--as-tinte);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+[data-apple-seite='bf-deals'] .bf-stufen {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--as-s-3);
+}
+[data-apple-seite='bf-deals'] .bf-stufe {
+  display: flex;
+  gap: var(--as-s-2);
+  align-items: baseline;
+}
+[data-apple-seite='bf-deals'] .bf-stufe-zahl {
+  flex: none;
+  width: var(--as-s-3);
+  font-size: var(--as-fs-3);
+  font-weight: 600;
+  color: var(--as-gold-tinte);
+  font-variant-numeric: tabular-nums;
+}
+[data-apple-seite='bf-deals'] .bf-stufe-satz {
+  font-size: var(--as-fs-4);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* ---- Kopf der Angebotsseite ----------------------------------------------- */
+[data-apple-seite='bf-deals'] .bf-kopf {
+  display: grid;
+  gap: var(--as-s-3);
+  max-width: var(--as-breite);
+  margin: 0 auto;
+  padding: var(--as-s-4) var(--as-s-2) 0;
+}
+[data-apple-seite='bf-deals'] .bf-kopf .as-unter {
+  margin-left: 0;
+}
+/* Ohne Ankündigungsleiste steht der Kopf bei 84 px, <main> hält 104 px frei. Ein
+   Polster obendrauf ließe auf dem Handy eine weiße Lücke und schöbe den Knopf hinaus. */
+@media (max-width: 749px) {
+  [data-apple-seite='bf-deals'] .bf-kopf {
+    padding-top: 0;
+  }
+}
+@media (min-width: 750px) {
+  [data-apple-seite='bf-deals'] .bf-kopf {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'bild text'
+      'bild kauf';
+    column-gap: var(--as-s-8);
+    padding: var(--as-s-8) var(--as-s-4) 0;
+  }
+  [data-apple-seite='bf-deals'] .bf-kopf-text {
+    grid-area: text;
+  }
+  [data-apple-seite='bf-deals'] .bf-kopf-bild {
+    grid-area: bild;
+  }
+  [data-apple-seite='bf-deals'] .bf-kopf-kauf {
+    grid-area: kauf;
+  }
+}
+[data-apple-seite='bf-deals'] .bf-vertrauen {
+  list-style: none;
+  margin: var(--as-s-3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--as-s-1);
+  font-size: var(--as-fs-2);
+  color: var(--as-grau);
+}
+/* reset.css setzt li auf 19,2 px: die Größe des ul käme sonst nicht an. */
+[data-apple-seite='bf-deals'] .bf-vertrauen li {
+  font-size: var(--as-fs-2);
+}
+[data-apple-seite='bf-deals'] .bf-ueberblick {
+  padding-top: var(--as-s-4);
+}
