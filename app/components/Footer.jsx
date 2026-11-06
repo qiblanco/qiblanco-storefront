@@ -10,7 +10,11 @@ const PRODUCT_LINKS = [
   {to: '/products/qibracelet', label: 'QiBracelet®'},
   {to: '/products/qihome-air', label: 'QiHome® Air'},
   {to: '/products/qione-kette', label: 'Necklace für QiOne®'},
-  {to: '/products/zeremonie-kakao', label: 'Zeremonie Kakao'},
+  // Christian 01.11.2026 (Grossjob 20261101-GROSSJOB-crystal-cacao-apple-stil-1zu1-
+  // spiegel-videos-selbst-hosten-r2, Z16): "unten im Futter steht Zeremonie-Kakao ...
+  // Da muss Crystal-Kakao stehen." Ziel ist die Übersicht beider Sorten; der Pfad
+  // steht damit nur hier und nicht mehr zusätzlich in INHALT_LINKS (eine Zeile je Ziel).
+  {to: '/pages/crystal-cacao', label: 'Crystal Cacao'},
   {to: '/products/crystal-cacao-awake', label: 'Crystal Cacao Awake'},
   {to: '/products/crystal-cacao-create', label: 'Crystal Cacao Create'},
 ];
@@ -478,9 +482,10 @@ function PaymentIcons() {
  * wären ein Stilbruch — und aus sechs Einträgen würden neun in EINER Zeile,
  * die auf dem Telefon zur Treppe wird.
  */
+// /pages/crystal-cacao stand bis 06.11.2026 auch hier; seit Z16 (Christian 01.11.)
+// führt ihn die Produktliste oben als "Crystal Cacao", ein Ziel steht nur einmal im Fuß.
 const INHALT_LINKS = [
   {to: '/pages/technologie', label: 'Die Technologie dahinter'},
-  {to: '/pages/crystal-cacao', label: 'Crystal Cacao®'},
   {to: '/blogs/wissen', label: 'Wissens-Magazin'},
 ];
 
