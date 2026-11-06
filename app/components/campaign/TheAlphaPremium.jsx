@@ -5,7 +5,8 @@ import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
 import {kaufZiel, RESERVIERUNG_PARAM} from '~/lib/qi-alpha-reservierung';
 import {TapTon, TapFilmTon, videoQuellen} from '~/components/campaign/TheAlphaTon';
 import {tapStopper} from '~/components/campaign/the-alpha-stopper';
-import {LEINWAND_ZEIT} from '~/components/campaign/the-alpha-video-ios';
+import {iosLaufbahn, iosSchrittPx} from '~/components/campaign/the-alpha-takt-ios';
+import {istIos, LEINWAND_ZEIT} from '~/components/campaign/the-alpha-video-ios';
 import {
   THE_ALPHA_KOPF,
   THE_ALPHA_SCHLUSS,
@@ -189,6 +190,9 @@ function useTapFilm(wurzel, szene) {
     const filmNachBuehne = [];
     // Video in der Kette: Bühne davor, Bühne danach (Fenster des Stoppers).
     const filme = [];
+    // Takt am iPhone (the-alpha-takt-ios.js): mehr Scrollweg, kein Snap.
+    const laufbahnIos = kette && istIos(navigator) ? iosLaufbahn(window.location.search) : false;
+    if (laufbahnIos) el.classList.add('tap-ios-takt');
     if (kette) {
       el.classList.add('tap-kette');
       szenen.forEach((s, i) => {
@@ -204,6 +208,7 @@ function useTapFilm(wurzel, szene) {
       });
       aufraeumen.push(() => {
         el.classList.remove('tap-kette');
+        el.classList.remove('tap-ios-takt');
         szenen.forEach((s) =>
           s.classList.remove('tap-nachruecken', 'tap-nach-buehne', 'tap-nach-video', 'tap-aus', 'tap-wartet'),
         );
@@ -274,7 +279,12 @@ function useTapFilm(wurzel, szene) {
     };
     const masse = () => {
       for (const s of buehnen) {
+        if (laufbahnIos) s.b.style.removeProperty('--tap-schritt');
         s.px = parseFloat(getComputedStyle(s.b).getPropertyValue('--tap-schritt')) || 48;
+        if (laufbahnIos && !s.ende) {
+          s.px = iosSchrittPx(s.px, s.zahl, laufbahnIos);
+          s.b.style.setProperty('--tap-schritt', `${s.px}px`);
+        }
       }
       // Höhe des Videos für tap-nach-buehne / tap-nach-video (CSS).
       if (filmNachBuehne[0]) {
