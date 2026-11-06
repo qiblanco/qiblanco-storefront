@@ -59,6 +59,24 @@
  * Läuft das Video vorher selbst an, geht das Canvas wortlos. Der Film hat
  * keine Tonspur (data-tap-video-ton="nein"), es fehlt also nichts. Die Sätze
  * unter dem Film folgen der Canvas-Zeit (Ereignis LEINWAND_ZEIT).
+ *
+ * NACHTRAG 06.11.2026 (Christian: „bei Annas [iPhone] immer noch so … dass das
+ * Video beim iPhone nicht automatisch abläuft auf der Landingpage vom Qi Alpha,
+ * also man muss immer noch klicken“; Job 20261106-prio1-qi-alpha-lp-designer-
+ * feedback-roter-button-hochwertig-scroll-iphone-video-autostart). Zwei Lücken:
+ *  - FREISCHALTEN BEIM ERSTEN TIPP (entsperren): WebKit nimmt einem Video die
+ *    Gesten-Sperre, auch die des Stromsparmodus, sobald play() einmal in einer
+ *    Geste lief (HTMLMediaElement::removeBehaviorRestrictionsAfterFirstUserGesture).
+ *    Fast jeder tippt schon oben (Cookie-Hinweis, „Sound On“). Bis hier verfiel
+ *    dieser Tipp, weil nachholen() nur ein Video im Bild startet: unten lehnte
+ *    iOS dann wieder ab. Jetzt schaltet jede Geste das Video frei, auch wenn es
+ *    noch nicht zu sehen ist; zu sehen und zu hören ist davon nichts.
+ *  - TIPP-ZEICHEN (tippZeichenAn): läuft trotzdem nichts (kein WebCodecs, Canvas
+ *    scheitert oder bringt kein Bild), stand bisher ein Standbild ohne jeden
+ *    Hinweis da. Jetzt zeigt es nach TIPP_ZEICHEN_MS ein großes Abspiel-Zeichen,
+ *    und der erste Tipp startet den Film.
+ * Prüfschalter ?video=diag zeigt den Zustand auf dem Gerät: der einzige Blick
+ * auf das, was die Simulation nicht sieht.
  */
 
 import {filmAufLeinwand} from '../reusables/film-dekoder.js';
@@ -77,6 +95,9 @@ export const WARTEN_MS = 700;
 export const VORLADEN_SPAETESTENS_MS = 400;
 // Große Stufe nur, wenn die kleine mindestens so schnell kam (Bit/s).
 export const HOCH_AB_BPS = 4e6;
+// So lange nach dem Standbild ohne laufendes Bild, dann das Abspiel-Zeichen.
+// Der Canvas-Rückfall hat Vorrang: Holen und Dekodieren brauchen einen Moment.
+export const TIPP_ZEICHEN_MS = 2500;
 
 /** iPhone, iPod, iPad (auch iPadOS, das sich als Mac ausgibt). Chrome auf
  * dem iPhone (CriOS) ist WebKit und gehört dazu. */
@@ -132,6 +153,9 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     waermt: false,
     // Rückfall Canvas (Nachtrag 02.11.): null | {el, dek, zeigt}
     leinwand: null,
+    // Nachtrag 06.11.: Video ist in einer Geste einmal angelaufen
+    entsperrt: false,
+    tippTimer: 0,
   };
   v.dataset.tapIos = 'leer';
   v.removeAttribute('poster');
@@ -208,11 +232,27 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     img.src = notbildUrl;
     st.vorbild = img;
   };
+  // Abspiel-Zeichen (Nachtrag 06.11.): nur, solange wirklich nichts läuft.
+  // CSS: .tap-film-bild:has(> video[data-tap-tipp-zeichen]).
+  const tippZeichenAus = () => {
+    fenster.clearTimeout(st.tippTimer);
+    st.tippTimer = 0;
+    delete v.dataset.tapTippZeichen;
+  };
+  const tippZeichenBald = () => {
+    if (st.tippTimer || v.dataset.tapTippZeichen) return;
+    st.tippTimer = fenster.setTimeout(() => {
+      st.tippTimer = 0;
+      if (st.weg || st.erstesBild || !v.paused || (st.leinwand && st.leinwand.zeigt)) return;
+      v.dataset.tapTippZeichen = '1';
+    }, TIPP_ZEICHEN_MS);
+  };
   // Notfallplan: Standbild ÜBER dem Video, bis das erste Bild läuft.
   const notbildAn = (grund) => {
     if (st.erstesBild || st.weg) return;
     leinwandAn();
     if (st.leinwand && st.leinwand.zeigt) return;
+    tippZeichenBald();
     if (!notbildUrl || !figurBild) return;
     v.poster = notbildUrl;
     v.dataset.tapNotbild = grund;
@@ -295,6 +335,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
         st.notTimer = 0;
         el.classList.add('tap-film-leinwand-an');
         v.dataset.tapIosLeinwand = 'spielt';
+        tippZeichenAus();
         notbildWeg();
         if (!v.paused) v.pause();
       },
@@ -327,6 +368,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     st.erstesBild = true;
     st.lief = true;
     leinwandAus();
+    tippZeichenAus();
     fenster.clearTimeout(st.notTimer);
     st.notTimer = 0;
     v.dataset.tapIosBild = '1';
@@ -390,6 +432,40 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   };
 
   const abgelehnt = () => notbildAn('abgelehnt');
+  // Nachtrag 06.11.: aus einer Geste heraus (nachholen, TheAlphaTon.jsx). Das
+  // Video im Bild startet nachholen selbst. Hier geht es um das noch nicht
+  // sichtbare: mit Quelle läuft es bis zum ersten Bild an wie beim Anwärmen,
+  // ohne Quelle genügt der Aufruf, die Sperre fällt schon bei play().
+  // Abgelehnt heißt: das war keine Geste (ein Finger, der gescrollt hat), die
+  // nächste zählt.
+  const entsperren = () => {
+    if (st.entsperrt || st.weg || st.erstesBild || v.dataset.tapImBild || !v.paused) return;
+    st.entsperrt = true;
+    v.dataset.tapIosEntsperrt = '1';
+    los();
+    let p;
+    try {
+      p = v.play();
+    } catch {
+      st.entsperrt = false;
+      delete v.dataset.tapIosEntsperrt;
+      return;
+    }
+    if (st.url && !st.warm) {
+      st.waermt = true;
+      warteAufBild();
+    } else {
+      v.pause();
+    }
+    if (p && p.catch) {
+      p.catch((e) => {
+        if (e && e.name !== 'NotAllowedError') return;
+        st.entsperrt = false;
+        st.waermt = false;
+        delete v.dataset.tapIosEntsperrt;
+      });
+    }
+  };
   // Rückfallkette: blob (Speicher) -> kleine MP4 aus dem Netz -> Quellen der
   // Seite (HLS/MP4). Ein Video, das ein Gerät aus dem Speicher nicht
   // dekodiert, fällt beim Anwärmen auf, nicht erst vor den Augen des Kunden.
@@ -420,6 +496,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
     st.sichtbarSeit = 0;
     fenster.clearTimeout(st.notTimer);
     st.notTimer = 0;
+    tippZeichenAus();
     wechsle();
   };
   let letzte = 0;
@@ -533,6 +610,7 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   fenster.addEventListener('scroll', los, {passive: true, once: true});
 
   const ereignisse = [
+    ['play', tippZeichenAus],
     ['playing', warteAufBild],
     ['timeupdate', zeit],
     ['timeupdate', schleife],
@@ -541,14 +619,35 @@ export function bindeIosVideo(v, {spiele, fenster = window, doc = document} = {}
   ];
   ereignisse.forEach(([t, f]) => v.addEventListener(t, f));
 
+  // Prüfschalter ?video=diag (Nachtrag 06.11.): Zustand sichtbar am Gerät.
+  let diag = 0;
+  if (/(^|[?&])video=diag(&|$)/.test(String(fenster.location && fenster.location.search))) {
+    const tafel = doc.createElement('pre');
+    tafel.setAttribute('style', 'position:fixed;left:8px;right:8px;top:8px;z-index:2147483000;margin:0;padding:8px;background:rgba(0,0,0,.85);color:#7CFC00;font:11px/1.35 monospace;white-space:pre-wrap;pointer-events:none');
+    doc.body.appendChild(tafel);
+    const zeile = () => {
+      tafel.textContent = [
+        fenster.navigator.userAgent,
+        `VideoDecoder ${typeof fenster.VideoDecoder} | phase ${st.phase} | warm ${st.warm} | entsperrt ${st.entsperrt}`,
+        `paused ${v.paused} | t ${v.currentTime.toFixed(2)} | ready ${v.readyState} | net ${v.networkState} | err ${v.error ? v.error.code : '-'}`,
+        `imBild ${v.dataset.tapImBild || '-'} | bild ${st.erstesBild} | notbild ${v.dataset.tapNotbild || '-'} | leinwand ${v.dataset.tapIosLeinwand || '-'} | zeichen ${v.dataset.tapTippZeichen || '-'} | wartet ${v.dataset.tapWartetGeste || '-'} | playFehler ${v.dataset.tapPlayFehler || '-'}`,
+      ].join('\n');
+    };
+    zeile();
+    diag = fenster.setInterval(zeile, 500);
+  }
+
   return {
     sichtbar,
     abgelehnt,
+    entsperren,
     // Zeigt das Canvas den Film, bleibt das <video> stehen (kein Sprung an
     // den Anfang mitten im Film).
     zeigtLeinwand: () => Boolean(st.leinwand && st.leinwand.zeigt),
     aufraeumen() {
       leinwandAus();
+      tippZeichenAus();
+      if (diag) fenster.clearInterval(diag);
       st.weg = true;
       if (st.abbruch) st.abbruch.abort();
       fenster.clearTimeout(st.notTimer);
