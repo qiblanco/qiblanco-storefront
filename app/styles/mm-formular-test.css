@@ -57,10 +57,18 @@
   font-weight: 600;
   padding: 0.75rem 1.25rem;
   border: 0;
-  border-radius: 6px;
-  background: #1a1a1a;
-  color: #fff;
+  border-radius: 10px;
+  background: #f2bf72;
+  color: #171310;
   cursor: pointer;
+}
+/* Kit-Knopf (Elina EL-20261106-709630e1). Der Kakao-Kurs steht im Kit Crystal Cacao. */
+#formular-21 .mm-formular__knopf {
+  background: #8b5e3c;
+  color: #fff;
+}
+.mm-formular__knopf:hover {
+  filter: brightness(0.95);
 }
 .mm-formular__knopf:disabled {
   opacity: 0.6;
