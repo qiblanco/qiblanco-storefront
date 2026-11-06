@@ -20,10 +20,11 @@ export const meta = ({data}) => {
       beschreibung: data?.page?.seo?.description,
     }),
     // Das Lektionsvideo als VideoObject. Die Einbettungs-URL kommt aus
-    // app/lib/kurs-video-schema.js und ist DIESELBE, die unten an
-    // <CourseLesson videoEmbed=...> steht — dass die beiden nie
-    // auseinanderlaufen, prüft test/kurs-video-schema.test.mjs Zeichen um
-    // Zeichen, nicht diese Konvention.
+    // app/lib/kurs-video-schema.js. Der Player steht auf dieser Seite NICHT
+    // in der Route, sondern im Shopify-Seitentext unter der Überschrift
+    // „Das Beispiel“: das Video stand doppelt, und Elina hat den oberen
+    // Kasten entfernen lassen (EL-20261106-3de18468). Die Ausnahme führt
+    // test/kurs-video-schema.test.mjs (VIDEO_IM_SEITENTEXT).
     ...kursVideoSignale({
       pfad: '/pages/das-beispiel',
       beschreibung: data?.page?.seo?.description,
@@ -60,7 +61,6 @@ export default function DasBeispielPage() {
       body={page.body}
       courseTitle="Superhuman"
       courseTo="/pages/superhuman"
-      videoEmbed="https://www.youtube.com/embed/p0FoQgQ3t6E?si=35zk0vS1FgwFT7FL"
       prevLesson={{label: 'Vorherige Lektion', to: '/pages/kohaerentes-wasser'}}
     />
   );

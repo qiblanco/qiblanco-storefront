@@ -126,8 +126,29 @@ const ROUTEN = readdirSync(new URL('../app/routes', import.meta.url))
   .map((f) => [f, readFileSync(new URL(`../app/routes/${f}`, import.meta.url), 'utf8')])
   .filter(([, q]) => /<CourseLesson\b/.test(q) && /videoEmbed=/.test(q));
 
+/*
+ * Lektionen ohne Player der Route: ihr Video steht nur im Shopify-Seitentext,
+ * das VideoObject bleibt. /pages/das-beispiel zeigte es doppelt, Elina hat den
+ * oberen Kasten entfernen lassen (EL-20261106-3de18468). Dass das Video im
+ * Text wirklich steht, misst seo-manager/pruefungen/probe_kurs_videoobject.py.
+ */
+const VIDEO_IM_SEITENTEXT = {
+  '/pages/das-beispiel': 'pages.das-beispiel.jsx',
+};
+
 test('es gibt überhaupt Lektionsrouten — sonst misst der nächste Test nichts', () => {
-  assert.ok(ROUTEN.length >= 10, `nur ${ROUTEN.length} Lektionsrouten gefunden`);
+  assert.ok(ROUTEN.length >= 9, `nur ${ROUTEN.length} Lektionsrouten gefunden`);
+});
+
+test('eine Lektion mit Video im Seitentext hat keinen Player, aber ihren Knoten', () => {
+  for (const [pfad, datei] of Object.entries(VIDEO_IM_SEITENTEXT)) {
+    const quelle = readFileSync(new URL(`../app/routes/${datei}`, import.meta.url), 'utf8');
+    assert.match(quelle, /<CourseLesson\b/, `${datei}: rendert keine Lektion mehr`);
+    assert.doesNotMatch(quelle, /videoEmbed=/, `${datei}: zeigt das Video wieder doppelt`);
+    assert.ok(quelle.includes(`pfad: '${pfad}'`), `${datei}: kursVideoSignale ohne pfad`);
+    assert.ok(KURS_VIDEOS[videoKennung(LEKTIONSVIDEOS[pfad])], `${pfad}: Kennung fehlt in KURS_VIDEOS`);
+    assert.equal(kursVideoSignale({pfad}).length, 1, `${pfad}: es entsteht kein Knoten`);
+  }
 });
 
 test('jede Lektionsroute ist verdrahtet und Player-URL == Tabellen-URL', () => {
@@ -156,14 +177,18 @@ test('jede Lektionsroute ist verdrahtet und Player-URL == Tabellen-URL', () => {
 });
 
 test('die Tabelle enthält keinen Eintrag ohne Route und keinen ohne Ernte', () => {
-  const pfadeDerRouten = new Set(
-    ROUTEN.map(([, q]) => (q.match(/\.\.\.kursVideoSignale\(\{\s*\n\s*pfad: '([^']+)'/) || [])[1]),
-  );
+  const pfadeDerRouten = new Set([
+    ...ROUTEN.map(([, q]) => (q.match(/\.\.\.kursVideoSignale\(\{\s*\n\s*pfad: '([^']+)'/) || [])[1]),
+    ...Object.keys(VIDEO_IM_SEITENTEXT),
+  ]);
   for (const [pfad, url] of Object.entries(LEKTIONSVIDEOS)) {
     assert.ok(pfadeDerRouten.has(pfad), `LEKTIONSVIDEOS['${pfad}'] hat keine Route`);
     assert.ok(KURS_VIDEOS[videoKennung(url)], `${pfad}: Kennung fehlt in KURS_VIDEOS`);
   }
-  assert.equal(Object.keys(LEKTIONSVIDEOS).length, ROUTEN.length);
+  assert.equal(
+    Object.keys(LEKTIONSVIDEOS).length,
+    ROUTEN.length + Object.keys(VIDEO_IM_SEITENTEXT).length,
+  );
 });
 
 test('keine zwei Lektionsrouten zeigen auf dasselbe Video', () => {
