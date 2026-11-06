@@ -1,0 +1,71 @@
+/*
+ * /pages/superhuman-kurs-bestatigung-b (EL-20261106-e3d6d1db). Übernimmt die
+ * Maße der US-Seite class-confirmation (Theme-Datei apple-seite.css, .ap-kopf,
+ * .ap-sektion, .ap-kapitel--ohne-bild), gemessen bei 390 und 1280 px. Abstände und Farben
+ * sind --as-*-Tokens aus apple-seite.css. Die Titelgrößen stehen als Werte da
+ * (H1 40/56 px, H2 28/36 px) und tragen !important: sie folgen der US-Skala,
+ * und reset.css setzt h1/h2 am Handy selbst mit !important kleiner.
+ *
+ * Der Seiten-Selektor steht vor jeder Regel, weil AppleSeite ihr Token-CSS im
+ * Körper lädt, also nach diesem Stylesheet: gleiche Spezifität verlöre.
+ */
+[data-apple-seite='superhuman-kurs-bestatigung-b'] {
+  padding-bottom: var(--as-s-8);
+}
+[data-apple-seite='superhuman-kurs-bestatigung-b'] :where(h1, h2, p) {
+  text-shadow: none;
+}
+[data-apple-seite='superhuman-kurs-bestatigung-b'] .sb-kopf,
+[data-apple-seite='superhuman-kurs-bestatigung-b'] .sb-sektion {
+  max-width: var(--as-breite);
+  margin-inline: auto;
+  padding-inline: var(--as-s-2);
+}
+[data-apple-seite='superhuman-kurs-bestatigung-b'] .sb-kopf {
+  padding-block: var(--as-s-6) 0;
+}
+[data-apple-seite='superhuman-kurs-bestatigung-b'] .sb-sektion {
+  margin-top: calc(var(--as-s-8) * 2);
+  padding-block: 0;
+}
+[data-apple-seite='superhuman-kurs-bestatigung-b'] .as-etikett {
+  width: fit-content;
+  margin: 0 0 var(--as-s-1);
+  font-size: var(--as-fs-1);
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--as-grau);
+}
+[data-apple-seite='superhuman-kurs-bestatigung-b'] .as-h1 {
+  font-size: 2.5rem !important;
+  font-weight: 700;
+  color: var(--as-tinte);
+  line-height: 1.05;
+}
+[data-apple-seite='superhuman-kurs-bestatigung-b'] .as-unter {
+  margin: var(--as-s-3) 0 0;
+  line-height: 1.3;
+}
+[data-apple-seite='superhuman-kurs-bestatigung-b'] .as-h2 {
+  font-size: 1.75rem !important;
+  font-weight: 700;
+  color: var(--as-tinte);
+  line-height: 1.15;
+}
+[data-apple-seite='superhuman-kurs-bestatigung-b'] .as-absatz {
+  font-size: var(--as-fs-3);
+  line-height: 1.47;
+}
+@media (min-width: 750px) {
+  [data-apple-seite='superhuman-kurs-bestatigung-b'] .as-h1 {
+    font-size: 3.5rem !important;
+  }
+  [data-apple-seite='superhuman-kurs-bestatigung-b'] .as-h2 {
+    font-size: 2.25rem !important;
+  }
+}
+@media (min-width: 1024px) {
+  [data-apple-seite='superhuman-kurs-bestatigung-b'] .sb-kopf {
+    padding-block-start: var(--as-s-8);
+  }
+}
