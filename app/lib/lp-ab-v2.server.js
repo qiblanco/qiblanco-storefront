@@ -396,7 +396,7 @@ export const E6 = Object.freeze({
 });
 
 /** Code-Schalter der letzten Runde; false = kein Besucher auf B über E6. */
-export const E6_AKTIV = false;
+export const E6_AKTIV = true;
 
 /**
  * E6 läuft nur, wenn sein Code-Schalter steht, die Env ihn nicht abschaltet (NUR
