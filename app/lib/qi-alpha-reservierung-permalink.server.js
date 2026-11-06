@@ -15,7 +15,7 @@
 import {
   istSchluessel,
   nummerAusVariantenTitel,
-  permalinkReservierung,
+  reservierungsMerkmale,
   reservierungZu,
 } from '~/lib/qi-alpha-reservierung';
 import {RESERVIERUNGEN} from '~/lib/qi-alpha-reservierungen.server';
@@ -95,4 +95,33 @@ export async function reservierungAmPermalink({storefront, zeilen, schluessel}) 
     }
   }
   return permalinkReservierung(zeilen, nummerJeVariante, reservierung);
+}
+
+/**
+ * RATEN IM PREMIUM-BEREICH (Job 20261101-prio10-qi-alpha-premium-checkout-
+ * raten): der Rest-Link der geteilten Zahlung kommt als Warenkorb-Permalink
+ * /cart/<qi>:1,<nummer>:1[,<kette>:1]?discount=<CODE>&reservierung=<schlüssel>
+ * zurück. Hier bekommt jede Nummern-Zeile, deren Nummer zu GENAU dieser
+ * Reservierung gehört, Schlüssel und Namen als Zeilen-Merkmal — dieselben
+ * wie beim Kauf über die Kaufseite. Jede andere Zeile bleibt, wie sie ist;
+ * eine fremde reservierte Nummer nimmt die Sperre danach heraus.
+ * `nummerJeVariante`: Map Varianten-GID -> Nummer (nur Wunschnummern).
+ * Hier und nicht in lib/qi-alpha-reservierung.js: jene Datei hängt über den
+ * Warenkorb an jeder Seite, diese Regel braucht nur der Permalink.
+ */
+export function permalinkReservierung(zeilen, nummerJeVariante, reservierung) {
+  const namen = new Map(
+    (reservierung?.nummern || []).map((x) => [Number(x.n), x.name]),
+  );
+  return (zeilen || []).map((z) => {
+    const n = nummerJeVariante?.get(z?.merchandiseId);
+    if (!istSchluessel(reservierung?.schluessel) || !namen.has(n)) return z;
+    return {
+      ...z,
+      attributes: [
+        ...(z.attributes || []),
+        ...reservierungsMerkmale(reservierung.schluessel, namen.get(n)),
+      ],
+    };
+  });
 }

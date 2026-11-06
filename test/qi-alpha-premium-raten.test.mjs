@@ -36,6 +36,9 @@ const WURZEL = join(dirname(fileURLToPath(import.meta.url)), '..');
 const lies = (f) => readFileSync(join(WURZEL, f), 'utf8');
 const tz = await import(join(WURZEL, 'app/lib/qi-alpha-teilzahlung.js'));
 const rs = await import(join(WURZEL, 'app/lib/qi-alpha-reservierung.js'));
+const pm = await import(
+  join(WURZEL, 'app/lib/qi-alpha-reservierung-permalink.server.js')
+);
 const VERTRAG_PFAD =
   process.env.QA_VERTRAG ||
   '/srv/openclaw/shared-state/qi-alpha-teilzahlung/config/vertrag.json';
@@ -100,7 +103,7 @@ test('Permalink-Regel: nur Nummern-Zeilen DIESER Reservierung bekommen Schlüsse
     [V(902), 2],
     [V(988), 88],
   ]);
-  const aus = rs.permalinkReservierung(zeilen, nummern, res);
+  const aus = pm.permalinkReservierung(zeilen, nummern, res);
   assert.deepEqual(aus[1].attributes, [
     {key: '_reservierung', value: S},
     {key: 'Reservierung', value: 'Daniela'},
@@ -109,7 +112,7 @@ test('Permalink-Regel: nur Nummern-Zeilen DIESER Reservierung bekommen Schlüsse
   assert.equal(aus[2].attributes, undefined, 'fremde reservierte Nummer ohne Merkmal');
   assert.equal(aus[3].attributes, undefined, 'Kette ohne Merkmal');
   // Ohne Reservierung: unverändert.
-  assert.deepEqual(rs.permalinkReservierung(zeilen, nummern, null), zeilen);
+  assert.deepEqual(pm.permalinkReservierung(zeilen, nummern, null), zeilen);
 });
 
 test('NAHT Permalink -> Sperre: Rest-Link mit Schlüssel behält die Nummer, ohne Schlüssel fällt sie', () => {
@@ -117,13 +120,13 @@ test('NAHT Permalink -> Sperre: Rest-Link mit Schlüssel behält die Nummer, ohn
   const zeilen = [{merchandiseId: V(902), quantity: 1}];
   const nummern = new Map([[V(902), 2]]);
   const imKorb = (z, i) => ({id: `l${i}`, nummer: nummern.get(z.merchandiseId), attributes: z.attributes});
-  const mit = rs.permalinkReservierung(zeilen, nummern, res).map(imKorb);
+  const mit = pm.permalinkReservierung(zeilen, nummern, res).map(imKorb);
   assert.deepEqual(rs.reservierungsSperre(mit, LISTE), []);
   const ohne = zeilen.map(imKorb);
   assert.deepEqual(rs.reservierungsSperre(ohne, LISTE), ['l0']);
   // Schlüssel eines FREMDEN Links: die Nummer 2 gehört nicht dazu, also kein
   // Merkmal und die Sperre nimmt sie heraus.
-  const fremd = rs
+  const fremd = pm
     .permalinkReservierung(zeilen, nummern, rs.reservierungZu(LISTE, FREMD))
     .map(imKorb);
   assert.deepEqual(rs.reservierungsSperre(fremd, LISTE), ['l0']);
@@ -177,9 +180,6 @@ test('Verdrahtung: Kaufseite bietet Raten auch im Premium-Bereich, je Gerät; Pe
  * Rest-Korb wäre das QA-REST mit der Anrechnung der 10.000 €. Gemessen an den
  * ECHTEN Server-Listen: ein Rabatt-Schlüssel trägt keine Raten, die übrigen ja.
  */
-const pm = await import(
-  join(WURZEL, 'app/lib/qi-alpha-reservierung-permalink.server.js')
-);
 const {RESERVIERUNGEN} = await import(
   join(WURZEL, 'app/lib/qi-alpha-reservierungen.server.js')
 );
