@@ -19,6 +19,7 @@ import {
   reservierungZu,
 } from '~/lib/qi-alpha-reservierung';
 import {RESERVIERUNGEN} from '~/lib/qi-alpha-reservierungen.server';
+import {RESERVIERUNGS_RABATTE} from '~/lib/qi-alpha-reservierung-rabatte.server';
 import {addonArt} from '~/lib/qi-master-addons';
 
 const KANONISCH_RX = /^gid:\/\/shopify\/ProductVariant\/[1-9]\d{0,19}$/;
@@ -37,9 +38,21 @@ const VARIANTEN_QUERY = `#graphql
   }
 `;
 
-/** Kennt die Server-Liste diesen Schlüssel (Global Deutsch-Shop)? */
+/*
+ * LINK MIT EIGENEM RABATT: KEINE RATEN (Job 20261101-prio10-qi-alpha-premium-
+ * raten-deploy). Am Link 2+99 setzt der Server seit 02.11.2026 genau seinen
+ * Code und wirft jeden anderen heraus (rabattCodeKorrektur, „kein weiterer
+ * Rabatt kombinierbar“). Im Rest-Korb der Raten wäre das der Code QA-REST mit
+ * der Anrechnung der 10.000 €. Deshalb gilt so ein Schlüssel hier als
+ * unbekannt: kein Merkmal an Bestellung 1, kein Schlüssel am Rest-Link.
+ */
+const mitRabatt = (schluessel) => Boolean(RESERVIERUNGS_RABATTE?.[schluessel]);
+
+/** Darf dieser Schlüssel die Raten tragen (bekannt, ohne eigenen Rabatt)? */
 export function reservierungBekannt(schluessel) {
-  return Boolean(reservierungZu(RESERVIERUNGEN, schluessel));
+  return (
+    Boolean(reservierungZu(RESERVIERUNGEN, schluessel)) && !mitRabatt(schluessel)
+  );
 }
 
 /**
@@ -49,7 +62,7 @@ export function reservierungBekannt(schluessel) {
  * Kunde zahlte den Rest ohne seine Nummer.
  */
 export async function reservierungAmPermalink({storefront, zeilen, schluessel}) {
-  if (!istSchluessel(schluessel)) return zeilen;
+  if (!istSchluessel(schluessel) || mitRabatt(schluessel)) return zeilen;
   const reservierung = reservierungZu(RESERVIERUNGEN, schluessel);
   if (!reservierung) return zeilen;
   const ids = [

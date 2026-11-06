@@ -16,8 +16,21 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
+import {registerHooks} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
+
+// Server-Dateien mit `~/`-Importen (wie kakao-set-zeile-server.test.mjs).
+const APP = new URL('../app/', import.meta.url).href;
+registerHooks({
+  resolve(spez, kontext, naechster) {
+    if (spez.startsWith('~/')) {
+      const pfad = APP + spez.slice(2);
+      return naechster(/\.(js|jsx|mjs)$/.test(pfad) ? pfad : pfad + '.js', kontext);
+    }
+    return naechster(spez, kontext);
+  },
+});
 
 const WURZEL = join(dirname(fileURLToPath(import.meta.url)), '..');
 const lies = (f) => readFileSync(join(WURZEL, f), 'utf8');
@@ -135,7 +148,7 @@ test('NAHT Vertrag: Merkmal, Parameter und Schlüssel-Form = vertrag.json Abschn
 test('Verdrahtung: Kaufseite bietet Raten auch im Premium-Bereich, je Gerät; Permalink setzt den Schlüssel', () => {
   const seite = lies('app/components/campaign/TheAlphaShop.jsx');
   assert.doesNotMatch(seite, /ratenAn = !premium/, 'Premium ohne Raten (alter Stand)');
-  assert.match(seite, /const ratenAn = ratenMarkt\(\{waehrung, land\}\)/);
+  assert.match(seite, /const ratenAn = !rabatt && ratenMarkt\(\{waehrung, land\}\)/);
   assert.match(seite, /ratenJeGeraet = premium && einheiten\.length > 1/);
   assert.match(seite, /reservierung: ratenGeraet\?\.name \? reservierung\.schluessel : null/);
   const daten = lies('app/components/campaign/the-alpha-shop-daten.js');
@@ -155,4 +168,82 @@ test('Verdrahtung: Kaufseite bietet Raten auch im Premium-Bereich, je Gerät; Pe
     lies('app/lib/qi-alpha-teilzahlung.js'),
     /qi-alpha-reservierungen\.server/,
   );
+});
+
+/*
+ * LINK MIT EIGENEM RABATT (Job 20261101-prio10-qi-alpha-premium-raten-deploy):
+ * am Link 2+99 setzt rabattCodeKorrektur seit 02.11.2026 genau seinen Code und
+ * nimmt jeden anderen heraus, sobald eine Zeile den Schlüssel trägt. Im
+ * Rest-Korb wäre das QA-REST mit der Anrechnung der 10.000 €. Gemessen an den
+ * ECHTEN Server-Listen: ein Rabatt-Schlüssel trägt keine Raten, die übrigen ja.
+ */
+const pm = await import(
+  join(WURZEL, 'app/lib/qi-alpha-reservierung-permalink.server.js')
+);
+const {RESERVIERUNGEN} = await import(
+  join(WURZEL, 'app/lib/qi-alpha-reservierungen.server.js')
+);
+const {RESERVIERUNGS_RABATTE} = await import(
+  join(WURZEL, 'app/lib/qi-alpha-reservierung-rabatte.server.js')
+);
+const keinNetz = {
+  CacheNone: () => ({}),
+  query: () => {
+    throw new Error('Storefront gefragt');
+  },
+};
+
+test('Rabatt-Link: Schlüssel gilt für die Raten als unbekannt, kein Merkmal an Bestellung 1', () => {
+  const mitRabatt = Object.keys(RESERVIERUNGS_RABATTE);
+  assert.ok(mitRabatt.length >= 1, 'Messgrundlage: kein Link mit Rabatt in der Liste');
+  for (const k of mitRabatt) {
+    assert.ok(rs.reservierungZu(RESERVIERUNGEN, k), `Rabatt-Schlüssel ohne Reservierung: ${k}`);
+    assert.equal(pm.reservierungBekannt(k), false, k);
+    const q = new URLSearchParams({_qa_vorgang: 'qa-x-1', _qa_reservierung: k});
+    const m = tz.merkmaleAusQuery(q, {reservierungBekannt: pm.reservierungBekannt});
+    assert.equal(m.some((x) => x.key === '_qa_reservierung'), false, k);
+  }
+  const ohne = RESERVIERUNGEN.map((r) => r.schluessel).filter(
+    (k) => !RESERVIERUNGS_RABATTE[k],
+  );
+  assert.ok(ohne.length >= 1, 'Messgrundlage: kein Link ohne Rabatt');
+  for (const k of ohne) assert.equal(pm.reservierungBekannt(k), true, k);
+});
+
+test('Rabatt-Link: Rest-Permalink bleibt unverändert und fragt die Storefront nicht', async () => {
+  const zeilen = [{merchandiseId: V(5), quantity: 1}];
+  for (const k of Object.keys(RESERVIERUNGS_RABATTE)) {
+    const aus = await pm.reservierungAmPermalink({
+      storefront: keinNetz,
+      zeilen,
+      schluessel: k,
+    });
+    assert.equal(aus, zeilen, k);
+  }
+});
+
+test('Link ohne Rabatt: Rest-Permalink setzt Schlüssel und Namen an die Nummer', async () => {
+  const r = RESERVIERUNGEN.find((x) => !RESERVIERUNGS_RABATTE[x.schluessel]);
+  const n = r.nummern[0];
+  const storefront = {
+    CacheNone: () => ({}),
+    query: async () => ({
+      nodes: [
+        {id: V(7), title: `${n.n} / Gold`, product: {handle: 'qi-alpha-wunschnummer'}},
+        {id: V(8), title: 'Default Title', product: {handle: 'qi-alpha'}},
+      ],
+    }),
+  };
+  const aus = await pm.reservierungAmPermalink({
+    storefront,
+    zeilen: [
+      {merchandiseId: V(8), quantity: 1},
+      {merchandiseId: V(7), quantity: 1},
+    ],
+    schluessel: r.schluessel,
+  });
+  const nummer = aus.find((z) => z.merchandiseId === V(7));
+  const werte = Object.fromEntries((nummer.attributes || []).map((a) => [a.key, a.value]));
+  assert.equal(werte[rs.MERKMAL_SCHLUESSEL], r.schluessel);
+  assert.equal(aus.find((z) => z.merchandiseId === V(8)).attributes, undefined);
 });

@@ -226,7 +226,10 @@ export function TheAlphaShop({
   // ihn an die Nummern-Zeile. Ein Ratenvorgang trägt genau ein Gerät (Vertrag
   // des Wächters: ein Qi Alpha®, eine Nummer, eine Kette): ab zwei Geräten
   // läuft die Ratenzahlung je Gerät, nacheinander über denselben Link.
-  const ratenAn = ratenMarkt({waehrung, land});
+  // Ein Link mit eigenem Rabatt (2+99, 1.500 € je Qi Alpha®) bleibt bei
+  // Direktzahlung: sein Code ist mit keinem anderen kombinierbar, auch nicht
+  // mit der Anrechnung im Rest-Link (lib/qi-alpha-reservierung-permalink).
+  const ratenAn = !rabatt && ratenMarkt({waehrung, land});
   const art = ratenAn ? zahlart : 'direkt';
   const ratenJeGeraet = premium && einheiten.length > 1;
   const teilung = ratenJeGeraet ? null : aufteilung({summe, waehrung, land});
