@@ -2,6 +2,8 @@ import {useLoaderData} from 'react-router';
 import {canonicalLink} from '~/lib/seo';
 import {beschreibungTags} from '~/lib/seiten-beschreibung';
 import {KakaoKurs} from '~/components/kurse/KakaoKurs';
+import {KakaoKursApple} from '~/components/apple-seite/lp/KakaoKursApple';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {seitenSignale} from '~/lib/seiten-seo';
 
@@ -38,7 +40,9 @@ export async function loader(args) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args, 'zeremonie-kakao-kurs'); // ✅ Static handle
 
-  return {...deferredData, ...criticalData};
+  // Apple-Fassung A (Grossjob 20261101 crystal-cacao-apple-stil, s03): Schalter
+  // APPLE_SEITE_ZEREMONIE_KAKAO_KURS, Rückweg homepage-bauer/bin/apple-seite zurück.
+  return {...deferredData, ...criticalData, appleSeite: appleSeiteLaden(args.context, 'zeremonie-kakao-kurs')};
 }
 
 /**
@@ -74,8 +78,9 @@ function loadDeferredData({context}) {
 
 export default function KakaoPage() {
   /** @type {LoaderReturnData} */
-  const {page} = useLoaderData();
+  const {appleSeite} = useLoaderData();
 
+  if (appleSeite?.an) return <KakaoKursApple seite={appleSeite.seite} />;
   return (
     <>
      <KakaoKurs /> 

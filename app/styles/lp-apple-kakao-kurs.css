@@ -1,0 +1,106 @@
+/*
+ * APPLE-FASSUNG /pages/zeremonie-kakao-kurs (Grossjob 20261101-GROSSJOB-crystal-
+ * cacao-apple-stil-1zu1-spiegel-videos-selbst-hosten-r2, s03). Abschrift von
+ * lp-apple-superhuman.css (s07-r8 des Grossjobs 20261029), Scope und Formular-Id
+ * (formId 21 statt 13) getauscht. Eigene Datei, nur von
+ * components/apple-seite/lp/KakaoKursApple.jsx geladen. Nur --as-*-Tokens.
+ * Das Formular kommt zur Laufzeit als ActiveCampaign-Embed mit eigenem CSS
+ * (ID-Selektoren, teils !important), deshalb hier mit !important im Scope.
+ */
+[data-apple-seite='zeremonie-kakao-kurs'] .as-kk-anmeldung {
+  scroll-margin-top: var(--as-s-12);
+}
+[data-apple-seite='zeremonie-kakao-kurs'] .as-kk-karte {
+  max-width: 560px;
+  margin: var(--as-s-4) 0 0;
+  padding: var(--as-s-4) var(--as-s-3);
+  background: var(--as-flaeche);
+  border-radius: var(--as-radius);
+  min-height: 264px;
+}
+[data-apple-seite='zeremonie-kakao-kurs'] .as-kk-klein {
+  max-width: 560px;
+  margin: var(--as-s-2) 0 0;
+  color: var(--as-grau);
+  font-size: var(--as-fs-2);
+}
+[data-apple-seite='zeremonie-kakao-kurs'] .as-kk-vorsatz {
+  max-width: 720px;
+  margin-top: var(--as-s-2);
+}
+
+/* ---- ActiveCampaign-Embed (formId 13) ------------------------------------- */
+[data-apple-seite='zeremonie-kakao-kurs'] ._form_21 {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+  font-size: var(--as-fs-3) !important;
+  color: var(--as-tinte) !important;
+}
+[data-apple-seite='zeremonie-kakao-kurs'] ._form_21 ._form-content,
+[data-apple-seite='zeremonie-kakao-kurs'] ._form_21 ._form_element,
+[data-apple-seite='zeremonie-kakao-kurs'] ._form_21 ._field-wrapper,
+[data-apple-seite='zeremonie-kakao-kurs'] ._form_21 ._button-wrapper {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 0 var(--as-s-2) !important;
+  padding: 0 !important;
+  float: none !important;
+  background: none !important;
+}
+[data-apple-seite='zeremonie-kakao-kurs'] ._form_21 * {
+  font-family: inherit !important;
+  font-size: inherit !important;
+}
+[data-apple-seite='zeremonie-kakao-kurs'] ._form_21 ._form-label {
+  display: none !important;
+}
+[data-apple-seite='zeremonie-kakao-kurs'] ._form_21 input:not([type='hidden']) {
+  display: block !important;
+  width: 100% !important;
+  min-height: var(--as-tippziel) !important;
+  margin: 0 !important;
+  padding: var(--as-s-1) var(--as-s-2) !important;
+  box-sizing: border-box !important;
+  background: var(--as-weiss) !important;
+  border: 1px solid var(--as-linie) !important;
+  border-radius: var(--as-s-1) !important;
+  font-family: inherit !important;
+  font-size: var(--as-fs-3) !important;
+  color: var(--as-tinte) !important;
+}
+[data-apple-seite='zeremonie-kakao-kurs'] ._form_21 ._submit {
+  display: block !important;
+  width: 100% !important;
+  min-height: var(--as-tippziel) !important;
+  padding: var(--as-s-1) var(--as-s-3) !important;
+  background: var(--as-gold) !important;
+  border: 0 !important;
+  border-radius: var(--as-s-1) !important;
+  font-family: inherit !important;
+  font-size: var(--as-fs-3) !important;
+  font-weight: 600 !important;
+  color: var(--as-tinte) !important;
+  cursor: pointer;
+}
+
+/* Christians Foto (Datei 1200 px) steht unter 1024 px einspaltig. Ohne Deckel
+   wurde es auf dem Tablet bis 836 CSS-px breit und auf 2x-Bildschirmen
+   hochskaliert (Gate 12 bild-aufloesung, s07-r12). Gleicher Deckel wie das
+   Sprecherbild der Webinar-Seite. */
+@media (max-width: 1023px) {
+  [data-apple-seite='zeremonie-kakao-kurs'] .as-kapitel-bild {
+    max-width: 560px;
+  }
+}
+
+/* Länge des Videos unter dem Titel der Kachel, leiser als die Fragen. */
+[data-apple-seite='zeremonie-kakao-kurs'] .as-kk-dauer {
+  color: var(--as-grau);
+}
