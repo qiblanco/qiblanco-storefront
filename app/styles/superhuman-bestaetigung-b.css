@@ -12,6 +12,9 @@
 [data-apple-seite='superhuman-kurs-bestatigung-b'] {
   padding-bottom: var(--as-s-8);
 }
+[data-apple-seite='superhuman-kurs-bestatigung-b'] :where(h1, h2, p) {
+  text-shadow: none;
+}
 [data-apple-seite='superhuman-kurs-bestatigung-b'] .sb-kopf,
 [data-apple-seite='superhuman-kurs-bestatigung-b'] .sb-sektion {
   max-width: var(--as-breite);
