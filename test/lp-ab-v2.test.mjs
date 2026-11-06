@@ -159,6 +159,9 @@ import {
   E1_AKTIV,
   E2,
   E2_AKTIV,
+  E6,
+  E6_AKTIV,
+  LP_EXP_E6_MARKER,
   LP_EXP_B_PFAD,
   LP_EXP_B2_PFAD,
   LP_EXP_B2_MARKER,
@@ -177,9 +180,10 @@ function entscheideMitE1(request, env, codeSchalter = true, ...weitere) {
   // Die Kurz-Arme K50/K25 belegten vom 28.10. bis 02.11.2026 die Eimer 0..29.
   // Diese Tests prüfen die Mechanik von E1/B2 für sich: B2 steht gepinnt an (im
   // Code seit der A/B-Pause aus), die Kurz-Arme bleiben hier aus, solange ein
-  // Test sie nicht ausdrücklich setzt.
+  // Test sie nicht ausdrücklich setzt. E6 (letzte Runde, Eimer 30..44) ebenso:
+  // er hat einen eigenen Test weiter unten.
   const [b2 = true, k50 = false, k25 = false] = weitere;
-  return entscheideLpExperiment(request, env, codeSchalter, b2, k50, k25);
+  return entscheideLpExperiment(request, env, codeSchalter, b2, k50, k25, false);
 }
 
 /** Request-Stub mit Kopfzeilen (IP + UA), wie Oxygen sie liefert. */
@@ -300,7 +304,7 @@ test('E1 beendet (20.10.2026): Schalter aus, niemand kommt mehr nach B, B2 unver
   let b2 = 0;
   for (let i = 0; i < 20000; i += 1) {
     const ip = `100.${(i >> 16) & 255}.${(i >> 8) & 255}.${i & 255}`;
-    const e = entscheideLpExperiment(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {}, E1_AKTIV, true, false, false);
+    const e = entscheideLpExperiment(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {}, E1_AKTIV, true, false, false, false);
     if (e?.arm === 'b') b += 1;
     if (e?.arm === 'b2') b2 += 1;
     // Je Besucher: B2 bleibt byte-gleich zugeteilt (Arm UND Ziel), ob E1 läuft oder nicht.
@@ -312,7 +316,7 @@ test('E1 beendet (20.10.2026): Schalter aus, niemand kommt mehr nach B, B2 unver
   assert.equal(b, 0);
   assert.ok(b2 / 20000 > 0.14 && b2 / 20000 < 0.16, `B2 ${b2 / 20000}`);
   // Ein Pin auf den abgeschalteten Arm zeigt A, B2 bleibt per Pin erreichbar.
-  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'}), {}, E1_AKTIV, true, false, false), null);
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b`, {ip: '65.108.150.121'}), {}, E1_AKTIV, true, false, false, false), null);
   assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b2`, {ip: '65.108.150.121'}), {}, E1_AKTIV, true, false, false).arm, 'b2');
 });
 
@@ -472,8 +476,8 @@ import {
   experimentKurzAktiv,
 } from '../app/lib/lp-ab-v2.server.js';
 
-/** entscheideLpExperiment mit allen vier Code-Schaltern. */
-const entscheide4 = (req, env, e1, e2, k50, k25) => entscheideLpExperiment(req, env, e1, e2, k50, k25);
+/** entscheideLpExperiment mit den vier alten Code-Schaltern; E6 bleibt hier aus (eigener Test). */
+const entscheide4 = (req, env, e1, e2, k50, k25) => entscheideLpExperiment(req, env, e1, e2, k50, k25, false);
 
 test('Kurz-Arme: Definition, Pfade, Marker; im Code AUS seit der A/B-Pause', () => {
   assert.equal(E3.id, 'szs-e3-gs079');
@@ -491,16 +495,47 @@ test('Kurz-Arme: Definition, Pfade, Marker; im Code AUS seit der A/B-Pause', () 
   assert.notEqual(LP_EXP_K50_MARKER, LP_EXP_K25_MARKER);
 });
 
-test('A/B-Pause (02.11.2026): Auslieferungszustand = alle Arme aus, niemand wird umgelenkt, auch nicht per Pin', () => {
+test('A/B-Pause (02.11.2026): Auslieferungszustand = alte Arme aus, umgelenkt wird höchstens die letzte Runde E6', () => {
   assert.deepEqual([E1_AKTIV, E2_AKTIV, E3_AKTIV, E4_AKTIV], [false, false, false, false]);
+  // Liest E6_AKTIV statt ihn zu pinnen: gilt während der letzten Runde und nach ihrem Ende (Schalter zurück auf false).
+  const imE6 = (b) => {
+    const eimer = besucherEimer(b.ip, b.ua);
+    return E6_AKTIV && eimer >= E6.eimer_ab && eimer < E6.eimer_ab + E6.anteil_prozent;
+  };
   for (const b of POP_B2.slice(0, 5000)) {
-    assert.equal(entscheideLpExperiment(reqK(LP_A, b), {}), null);
+    assert.equal(entscheideLpExperiment(reqK(LP_A, b), {})?.arm ?? 'a', imE6(b) ? 'b' : 'a');
   }
-  for (const pin of ['b', 'b2', 'k50', 'k25']) {
+  for (const pin of ['b2', 'k50', 'k25']) {
     assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=${pin}`, {ip: '10.9.9.9'}), {}), null, pin);
   }
+  assert.equal(entscheideLpExperiment(reqK(`${LP_A}?lp_exp=b`, {ip: '10.9.9.9'}), {})?.arm ?? 'a', E6_AKTIV ? 'b' : 'a');
   // Positivkontrolle: mit Schalter an lenkt derselbe Pin um (der Test sähe sonst nichts)
   assert.equal(entscheide4(reqK(`${LP_A}?lp_exp=b2`, {ip: '10.9.9.9'}), {}, false, true, false, false).arm, 'b2');
+});
+
+test('Letzte Runde E6: Eimer 30..44 = B mit Marker g, 15 %, alle übrigen Besucher A; Pin und Env-Kill', () => {
+  const e6 = (req, env = {}, schalter = true) => entscheideLpExperiment(req, env, false, false, false, false, schalter);
+  let b = 0;
+  for (const p of POP_B2) {
+    const eimer = besucherEimer(p.ip, p.ua);
+    const e = e6(reqK(LP_A, p));
+    if (eimer >= 30 && eimer < 45) {
+      assert.equal(e?.arm, 'b', `Eimer ${eimer}`);
+      assert.ok(e.ziel.startsWith(LP_EXP_B_PFAD) && e.ziel.includes(`lp_m=${LP_EXP_E6_MARKER}`), e.ziel);
+      b += 1;
+    } else {
+      assert.equal(e, null, `Eimer ${eimer}`);
+    }
+  }
+  assert.equal(LP_EXP_E6_MARKER, 'g');
+  assert.ok(Math.abs(b / POP_B2.length - 0.15) < 0.01, `B ${b / POP_B2.length}`);
+  // Pin b zeigt B nur mit Schalter an, Pin a hält auf A, Env-Kill schaltet ab.
+  assert.equal(e6(reqK(`${LP_A}?lp_exp=b`, {ip: '10.9.9.9'})).arm, 'b');
+  assert.equal(e6(reqK(`${LP_A}?lp_exp=b`, {ip: '10.9.9.9'}), {}, false), null);
+  assert.equal(e6(reqK(`${LP_A}?lp_exp=b`, {ip: '10.9.9.9'}), {LP_EXP_SZS_E6_MODE: 'off'}), null);
+  const inE6 = POP_B2.find((p) => { const x = besucherEimer(p.ip, p.ua); return x >= 30 && x < 45; });
+  assert.equal(e6(reqK(LP_A, inE6), {LP_EXP_SZS_E6_MODE: 'off'}), null);
+  assert.equal(e6(reqK(`${LP_A}?lp_exp=a`, inE6)), null);
 });
 
 test('Kurz-Arme mit Schalter an: nur Eimer 0..29 wechseln, B2 und alle übrigen Besucher unverändert', () => {
