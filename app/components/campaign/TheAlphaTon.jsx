@@ -621,6 +621,7 @@ function binde_videos(wurzel, m) {
       p.then(
         () => delete v.dataset.tapWartetGeste,
         (e) => {
+          if (e) v.dataset.tapPlayFehler = e.name;
           if (e && e.name === 'NotAllowedError') {
             v.dataset.tapWartetGeste = '1';
             if (iv) iv.abgelehnt();
@@ -636,6 +637,9 @@ function binde_videos(wurzel, m) {
     aufraeumen.push(() => iv.aufraeumen());
   });
   const nachholen = () => {
+    // Auch das Video, das noch nicht im Bild ist, nimmt die Geste mit (iPhone,
+    // the-alpha-video-ios.js Nachtrag 06.11.): sonst lehnt iOS unten wieder ab.
+    for (const iv of ios.values()) iv.entsperren();
     for (const v of videos) if (v.paused) spiele(v);
   };
   GESTEN.forEach((t) =>

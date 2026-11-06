@@ -275,3 +275,87 @@ test('Rückfall Canvas: ohne VideoDecoder (alter Browser) bleibt es beim Standbi
   assert.equal(iv.zeigtLeinwand(), false);
   iv.aufraeumen();
 });
+
+// Nachtrag 06.11.2026: Christian „man muss immer noch klicken“ (Annas iPhone).
+test('Erster Tipp schaltet frei: Video noch nicht im Bild, play() läuft in der Geste, nur einmal', async () => {
+  const w = welt();
+  let plays = 0;
+  w.v.play = () => {
+    plays += 1;
+    return Promise.resolve();
+  };
+  w.v.pause = () => {};
+  const iv = vi.bindeIosVideo(w.v, {spiele: () => {}, fenster: w.fenster, doc: w.doc});
+  await w.lauf(10);
+  const vorher = plays;
+  iv.entsperren();
+  assert.equal(plays, vorher + 1, 'die Geste ruft play()');
+  assert.equal(w.v.dataset.tapIosEntsperrt, '1');
+  iv.entsperren();
+  assert.equal(plays, vorher + 1, 'zweite Geste nicht nötig');
+  iv.aufraeumen();
+});
+
+test('Erster Tipp: abgelehnt (Finger hat gescrollt, keine Geste) zählt nicht, die nächste Geste versucht es neu', async () => {
+  const w = welt();
+  let plays = 0;
+  w.v.play = () => {
+    plays += 1;
+    return Promise.reject(Object.assign(new Error('x'), {name: 'NotAllowedError'}));
+  };
+  w.v.pause = () => {};
+  const iv = vi.bindeIosVideo(w.v, {spiele: () => {}, fenster: w.fenster, doc: w.doc});
+  await w.lauf(10);
+  const vorher = plays;
+  iv.entsperren();
+  await w.lauf(1);
+  assert.equal(w.v.dataset.tapIosEntsperrt, undefined);
+  iv.entsperren();
+  assert.equal(plays, vorher + 2);
+  await w.lauf(1);
+  iv.aufraeumen();
+});
+
+test('Erster Tipp: ein Video im Bild startet nachholen selbst, entsperren ruft nichts', async () => {
+  const w = welt();
+  let plays = 0;
+  w.v.play = () => {
+    plays += 1;
+    return Promise.resolve();
+  };
+  w.v.pause = () => {};
+  const iv = vi.bindeIosVideo(w.v, {spiele: () => {}, fenster: w.fenster, doc: w.doc});
+  await w.lauf(10);
+  w.v.dataset.tapImBild = '1';
+  const vorher = plays;
+  iv.entsperren();
+  assert.equal(plays, vorher);
+  iv.aufraeumen();
+});
+
+test('nachholen gibt jede Geste an das iPhone-Video weiter', () => {
+  const ton = lies('app/components/campaign/TheAlphaTon.jsx');
+  assert.match(ton, /const nachholen = \(\) => \{[\s\S]{0,260}iv\.entsperren\(\)/);
+});
+
+test('Abspiel-Zeichen: ohne VideoDecoder nach TIPP_ZEICHEN_MS, nicht vorher; ein laufendes Bild nimmt es weg', async () => {
+  const w = welt();
+  const iv = vi.bindeIosVideo(w.v, {spiele: () => {}, fenster: w.fenster, doc: w.doc});
+  await w.lauf(10);
+  w.v.dataset.tapImBild = '1';
+  iv.sichtbar();
+  iv.abgelehnt();
+  assert.equal(w.v.dataset.tapTippZeichen, undefined, 'nicht sofort');
+  await w.lauf(vi.TIPP_ZEICHEN_MS + 10);
+  assert.equal(w.v.dataset.tapTippZeichen, '1');
+  w.feuer('play');
+  assert.equal(w.v.dataset.tapTippZeichen, undefined, 'der Tipp nimmt das Zeichen sofort');
+  w.v.paused = false;
+  w.v.dataset.tapImBild = '1';
+  iv.abgelehnt();
+  await w.lauf(vi.TIPP_ZEICHEN_MS + 10);
+  assert.equal(w.v.dataset.tapTippZeichen, undefined, 'lädt schon: kein Zeichen');
+  iv.aufraeumen();
+  const css = lies('app/styles/the-alpha-premium.css');
+  assert.match(css, /video\[data-tap-tipp-zeichen\]/);
+});

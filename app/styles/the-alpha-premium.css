@@ -1085,6 +1085,36 @@ html:has(main[data-film-seite]) {
   opacity: 1;
 }
 
+/* iPhone, letzte Stufe (Nachtrag 06.11.2026): läuft weder Video noch Canvas,
+   zeigt das Standbild ein großes Abspiel-Zeichen, und der erste Tipp startet
+   den Film (GESTEN, TheAlphaTon.jsx). Das Zeichen fängt keine Tipps ab. */
+.tap-film-bild:has(> video[data-tap-tipp-zeichen])::before,
+.tap-film-bild:has(> video[data-tap-tipp-zeichen])::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+}
+
+.tap-film-bild:has(> video[data-tap-tipp-zeichen])::before {
+  width: 88px;
+  height: 88px;
+  margin: -44px 0 0 -44px;
+  border: 2px solid var(--tap-leise);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.tap-film-bild:has(> video[data-tap-tipp-zeichen])::after {
+  width: 30px;
+  height: 34px;
+  margin: -17px 0 0 -11px;
+  background: var(--tap-weiss);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
 /* Bild und Text passen zusammen auf einen Bildschirm (die Szene erscheint
    erst, wenn sie ganz im Bild ist): das Video gibt dem Text die Höhe ab. */
 .tap-film-mit-text video {
