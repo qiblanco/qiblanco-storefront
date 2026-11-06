@@ -195,21 +195,6 @@ function LieferbarFormular({variantId, anzeige: ersteAnzeige, versatz: ersterVer
       setMeldung('Bitte prüf deine E-Mail-Adresse.');
       return;
     }
-    // Gesperrte Adresse: der Endpunkt nennt den Grund selbst (Feld text).
-    if (status === 403 && antwort && textDa(antwort.text)) {
-      setStand('bereit');
-      setMeldung(antwort.text);
-      return;
-    }
-    // Keine Antwort (Netz weg, Zeitüberschreitung): der Wunsch kann schon gespeichert sein. Wortgleich mit
-    // FEHLER_TEXT.de.unklar in mail-manager/src/mm_formulare.py (Elina EL-20261103-ca2f6465).
-    if (status === 0) {
-      setStand('bereit');
-      setMeldung(
-        'Wir konnten gerade nicht prüfen, ob deine Anmeldung angekommen ist. Schau bitte in dein Postfach. Kommt in ein paar Minuten keine Mail von uns, versuch es noch einmal.',
-      );
-      return;
-    }
     setStand('bereit');
     setMeldung('Das hat gerade nicht geklappt. Bitte versuch es in ein paar Minuten noch einmal.');
   }
