@@ -29,6 +29,7 @@
   padding-block: 0;
 }
 [data-apple-seite='superhuman-kurs-bestatigung-b'] .as-etikett {
+  width: fit-content;
   margin: 0 0 var(--as-s-1);
   font-size: var(--as-fs-1);
   font-weight: 400;
@@ -52,7 +53,6 @@
   line-height: 1.15;
 }
 [data-apple-seite='superhuman-kurs-bestatigung-b'] .as-absatz {
-  max-width: calc(var(--as-breite) * 2 / 3);
   font-size: var(--as-fs-3);
   line-height: 1.47;
 }
