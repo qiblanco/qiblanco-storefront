@@ -19,6 +19,12 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
+import {
+  IOS_LAUFBAHN_PX,
+  iosLaufbahn,
+  iosSchrittPx,
+} from '../app/components/campaign/the-alpha-takt-ios.js';
+import {istIos} from '../app/components/campaign/the-alpha-video-ios.js';
 
 const WURZEL = join(dirname(fileURLToPath(import.meta.url)), '..');
 const lies = (f) => readFileSync(join(WURZEL, f), 'utf8');
@@ -198,4 +204,43 @@ test('Slap-Stop immer: wer oberhalb des Fensters ansetzt, hält in dessen Mitte 
   // loesen() baut die Ereignisse nicht mehr ab (sonst kein Slap-Stop danach).
   const loesen = src.slice(src.indexOf('const loesen'), src.indexOf('const zählen'));
   assert.doesNotMatch(loesen, /abbauen\(\)/);
+});
+
+// Takt am iPhone (Designer-Feedback 06.11.2026, the-alpha-takt-ios.js).
+test('Laufbahn ist laenger als ein langer Wisch (946 px gemessen)', () => {
+  assert.ok(IOS_LAUFBAHN_PX > 946);
+});
+
+test('kurze Buehne wird gestreckt, lange behaelt den Grundtakt', () => {
+  assert.equal(iosSchrittPx(185, 0), 1000);
+  assert.equal(iosSchrittPx(185, 3), 250);
+  assert.equal(iosSchrittPx(185, 9), 185);
+  for (const zahl of [0, 1, 2, 3, 4, 7, 12]) {
+    assert.ok((zahl + 1) * iosSchrittPx(92.5, zahl) >= IOS_LAUFBAHN_PX);
+  }
+});
+
+test('Pruefschalter ?takt: alt, Zahl im Rahmen, sonst Standard', () => {
+  assert.equal(iosLaufbahn('?takt=alt'), false);
+  assert.equal(iosLaufbahn('?takt=1400'), 1400);
+  assert.equal(iosLaufbahn('?takt=5'), IOS_LAUFBAHN_PX);
+  assert.equal(iosLaufbahn(''), IOS_LAUFBAHN_PX);
+});
+
+test('Takt nur auf iOS: Android und Desktop bleiben', () => {
+  assert.equal(istIos({userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) CriOS/141.0'}), true);
+  assert.equal(istIos({userAgent: 'Mozilla/5.0 (Linux; Android 14; SM-S928B) Chrome/141.0 Mobile'}), false);
+  assert.equal(istIos({userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', maxTouchPoints: 0}), false);
+  const jsx = lies('app/components/campaign/TheAlphaPremium.jsx');
+  assert.match(jsx, /kette && istIos\(navigator\) \? iosLaufbahn/);
+  assert.match(jsx, /el\.classList\.add\('tap-ios-takt'\)/);
+});
+
+test('Takt arbeitet nicht gegen den Schwung: kein Snap, Halt nur am Video', () => {
+  const css = lies('app/styles/the-alpha-premium.css');
+  assert.doesNotMatch(css, /scroll-snap-type\s*:\s*y/);
+  const regel = css.match(/\.tap-js\.tap-kette\.tap-ios-takt\s*\{([^}]*)\}/);
+  assert.ok(regel, 'Regel .tap-ios-takt fehlt');
+  assert.match(regel[1], /--tap-schritt-zeile:\s*185px/);
+  assert.doesNotMatch(regel[1], /overflow|snap/);
 });

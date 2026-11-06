@@ -261,6 +261,16 @@ html:has(main[data-film-seite]) {
   margin-top: calc(-100svh + var(--tap-video-luft) + var(--tap-schritt-bild));
 }
 
+/* Takt am iPhone (the-alpha-takt-ios.js; Klasse nur auf iOS): mittleres Tempo,
+   185 px je Zeile, Wort, Absatz und Bild im Verhältnis des Urzustands. Android
+   und Desktop behalten ihren Takt. */
+.tap-js.tap-kette.tap-ios-takt {
+  --tap-schritt-wort: 92.5px;
+  --tap-schritt-zeile: 185px;
+  --tap-schritt-absatz: 308px;
+  --tap-schritt-bild: 308px;
+}
+
 /* Bühnen liegen übereinander: nur was gerade zu sehen ist, nimmt Tipps an
    (sonst finge die nächste Bühne den Ton-Knopf am Video ab). */
 .tap-js.tap-kette .tap-scrub {
