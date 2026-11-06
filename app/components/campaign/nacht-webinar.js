@@ -22,6 +22,10 @@ const FEHLER = {
   400: 'Bitte prüf deine E-Mail-Adresse.',
   geaendert: 'Der Text über dem Knopf hat sich gerade geändert. Bitte lies ihn und klick noch einmal.',
   sonst: 'Das hat gerade nicht geklappt. Bitte versuch es in ein paar Minuten noch einmal.',
+  // Keine Antwort (Netz weg, Zeitüberschreitung): die Anmeldung kann schon gespeichert sein. Wortgleich mit
+  // FEHLER_TEXT.de.unklar in mail-manager/src/mm_formulare.py (Elina EL-20261103-ca2f6465).
+  unklar:
+    'Wir konnten gerade nicht prüfen, ob deine Anmeldung angekommen ist. Schau bitte in dein Postfach. Kommt in ein paar Minuten keine Mail von uns, versuch es noch einmal.',
 };
 
 /** Termin aus /w nur, wenn er vollständig ist (sonst gilt er als fehlend). */
@@ -93,6 +97,7 @@ export function nutzlast({werte, t, anzeige, termin, seite, utm}) {
 /**
  * Was die Seite nach der Antwort des Endpunkts tut (VERTRAG §2).
  * -> {zustand: 'fertig'|'bereit'|'neu_laden', meldung, lead}
+ * status 0 heißt: keine Antwort bekommen (fetch warf), nicht: abgelehnt.
  */
 export function antwortZustand(status, antwort) {
   if (status === 202 && antwort && antwort.ok) {
@@ -101,6 +106,11 @@ export function antwortZustand(status, antwort) {
   if (status === 404) return {zustand: 'bereit', meldung: OEFFNET_BALD, lead: false};
   if (status === 409) return {zustand: 'neu_laden', meldung: FEHLER.geaendert, lead: false};
   if (status === 400) return {zustand: 'bereit', meldung: FEHLER[400], lead: false};
+  // Gesperrte Adresse: der Endpunkt nennt den Grund selbst (Feld text), die Seite zeigt ihn.
+  if (status === 403 && antwort && typeof antwort.text === 'string' && antwort.text.trim()) {
+    return {zustand: 'bereit', meldung: antwort.text, lead: false};
+  }
+  if (status === 0) return {zustand: 'bereit', meldung: FEHLER.unklar, lead: false};
   return {zustand: 'bereit', meldung: FEHLER.sonst, lead: false};
 }
 

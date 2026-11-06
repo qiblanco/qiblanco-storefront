@@ -3,7 +3,7 @@
 // Bordmittel node:test/node:assert, KEIN Netz. Ausführen:
 //   node --test app/components/campaign/nacht-webinar.test.mjs
 // ARME: TERMIN (Text aus /w, ohne Termin kein Datum), ANTWORT (202/404/409/
-// 400/429/503/Netz), LEAD (nur nach 202, Meta nur bei gebootetem Pixel),
+// 400/403/429/503/Netz), LEAD (nur nach 202, Meta nur bei gebootetem Pixel),
 // T (Serverzeit), UTM (Säuberung), KALENDER (F9), SEITE (Quelltext-Pflichten).
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -53,12 +53,41 @@ test('ANTWORT: jeder Zweig des Vertrags', () => {
   assert.equal(L.antwortZustand(404, {fehler: 'formular_unbekannt'}).meldung, L.OEFFNET_BALD);
   assert.equal(L.antwortZustand(409, {fehler: 'einwilligung_veraltet'}).zustand, 'neu_laden');
   assert.match(L.antwortZustand(400, {}).meldung, /E-Mail-Adresse/);
-  for (const s of [429, 503, 0, 500]) {
+  for (const s of [429, 503, 500]) {
     const z = L.antwortZustand(s, null);
     assert.equal(z.zustand, 'bereit');
     assert.equal(z.lead, false);
-    assert.match(z.meldung, /ein paar Minuten/);
+    assert.match(z.meldung, /nicht geklappt.*ein paar Minuten/);
   }
+});
+
+// Elina EL-20261103-ca2f6465: Fehlermeldung nur bei echtem Fehler.
+const UNKLAR =
+  'Wir konnten gerade nicht prüfen, ob deine Anmeldung angekommen ist. Schau bitte in dein Postfach. Kommt in ein paar Minuten keine Mail von uns, versuch es noch einmal.';
+const GESPERRT = 'Diese Adresse ist bei uns gesperrt, zum Beispiel nach einer Abmeldung.';
+
+test('ANTWORT: keine Antwort (Netz weg) sagt "unklar", nie "nicht geklappt"', () => {
+  for (const antwort of [null, {}]) {
+    const z = L.antwortZustand(0, antwort);
+    assert.deepEqual(z, {zustand: 'bereit', meldung: UNKLAR, lead: false});
+    assert.doesNotMatch(z.meldung, /nicht geklappt/);
+  }
+});
+
+test('ANTWORT: 403 zeigt den Sperr-Hinweis des Endpunkts', () => {
+  const z = L.antwortZustand(403, {ok: false, fehler: 'gesperrt', text: GESPERRT});
+  assert.deepEqual(z, {zustand: 'bereit', meldung: GESPERRT, lead: false});
+  // Ohne Text bleibt es beim allgemeinen Satz, nie eine leere Meldung.
+  for (const antwort of [null, {ok: false}, {ok: false, text: '  '}, {ok: false, text: 7}]) {
+    assert.match(L.antwortZustand(403, antwort).meldung, /nicht geklappt/);
+  }
+  // Ein Text zählt nur bei 403: andere Fehlerstatus zeigen nie einen Text aus der Antwort.
+  assert.match(L.antwortZustand(503, {ok: false, text: GESPERRT}).meldung, /nicht geklappt/);
+});
+
+test('ANTWORT: Erfolg bleibt Erfolg (202 mit ok)', () => {
+  const z = L.antwortZustand(202, {ok: true, status: 'bitte_bestaetigen', text: 'Schau in dein Postfach.'});
+  assert.deepEqual(z, {zustand: 'fertig', meldung: 'Schau in dein Postfach.', lead: true});
 });
 
 test('LEAD: qpx immer, Meta nur bei gebootetem Pixel', () => {
