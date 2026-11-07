@@ -90,14 +90,13 @@ export const PRODUKT_BESCHREIBUNGEN = {
   // x0,91 gegen x0,79, Klicks 9 -> 15 gegen 41 -> 44, je 25 Tage vor und
   // nach dem Livegang), also gilt dieselbe Regel jetzt auch hier:
   // Kundenwort vorn, danach nur, was die Seite sichtbar trägt („Schutz vor
-  // E-Smog, 5G & 6G", „Anhänger zum Tragen um den Hals", „Gehäuse aus
-  // Chirurgenstahl, Gitterchip® aus Goldlegierung", „20 Tage zu Hause
+  // E-Smog, 5G & 6G", „Anhänger zum Tragen um den Hals", „20 Tage zu Hause
   // testen"). Vorfassung: „E-Smog ist überall, wo du bist — der QiOne® 2
   // Pro auch. …" (Vorher-Abzug im Job-Ordner).
   '/products/qione-2-pro':
     'Schutz vor E-Smog und 5G am Hals: Der QiOne® 2 Pro reduziert mit ' +
-    'Gitterchip® die Auswirkungen von Elektrosmog. Chirurgenstahl, ' +
-    'Goldlegierung, 20 Tage testen.',
+    'Gitterchip® die Auswirkungen von Elektrosmog. Du testest ihn 20 Tage ' +
+    'zu Hause.',
   // GEO-Maßnahme M1 (2026-10-10, Job 20261010-geo-sageo-m1-kundenwortschatz-
   // strukturfelder-de-us): QiBracelet und QiHome Air sind Arm A, die
   // QiOne-Familie darüber und darunter ist für 28 Tage die Kontrollgruppe
