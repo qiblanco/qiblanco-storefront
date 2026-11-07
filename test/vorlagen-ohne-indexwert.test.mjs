@@ -54,7 +54,7 @@ const SOLL = {
 // ~/lib/vorschau-noindex) und fliegt ebenfalls aus der Sitemap. qibracelet
 // vertritt es.
 const NACHBARN = {
-  products: ['qibracelet', 'crystal-cacao-create', 'qione-2-pro', 'bundle-2x-awake-neu'],
+  products: ['qibracelet', 'qihome-air', 'qione-2-pro', 'bundle-2x-awake-neu'],
   collections: ['zeremonie-kakao', 'all'],
 };
 
