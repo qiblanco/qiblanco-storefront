@@ -28,6 +28,19 @@ const FEHLER = {
     'Wir konnten gerade nicht prüfen, ob deine Anmeldung angekommen ist. Schau bitte in dein Postfach. Kommt in ein paar Minuten keine Mail von uns, versuch es noch einmal.',
 };
 
+/**
+ * Rückfall-Puffer (Elina EL-20261107-af9594f2, Punkt 4; reusables/anmelde-puffer.js):
+ * wartet  während die Seite neu versucht und die Anmeldung schon im Browser liegt;
+ * gemerkt alle Versuche gescheitert, die Anmeldung liegt sicher im Browser und geht
+ *         beim nächsten Versuch raus (Minutentakt, Netz zurück, nächster Seitenaufruf).
+ * Nur wenn der Speicher sie nachweislich hält; sonst gilt FEHLER.unklar wie bisher.
+ */
+export const PUFFER_TEXT = {
+  wartet: 'Wir haben deine Anmeldung. Sie wird gleich übertragen.',
+  gemerkt:
+    'Wir haben deine Anmeldung. Sie wird übertragen, sobald die Verbindung wieder steht. Lass die Seite dafür offen oder schau später noch einmal vorbei. Danach kommt die Mail zum Bestätigen.',
+};
+
 /** Termin aus /w nur, wenn er vollständig ist (sonst gilt er als fehlend). */
 export function terminAus(anzeige) {
   const t = anzeige && anzeige.termin;
