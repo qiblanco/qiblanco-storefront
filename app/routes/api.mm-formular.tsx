@@ -29,8 +29,13 @@ export async function action({request, context}: ActionFunctionArgs) {
   // Technikgrund nur ins Protokoll (Oxygen-Log), nie an den Kunden und nie mit Adresse (Elina EL-20261103-08835161).
   const protokoll = (grund: string, http = 0, detail = '') =>
     console.error(`[mm-formular] formular=${id} grund=${grund} http=${http}${detail ? ' detail=' + detail : ''}`);
-  const antworte = (ok: boolean, weiter: string, fehler = '') => {
-    if (!ohneJs) return data({ok, fehler, weiter: ok && weiter ? weiter : undefined}, {status: ok ? 200 : 400});
+  // http/text: Status und Satz des Endpunkts (0 = nicht erreicht). Der Rückfall-Puffer der Storefront-Formulare
+  // (reusables/anmelde-puffer.js) liest daraus, ob er wiederholen muss; die Mail-Manager-Komponente liest sie nicht.
+  const antworte = (ok: boolean, weiter: string, fehler = '', http = 0, text = '') => {
+    if (!ohneJs) {
+      return data({ok, fehler, weiter: ok && weiter ? weiter : undefined, http, text: text || undefined},
+        {status: ok ? 200 : 400});
+    }
     const herkunft = request.headers.get('Referer') || '/';
     return redirect(ok && weiter ? weiter : herkunft.split('#')[0] + (herkunft.includes('?') ? '&' : '?') +
       'mm-formular=' + (ok ? 'danke' : 'fehler'));
@@ -47,6 +52,11 @@ export async function action({request, context}: ActionFunctionArgs) {
     einwilligung_id: w('einwilligung_id', 20), seite: new URL(request.headers.get('Referer') || request.url).pathname,
     formular_id: id, liste: w('liste', 120), tags: w('tags', 300), erfolgsseite: erfolg,
   };
+  // Zweiter Weg der Storefront-Formulare (Elina EL-20261107-af9594f2, Punkt 4): dieselben Felder wie direkt an
+  // /f/<id>, nur wenn gesendet. anmelde_id macht die Doppelzustellung harmlos (der Endpunkt verwirft Dubletten).
+  const zusatz: Record<string, string> = {anmelde_id: w('anmelde_id', 64), frage: w('frage', 2000),
+    webinar_id: w('webinar_id', 120), utm_content: w('utm_content', 64), variant_id: w('variant_id', 120)};
+  for (const [k, v] of Object.entries(zusatz)) if (v) (nutzlast as Record<string, string>)[k] = v;
   let antwort: {ok?: boolean; fehler?: string} = {};
   let status = 0;
   try {
@@ -59,14 +69,16 @@ export async function action({request, context}: ActionFunctionArgs) {
     status = r.status;
     antwort = await r.json().catch(() => ({}));
   } catch (e) {
-    // Netz/Endpunkt weg: KEIN automatischer Zweitversuch (er wäre eine doppelte Anmeldung).
+    // Netz/Endpunkt weg: KEIN automatischer Zweitversuch hier. Wiederholen darf nur, wer eine anmelde_id
+    // mitschickt (der Rückfall-Puffer im Browser); ohne sie wäre es eine doppelte Anmeldung.
     protokoll('nicht_erreichbar', 0, String((e as Error)?.message ?? e).slice(0, 160));
-    return antworte(false, '', 'nicht_erreichbar');
+    return antworte(false, '', 'nicht_erreichbar', 0);
   }
-  if (antwort.ok) return antworte(true, ERLAUBTE_ZIELE.test(erfolg) ? erfolg : '');
+  const text = typeof (antwort as {text?: unknown}).text === 'string' ? String((antwort as {text?: string}).text) : '';
+  if (antwort.ok) return antworte(true, ERLAUBTE_ZIELE.test(erfolg) ? erfolg : '', '', status, text);
   const grund = antwort.fehler || (status === 429 ? 'zu_viele_anfragen' : 'fehler');
   protokoll(grund, status);
-  return antworte(false, '', grund);
+  return antworte(false, '', grund, status, text);
 }
 
 // Kein GET: die Route ist nur ein Ziel für Formulare.

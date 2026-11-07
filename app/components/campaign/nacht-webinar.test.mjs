@@ -160,3 +160,15 @@ test('SEITE: Marker, noindex, Pflichtsätze, Verbotenes', () => {
   }
   assert.doesNotMatch(seite + route, /2026-11-15|15\.11\.2026|15\. November/);
 });
+
+// Elina EL-20261107-af9594f2, Punkt 4: die Anmeldung geht über den Rückfall-Puffer, nie mehr als nackter fetch.
+test('PUFFER: Seite sendet über zustellen(), zeigt den ehrlichen Satz, schickt beim Aufruf nach', () => {
+  const seite = readFileSync(join(hier, 'NachtWebinarSeite.jsx'), 'utf8');
+  assert.match(seite, /await zustellen\(/);
+  assert.match(seite, /starteNachschicken\(\{endpunkt: ANMELDE_ENDPUNKT\}\)/);
+  assert.match(seite, /data-webinar-zustand="gepuffert"/);
+  assert.doesNotMatch(seite, /fetch\(`\$\{ANMELDE_ENDPUNKT\}\/f\//);
+  assert.match(L.PUFFER_TEXT.wartet, /^Wir haben deine Anmeldung\. Sie wird gleich übertragen\.$/);
+  assert.match(L.PUFFER_TEXT.gemerkt, /^Wir haben deine Anmeldung\./);
+  assert.doesNotMatch(L.PUFFER_TEXT.gemerkt + L.PUFFER_TEXT.wartet, /nicht geklappt|Fehler/);
+});

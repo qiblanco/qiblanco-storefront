@@ -4,6 +4,8 @@ import {ANMELDE_ENDPUNKT, holeAnmeldewege} from '~/components/reusables/Anmeldew
 import {qpxTrack} from '~/lib/qpx-commerce';
 import {FORMULAR, OEFFNET_BALD, THEMA, anzeigeVollstaendig, antwortZustand, icsText} from './nacht-webinar';
 import {kalenderErlaubt, leadSenden, nutzlast, terminAus, terminText, utmContent} from './nacht-webinar';
+import {PUFFER_TEXT} from './nacht-webinar';
+import {beobachten, starteNachschicken, zustellen} from '~/components/reusables/anmelde-puffer';
 
 /**
  * ANMELDESEITE „DIE NACHT ENTSCHEIDET“ (eigene Live-Serie, alle zwei Wochen
@@ -118,12 +120,30 @@ export function Anmeldung({lage, versatz, setLage}) {
   const [stand, setStand] = useState('bereit');
   const [meldung, setMeldung] = useState('');
   const [kalender, setKalender] = useState(null);
+  const gepuffert = useRef(null);
   const {anzeige, weg} = lage;
   const termin = terminAus(anzeige);
 
   useEffect(() => {
     angezeigt.current = Date.now();
+    // Liegengebliebene Anmeldungen (Rückfall-Puffer) beim Seitenaufruf nachschicken.
+    starteNachschicken({endpunkt: ANMELDE_ENDPUNKT});
   }, []);
+
+  // Geht die gepufferte Anmeldung später durch (Takt, Netz zurück), zeigt die Seite das Ergebnis.
+  useEffect(() => {
+    if (stand !== 'gepuffert') return undefined;
+    return beobachten((id, ergebnis) => {
+      if (!gepuffert.current || id !== gepuffert.current.id) return;
+      const z = antwortZustand(ergebnis.status, ergebnis.antwort);
+      if (z.zustand !== 'fertig') return;
+      const {termin: gesendet, utm, topf} = gepuffert.current;
+      if (!topf) leadSenden({qpxTrack, fenster: window, webinarId: gesendet ? gesendet.webinar_id : '', utm, eventId: eventId()});
+      setKalender(kalenderErlaubt(gesendet, Date.now() + versatz.current) ? gesendet : null);
+      setMeldung(z.meldung);
+      setStand('fertig');
+    });
+  }, [stand, versatz]);
 
   if (!anzeigeVollstaendig(anzeige)) {
     return (
@@ -145,21 +165,19 @@ export function Anmeldung({lage, versatz, setLage}) {
     const rest = 1600 - (Date.now() - angezeigt.current);
     if (rest > 0) await new Promise((weiter) => setTimeout(weiter, rest));
     const utm = utmContent(window.location.search);
-    let status = 0;
-    let antwort = null;
-    try {
-      const r = await fetch(`${ANMELDE_ENDPUNKT}/f/${FORMULAR}`, {
-        method: 'POST',
-        credentials: 'omit',
-        headers: {'Content-Type': 'application/json', Accept: 'application/json'},
-        body: JSON.stringify(nutzlast({werte, t, anzeige, termin: gesendet, seite: window.location.pathname, utm})),
-      });
-      status = r.status;
-      antwort = await r.json().catch(() => null);
-    } catch {
-      status = 0;
+    // Rückfall-Puffer: ablegen, bis zu drei Runden direkt und über die Shop-Route (anmelde-puffer.js).
+    const ergebnis = await zustellen(
+      {formular: FORMULAR, felder: nutzlast({werte, t, anzeige, termin: gesendet, seite: window.location.pathname, utm}), t, versatz: versatz.current},
+      {endpunkt: ANMELDE_ENDPUNKT, beiWarten: (gemerkt) => gemerkt && setMeldung(PUFFER_TEXT.wartet)},
+    );
+    if (ergebnis.gepuffert) {
+      gepuffert.current = {id: ergebnis.id, termin: gesendet, utm, topf};
+      setMeldung(PUFFER_TEXT.gemerkt);
+      setStand('gepuffert');
+      starteNachschicken({endpunkt: ANMELDE_ENDPUNKT, sofort: false});
+      return;
     }
-    const z = antwortZustand(status, antwort);
+    const z = antwortZustand(ergebnis.status, ergebnis.antwort);
     if (z.zustand === 'neu_laden') {
       const wege = await holeAnmeldewege({frisch: true}).catch(() => null);
       const neu = wege ? wege.anzeige[FORMULAR] : null;
@@ -174,6 +192,14 @@ export function Anmeldung({lage, versatz, setLage}) {
     }
     setMeldung(z.meldung);
     setStand(z.zustand === 'fertig' ? 'fertig' : 'bereit');
+  }
+
+  if (stand === 'gepuffert') {
+    return (
+      <div className="wn-karte" data-webinar-zustand="gepuffert" data-formular={FORMULAR}>
+        <p className="wn-danke" role="status">{meldung}</p>
+      </div>
+    );
   }
 
   if (stand === 'fertig') {
@@ -226,7 +252,10 @@ export function Anmeldung({lage, versatz, setLage}) {
       <button className="wn-knopf" type="submit" aria-describedby={`${kennung}-einwilligung`} disabled={stand === 'sendet'} data-qa="cta">
         {stand === 'sendet' ? 'Wird gesendet …' : anzeige.knopf}
       </button>
-      {meldung ? (
+      {meldung && stand === 'sendet' ? (
+        <p className="wn-status" role="status">{meldung}</p>
+      ) : null}
+      {meldung && stand !== 'sendet' ? (
         <p className="wn-meldung" role="alert">{meldung}</p>
       ) : null}
     </form>
