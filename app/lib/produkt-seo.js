@@ -84,9 +84,20 @@ export const MARKE = 'Qi Blanco';
  * wird — sie zu setzen würde einen Vollzug vortäuschen, den es nicht gibt.
  */
 export const PRODUKT_BESCHREIBUNGEN = {
+  // GEO-Maßnahme M1, Welle 2 (2026-11-07, Job 20261107-geo-sageo-m1-welle2-
+  // qione-familie): die QiOne-Familie war 28 Tage die Kontrollgruppe (Arm B).
+  // Arm A lag danach in der Search Console nicht unter ihr (Impressionen
+  // x0,91 gegen x0,79, Klicks 9 -> 15 gegen 41 -> 44, je 25 Tage vor und
+  // nach dem Livegang), also gilt dieselbe Regel jetzt auch hier:
+  // Kundenwort vorn, danach nur, was die Seite sichtbar trägt („Schutz vor
+  // E-Smog, 5G & 6G", „Anhänger zum Tragen um den Hals", „Gehäuse aus
+  // Chirurgenstahl, Gitterchip® aus Goldlegierung", „20 Tage zu Hause
+  // testen"). Vorfassung: „E-Smog ist überall, wo du bist — der QiOne® 2
+  // Pro auch. …" (Vorher-Abzug im Job-Ordner).
   '/products/qione-2-pro':
-    'E-Smog ist überall, wo du bist — der QiOne® 2 Pro auch. Sein Gitterchip® ' +
-    'reduziert die Auswirkungen. Original vom Hersteller, 20 Tage risikofrei.',
+    'Schutz vor E-Smog und 5G am Hals: Der QiOne® 2 Pro reduziert mit ' +
+    'Gitterchip® die Auswirkungen von Elektrosmog. Chirurgenstahl, ' +
+    'Goldlegierung, 20 Tage testen.',
   // GEO-Maßnahme M1 (2026-10-10, Job 20261010-geo-sageo-m1-kundenwortschatz-
   // strukturfelder-de-us): QiBracelet und QiHome Air sind Arm A, die
   // QiOne-Familie darüber und darunter ist für 28 Tage die Kontrollgruppe
@@ -128,9 +139,15 @@ export const PRODUKT_BESCHREIBUNGEN = {
   '/products/qi-alpha':
     'Qi Alpha®: Alpha Serie, limitiert auf 111 Stück. \u201eThe One Eye\u201c: ein Naturdiamant, ' +
     'Gitterchip® der zweiten Generation, eigene Goldlegierung. 20 Tage risikofrei.',
+  // M1 Welle 2 (2026-11-07): Kundenwort „Kette" vorn, danach die Angaben der
+  // Seite (Chirurgenstahl 316L, 1,6 mm, Karabinerverschluss, Längen 40 bis
+  // 75 cm, Made in Germany, 20 Tage zu Hause testen). Dieselbe Form trägt die
+  // US-Kette seit 07.10. Vorfassung: „Die passende Kette für deinen QiOne® 2
+  // Pro: hochwertig verarbeitet und angenehm zu tragen, …".
   '/products/qione-kette':
-    'Die passende Kette für deinen QiOne® 2 Pro: hochwertig verarbeitet und ' +
-    'angenehm zu tragen, damit dein Anhänger überall dabei ist.',
+    'Kette für deinen QiOne® 2 Pro aus Chirurgenstahl 316L, 1,6 mm, mit ' +
+    'Karabinerverschluss. Fünf Längen von 40 bis 75 cm, Made in Germany, ' +
+    '20 Tage testen.',
   '/products/necklace-2':
     'Necklace 2 für den Qi Alpha® und QiOne®: 750er ethisches Vollgold oder Chirurgenstahl, ' +
     'Logo des Qi Alpha® und 6-fache Laserung am Verschluss.',
@@ -310,7 +327,17 @@ export function produktBeschreibung(pfad) {
  * @type {Record<string, string>}
  */
 export const PRODUKT_TITEL = {
-  '/products/qione-2-pro': `QiOne® 2 Pro kaufen — 20 Tage risikofrei | ${MARKE}`,
+  // ABGELÖST 2026-11-07 (GEO-Maßnahme M1, Welle 2): wie beim QiBracelet
+  // eine Zeile tiefer. Der Name bleibt im Titel und trifft die Suche nach
+  // „QiOne 2 Pro" weiter; vorn steht jetzt die Frage, mit der neue Besucher
+  // und die KI-Websuche kommen. „20 Tage testen" steht in der
+  // Meta-Beschreibung, die Risikoumkehr bleibt im Suchergebnis. Vorfassung:
+  // „QiOne® 2 Pro kaufen — 20 Tage risikofrei | Qi Blanco".
+  '/products/qione-2-pro': `Anhänger gegen E-Smog und 5G: QiOne® 2 Pro | ${MARKE}`,
+  // QiOne-Kette (M1 Welle 2): bisher galt der Rohtitel „Necklace für QiOne® |
+  // Qi Blanco" der Route. Kunden schreiben „Kette"; „Chirurgenstahl 316L"
+  // steht sichtbar auf der Seite.
+  '/products/qione-kette': `Kette aus Chirurgenstahl: Necklace für QiOne® | ${MARKE}`,
   // QiBracelet, ergänzt 2026-09-11 (Segment s03 des Großjobs
   // 20260911-BAU-produktnamen-bespielen-…): DIESELBE Mechanik wie eine Zeile
   // darüber, an derselben Stelle gemessen. Search Console, Fenster

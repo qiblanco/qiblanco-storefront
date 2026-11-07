@@ -95,10 +95,19 @@ export const meta = () => {
   // steht damit bewusst in der vollen Messpflicht und besteht sie. Wer hier
   // k\u00FCnftig etwas \u00E4ndert, braucht also einen frischen Design-Beleg --
   // das ist kein Hindernis mehr, sondern der Normalfall.
+  // GEO-Maßnahme M1, Welle 2 (2026-11-07, Job 20261107-geo-sageo-m1-welle2-
+  // qione-familie): Kundenwort vorn (E-Smog), Produktname danach, der
+  // Fachbegriff „kohärentes Wasser" erst danach — dieselbe Form wie
+  // /pages/qibracelet-details seit 10.10. Jede Angabe steht sichtbar auf der
+  // Seite („750er Goldlegierung", „Was ist kohärentes Wasser?", „Was Zellen
+  // im Labor unter Strahlung zeigen", „fünf Studien"). Vorfassung (PR #1134):
+  // Titel „QiOne® 2 Pro im Detail | Qi Blanco", Meta „QiOne® 2 Pro im
+  // Detail: wie der Gitterchip® aus 750er Gold Wasser ordnet, …".
   const BESCHREIBUNG =
-    'QiOne\u00AE 2 Pro im Detail: wie der Gitterchip® aus 750er Gold Wasser ' +
-    'ordnet, was kohärentes Wasser im Körper macht und was fünf Studien zeigen.';
-  const titel = 'QiOne\u00AE 2 Pro im Detail | Qi Blanco';
+    'E-Smog und der QiOne\u00AE 2 Pro: wie der Gitterchip® aus 750er ' +
+    'Goldlegierung wirkt, was kohärentes Wasser ist und was fünf Studien an ' +
+    'Zellen unter Strahlung zeigen.';
+  const titel = 'E-Smog-Anhänger QiOne\u00AE 2 Pro: Technik & Studien | Qi Blanco';
   return [
     {title: titel},
     {name: 'description', content: BESCHREIBUNG},
