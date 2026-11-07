@@ -1316,6 +1316,22 @@ export const NUR_ROUTE_SEITEN = [
       'b-ki-c/probe_kauf_the_alpha.py (Kaufweg am Rand, nachbau-audit-Abnahme) ' +
       'und probe.py (Abschnitte der Vorlage), dazu der tägliche Design-Watch.',
   },
+  {
+    pfad: '/pages/best-wearables-for-longevity-2027',
+    lastmod: '2026-10-27T13:00:00Z',
+    grund:
+      'Der Longevity-Guide 2027 „Die besten Wearables für Longevity" ' +
+      '(Grossjob 20261027-pr-page-best-wearables-longevity-2027-messen-vs-' +
+      'zelle, Christian 27.10.2026, Eigner PR-Manager): Messen und Wirken im ' +
+      'Vergleich, Qi Blanco als Kategorie „aktiv wirken“. Die Seite besteht ' +
+      'allein aus der Route pages.best-wearables-for-longevity-2027.jsx und ' +
+      'hat KEIN Shopify-Seitenobjekt; ohne diesen Eintrag stünde sie in ' +
+      'keiner Sitemap. Kein noindex, canonicalLink() in der Route. lastmod ' +
+      'ist die Obergrenze des Merge-Fensters (s02). Wache: claude-jobs/' +
+      '20261027-pr-page-best-wearables-longevity-2027-messen-vs-zelle/s02/' +
+      'probe_live_de.py prüft am ausgelieferten HTML Titel, Kernbotschaft, ' +
+      'Tabelle, FAQ, JSON-LD und jeden internen Link.',
+  },
 ];
 
 /**

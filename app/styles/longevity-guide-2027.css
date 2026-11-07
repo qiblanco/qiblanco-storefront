@@ -1,0 +1,712 @@
+/* ============================================================================
+   longevity-guide-2027.css — Scope-CSS der Seite
+   /pages/best-wearables-for-longevity-2027 (Global Deutsch-Shop).
+
+   Grossjob 20261027-pr-page-best-wearables-longevity-2027-messen-vs-zelle, s02.
+   Rezept: design-meister web-brief (web-soll.yaml v2) und das Token-CSS der
+   Referenzseite app/styles/schlaf-zellen-schutz.css (.lp-a3). Farbe, Gold und
+   Radien kommen aus der Token-Wurzel qb-tokens.css (global geladen).
+
+   Typo-Skala, sieben Stufen, jedes Nachbarpaar 1,11 bis 1,38:
+     14 / 16 / 18 / 20 / 25 / 32 / 44 px (Handy: h1 32, h2 25, Lead 20).
+   Abstand: 8er-Raster, Sektions-Takt 96 / 64 px.
+   Farb-Akte: Weiß (grund), warme Fläche (flaeche), dunkel nur für die
+   Kategorie „Wirken" und den Abschluss. Gold nur auf Handlung (Knöpfe) und
+   Beweis (Studienzahlen, als Gold-Tinte).
+   Radien: 8 px (Knöpfe, Marken) und 16 px (Karten, Bilder).
+   ========================================================================== */
+
+.lg27 {
+  --lg-fs-xs: 0.875rem; /* 14px */
+  --lg-fs-base: 1rem; /* 16px */
+  --lg-fs-md: 1.125rem; /* 18px */
+  --lg-fs-lg: 1.25rem; /* 20px */
+  --lg-fs-xl: 1.5625rem; /* 25px */
+  --lg-fs-h2: 2rem; /* 32px */
+  --lg-fs-h1: 2.75rem; /* 44px */
+
+  --lg-s1: 8px;
+  --lg-s2: 16px;
+  --lg-s3: 24px;
+  --lg-s4: 32px;
+  --lg-s6: 48px;
+  --lg-s8: 64px;
+  --lg-s12: 96px;
+
+  --lg-grund: #ffffff; /* Weiss wie die geteilte Huelle: vier Farbwelten statt fuenf */
+  --lg-flaeche: var(--qb-flaeche, #f8f4ee);
+  --lg-karte: var(--lg-grund);
+  --lg-dunkel: #1a1a1a;
+  --lg-text: var(--qb-text, #2c2a26);
+  --lg-muted: var(--qb-text-gedaempft, #6b665d);
+  --lg-hell: #f8f4ee;
+  --lg-hell-muted: rgba(248, 244, 238, 0.78);
+  --lg-akzent: var(--qb-akzent, rgb(242, 191, 114));
+  --lg-akzent-tinte: var(--qb-akzent-tinte, #856828);
+  --lg-auf-akzent: var(--qb-text-auf-akzent, #2c2a26);
+  --lg-linie: rgba(44, 42, 38, 0.12);
+
+  --lg-r1: 8px;
+  --lg-r2: 16px;
+  --lg-schatten: 0 12px 32px rgba(26, 26, 26, 0.08);
+
+  --lg-mass: 68ch;
+  --lg-breite: 1120px;
+  --lg-breite-schmal: 760px;
+
+  background: var(--lg-grund);
+  color: var(--lg-text);
+  font-size: var(--lg-fs-base);
+  line-height: 1.6;
+}
+
+.lg27 *,
+.lg27 *::before,
+.lg27 *::after {
+  box-sizing: border-box;
+}
+
+.lg27 p {
+  margin: 0 0 var(--lg-s2);
+  max-width: var(--lg-mass);
+}
+
+.lg27 a {
+  color: inherit;
+}
+
+.lg27 a:focus-visible,
+.lg27 summary:focus-visible,
+.lg27 .lg27-tabelle:focus-visible {
+  outline: 2px solid var(--lg-akzent-tinte);
+  outline-offset: 3px;
+}
+
+/* ---- Rahmen ---------------------------------------------------------- */
+
+.lg27-wrap {
+  max-width: var(--lg-breite);
+  margin: 0 auto;
+  padding: 0 var(--lg-s3);
+}
+
+.lg27-schmal {
+  max-width: var(--lg-breite-schmal);
+}
+
+.lg27-sek {
+  padding: var(--lg-s12) 0;
+  scroll-margin-top: var(--lg-s12);
+}
+
+.lg27-sek--flaeche {
+  background: var(--lg-flaeche);
+}
+
+.lg27-sek--dunkel {
+  background: var(--lg-dunkel);
+  color: var(--lg-hell);
+}
+
+/* EIN H2-Stil, links, auf jeder Sektion. */
+.lg27 h2 {
+  font-size: var(--lg-fs-h2);
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--lg-s4);
+  text-align: left;
+  max-width: 30ch;
+  color: inherit;
+}
+
+/* EIN H3-Stil. */
+.lg27 h3 {
+  font-size: var(--lg-fs-lg);
+  line-height: 1.4;
+  font-weight: 600;
+  margin: 0 0 var(--lg-s1);
+  color: inherit;
+}
+
+.lg27-eyebrow {
+  font-size: var(--lg-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lg-akzent-tinte);
+  margin: 0 0 var(--lg-s2);
+}
+
+.lg27-text-lead {
+  font-size: var(--lg-fs-md);
+  line-height: 1.65;
+}
+
+.lg27 .lg27-einleitung {
+  font-size: var(--lg-fs-md);
+  color: var(--lg-muted);
+  margin-bottom: var(--lg-s6);
+}
+
+/* ---- Knöpfe ---------------------------------------------------------- */
+
+.lg27-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: var(--lg-s2) var(--lg-s4);
+  border-radius: var(--lg-r1);
+  background: var(--lg-akzent);
+  color: var(--lg-auf-akzent);
+  font-size: var(--lg-fs-md);
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  text-align: center;
+  border: 1px solid transparent;
+  transition: box-shadow 0.2s ease;
+}
+
+.lg27 .lg27-btn {
+  color: var(--lg-auf-akzent);
+}
+
+.lg27-btn:hover {
+  box-shadow: var(--lg-schatten);
+}
+
+.lg27 .lg27-btn--zweit {
+  background: transparent;
+  color: var(--lg-text);
+  border-color: var(--lg-text);
+}
+
+.lg27 .lg27-btn--zweit:hover {
+  background: rgba(44, 42, 38, 0.04);
+  box-shadow: none;
+}
+
+/* ---- Kopf ------------------------------------------------------------ */
+
+.lg27-hero {
+  padding: var(--lg-s12) 0;
+  text-align: center;
+}
+
+.lg27-hero__inner {
+  max-width: 880px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lg27-hero__titel {
+  font-size: var(--lg-fs-h1);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--lg-s3);
+  max-width: 20ch;
+}
+
+.lg27 .lg27-hero__lead {
+  font-size: var(--lg-fs-xl);
+  line-height: 1.45;
+  font-weight: 600;
+  margin: 0 auto var(--lg-s2);
+  max-width: 34ch;
+}
+
+.lg27 .lg27-hero__sublead {
+  font-size: var(--lg-fs-md);
+  color: var(--lg-muted);
+  margin: 0 auto var(--lg-s4);
+  max-width: 48ch;
+}
+
+.lg27-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--lg-s2);
+}
+
+/* ---- Kurz gesagt ----------------------------------------------------- */
+
+.lg27-sek--flaeche .lg27-schmal > .lg27-text-lead:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- Zwei Kategorien ------------------------------------------------- */
+
+.lg27-kategorien {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--lg-s3);
+}
+
+.lg27-kategorie {
+  padding: var(--lg-s6) var(--lg-s4);
+  border-radius: var(--lg-r2);
+  border: 1px solid var(--lg-linie);
+  background: var(--lg-grund);
+}
+
+.lg27 .lg27-kategorie h3 {
+  font-size: var(--lg-fs-xl);
+}
+
+.lg27-kategorie__unter {
+  font-size: var(--lg-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--lg-muted);
+}
+
+.lg27-kategorie p:last-child {
+  margin-bottom: 0;
+}
+
+.lg27-kategorie--wirken {
+  background: var(--lg-dunkel);
+  border-color: var(--lg-dunkel);
+  color: var(--lg-hell);
+}
+
+.lg27-kategorie--wirken .lg27-kategorie__unter {
+  color: var(--lg-hell-muted);
+}
+
+/* ---- Kriterien ------------------------------------------------------- */
+
+.lg27-kriterien {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--lg-s4);
+}
+
+.lg27-kriterium {
+  padding-top: var(--lg-s3);
+  border-top: 1px solid var(--lg-linie);
+}
+
+.lg27-kriterium__nr {
+  display: block;
+  font-size: var(--lg-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--lg-muted);
+  margin-bottom: var(--lg-s2);
+}
+
+.lg27-kriterium p {
+  margin: 0;
+  color: var(--lg-muted);
+}
+
+/* ---- Vergleichstabelle ----------------------------------------------- */
+
+.lg27-tabelle {
+  overflow-x: auto;
+  border: 1px solid var(--lg-linie);
+  border-radius: var(--lg-r2);
+  background: var(--lg-karte);
+  -webkit-overflow-scrolling: touch;
+}
+
+.lg27-tabelle table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--lg-fs-base);
+}
+
+.lg27-tabelle th,
+.lg27-tabelle td {
+  padding: var(--lg-s2);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--lg-linie);
+}
+
+.lg27-tabelle tbody tr:last-child th,
+.lg27-tabelle tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.lg27-tabelle thead th {
+  font-size: var(--lg-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--lg-muted);
+  background: var(--lg-karte);
+}
+
+.lg27-tabelle tbody th {
+  font-weight: 600;
+  width: 22%;
+}
+
+/* Erste Spalte bleibt beim seitlichen Wischen stehen. */
+.lg27-tabelle th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--lg-karte);
+  box-shadow: 1px 0 0 var(--lg-linie);
+}
+
+.lg27-tabelle .lg27-zeile--wirken th,
+.lg27-tabelle .lg27-zeile--wirken td {
+  background: var(--lg-flaeche);
+}
+
+.lg27-tabelle tbody th a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lg27-tabelle tbody th a:hover {
+  color: var(--lg-akzent-tinte);
+}
+
+.lg27-marke {
+  display: inline-block;
+  padding: 2px var(--lg-s1);
+  border-radius: var(--lg-r1);
+  font-size: var(--lg-fs-xs);
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.lg27-marke--wirken {
+  background: var(--lg-dunkel);
+  color: var(--lg-hell);
+}
+
+.lg27-marke--messen {
+  border: 1px solid var(--lg-linie);
+  color: var(--lg-muted);
+}
+
+/* ---- Messende Wearables ------------------------------------------------- */
+
+.lg27-tracker-raster {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--lg-s4) var(--lg-s4);
+}
+
+.lg27-tracker {
+  padding-top: var(--lg-s3);
+  border-top: 1px solid var(--lg-linie);
+}
+
+.lg27-tracker p {
+  margin: 0;
+  color: var(--lg-muted);
+}
+
+/* ---- Aktiv wirken: Produkte ------------------------------------------ */
+
+.lg27-produkte {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--lg-s3);
+}
+
+.lg27-produkt {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: var(--lg-s3);
+  border-radius: var(--lg-r2);
+  border: 1px solid var(--lg-linie);
+  background: var(--lg-karte);
+  text-align: left;
+}
+
+.lg27-produkt__bild {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto var(--lg-s3);
+  border-radius: var(--lg-r2);
+  overflow: hidden;
+  background: var(--lg-karte);
+}
+
+.lg27-produkt__bild img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.lg27-produkt p {
+  margin: 0 0 var(--lg-s2);
+  color: var(--lg-muted);
+}
+
+.lg27 .lg27-produkt__nutzen {
+  color: var(--lg-text);
+  font-weight: 600;
+}
+
+.lg27-produkt .lg27-btn {
+  margin-top: auto;
+  width: 100%;
+}
+
+.lg27-zuhause {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--lg-s1) var(--lg-s2);
+  margin-top: var(--lg-s4);
+  padding: var(--lg-s3) var(--lg-s4);
+  border-radius: var(--lg-r2);
+  border: 1px solid var(--lg-linie);
+  text-decoration: none;
+}
+
+.lg27-zuhause:hover .lg27-zuhause__name {
+  color: var(--lg-akzent-tinte);
+}
+
+.lg27-zuhause__name {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---- Belege (Überschrift, Zahl, Quelle) ------------------------------ */
+
+.lg27-belege {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--lg-s3);
+}
+
+.lg27-beleg {
+  margin: 0;
+  padding: var(--lg-s4) var(--lg-s3);
+  border-radius: var(--lg-r2);
+  background: var(--lg-karte);
+  border: 1px solid var(--lg-linie);
+  display: flex;
+  flex-direction: column;
+}
+
+.lg27-beleg__titel {
+  font-size: var(--lg-fs-base);
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: var(--lg-s2);
+}
+
+.lg27 .lg27-beleg__zahl {
+  font-size: var(--lg-fs-h2);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--lg-akzent-tinte);
+  margin: 0 0 var(--lg-s2);
+  font-variant-numeric: tabular-nums;
+}
+
+.lg27 .lg27-beleg__quelle {
+  margin: auto 0 0;
+  font-size: var(--lg-fs-xs);
+  color: var(--lg-muted);
+}
+
+.lg27 .lg27-belege__fuss {
+  margin: var(--lg-s4) 0 0;
+  color: var(--lg-muted);
+}
+
+.lg27-belege__fuss a {
+  color: var(--lg-text);
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
+.lg27-belege__fuss a:hover {
+  color: var(--lg-akzent-tinte);
+}
+
+/* ---- Kombinieren ----------------------------------------------------- */
+
+.lg27-ziele {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--lg-s4);
+  margin: 0;
+}
+
+.lg27-ziel {
+  padding-top: var(--lg-s3);
+  border-top: 1px solid var(--lg-linie);
+}
+
+.lg27-ziel dt {
+  font-size: var(--lg-fs-lg);
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: var(--lg-s1);
+}
+
+.lg27-ziel dd {
+  margin: 0;
+  color: var(--lg-muted);
+}
+
+/* ---- FAQ ------------------------------------------------------------- */
+
+.lg27-faq {
+  border-top: 1px solid var(--lg-linie);
+}
+
+.lg27-frage {
+  border-bottom: 1px solid var(--lg-linie);
+}
+
+.lg27-frage summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lg-s2);
+  padding: var(--lg-s3) 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.lg27-frage summary::-webkit-details-marker {
+  display: none;
+}
+
+.lg27 .lg27-frage summary h3 {
+  margin: 0;
+  font-size: var(--lg-fs-md);
+}
+
+.lg27-frage summary::after {
+  content: '';
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--lg-text);
+  border-bottom: 2px solid var(--lg-text);
+  transform: rotate(45deg);
+  margin-right: var(--lg-s1);
+  transition: transform 0.2s ease;
+}
+
+.lg27-frage[open] summary::after {
+  transform: rotate(-135deg);
+}
+
+.lg27-frage p {
+  margin: 0 0 var(--lg-s3);
+  color: var(--lg-muted);
+}
+
+/* ---- Abschluss ------------------------------------------------------- */
+
+.lg27-sek--dunkel .lg27-text-lead {
+  color: var(--lg-hell-muted);
+  margin-bottom: var(--lg-s4);
+}
+
+/* ---- Quellen --------------------------------------------------------- */
+
+.lg27-sek--quellen {
+  padding: var(--lg-s8) 0;
+}
+
+.lg27-quellen {
+  margin: 0;
+  padding-left: var(--lg-s3);
+  font-size: var(--lg-fs-xs);
+  color: var(--lg-muted);
+}
+
+.lg27-quellen li {
+  margin-bottom: var(--lg-s1);
+}
+
+/* ---- Breiten --------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  .lg27-produkte,
+  .lg27-belege {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lg27-tracker-raster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 749px) {
+  .lg27 {
+    --lg-fs-h1: 2rem; /* 32px */
+    --lg-fs-h2: 1.5625rem; /* 25px */
+    --lg-fs-xl: 1.25rem; /* 20px */
+  }
+
+  .lg27-sek,
+  .lg27-hero {
+    padding: var(--lg-s8) 0;
+  }
+
+  .lg27-wrap {
+    padding: 0 var(--lg-s2);
+  }
+
+  .lg27-kategorien,
+  .lg27-kriterien,
+  .lg27-tracker-raster,
+  .lg27-ziele {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lg27-kategorie {
+    padding: var(--lg-s4) var(--lg-s3);
+  }
+
+  .lg27-produkte,
+  .lg27-belege {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lg27-produkt__bild {
+    max-width: 280px;
+  }
+
+  .lg27-hero__ctas {
+    flex-direction: column;
+    align-self: stretch;
+  }
+
+  .lg27-hero__ctas .lg27-btn {
+    width: 100%;
+  }
+
+  .lg27-tabelle table {
+    min-width: 640px;
+    font-size: var(--lg-fs-xs);
+  }
+
+  .lg27-tabelle tbody th {
+    width: 128px;
+  }
+}

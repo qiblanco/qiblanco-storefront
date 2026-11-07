@@ -229,6 +229,15 @@ const WEITERFUEHREND = [
     text: 'Ring, Uhr, Matte: was die vermessene Nacht wirklich zeigt und wo sie sich irrt.',
   },
   {
+    // Longevity-Guide 2027 (Grossjob 20261027-pr-page-best-wearables-
+    // longevity-2027-messen-vs-zelle, s02): direkt hinter der Messfrage,
+    // weil der Guide genau sie weiterführt.
+    pfad: '/pages/best-wearables-for-longevity-2027',
+    frage: 'Messen oder wirken?',
+    titel: 'Die besten Wearables für Longevity (Guide 2027)',
+    text: 'Smart Ring, Uhr und Glukosesensor neben Qi Blanco: was misst, was in der Zelle wirkt und wie beides zusammenpasst.',
+  },
+  {
     pfad: '/blogs/wissen/nervensystem-regulieren-trend-innere-ruhe',
     frage: 'Kommen Sie nicht zur Ruhe?',
     titel: 'Nervensystem regulieren: was hinter dem Trend steckt',
