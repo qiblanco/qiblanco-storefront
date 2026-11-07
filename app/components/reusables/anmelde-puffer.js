@@ -350,7 +350,8 @@ let takt = null;
 /**
  * Beim Seitenaufruf: liegengebliebene Anmeldungen sofort nachschicken, danach im
  * Minutentakt und bei 'online', bis der Puffer leer ist. Einmal je Tab, egal wie
- * viele Formulare es aufrufen.
+ * viele Formulare es aufrufen. sofort: false (nach drei gescheiterten Runden)
+ * startet nur den Takt, ohne gleich einen vierten Versuch.
  */
 export function starteNachschicken(d = {}) {
   if (typeof window === 'undefined' || !PUFFER_AN || takt) return;
@@ -366,7 +367,7 @@ export function starteNachschicken(d = {}) {
   if (!offene({speicher: a.speicher, jetzt: a.jetzt()}).length) return;
   takt = {runde, uhr: setInterval(runde, NACHSCHICKEN_TAKT_MS)};
   window.addEventListener('online', runde);
-  runde();
+  if (d.sofort !== false) runde();
 }
 
 /** Für die Tests: Modulzustand zurücksetzen. */

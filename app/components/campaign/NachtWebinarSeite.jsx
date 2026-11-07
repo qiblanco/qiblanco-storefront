@@ -174,7 +174,7 @@ export function Anmeldung({lage, versatz, setLage}) {
       gepuffert.current = {id: ergebnis.id, termin: gesendet, utm, topf};
       setMeldung(PUFFER_TEXT.gemerkt);
       setStand('gepuffert');
-      starteNachschicken({endpunkt: ANMELDE_ENDPUNKT});
+      starteNachschicken({endpunkt: ANMELDE_ENDPUNKT, sofort: false});
       return;
     }
     const z = antwortZustand(ergebnis.status, ergebnis.antwort);

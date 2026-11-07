@@ -294,3 +294,24 @@ test('PUFFER_AN steht auf an (Rückweg ist ein Deploy mit false)', () => {
   assert.equal(P.PUFFER_AN, true);
   assert.deepEqual(P.RUNDEN_PAUSEN_MS, [0, 5000, 15000]);
 });
+
+test('TAKT: nach drei gescheiterten Runden kein sofortiger vierter Versuch, beim Seitenaufruf sofort', async () => {
+  const sp = speicher();
+  await P.zustellen({formular: '15', felder: FELDER, t: T0 - 5000}, deps({speicher: sp, holen: netz(() => 'netz').holen}).d);
+  const n = netz(() => 'netz');
+  const fenster = {addEventListener: () => {}, removeEventListener: () => {}};
+  const vorher = globalThis.window;
+  globalThis.window = fenster;
+  try {
+    P.starteNachschicken({speicher: sp, holen: n.holen, endpunkt: ENDPUNKT, jetzt: () => T0, sofort: false});
+    await new Promise((r) => setTimeout(r, 20));
+    assert.equal(n.aufrufe.length, 0, 'sofort: false darf nicht gleich senden');
+    P._zuruecksetzen();
+    P.starteNachschicken({speicher: sp, holen: n.holen, endpunkt: ENDPUNKT, jetzt: () => T0});
+    await new Promise((r) => setTimeout(r, 20));
+    assert.equal(n.aufrufe.length, 2, 'Seitenaufruf: ein Versuch über beide Wege');
+  } finally {
+    P._zuruecksetzen();
+    globalThis.window = vorher;
+  }
+});
