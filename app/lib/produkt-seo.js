@@ -138,15 +138,16 @@ export const PRODUKT_BESCHREIBUNGEN = {
   '/products/qi-alpha':
     'Qi Alpha®: Alpha Serie, limitiert auf 111 Stück. \u201eThe One Eye\u201c: ein Naturdiamant, ' +
     'Gitterchip® der zweiten Generation, eigene Goldlegierung. 20 Tage risikofrei.',
-  // M1 Welle 2 (2026-11-07): Kundenwort „Kette" vorn, danach die Angaben der
-  // Seite (Chirurgenstahl 316L, 1,6 mm, Karabinerverschluss, Längen 40 bis
-  // 75 cm, Made in Germany, 20 Tage zu Hause testen). Dieselbe Form trägt die
-  // US-Kette seit 07.10. Vorfassung: „Die passende Kette für deinen QiOne® 2
-  // Pro: hochwertig verarbeitet und angenehm zu tragen, …".
+  // BEWUSST NICHT nach der M1-Regel umgeschrieben (Welle 2, 2026-11-07): die
+  // Seite ist geschützte Seite des Gewinners „Qi Blanco kaufen"
+  // (zielsteuerung/config/gewinner.yaml), und genau sie fiel am 03./04.11.
+  // aus den Top 10 (Verlustfall offen, seo-manager/gewinnerschutz/exports/
+  // FAELLE.md). Eine rangrelevante Änderung jetzt verunreinigt die
+  // Ursachenanalyse. Erst wenn der Fall geschlossen ist, dieselbe Regel wie
+  // bei /products/qione-2-pro anwenden.
   '/products/qione-kette':
-    'Kette für deinen QiOne® 2 Pro aus Chirurgenstahl 316L, 1,6 mm, mit ' +
-    'Karabinerverschluss. Fünf Längen von 40 bis 75 cm, Made in Germany, ' +
-    '20 Tage testen.',
+    'Die passende Kette für deinen QiOne® 2 Pro: hochwertig verarbeitet und ' +
+    'angenehm zu tragen, damit dein Anhänger überall dabei ist.',
   '/products/necklace-2':
     'Necklace 2 für den Qi Alpha® und QiOne®: 750er ethisches Vollgold oder Chirurgenstahl, ' +
     'Logo des Qi Alpha® und 6-fache Laserung am Verschluss.',
@@ -333,10 +334,6 @@ export const PRODUKT_TITEL = {
   // Meta-Beschreibung, die Risikoumkehr bleibt im Suchergebnis. Vorfassung:
   // „QiOne® 2 Pro kaufen — 20 Tage risikofrei | Qi Blanco".
   '/products/qione-2-pro': `Anhänger gegen E-Smog und 5G: QiOne® 2 Pro | ${MARKE}`,
-  // QiOne-Kette (M1 Welle 2): bisher galt der Rohtitel „Necklace für QiOne® |
-  // Qi Blanco" der Route. Kunden schreiben „Kette"; „Chirurgenstahl 316L"
-  // steht sichtbar auf der Seite.
-  '/products/qione-kette': `Kette aus Chirurgenstahl: Necklace für QiOne® | ${MARKE}`,
   // QiBracelet, ergänzt 2026-09-11 (Segment s03 des Großjobs
   // 20260911-BAU-produktnamen-bespielen-…): DIESELBE Mechanik wie eine Zeile
   // darüber, an derselben Stelle gemessen. Search Console, Fenster
