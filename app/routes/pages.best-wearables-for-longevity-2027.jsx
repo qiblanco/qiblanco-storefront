@@ -422,12 +422,12 @@ const ALT = {
   '/products/qione-2-pro': 'QiOne® 2 Pro Anhänger, Vorderseite',
   '/products/qibracelet': 'QiBracelet® offener Armreif, Vorderansicht',
   '/products/qione-kette': 'Necklace, Kette für den QiOne®',
-  '/products/the-alpha':
+  '/products/qi-alpha':
     'Qi Alpha®, Vorderseite mit Diamant in goldener Fassung',
 };
 
 const ERSATZBILD = {
-  '/products/the-alpha': {
+  '/products/qi-alpha': {
     url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-01-front.jpg?v=1792849253&width=720',
     width: 720,
     height: 720,
@@ -456,7 +456,7 @@ const GUIDE_PRODUKTE_QUERY = `#graphql
     kette: product(handle: "qione-kette") {
       ...GuideProdukt
     }
-    alpha: product(handle: "the-alpha") {
+    alpha: product(handle: "qi-alpha") {
       ...GuideProdukt
     }
   }

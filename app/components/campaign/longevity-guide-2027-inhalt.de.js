@@ -95,7 +95,7 @@ export const INHALT = {
         kategorie: 'Wirken',
         tut: 'Der Gitterchip® des QiOne® 2 Pro mit Diamant, gefasst in 750er Gold, nummeriert',
         zielgruppe: 'Wer das Beste für ein ganzes Leben tragen will',
-        link: '/products/the-alpha',
+        link: '/products/qi-alpha',
       },
       {
         wearable: 'Oura Ring',
@@ -205,7 +205,7 @@ export const INHALT = {
         name: 'Qi Alpha®',
         nutzen: 'Das Stück, das du ein Leben lang trägst.',
         text: 'Der Gitterchip® des QiOne® 2 Pro mit einem hochreinen Naturdiamanten, gefasst in einer eigenen 750er Goldlegierung, von Hand poliert und nummeriert.',
-        link: '/products/the-alpha',
+        link: '/products/qi-alpha',
         cta: 'Qi Alpha® ansehen',
       },
     ],
