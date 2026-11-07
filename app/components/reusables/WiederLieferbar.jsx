@@ -6,6 +6,7 @@ import {
   holeAnmeldewege as holeWege,
   anmeldeVorschauEigen as vorschauEigen,
 } from './Anmeldeweiche';
+import {beobachten, starteNachschicken, zustellen} from './anmelde-puffer';
 
 /*
  * WIEDER LIEFERBAR — „Benachrichtige mich, wenn wieder lieferbar“ unter dem
@@ -43,6 +44,13 @@ import {
  */
 
 export const LIEFERBAR_FORMULAR = 'lieferbar-dach';
+
+// Rückfall-Puffer (Elina EL-20261107-af9594f2, Punkt 4; anmelde-puffer.js), nur bei nachweislich gemerktem Wunsch.
+const PUFFER_TEXT = {
+  wartet: 'Wir haben deinen Wunsch. Er wird gleich übertragen.',
+  gemerkt:
+    'Wir haben deinen Wunsch. Er wird übertragen, sobald die Verbindung wieder steht. Lass die Seite dafür offen oder schau später noch einmal vorbei. Danach kommt die Mail zum Bestätigen.',
+};
 
 const MIN_ANZEIGE_MS = 1600;
 const MAX_ANZEIGE_MS = 23 * 3600 * 1000;
@@ -118,10 +126,21 @@ function LieferbarFormular({variantId, anzeige: ersteAnzeige, versatz: ersterVer
   const [anzeige, setAnzeige] = useState(ersteAnzeige);
   const [stand, setStand] = useState('bereit');
   const [meldung, setMeldung] = useState('');
+  const gepuffert = useRef('');
 
   useEffect(() => {
     angezeigt.current = Date.now();
+    starteNachschicken({endpunkt: ANMELDE_ENDPUNKT});
   }, []);
+
+  useEffect(() => {
+    if (stand !== 'gepuffert') return undefined;
+    return beobachten((id, ergebnis) => {
+      if (id !== gepuffert.current || ergebnis.status !== 202 || !ergebnis.antwort || !ergebnis.antwort.ok) return;
+      setMeldung(ergebnis.antwort.text || 'Wir haben dir gerade eine Mail geschickt. Bestätige darin deinen Wunsch.');
+      setStand('fertig');
+    });
+  }, [stand]);
 
   async function absenden(ereignis) {
     ereignis.preventDefault();
@@ -136,30 +155,29 @@ function LieferbarFormular({variantId, anzeige: ersteAnzeige, versatz: ersterVer
     const rest = MIN_ANZEIGE_MS - (Date.now() - angezeigt.current);
     if (rest > 0) await new Promise((fertig) => setTimeout(fertig, rest));
 
-    let status = 0;
-    let antwort = null;
-    try {
-      const r = await fetch(
-        `${ANMELDE_ENDPUNKT}/f/${encodeURIComponent(LIEFERBAR_FORMULAR)}`,
-        {
-          method: 'POST',
-          credentials: 'omit',
-          headers: {'Content-Type': 'application/json', Accept: 'application/json'},
-          body: JSON.stringify({
-            email: String(daten.get('email') || ''),
-            website: String(daten.get('website') || ''),
-            t: String(t),
-            variant_id: String(variantId),
-            einwilligung_id: String(anzeige.einwilligung_id),
-            seite: window.location.pathname,
-          }),
+    const ergebnis = await zustellen(
+      {
+        formular: LIEFERBAR_FORMULAR,
+        felder: {
+          email: String(daten.get('email') || ''),
+          website: String(daten.get('website') || ''),
+          variant_id: String(variantId),
+          einwilligung_id: String(anzeige.einwilligung_id),
+          seite: window.location.pathname,
         },
-      );
-      status = r.status;
-      antwort = await r.json().catch(() => null);
-    } catch {
-      status = 0;
+        t,
+        versatz: versatz.current,
+      },
+      {endpunkt: ANMELDE_ENDPUNKT, beiWarten: (gemerkt) => gemerkt && setMeldung(PUFFER_TEXT.wartet)},
+    );
+    if (ergebnis.gepuffert) {
+      gepuffert.current = ergebnis.id;
+      setMeldung(PUFFER_TEXT.gemerkt);
+      setStand('gepuffert');
+      starteNachschicken({endpunkt: ANMELDE_ENDPUNKT, sofort: false});
+      return;
     }
+    const {status, antwort} = ergebnis;
     const fehler = antwort && antwort.fehler;
 
     if (status === 202 && antwort && antwort.ok) {
@@ -214,11 +232,11 @@ function LieferbarFormular({variantId, anzeige: ersteAnzeige, versatz: ersterVer
     setMeldung('Das hat gerade nicht geklappt. Bitte versuch es in ein paar Minuten noch einmal.');
   }
 
-  if (stand === 'fertig') {
+  if (stand === 'fertig' || stand === 'gepuffert') {
     return (
       <div
         className="qb-anmelden qb-lieferbar"
-        data-anmeldeweg="eigen"
+        data-anmeldeweg={stand === 'gepuffert' ? 'gepuffert' : 'eigen'}
         data-formular={LIEFERBAR_FORMULAR}
         data-variante={variantId}
       >
@@ -285,7 +303,7 @@ function LieferbarFormular({variantId, anzeige: ersteAnzeige, versatz: ersterVer
         {anzeige.knopf}
       </button>
       {meldung ? (
-        <p className="qb-anmelden__meldung" role="alert">
+        <p className="qb-anmelden__meldung" role={stand === 'sendet' ? 'status' : 'alert'}>
           {meldung}
         </p>
       ) : null}
