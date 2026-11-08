@@ -24,6 +24,13 @@ export function headers() {
   return {'X-Robots-Tag': 'noindex, nofollow'};
 }
 
+// Die drei Schritte des Ablaufs, wie Elina ihn am 08.11.2026 festgelegt hat (EL-20261108-3a488064).
+const SCHRITTE = [
+  {titel: 'Eintragen', text: 'Vorname und E-Mail-Adresse, ein Klick auf den Knopf.'},
+  {titel: 'Direkt zu den Deals', text: 'Danach landest du sofort auf der Seite mit den Black-Friday-Deals.'},
+  {titel: 'Zugang per E-Mail', text: 'Den Link zu den Deals bekommst du zusätzlich per E-Mail.'},
+];
+
 export default function PreAccess() {
   return (
     <div className="pre-access">
@@ -33,6 +40,17 @@ export default function PreAccess() {
         <p className="pre-access__text">Trag dich kurz ein, danach geht es direkt zu den Deals.</p>
         <MailManagerFormular konfig={KONFIG} direkt={ENDPUNKT} />
       </div>
+      <section className="pre-access__schritte" aria-labelledby="pre-access-so-gehts">
+        <h2 id="pre-access-so-gehts" className="pre-access__zwischentitel">So geht&apos;s</h2>
+        <ol className="pre-access__liste">
+          {SCHRITTE.map((s) => (
+            <li key={s.titel} className="pre-access__schritt">
+              <strong>{s.titel}</strong>
+              <span>{s.text}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
     </div>
   );
 }
