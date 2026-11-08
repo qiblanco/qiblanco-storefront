@@ -62,3 +62,20 @@
 [data-apple-seite^='products-'] .product-main > p.mt-2 {
   display: none;
 }
+
+/* Kopf nach dem Preisanker-Wegfall (s12-r10, shop-tor D4 desktop 92 an der Vorschau): ohne die
+   zwei Zeilen stand der Preis 0 px unter dem Text (A1), und die Überschrift der Kundenstimmen
+   rückte ins erste Fenster an den Kopfblock (K1, dritte linke Kante). Preis mit einem Schritt
+   Abstand zum Text; ab Tablet trennt der Sektionsabstand des Hauses den Kopf von den
+   Kundenstimmen. Nur Abstands-Tokens, keine freien Werte. */
+[data-apple-seite^='products-'] .product-main > [data-section='pdp-buybox'] {
+  margin-top: var(--as-s-3);
+}
+@media (min-width: 768px) {
+  [data-apple-seite^='products-'] .product {
+    margin-bottom: var(--as-s-12);
+  }
+  [data-apple-seite^='products-'] .GoogleRezensionenBereich {
+    padding-top: var(--as-s-6);
+  }
+}
