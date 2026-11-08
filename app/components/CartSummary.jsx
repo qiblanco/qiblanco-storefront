@@ -12,6 +12,7 @@ import {
   NICHT_KOMBINIERBAR_TEXT,
 } from '~/lib/qi-alpha-reservierung';
 import {KasseImBrowser} from '~/components/reusables/KasseImBrowser';
+import {B2bNettoWeg} from '~/components/reusables/B2bNettoWeg';
 
 /**
  * @param {CartSummaryProps}
@@ -91,6 +92,11 @@ export function CartSummary({cart, layout}) {
           der Weg zu Apple Pay / Google Pay führt über die Kasse, nicht über
           diesen Warenkorb (Begründung und Rückweg in reusables/KasseImBrowser.jsx). */}
       {cart.checkoutUrl ? <KasseImBrowser layout={layout} /> : null}
+      {/* Zweiter, ruhiger Weg für EU-Firmen: Preis und Zahlung ohne MwSt
+          (Christian 08.11.2026). Existiert nur, wenn der Server-Weg scharf
+          ist und der Warenkorb ohne Verlust übergeben werden kann
+          (Begründung und Rückweg in reusables/B2bNettoWeg.jsx). */}
+      {cart.checkoutUrl ? <B2bNettoWeg cart={cart} layout={layout} /> : null}
       <PaymentMethods />
     </div>
   );
