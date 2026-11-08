@@ -260,5 +260,12 @@ export const FAQ = {
       f: 'Wie zahle ich in Raten?',
       a: 'Wähle im Schritt Bezahlart „In Raten zahlen“ und an der Kasse PayPal oder Klarna. Du zahlst 12 Monatsraten à {rate12} €, bei Klarna auch bis zu 24. Klarna und PayPal bestätigen die Raten bei der Bestellung. Voraussetzung ist ein Wohnsitz in Deutschland.',
     },
+    // GS-122 (Grossjob km-entw-hebel-umsetzen-seo-top3-zwei-qi-bracelet-de-gs-122-20261018 s02):
+    // greift die Kundenschreibweise „Qi Bracelet“ auf und grenzt vom Qi-Ladestandard ab.
+    // Keine Wirkaussage. Steht auch am Ende von FAQ_QIBRACELET (product-faqs.js).
+    {
+      f: 'Ist das Qi Bracelet ein Qi-Ladegerät?',
+      a: 'Nein. Das QiBracelet® wird auch „Qi Bracelet“ geschrieben und ist das Armband von Qi Blanco mit dem Gitterchip®. Mit dem Qi-Standard für kabelloses Laden hat es nichts zu tun. Es lädt keine Geräte.',
+    },
   ],
 };

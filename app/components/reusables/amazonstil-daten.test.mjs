@@ -72,6 +72,7 @@ test('Kundenfragen: Reihenfolge nach dem Zähler (Tragen, Sauna, Preis/Raten, Ma
     'Wie funktioniert die Finanzierung über Klarna?',
     'Ist das QiBracelet® sicher für Anwender mit Allergien?',
     'Aus welchem Material bestehen die Qi Blanco® Produkte?',
+    'Ist das Qi Bracelet ein Qi-Ladegerät?',
   ]);
   assert.deepEqual(teileFragen('qihome-air', FAQ_QIHOME_AIR).oben.map((it) => it.q), [
     'Wie funktioniert die Finanzierung über Klarna?',

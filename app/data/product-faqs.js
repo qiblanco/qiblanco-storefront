@@ -143,6 +143,11 @@ export const FAQ_QIBRACELET = [
     q: 'Wie funktioniert die Finanzierung über Klarna?',
     a: 'Leg dein QiBracelet® in den Warenkorb und geh zur Kasse. Als Bezahlart wählst du „Klarna – Sofort oder später bezahlen“ und klickst auf „Jetzt Kaufen“, berechnet wird dir dabei noch nichts. Danach landest du im Klarna-Checkout, klickst dort auf „Ratenzahlung“ und suchst dir Laufzeit und Betrag aus. Zum Schluss klickst du noch einmal auf „Jetzt Kaufen“. Ab 25 € Warenwert kannst du in 6 Monatsraten zahlen, ab 500 € in 12 und ab 1000 € in 24 Monatsraten.',
   },
+  {
+    // GS-122: Kundenschreibweise „Qi Bracelet“, Abgrenzung vom Qi-Ladestandard (ans Ende, Indizes bleiben).
+    q: 'Ist das Qi Bracelet ein Qi-Ladegerät?',
+    a: 'Nein. Das QiBracelet® wird auch „Qi Bracelet“ geschrieben und ist das Armband von Qi Blanco mit dem Gitterchip®. Mit dem Qi-Standard für kabelloses Laden hat es nichts zu tun. Es lädt keine Geräte.',
+  },
 ];
 
 export const FAQ_QIHOME_AIR = [
