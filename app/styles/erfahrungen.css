@@ -267,6 +267,26 @@
 .erf__frage dd { margin: 0; }
 .erf p.erf__auch { margin: var(--erf-s1) 0 0; }
 
+/* ─── Im Alltag (2026-11-08, SEO-Maßnahme M-SP-20261017-erfahrungen) ─────── */
+/* Drei Karten ohne Box: getrennt durch die Haarlinie der Videoblöcke, Abstände
+   aus dem 8pt-Grid. Kein neues Token, keine Fläche, kein Radius. */
+.erf__alltag {
+  display: grid;
+  gap: var(--erf-s4);
+  grid-template-columns: 1fr;
+  margin: var(--erf-s4) 0;
+}
+@media (min-width: 900px) {
+  .erf__alltag { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.erf__karte {
+  padding-top: var(--erf-s3);
+  border-top: 1px solid var(--erf-linie);
+}
+.erf p.erf__karte-quelle {
+  color: var(--erf-muted);
+  margin: var(--erf-s1) 0 0;
+}
 /* ─── Abschluss ───────────────────────────────────────────────────────────── */
 .erf__abschluss { background: var(--erf-flaeche); }
 
@@ -353,3 +373,11 @@ body:has(.erf) ._form_15 input[type='submit'] {
    Direkt schlaegt GEERBT — auf dunklem Grund gewinnt sonst der dunkle Fliesstext. */
 body:has(.erf) .footer p,
 body:has(.erf) .footer li { color: inherit; }
+
+/* Der Trustpilot-Scroller (ReviewsSlider) färbt „weiterlesen" in Google-Blau
+   #1565c0. Auf dieser Route ist das eine zweite gesättigte Farbwelt neben dem
+   Gold (design-rubrik 08.11.2026: harmonisch 75, „Fremd-Widgets einfaerben").
+   Hier erbt er die Gold-Tinte, AA-fest auf hellem Grund. */
+.erf .TrustpilotStimmen button[aria-expanded] {
+  color: var(--erf-akzent-tinte);
+}

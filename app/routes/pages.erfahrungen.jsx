@@ -83,11 +83,21 @@ import {isoMitZone} from '~/lib/datum';
  * Seite einlöst. Ohne „| Qi Blanco"-Anhang: die Marke steht schon am Anfang
  * (dieselbe Abwägung wie auf /pages/kritik).
  */
-const TITEL = 'Qi Blanco Erfahrungen: Menschen erzählen in eigenen Videos';
+/**
+ * GEÄNDERT AM 2026-11-08 (SEO-Maßnahme M-SP-20261017-erfahrungen, Grossjob
+ * seo-2026-w43-l26-erfahrungen-d285-…, s02): der Begriff ohne Marke
+ * „Erfahrungen mit Elektrosmog-Schutz" steht jetzt in Titel, Beschreibung und
+ * in der h2 des neuen Abschnitts. Die Marke bleibt vorn im Titel, damit
+ * „qi blanco erfahrungen" nicht verliert. Vorher:
+ * „Qi Blanco Erfahrungen: Menschen erzählen in eigenen Videos" und
+ * „Qi Blanco Erfahrungen aus erster Hand: Menschen erzählen in eigenen Videos
+ * von Schlaf, Energie und Ruhe im Alltag, jedes mit einer Zusammenfassung."
+ */
+const TITEL = 'Qi Blanco Erfahrungen mit Elektrosmog-Schutz: Menschen erzählen';
 
 const BESCHREIBUNG =
-  'Qi Blanco Erfahrungen aus erster Hand: Menschen erzählen in eigenen Videos ' +
-  'von Schlaf, Energie und Ruhe im Alltag, jedes mit einer Zusammenfassung.';
+  'Erfahrungen mit Elektrosmog-Schutz aus erster Hand: Menschen erzählen in ' +
+  'eigenen Videos und auf Trustpilot von Schlaf, Bildschirmarbeit und Reisen.';
 
 /**
  * FAQPage-SCHEMA AUS DEM SICHTBAREN TEXT: `erfahrungenFragen()` ist dieselbe

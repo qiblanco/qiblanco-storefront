@@ -1,8 +1,9 @@
 import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {ERFAHRUNGS_BEITRAEGE} from '~/data/erfahrungen-beitraege';
-import {gruppenNachSprache} from '~/lib/erfahrungen-gruppen';
+import {gruppenNachSprache, sprecherSlug} from '~/lib/erfahrungen-gruppen';
 import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
+import trustpilotDaten from '~/data/trustpilot-bewertungen.json';
 
 /**
  * /pages/erfahrungen — die Erlebnis-Flaeche.
@@ -131,6 +132,8 @@ export function ErfahrungenSeite() {
         </div>
       </section>
 
+      <AlltagAbschnitt />
+
       <section data-section="erf-deutsch">
         <div className="erf__mitte">
           <h2>Auf Deutsch</h2>
@@ -217,6 +220,75 @@ export function ErfahrungenSeite() {
         </div>
       </section>
     </div>
+  );
+}
+
+/**
+ * „Erfahrungen mit Elektrosmog-Schutz im Alltag" (2026-11-08, SEO-Maßnahme
+ * M-SP-20261017-erfahrungen, Grossjob seo-2026-w43-l26-erfahrungen-d285-…,
+ * s02; Text nach dessen KONZEPT.md Abschnitt 1a).
+ *
+ * KEINE NEUE STIMME, KEIN NEUES ZITAT, KEINE NEUE ZAHL: alle drei Menschen
+ * stehen schon auf dieser Seite. Lea D. kommt wortgleich aus dem Trustpilot-
+ * Datenmodul, das auch den Scroller weiter unten speist (JSON ist der Hausweg
+ * für fremden Volltext, Gate 25). Fehlt ihre Bewertung dort einmal, entfällt
+ * die Karte, statt ein Zitat ohne Quelle stehenzulassen. Marion Engelbrecht
+ * und Scott Schwenk sind die Kurzfassung ihrer eigenen Video-Zusammenfassung
+ * (app/data/erfahrungen-beitraege.js); ihr Name springt zu ihrem Video.
+ * Die 20 Tage stehen so auf /pages/faq; „Erfahre es jetzt selbst. 20 Tage
+ * nach Erhalt risikofrei testen" ist Christians eigener Satz aus seinen
+ * Anzeigentexten (menschlichkeit/korpus/gold, 2026-09-30).
+ * TEXT GEGENÜBER DEM KONZEPT GEKÜRZT: der KI-Klang-Richter des Moduls
+ * menschlichkeit (3 von 3) verwarf den Ankündigungssatz, „wortgleich"
+ * und das doppelte „nach eigener Aussage" als Absicherungssprache. Die
+ * Quelle bleibt sichtbar: jeder Name ist der Link auf das Original.
+ */
+const LEA_D_ID = 'trustpilot:692d4bedceda2835eddf7865';
+
+function AlltagAbschnitt() {
+  const lea = trustpilotDaten.bewertungen.find((b) => b.id === LEA_D_ID);
+  return (
+    <section data-section="erf-alltag">
+      <div className="erf__mitte">
+        <h2>Erfahrungen mit Elektrosmog-Schutz im Alltag</h2>
+        <div className="erf__alltag">
+          {lea ? (
+            <article className="erf__karte">
+              <h3>Schlaf</h3>
+              <p>„{lea.text}“</p>
+              <p className="erf__karte-quelle">
+                <a href={lea.link} target="_blank" rel="noopener noreferrer">
+                  {lea.name} auf Trustpilot
+                </a>
+              </p>
+            </article>
+          ) : null}
+          <article className="erf__karte">
+            <h3>Arbeit am Bildschirm</h3>
+            <p>
+              <a href={`#${sprecherSlug('Marion Engelbrecht')}`}>
+                Marion Engelbrecht
+              </a>{' '}
+              ist Business-Coach und sitzt täglich viel am Handy und am Laptop.
+              Müde wird sie dabei nicht mehr.
+            </p>
+          </article>
+          <article className="erf__karte">
+            <h3>Reisen</h3>
+            <p>
+              <a href={`#${sprecherSlug('Scott Schwenk')}`}>Scott Schwenk</a>{' '}
+              war einen Monat in Europa unterwegs und hat sich danach schneller
+              vom Jetlag erholt.
+            </p>
+          </article>
+        </div>
+        <p>
+          Erfahre es jetzt selbst. 20 Tage nach Erhalt risikofrei testen, und
+          wenn es nichts für dich ist, schickst du es ohne Angabe von Gründen
+          zurück.
+        </p>
+      </div>
+    </section>
   );
 }
 
