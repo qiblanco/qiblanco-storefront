@@ -238,8 +238,8 @@ export function ErfahrungenSeite() {
  * Die 20 Tage stehen so auf /pages/faq; „Erfahre es jetzt selbst. 20 Tage
  * nach Erhalt risikofrei testen" ist Christians eigener Satz aus seinen
  * Anzeigentexten (menschlichkeit/korpus/gold, 2026-09-30).
- * TEXT GEGENÜBER DEM KONZEPT GEKÜRZT: der KI-Klang-Richter (menschlichkeit/
- * bin/pruefen --richter, 3 von 3) verwarf den Ankündigungssatz, „wortgleich"
+ * TEXT GEGENÜBER DEM KONZEPT GEKÜRZT: der KI-Klang-Richter des Moduls
+ * menschlichkeit (3 von 3) verwarf den Ankündigungssatz, „wortgleich"
  * und das doppelte „nach eigener Aussage" als Absicherungssprache. Die
  * Quelle bleibt sichtbar: jeder Name ist der Link auf das Original.
  */
