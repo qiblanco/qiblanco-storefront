@@ -280,7 +280,10 @@ test('SSR: Kopf mit Drehung = ein Knopf, ein Preis, das Video sofort, Ersatzbild
   const kopf = html.slice(html.indexOf('data-section="as-hero"'), html.indexOf('data-section="as-band"'));
   assert.equal((kopf.match(/data-as-cta="primary"/g) || []).length, 1, 'genau ein Kaufknopf im Kopf');
   assert.equal((kopf.match(/class="as-preis"/g) || []).length, 1, 'genau ein Preis im Kopf');
-  assert.ok(kopf.indexOf('as-knoepfe') < kopf.indexOf('as-hero-bild'), 'DOM unverändert: Desktop-Reihenfolge');
+  // Seit 08.11.2026 an jeder Breite: Titel, Bild, Knöpfe, Preis - im DOM, nicht nur per CSS-order.
+  assert.ok(kopf.indexOf('as-h1') < kopf.indexOf('as-hero-bild'), 'Titel vor dem Bild');
+  assert.ok(kopf.indexOf('as-hero-bild') < kopf.indexOf('as-knoepfe'), 'Bild vor den Knöpfen (Desktop wie Handy)');
+  assert.ok(kopf.indexOf('as-knoepfe') < kopf.indexOf('class="as-preis"'), 'Knopf vor dem Preis');
   assert.match(kopf, /data-qb-360="qione"/);
   assert.match(kopf, /<video[^>]*src="https:\/\/cdn\.shopify\.com\/[^"]*qb-hero--360-qione-1x1[^"]*\.mp4/);
   assert.match(kopf, /<video[^>]*preload="metadata"/);

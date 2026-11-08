@@ -115,12 +115,15 @@ function AsKnoepfe({cta, cta2, preis}) {
  *   cta2?: {text: string, href: string}, dunkel?: boolean}} props
  */
 /*
- * REIHENFOLGE AUF DEM HANDY (Christian 30.10.2026, Z5: „Da dann auch erst die
- * Knöpfchen, bevor ein Foto kommt, ist auch komisch“): Titel, dann Bild, dann
- * Knöpfe und Preis. Das DOM bleibt, wie es war (ein Knopf, ein Preis, keine
- * Doppelung); unter 750 px löst apple-seite.css .as-hero-text per
- * display: contents auf und ordnet mit `order`. Am Desktop bleibt der Kopf
- * unverändert: Text und Knöpfe, darunter das Bild.
+ * REIHENFOLGE AN JEDER BREITE: Titel, dann Bild, dann Knöpfe und Preis.
+ * Handy seit 30.10.2026 (Christian, Z5: „Da dann auch erst die Knöpfchen, bevor
+ * ein Foto kommt, ist auch komisch“), Desktop und Tablet seit 08.11.2026
+ * (Christian: „Erst das Bild und dann der Knopf. Und auf der Desktop-Version ist
+ * genau andersrum.“). Seitdem steht die Reihenfolge im DOM: Knöpfe und Preis
+ * (AsKnoepfe, ein Fragment) sind direkte Kinder des Kopfs hinter der figure.
+ * So stimmen Bild- und Lesereihenfolge überein, auch für Screenreader. Der
+ * Handy-Block in apple-seite.css (display: contents, order) bleibt und ordnet
+ * dasselbe noch einmal, er widerspricht dem DOM nicht.
  */
 export function AppleHero({overline, titel, unter, bild, cta, cta2, preis, dunkel = false}) {
   return (
@@ -129,11 +132,11 @@ export function AppleHero({overline, titel, unter, bild, cta, cta2, preis, dunke
         {overline ? <p className="as-overline">{mitMarkeR(overline)}</p> : null}
         <h1 className="as-h1">{mitMarkeR(titel)}</h1>
         {unter ? <p className="as-unter">{mitMarkeR(unter)}</p> : null}
-        <AsKnoepfe cta={cta} cta2={cta2} preis={preis} />
       </div>
       <figure className="as-hero-bild">
         <AsBild bild={bild} sizes="(min-width: 1200px) 1200px, 100vw" sofort />
       </figure>
+      <AsKnoepfe cta={cta} cta2={cta2} preis={preis} />
     </section>
   );
 }

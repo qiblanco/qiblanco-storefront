@@ -198,7 +198,9 @@
  * HANDY: Titel -> Bild -> Knöpfe und Preis (Christian 30.10.2026, Z2/Z5).
  * .as-hero-text löst sich auf, seine Kinder werden Flex-Kinder des Kopfs und
  * lassen sich zusammen mit der figure ordnen. Im DOM bleibt alles einmal.
- * Ab 750 px gilt dieser Block nicht: dort steht der Kopf wie bisher.
+ * Seit 08.11.2026 steht dieselbe Reihenfolge im DOM von AppleHero (Knöpfe und
+ * Preis hinter der figure), also auch ab 750 px. Dieser Block ordnet am Handy
+ * weiter die Köpfe, die nicht AppleHero sind (pba-kopf, szs-kopf).
  * Abstände: Flex fällt keine Ränder zusammen, deshalb setzt der Block sie hier
  * aus den Tokens neu (Unterzeile s-2 wie bisher, Bild s-4, Knöpfe s-4).
  */
