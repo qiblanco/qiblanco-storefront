@@ -57,8 +57,11 @@
   padding: var(--bw-s4) var(--bw-s3);
 }
 
+/* Ohne Ziffern davor: Christians Shop-Regel D1 ("keine gimgis vor den
+   aufzählungspunkten", 27.10.2026) wertet jedes ::before und jeden sichtbaren
+   Listenmarker als STOP, auch die <ol>-Ziffer. Die Reihenfolge traegt das <ol>
+   fuer Vorleseprogramme weiter; sichtbar fuehren die Fragen als Ueberschriften. */
 .blog-wegweiser-liste {
-  counter-reset: wegweiser;
   display: grid;
   gap: var(--bw-s3);
   list-style: none;
@@ -67,20 +70,7 @@
 }
 
 .blog-wegweiser-schritt {
-  counter-increment: wegweiser;
   max-width: var(--bw-breite-text);
-  padding-left: var(--bw-s4);
-  position: relative;
-}
-
-.blog-wegweiser-schritt::before {
-  color: var(--bw-muted);
-  content: counter(wegweiser) '.';
-  font-size: var(--bw-fs-lg);
-  left: 0;
-  line-height: 1.3;
-  position: absolute;
-  top: 0;
 }
 
 .blog-wegweiser-frage {
