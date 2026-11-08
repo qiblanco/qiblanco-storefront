@@ -259,6 +259,70 @@ export function VideoGalerie({kopf, kacheln, kennung}) {
     [fahreZu, indexJetzt, vermessen],
   );
 
+  /* HÖCHSTENS EINE KACHEL JE WISCH, auch wenn der Finger weiter zieht.
+   * scroll-snap-stop hält nur den Schwung nach dem Loslassen an der nächsten
+   * Kachel an. Zieht der Finger selbst über mehr als eine Kachel (gemessen im
+   * Test: 350 px Wisch auf 390 px Breite landete zwei Kacheln weiter), führt
+   * die Bahn nach dem Loslassen auf die Nachbarkachel zurück. Dasselbe greift,
+   * falls ein älterer Browser den Schwung über die Kachel hinaus trägt.
+   * Nur passive Lauscher: das senkrechte Scrollen der Seite bleibt unberührt. */
+  useEffect(() => {
+    const bahn = bahnRef.current;
+    if (!bahn) return undefined;
+    let wisch = null;
+    let frist = 0;
+    const grenzeVon = (i0) => {
+      const ks = masse.current.kacheln;
+      const max = bahn.scrollWidth - bahn.clientWidth;
+      const ziel = (i) => Math.min(ks[Math.max(0, Math.min(i, ks.length - 1))].ziel, max);
+      return {links: ziel(i0 - 1), rechts: ziel(i0 + 1)};
+    };
+    const halten = () => {
+      if (!wisch || !wisch.los) return;
+      const x = bahn.scrollLeft;
+      const g = wisch.grenze;
+      let ziel = null;
+      if (x > g.rechts + 2) ziel = g.rechts;
+      else if (x < g.links - 2) ziel = g.links;
+      if (ziel === null) return;
+      wisch = null;
+      bahn.scrollTo({left: ziel, behavior: bewegungReduziert() ? 'auto' : 'smooth'});
+    };
+    const start = (e) => {
+      if (e.touches && e.touches.length > 1) return;
+      vermessen();
+      if (!masse.current.kacheln.length) return;
+      window.clearTimeout(frist);
+      wisch = {los: false, grenze: grenzeVon(indexJetzt())};
+    };
+    const ende = () => {
+      if (!wisch) return;
+      wisch.los = true;
+      halten();
+      window.clearTimeout(frist);
+      frist = window.setTimeout(() => {
+        wisch = null;
+      }, 1200);
+    };
+    const fertig = () => {
+      halten();
+      wisch = null;
+    };
+    bahn.addEventListener('touchstart', start, {passive: true});
+    bahn.addEventListener('touchend', ende, {passive: true});
+    bahn.addEventListener('touchcancel', ende, {passive: true});
+    bahn.addEventListener('scroll', halten, {passive: true});
+    bahn.addEventListener('scrollend', fertig);
+    return () => {
+      window.clearTimeout(frist);
+      bahn.removeEventListener('touchstart', start);
+      bahn.removeEventListener('touchend', ende);
+      bahn.removeEventListener('touchcancel', ende);
+      bahn.removeEventListener('scroll', halten);
+      bahn.removeEventListener('scrollend', fertig);
+    };
+  }, [indexJetzt, vermessen, liste.length]);
+
   /* Ziehen mit der Maus. Finger und Trackpad scrollen nativ, hier nur pointerType
    * mouse. Wie am Handy höchstens eine Kachel je Geste. */
   const snapWieder = useCallback(() => {
