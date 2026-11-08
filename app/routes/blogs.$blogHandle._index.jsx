@@ -29,6 +29,19 @@ const PRO_SEITE = 9;
 // jetzt den BESTAND je Abfrage, nicht mehr die Anzeige.
 const BESTANDS_DECKEL = 50;
 
+// EINLEITUNG JE BLOG-HANDLE, wenn Shopify kein `seo.description` führt.
+// coming-home: Wortlaut aus /pages/live (Absatz unter der H1 und Hinweis zur
+// Aufnahme), nur das Bezugswort „dafür" fällt weg — nichts dazuerfunden.
+const EINLEITUNGEN = {
+  wissen:
+    'Was zu Schlaf, Energie und Strahlung im Alltag wirklich gemessen ist — ' +
+    'und wo die Messung aufhört. Jeder Beitrag nennt seine Quellen.',
+  'coming-home':
+    'Jeden Sonntag treffen wir uns auf Zoom, Anna und Christian und alle, ' +
+    'die dabei sein möchten. Danach schreiben wir auf, worüber wir ' +
+    'gesprochen haben.',
+};
+
 export const links = () => [
   {rel: 'stylesheet', href: blogStyles},
   // Eigenes Blatt für die Strang-Gruppierung: siehe Kopf dort. Es trägt
@@ -271,16 +284,18 @@ export default function Blog() {
   // kommt aus unserem Marketing und wird von Kunden nur zurückgespiegelt.
   // Gepflegte SEO-Beschreibung geht vor, damit die Redaktion sie in Shopify
   // ändern kann, ohne dass jemand diese Datei anfasst.
+  // Die Auffanglinie gilt JE BLOG: bis zum 2026-11-08 stand hier ein einziger
+  // Satz für alle Blogs, und /blogs/coming-home trug damit die Einleitung des
+  // Wissens-Blogs (Befund Job 20261023-seitenzweck-kuratieren-ebdd4391f1).
+  // Ein Blog ohne Eintrag bekommt GAR KEINE Einleitung statt einer fremden.
   const einleitung =
-    blog.seo?.description?.trim() ||
-    'Was zu Schlaf, Energie und Strahlung im Alltag wirklich gemessen ist — ' +
-      'und wo die Messung aufhört. Jeder Beitrag nennt seine Quellen.';
+    blog.seo?.description?.trim() || EINLEITUNGEN[blog.handle] || '';
 
   return (
     <div className="blog-wissen">
       <div className="blog">
         <h1>{blog.title}</h1>
-        <p className="blog-einleitung">{einleitung}</p>
+        {einleitung ? <p className="blog-einleitung">{einleitung}</p> : null}
         {einstieg?.length ? (
           <Wegweiser blogHandle={blog.handle} weg={einstieg} />
         ) : null}
