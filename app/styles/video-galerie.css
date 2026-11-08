@@ -118,14 +118,6 @@
   display: block;
 }
 
-.vg__video {
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-
-.vg__kachel[data-qb-video-zustand='spielt'] .vg__video {
-  opacity: 1;
-}
 
 .vg__verlauf {
   position: absolute;
@@ -296,8 +288,3 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .vg__video {
-    transition: none;
-  }
-}

@@ -200,7 +200,16 @@ export function VideoGalerie({kopf, kacheln, kennung, ebene = 'h2'}) {
         v.load();
       }
       const p = v.play();
-      if (p && typeof p.catch === 'function') p.catch(() => {});
+      if (p && typeof p.catch === 'function') {
+        p.catch((fehler) => {
+          /* Stromsparmodus am iPhone: Abspielen ohne Geste abgelehnt. Die
+           * Kachel merkt es sich, der erste Tipp startet das Video (onClickCapture). */
+          const kachel = v.closest('[data-vg-kachel]');
+          if (kachel && fehler && fehler.name === 'NotAllowedError') {
+            kachel.dataset.vgAbgelehnt = '';
+          }
+        });
+      }
     };
     const io = new IntersectionObserver(
       (befunde) => {
@@ -434,11 +443,34 @@ export function VideoGalerie({kopf, kacheln, kennung, ebene = 'h2'}) {
   const onPointerUp = useCallback((e) => ziehenEnde(e, false), [ziehenEnde]);
   const onPointerCancel = useCallback((e) => ziehenEnde(e, true), [ziehenEnde]);
 
+  /* ERSTER TIPP STARTET DAS VIDEO, wenn das Abspielen abgelehnt wurde (Stromsparmodus
+   * am iPhone; Hausregel aus dem Handy-Prüfstand, „Annas Video“ 30.10.). Dieser Tipp
+   * öffnet Instagram noch nicht, erst der nächste. Gestartet werden alle abgelehnten
+   * Videos der Bahn, solange der Tipp als Geste gilt. */
   const onClickCapture = useCallback((e) => {
     if (klickSperre.current) {
       e.preventDefault();
       e.stopPropagation();
+      return;
     }
+    const kachel = e.target.closest && e.target.closest('[data-vg-kachel]');
+    if (!kachel || kachel.dataset.vgAbgelehnt === undefined) return;
+    if (!e.target.closest('.vg__link')) return;
+    e.preventDefault();
+    const bahn = bahnRef.current;
+    if (!bahn) return;
+    bahn.querySelectorAll('[data-vg-abgelehnt]').forEach((k) => {
+      const v = k.querySelector('video');
+      if (!v) return;
+      if (!v.getAttribute('src')) v.setAttribute('src', v.dataset.clip);
+      v.muted = true;
+      const p = v.play();
+      const fertig = () => {
+        delete k.dataset.vgAbgelehnt;
+      };
+      if (p && typeof p.then === 'function') p.then(fertig, () => {});
+      else fertig();
+    });
   }, []);
 
   if (!liste.length) return null;
