@@ -7378,3 +7378,87 @@ html.qb-chat-docked .GoogleRezensionenPopup {
   height: 1px;
   overflow: hidden;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ALS FIRMA OHNE MWST BESTELLEN — Netto-Weg für EU-Firmen im Warenkorb
+   (app/components/reusables/B2bNettoWeg.jsx, Christian 08.11.2026).
+   Bauweise wie LINK PER E-MAIL darüber: Nebenhandlung unter dem Kassenknopf,
+   Textknopf zum Aufklappen, Felder und Nebenknopf aus dem Bausatz. Kein Gold,
+   kein eigener Farbblock: der Kassenknopf bleibt der eine Fokus. Werte aus
+   qb-tokens (Typo-Stufen 2/3, Raster, kleiner Radius).
+   ═══════════════════════════════════════════════════════════════════════════ */
+.b2b-netto {
+  margin-top: var(--qb-ref-raster);
+  color: var(--qb-text);
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.45;
+}
+.b2b-netto .b2b-netto__auf {
+  padding-left: 0;
+  padding-right: 0;
+  font-size: var(--qb-ref-fs-2);
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.b2b-netto__titel,
+.b2b-netto__satz,
+.b2b-netto__fehler {
+  margin: 0 0 var(--qb-ref-raster);
+  font-size: var(--qb-ref-fs-2);
+}
+.b2b-netto__titel,
+.b2b-netto__fehler {
+  font-weight: 600;
+}
+.b2b-netto__feld {
+  flex: 1 1 8rem;
+  min-width: 0;
+  margin-bottom: var(--qb-ref-raster);
+}
+.b2b-netto__paar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--qb-ref-raster);
+}
+.b2b-netto__paar--plz .b2b-netto__feld:first-child {
+  flex: 0 1 7rem;
+}
+.b2b-netto__label {
+  display: block;
+  margin-bottom: calc(var(--qb-ref-raster) / 2);
+  font-weight: 600;
+}
+.b2b-netto__eingabe {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: var(--qb-ref-raster) calc(var(--qb-ref-raster) * 1.5);
+  /* 16px verhindert das automatische Hineinzoomen von iOS beim Tippen. */
+  font-size: var(--qb-ref-fs-3);
+  color: var(--qb-text);
+  background: transparent;
+  border: 1px solid var(--qb-text-gedaempft);
+  border-radius: var(--qb-radius-klein);
+}
+select.b2b-netto__eingabe {
+  margin-bottom: var(--qb-ref-raster);
+}
+.b2b-netto .b2b-netto__senden {
+  width: 100%;
+  padding: var(--qb-ref-raster) calc(var(--qb-ref-raster) * 2);
+  font-size: var(--qb-ref-fs-3);
+}
+.b2b-netto__normal {
+  margin-top: var(--qb-ref-raster);
+}
+/* Honigtopf: aus dem Bild geschoben statt display:none (Hausmuster .pb__topf). */
+.b2b-netto__topf {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
