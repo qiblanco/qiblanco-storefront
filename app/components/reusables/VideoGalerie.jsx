@@ -261,65 +261,72 @@ export function VideoGalerie({kopf, kacheln, kennung}) {
 
   /* HÖCHSTENS EINE KACHEL JE WISCH, auch wenn der Finger weiter zieht.
    * scroll-snap-stop hält nur den Schwung nach dem Loslassen an der nächsten
-   * Kachel an. Zieht der Finger selbst über mehr als eine Kachel (gemessen im
-   * Test: 350 px Wisch auf 390 px Breite landete zwei Kacheln weiter), führt
-   * die Bahn nach dem Loslassen auf die Nachbarkachel zurück. Dasselbe greift,
-   * falls ein älterer Browser den Schwung über die Kachel hinaus trägt.
+   * Kachel an. Zieht der Finger selbst über mehr als eine Kachel, rastete die
+   * Bahn im Test zwei Kacheln weiter ein (350 px Wisch auf 390 px Breite), und
+   * ein Zurückführen per scrollTo kämpfte mit dem Schwung des Browsers.
+   * Deshalb sind während eines Wischs NUR die aktuelle Kachel und ihre beiden
+   * Nachbarn Rastpunkte (data-vg-nah, CSS nimmt den übrigen scroll-snap-align).
+   * Der Browser rastet dann selbst und ohne Gegenbewegung höchstens eine Kachel
+   * weiter. Steht die Bahn wieder still, gelten alle Rastpunkte wieder.
    * Nur passive Lauscher: das senkrechte Scrollen der Seite bleibt unberührt. */
   useEffect(() => {
     const bahn = bahnRef.current;
     if (!bahn) return undefined;
-    let wisch = null;
-    let frist = 0;
-    const grenzeVon = (i0) => {
-      const ks = masse.current.kacheln;
-      const max = bahn.scrollWidth - bahn.clientWidth;
-      const ziel = (i) => Math.min(ks[Math.max(0, Math.min(i, ks.length - 1))].ziel, max);
-      return {links: ziel(i0 - 1), rechts: ziel(i0 + 1)};
+    let ruhe = 0;
+    let gefasst = false;
+    const freigeben = () => {
+      window.clearTimeout(ruhe);
+      gefasst = false;
+      delete bahn.dataset.wisch;
+      bahn.querySelectorAll('[data-vg-nah]').forEach((el) => {
+        delete el.dataset.vgNah;
+      });
     };
-    const halten = () => {
-      if (!wisch || !wisch.los) return;
-      const x = bahn.scrollLeft;
-      const g = wisch.grenze;
-      let ziel = null;
-      if (x > g.rechts + 2) ziel = g.rechts;
-      else if (x < g.links - 2) ziel = g.links;
-      if (ziel === null) return;
-      wisch = null;
-      bahn.scrollTo({left: ziel, behavior: bewegungReduziert() ? 'auto' : 'smooth'});
+    const baldFrei = () => {
+      window.clearTimeout(ruhe);
+      ruhe = window.setTimeout(freigeben, 250);
     };
     const start = (e) => {
       if (e.touches && e.touches.length > 1) return;
       vermessen();
-      if (!masse.current.kacheln.length) return;
-      window.clearTimeout(frist);
-      wisch = {los: false, grenze: grenzeVon(indexJetzt())};
+      const ks = masse.current.kacheln;
+      if (!ks.length) return;
+      window.clearTimeout(ruhe);
+      const i0 = indexJetzt();
+      ks.forEach((k, i) => {
+        if (Math.abs(i - i0) <= 1) k.el.dataset.vgNah = '';
+        else delete k.el.dataset.vgNah;
+      });
+      bahn.dataset.wisch = '';
+      gefasst = true;
     };
     const ende = () => {
-      if (!wisch) return;
-      wisch.los = true;
-      halten();
-      window.clearTimeout(frist);
-      frist = window.setTimeout(() => {
-        wisch = null;
-      }, 1200);
+      if (gefasst) baldFrei();
     };
-    const fertig = () => {
-      halten();
-      wisch = null;
+    const bewegt = () => {
+      if (gefasst && !bahn.dataset.ziehtFinger) baldFrei();
+    };
+    const fingerDran = () => {
+      bahn.dataset.ziehtFinger = '1';
+    };
+    const fingerWeg = () => {
+      delete bahn.dataset.ziehtFinger;
+      ende();
     };
     bahn.addEventListener('touchstart', start, {passive: true});
-    bahn.addEventListener('touchend', ende, {passive: true});
-    bahn.addEventListener('touchcancel', ende, {passive: true});
-    bahn.addEventListener('scroll', halten, {passive: true});
-    bahn.addEventListener('scrollend', fertig);
+    bahn.addEventListener('touchstart', fingerDran, {passive: true});
+    bahn.addEventListener('touchend', fingerWeg, {passive: true});
+    bahn.addEventListener('touchcancel', fingerWeg, {passive: true});
+    bahn.addEventListener('scroll', bewegt, {passive: true});
+    bahn.addEventListener('scrollend', ende);
     return () => {
-      window.clearTimeout(frist);
+      freigeben();
       bahn.removeEventListener('touchstart', start);
-      bahn.removeEventListener('touchend', ende);
-      bahn.removeEventListener('touchcancel', ende);
-      bahn.removeEventListener('scroll', halten);
-      bahn.removeEventListener('scrollend', fertig);
+      bahn.removeEventListener('touchstart', fingerDran);
+      bahn.removeEventListener('touchend', fingerWeg);
+      bahn.removeEventListener('touchcancel', fingerWeg);
+      bahn.removeEventListener('scroll', bewegt);
+      bahn.removeEventListener('scrollend', ende);
     };
   }, [indexJetzt, vermessen, liste.length]);
 

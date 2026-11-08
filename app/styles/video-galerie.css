@@ -84,6 +84,12 @@
   scroll-snap-stop: always;
 }
 
+/* Während eines Wischs rasten nur die aktuelle Kachel und ihre Nachbarn ein
+ * (data-vg-nah, gesetzt vom Baustein): höchstens eine Kachel je Wisch. */
+.vg__bahn[data-wisch] .vg__kachel:not([data-vg-nah]) {
+  scroll-snap-align: none;
+}
+
 /* Video und Standbild stehen 8 % links und rechts über die Kachel hinaus,
  * damit der Parallax-Versatz (PARALLAX im Baustein) nie eine Kante zeigt. */
 .vg__medien {
