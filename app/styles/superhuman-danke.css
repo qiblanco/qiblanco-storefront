@@ -62,7 +62,8 @@
   gap: var(--as-s-3);
   margin-top: var(--as-s-3);
 }
-[data-apple-seite='superhuman-anmeldung-erfolgreich'] .sd-knopf {
+/* .as-knopf.sd-knopf: schlägt den Haus-Knopf .as-seite .as-knopf (Schrift 17 px !important, Mindestbreite 220 px). */
+[data-apple-seite='superhuman-anmeldung-erfolgreich'] .as-knopf.sd-knopf {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -115,7 +116,7 @@
   background: var(--as-flaeche);
   border-radius: var(--as-radius);
 }
-[data-apple-seite='superhuman-anmeldung-erfolgreich'] .sd-schluss .sd-knopf {
+[data-apple-seite='superhuman-anmeldung-erfolgreich'] .sd-schluss .as-knopf.sd-knopf {
   margin-top: var(--as-s-2);
 }
 @media (min-width: 750px) {
