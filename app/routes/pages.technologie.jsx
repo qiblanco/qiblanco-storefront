@@ -423,12 +423,11 @@ export default function TechnologiePage() {
                   dort zählt seiten_zufahrt ihn. Rückweg: diesen Absatz
                   entfernen (hb-deploy revert). */}
               <p style={pStyle} data-zufahrt="gitterchip">
-                Im QiOne® 2 Pro steckt eine solche Legierung als Gitterchip®, ein Gitter ohne Strom und ohne
-                Elektronik. Wie daraus Schutz wird, vom Chip über das Wasser bis zur Zelle, zeigt{' '}
+                Aus dieser Legierung entsteht der Gitterchip® im QiOne® 2 Pro.{' '}
                 <Link to="/pages/wie-funktioniert-der-gitterchip-im-qione">
-                  Wie der QiOne® schützt: der Gitterchip® in sieben Stufen
+                  So schützt dich der Gitterchip®
                 </Link>
-                .
+                : vom Chip über das Wasser bis zur Zelle.
               </p>
               <TechBild
                 datei="KristallineStrukturSalz_png.webp"
