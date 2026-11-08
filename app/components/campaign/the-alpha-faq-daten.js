@@ -29,8 +29,7 @@
  * /products/the-alpha gemessen; Versand im Januar 2027 für das ganze Paket:
  * Christian 30.10.2026 (ai-ceo/wissen/kanon/qi-alpha-fakten.json); Ratenpreis 9.999 €
  * mit Code von Anna: the-alpha-shop-daten.js RATEN; Vorverkauf 01.11.2026:
- * app/data/qi-master-wortlaut.json; Live am 8. November, 12 Uhr: Christians
- * Satz in der Anzeige A3 (pr-manager/wissen/qi-alpha-live-launch.md).
+ * app/data/qi-master-wortlaut.json.
  * PREIS UND RATEN stehen bewusst NICHT in den Antworten: sie stehen auf der
  * Shopseite in Kaufbox und Bezahlart (Zahl aus Shopify), auf den LPs im roten
  * Balken; eine zweite, statische Preiszeile hier würde still veralten. Der
@@ -72,7 +71,7 @@ export const THE_ALPHA_FAQ = [
     frage: 'Bin ich bereit für den Qi Alpha®?',
     antwort: [
       'Ja, wenn du alles willst. Der Qi Alpha® ist gemacht für Menschen, die das Maximum aus ihrem Leben holen, beruflich und privat. Für den Alltag ist der QiOne® 2 Pro mehr als ausreichend.',
-      'Der Vorverkauf läuft seit dem 01.11.2026. Am Sonntag, 8. November, um 12 Uhr halte ich ihn zum ersten Mal live für dich in die Kamera. Komm vorbei und stell mir deine Fragen!',
+      'Der Vorverkauf läuft seit dem 01.11.2026.',
     ],
   },
   {
