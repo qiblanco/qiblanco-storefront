@@ -101,6 +101,7 @@ export const MODELLE = Object.freeze({
  */
 const KOPF = {
   art: 'hero',
+  bildZuerst: true,
   overline: 'QiOne® 2 Pro',
   titel: 'Deine Zellen. Auf voller Leistung.',
   unter: 'Mehr Energie, tieferer Schlaf und Schutz vor E-Smog.',

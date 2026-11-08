@@ -44,6 +44,7 @@ const BILD = Object.freeze({
 export const QIBRACELET_DETAILS = Object.freeze([
   {
     art: 'hero',
+    bildZuerst: true,
     overline: 'QiBracelet® im Detail',
     titel: 'Tragbares Hightech mit messbaren Effekten auf Zellebene',
     unter: 'Den ganzen Tag an deinem Handgelenk, mit derselben Leistung wie der QiOne® 2 Pro.',

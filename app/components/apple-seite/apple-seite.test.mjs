@@ -433,3 +433,28 @@ test('#172 root.jsx setzt die Kopf-Links nach <Links /> und stellt den Provider 
   assert.match(root, /<AppleStilImKopf\.Provider value=\{rechtsseitenStil\.length > 0\}>/);
   assert.doesNotMatch(root, /from '\.\/components\/(Rechtsseite|apple-seite\/AppleSeite)'/);
 });
+
+/* ---- (5) Bild vor Knopf je Seite (Christian 08.11.2026: „Erst das Bild und dann
+   der Knopf. Und auf der Desktop-Version ist genau andersrum.“). Der Schalter
+   bildZuerst wird in den Kopfdaten gesetzt, je Seite (PR2a: Startseite A und B,
+   drei Detailseiten = die Fläche aus Christians Screenshot). ---------------- */
+
+test('Kopfdaten: Startseite (A und B) und die drei Detailseiten setzen bildZuerst', async () => {
+  const start = await import(pathToFileURL(join(HIER, 'startseite/startseite-daten.js')).href);
+  const det = {
+    'qione-2-pro-details': ['produkt-details/qione-2-pro-details-daten.js', 'QIONE_2_PRO_DETAILS'],
+    'qibracelet-details': ['produkt-details/qibracelet-details-daten.js', 'QIBRACELET_DETAILS'],
+    'qihome-details': ['produkt-details/qihome-details-daten.js', 'QIHOME_DETAILS'],
+  };
+  const koepfe = {
+    'startseite A': start.startseiteSektionen('a')[0],
+    'start-b': start.startseiteSektionen('b')[0],
+  };
+  for (const [seite, [datei, name]] of Object.entries(det)) {
+    koepfe[seite] = (await import(pathToFileURL(join(HIER, datei)).href))[name][0];
+  }
+  for (const [seite, kopf] of Object.entries(koepfe)) {
+    assert.equal(kopf.art, 'hero', `${seite}: erste Sektion ist der Kopf`);
+    assert.equal(kopf.bildZuerst, true, `${seite}: Kopf setzt bildZuerst`);
+  }
+});

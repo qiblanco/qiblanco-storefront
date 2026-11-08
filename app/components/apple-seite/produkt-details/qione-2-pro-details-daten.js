@@ -228,6 +228,7 @@ export const TECHNIK = Object.freeze({
 export const QIONE_2_PRO_DETAILS = Object.freeze([
   {
     art: 'hero',
+    bildZuerst: true,
     overline: 'QiOne® 2 Pro im Detail',
     titel: 'Der QiOne® 2 Pro',
     unter: 'Messbare Effekte auf Zellebene.',
