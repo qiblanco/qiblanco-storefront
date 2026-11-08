@@ -38,7 +38,10 @@ import {IG_TESTIMONIALS} from '~/data/ig-testimonials';
  * wird aus gespeicherten Maßen (offsetLeft), je Bild nur scrollLeft lesen und
  * transform schreiben, kein Layout im Bildtakt. Bei „Bewegung reduzieren“ aus.
  *
- * VIDEOS: ohne src ausgeliefert; die Adresse wird erst gesetzt, wenn die Kachel
+ * VIDEOS: das Video trägt dasselbe Standbild zusätzlich als poster: im
+ * Stromsparmodus spielt iOS nichts von selbst, und die Medien-Prüfung des Deploys
+ * (medien_format.py) wertet nur das poster-Attribut als Standbild.
+ * Ohne src ausgeliefert; die Adresse wird erst gesetzt, wenn die Kachel
  * sichtbar wird, und das Video pausiert, sobald sie den Blick verlässt oder der
  * Tab im Hintergrund ist. Bis das Video wirklich läuft, steht das Standbild.
  *
@@ -502,6 +505,7 @@ export function VideoGalerie({kopf, kacheln, kennung, ebene = 'h2'}) {
                 <video
                   className="vg__video"
                   data-clip={k.clip}
+                  poster={k.poster ? bildBreite(k.poster, 540) : undefined}
                   data-video-ton={k.ton === 'stumm' ? 'stumm' : undefined}
                   muted
                   loop
