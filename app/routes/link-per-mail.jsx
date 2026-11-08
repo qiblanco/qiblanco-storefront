@@ -136,6 +136,7 @@ export async function action({request, context}) {
   }
 
   const anon = einwilligung ? cookieWert(request.headers.get('Cookie'), '_qpx_anon') : '';
+  const t0 = Date.now();
   const r = await holeJson(
     `${basis(context)}/a`,
     {
@@ -160,8 +161,18 @@ export async function action({request, context}) {
     15000,
   );
   const ok = r.status === 200 && r.body?.ok === true;
-  return Response.json(
-    {ok, code: ok ? '' : String(r.body?.code || 'fehler')},
-    {headers},
-  );
+  // Ursache unterscheidbar machen (rtbefund-buendel-worker-pool-h56001d-20261027
+  // s03, K1 B): 10-03..10-28 kam die Mail an, der Browser bekam trotzdem
+  // FEHLER_SONST, und niemand konnte sagen, ob die Brücke zu langsam (Abbruch
+  // nach 15 s, Status 0) oder mit einem Nicht-200 ohne Code antwortete. Der
+  // Text für den Besucher bleibt derselbe (LinkPerMail.jsx kennt nur adresse
+  // und drossel); die Probe liest Code und Server-Timing.
+  headers.set('Server-Timing', `bruecke;dur=${Date.now() - t0}`);
+  const code = ok
+    ? ''
+    : String(
+        r.body?.code ||
+          (r.status === 0 ? 'bruecke_nicht_erreicht' : `bruecke_${r.status}`),
+      );
+  return Response.json({ok, code}, {headers});
 }
