@@ -1,0 +1,418 @@
+import {data} from 'react-router';
+import {Form, Link, useNavigation} from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
+import {canonicalLink} from '~/lib/seo';
+import {seitenSignale} from '~/lib/seiten-seo';
+import {FaqListe} from '~/components/reusables/FaqListe';
+
+/**
+ * TITEL UND BESCHREIBUNG GESCHÄRFT AM 2026-09-02 (Grossjob-Segment s04) — und
+ * zwar NUR sie, kein einziger Q&A-Text.
+ *
+ * ANLASS: Seit diesem Tag gibt es /pages/faq, eine eigene, indexierbare
+ * Fragen-Fläche mit FAQPage-Schema. Zwei indexierte Seiten, die beide „FAQ"
+ * im Titel führen, konkurrieren um dieselbe Suchabsicht — und der Titel ist
+ * der stärkste Signalgeber, den Google dafür liest. Diese Seite ist ihrer
+ * Funktion nach das KONTAKTFORMULAR (Rate-Limit, Freshdesk-Anbindung, action);
+ * die Fragen-Absicht gehört nach /pages/faq. Der Titel sagt das jetzt.
+ *
+ * WAS AUSDRÜCKLICH NICHT ANGEFASST WURDE, obwohl es auffiel: die Konstante
+ * FAQ_ITEMS weiter unten ist ein DRITTER, unabhängiger FAQ-Bestand (weder
+ * product-faqs.js noch faq-schema.js, kein FAQPage-JSON-LD) und widerspricht
+ * an drei Stellen anderen Live-Flächen — Sauna, 14-vs-20-Tage-Rückgabe und
+ * eine ungefilterte Wirkaussage. Inhalts-Umformulierungen sind laut Kopf von
+ * app/lib/faq-schema.js ein CHRISTIAN-GATE; die drei Widersprüche liegen ihm
+ * mit Fundstellen als Vorlage vor (RESULT des Segments, Abschnitt „Offene
+ * Flanken"). Sie hier im Vorbeigehen zu heilen wäre bequem und nicht meine
+ * Entscheidung.
+ */
+export const meta = () => {
+  // GEO M5-F2 (2026-10-11, SAGEO), Job
+  // 20261011-geo-sageo-m5f2-strukturfelder-ratgeber-de-us-crystal:
+  // Title höchstens 60 Zeichen mit Gegenstand,
+  // Marke am Ende (Seitenregel R3); Meta 120-160 Zeichen mit Zahlen, die die
+  // Seite sichtbar trägt (R4). Arm A eines A/B, Kontrolle Arm B bis 28 Tage
+  // nach Livegang. Vorher: 'Kontakt & Hilfe | Qi Blanco'
+  // Meta vorher: 'Schreib uns direkt, … unter „Häufige Fragen“.' (183 Zeichen)
+  const titel = 'Kontakt & Hilfe: Wirkung, Tragen, Rückgabe | Qi Blanco';
+  return [
+    {title: titel},
+    {
+      name: 'description',
+      content:
+        'Schreib uns über das Kontaktformular. Dazu Antworten zu Wirkung ' +
+        'und Tragen des QiOne® und zur Rückgabe: 14 Tage Widerrufsrecht, ' +
+        'Rücksendung kostenlos.',
+    },
+    canonicalLink('/pages/support'),
+    ...seitenSignale({
+      pfad: '/pages/support',
+      titel,
+    }),
+  ];
+};
+
+export function loader() {
+  return {};
+}
+
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_WINDOW_SECONDS = 60 * 60;
+const memoryRateLimit = new Map();
+
+async function checkRateLimit(kv, ip) {
+  const key = `contact:${ip}`;
+  const now = Math.floor(Date.now() / 1000);
+
+  if (kv) {
+    const raw = await kv.get(key);
+    const count = raw ? Number(raw) : 0;
+    if (count >= RATE_LIMIT_MAX) return false;
+    await kv.put(key, String(count + 1), {expirationTtl: RATE_LIMIT_WINDOW_SECONDS});
+    return true;
+  }
+
+  const entry = memoryRateLimit.get(ip);
+  if (entry && entry.resetAt > now) {
+    if (entry.count >= RATE_LIMIT_MAX) return false;
+    entry.count += 1;
+    return true;
+  }
+  memoryRateLimit.set(ip, {count: 1, resetAt: now + RATE_LIMIT_WINDOW_SECONDS});
+  return true;
+}
+
+function sanitizeHeaderValue(s) {
+  return s.replace(/[\r\n]+/g, ' ').trim();
+}
+
+function escapeHtml(value) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .replace(/\n/g, '<br>');
+}
+
+function normalizeFreshdeskDomain(rawDomain) {
+  return rawDomain.replace(/^https?:\/\//, '').replace(/\/.*$/, '').trim();
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * @param {ActionFunctionArgs}
+ */
+export async function action({request, context}) {
+  if (request.method !== 'POST') {
+    return data({ok: false, error: 'Methode nicht erlaubt.'}, {status: 405});
+  }
+
+  const env = context.env || {};
+  const formData = await request.formData();
+  const honeypot = String(formData.get('company') || '');
+  const name = sanitizeHeaderValue(String(formData.get('name') || ''));
+  const email = sanitizeHeaderValue(String(formData.get('email') || '')).toLowerCase();
+  const message = String(formData.get('message') || '').trim();
+
+  if (honeypot) {
+    return data({ok: true});
+  }
+
+  if (name.length < 1 || name.length > 100) {
+    return data({ok: false, error: 'Bitte gib einen gültigen Namen an.'}, {status: 400});
+  }
+  if (!EMAIL_RE.test(email) || email.length > 254) {
+    return data({ok: false, error: 'Bitte gib eine gültige E-Mail-Adresse an.'}, {status: 400});
+  }
+  if (message.length < 10 || message.length > 5000) {
+    return data(
+      {ok: false, error: 'Deine Nachricht muss zwischen 10 und 5000 Zeichen lang sein.'},
+      {status: 400},
+    );
+  }
+
+  const ip =
+    request.headers.get('CF-Connecting-IP') ||
+    request.headers.get('X-Forwarded-For')?.split(',')[0].trim() ||
+    'unknown';
+
+  const allowed = await checkRateLimit(env.CONTACT_RATE_LIMIT, ip);
+  if (!allowed) {
+    return data(
+      {ok: false, error: 'Zu viele Anfragen. Bitte versuche es später erneut.'},
+      {status: 429},
+    );
+  }
+
+  const freshdeskApiKey = env.FRESHDESK_API_KEY;
+  const freshdeskDomain = normalizeFreshdeskDomain(
+    env.FRESHDESK_DOMAIN || 'qiblanco.freshdesk.com',
+  );
+
+  if (!freshdeskApiKey) {
+    console.error('Contact form is missing FRESHDESK_API_KEY');
+    return data(
+      {
+        ok: false,
+        error:
+          'Das Kontaktformular ist aktuell nicht vollständig konfiguriert. Bitte schreibe uns direkt an service@qiblanco.com.',
+      },
+      {status: 503},
+    );
+  }
+
+  const subject = `Kontaktanfrage von ${name}`;
+  const description = [
+    `<p>${escapeHtml(message)}</p>`,
+    '<hr>',
+    `<p><strong>Von:</strong> ${escapeHtml(name)} &lt;${escapeHtml(email)}&gt;<br>`,
+    `<strong>Quelle:</strong> QiBlanco Storefront Kontaktformular<br>`,
+    `<strong>IP:</strong> ${escapeHtml(ip)}</p>`,
+  ].join('');
+
+  try {
+    const res = await fetch(`https://${freshdeskDomain}/api/v2/tickets`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${btoa(`${freshdeskApiKey}:X`)}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        description,
+        email,
+        name,
+        priority: 1,
+        source: 2,
+        status: 2,
+        subject,
+        tags: ['storefront-contact'],
+      }),
+    });
+
+    if (!res.ok) {
+      const detail = await res.text();
+      console.error('Freshdesk ticket creation failed', res.status, detail);
+      return data(
+        {ok: false, error: 'Versand fehlgeschlagen. Bitte versuche es später erneut.'},
+        {status: 502},
+      );
+    }
+  } catch (err) {
+    console.error('Freshdesk request error', err);
+    return data(
+      {ok: false, error: 'Versand fehlgeschlagen. Bitte versuche es später erneut.'},
+      {status: 502},
+    );
+  }
+
+  return data({ok: true});
+}
+
+const FAQ_ITEMS = [
+  {
+    question: 'Wie funktioniert der QiOne®?',
+    answer:
+      'Der QiOne® enthält keinerlei elektronische Bauteile. Er nutzt einen proprietären Gitterchip®, der durch die spezifische Positionierung von Goldatomen ein statisches Feld erzeugt. Dieses Feld fördert die Selbstorganisation von Wassermolekülen zu kohärenten Strukturen, einem Zustand, der die zelluläre Kommunikation im Körper verbessert.',
+  },
+  {
+    question: 'Ist die kohärente Wasserstruktur messbar?',
+    answer:
+      'Ja. Die kohärente Struktur ist an hydrophoben Oberflächen mikroskopisch sichtbar. Kohärentes Wasser absorbiert Licht bei einer Wellenlänge von 270 nm. Indirekt lassen sich die Auswirkungen über HRV- oder EKG-Geräte messen.',
+  },
+  {
+    question: 'Gibt es einen „Handy Chip" von Qi Blanco®?',
+    answer:
+      'Nein. Qi Blanco® stellt keine Handy-Chips her. Unsere Produkte passen sich dynamisch an verschiedene Situationen an und bieten durch ihre lange Lebensdauer einen dauerhaften Schutz. Herkömmliche Abschirmprodukte sind dagegen nur für ein einzelnes Gerät konzipiert.',
+  },
+  {
+    question: 'Gibt es ein Widerrufsrecht?',
+    answer:
+      'Ja. Es gilt das gesetzliche 14-tägige Widerrufsrecht. Deinen Widerruf kannst du online über den Link "Vertrag widerrufen" im Footer erklären. Die Rücksendung ist für dich kostenlos. Melde dich vorher kurz bei uns, dann stimmen wir den Rückweg mit dir ab und übernehmen das Porto. Nach Eingang der Ware erstatten wir den Kaufpreis.',
+  },
+  {
+    question: 'Darf der QiOne® nass werden oder in die Sauna?',
+    answer:
+      'Der QiOne® ist wasserresistent, sollte aber nicht dauerhaft Sonne, Sauna, Salzwasser oder Chlorwasser ausgesetzt werden. Der QiOne® 2 Pro bietet eine erhöhte Beständigkeit gegenüber diesen Einflüssen.',
+  },
+  {
+    question: 'Kann ich den QiOne® an einer anderen Kette tragen?',
+    answer:
+      'Ja. Der Bohrdurchmesser beträgt 2,5 mm. Metallketten können Kratzer hinterlassen, eine Alternative aus Edelstahl ist erhältlich. Wichtig ist, dass die Kette durch die Öffnung passt.',
+  },
+  {
+    question: 'Wie sollte ich den QiOne® tragen?',
+    answer:
+      'Du kannst ihn an jeder Körperstelle tragen. Hautkontakt verstärkt die Wirkung. Wenn die Wirkung anfangs zu intensiv ist, kann er anfänglich auch über der Kleidung getragen werden.',
+  },
+  {
+    question: 'Lässt die Wirkung irgendwann nach?',
+    answer:
+      'Nein. Die Wirkung des QiOne® bleibt bestehen. Mit der Zeit spürst du sie weniger deutlich, weil sich dein Körper daran gewöhnt.',
+  },
+  {
+    question: 'Hat der QiOne® einen Einfluss auf Trinkwasser?',
+    answer:
+      'Ja. Wasser, das in der Nähe des QiOne® aufbewahrt oder getrunken wird, nimmt durch den selbst propagierenden Kohärenzeffekt ebenfalls kohärente Strukturen an.',
+  },
+  {
+    question: 'Wie entstand die Idee für Qi Blanco®?',
+    answer:
+      'Die Grundlage bilden die Hypothesen des französischen Physikers Jean Émile Charon zur komplexen Relativitätstheorie aus den 1970er und 1980er Jahren, die sich mit der Informationsspeicherung in Elektronen befassen.',
+  },
+];
+
+/*
+ * DIE ZWEITE AKKORDEON-FASSUNG IST AM 22.09.2026 ENTFALLEN (Grossjob
+ * 20260922-GROSSJOB-alle-knoepfe-kommen-aus-dem-bausatz).
+ *
+ * Hier stand eine eigene `FaqAccordion`, deren zehn Umschalter je 225 Zeichen
+ * `style`-Attribut trugen — gemessen am ausgelieferten Dokument. Sie war
+ * nicht nur anders als der Bestand, sie war schlechter: ohne Klasse, ohne
+ * `aria-expanded`, ohne `aria-controls`. Ein Screenreader konnte den Zustand
+ * einer Frage nicht ansagen.
+ *
+ * An ihre Stelle tritt `FaqListe` — dieselbe Mechanik, die auch ProductFAQ
+ * benutzt (dorthin extrahiert, nicht neu gebaut).
+ *
+ * WAS BEWUSST NICHT MITKOMMT: das FAQPage-JSON-LD. `FaqListe` emittiert
+ * keines, und das ist hier die Sachentscheidung — FAQ_ITEMS ist der im Kopf
+ * dieser Datei beschriebene DRITTE, inhaltlich ungeprüfte FAQ-Bestand mit
+ * drei bekannten Widersprüchen zu anderen Live-Flächen. Ihn als
+ * strukturierte Daten zu veröffentlichen wäre eine Inhaltsentscheidung und
+ * damit ein Christian-Gate (Kopf von app/lib/faq-schema.js). Der Zustand
+ * bleibt also exakt der, den das Segment vom 2026-09-02 hinterlassen hat.
+ */
+
+export default function SupportPage() {
+  const actionData = useAktionsergebnisUeberRevalidierung();
+  const navigation = useNavigation();
+  const submitting = navigation.state !== 'idle';
+  const success = actionData?.ok === true;
+
+  return (
+    <div className="NormalSectionSize" style={{padding: '3rem 1.5rem 5rem'}}>
+      <div style={{maxWidth: '680px', margin: '0 auto'}}>
+        <h1 style={{marginBottom: '0.5rem'}}>Kontaktiere uns!</h1>
+        <p style={{marginBottom: '2.5rem', opacity: 0.7}}>
+          Wir sind für dich da! Wenn du weitere Fragen hast oder über etwas anderes sprechen möchtest, nimm mit uns Kontakt auf.
+        </p>
+
+        {success ? (
+          <div
+            style={{
+              background: 'rgba(57, 110, 37, 0.1)',
+              border: '1px solid rgba(57, 110, 37, 0.3)',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              marginBottom: '3rem',
+              color: 'var(--checkmark-color)',
+            }}
+          >
+            <strong>Danke für deine Nachricht!</strong> Wir melden uns so schnell wie möglich bei dir.
+          </div>
+        ) : (
+          <Form method="post" style={{marginBottom: '4rem'}} noValidate>
+            {actionData?.error ? (
+              <div
+                style={{
+                  background: 'rgba(180, 35, 24, 0.08)',
+                  border: '1px solid rgba(180, 35, 24, 0.3)',
+                  borderRadius: '12px',
+                  padding: '1rem 1.25rem',
+                  marginBottom: '1.25rem',
+                  color: '#b42318',
+                  fontSize: '0.95rem',
+                }}
+                role="alert"
+              >
+                {actionData.error}
+              </div>
+            ) : null}
+            <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+              {/* Honeypot field - hidden from users, bots fill it in */}
+              <input
+                type="text"
+                name="company"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  left: '-9999px',
+                  width: '1px',
+                  height: '1px',
+                  opacity: 0,
+                  pointerEvents: 'none',
+                }}
+              />
+              <input
+                type="text"
+                name="name"
+                placeholder="Dein Name"
+                required
+                maxLength={100}
+                style={inputStyle}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Deine E-Mail"
+                required
+                maxLength={254}
+                style={inputStyle}
+              />
+              <textarea
+                name="message"
+                placeholder="Deine Nachricht"
+                required
+                rows={5}
+                minLength={10}
+                maxLength={5000}
+                style={{...inputStyle, resize: 'vertical'}}
+              />
+              {/* DER KNOPF AUS DEM BAUSATZ (Christian, 22.09.2026).
+                  Vorher 169 Zeichen `style`-Attribut. Der gesperrte Zustand
+                  (`cursor`, `opacity`) stand nur deshalb inline, weil der
+                  Bausatz für "läuft gerade" keine Form hatte — er hat sie
+                  jetzt (`.btn--primary:disabled` in app/styles/app.css), und
+                  das `disabled`-Attribut allein löst sie aus. */}
+              <button type="submit" className="btn--primary" disabled={submitting}>
+                {submitting ? 'Wird gesendet…' : 'Nachricht senden'}
+              </button>
+            </div>
+          </Form>
+        )}
+
+        <h2>Häufige Fragen &amp; Antworten</h2>
+        {/* Der Verweis auf die vollständige FAQ steht VOR dem Akkordeon, nicht
+            darunter: wer hier landet und eine Antwort sucht, soll den besseren
+            Ort finden, bevor er sich durch die Kurzfassung klickt. */}
+        <p style={{marginTop: '0.5rem'}}>
+          Ausführlicher und mit Größentabelle, Reichweite, Rückgabe und der
+          Antwort auf „Wirkt das überhaupt?"{' '}
+          <Link to="/pages/faq">stehen die häufigen Fragen hier</Link>.
+        </p>
+        <FaqListe
+          items={FAQ_ITEMS.map((f) => ({q: f.question, a: f.answer}))}
+        />
+      </div>
+    </div>
+  );
+}
+
+const inputStyle = {
+  width: '100%',
+  padding: '0.75rem 1rem',
+  border: '1px solid rgba(0,0,0,0.2)',
+  borderRadius: '8px',
+  fontSize: '1rem',
+  fontFamily: 'inherit',
+  background: 'rgba(255,255,255,0.6)',
+  outline: 'none',
+};
+
+/** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
+/** @typedef {import('react-router').ActionFunctionArgs} ActionFunctionArgs */
