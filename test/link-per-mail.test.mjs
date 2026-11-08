@@ -182,9 +182,15 @@ test('Drossel und Ausfall des Servers kommen als Code zurück, nie als Absturz',
   stubFetch({'/a': [429, {ok: false, code: 'drossel'}]});
   let res = await action({request: post({email: 'kundin@example.de', art: 'warenkorb'}), context: kontext()});
   assert.deepEqual(await res.json(), {ok: false, code: 'drossel'});
+  // Ursache unterscheidbar (rtbefund-buendel-worker-pool-h56001d-20261027 s03, K1 B):
+  // Server nicht erreicht/zu langsam = bruecke_nicht_erreicht, Nicht-200 ohne Code = bruecke_<status>.
   stubFetch({'/a': [0, null]});
   res = await action({request: post({email: 'kundin@example.de', art: 'warenkorb'}), context: kontext()});
-  assert.deepEqual(await res.json(), {ok: false, code: 'fehler'});
+  assert.deepEqual(await res.json(), {ok: false, code: 'bruecke_nicht_erreicht'});
+  assert.match(res.headers.get('Server-Timing') || '', /^bruecke;dur=\d+$/);
+  stubFetch({'/a': [502, null]});
+  res = await action({request: post({email: 'kundin@example.de', art: 'warenkorb'}), context: kontext()});
+  assert.deepEqual(await res.json(), {ok: false, code: 'bruecke_502'});
 });
 
 test('Interne Probe: intern=true, Klasse intern', async () => {
