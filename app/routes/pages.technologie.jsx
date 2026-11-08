@@ -427,7 +427,7 @@ export default function TechnologiePage() {
                 <Link to="/pages/wie-funktioniert-der-gitterchip-im-qione">
                   So schützt dich der Gitterchip®
                 </Link>
-                : vom Chip über das Wasser bis zur Zelle.
+                : Sein statisches Feld bringt Ordnung ins Wasser.
               </p>
               <TechBild
                 datei="KristallineStrukturSalz_png.webp"
