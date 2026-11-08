@@ -112,28 +112,39 @@ function AsKnoepfe({cta, cta2, preis}) {
 /**
  * @param {{overline?: string, titel: string, unter?: string, bild: {url: string,
  *   alt?: string, breite?: number, hoehe?: number}, cta?: {text: string, href: string},
- *   cta2?: {text: string, href: string}, dunkel?: boolean}} props
+ *   cta2?: {text: string, href: string}, dunkel?: boolean, bildZuerst?: boolean}} props
  */
 /*
- * REIHENFOLGE AUF DEM HANDY (Christian 30.10.2026, Z5: „Da dann auch erst die
- * Knöpfchen, bevor ein Foto kommt, ist auch komisch“): Titel, dann Bild, dann
- * Knöpfe und Preis. Das DOM bleibt, wie es war (ein Knopf, ein Preis, keine
- * Doppelung); unter 750 px löst apple-seite.css .as-hero-text per
- * display: contents auf und ordnet mit `order`. Am Desktop bleibt der Kopf
- * unverändert: Text und Knöpfe, darunter das Bild.
+ * REIHENFOLGE: Titel, dann Bild, dann Knöpfe und Preis.
+ * Handy seit 30.10.2026 (Christian, Z5: „Da dann auch erst die Knöpfchen, bevor
+ * ein Foto kommt, ist auch komisch“): unter 750 px löst apple-seite.css
+ * .as-hero-text per display: contents auf und ordnet mit `order`.
+ * Desktop und Tablet ab 08.11.2026 (Christian: „Erst das Bild und dann der
+ * Knopf. Und auf der Desktop-Version ist genau andersrum.“): mit `bildZuerst`
+ * stehen Knöpfe und Preis (AsKnoepfe, ein Fragment) im DOM als direkte Kinder
+ * des Kopfs hinter der figure. Dann stimmen Bild- und Lesereihenfolge an jeder
+ * Breite überein, auch für Screenreader, und der Handy-Block widerspricht dem
+ * DOM nicht.
+ * WARUM EIN SCHALTER STATT EINER NEUEN VORGABE: AppleHero erreicht rund 100
+ * Seiten. Ein sichtbarer Umbau hier verlangt in Gate 12 Zweig-Belege auf allen.
+ * Ohne `bildZuerst` rendert der Kopf byte-gleich wie bisher. Gesetzt wird der
+ * Schalter in den Seitendaten (art: 'hero'), also je Seite und nur dort, wo
+ * sich die Seite sichtbar ändert.
  */
-export function AppleHero({overline, titel, unter, bild, cta, cta2, preis, dunkel = false}) {
+export function AppleHero({overline, titel, unter, bild, cta, cta2, preis, dunkel = false, bildZuerst = false}) {
+  const knoepfe = <AsKnoepfe cta={cta} cta2={cta2} preis={preis} />;
   return (
     <section className={`as-hero${dunkel ? ' as-dunkel' : ''}`} data-section="as-hero">
       <div className="as-hero-text">
         {overline ? <p className="as-overline">{mitMarkeR(overline)}</p> : null}
         <h1 className="as-h1">{mitMarkeR(titel)}</h1>
         {unter ? <p className="as-unter">{mitMarkeR(unter)}</p> : null}
-        <AsKnoepfe cta={cta} cta2={cta2} preis={preis} />
+        {bildZuerst ? null : knoepfe}
       </div>
       <figure className="as-hero-bild">
         <AsBild bild={bild} sizes="(min-width: 1200px) 1200px, 100vw" sofort />
       </figure>
+      {bildZuerst ? knoepfe : null}
     </section>
   );
 }
