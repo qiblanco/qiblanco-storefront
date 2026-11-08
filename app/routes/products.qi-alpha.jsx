@@ -16,12 +16,6 @@ import rechtszeileStyles from '~/styles/qi-alpha-rechtszeile.css?url';
 import {QiAlphaRechtsZeile} from '~/components/campaign/QiAlphaRechtsZeile';
 import {TheAlphaWissen} from '~/components/the-alpha-shop/TheAlphaWissen';
 import {TheAlphaFaq} from '~/components/campaign/TheAlphaFaq';
-import {
-  TheAlphaLiveAnmeldung,
-  THE_ALPHA_LIVE_ANMELDUNG_STIL,
-} from '~/components/campaign/TheAlphaLiveAnmeldung';
-import {TAB_LIVE} from '~/components/campaign/the-alpha-variante-b-daten';
-import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {produktMeta, MARKE} from '~/lib/produkt-seo';
 import {istVorschauNoindex} from '~/lib/vorschau-noindex';
 import {QM_ADDONS_QUERY, QM_HANDLES} from '~/lib/qi-master-addons';
@@ -123,7 +117,6 @@ export function links() {
     {rel: 'stylesheet', href: faqStyles},
     {rel: 'stylesheet', href: teilzahlungStyles},
     {rel: 'stylesheet', href: rechtszeileStyles},
-    {rel: 'stylesheet', href: THE_ALPHA_LIVE_ANMELDUNG_STIL},
   ];
 }
 
@@ -286,40 +279,12 @@ export default function Product() {
         nachDerBox={
           <>
             <TheAlphaWissen />
-            <LiveVorstellung />
             <TheAlphaFaq ton="hell" />
           </>
         }
       />
       <QiAlphaRechtsZeile seite="kauf" />
     </>
-  );
-}
-
-/* Zeilen aus TAB_LIVE (LP B), Formular und Einwilligung unverändert aus
-   TheAlphaLiveAnmeldung (Action /pages/live, ch-live-1). Grossjob 20261025-
-   qi-alpha-produktseite-englisch-aufbauen-a-auf-b-niveau, s04-r1-r2. */
-function LiveVorstellung() {
-  return (
-    <section
-      className="tas-live"
-      id={TAB_LIVE.anker}
-      aria-labelledby="tas-live-titel"
-      data-tas-live=""
-    >
-      <div className="tas-live-innen">
-        <h2 id="tas-live-titel" className="tas-live-titel">
-          {TAB_LIVE.titel}
-        </h2>
-        <p className="tas-live-wann">{TAB_LIVE.wann}</p>
-        <p className="tas-live-text">{mitMarkeR(TAB_LIVE.text)}</p>
-        <TheAlphaLiveAnmeldung
-          quelle="produkt-a"
-          variante="a"
-          className="tas-live-karte"
-        />
-      </div>
-    </section>
   );
 }
 
