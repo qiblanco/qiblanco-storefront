@@ -280,10 +280,8 @@ test('SSR: Kopf mit Drehung = ein Knopf, ein Preis, das Video sofort, Ersatzbild
   const kopf = html.slice(html.indexOf('data-section="as-hero"'), html.indexOf('data-section="as-band"'));
   assert.equal((kopf.match(/data-as-cta="primary"/g) || []).length, 1, 'genau ein Kaufknopf im Kopf');
   assert.equal((kopf.match(/class="as-preis"/g) || []).length, 1, 'genau ein Preis im Kopf');
-  // Seit 08.11.2026 an jeder Breite: Titel, Bild, Knöpfe, Preis - im DOM, nicht nur per CSS-order.
-  assert.ok(kopf.indexOf('as-h1') < kopf.indexOf('as-hero-bild'), 'Titel vor dem Bild');
-  assert.ok(kopf.indexOf('as-hero-bild') < kopf.indexOf('as-knoepfe'), 'Bild vor den Knöpfen (Desktop wie Handy)');
-  assert.ok(kopf.indexOf('as-knoepfe') < kopf.indexOf('class="as-preis"'), 'Knopf vor dem Preis');
+  // Ohne bildZuerst bleibt das DOM wie vor dem 08.11.2026 (Knöpfe im Textblock, Handy ordnet per CSS).
+  assert.ok(kopf.indexOf('as-knoepfe') < kopf.indexOf('as-hero-bild'), 'DOM unverändert ohne bildZuerst');
   assert.match(kopf, /data-qb-360="qione"/);
   assert.match(kopf, /<video[^>]*src="https:\/\/cdn\.shopify\.com\/[^"]*qb-hero--360-qione-1x1[^"]*\.mp4/);
   assert.match(kopf, /<video[^>]*preload="metadata"/);
@@ -294,6 +292,29 @@ test('SSR: Kopf mit Drehung = ein Knopf, ein Preis, das Video sofort, Ersatzbild
   // Außerhalb des Kopfs: Quelle erst in Sichtweite, nichts beim Seitenaufruf.
   assert.match(band, /<video(?![^>]*\ssrc=)[^>]*preload="none"/);
   assert.match(band, /data-video="new-360-QiBracelet-1x1\.mov"/);
+});
+
+test('SSR: Kopf mit bildZuerst = Titel, Bild, Knöpfe, Preis im DOM (Desktop wie Handy, 08.11.2026)', async () => {
+  const sekt = (bz) => [
+    {art: 'hero', titel: 'Kopf.', unter: 'Zeile.', bild: BILD_360, cta: {text: 'Jetzt kaufen', href: '/products/qione-2-pro'},
+      preis: '549 €', ...(bz === undefined ? {} : {bildZuerst: bz})},
+    {art: 'band', titel: 'Armband.', text: ['Am Handgelenk.'], bild: {...BILD_360, drehung: 'qibracelet', alt: 'Armband'}},
+    {art: 'anna'},
+  ];
+  const kopfVon = (html) => html.slice(html.indexOf('data-section="as-hero"'), html.indexOf('data-section="as-band"'));
+  const kopf = kopfVon(await renderSeite({seite: 'startseite', sektionen: sekt(true)}));
+  assert.equal((kopf.match(/data-as-cta="primary"/g) || []).length, 1, 'genau ein Kaufknopf im Kopf');
+  assert.equal((kopf.match(/class="as-preis"/g) || []).length, 1, 'genau ein Preis im Kopf');
+  assert.ok(kopf.indexOf('as-h1') < kopf.indexOf('as-hero-bild'), 'Titel vor dem Bild');
+  assert.ok(kopf.indexOf('as-hero-bild') < kopf.indexOf('as-knoepfe'), 'Bild vor den Knöpfen');
+  assert.ok(kopf.indexOf('as-knoepfe') < kopf.indexOf('class="as-preis"'), 'Knopf vor dem Preis');
+  // Knöpfe stehen außerhalb des Textblocks, als direkte Kinder des Kopfs.
+  const textblock = kopf.slice(kopf.indexOf('as-hero-text'), kopf.indexOf('as-hero-bild'));
+  assert.doesNotMatch(textblock, /as-knoepfe/, 'keine Knöpfe im Textblock');
+  // Pixel-Neutralität des Schalters: ohne Angabe und mit false byte-gleich.
+  const ohne = await renderSeite({seite: 'startseite', sektionen: sekt(undefined)});
+  const aus = await renderSeite({seite: 'startseite', sektionen: sekt(false)});
+  assert.equal(aus, ohne, 'bildZuerst: false rendert byte-gleich wie ohne Angabe');
 });
 
 test('SSR: Bild ohne drehung bleibt ein Bild (kein Video)', async () => {
