@@ -119,7 +119,7 @@ export const APPLE_SEITEN = Object.freeze({
   'policy-refund-policy': {pfad: '/policies/refund-policy', schalter: 'APPLE_SEITE_POLICY_REFUND_POLICY', standard: 'on'},
   'policies-shipping-policy': {pfad: '/policies/shipping-policy', schalter: 'APPLE_SEITE_POLICIES_SHIPPING_POLICY', standard: 'on'},
   'policies-terms-of-service': {pfad: '/policies/terms-of-service', schalter: 'APPLE_SEITE_POLICIES_TERMS_OF_SERVICE', standard: 'on'},
-  'products-sprechstunde-mit-christian': {pfad: '/products/sprechstunde-mit-christian', schalter: 'APPLE_SEITE_PRODUCTS_SPRECHSTUNDE_MIT_CHRISTIAN', standard: 'on'},
+  'products-sprechstunde-mit-christian': {pfad: '/products/sprechstunde-mit-christian', schalter: 'APPLE_SEITE_PRODUCTS_SPRECHSTUNDE_MIT_CHRISTIAN', standard: 'off'},
   'search': {pfad: '/search', schalter: 'APPLE_SEITE_SEARCH', standard: 'on'},
   'widerruf': {pfad: '/widerruf', schalter: 'APPLE_SEITE_WIDERRUF', standard: 'on'},
   'widerruf-bestaetigen': {pfad: '/widerruf/bestaetigen', schalter: 'APPLE_SEITE_WIDERRUF_BESTAETIGEN', standard: 'on'},
