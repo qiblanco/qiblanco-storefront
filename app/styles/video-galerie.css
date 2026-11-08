@@ -2,7 +2,10 @@
  * Baustein app/components/reusables/VideoGalerie.jsx. Jede Seite, die ihn
  * einsetzt, lädt diese Datei über links().
  *
- * Kacheln je Breite: Handy ca. 1,2 (die nächste schaut an), kleines Tablet ca.
+ * Kacheln je Breite: Handy eine mittige Kachel (80 % der Breite), links und
+ * rechts schaut je ein Nachbar an, zusammen ca. 1,2 sichtbar. Mittig, weil das
+ * Shop-Tor (D2_hero_zentriert, Christian 26.10.2026) das größte Bild am Handy
+ * mittig verlangt. Kleines Tablet ca.
  * 2,3, Tablet und kleiner Laptop ca. 4,3, ab 1280 px fünf ganze Kacheln.
  * Die Kachelbreite rechnet aus der Innenbreite der Bahn (100 %), dem linken
  * Rand und der Lücke: b = (100 % + Rand - Lücke × (n - 1)) / Sicht. */
@@ -17,7 +20,10 @@
 }
 
 .vg .vg__kopf {
-  margin: 0 var(--vg-rand) 24px;
+  max-width: 28ch;
+  margin: 0 auto 24px;
+  padding: 0 var(--vg-rand);
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.4rem);
   text-align: center;
   font-weight: 600;
   line-height: 1.2;
@@ -198,6 +204,22 @@
 
 .vg__pfeil {
   display: none;
+}
+
+@media (max-width: 599.98px) {
+  .vg__bahn {
+    padding: 0 10%;
+    scroll-padding-inline: 0;
+  }
+
+  .vg__bahn::after {
+    flex-basis: max(1px, calc(12.5% - var(--vg-luecke)));
+  }
+
+  .vg__kachel {
+    flex-basis: 100%;
+    scroll-snap-align: center;
+  }
 }
 
 @media (min-width: 600px) {

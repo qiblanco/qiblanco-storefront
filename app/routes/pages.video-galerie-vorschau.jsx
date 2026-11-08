@@ -30,7 +30,7 @@ export const headers = () => ({'X-Robots-Tag': 'noindex, nofollow'});
 export default function VideoGalerieVorschau() {
   return (
     <div className="vg-vorschau">
-      <VideoGalerie kopf={VORSCHAU_KOPF} kacheln={VORSCHAU_KACHELN} />
+      <VideoGalerie kopf={VORSCHAU_KOPF} kacheln={VORSCHAU_KACHELN} ebene="h1" />
     </div>
   );
 }

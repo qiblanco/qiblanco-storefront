@@ -10,6 +10,7 @@ import {IG_TESTIMONIALS} from '~/data/ig-testimonials';
  *
  * EINSTELLUNGEN je Seite (alles über Props, nichts fest verdrahtet):
  *   kopf      Überschrift der Sektion
+ *   ebene     'h2' (Vorgabe) oder 'h1', wenn die Galerie der Hauptinhalt der Seite ist
  *   kacheln   [{clip, poster, titel, name, profilUrl, beitragUrl, ton}]
  *             clip    kurze mp4 auf unserem CDN (stumm, wenige Sekunden)
  *             poster  Standbild auf unserem CDN, erstes Bild des Clips
@@ -92,7 +93,8 @@ export function stimmenKachel(code, {clip, poster, titel, ton}) {
   };
 }
 
-export function VideoGalerie({kopf, kacheln, kennung}) {
+export function VideoGalerie({kopf, kacheln, kennung, ebene = 'h2'}) {
+  const Kopf = ebene === 'h1' ? 'h1' : 'h2';
   const liste = (kacheln || []).filter((k) => k && k.clip && k.beitragUrl);
   const kopfId = useId();
   const bahnRef = useRef(null);
@@ -106,13 +108,20 @@ export function VideoGalerie({kopf, kacheln, kennung}) {
     if (!bahn) return;
     const els = Array.from(bahn.querySelectorAll('[data-vg-kachel]'));
     const start = els.length ? els[0].offsetLeft : 0;
+    const breite = bahn.clientWidth;
+    /* Am Handy rastet die Kachel mittig ein, sonst links (siehe CSS). */
+    const mittig =
+      els.length > 0 &&
+      String(window.getComputedStyle(els[0]).scrollSnapAlign).includes('center');
     masse.current = {
-      breite: bahn.clientWidth,
+      breite,
       kacheln: els.map((el) => ({
         el,
         medien: el.querySelector('[data-vg-medien]'),
         links: el.offsetLeft,
-        ziel: el.offsetLeft - start,
+        ziel: mittig
+          ? Math.max(0, el.offsetLeft + el.offsetWidth / 2 - breite / 2)
+          : el.offsetLeft - start,
         w: el.offsetWidth,
       })),
     };
@@ -439,9 +448,9 @@ export function VideoGalerie({kopf, kacheln, kennung}) {
       id={kennung}
     >
       {kopf ? (
-        <h2 className="vg__kopf" id={kopfId}>
+        <Kopf className="vg__kopf" id={kopfId}>
           {kopf}
-        </h2>
+        </Kopf>
       ) : null}
       <div className="vg__rahmen">
         <button
