@@ -234,7 +234,6 @@ export default function TechnologiePage() {
             datei="qiblanco-com-gehirn-frequenzen_jpg.webp"
             version="1666867432"
             alt="Frequenzentstehung im Gehirn"
-            style={{borderRadius: '12px'}}
           />
           <div>
             <h3 style={h3Style}>Frequenzentstehung im Gehirn</h3>
@@ -362,7 +361,7 @@ export default function TechnologiePage() {
             datei="qiblanco-com-leiternetzwerk_jpg.webp"
             version="1666867432"
             alt="Leiternetzwerk des Körpers"
-            style={{borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)'}}
+            style={{boxShadow: '0 8px 32px rgba(0,0,0,0.1)'}}
           />
           <div>
             <h2 style={{marginBottom: '1rem'}}>Leiternetzwerk des Körpers</h2>
