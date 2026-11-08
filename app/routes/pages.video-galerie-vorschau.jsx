@@ -1,5 +1,5 @@
 import {VideoGalerie} from '~/components/reusables/VideoGalerie';
-import {VORSCHAU_KACHELN, VORSCHAU_KOPF} from '~/data/video-galerie';
+import {VORSCHAU_KACHELN, VORSCHAU_KOPF} from '~/components/reusables/video-galerie-daten';
 import videoGalerieStyles from '~/styles/video-galerie.css?url';
 
 /*

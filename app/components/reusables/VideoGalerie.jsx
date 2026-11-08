@@ -41,7 +41,7 @@ import {IG_TESTIMONIALS} from '~/data/ig-testimonials';
  * sichtbar wird, und das Video pausiert, sobald sie den Blick verlässt oder der
  * Tab im Hintergrund ist. Bis das Video wirklich läuft, steht das Standbild.
  *
- * Rückbau: diese Datei, app/styles/video-galerie.css, app/data/video-galerie.js
+ * Rückbau: diese Datei, app/styles/video-galerie.css, app/components/reusables/video-galerie-daten.js
  * und die Vorschau-Route pages.video-galerie-vorschau.jsx löschen.
  */
 

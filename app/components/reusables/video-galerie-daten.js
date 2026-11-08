@@ -1,4 +1,4 @@
-import {stimmenKachel} from '~/components/reusables/VideoGalerie';
+import {stimmenKachel} from './VideoGalerie';
 
 /*
  * Kacheln der Video-Galerie (Elina, EL-20261108-a7401ffd). Jede Seite kann ihre
