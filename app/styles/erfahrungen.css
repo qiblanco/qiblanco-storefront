@@ -373,3 +373,11 @@ body:has(.erf) ._form_15 input[type='submit'] {
    Direkt schlaegt GEERBT — auf dunklem Grund gewinnt sonst der dunkle Fliesstext. */
 body:has(.erf) .footer p,
 body:has(.erf) .footer li { color: inherit; }
+
+/* Der Trustpilot-Scroller (ReviewsSlider) färbt „weiterlesen" in Google-Blau
+   #1565c0. Auf dieser Route ist das eine zweite gesättigte Farbwelt neben dem
+   Gold (design-rubrik 08.11.2026: harmonisch 75, „Fremd-Widgets einfaerben").
+   Hier erbt er die Gold-Tinte, AA-fest auf hellem Grund. */
+.erf .TrustpilotStimmen button[aria-expanded] {
+  color: var(--erf-akzent-tinte);
+}
