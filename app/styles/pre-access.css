@@ -102,29 +102,12 @@
 }
 .pre-access__liste {
   list-style: none;
-  counter-reset: schritt;
   margin: 0;
   padding: 0;
 }
 .pre-access__schritt {
-  counter-increment: schritt;
-  position: relative;
-  padding: 0 0 1.125rem 2.75rem;
+  padding: 0 0 1.125rem;
   line-height: 1.5;
-}
-.pre-access__schritt::before {
-  content: counter(schritt);
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1.875rem;
-  height: 1.875rem;
-  border-radius: 50%;
-  background: #f2bf72;
-  color: #171310;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  line-height: 1.875rem;
   text-align: center;
 }
 .pre-access__schritt strong {
