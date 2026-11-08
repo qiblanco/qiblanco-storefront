@@ -137,6 +137,7 @@ const studieKapitel = (s) => ({
 export const ZELL_SEKTIONEN_A = Object.freeze([
   {
     art: 'hero',
+    bildZuerst: true,
     overline: 'Evidenz, mit Grenzen',
     titel: 'Die vier Zellstudien, eingeordnet',
     unter: 'Was untersucht wurde, was herauskam und wo die Aussagekraft endet.',

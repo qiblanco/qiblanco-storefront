@@ -9,6 +9,7 @@ import {ANNA, BILD, STIMMEN, ZIEL} from './lp-gemeinsam.js';
 export const VERSPRECHEN_SEKTIONEN = Object.freeze([
   {
     art: 'hero',
+    bildZuerst: true,
     overline: 'Das 20-Tage-Versprechen',
     titel: '20 Tage. Kein Kleingedrucktes. Kein „nur wenn“.',
     unter: 'Du testest in Ruhe. Überzeugt er dich nicht, bekommst du dein Geld zurück.',

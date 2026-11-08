@@ -458,3 +458,25 @@ test('Kopfdaten: Startseite (A und B) und die drei Detailseiten setzen bildZuers
     assert.equal(kopf.bildZuerst, true, `${seite}: Kopf setzt bildZuerst`);
   }
 });
+
+test('Kopfdaten: die sieben LP-Seiten und Zellstudien-ehrlich setzen bildZuerst', async () => {
+  const lp = {
+    'tiefer-schlaf': ['lp/lp-schlaf.js', 'SCHLAF_SEKTIONEN'],
+    'wir-machen-ihn-auf': ['lp/lp-skeptiker.js', 'SKEPTIKER_SEKTIONEN'],
+    'das-20-tage-versprechen': ['lp/lp-versprechen.js', 'VERSPRECHEN_SEKTIONEN'],
+    'so-funktioniert-der-qione': ['lp/lp-einfach.js', 'EINFACH_SEKTIONEN'],
+    'so-wirkt-kohaerentes-wasser': ['lp/lp-mechanismus.js', 'MECHANISMUS_SEKTIONEN'],
+    'kette-oder-armband': ['lp/lp-trageform.js', 'TRAGEFORM_SEKTIONEN'],
+    'haelt-das-mein-leben-aus': ['lp/lp-alltag.js', 'ALLTAG_SEKTIONEN'],
+  };
+  const koepfe = {};
+  for (const [seite, [datei, name]] of Object.entries(lp)) {
+    koepfe[seite] = (await import(pathToFileURL(join(HIER, datei)).href))[name][0];
+  }
+  const zell = await renderModul("export {ZELL_SEKTIONEN_A} from '~/components/campaign/MmZellstudienEhrlich';");
+  koepfe['zellstudien-ehrlich'] = zell.ZELL_SEKTIONEN_A[0];
+  for (const [seite, kopf] of Object.entries(koepfe)) {
+    assert.equal(kopf.art, 'hero', `${seite}: erste Sektion ist der Kopf`);
+    assert.equal(kopf.bildZuerst, true, `${seite}: Kopf setzt bildZuerst`);
+  }
+});
