@@ -59,7 +59,6 @@
  *   "begruendung": string[], teilfragen?: Array<string|null>,
  *   beleg_titel?: string,
  *   beleg: string[], fundstellen?: string[], offen: string[],
- *   offen_links?: Array<{pfad: string, text: string}>,
  *   weiter: Array<{pfad: string, text: string}>, quellen: string[],
  *   pfad: string}} FrageSeite
  */
@@ -327,13 +326,7 @@ export const FRAGEN = [
     "offen": [
       "Alle Zahlen sind Durchschnitte über viele Menschen. Wie du persönlich reagierst, zeigt dir am ehesten dein eigener Schlaf.",
       "Für die neueren Mobilfunkfrequenzen gibt es noch keine Beobachtungen über Jahrzehnte, weil sie erst seit wenigen Jahren im Einsatz sind.",
-      "Schlaf ist das Thema, zu dem uns Kundinnen und Kunden am häufigsten schreiben. Was einige von ihnen unter eigenem Namen erzählen, haben wir bei den Erfahrungen mit Elektrosmog-Schutz gesammelt."
-    ],
-    "offen_links": [
-      {
-        "pfad": "/pages/erfahrungen",
-        "text": "Erfahrungen mit Elektrosmog-Schutz"
-      }
+      "Schlaf ist das Thema, zu dem uns Kundinnen und Kunden am häufigsten schreiben. Was einige von ihnen unter eigenem Namen erzählen, haben wir bei den Erfahrungen gesammelt."
     ],
     "weiter": [
       {

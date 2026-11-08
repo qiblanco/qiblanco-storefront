@@ -133,9 +133,7 @@ export function FrageSeite({seite, anhang = null}) {
           <div className="frg__inhalt">
             <h2>Gut zu wissen</h2>
             {seite.offen.map((absatz) => (
-              <p key={absatz.slice(0, 48)}>
-                {mitTextLink(absatz, seite.offen_links)}
-              </p>
+              <p key={absatz.slice(0, 48)}>{absatz}</p>
             ))}
           </div>
         </section>
@@ -179,30 +177,4 @@ export function FrageSeite({seite, anhang = null}) {
       )}
     </div>
   );
-}
-
-/**
- * `seite.offen_links` (data/fragen.js, optional, seit 2026-11-08): macht in
- * einem Absatz von „Gut zu wissen" genau EINE Wortgruppe zum Link. Der Absatz
- * bleibt im Datenmodul reiner Text, damit jeder andere Leser von `offen`
- * (FrageAbschnitt auf FAQ und Studien, Proben, Stilprüfung) unverändert
- * dasselbe liest. Gilt nur auf der eigenen Frageseite.
- * Anlass: SEO-Maßnahme M-SP-20261017-erfahrungen (Grossjob seo-2026-w43-l26-
- * erfahrungen-d285-…, s02): der Satz „… haben wir bei den Erfahrungen mit
- * Elektrosmog-Schutz gesammelt." verlinkt auf /pages/erfahrungen.
- * Steht die Wortgruppe nicht (mehr) im Absatz, bleibt er unverlinkter Text.
- */
-function mitTextLink(absatz, links) {
-  for (const l of links || []) {
-    const i = absatz.indexOf(l.text);
-    if (i < 0) continue;
-    return (
-      <>
-        {absatz.slice(0, i)}
-        <a href={adresse(l.pfad)}>{l.text}</a>
-        {absatz.slice(i + l.text.length)}
-      </>
-    );
-  }
-  return absatz;
 }
