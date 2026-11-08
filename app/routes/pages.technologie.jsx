@@ -414,6 +414,23 @@ export default function TechnologiePage() {
                 Moleküle in kristalline Strukturen anordnen. Qi Blanco verwendet eine eigens entwickelte Legierung,
                 die maßgeblich auf Feingold, Kupfer und Kohlenstoff beruht.
               </p>
+              {/* ZUFAHRT ZUR GITTERCHIP-SEITE (2026-11-08, Job 20261101-seo-
+                  gitterchip-zufahrt-ssr-link): Google kannte
+                  /pages/wie-funktioniert-der-gitterchip-im-qione nicht, weil
+                  kein ausgeliefertes HTML auf sie zeigte (der Link im
+                  Video-Dialog der Kaufseite ist ein Portal, nicht im SSR).
+                  Er steht hier, weil der Satz davor die Legierung nennt, aus
+                  der der Chip besteht. Im Inhalt, nicht in Kopf oder Fuß: nur
+                  dort zählt seiten_zufahrt ihn. Rückweg: diesen Absatz
+                  entfernen (hb-deploy revert). */}
+              <p style={pStyle} data-zufahrt="gitterchip">
+                Im QiOne® 2 Pro steckt eine solche Legierung als Gitterchip®, ein Gitter ohne Strom und ohne
+                Elektronik. Wie daraus Schutz wird, vom Chip über das Wasser bis zur Zelle, zeigt{' '}
+                <Link to="/pages/wie-funktioniert-der-gitterchip-im-qione">
+                  Wie der QiOne® schützt: der Gitterchip® in sieben Stufen
+                </Link>
+                .
+              </p>
               <TechBild
                 datei="KristallineStrukturSalz_png.webp"
                 version="1666867432"
