@@ -727,7 +727,7 @@ function RecommendedProducts({products}) {
 // Eine Probe, die den damaligen Zustand misst, wäre grün gewesen und hätte
 // nichts bewiesen. Deshalb bindet die Query jetzt die KOLLEKTION, nicht die Zeit.
 const FEATURED_COLLECTION_QUERY = `#graphql
-  fragment FeaturedCollection on Collection {
+  fragment CrystalSpiegelFeaturedCollection on Collection {
     id
     title
     image {
@@ -739,10 +739,10 @@ const FEATURED_COLLECTION_QUERY = `#graphql
     }
     handle
   }
-  query FeaturedCollection($country: CountryCode, $language: LanguageCode, $handle: String!)
+  query CrystalSpiegelFeaturedCollection($country: CountryCode, $language: LanguageCode, $handle: String!)
     @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
-      ...FeaturedCollection
+      ...CrystalSpiegelFeaturedCollection
     }
   }
 `;
@@ -787,6 +787,6 @@ const SORTEN_QUERY = `#graphql
 `;
 
 /** @typedef {import('./+types/_index').Route} Route */
-/** @typedef {import('storefrontapi.generated').FeaturedCollectionFragment} FeaturedCollectionFragment */
+/** @typedef {import('storefrontapi.generated').CrystalSpiegelFeaturedCollectionFragment} FeaturedCollectionFragment */
 /** @typedef {import('storefrontapi.generated').SortenQuery} SortenQuery */
 /** @typedef {ReturnType<typeof useLoaderData<typeof loader>>} LoaderReturnData */
