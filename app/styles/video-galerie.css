@@ -1,0 +1,275 @@
+/* Sektion „Video-Galerie / Stimmen-Karussell“ (Elina, EL-20261108-a7401ffd).
+ * Baustein app/components/reusables/VideoGalerie.jsx. Jede Seite, die ihn
+ * einsetzt, lädt diese Datei über links().
+ *
+ * Kacheln je Breite: Handy ca. 1,2 (die nächste schaut an), kleines Tablet ca.
+ * 2,3, Tablet und kleiner Laptop ca. 4,3, ab 1280 px fünf ganze Kacheln.
+ * Die Kachelbreite rechnet aus der Innenbreite der Bahn (100 %), dem linken
+ * Rand und der Lücke: b = (100 % + Rand - Lücke × (n - 1)) / Sicht. */
+
+.vg {
+  --vg-rand: 16px;
+  --vg-luecke: 10px;
+  --vg-radius: 22px;
+  --vg-kachel: calc((100% + var(--vg-rand) - var(--vg-luecke)) / 1.2);
+  padding: 48px 0 40px;
+  overflow: hidden;
+}
+
+.vg .vg__kopf {
+  margin: 0 var(--vg-rand) 24px;
+  text-align: center;
+  font-weight: 600;
+  line-height: 1.2;
+  text-shadow: none;
+  text-wrap: balance;
+}
+
+.vg__rahmen {
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.vg__bahn {
+  position: relative;
+  display: flex;
+  gap: var(--vg-luecke);
+  margin: 0;
+  padding: 0 var(--vg-rand);
+  list-style: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--vg-rand);
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.vg__bahn::-webkit-scrollbar {
+  display: none;
+}
+
+/* Rand am Ende: padding-right einer scrollenden Flex-Bahn gilt nicht in jedem
+ * Browser, ein leeres Glied schon (Lücke davor + Rest = --vg-rand). */
+.vg__bahn::after {
+  content: '';
+  flex: 0 0 max(1px, calc(var(--vg-rand) - var(--vg-luecke)));
+}
+
+.vg__bahn[data-zieht] {
+  cursor: grabbing;
+  user-select: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .vg__bahn {
+    cursor: grab;
+  }
+}
+
+.vg__kachel {
+  position: relative;
+  flex: 0 0 var(--vg-kachel);
+  min-width: 0;
+  aspect-ratio: 9 / 16;
+  margin: 0;
+  border-radius: var(--vg-radius);
+  overflow: hidden;
+  isolation: isolate;
+  transform: translateZ(0);
+  background: #2b2925;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Video und Standbild stehen 8 % links und rechts über die Kachel hinaus,
+ * damit der Parallax-Versatz (PARALLAX im Baustein) nie eine Kante zeigt. */
+.vg__medien {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -8%;
+  right: -8%;
+  will-change: transform;
+}
+
+.vg__bild,
+.vg__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  display: block;
+}
+
+.vg__video {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.vg__kachel[data-qb-video-zustand='spielt'] .vg__video {
+  opacity: 1;
+}
+
+.vg__verlauf {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 46%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.28) 45%, rgba(0, 0, 0, 0) 100%);
+}
+
+.vg__link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+}
+
+.vg__link:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -6px;
+}
+
+.vg__name {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  max-width: calc(100% - 24px);
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: #fff;
+  color: #2c2a26;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+/* Größere Trefferfläche als das sichtbare Etikett. */
+.vg__name::after {
+  content: '';
+  position: absolute;
+  inset: -8px -6px;
+}
+
+.vg__name:hover {
+  text-decoration: underline;
+}
+
+.vg__name:focus-visible {
+  outline: 2px solid #2c2a26;
+  outline-offset: 2px;
+}
+
+.vg__titel {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+  margin: 0;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  overflow-wrap: break-word;
+}
+
+.vg__pfeil {
+  display: none;
+}
+
+@media (min-width: 600px) {
+  .vg {
+    --vg-kachel: calc((100% + var(--vg-rand) - var(--vg-luecke) * 2) / 2.3);
+  }
+}
+
+@media (min-width: 750px) {
+  .vg {
+    --vg-rand: 24px;
+    --vg-luecke: 12px;
+    --vg-radius: 24px;
+    padding: 64px 0 56px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .vg {
+    --vg-kachel: calc((100% + var(--vg-rand) - var(--vg-luecke) * 4) / 4.3);
+  }
+
+  .vg__titel {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .vg {
+    --vg-rand: 48px;
+    --vg-luecke: 14px;
+    --vg-kachel: calc((100% - var(--vg-luecke) * 4) / 5);
+  }
+}
+
+/* Pfeile nur mit Maus/Trackpad; am Handy wischt man. */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .vg__pfeil {
+    position: absolute;
+    top: 50%;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: #2c2a26;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: opacity 0.2s ease;
+  }
+
+  .vg__pfeil--links {
+    left: 8px;
+  }
+
+  .vg__pfeil--rechts {
+    right: 8px;
+  }
+
+  .vg__pfeil:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .vg__pfeil:focus-visible {
+    outline: 2px solid #2c2a26;
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vg__video {
+    transition: none;
+  }
+}
