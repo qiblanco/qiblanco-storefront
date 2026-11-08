@@ -1,0 +1,124 @@
+/* Eintragungsseite /pages/pre-access (Black Friday Pre-Sale DACH, Elina 08.11.2026, EL-20261108-3a488064).
+   Nur fuer diese Seite geladen. Die Klassen mm-formular__* sind die Standardklassen der geteilten Komponente
+   app/components/MailManagerFormular.tsx; der Knopf im Kit-Gold wie auf der Testseite (EL-20261106-709630e1). */
+.pre-access {
+  padding: 3rem 1rem 4.5rem;
+  color: #4a4741;
+}
+.pre-access__karte {
+  max-width: 30rem;
+  margin: 0 auto;
+  text-align: center;
+}
+.pre-access__dach {
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 0.75rem;
+  color: #6b675f;
+}
+.pre-access__titel {
+  font-size: 2rem;
+  line-height: 1.2;
+  font-style: italic;
+  margin: 0 0 1rem;
+  color: #171310;
+}
+.pre-access__text {
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  margin: 0 0 2rem;
+}
+.pre-access .mm-formular {
+  position: relative;
+  text-align: left;
+}
+.pre-access .mm-formular__feld {
+  margin: 0 0 0.875rem;
+}
+.pre-access .mm-formular__label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 1rem;
+}
+.pre-access .mm-formular__input {
+  font-size: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  background: #fff;
+  color: inherit;
+}
+.pre-access .mm-formular__knopf {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  border: 0;
+  border-radius: 10px;
+  background: #f2bf72;
+  color: #171310;
+  cursor: pointer;
+}
+.pre-access .mm-formular__knopf:hover {
+  filter: brightness(0.95);
+}
+.pre-access .mm-formular__knopf:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.pre-access .mm-formular__einwilligung {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #555;
+  margin: 0.875rem 0 0;
+}
+.pre-access .mm-formular__meldung {
+  font-size: 1rem;
+  color: #a40000;
+  margin: 0.5rem 0 0;
+}
+.pre-access .mm-formular__danke {
+  white-space: pre-line;
+  font-size: 1rem;
+}
+.pre-access__schritte {
+  max-width: 30rem;
+  margin: 3rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid #e4e1db;
+}
+.pre-access__zwischentitel {
+  font-size: 1.25rem;
+  font-style: italic;
+  text-align: center;
+  margin: 0 0 1.25rem;
+  color: #171310;
+}
+.pre-access__liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pre-access__schritt {
+  padding: 0 0 1.125rem;
+  line-height: 1.5;
+  text-align: center;
+}
+.pre-access__schritt strong {
+  display: block;
+  color: #171310;
+}
+@media (max-width: 480px) {
+  .pre-access {
+    padding: 2rem 1rem 3.5rem;
+  }
+  .pre-access__titel {
+    font-size: 1.625rem;
+  }
+}
