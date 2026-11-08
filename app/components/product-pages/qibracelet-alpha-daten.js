@@ -262,7 +262,7 @@ export const FAQ = {
     },
     // GS-122 (Grossjob km-entw-hebel-umsetzen-seo-top3-zwei-qi-bracelet-de-gs-122-20261018 s02):
     // greift die Kundenschreibweise „Qi Bracelet“ auf und grenzt vom Qi-Ladestandard ab.
-    // Keine Wirkaussage. Steht auch am Ende von FAQ_QIBRACELET (product-faqs.js).
+    // Keine Wirkaussage. Nur hier: die Seite rendert mit KONFIGURATOR_QIBRACELET=on diese Liste.
     {
       f: 'Ist das Qi Bracelet ein Qi-Ladegerät?',
       a: 'Nein. Das QiBracelet® wird auch „Qi Bracelet“ geschrieben und ist das Armband von Qi Blanco mit dem Gitterchip®. Mit dem Qi-Standard für kabelloses Laden hat es nichts zu tun. Es lädt keine Geräte.',
