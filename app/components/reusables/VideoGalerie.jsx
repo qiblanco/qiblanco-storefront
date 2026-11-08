@@ -191,8 +191,8 @@ export function VideoGalerie({kopf, kacheln, kennung}) {
       if (p && typeof p.catch === 'function') p.catch(() => {});
     };
     const io = new IntersectionObserver(
-      (eintraege) => {
-        for (const e of eintraege) {
+      (befunde) => {
+        for (const e of befunde) {
           const v = e.target.querySelector('video');
           if (!v) continue;
           if (e.isIntersecting) {
@@ -243,7 +243,7 @@ export function VideoGalerie({kopf, kacheln, kennung}) {
 
   /* Pfeile: genau eine Kachel je Klick. Am rechten Rand steht die Bahn schon am
    * Ende, auch wenn die letzte Kachel nicht links anliegt. */
-  const blaettern = useCallback(
+  const schieben = useCallback(
     (richtung) => {
       const bahn = bahnRef.current;
       if (!bahn) return;
@@ -448,7 +448,7 @@ export function VideoGalerie({kopf, kacheln, kennung}) {
           type="button"
           className="vg__pfeil vg__pfeil--links"
           aria-label="Vorherige Kachel"
-          onClick={() => blaettern(-1)}
+          onClick={() => schieben(-1)}
           disabled={rand.links}
         >
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
@@ -538,7 +538,7 @@ export function VideoGalerie({kopf, kacheln, kennung}) {
           type="button"
           className="vg__pfeil vg__pfeil--rechts"
           aria-label="Nächste Kachel"
-          onClick={() => blaettern(1)}
+          onClick={() => schieben(1)}
           disabled={rand.rechts}
         >
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
