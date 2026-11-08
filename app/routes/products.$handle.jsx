@@ -1,3 +1,4 @@
+import {useRef} from 'react';
 import {useLoaderData} from 'react-router';
 import {redirect} from 'react-router';
 import {
@@ -38,6 +39,8 @@ import {appleSeiteLaden, appleSeiteFuerPfad} from '~/lib/apple-seiten';
 import {AppleSeite} from '~/components/apple-seite/AppleSeite';
 import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
 import produktAppleStyles from '~/styles/produkt-apple.css?url';
+import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
+import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
@@ -305,15 +308,20 @@ export default function Product() {
   return (
     <>
       <link rel="stylesheet" href={produktAppleStyles} />
+      <link rel="stylesheet" href={kaufleisteStyles} />
       <AppleSeite seite={appleSeite.seite}>
-        <StandardProduct product={product} />
+        {/* Nur die Apple-Fassung bekommt die klebende Kaufleiste (Grossjob
+            20261029 alle-shop-seiten-apple-niveau, s12-r10): am Handy-Seitenende
+            steht sonst kein aktiver Kaufknopf (Echtgeraet-Tor). Die Standard-PDP
+            ohne Schalter bleibt ohne Leiste und ohne ihr Stylesheet. */}
+        <StandardProduct product={product} kaufleiste />
         <AppleAnna />
       </AppleSeite>
     </>
   );
 }
 
-function StandardProduct({product}) {
+function StandardProduct({product, kaufleiste = false}) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,
@@ -331,6 +339,9 @@ function StandardProduct({product}) {
   });
 
   const {title, descriptionHtml} = product;
+  // Kaufbox-Ref für die Kaufleiste: sie misst, ob der Kaufknopf der Kaufbox
+  // im Bild ist (reusables/Kaufleiste.jsx).
+  const kaufbox = useRef(null);
 
   return (
     <>
@@ -344,7 +355,7 @@ function StandardProduct({product}) {
         Layout-Effekt. Erfasst beim HARD-LOAD (Ad-Traffic landet hart) analog
         zum bestehenden Tracker; SPA-navigierte PDPs bleiben ungemessen (Eigen-
         schaft des Trackers, s. RESULT). Job 20260723-commerce-microfunnel. */}
-    <div className="product">
+    <div className="product" ref={kaufbox}>
       <div className="ProductImages" data-section="pdp-gallery">
         <ProductImage image={selectedVariant?.image} />
         <ProductImageList images={product?.images} />
@@ -389,6 +400,18 @@ function StandardProduct({product}) {
         }}
       />
     </div>
+    {kaufleiste ? (
+      <Kaufleiste
+        kaufbox={kaufbox}
+        preis={{
+          handle: product.handle,
+          price: selectedVariant?.price,
+          compareAtPrice: selectedVariant?.compareAtPrice,
+        }}
+        selectedVariant={selectedVariant}
+        productOptions={productOptions}
+      />
+    ) : null}
 
     {/* Google-Rezensionsbereich sitewide auf Produktseiten (Job
         20260731-google-rezensionen): auch die generischen PDPs tragen die
