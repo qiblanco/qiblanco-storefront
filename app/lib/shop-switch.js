@@ -22,6 +22,7 @@ export const SHOP_LABEL = {
 export const HREFLANG_PAARE = {
   "/": "/",
   "/pages/agb": "/pages/terms-conditions",
+  "/pages/best-wearables-for-longevity-2027": "/pages/best-wearables-for-longevity-2027",
   "/pages/bewertungen": "/pages/reviews",
   "/pages/das-beispiel": "/pages/example",
   "/pages/datenschutz": "/pages/privacy-policy",
@@ -31,6 +32,7 @@ export const HREFLANG_PAARE = {
   "/pages/impressum": "/pages/imprint",
   "/pages/kohaerentes-wasser": "/pages/coherent-water-structure",
   "/pages/mentales-setting": "/pages/mental-setting",
+  "/pages/produktberatung": "/pages/consultation",
   "/pages/studie-darmbarriere": "/pages/study-intestinal-cells",
   "/pages/studie-nutzererfahrung": "/pages/study-user-observations",
   "/pages/studien": "/pages/studies",
@@ -49,6 +51,7 @@ export const HREFLANG_PAARE = {
 
 const MAP_DE_US = {
   "/pages/agb": "/pages/terms-conditions",
+  "/pages/best-wearables-for-longevity-2027": "/pages/best-wearables-for-longevity-2027",
   "/pages/bewertungen": "/pages/reviews",
   "/pages/das-beispiel": "/pages/example",
   "/pages/datenschutz": "/pages/privacy-policy",
@@ -61,6 +64,7 @@ const MAP_DE_US = {
   "/pages/mentales-setting": "/pages/mental-setting",
   "/pages/partner": "/pages/partner",
   "/pages/pre-access": "/pages/pre-access",
+  "/pages/produktberatung": "/pages/consultation",
   "/pages/qibracelet": "/pages/page-qibracelet",
   "/pages/qihome-air": "/pages/pages-qihome-air",
   "/pages/studie-darmbarriere": "/pages/study-intestinal-cells",
@@ -80,8 +84,10 @@ const MAP_DE_US = {
 };
 
 const MAP_US_DE = {
+  "/pages/best-wearables-for-longevity-2027": "/pages/best-wearables-for-longevity-2027",
   "/pages/coherent-water": "/pages/was-ist-kohaerentes-wasser",
   "/pages/coherent-water-structure": "/pages/kohaerentes-wasser",
+  "/pages/consultation": "/pages/produktberatung",
   "/pages/detoxification": "/pages/entgiftung",
   "/pages/e-smog": "/pages/e-smog",
   "/pages/example": "/pages/das-beispiel",
