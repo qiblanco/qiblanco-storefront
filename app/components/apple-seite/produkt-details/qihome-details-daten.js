@@ -51,6 +51,7 @@ export const VIDEO = Object.freeze({
 export const QIHOME_DETAILS = Object.freeze([
   {
     art: 'hero',
+    bildZuerst: true,
     overline: 'QiHome® Air im Detail',
     titel: 'Erschaffe dir deine Wohlfühloase.',
     unter: 'Ein Gerät für dein ganzes Zuhause. Ohne Strom.',
