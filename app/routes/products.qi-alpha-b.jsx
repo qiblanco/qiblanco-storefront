@@ -11,7 +11,6 @@ import {
   alpha,
   alphaWortlaut,
 } from '~/components/campaign/QiAlphaLpB';
-import {THE_ALPHA_LIVE_ANMELDUNG_STIL} from '~/components/campaign/TheAlphaLiveAnmeldung';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import qiMasterStyles from '~/styles/qi-master.css?url';
 import wortlautStyles from '~/styles/qi-master-wortlaut.css?url';
@@ -143,7 +142,6 @@ export function links() {
     {rel: 'stylesheet', href: kaufZuerstStyles},
     {rel: 'stylesheet', href: kaufleisteStyles},
     {rel: 'stylesheet', href: qiAlphaBStyles},
-    {rel: 'stylesheet', href: THE_ALPHA_LIVE_ANMELDUNG_STIL},
   ];
 }
 
