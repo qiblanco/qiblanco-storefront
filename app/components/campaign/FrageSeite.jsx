@@ -49,7 +49,7 @@ export function FrageSeite({seite, anhang = null}) {
   // der wäre in einem Feldnamen der Fehler. Die quotierte Form ist die
   // Schreibweise, die es bereits als Code-Kontext erkennt. Die Klasse ist
   // gemeldet (fünfte Instanz), der Feldname selbst bleibt unverändert.
-  const {"begruendung": absaetze} = seite;
+  const {"begruendung": absaetze, "begruendung_links": absatzLinks} = seite;
   return (
     <div className="frg">
       <section className="frg__kopf" data-section="frg-kopf">
@@ -81,10 +81,10 @@ export function FrageSeite({seite, anhang = null}) {
             return teilfrage ? (
               <Fragment key={absatz.slice(0, 48)}>
                 <h2 data-geo="teilfrage">{teilfrage}</h2>
-                <p>{absatz}</p>
+                <p>{mitTextLink(absatz, absatzLinks)}</p>
               </Fragment>
             ) : (
-              <p key={absatz.slice(0, 48)}>{absatz}</p>
+              <p key={absatz.slice(0, 48)}>{mitTextLink(absatz, absatzLinks)}</p>
             );
           })}
         </div>
@@ -191,6 +191,12 @@ export function FrageSeite({seite, anhang = null}) {
  * erfahrungen-d285-…, s02): der Satz „… haben wir bei den Erfahrungen mit
  * Elektrosmog-Schutz gesammelt." verlinkt auf /pages/erfahrungen.
  * Steht die Wortgruppe nicht (mehr) im Absatz, bleibt er unverlinkter Text.
+ *
+ * Dasselbe gilt seit 2026-11-09 für die Begründungsabsätze über das Feld
+ * `"begruendung_links"` (Hebel GS-139, Auftrag 20261109-gs139-kritik-
+ * inhaltslinks-bau): auf /pages/ist-qi-blanco-serioes verlinkt der Satz zu den
+ * fünf Arbeiten auf /pages/kritik, Ankertext aus deren Titel ohne das Wort
+ * „Kritik“. Das FAQPage-Schema liest weiter den reinen Absatztext.
  */
 function mitTextLink(absatz, links) {
   for (const l of links || []) {

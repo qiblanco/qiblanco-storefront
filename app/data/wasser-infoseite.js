@@ -1120,6 +1120,14 @@ export const WEITER = [
     text: `${versal(zahlwort(STUDIEN.length))} veröffentlichte Studien, ${zahlwort(anzahlNachArt('in-vitro'))} davon an Zellen im Labor, mit Methode und Ergebnis.`,
   },
   {
+    to: '/pages/kritik',
+    // Hebel GS-139 (Auftrag 20261109-gs139-kritik-inhaltslinks-bau): Ankertext
+    // aus dem Titel der Zielseite, ohne das Wort „Kritik“ (Brain-Regel
+    // bestmoegliches-licht-kritik-nicht-selbst-verbreiten).
+    titel: 'Zellversuche: was sie sagen und was nicht',
+    text: 'Sieben Fragen, die du dir vielleicht auch stellst, beantwortet mit den Zahlen der Studien und 20 Tagen zum Selbstprüfen.',
+  },
+  {
     to: '/pages/kohaerentes-wasser',
     titel: 'Der Kurs, Tag 5',
     text: 'Kohärente Wasserstrukturen als Lektion im Gratis-Kurs „In 5 Stufen zum Superhuman".',
