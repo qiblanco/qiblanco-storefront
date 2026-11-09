@@ -5,6 +5,8 @@
 .pab{--g:#f2bf72;--grund:#0c0a08;--hell:#f5efe6;--matt:rgba(245,239,230,.78);--satz:24px;--titel:34px;--betrag:68px;--zahl:44px;position:relative;width:100%;margin:0;background:var(--grund);color:var(--hell);font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif;overflow:hidden;overflow:clip;text-align:left}
 .pab *{box-sizing:border-box}
 .pab__innen{max-width:82rem;margin:0 auto;padding:1.25rem 1.125rem 3.5rem;display:grid;gap:1.75rem}
+/* Zeilenlaenge begrenzt: Textspalte hoechstens 40rem (am Desktop ohnehin schmaler, wirkt nur unter 960px) */
+.pab__text{max-width:40rem}
 .pab__bild{position:relative;margin:0;border-radius:24px;aspect-ratio:1/1;background:#15110d;overflow:hidden;box-shadow:0 0 0 1px rgba(242,191,114,.14),0 30px 80px -30px rgba(0,0,0,.9)}
 .pab__bild img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 40%;border-radius:inherit}
 .pab__bild::after{content:"";position:absolute;inset:auto 0 0 0;height:38%;background:linear-gradient(transparent,rgba(12,10,8,.82));pointer-events:none}
@@ -43,7 +45,7 @@
 .pab .mm-formular .mm-formular__knopf{display:block;justify-self:stretch;width:100%;min-height:54px;margin-top:.25rem;padding:.9rem 1.5rem;border:0;border-radius:999px;background:var(--g);color:#171310;font-family:inherit;font-size:16px;line-height:1.3;font-weight:700;cursor:pointer;box-shadow:0 10px 30px -12px rgba(242,191,114,.5)}
 .pab .mm-formular .mm-formular__knopf:hover{filter:brightness(1.05)}
 .pab .mm-formular .mm-formular__knopf:disabled{opacity:.6;cursor:default}
-.pab .mm-formular__einwilligung{margin:.75rem 0 0;color:rgba(245,239,230,.8);font-size:14px;line-height:1.65;opacity:1}
+.pab .mm-formular__einwilligung{margin:.75rem 0 0;color:rgba(245,239,230,.8);font-size:15px;line-height:1.65;opacity:1}
 .pab .mm-formular__meldung{margin:0;color:#ffb4a8;font-size:15px}
 .pab .mm-formular__meldung:empty{display:none}
 .pab .mm-falle{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
@@ -52,7 +54,7 @@
 @media (max-width:359px){.pab{--satz:20px;--titel:29px;--betrag:56px;--zahl:36px}}
 @media (min-width:600px){.pab{--satz:24px;--titel:46px;--zahl:52px}.pab__innen{padding:2rem 2rem 4.5rem}}
 @media (min-width:960px){
-.pab{--titel:48px;--betrag:48px}
+.pab{--titel:48px;--betrag:60px}
 .pab__innen{grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:3.5rem;align-items:start;padding:3rem 2.5rem 5.5rem}
 .pab__bild{position:sticky;top:6rem;border-radius:32px;aspect-ratio:4/5}
 .pab__text{padding-top:.5rem}
@@ -60,7 +62,7 @@
 @media (min-width:1280px){.pab{--titel:60px;--betrag:60px}}
 /* Mobil unter 900px alles mittig, Desktop bleibt linksbuendig (Elina EL-20261109-d1679392) */
 @media (max-width:899.98px){
-.pab__text{text-align:center}
+.pab__text{text-align:center;margin-inline:auto}
 .pab__dach{flex-direction:column;justify-content:center;gap:.5rem}
 .pab h1.pab__titel{text-align:center}
 .pab__uhr,.pab__zelle{text-align:center}
