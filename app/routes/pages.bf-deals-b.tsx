@@ -12,18 +12,18 @@ import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
 import bfDealsBStyles from '../styles/bf-deals-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
 
-// Bilder: Shopify-Dateien DACH. Die zwei Bundle-Bilder und das Kakao-Set-Bild sind neu (EL-20261109-79b117c7 bzw.
-// b0f2e574). Bis sie in den DACH-Dateien liegen, stehen bei den Bundles die bisherigen Freisteller, und das Kakao-Bild
-// bleibt leer (die Kachel zeigt dann nur den dunklen Grund). Vor dem Livegang alle drei auf die neuen Dateien setzen.
-// Werte ohne Query.
+// Bilder: die zwei neuen Bundle-Bilder und das Kakao-Set-Bild (EL-20261109-79b117c7 bzw. b0f2e574) liegen als
+// Kampagnen-Dateien unter public/campaigns/bf-deals-2026 (1200 px, WebP); QiBracelet und QiHome Air sind die bestehenden
+// Shopify-Produktbilder (Elinas Wortlaut: „vorerst mit den bestehenden Produktbildern“). Shopify-Werte ohne Query.
 const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
+const KAMPAGNE = '/campaigns/bf-deals-2026/';
 const BILDER: Record<string, string> = {
-  'bundle-2x-qione-2-pro': CDN + '2xQiOne2Profreistehend_1.png',
-  'bundle-qione-2-pro-necklace':
-    CDN + 'QiOne_NecklaceBundlev3Transparent_1.png',
+  'bundle-2x-qione-2-pro': KAMPAGNE + 'bundle-2x-qione-2-pro.webp',
+  'bundle-qione-2-pro-necklace': KAMPAGNE + 'bundle-qione-2-pro-necklace.webp',
   QiBracelet1: CDN + 'QiBracelet1.webp',
   QiHome1: CDN + 'QiHome1.webp',
-  'crystal-cacao-set-awake-create-dunkel-gold-4x3': '',
+  'crystal-cacao-set-awake-create-dunkel-gold-4x3':
+    KAMPAGNE + 'crystal-cacao-set-awake-create-dunkel-gold-4x3.webp',
 };
 
 export function links() {
@@ -200,19 +200,27 @@ function Countdown({jetzt}: {jetzt: number | null}) {
 function Bild({k}: {k: Kachel}) {
   const u = BILDER[k.bild];
   const wahl = Boolean(k.sets);
+  // Kampagnen-Dateien (public/) haben feste 1200 px, Shopify-Bilder skaliert das CDN per ?width=.
+  const lokal = u.startsWith('/');
   return (
     <figure className="bfd__bild" data-eb="zoom">
       {u ? (
         <img
-          src={`${u}?width=900`}
-          srcSet={`${u}?width=500 500w, ${u}?width=900 900w, ${u}?width=1300 1300w`}
-          sizes={
-            k.gross
-              ? '(min-width: 960px) 36rem, (min-width: 600px) 46vw, 92vw'
-              : '(min-width: 960px) 34rem, (min-width: 600px) 46vw, 92vw'
+          src={lokal ? u : `${u}?width=900`}
+          srcSet={
+            lokal
+              ? undefined
+              : `${u}?width=500 500w, ${u}?width=900 900w, ${u}?width=1300 1300w`
           }
-          width={wahl ? 1600 : 900}
-          height={wahl ? 1200 : 900}
+          sizes={
+            lokal
+              ? undefined
+              : k.gross
+                ? '(min-width: 960px) 36rem, (min-width: 600px) 46vw, 92vw'
+                : '(min-width: 960px) 34rem, (min-width: 600px) 46vw, 92vw'
+          }
+          width={wahl ? 1200 : 900}
+          height={900}
           alt={k.bildAlt}
           loading="lazy"
           decoding="async"
