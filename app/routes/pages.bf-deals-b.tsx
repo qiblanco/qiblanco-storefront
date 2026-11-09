@@ -12,18 +12,18 @@ import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
 import bfDealsBStyles from '../styles/bf-deals-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
 
-// Bilder: die zwei neuen Bundle-Bilder und das Kakao-Set-Bild (EL-20261109-79b117c7 bzw. b0f2e574) liegen als
-// Kampagnen-Dateien unter public/campaigns/bf-deals-2026 (1200 px, WebP); QiBracelet und QiHome Air sind die bestehenden
-// Shopify-Produktbilder (Elinas Wortlaut: „vorerst mit den bestehenden Produktbildern“). Shopify-Werte ohne Query.
+// Bilder: Shopify-Dateien DACH (Medien aufs CDN, nicht ins Repo). Die zwei neuen Bundle-Bilder und das Kakao-Set-Bild
+// (EL-20261109-79b117c7 bzw. b0f2e574) lädt ein Nachlauf in die DACH-Dateien; bis dahin stehen bei den Bundles die
+// bisherigen Freisteller, und das Kakao-Bild bleibt leer (die Kachel zeigt dann nur den dunklen Grund). Vor dem
+// Livegang alle drei auf die neuen Dateien setzen. Werte ohne Query.
 const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
-const KAMPAGNE = '/campaigns/bf-deals-2026/';
 const BILDER: Record<string, string> = {
-  'bundle-2x-qione-2-pro': KAMPAGNE + 'bundle-2x-qione-2-pro.webp',
-  'bundle-qione-2-pro-necklace': KAMPAGNE + 'bundle-qione-2-pro-necklace.webp',
+  'bundle-2x-qione-2-pro': CDN + '2xQiOne2Profreistehend_1.png',
+  'bundle-qione-2-pro-necklace':
+    CDN + 'QiOne_NecklaceBundlev3Transparent_1.png',
   QiBracelet1: CDN + 'QiBracelet1.webp',
   QiHome1: CDN + 'QiHome1.webp',
-  'crystal-cacao-set-awake-create-dunkel-gold-4x3':
-    KAMPAGNE + 'crystal-cacao-set-awake-create-dunkel-gold-4x3.webp',
+  'crystal-cacao-set-awake-create-dunkel-gold-4x3': '',
 };
 
 export function links() {
@@ -44,7 +44,7 @@ export function headers() {
 
 type Set = {pille: string; neu: string; alt: string; link: string};
 type Kachel = {
-  gross: boolean;
+  breit: boolean;
   zeile: string;
   name: string;
   rabatt: string;
@@ -65,7 +65,7 @@ const UHR = {
 const EINHEITEN = ['Tage', 'Std', 'Min', 'Sek'];
 const KACHELN: Kachel[] = [
   {
-    gross: true,
+    breit: true,
     zeile: 'Bestseller · Für zwei',
     name: '2x QiOne® 2 Pro',
     rabatt: '−500 €',
@@ -76,7 +76,7 @@ const KACHELN: Kachel[] = [
     link: '/products/jhsdhze783?el=BF2026',
   },
   {
-    gross: false,
+    breit: false,
     zeile: 'Set · Mit Kette',
     name: 'QiOne® 2 Pro + Necklace',
     rabatt: '−250 €',
@@ -87,7 +87,7 @@ const KACHELN: Kachel[] = [
     link: '/products/734husd8hh?el=BF2026',
   },
   {
-    gross: false,
+    breit: false,
     zeile: 'Am Handgelenk',
     name: 'QiBracelet®',
     rabatt: '−200 €',
@@ -98,7 +98,7 @@ const KACHELN: Kachel[] = [
     link: '/products/687ghgf4ed?el=BF2026',
   },
   {
-    gross: true,
+    breit: true,
     zeile: 'Für dein Zuhause',
     name: 'QiHome® Air',
     rabatt: '−400 €',
@@ -109,7 +109,7 @@ const KACHELN: Kachel[] = [
     link: '/products/56huz67dds?el=BF2026',
   },
   {
-    gross: true,
+    breit: true,
     zeile: 'Neu im Set · Bio-Kakao',
     name: 'Crystal Cacao · Awake & Create',
     rabatt: '−30 €',
@@ -200,7 +200,7 @@ function Countdown({jetzt}: {jetzt: number | null}) {
 function Bild({k}: {k: Kachel}) {
   const u = BILDER[k.bild];
   const wahl = Boolean(k.sets);
-  // Kampagnen-Dateien (public/) haben feste 1200 px, Shopify-Bilder skaliert das CDN per ?width=.
+  // Shopify-Bilder skaliert das CDN per ?width=; ein Pfad ab „/“ wäre eine feste Datei ohne Skalierung.
   const lokal = u.startsWith('/');
   return (
     <figure className="bfd__bild" data-eb="zoom">
@@ -215,7 +215,7 @@ function Bild({k}: {k: Kachel}) {
           sizes={
             lokal
               ? undefined
-              : k.gross
+              : k.breit
                 ? '(min-width: 960px) 36rem, (min-width: 600px) 46vw, 92vw'
                 : '(min-width: 960px) 34rem, (min-width: 600px) 46vw, 92vw'
           }
@@ -251,7 +251,7 @@ function SetKachel({k}: {k: Kachel}) {
   const [wahl, setWahl] = useState(0);
   const s = sets[wahl];
   return (
-    <li className="bfd--gross bfd--wahl">
+    <li className="bfd--breit bfd--wahl">
       <div className="bfd__kachel" data-eb="">
         <Bild k={k} />
         <div className="bfd__text">
@@ -287,7 +287,7 @@ function SetKachel({k}: {k: Kachel}) {
 
 function LinkKachel({k}: {k: Kachel}) {
   return (
-    <li className={k.gross ? 'bfd--gross' : 'bfd--klein'}>
+    <li className={k.breit ? 'bfd--breit' : 'bfd--klein'}>
       <a
         className="bfd__kachel"
         href={k.link}
