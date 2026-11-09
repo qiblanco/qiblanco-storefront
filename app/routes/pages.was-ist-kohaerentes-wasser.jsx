@@ -28,6 +28,13 @@ import {SEITE, strukturierteDaten} from '~/data/wasser-infoseite';
  * INDEXIERBAR: canonical über canonicalLink() (Gate 17 verlangt die
  * <link>-Form), kein noindex, kein Disallow.
  *
+ * ZWEI SEITEN, ZWEI ABSICHTEN (Hebel GS-253, 09.11.2026): diese Seite bleibt die
+ * Begriffserklärung; der Fachartikel /blogs/wissen/kohaerentes-wasser-was-die-forschung-misst
+ * ist die Studienlage. Die Kurzfassung verlinkt ihn mit eigenem Ankertext (KURZ_VERWEIS
+ * unten), der Artikel verlinkt hierher zurück. Der Satz steht in der Route und nicht in
+ * app/data/wasser-infoseite.js: jene Datei lesen auch die Hexagonal- und die Gitterchip®-
+ * Seite, und SEITE.kurz geht roh als Article.abstract ins JSON-LD.
+ *
  * TRACKING-NAHT: keine Cookies, kein neuer Identitäts- oder Tracking-Schlüssel,
  * kein Kaufknopf. Das Video lädt erst auf Klick über youtube-nocookie.com
  * (YoutubeTimestamp). Die Tracking-Kette hängt pfad-agnostisch im root-Layout.
@@ -56,8 +63,12 @@ export const meta = () => [
   ...strukturierteDaten().map((knoten) => ({'script:ld+json': knoten})),
 ];
 
+/** Ein Satz am Ende der Kurzfassung, Verweis-Markup wie in app/data/wasser-infoseite.js. */
+export const KURZ_VERWEIS =
+  'Wenn du sehen willst, {l:/blogs/wissen/kohaerentes-wasser-was-die-forschung-misst|was Studien an kohärentem Wasser messen}, findest du die Zahlen in unserem Fachartikel.';
+
 export default function WasIstKohaerentesWasserRoute() {
-  return <KohaerentesWasserSeite />;
+  return <KohaerentesWasserSeite kurzVerweis={KURZ_VERWEIS} />;
 }
 
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
