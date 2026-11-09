@@ -73,6 +73,7 @@ export function ExclusiveSolutionsApple({seite, products = []}) {
       <link rel="stylesheet" href={exclusiveStyles} />
       <AppleSeite seite={seite}>
         <AppleHero
+          bildZuerst
           overline="Geldhelden-exklusiv"
           titel="Schütz dein Umfeld. Schärf deinen Fokus. Sichere deine Leistung."
           unter="Drei Pakete für alle, die nicht einsteigen, sondern ankommen wollen."

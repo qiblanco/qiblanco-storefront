@@ -112,6 +112,7 @@ export function KakaoKursApple({seite}) {
       <link rel="stylesheet" href={kakaoKursStyles} />
       <AppleSeite seite={seite}>
         <AppleHero
+          bildZuerst
           overline="Kostenloser Videokurs"
           titel="Dein Kakao-Ritual für Zuhause."
           unter="Raus aus dem Kopf und rein ins Herz. Vier Videos von Anna und Christian Bernd Bauer."
