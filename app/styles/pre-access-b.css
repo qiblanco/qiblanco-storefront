@@ -58,3 +58,5 @@
 .pab__text{padding-top:.5rem}
 }
 @media (min-width:1280px){.pab{--titel:60px;--betrag:60px}}
+/* Ruhige Fassung (D7): bei "Bewegung reduzieren" steht alles still und ist sofort da (Einblenden regelt elina-bewegung.css). */
+@media (prefers-reduced-motion:reduce){.pab *,.pab *::before,.pab *::after{transition:none!important;animation:none!important}.pab [data-eb]{opacity:1!important;transform:none!important}}
