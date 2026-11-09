@@ -300,13 +300,21 @@ export const KETTENLAENGE_ATTR = 'Kettenlänge';
  */
 export function laengenKacheln(produkt, ersatzCm = []) {
   const live = (produkt?.variants?.nodes ?? [])
-    .map((v) => ({cm: laengeCm(v?.title), verfuegbar: Boolean(v?.availableForSale)}))
+    .map((v) => ({
+      cm: laengeCm(v?.title),
+      verfuegbar: Boolean(v?.availableForSale),
+      // Nur für „Benachrichtige mich, wenn wieder lieferbar“: die Kettenvariante
+      // dieser Länge (gekauft wird sie nie, s. oben).
+      varianteId: v?.id ?? null,
+    }))
     .filter((x) => x.cm);
   // Kettendaten nicht geladen (Abfrage gescheitert, Kette im Markt nicht
   // veröffentlicht): die Längen aus der Datenstelle, alle wählbar. Sonst wäre
   // das Set ohne Längenwahl kaufbar und die Länge fehlte wieder an der
   // Bestellung (Prüfer s13-r3).
-  const basis = live.length ? live : ersatzCm.map((cm) => ({cm: Number(cm), verfuegbar: true}));
+  const basis = live.length
+    ? live
+    : ersatzCm.map((cm) => ({cm: Number(cm), verfuegbar: true, varianteId: null}));
   return basis
     .filter((x) => x.cm)
     .sort((a, b) => a.cm - b.cm)
@@ -317,6 +325,26 @@ export function laengenKacheln(produkt, ersatzCm = []) {
 export function startLaenge(kacheln, vorwahl = null) {
   const lieferbar = (kacheln ?? []).filter((k) => k.verfuegbar);
   return (lieferbar.find((k) => k.cm === vorwahl) ?? lieferbar[0] ?? null)?.cm ?? null;
+}
+
+/**
+ * „Benachrichtige mich, wenn wieder lieferbar“ (Job 20261109-wiederlieferbar-
+ * in-alphavorlage): welche Variante gilt als gewählt, und ist sie ausverkauft?
+ * Kette im Set: ist die gewählte Länge ausverkauft, gilt die Kettenvariante
+ * dieser Länge. Das Set selbst bleibt lieferbar, und nur eine ausverkaufte
+ * Variante nimmt der Anmelde-Endpunkt an; kommt die Länge zurück, ist das Set
+ * mit ihr wieder kaufbar. Sonst die Variante der Auswahl.
+ * @returns {{variantId: string|null, ausverkauft: boolean}}
+ */
+export function lieferbarWunsch(variante, laengen = [], laengeWahl = null) {
+  const wahlLaenge = (laengen ?? []).find((l) => l.cm === laengeWahl) ?? null;
+  if (wahlLaenge && !wahlLaenge.verfuegbar) {
+    return {variantId: wahlLaenge.varianteId ?? null, ausverkauft: Boolean(wahlLaenge.varianteId)};
+  }
+  return {
+    variantId: variante?.id ?? null,
+    ausverkauft: Boolean(variante?.id) && !variante.availableForSale,
+  };
 }
 
 /** Zeilenattribut der gewählten Länge; ohne Länge keins. */
