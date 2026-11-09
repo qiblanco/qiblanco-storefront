@@ -138,7 +138,7 @@ export default function PreAccessB() {
   const jetzt = useJetzt();
   return (
     <div className="pab" id="pab" ref={wurzel}>
-      <div className="pab__innen">
+      <div className="pab__innen" data-section="pre-access-b">
         <figure className="pab__bild" data-eb="zoom">
           <img
             src={`${BILD}?width=1100`}
