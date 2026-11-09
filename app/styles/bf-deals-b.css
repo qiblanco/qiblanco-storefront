@@ -1,0 +1,82 @@
+/* bf-deals-b.css: Black-Friday-Deal-Übersicht DACH, B-Fassung (Elina EL-20261109-79b117c7, gehört zu EL-20261109-bda7a985).
+ * 1:1 aus der Master-Vorlage bfd.css (gleicher Aufbau wie qi-blanco.com/pages/bf-deals-b), nur Text/Preise/Links je Markt.
+ * Rückbau: diese Datei und app/routes/pages.bf-deals-b.tsx löschen. */
+.bfd{--g:#f2bf72;--g1:#f6cc86;--g2:#e7ad5c;--grund:#0c0a08;--hell:#f5efe6;--matt:rgba(245,239,230,.72);--rand:rgba(245,239,230,.14);--satz:22px;--gross:34px;--betrag:64px;--name:22px;--zahl:36px;position:relative;width:var(--bfd-breite,100vw);margin-left:calc(50% - var(--bfd-breite,100vw)/2);margin-top:-1px;background:var(--grund);color:var(--hell);font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif;overflow:hidden;overflow:clip;text-align:center}
+.bfd *{box-sizing:border-box}
+.bfd__innen{max-width:72rem;margin:0 auto;padding:2rem 1.125rem 3.5rem}
+.bfd__kopf{display:grid;gap:1.5rem;justify-items:center;margin:0 0 2.25rem}
+.bfd__dach{display:flex;flex-direction:column;align-items:center;gap:.5rem;margin:0 0 1.1rem;color:var(--g);font-size:14px;font-weight:700;letter-spacing:.1em;line-height:1.3;text-transform:uppercase}
+.bfd__dach svg{flex:none;width:22px;height:22px}
+.bfd h1.bfd__titel{margin:0;padding:0;color:var(--hell)!important;font-family:inherit!important;font-size:var(--satz)!important;line-height:1.3!important;font-weight:300!important;letter-spacing:0;text-transform:none!important}
+.bfd__titel-oben{display:block;font-size:var(--satz);font-weight:300;line-height:1.3;color:var(--hell)}
+.bfd__titel-unten{display:block;margin-top:.3rem;font-size:var(--gross);font-weight:700;line-height:1.12;color:var(--g);letter-spacing:-.015em}
+.bfd__spar{display:block;margin:1.25rem 0 0;font-size:var(--satz);font-weight:400;line-height:1.2;color:var(--hell)}
+.bfd__spar-betrag{display:inline-block;margin-left:.15em;font-size:var(--betrag);font-weight:700;line-height:1.05;letter-spacing:-.02em;vertical-align:baseline;color:var(--g);background:linear-gradient(180deg,var(--g1) 0%,var(--g2) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.bfd__uhr{width:100%;max-width:26rem;padding:1.1rem 1.25rem 1rem;border:1px solid rgba(242,191,114,.6);border-radius:20px;background:linear-gradient(180deg,rgba(242,191,114,.08),rgba(242,191,114,.02))}
+.bfd__uhrtitel{margin:0 0 .7rem;color:var(--g);font-size:17px;font-weight:700;line-height:1.3}
+.bfd__zellen{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:0}
+.bfd__zahl{display:block;color:var(--hell);font-size:var(--zahl);line-height:1.05;font-weight:300;font-variant-numeric:tabular-nums}
+.bfd__einheit{display:block;margin-top:.45rem;color:var(--matt);font-size:12px;line-height:1.2;letter-spacing:.1em;text-transform:uppercase}
+.bfd__datum{margin:.7rem 0 0;color:var(--matt);font-size:14px;line-height:1.3}
+.bfd__offen{display:none;margin:0;color:var(--g);font-size:28px;line-height:1.2;font-weight:300}
+.bfd__uhr.ist-offen .bfd__zellen,.bfd__uhr.ist-offen .bfd__uhrtitel{display:none}
+.bfd__uhr.ist-offen .bfd__offen{display:block}
+.bfd__liste{display:grid;grid-template-columns:1fr;gap:1.25rem;margin:0!important;padding:0!important;list-style:none}
+.bfd__liste>li{margin:0;padding:0;list-style:none;min-width:0}
+.bfd__kachel{display:grid;grid-template-columns:1fr;gap:1.1rem;height:100%;padding:.75rem .75rem 1.4rem;border:1px solid var(--rand);border-radius:24px;background:rgba(245,239,230,.03);color:inherit!important;text-decoration:none!important;-webkit-tap-highlight-color:transparent;transition:border-color .3s ease,background-color .3s ease}
+.bfd__kachel:hover{border-color:rgba(242,191,114,.55);background:rgba(242,191,114,.05)}
+.bfd__kachel:focus-visible{outline:2px solid var(--g);outline-offset:3px}
+.bfd__bild{position:relative;margin:0;aspect-ratio:1/1;border-radius:18px;overflow:hidden;background:#15110d}
+.bfd__bild img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.bfd__plakette{position:absolute;z-index:1;top:.75rem;left:.75rem;padding:.35rem .75rem;border-radius:999px;background:linear-gradient(180deg,var(--g1),var(--g2));color:#171310;font-size:15px;font-weight:700;line-height:1.2;letter-spacing:.01em;box-shadow:0 6px 18px -8px rgba(0,0,0,.7)}
+.bfd__text{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:0 .5rem}
+.bfd__zeile{margin:0;color:var(--g);font-size:13px;font-weight:700;letter-spacing:.1em;line-height:1.3;text-transform:uppercase}
+.bfd__name{margin:0;color:var(--hell);font-size:var(--name);font-weight:700;line-height:1.2;letter-spacing:-.01em}
+.bfd__preis{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:.25rem .7rem;margin:.2rem 0 0}
+.bfd__alt{color:var(--matt);font-size:16px;font-weight:400;text-decoration:line-through;text-decoration-thickness:1px}
+.bfd__neu{color:var(--g);font-size:24px;font-weight:700;line-height:1.2}
+.bfd__pfeil{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;margin-top:.6rem;border-radius:50%;background:linear-gradient(180deg,var(--g1),var(--g2));color:#171310;box-shadow:0 10px 26px -12px rgba(242,191,114,.55);transition:transform .3s ease}
+.bfd__pfeil svg{width:20px;height:20px}
+.bfd__kachel:hover .bfd__pfeil{transform:translate3d(3px,0,0)}
+.bfd--wahl .bfd__kachel{position:relative}
+.bfd--wahl .bfd__bild{aspect-ratio:4/3}
+.bfd--wahl .bfd__bild img{object-position:50% 50%}
+.bfd__link{color:inherit!important;text-decoration:none!important}
+.bfd__link::after{content:"";position:absolute;inset:0;z-index:1;border-radius:24px}
+.bfd__link:focus-visible{outline:none}
+.bfd__link:focus-visible::after{outline:2px solid var(--g);outline-offset:3px}
+.bfd__pillen{position:relative;z-index:2;display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin:.35rem 0 .1rem}
+.bfd__pille{min-height:44px;margin:0;padding:.55rem 1rem;border:1px solid rgba(242,191,114,.45);border-radius:999px;background:rgba(245,239,230,.04);color:var(--hell);font-family:inherit;font-size:14px;font-weight:700;line-height:1.2;cursor:pointer;transition:background-color .2s ease,color .2s ease,border-color .2s ease}
+.bfd__pille[aria-pressed="true"]{border-color:transparent;background:linear-gradient(180deg,var(--g1),var(--g2));color:#171310}
+.bfd__pille:focus-visible{outline:2px solid var(--g);outline-offset:3px}
+.bfd__vertrauen{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1rem;margin:2.5rem 0 0!important;padding:1.4rem 0 0!important;border-top:1px solid rgba(245,239,230,.2);list-style:none;color:var(--hell);font-size:15px;line-height:1.35}
+.bfd__vertrauen li{margin:0;padding:0;list-style:none}
+.bfd__vertrauen b{color:var(--g);font-weight:700}
+@media (max-width:359px){.bfd{--satz:19px;--gross:29px;--betrag:52px;--name:20px;--zahl:30px}}
+@media (min-width:600px){
+.bfd{--satz:24px;--gross:46px;--betrag:72px;--zahl:40px}
+.bfd__innen{padding:2.5rem 2rem 4.5rem}
+.bfd__liste{grid-template-columns:1fr 1fr}
+.bfd__liste>li.bfd--gross{grid-column:1/-1}
+.bfd--gross .bfd__kachel{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;padding:.9rem}
+.bfd--gross .bfd__text{padding:0 1.5rem}
+.bfd--gross .bfd__name{font-size:30px}
+.bfd--gross .bfd__neu{font-size:28px}
+}
+@media (min-width:960px){
+.bfd{--gross:56px;--betrag:80px}
+.bfd__innen{padding:3.5rem 2.5rem 5.5rem}
+.bfd__kopf{grid-template-columns:minmax(0,1fr) auto;align-items:center;justify-items:stretch;gap:3rem;margin-bottom:3rem;text-align:left}
+.bfd__dach{flex-direction:row;gap:.6rem}
+.bfd__uhr{width:24rem;text-align:center}
+.bfd__liste{gap:1.5rem}
+.bfd__text{align-items:flex-start;text-align:left;padding:0 .75rem}
+.bfd__preis,.bfd__pillen{justify-content:flex-start}
+.bfd--gross .bfd__kachel{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:2rem}
+.bfd--gross .bfd__bild{aspect-ratio:4/3}
+.bfd--gross .bfd__bild img{object-position:50% 30%}
+.bfd--gross .bfd__text{padding:0 2rem 0 .5rem}
+.bfd--gross .bfd__name{font-size:36px}
+.bfd--gross .bfd__neu{font-size:32px}
+.bfd__vertrauen{grid-template-columns:repeat(4,auto);justify-content:center;gap:1rem 2.5rem;text-align:center}
+}
