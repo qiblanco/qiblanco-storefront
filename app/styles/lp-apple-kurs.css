@@ -87,6 +87,13 @@
   height: auto;
   border-radius: var(--as-radius);
 }
+/* Bilder ohne größeres Original (kurs-bilder.js, s07-r17): höchstens die
+   Breite aus dem width-Attribut, zentriert. Schmaler als die Spalte nur am
+   Desktop, auf dem Handy füllen sie die Spalte wie vorher. */
+.as-kurs .course-lesson-body img[data-bild-deckel] {
+  display: block;
+  margin-inline: auto;
+}
 .as-kurs .course-lesson-body :where(hr) {
   margin: var(--as-s-6) 0;
   border: 0;

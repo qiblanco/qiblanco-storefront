@@ -20,11 +20,25 @@
  * 1120 px für 2x) und steht weit unter der ersten Ansicht: es lädt lazy, weil
  * die schärfere Datei 101 kB wiegt statt 47 kB.
  * Nur KursApple ruft das auf, die C-Fassung bleibt gleich.
+ *
+ * DECKEL STATT TAUSCH (s07-r17, AI-CEO-Entscheid 2026-11-09 zu
+ * design-meister:vorschlag:s07-r13-kurs-bilder-entscheidungen): Für drei
+ * Sachbilder gibt es kein größeres Original. Sie zeigen höchstens die Breite,
+ * die die Datei auf 2x-Bildschirmen scharf trägt: Dateibreite / (2 x 0,9),
+ * abgerundet (1024 px -> 568, 960 px -> 533), zentriert (lp-apple-kurs.css,
+ * [data-bild-deckel]). Auf dem Handy ist die Spalte schmaler, dort bleibt alles
+ * gleich. Ein Eintrag ohne `datei` lässt die Quelle unberührt.
+ * Das Porträt Christian-Bauer (290 px) wird das größere Foto Christian.webp
+ * (1200 x 1535) in derselben Anzeigebreite, nicht kleiner.
  */
 const BILDER = new Map([
   ['Christian_480x480.webp', {datei: 'Christian.webp'}],
   ['Kreislauf_Biohacking.png_1_480x480.webp', {datei: 'Kreislauf_Biohacking.png_1.webp', dateiBreite: 960, attribute: 'width="480" height="480"'}],
   ['qiblanco-com-qione-2-pro-transparent_1.webp', {datei: 'QiOne2Pro_01_transparent.png', version: '1683116991', dateiBreite: 1120, attribute: 'width="1120" height="1120" loading="lazy"'}],
+  ['Christian-Bauer-290x300_1_240x240.webp', {datei: 'Christian.webp', dateiBreite: 464, attribute: 'width="232" height="297"'}],
+  ['chlorella_algen-1024x576.jpg_1.webp', {attribute: 'data-bild-deckel width="568" height="320"'}],
+  ['Zeolithe-1024x576.jpg_1.webp', {attribute: 'data-bild-deckel width="568" height="320"'}],
+  ['61brbD89MGL._AC_SL1500.jpg', {attribute: 'data-bild-deckel width="533" height="768"'}],
 ]);
 
 const SHOPIFY_DATEI = /^(?:https?:)?\/\/cdn\.shopify\.com\/s\/files\/.*\/files\/[^/]+$/i;
@@ -53,6 +67,8 @@ export function scharfesBild(tag) {
   if (!bild) return tag;
   // width="100%", width="0" und height ohne width: die Anzeigebreite ist unbekannt, also keine Aussage über die Datei.
   if (a.has('width') ? !/^[1-9]\d*$/.test(a.get('width').trim()) : a.has('height')) return tag;
+  // Deckel: Quelle bleibt, nur Maße und Marke; ein eigenes width-Attribut gibt die Breite schon vor
+  if (!bild.datei) return a.has('width') || a.has('style') ? tag : `<img ${bild.attribute}${rest}`;
   const w = a.has('width') ? Number(a.get('width')) : 0;
   const breite = w ? 2 * w : bild.dateiBreite;
   if (!breite) return tag;
