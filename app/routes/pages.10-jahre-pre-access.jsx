@@ -1,7 +1,9 @@
-import {useEffect, useRef} from 'react';
-import {ActiveCampaignForm} from '~/components/reusables/ActiveCampaignForm';
+import {Anmeldeformular} from '~/components/reusables/Anmeldeformular';
 import tenYearsStyles from '~/styles/ten-years-sale.css?url';
 
+// Seite stillgelegt (404 live). Beim AC-Abschluss (Elina EL-20261103-b633cb45)
+// nur das Formular auf den eigenen Weg gestellt; der Umweg über
+// qiblanco.activehosted.com/proc.php ist entfernt.
 const FORM_ID = 27;
 
 export function links() {
@@ -14,8 +16,6 @@ export const meta = () => [
 ];
 
 export default function TenYearsPreAccess() {
-  const formRef = usePreAccessRedirect(FORM_ID);
-
   return (
     <div className="ten-years-page ten-years-pre-access">
       <div className="ten-years-inner ten-years-pre-access__grid">
@@ -36,8 +36,8 @@ export default function TenYearsPreAccess() {
             <strong>10 Jahre Jubiläums Sale / Pre-Sale Deals</strong> und{' '}
             <strong>spare bis zu 500€!</strong>
           </p>
-          <div className="ten-years-pre-access__form" ref={formRef}>
-            <ActiveCampaignForm formId={FORM_ID} />
+          <div className="ten-years-pre-access__form">
+            <Anmeldeformular formId={FORM_ID} />
           </div>
           <p className="ten-years-pre-access__disclaimer">
             *Deine Eintragung ist absolut unverbindlich. Du kannst dich
@@ -50,76 +50,4 @@ export default function TenYearsPreAccess() {
       </div>
     </div>
   );
-}
-
-function usePreAccessRedirect(formId) {
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    let submitted = false;
-
-    function getSuccessUrl() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('view') === '10-jahre-pre-access') {
-        params.set('view', 'anmeldung-erfolgreich-pre-access');
-        return `${window.location.pathname}?${params.toString()}`;
-      }
-      return '/pages/anmeldung-erfolgreich-pre-access';
-    }
-
-    function onSubmit(event) {
-      const form = event.target;
-      if (!form || form.tagName !== 'FORM') return;
-      if (!containerRef.current?.contains(form)) return;
-
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      if (submitted) return;
-      if (typeof form.reportValidity === 'function' && !form.reportValidity()) {
-        return;
-      }
-
-      const email = form.querySelector('input[name="email"]');
-      if (
-        email?.value &&
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())
-      ) {
-        email.focus();
-        return;
-      }
-
-      submitted = true;
-
-      const submitButton = form.querySelector(`#_form_${formId}_submit`);
-      if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.classList.add('processing');
-      }
-
-      const iframeName = 'ten-years-pre-access-submit';
-      let iframe = document.querySelector(`iframe[name="${iframeName}"]`);
-      if (!iframe) {
-        iframe = document.createElement('iframe');
-        iframe.name = iframeName;
-        iframe.style.display = 'none';
-        iframe.setAttribute('aria-hidden', 'true');
-        document.body.appendChild(iframe);
-      }
-
-      form.action = 'https://qiblanco.activehosted.com/proc.php';
-      form.method = 'POST';
-      form.target = iframeName;
-      form.submit();
-
-      window.setTimeout(() => {
-        window.location.href = getSuccessUrl();
-      }, 900);
-    }
-
-    document.addEventListener('submit', onSubmit, true);
-    return () => document.removeEventListener('submit', onSubmit, true);
-  }, [formId]);
-
-  return containerRef;
 }

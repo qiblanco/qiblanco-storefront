@@ -1,4 +1,4 @@
-import {ActiveCampaignForm} from '../reusables/ActiveCampaignForm';
+import {Anmeldeformular} from '../reusables/Anmeldeformular';
 
 const IMG_HERO_BG =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/kakaohero_1_4ebdaf6e-683a-40c5-bbfe-d5d83e6b3b4f_1296x.webp?v=1680818117';
@@ -55,7 +55,7 @@ function RegistrationSection() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center">
         <div>
           <h3 className="font-bold text-xl mb-4">HOL' DIR DEN KURS JETZT KOSTENFREI!</h3>
-          <ActiveCampaignForm formId="21" />
+          <Anmeldeformular formId="21" />
           <p className="text-xs text-gray-500 mt-4">{DISCLAIMER}</p>
         </div>
         <div>

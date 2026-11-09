@@ -1,6 +1,6 @@
 import LazyImage from '../reusables/LazyImage';
 import {KAKAO_KENNZAHLEN} from '~/lib/kakao-zone';
-import {ActiveCampaignForm} from '../reusables/ActiveCampaignForm';
+import {Anmeldeformular} from '../reusables/Anmeldeformular';
 import {SwipeTable} from '../reusables/SwipeTable';
 
 /**
@@ -576,7 +576,7 @@ function KursRegistration() {
       <div className="NormalSectionSize grid grid-cols-1 sm:grid-cols-2 gap-8 items-center">
         <div className="flex flex-col gap-4">
           <h2>Jetzt kostenfrei mitmachen!</h2>
-          <ActiveCampaignForm formId="21" />
+          <Anmeldeformular formId="21" />
           <p className="text-sm! text-gray-500">
             *Deine Eintragung ist absolut unverbindlich. Wenn dir der Kurs nicht
             gefällt, kannst du dich jederzeit mit nur einem Klick wieder

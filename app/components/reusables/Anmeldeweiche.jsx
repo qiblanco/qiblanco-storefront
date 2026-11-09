@@ -3,22 +3,23 @@ import anmeldeStyles from './anmeldeformular.css?url';
 import {beobachten, starteNachschicken, zustellen} from './anmelde-puffer';
 
 /*
- * ANMELDEWEICHE — eigenes Anmeldeformular statt ActiveCampaign, je Formular
- * zur Laufzeit umschaltbar (Stufe E1 der AC-Ablösung, Großjob
+ * ANMELDEFORMULAR — fest das eigene Formular (AC-Abschluss, Elina
+ * EL-20261103-b633cb45, Punkt 5). Bis dahin war dies eine Weiche je Formular
+ * zwischen ActiveCampaign und dem eigenen Weg (Stufe E1 der AC-Ablösung, Großjob
  * 20260926-GROSSJOB-activecampaign-abloesen-bis-28-november-stufenplan-alarm,
- * Segment s11).
+ * Segment s11). ActiveCampaign gibt es nach dem Kontoende nicht mehr; ein
+ * Embed als Rückfall zeigte dann ein leeres Formular.
  *
- * WER ENTSCHEIDET: der eigene Anmelde-Endpunkt (Modul ac-eingang auf dem
- * Server) meldet unter GET /w je AC-Formular-id 'ac' oder 'eigen'. Umgeschaltet
- * wird dort mit EINEM Kommando (`ac-eingang schalte <id> eigen`), ohne Deploy.
+ * WAS /w NOCH LIEFERT: Einwilligungssatz, Kennung, Knopftext und den Uhrstand.
+ * Der Schalter je Formular (formulare[id]) wird nicht mehr gelesen.
  *
- * WAS BEI EINEM FEHLER PASSIERT — bewusst immer das heutige Verhalten:
- *  - /w antwortet nicht, nicht rechtzeitig oder kennt das Formular nicht
- *    -> das AC-Formular wie bisher.
- *  - die Anmeldung scheitert (5xx, 429, Netz) und /w meldet rueckfall_ac
- *    -> das AC-Formular mit einem Satz darüber. rueckfall_ac stellt der
- *    Server mit der AC-Abschaltung ab (Segment s08); danach steht hier ein
- *    Hinweis statt eines toten AC-Formulars.
+ * WAS BEI EINEM FEHLER PASSIERT:
+ *  - /w antwortet nicht oder kennt das Formular nicht: ein zweiter Abruf ohne
+ *    Cache, dann ein ruhiger Hinweis statt eines Formulars ohne Satz. Ohne den
+ *    Satz aus /w gibt es keine Anmeldung, weil der Nachweis ihn nennen muss.
+ *  - die Anmeldung scheitert (5xx, 429, Netz): der Rückfall-Puffer hält sie im
+ *    Browser (anmelde-puffer.js); geht auch das nicht, die Bitte, es in ein
+ *    paar Minuten noch einmal zu versuchen.
  *
  * DER EINWILLIGUNGSSATZ KOMMT AUS /w und steht nirgends in diesem Repo. Er ist
  * Teil des Nachweises im Kontakt-Tresor; eine Kopie hier liefe beim nächsten
@@ -42,14 +43,13 @@ import {beobachten, starteNachschicken, zustellen} from './anmelde-puffer';
  * Satz, während ein Tab offen steht, antwortet der Endpunkt 409; das Formular
  * holt den neuen Satz und bittet um einen zweiten Klick (K3-Prüfung, B2).
  *
- * VORSCHAU OHNE UMSCHALTEN (Probe, Design-Beleg): localStorage
- * 'qb-anmeldung-vorschau' = 'eigen' (alle) oder '15,21' (diese) zeigt das
- * eigene Formular nur in DIESEM Browser. Bewusst kein URL-Parameter: ein
- * geteilter Link schaltete sonst fremde Besucher um.
+ * VORSCHAU OHNE UMSCHALTEN (localStorage 'qb-anmeldung-vorschau') gilt nur
+ * noch für WiederLieferbar.jsx (Weg 'aus'); die Anmeldeformulare hier zeigen
+ * ohnehin immer das eigene Formular.
  */
 
 // STELLE 1 VON 2 — die zweite ist connect-src in app/entry.server.jsx. Fehlt
-// sie dort, blockt die CSP STILL und jede Seite bleibt beim AC-Formular.
+// sie dort, blockt die CSP STILL und keine Seite zeigt ein Formular.
 export const ANMELDE_ENDPUNKT = 'https://anmelden.dienst.qiblanco.com';
 
 const WEICHE_ZEITLIMIT_MS = 2500;
@@ -59,7 +59,7 @@ const MAX_ANZEIGE_MS = 23 * 3600 * 1000;
 const VORSCHAU_SCHLUESSEL = 'qb-anmeldung-vorschau';
 
 // Rückfall-Puffer (Elina EL-20261107-af9594f2, Punkt 4; anmelde-puffer.js): nur, wenn die Anmeldung
-// nachweislich im Browser liegt. Sonst gilt der bisherige Weg (Rückfall auf AC bzw. „in ein paar Minuten“).
+// nachweislich im Browser liegt. Sonst die Bitte „in ein paar Minuten“.
 const PUFFER_TEXT = {
   de: {
     wartet: 'Wir haben deine Anmeldung. Sie wird gleich übertragen.',
@@ -149,62 +149,63 @@ function vorschauEigen(formId) {
   }
 }
 
+/** Hinweis, wenn /w auch im zweiten Abruf keinen Satz liefert. */
+const STOERUNG_TEXT = {
+  de: 'Die Anmeldung ist gerade nicht erreichbar. Bitte versuche es in ein paar Minuten noch einmal.',
+  en: 'Sign-up is not available right now. Please try again in a few minutes.',
+};
+
 /**
- * @param {{formId: string, ac: import('react').ReactNode, dunkel?: boolean}} props
- *   ac      das bisherige AC-Formular (Weg 'ac' und Rückfall)
- *   dunkel  heller Text auf dunklem Grund (Fußzeile)
+ * @param {{formId: string, dunkel?: boolean, sprache?: 'de' | 'en'}} props
+ *   dunkel   heller Text auf dunklem Grund (Fußzeile)
+ *   sprache  nur für den Störungshinweis (sonst kommt die Sprache aus /w)
  */
-export function AnmeldeWeiche({formId, ac, dunkel = false}) {
+export function AnmeldeWeiche({formId, dunkel = false, sprache = 'de'}) {
   const [lage, setLage] = useState({weg: 'offen'});
 
   useEffect(() => {
     // Jede Seite trägt die Fußzeile: hier gehen liegengebliebene Anmeldungen beim nächsten Seitenaufruf raus.
     starteNachschicken({endpunkt: ANMELDE_ENDPUNKT});
     let aktiv = true;
+    const id = String(formId);
+    const lesen = (wege) => {
+      const anzeige = wege ? wege.anzeige[id] : null;
+      return anzeigeVollstaendig(anzeige) ? {weg: 'eigen', anzeige, versatz: wege.versatz} : null;
+    };
     holeWege()
-      .then((wege) => {
-        if (!aktiv) return;
-        const id = String(formId);
-        const anzeige = wege ? wege.anzeige[id] : null;
-        const eigen =
-          anzeigeVollstaendig(anzeige) &&
-          (wege.formulare[id] === 'eigen' || vorschauEigen(id));
-        setLage(
-          eigen
-            ? {
-                weg: 'eigen',
-                anzeige,
-                versatz: wege.versatz,
-                rueckfallAc: wege.rueckfall_ac !== false,
-              }
-            : {weg: 'ac'},
-        );
+      .then((wege) => lesen(wege) || holeWege({frisch: true}).then(lesen))
+      .then((neu) => {
+        if (aktiv) setLage(neu || {weg: 'stoerung'});
       })
       .catch(() => {
-        // Jeder unerwartete Fehler endet beim AC-Formular, nie im Platzhalter.
-        if (aktiv) setLage({weg: 'ac'});
+        if (aktiv) setLage({weg: 'stoerung'});
       });
     return () => {
       aktiv = false;
     };
   }, [formId]);
 
+  const klasse = `qb-anmelden${dunkel ? ' qb-anmelden--dunkel' : ''}`;
   return (
     <>
-      {/* Immer mitgerendert (auch auf dem AC-Weg), damit das eigene Formular
-          nicht ungestaltet aufblitzt, wenn es nach /w erscheint. */}
+      {/* Immer mitgerendert, damit das Formular nicht ungestaltet aufblitzt,
+          wenn es nach /w erscheint. */}
       <link rel="stylesheet" href={anmeldeStyles} />
       {lage.weg === 'offen' ? (
         <div className="qb-anmelden-platz" data-anmeldeweg="offen" />
       ) : null}
-      {lage.weg === 'ac' ? ac : null}
+      {lage.weg === 'stoerung' ? (
+        <div className={klasse} data-anmeldeweg="stoerung" data-formular={String(formId)}>
+          <p className="qb-anmelden__meldung" role="status">
+            {STOERUNG_TEXT[sprache === 'en' ? 'en' : 'de']}
+          </p>
+        </div>
+      ) : null}
       {lage.weg === 'eigen' ? (
         <EigenesFormular
           formId={String(formId)}
           anzeige={lage.anzeige}
           versatz={lage.versatz}
-          rueckfallAc={lage.rueckfallAc}
-          ac={ac}
           dunkel={dunkel}
         />
       ) : null}
@@ -212,7 +213,7 @@ export function AnmeldeWeiche({formId, ac, dunkel = false}) {
   );
 }
 
-function EigenesFormular({formId, anzeige: ersteAnzeige, versatz: ersterVersatz, rueckfallAc, ac, dunkel}) {
+function EigenesFormular({formId, anzeige: ersteAnzeige, versatz: ersterVersatz, dunkel}) {
   const kennung = useId();
   const angezeigt = useRef(0);
   const [anzeige, setAnzeige] = useState(ersteAnzeige);
@@ -318,10 +319,6 @@ function EigenesFormular({formId, anzeige: ersteAnzeige, versatz: ersterVersatz,
       );
       return;
     }
-    if (rueckfallAc) {
-      setStand('rueckfall');
-      return;
-    }
     setStand('bereit');
     setMeldung(
       deutsch
@@ -331,19 +328,6 @@ function EigenesFormular({formId, anzeige: ersteAnzeige, versatz: ersterVersatz,
   }
 
   const klasse = `qb-anmelden${dunkel ? ' qb-anmelden--dunkel' : ''}`;
-
-  if (stand === 'rueckfall') {
-    return (
-      <div className={klasse} data-anmeldeweg="rueckfall" data-formular={formId}>
-        <p className="qb-anmelden__meldung" role="status">
-          {deutsch
-            ? 'Bitte trag dich hier noch einmal ein.'
-            : 'Please sign up here once more.'}
-        </p>
-        {ac}
-      </div>
-    );
-  }
 
   if (stand === 'gepuffert') {
     return (

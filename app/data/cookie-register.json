@@ -11,12 +11,6 @@
       "beschreibung": "Warenkorb, Kasse, Sicherheit und deine Cookie-Wahl. Immer aktiv.",
       "cookies": [
         {
-          "name": "__cf_bm",
-          "anbieter": "Cloudflare (für ActiveCampaign)",
-          "zweck": "Unterscheidet Menschen von Bots beim Newsletter-Formular.",
-          "laufzeit": "30 Minuten"
-        },
-        {
           "name": "CookieConsent",
           "anbieter": "Qi Blanco",
           "zweck": "Speichert deine Cookie-Wahl und die Fassung des Hinweises, dem du zugestimmt hast.",

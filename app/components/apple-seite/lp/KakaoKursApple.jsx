@@ -1,6 +1,6 @@
 import lpAppleStyles from '~/styles/lp-apple.css?url';
 import kakaoKursStyles from '~/styles/lp-apple-kakao-kurs.css?url';
-import {ActiveCampaignForm} from '~/components/reusables/ActiveCampaignForm';
+import {Anmeldeformular} from '~/components/reusables/Anmeldeformular';
 import {AppleSeite} from '../AppleSeite';
 import {AppleAnna, AppleCtaBand, AppleHero, AppleKapitel} from '../AppleSektionen';
 
@@ -8,7 +8,7 @@ import {AppleAnna, AppleCtaBand, AppleHero, AppleKapitel} from '../AppleSektione
  * APPLE-FASSUNG /pages/zeremonie-kakao-kurs (Grossjob 20261101-GROSSJOB-
  * crystal-cacao-apple-stil-1zu1-spiegel-videos-selbst-hosten-r2, s03; Muster
  * SuperhumanApple.jsx aus dem Grossjob 20261029). Dasselbe Formular wie C
- * (formId 21, Weiche ActiveCampaignForm), Annas und Christians Vorstellung
+ * (formId 21, eigenes Anmeldeformular), Annas und Christians Vorstellung
  * Wort für Wort. Aussortiert gegenüber C: „Warum ist dieser Kurs kostenlos?“
  * und der Fließtext „Was dich erwartet“ (dieselben Themen stehen in den vier
  * Video-Kacheln), das zweite Anmeldeformular am Ende (der Knopf führt zum
@@ -71,7 +71,7 @@ function Anmeldung() {
     <section className="as-sektion as-kk-anmeldung" id="anmeldung" data-section="as-anmeldung">
       <h2 className="as-h2">Hol dir den Kurs jetzt kostenfrei.</h2>
       <div className="as-kk-karte">
-        <ActiveCampaignForm formId="21" />
+        <Anmeldeformular formId="21" />
       </div>
       <p className="as-kk-klein">
         Deine Eintragung ist unverbindlich. Wenn dir der Kurs nicht gefällt, kannst du dich

@@ -373,7 +373,6 @@ export default async function handleRequest(
       'https://cdn.shopify.com',
       'https://cdn.grw.reputon.com',
       'https://qiblanco-only-rating-serpapi.vercel.app',
-      'https://qiblanco.activehosted.com',
       'https://consent.cookiebot.com',
       'https://consentcdn.cookiebot.com',
       'blob:',
@@ -400,27 +399,14 @@ export default async function handleRequest(
       "'unsafe-inline'",
       'https://cdn.shopify.com',
       'https://*.reputon.com',
-      'https://qiblanco.activehosted.com',
       'https://consentcdn.cookiebot.com',
       'https://fonts.googleapis.com',
       /*
-       * fonts.bunny.net STEHT HIER BEWUSST NICHT, und das ist seit dem
-       * 2026-08-24 entschieden (Job 20260824-storefront-hydration-418-und-
-       * csp-bunny-prio15, RESULT Entscheidung 2). Verursacher ist NICHT
-       * eine Browser-Erweiterung, sondern unser eigenes ActiveCampaign-
-       * Embed (embed.php Z. 166), das aus seiner Formular-Font-Einstellung
-       * einen bunny-<link> baut — samt defekter Query.
-       * Vier Gründe, die unverändert gelten: der Block ist der Status quo
-       * und nicht der Schaden (Erlauben würde einen Dritt-Font NEU
-       * einführen, nicht etwas wiederherstellen); es ist nicht unser Font;
-       * ein Dritt-Font-CDN sähe die Kunden-IP jedes Seitenaufrufs auf einem
-       * Cookiebot-geführten Shop; und die kosmetischen Kosten treffen nur
-       * Labels im Newsletter-Formular, weil unsere eigene Regel font-family
-       * für input/button/._submit ohnehin per !important gewinnt.
-       * Behebung gehört an die QUELLE (Font-Einstellung des AC-Formulars
-       * id=15 im ActiveCampaign-Konto), nicht in diese Liste.
-       * Am 2026-09-18 wieder gemeldet (3 Meldungen, /pages/crystal-cacao) —
-       * die Entscheidung wurde geprüft und bestätigt, nicht übersehen.
+       * fonts.bunny.net STEHT HIER NICHT. Verursacher der frueheren Meldungen
+       * war das ActiveCampaign-Embed (Font-Einstellung des Formulars 15); es
+       * ist mit dem AC-Abschluss (Elina EL-20261103-b633cb45) entfernt, also
+       * gibt es keinen Grund mehr für einen Dritt-Font. Entscheidung
+       * 2026-08-24 (Job 20260824-storefront-hydration-418-und-csp-bunny-prio15).
        */
       'https://assets.gorgias.chat',
       'https://client.gorgias.chat',
@@ -480,12 +466,11 @@ export default async function handleRequest(
       // qiblanco-video.imgix.net und werden relativ referenziert (gemessen
       // 2026-09-18). Ein Host genügt, der Wildcard entfällt.
       'https://qiblanco-video.imgix.net',
-      'https://qiblanco.activehosted.com',
       // Eigener Anmelde-Endpunkt (ac-eingang, Stufe E1 der AC-Ablösung, s11):
       // GET /w (Weiche je Formular) und POST /f/<id>. STELLE 2 VON 2 — die
       // erste ist ANMELDE_ENDPUNKT in app/components/reusables/Anmeldeweiche.jsx.
-      // Fehlt diese Zeile, scheitert der Abruf STILL und jedes Formular bleibt
-      // beim AC-Embed.
+      // Fehlt diese Zeile, scheitert der Abruf STILL und kein Formular erscheint
+      // (seit dem AC-Abschluss gibt es keinen Rückfall auf ein Embed mehr).
       // Seit 2026-10-30 eigene Domain (components/reusables/dienst-domain.js).
       'https://anmelden.dienst.qiblanco.com',
       'https://*.myshopify.dev',

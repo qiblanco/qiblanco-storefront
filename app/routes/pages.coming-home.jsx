@@ -2,7 +2,8 @@ import {useEffect, useId, useRef, useState} from 'react';
 import {Link, data, useFetcher} from 'react-router';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
-import {ActiveCampaignForm} from '~/components/reusables/ActiveCampaignForm';
+import {ANMELDE_ENDPUNKT, holeAnmeldewege} from '~/components/reusables/Anmeldeweiche';
+import {zustellen} from '~/components/reusables/anmelde-puffer';
 import {teilnahmeLink} from '~/lib/coming-home.server';
 import comingHomeStyles from '~/styles/coming-home.css?url';
 
@@ -37,52 +38,24 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  * NICHT geschrieben, weil in keiner Quelle belegt: Aussagen zu Kamera,
  * Aufzeichnung oder Teilnehmerzahl.
  *
- * ANMELDUNG = EIGENES FORMULAR 33 „Coming Home Anmeldung" (seit Elinas
- * Auftrag EL-20261002-4328e3fe; bis dahin Formular 15 wie der Fuß). Elina
- * hat es am 02.10.2026 in ActiveCampaign angelegt: Liste „Newsletter DACH",
- * dieselbe Bestätigungsmail wie Formular 15 (Double-Opt-in), und das
- * Formular hängt selbst den Tag „coming-home" an. So ist jede Anmeldung über
- * diese Seite in ActiveCampaign einzeln zählbar. Der Fuß jeder Seite bleibt
- * bei Formular 15. Der Browser schickt Name und E-Mail direkt an
- * ActiveCampaign, unser Server sieht weder Name noch Adresse.
+ * ANMELDUNG = FORMULAR 33 „Coming Home Anmeldung" AUF DEM EIGENEN WEG
+ * (AC-Abschluss, Elina EL-20261103-b633cb45, Punkt 5). Bis dahin schickte der
+ * Browser Name und Adresse an ActiveCampaign (proc.php mit den verborgenen
+ * Feldern eines unsichtbaren Embeds). Jetzt geht die Anmeldung an den eigenen
+ * Anmelde-Endpunkt (ac-eingang, POST /f/33), derselbe Weg wie Fußzeile und
+ * Kursseiten: Liste 2 (Newsletter DACH), Tag „coming-home" nach der
+ * Bestätigung, Bestätigungsmail nur, wer noch nicht im Newsletter steht.
  *
- * EIGENES FORMULAR-MARKUP, DAS EMBED NUR ALS QUELLE: die Seite zeigt ihr
- * eigenes Formular im Seitendesign. Das Embed von Formular 33 wird
- * unsichtbar mitgeladen (<ActiveCampaignForm formId="33"> in einem
- * hidden-Container), nur damit die Seite seine verborgenen Felder lesen kann.
- * Es kollidiert nicht mit dem Fuß, der trägt die Id 15.
+ * DER EINWILLIGUNGSSATZ KOMMT AUS /w (anzeige['33']), so wie in
+ * Anmeldeweiche.jsx. Steht /w noch nicht bereit, zeigt die Karte den Satz, der
+ * hier schon stand; er ist wortgleich mit formulare.yaml. Die Kennung
+ * (einwilligung_id) geht nur mit, wenn der Satz aus /w kam; ohne sie nimmt der
+ * Endpunkt die aktuelle Fassung.
  *
- * DIE VERBORGENEN FELDER KOMMEN AUS DEM EMBED, NICHT AUS DIESER DATEI.
- * Zwei davon erzeugt ActiveCampaign bei jedem Rendern des Embeds neu: `u`
- * (eine Kennung mit der Renderzeit) und `or` (eine UUID). Gemessen am
- * 2026-10-01: um 11:16Z und um 11:48Z lieferte embed.php?id=15 verschiedene
- * Werte. Feste Werte in dieser Datei veralten also nach Minuten. Beim
- * Absenden liest die Seite deshalb die verborgenen Felder aus dem
- * unsichtbaren Embed (form._form_33), so wie das Embed sie selbst abschickt.
- * Die Werte unten (Stand embed.php?id=33 vom 2026-10-02) sind nur der
- * Rückfall, falls das Embed noch nicht geladen ist. Die Wache
- * growth-manager/pruefungen/probe_coming_home_seite.py prüft die festen
- * Felder gegen das Embed und meldet, wenn ActiveCampaign das Formular ändert.
- *
- * DERSELBE WEG WIE DAS EMBED: proc.php?…&jsonp=true als GET. So schickt das
- * Embed von Formular 33 selbst ab (dort formSupportsPost = false). Die Antwort
- * trägt access-control-allow-origin: *, die Seite kann sie also lesen und
- * Erfolg von Fehler unterscheiden. Gemessen am 2026-10-01: Erfolg beginnt mit
- * _show_thank_you(, ein Fehler mit _show_error(.
- *
- * ZWEITE ERFOLGSANTWORT, gemessen am 2026-10-02 an Formular 33 mit einer
- * Adresse, die schon bestätigt auf der Liste steht: ActiveCampaign antwortet
- * dann mit window.top.location.href = "…/f/confirm.php?id=…" (seine Seite
- * „Vielen Dank für die Registrierung!") und nimmt die Anmeldung an (Eintrag
- * gezählt, Tag gesetzt), schickt aber keine Bestätigungsmail. Bis dahin hielt
- * die Seite das für einen Fehler und zeigte „Das hat nicht geklappt", genau
- * bei den Menschen, die die Einladung schon bekommen. Die Seite wertet die
- * Antwort jetzt als Erfolg und folgt der Weiterleitung NICHT (Elina: man
- * bleibt auf der Seite). Ein verstecktes iframe wie
- * auf der alten Pre-Access-Seite geht nicht: frame-src der CSP
- * (app/entry.server.jsx) führt qiblanco.activehosted.com nicht, connect-src
- * führt es. So bleibt entry.server.jsx unberührt.
- *
+ * ZEITFALLE UND PUFFER wie in Anmeldeweiche.jsx: t in Serverzeit ab der
+ * Anzeige, mindestens 1,6 s bis zum Absenden; scheitert das Netz, hält
+ * anmelde-puffer.js die Anmeldung im Browser, und der Zoom-Link kommt trotzdem.
+
  * DER TEILNAHME-LINK kommt nach dem Absenden aus der Action dieser Route
  * (app/lib/coming-home.server.js). Er steht nicht im HTML und nicht im
  * Bundle. Rückweg ohne Revert: LINK_AN = false in jener Datei.
@@ -102,7 +75,7 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  * außerhalb des Bildes; das füllen Browser-Autofill und Passwortmanager mit.
  * Deshalb jetzt: ein Name ohne Bedeutung, die Ignorier-Merkmale der gängigen
  * Passwortmanager, und ein gefüllter Topf führt nicht mehr in eine Sackgasse
- * (kein Versand an ActiveCampaign, aber der Link kommt).
+ * (keine Anmeldung, aber der Link kommt).
  *
  * TRACKING-NAHT: die Seite setzt keine Cookies und führt keinen neuen
  * Identitäts- oder Tracking-Schlüssel ein; TRACKING_COOKIE_NAMES bleibt
@@ -112,8 +85,8 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  *
  * Messmarker: data-coming-home-form, data-coming-home-zustand
  * (offen | sendet | gesendet | fehler), data-coming-home-felder
- * (embed | ersatz | topf, nach dem Absenden), data-coming-home-anmeldung
- * (neu | bekannt | topf), data-coming-home-link (Knopf),
+ * (eigen | topf, nach dem Absenden), data-coming-home-anmeldung
+ * (neu | gepuffert | topf), data-coming-home-link (Knopf),
  * data-coming-home-linktext (Link als Text), data-coming-home-kopieren.
  */
 
@@ -158,48 +131,15 @@ const BILD_BREITEN = [480, 720, 960, 1200, 1600];
 const BILD_ALT =
   'Anna und Christian von Qi Blanco sitzen nebeneinander auf dem Sofa und lachen';
 
-/**
- * Ziel und verborgene Felder des ActiveCampaign-Formulars 33. `u` und `or`
- * sind der Stand des Embeds vom 2026-10-02 und nur der Rückfall; die
- * übrigen Felder sind fest. `s` ist im Embed leer.
- */
-const AC_FORMULAR_ID = '33';
-const AC_ZIEL = 'https://qiblanco.activehosted.com/proc.php';
-const AC_ERFOLG = '_show_thank_you(';
-/** Erfolg für schon bestätigte Kontakte (siehe Kopf): Weiterleitung auf confirm.php. */
-const AC_ERFOLG_BEKANNT =
-  /^window\.top\.location\.href\s*=\s*["']https:\/\/qiblanco\.activehosted\.com\/f\/confirm\.php\?/;
-const AC_EMBED_FORMULAR = 'form._form_33';
-
-/**
- * Die verborgenen Felder, wie das unsichtbare Embed sie gerade trägt. Fehlt das
- * Embed oder eines seiner Felder, bleibt für dieses Feld der Rückfall.
- * @returns {{felder: Record<string, string>, ausEmbed: boolean}}
- */
-function acFelder() {
-  const felder = {...AC_FELDER};
-  const embed = document.querySelector(AC_EMBED_FORMULAR);
-  if (!embed) return {felder, ausEmbed: false};
-  let gelesen = 0;
-  for (const name of Object.keys(AC_FELDER)) {
-    const feld = embed.querySelector(`input[type="hidden"][name="${name}"]`);
-    if (feld) {
-      felder[name] = feld.value;
-      gelesen += 1;
-    }
-  }
-  return {felder, ausEmbed: gelesen === Object.keys(AC_FELDER).length};
-}
-const AC_FELDER = {
-  u: '6ABFA6BE407FA',
-  f: '33',
-  s: '',
-  c: '0',
-  m: '0',
-  act: 'sub',
-  v: '2',
-  or: '6b32c1ee-6c69-4110-b4a9-c59c12d45df4',
-};
+/** Formular 33 des eigenen Anmelde-Endpunkts (ac-eingang, formulare.yaml). */
+const FORMULAR_ID = '33';
+const MIN_ANZEIGE_MS = 1600;
+/** Satz, solange /w noch nicht bereit ist (wortgleich mit formulare.yaml). */
+const EINWILLIGUNG_RUECKFALL =
+  'Mit der Anmeldung bekommst du unsere E-Mails: jede Woche die ' +
+  'Einladung zu Coming Home und Neuigkeiten von Qi Blanco. Du bestätigst ' +
+  'deine Adresse per E-Mail und kannst dich jederzeit mit einem Klick ' +
+  'abmelden.';
 
 /**
  * Das Spam-Fangfeld. Der Name trägt bewusst keine Bedeutung („website",
@@ -314,7 +254,7 @@ export const meta = () => [
 
 /**
  * Gibt nach dem Absenden den Teilnahme-Link heraus. Name und Adresse kommen
- * hier nicht an, der Browser schickt sie direkt an ActiveCampaign.
+ * hier nicht an, der Browser schickt sie an den eigenen Anmelde-Endpunkt.
  */
 export async function action({request}) {
   if (request.method !== 'POST') {
@@ -440,11 +380,11 @@ export default function ComingHome() {
 /**
  * Das Anmeldeformular samt Erfolgszustand.
  *
- * ABLAUF: (1) der Browser prüft die Felder, (2) er schickt sie an
- * ActiveCampaign und liest die Antwort, (3) bei Erfolg holt die Seite den
- * Teilnahme-Link aus der Action, (4) Erfolgszustand in derselben Karte, ohne
- * Weiterleitung. Meldet ActiveCampaign einen Fehler oder scheitert das Netz,
- * bleibt das Formular stehen und sagt es.
+ * ABLAUF: (1) der Browser prüft die Felder, (2) er schickt sie an den
+ * eigenen Anmelde-Endpunkt und liest die Antwort, (3) bei Erfolg (oder wenn
+ * der Puffer sie hält) holt die Seite den Teilnahme-Link aus der Action,
+ * (4) Erfolgszustand in derselben Karte, ohne Weiterleitung. Lehnt der
+ * Endpunkt ab, bleibt das Formular stehen und sagt es.
  */
 function Anmeldung() {
   const [zustand, setZustand] = useState('offen');
@@ -452,6 +392,11 @@ function Anmeldung() {
   // neu = Bestätigungsmail unterwegs | bekannt = stand schon auf der Liste |
   // topf = nichts gesendet (Fangfeld gefüllt)
   const [anmeldung, setAnmeldung] = useState('');
+  const [antwortText, setAntwortText] = useState('');
+  const [fehlerText, setFehlerText] = useState('');
+  const [anzeige, setAnzeige] = useState(null);
+  const angezeigt = useRef(0);
+  const versatz = useRef(0);
   const fetcher = useFetcher();
   const id = useId();
   const erfolgRef = useRef(null);
@@ -461,6 +406,23 @@ function Anmeldung() {
   useEffect(() => {
     if (zustand === 'gesendet') erfolgRef.current?.focus();
   }, [zustand]);
+
+  // Satz, Kennung und Uhrversatz aus /w; Anzeigezeit für die Zeitfalle.
+  useEffect(() => {
+    angezeigt.current = Date.now();
+    let aktiv = true;
+    holeAnmeldewege()
+      .then((wege) => {
+        const neu = wege && wege.anzeige ? wege.anzeige[FORMULAR_ID] : null;
+        if (!aktiv || !neu || !neu.einwilligung || !neu.einwilligung_id) return;
+        versatz.current = wege.versatz || 0;
+        setAnzeige(neu);
+      })
+      .catch(() => {});
+    return () => {
+      aktiv = false;
+    };
+  }, []);
 
   function linkHolen() {
     fetcher.submit({absicht: 'link'}, {method: 'post', action: PFAD});
@@ -473,7 +435,7 @@ function Anmeldung() {
     if (!form.reportValidity()) return;
     const werte = new FormData(form);
     // Honigtopf: ein Mensch sieht das Feld nicht. Ist es gefüllt, geht nichts
-    // an ActiveCampaign. Den Link gibt es trotzdem: füllt ein übereifriges
+    // an den Endpunkt. Den Link gibt es trotzdem: füllt ein übereifriges
     // Autofill das Feld, steht ein Mensch sonst ohne Link da (so geschehen
     // bei Elinas Probe am 02.10.2026).
     if (String(werte.get(TOPF_NAME) || '') !== '') {
@@ -484,30 +446,72 @@ function Anmeldung() {
       return;
     }
     setZustand('sendet');
-    const {felder, ausEmbed} = acFelder();
-    setFelderQuelle(ausEmbed ? 'embed' : 'ersatz');
-    const sendung = new URLSearchParams(felder);
-    sendung.set('fullname', String(werte.get('fullname') || '').trim());
-    sendung.set('email', String(werte.get('email') || '').trim());
-    sendung.set('jsonp', 'true');
-    let ergebnis = '';
+    setFehlerText('');
+    setFelderQuelle('eigen');
+    const rest = MIN_ANZEIGE_MS - (Date.now() - angezeigt.current);
+    if (rest > 0) await new Promise((fertig) => setTimeout(fertig, rest));
+    const t = Math.round(angezeigt.current + versatz.current);
+    let ergebnis = null;
     try {
-      const antwort = await fetch(`${AC_ZIEL}?${sendung.toString()}`, {
-        credentials: 'omit',
-      });
-      const text = (await antwort.text()).trimStart();
-      if (text.startsWith(AC_ERFOLG)) ergebnis = 'neu';
-      else if (AC_ERFOLG_BEKANNT.test(text)) ergebnis = 'bekannt';
+      ergebnis = await zustellen(
+        {
+          formular: FORMULAR_ID,
+          felder: {
+            vorname: String(werte.get('fullname') || '').trim(),
+            email: String(werte.get('email') || '').trim(),
+            website: '',
+            einwilligung_id: anzeige ? String(anzeige.einwilligung_id) : '',
+            seite: PFAD,
+          },
+          t,
+          versatz: versatz.current,
+        },
+        {endpunkt: ANMELDE_ENDPUNKT},
+      );
     } catch {
-      ergebnis = '';
+      ergebnis = null;
     }
-    if (!ergebnis) {
+    if (ergebnis && ergebnis.gepuffert) {
+      setAnmeldung('gepuffert');
+      linkHolen();
+      setZustand('gesendet');
+      return;
+    }
+    const status = ergebnis ? ergebnis.status : 0;
+    const antwort = ergebnis ? ergebnis.antwort : null;
+    if (status === 202 && antwort && antwort.ok) {
+      setAntwortText(String(antwort.text || ''));
+      setAnmeldung('neu');
+      linkHolen();
+      setZustand('gesendet');
+      return;
+    }
+    if (status === 409) {
+      // Satz geändert, während die Seite offen stand: neuen Satz zeigen,
+      // der Mensch bestätigt den Satz, den er jetzt sieht.
+      const wege = await holeAnmeldewege({frisch: true}).catch(() => null);
+      const neu = wege && wege.anzeige ? wege.anzeige[FORMULAR_ID] : null;
+      if (neu && neu.einwilligung && neu.einwilligung_id) {
+        versatz.current = wege.versatz || 0;
+        setAnzeige(neu);
+      }
+      setFehlerText(
+        'Der Text unter dem Knopf hat sich gerade geändert. Bitte lies ihn und klick noch einmal.',
+      );
       setZustand('fehler');
       return;
     }
-    setAnmeldung(ergebnis);
-    linkHolen();
-    setZustand('gesendet');
+    if (status === 403 && antwort && antwort.text) {
+      setFehlerText(String(antwort.text));
+      setZustand('fehler');
+      return;
+    }
+    setFehlerText(
+      status === 400
+        ? 'Das hat nicht geklappt. Bitte prüf deine E-Mail-Adresse und versuch es noch einmal.'
+        : 'Das hat nicht geklappt. Bitte versuch es in ein paar Minuten noch einmal.',
+    );
+    setZustand('fehler');
   }
 
   if (zustand === 'gesendet') {
@@ -534,17 +538,13 @@ function Anmeldung() {
             Den Zoom-Link bekommst du mit der Einladung per E-Mail.
           </p>
         )}
-        {anmeldung === 'neu' ? (
-          <p className="ch-hinweis">
-            Für unseren Newsletter haben wir dir außerdem eine E-Mail
-            geschickt. Bestätige sie mit einem Klick, dann bekommst du jede
-            Woche die Einladung. Schau auch im Spam-Ordner nach.
-          </p>
+        {anmeldung === 'neu' && antwortText ? (
+          <p className="ch-hinweis">{antwortText}</p>
         ) : null}
-        {anmeldung === 'bekannt' ? (
+        {anmeldung === 'gepuffert' ? (
           <p className="ch-hinweis">
-            Du stehst schon auf unserer Newsletter-Liste. Die Einladung bekommst
-            du weiter jede Woche per E-Mail.
+            Deine Anmeldung wird übertragen, sobald die Verbindung wieder steht.
+            Danach kommt die Mail zum Bestätigen.
           </p>
         ) : null}
       </div>
@@ -609,24 +609,17 @@ function Anmeldung() {
         </button>
         {zustand === 'fehler' ? (
           <p className="ch-fehler" role="alert">
-            Das hat nicht geklappt. Bitte prüf deine E-Mail-Adresse und
-            versuch es noch einmal.
+            {fehlerText ||
+              'Das hat nicht geklappt. Bitte prüf deine E-Mail-Adresse und versuch es noch einmal.'}
           </p>
         ) : null}
-        <p className="ch-hinweis">
-          Mit der Anmeldung bekommst du unsere E-Mails: jede Woche die
-          Einladung zu Coming Home und Neuigkeiten von Qi Blanco. Du bestätigst
-          deine Adresse per E-Mail und kannst dich jederzeit mit einem Klick
-          abmelden.{' '}
+        <p className="ch-hinweis" data-einwilligung={anzeige ? anzeige.einwilligung_id : ''}>
+          {anzeige ? anzeige.einwilligung : EINWILLIGUNG_RUECKFALL}{' '}
           <Link className="ch-verweis" to="/pages/datenschutz" prefetch="intent">
             Datenschutz
           </Link>
         </p>
       </form>
-      {/* Nur Quelle der verborgenen Felder, nie sichtbar (siehe Kopf). */}
-      <div className="ch-ac-quelle" hidden aria-hidden="true">
-        <ActiveCampaignForm formId={AC_FORMULAR_ID} />
-      </div>
     </>
   );
 }

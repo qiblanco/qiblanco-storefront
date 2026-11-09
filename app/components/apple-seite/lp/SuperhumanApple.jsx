@@ -1,6 +1,6 @@
 import lpAppleStyles from '~/styles/lp-apple.css?url';
 import superhumanStyles from '~/styles/lp-apple-superhuman.css?url';
-import {ActiveCampaignForm} from '~/components/reusables/ActiveCampaignForm';
+import {Anmeldeformular} from '~/components/reusables/Anmeldeformular';
 import {AppleSeite} from '../AppleSeite';
 import {AppleAnna, AppleCtaBand, AppleHero, AppleKapitel} from '../AppleSektionen';
 import {BILD} from './lp-gemeinsam.js';
@@ -8,7 +8,7 @@ import {BILD} from './lp-gemeinsam.js';
 /*
  * APPLE-FASSUNG /pages/superhuman (Grossjob 20261029-GROSSJOB-alle-shop-seiten-
  * apple-niveau-ausser-seo-geo, s07-r8). Dasselbe Formular wie C (formId 13,
- * Weiche ActiveCampaignForm), Christians „Über mich“ Wort für Wort. Aussortiert
+ * eigenes Anmeldeformular), Christians „Über mich“ Wort für Wort. Aussortiert
  * gegenüber C: „Warum kostenlos“ (derselbe Absatz wie in „Über mich“), die
  * Aufzählung vor den fünf Stufen (dieselben fünf Themen), Vorschaubilder der
  * Videos und Kurs-Showcase (Quellen 480 und 526 px breit, auf dieser Fläche unscharf).
@@ -83,7 +83,7 @@ function Anmeldung() {
     <section className="as-sektion as-sh-anmeldung" id="anmeldung" data-section="as-anmeldung">
       <h2 className="as-h2">Hol dir den Kurs jetzt kostenfrei.</h2>
       <div className="as-sh-karte">
-        <ActiveCampaignForm formId="13" />
+        <Anmeldeformular formId="13" />
       </div>
       <p className="as-sh-klein">
         Deine Eintragung ist absolut unverbindlich. Wenn dir der Kurs nicht gefällt, kannst du dich

@@ -203,36 +203,10 @@ function FooterWissenVertrauen() {
   );
 }
 
-// Newsletter = AC-Formular 15. Die Weiche (Stufe E1 der AC-Ablösung, s11)
-// zeigt das eigene Formular, sobald der Anmelde-Endpunkt 15 auf 'eigen'
-// meldet; sonst und bei jedem Fehler das Embed wie bisher.
+// Newsletter = Formular 15, fest auf dem eigenen Weg (AC-Abschluss, Elina
+// EL-20261103-b633cb45). Das ActiveCampaign-Embed ist entfernt.
 function NewsletterForm() {
-  return (
-    <AnmeldeWeiche formId="15" ac={<NewsletterAcEmbed />} dunkel />
-  );
-}
-
-function NewsletterAcEmbed() {
-  useEffect(() => {
-    const id = 'ac-embed-15';
-    if (document.getElementById(id)) return;
-    const script = document.createElement('script');
-    script.id = id;
-    script.src = 'https://qiblanco.activehosted.com/f/embed.php?id=15';
-    script.type = 'text/javascript';
-    script.charset = 'utf-8';
-    document.body.appendChild(script);
-  }, []);
-
-  // Die Overrides für das ActiveCampaign-Embed stehen in app/styles/app.css
-  // (Block "Footer-Newsletter, Anker #qi-newsletter"). Sie standen bis zum
-  // 2026-09-13 als <style>{`...`}</style> genau hier -- das brach auf JEDER
-  // Seite die Hydration (React maskiert den Textinhalt beim Serverrendern,
-  // im SSR-HTML stand input[type=&#x27;text&#x27;]) UND machte die Regeln
-  // serverseitig wirkungslos, weil <style> ein Raw-Text-Element ist und der
-  // Parser die Maskierung darin nicht auflöst. Begründung vollstaendig an
-  // der Regel in app.css. Kein <style> mehr in diesem Baum.
-  return <div className="_form_15" id="qi-newsletter" />;
+  return <AnmeldeWeiche formId="15" dunkel />;
 }
 
 function FooterStudies() {

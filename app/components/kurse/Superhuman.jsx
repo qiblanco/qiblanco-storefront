@@ -1,4 +1,4 @@
-import { ActiveCampaignForm } from "../reusables/ActiveCampaignForm";
+import {Anmeldeformular} from "../reusables/Anmeldeformular";
 
 const IMG_HERO_BG =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qiblanco-com-in-5-stufen-zum-superhuman-hintergrund_1296x.png?v=1645178965';
@@ -67,7 +67,7 @@ function RegistrationSection() {
         <div>
         <h3 className="font-bold text-xl">HOL' DIR DEN KURS JETZT KOSTENFREI!</h3>
         
-          <ActiveCampaignForm formId="13" /> 
+          <Anmeldeformular formId="13" /> 
           <p className="text-xs text-gray-500 mt-4">
             *Deine Eintragung ist absolut unverbindlich. Wenn dir der Kurs nicht gefällt,
             kannst du dich jederzeit mit nur einem Klick wieder austragen und du erhältst
