@@ -8,6 +8,7 @@ import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
 import {useGoogleRating} from '~/lib/googleRating';
+import {kakaoSetArt} from '~/lib/kakao-set-zeile';
 import {menueZiel} from '~/crystal-spiegel-rahmen/pfade';
 import {MenueSymbol, alphabetisch, hatSymbolSpalte, istMehr} from '~/components/reusables/menue-symbole';
 import {
@@ -1467,7 +1468,28 @@ function AnnouncementBanner({announcement, link, onAnnouncementClick, variante, 
 function CartBanner() {
   const originalCart = useAsyncValue();
   const cart = useOptimisticCart(originalCart);
-  return <CartBadge count={cart?.totalQuantity ?? 0} />;
+  return <CartBadge count={packungenImKorb(cart)} />;
+}
+
+/**
+ * Packungen statt Zeilenmenge. Eine Kakao-Set-Zeile hat Menge 1 und trägt 2
+ * bis 7 Packungen; der Stepper im Warenkorb zählt Packungen
+ * (CartLineItem.jsx). Mit `totalQuantity` stand im Kopf "1", während die
+ * Zeile darunter "3" sagte (gemessen 2026-11-09 auf qiblanco.com, Probe
+ * crystal-cacao-node/proben/probe_set_zeile_warenkorb.py, Arm S4).
+ * Dieselbe Zählung wie im Kakao-Laden (crystal-cacao-node Header.jsx).
+ * Ohne Zeilen bleibt es bei `totalQuantity`; eine Zeile ohne Handle
+ * (optimistische Zeile) zählt mit ihrer Menge, wie vorher.
+ * @param {{totalQuantity?: number, lines?: {nodes?: Array<object>}}|null} cart
+ */
+function packungenImKorb(cart) {
+  const zeilen = cart?.lines?.nodes;
+  if (!Array.isArray(zeilen)) return cart?.totalQuantity ?? 0;
+  return zeilen.reduce((summe, zeile) => {
+    const set = kakaoSetArt(zeile?.merchandise?.product?.handle);
+    const menge = Number(zeile?.quantity) || 0;
+    return summe + (set ? set.packungen * menge : menge);
+  }, 0);
 }
 
 /*
