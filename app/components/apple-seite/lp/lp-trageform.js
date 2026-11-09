@@ -9,6 +9,7 @@ import {ANNA, BILD, STIMMEN, ZIEL} from './lp-gemeinsam.js';
 export const TRAGEFORM_SEKTIONEN = Object.freeze([
   {
     art: 'hero',
+    bildZuerst: true,
     overline: 'Entscheidungshilfe',
     titel: 'Kette oder Armband? Gleiche Technik. Deine Trageform.',
     unter: 'Beide tragen denselben Gitterchip® aus 750er Gold. Du entscheidest nur, wie du ihn trägst.',

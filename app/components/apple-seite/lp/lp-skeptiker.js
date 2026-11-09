@@ -10,6 +10,7 @@ import {ANNA, BILD, STIMMEN, STUDIEN, ZIEL} from './lp-gemeinsam.js';
 export const SKEPTIKER_SEKTIONEN = Object.freeze([
   {
     art: 'hero',
+    bildZuerst: true,
     overline: 'Für Skeptiker',
     titel: '„Ist das Einbildung?“ Gute Frage. Machen wir ihn auf.',
     unter: 'Hier zeigen wir dir offen, wie der Chip aufgebaut ist und was in Studien gemessen wurde. Dazu kommen die Berichte von Menschen, die ihn tragen.',

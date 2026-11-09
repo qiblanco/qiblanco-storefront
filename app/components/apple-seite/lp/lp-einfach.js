@@ -9,6 +9,7 @@ import {ANNA, BILD, STIMMEN, ZIEL} from './lp-gemeinsam.js';
 export const EINFACH_SEKTIONEN = Object.freeze([
   {
     art: 'hero',
+    bildZuerst: true,
     overline: 'In 20 Sekunden',
     titel: 'So funktioniert der QiOne® 2 Pro. Ganz einfach erklärt.',
     unter: 'Ein Gitter aus 750er Gold ordnet das Wasser in deinem Körper. Ohne Batterie, ohne App.',

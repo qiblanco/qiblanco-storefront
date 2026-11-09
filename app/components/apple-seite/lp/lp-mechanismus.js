@@ -9,6 +9,7 @@ import {ANNA, BILD, STIMMEN, STUDIEN, ZIEL} from './lp-gemeinsam.js';
 export const MECHANISMUS_SEKTIONEN = Object.freeze([
   {
     art: 'hero',
+    bildZuerst: true,
     overline: 'Der Mechanismus, in Ruhe erklärt',
     titel: 'So wirkt kohärentes Wasser. Schritt für Schritt.',
     unter: 'Kein Wunder, kein Heilstrahl. Ein physikalisches Ordnungs-Modell, an Zellen im Labor untersucht.',

@@ -12,6 +12,7 @@ import {ANNA, BILD, STIMMEN, STUDIEN, ZIEL} from './lp-gemeinsam.js';
 export const SCHLAF_SEKTIONEN = Object.freeze([
   {
     art: 'hero',
+    bildZuerst: true,
     overline: 'Tiefer Schlaf',
     titel: 'Endlich wieder tief schlafen.',
     unter: 'Gib deinem Schlaf 20 Nächte, über den Rest entscheidest du danach.',

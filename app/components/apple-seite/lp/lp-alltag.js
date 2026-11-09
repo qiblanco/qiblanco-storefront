@@ -9,6 +9,7 @@ import {ANNA, BILD, STIMMEN, ZIEL} from './lp-gemeinsam.js';
 export const ALLTAG_SEKTIONEN = Object.freeze([
   {
     art: 'hero',
+    bildZuerst: true,
     overline: 'Im Alltag getestet',
     titel: '„Hält das mein Leben aus?“ Dusche, Sport, Sauna. Er bleibt dran.',
     unter: 'Kein Akku, keine Elektronik. Wasser, Hitze, Schweiß und Chlor machen ihm nichts.',
