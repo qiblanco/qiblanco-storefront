@@ -294,6 +294,15 @@
   .szs-fest .as-knopf {
     min-height: var(--as-tippziel);
   }
+  /* Am Seitenende steht der Knopf wieder (der Schluss ist dann aus dem Bild)
+     und lag auf Impressum, Datenschutz, AGB und Widerruf (gemessen
+     09.11.2026). Der Fuß bekommt die Höhe der Leiste als Polster, wie auf der
+     Startseite (start-b-apple.css): gemessen 86 px hoch, 11 Stufen des
+     8pt-Rasters = 88 px. Immer gesetzt, nicht erst beim Erscheinen: nichts
+     springt. */
+  body:has(.as-seite > .szs-fest) footer {
+    padding-bottom: calc(var(--qb-ref-raster, 8px) * 11 + env(safe-area-inset-bottom));
+  }
 }
 
 /*

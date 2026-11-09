@@ -172,7 +172,20 @@
     padding: var(--as-s-12) var(--as-s-4) 0;
   }
 }
-.as-seite > :last-child {
+/* Schlussabstand der Seite: beim letzten Abschnitt im Fluss, nie bei einer
+   festen Leiste. Feste Kaufleisten (.szs-fest, .pd-kaufleiste, .qb-rs-sticky)
+   sind oft das letzte Kind und tragen in JEDEM Zustand ein Merkmal: versteckt
+   aria-hidden="true", sichtbar data-qb-chat-weicht (lib/kaufknopf-chat.js).
+   Daran erkennt die Regel sie, nicht am Klassennamen: eine neue Leiste ist
+   ohne eigene Nullung gedeckt. Der Abstand geht dann an das Kind davor, in
+   beiden Zuständen gleich, beim Erscheinen springt nichts. Ohne das stand
+   die Leiste mit bottom 0 und margin-bottom 64 px über dem Rand (.szs-fest,
+   gemessen 09.11.2026). :where hält die Spezifität bei 0,2,0 wie zuvor. Zwei
+   Regeln statt einer Liste: ein Browser ohne :has() verwirft sonst beide. */
+.as-seite > :last-child:where(:not([aria-hidden='true'], [data-qb-chat-weicht])) {
+  margin-bottom: var(--as-s-8);
+}
+.as-seite > :nth-last-child(2):where(:has(+ :is([aria-hidden='true'], [data-qb-chat-weicht]):last-child)) {
   margin-bottom: var(--as-s-8);
 }
 
