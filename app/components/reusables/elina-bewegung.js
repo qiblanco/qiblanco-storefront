@@ -1,24 +1,25 @@
 /* elina-bewegung.js: Scroll-Effekte nach Elinas Design-Dauerregel (EL-20261108-5bf00bf2).
  *
- * Kopie aus elina-design-regel/baukasten (shared-state), nur fuer ESLint angepasst
+ * Kopie aus elina-design-regel/baukasten (shared-state), angepasst nur für ESLint und das
+ * Umlaut-Tor des Deploys (echte Umlaute, Bezeichner ohne ae/oe/ue)
  * (catch ohne Bindung, Kurzschreibweise im api-Objekt).
  *
- * Gehoert zu elina-bewegung.css. Nachgebaut aus dem Hausrezept (homepage-bauer
+ * Gehört zu elina-bewegung.css. Nachgebaut aus dem Hausrezept (homepage-bauer
  * SKILL-SCROLL-ANIMATIONEN 1b, Qi-Alpha-Landingpages useTapFilm / tacScrollFilm):
- *  - versteckt wird nur unter html.eb-an, und die Klasse kommt erst, wenn dieses Skript laeuft
+ *  - versteckt wird nur unter html.eb-an, und die Klasse kommt erst, wenn dieses Skript läuft
  *    (Server-HTML, Bots und Browser ohne JavaScript sehen alles);
  *  - Einblenden einmalig per IntersectionObserver (threshold 0.15, rootMargin -8 % unten), danach unobserve;
  *  - der erste Bildschirm ist sofort da (Hero, Preis, Kaufknopf: kein LCP-Schaden);
- *  - Zoom und Linien: ein passiver Scroll-Zuhoerer, je Bild hoechstens eine Rechnung in requestAnimationFrame,
+ *  - Zoom und Linien: ein passiver Scroll-Zuhörer, je Bild höchstens eine Rechnung in requestAnimationFrame,
  *    erst alles lesen, dann nur die CSS-Variable --eb-p schreiben; nur sichtbare Elemente werden gerechnet
- *    (bewusst ohne CSS animation-timeline: in Safari erst ab 26 und im WebKit-Pruefstand nicht verlaesslich);
+ *    (bewusst ohne CSS animation-timeline: in Safari erst ab 26 und im WebKit-Prüfstand nicht verlässlich);
  *  - "Bewegung reduzieren": html.eb-an wird nicht gesetzt, alles steht still und ist sofort da;
  *  - nie preventDefault, nie scrollTo, kein Einrasten.
  *
  * Einbinden:
- *   Liquid/HTML:  <script src="elina-bewegung.js" defer></script>   (startet von selbst fuer document)
+ *   Liquid/HTML:  <script src="elina-bewegung.js" defer></script>   (startet von selbst für document)
  *   Hydrogen:     useElinaBewegung.jsx daneben legen, im Abschnitt useElinaBewegung(wurzelRef) aufrufen
- *                 (starte() gibt die Aufraeum-Funktion zurueck, der Hook ruft sie beim Verlassen)
+ *                 (starte() gibt die Aufräum-Funktion zurück, der Hook ruft sie beim Verlassen)
  */
 (function (global) {
   'use strict';
@@ -32,21 +33,21 @@
     try { return global.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
   }
 
-  /* Fortschritt 0..1 je Art. zoom: von "Oberkante erreicht den unteren Rand" bis "Element verlaesst oben".
-   * linie: fuellt sich, waehrend sie von 90 % auf 45 % der Bildschirmhoehe wandert (sie ist voll, solange man
-   * sie liest). Reine Funktion, damit der Selbsttest sie ohne Browser pruefen kann. */
-  function fortschritt(art, oben, hoehe, bild) {
-    if (art === 'zoom') return klemme((bild - oben) / (bild + hoehe));
-    if (art === 'linie-senkrecht') return klemme((bild * 0.9 - oben) / (hoehe + bild * 0.45));
+  /* Fortschritt 0..1 je Art. zoom: von "Oberkante erreicht den unteren Rand" bis "Element verlässt oben".
+   * linie: füllt sich, während sie von 90 % auf 45 % der Bildschirmhöhe wandert (sie ist voll, solange man
+   * sie liest). Reine Funktion, damit der Selbsttest sie ohne Browser prüfen kann. */
+  function fortschritt(art, oben, hoch, bild) {
+    if (art === 'zoom') return klemme((bild - oben) / (bild + hoch));
+    if (art === 'linie-senkrecht') return klemme((bild * 0.9 - oben) / (hoch + bild * 0.45));
     return klemme((bild * 0.9 - oben) / (bild * 0.45));
   }
 
   function starte(wurzel) {
     wurzel = wurzel || global.document;
     var html = global.document.documentElement;
-    // Traeger der Klasse eb-an: bei document das html-Element, sonst die Wurzel selbst. stop() nimmt
-    // sie wieder ab, damit nach einem Seitenwechsel (Hydrogen) nichts versteckt haengen bleibt.
-    var traeger = wurzel.nodeType === 9 ? html : wurzel;
+    // Träger der Klasse eb-an: bei document das html-Element, sonst die Wurzel selbst. stop() nimmt
+    // sie wieder ab, damit nach einem Seitenwechsel (Hydrogen) nichts versteckt hängen bleibt.
+    var halter = wurzel.nodeType === 9 ? html : wurzel;
     if (!('IntersectionObserver' in global) || ruhig()) return function () {};
 
     var alle = wurzel.querySelectorAll('[data-eb]');
@@ -66,12 +67,12 @@
       }
     }
 
-    // Erster Bildschirm: sofort sichtbar, ohne Uebergang (vor dem Setzen von eb-an, also kein Aufblitzen).
+    // Erster Bildschirm: sofort sichtbar, ohne Übergang (vor dem Setzen von eb-an, also kein Aufblitzen).
     for (i = 0; i < einblenden.length; i++) {
       el = einblenden[i];
       if (el.getBoundingClientRect().top < bild * 0.92) el.classList.add('eb-da', 'eb-sofort');
     }
-    traeger.classList.add('eb-an');
+    halter.classList.add('eb-an');
     global.requestAnimationFrame(function () {
       global.requestAnimationFrame(function () {
         var s = wurzel.querySelectorAll('.eb-sofort');
@@ -79,11 +80,11 @@
       });
     });
 
-    var io = new IntersectionObserver(function (eintraege) {
-      for (var j = 0; j < eintraege.length; j++) {
-        if (eintraege[j].isIntersecting) {
-          eintraege[j].target.classList.add('eb-da');
-          io.unobserve(eintraege[j].target);
+    var io = new IntersectionObserver(function (befunde) {
+      for (var j = 0; j < befunde.length; j++) {
+        if (befunde[j].isIntersecting) {
+          befunde[j].target.classList.add('eb-da');
+          io.unobserve(befunde[j].target);
         }
       }
     }, EIN);
@@ -91,18 +92,18 @@
       if (!einblenden[i].classList.contains('eb-da')) io.observe(einblenden[i]);
     }
 
-    var aufraeumen = [function () {
+    var abbau = [function () {
       io.disconnect();
-      traeger.classList.remove('eb-an');
+      halter.classList.remove('eb-an');
     }];
 
     if (laufend.length) {
       var sichtbar = new Set();
       var wartet = false;
-      var sicht = new IntersectionObserver(function (eintraege) {
-        for (var j = 0; j < eintraege.length; j++) {
-          if (eintraege[j].isIntersecting) sichtbar.add(eintraege[j].target);
-          else sichtbar.delete(eintraege[j].target);
+      var sicht = new IntersectionObserver(function (befunde) {
+        for (var j = 0; j < befunde.length; j++) {
+          if (befunde[j].isIntersecting) sichtbar.add(befunde[j].target);
+          else sichtbar.delete(befunde[j].target);
         }
         anfordern();
       }, { rootMargin: '10% 0px 10% 0px' });
@@ -124,7 +125,7 @@
       for (i = 0; i < laufend.length; i++) sicht.observe(laufend[i]);
       global.addEventListener('scroll', anfordern, { passive: true });
       global.addEventListener('resize', anfordern, { passive: true });
-      aufraeumen.push(function () {
+      abbau.push(function () {
         sicht.disconnect();
         global.removeEventListener('scroll', anfordern);
         global.removeEventListener('resize', anfordern);
@@ -132,7 +133,7 @@
     }
 
     return function stop() {
-      for (var j = 0; j < aufraeumen.length; j++) aufraeumen[j]();
+      for (var j = 0; j < abbau.length; j++) abbau[j]();
     };
   }
 

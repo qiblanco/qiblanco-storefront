@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useId, useRef, useState} from 'react';
 import {IG_TESTIMONIALS} from '~/data/ig-testimonials';
-import {useElinaBewegung} from '~/lib/useElinaBewegung';
+import {useElinaBewegung} from '~/components/reusables/useElinaBewegung';
 
 /*
  * VideoGalerie — die wiederverwendbare Sektion „Video-Galerie / Stimmen-Karussell“
@@ -47,7 +47,7 @@ import {useElinaBewegung} from '~/lib/useElinaBewegung';
  * Tab im Hintergrund ist. Bis das Video wirklich läuft, steht das Standbild.
  *
  * EINBLENDEN BEIM SCROLLEN nach Elinas Design-Dauerregel (EL-20261108-5bf00bf2) über
- * den geprüften Baukasten (app/lib/elina-bewegung.js): die Überschrift blendet ein
+ * den geprüften Baukasten (app/components/reusables/elina-bewegung.js): die Überschrift blendet ein
  * und gleitet 20 px hoch, die Kacheln folgen leicht versetzt. Steht die Galerie
  * beim Laden schon im Bild, ist sie sofort da. Bei „Bewegung reduzieren“ steht
  * alles still, ohne JavaScript ist alles sichtbar.
