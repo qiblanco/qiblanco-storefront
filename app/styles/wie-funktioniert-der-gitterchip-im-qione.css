@@ -459,6 +459,21 @@
   border-radius: var(--qb-radius-bild);
 }
 
+/* Skala für Diagramme mit Werten über 100 (QiHome® Air: Kontrolle = 100 %,
+   153,3 %). --gc-skala = 100 / hoechstwert kommt inline aus den Daten; ohne sie
+   bleibt alles wie im Bausatz. Dieselben drei Formeln wie qb-balkendiagramm.css,
+   je mit dem Faktor - bewusst hier und nicht im geteilten Bausatz (5 Seiten). */
+.gc-studien__diagramm[data-gc-diagramm] .qb-balkendiagramm__balken {
+  height: calc(var(--qb-sb-anteil) * var(--gc-skala, 1) * 100%);
+}
+
+.gc-studien__diagramm[data-gc-diagramm] .qb-balkendiagramm__wert {
+  bottom: calc(var(--qb-sb-anteil) * var(--gc-skala, 1) * 100%);
+  transform: translateY(
+    calc((1 - var(--qb-sb-p)) * var(--qb-sb-anteil) * var(--gc-skala, 1) * var(--qb-sb-hoehe))
+  );
+}
+
 .gc-studien__kennzahlen {
   display: grid;
   gap: var(--gc-s3);
@@ -563,6 +578,20 @@
   .gc-studien__balken,
   .gc-studien__kennzahlen {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Ungerade Zahl Diagramme (seit 01.11.2026 fünf): das letzte steht in
+     halber Breite mittig statt allein links. */
+  .gc-studien__diagramm:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc((100% - var(--gc-s4)) / 2);
+  }
+
+  /* Eine einzelne Kennzahl (seit 01.11.2026 ist QiHome® Air ein Diagramm)
+     steht über die volle Breite statt in einer halben Spalte. */
+  .gc-studien__kennzahlen:has(> :only-child) {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

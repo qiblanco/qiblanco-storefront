@@ -99,7 +99,12 @@ function Studien({stufe}) {
     <div className="gc-studien">
       <div className="gc-studien__balken">
         {stufe.diagramme.map((d) => (
-          <div className="gc-studien__diagramm" key={d.id}>
+          <div
+            className="gc-studien__diagramm"
+            key={d.id}
+            data-gc-diagramm={d.id}
+            style={d.hoechstwert ? {'--gc-skala': 100 / d.hoechstwert} : undefined}
+          >
             <BalkenDiagramm
               titel={
                 <>
