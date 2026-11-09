@@ -473,3 +473,29 @@ test('urteilsTakt Rückweg LEISTE_SOFORT_AN=false: Stand vor dem 09.11. (childLi
   assert.equal(urteilsTakt([eintrag(EINWILLIGUNG_OFFEN_ATTRIBUT)], aus), 'nichts');
   assert.equal(urteilsTakt([eintrag('style')], aus), 'nichts');
 });
+
+/* ───── Durchlass beim Gleiten (derselbe Job): live WebKit stand der Rahmen nach dem
+ * Erscheinen der Leiste bis 2,6 s ungemalt über ihrem Knopf. ───── */
+import {gleitetJetzt} from '../app/lib/kaufknopf-chat.js';
+
+test('gleitetJetzt: geänderte Strecke des geschlossenen Rahmens -> Durchlass', () => {
+  assert.equal(gleitetJetzt({hubVorher: 165, hubJetzt: 414, offen: false, bewegungReduziert: false}), true);
+  assert.equal(gleitetJetzt({hubVorher: 0, hubJetzt: 87, offen: false, bewegungReduziert: false}), true);
+  assert.equal(gleitetJetzt({hubVorher: 414, hubJetzt: 0, offen: false, bewegungReduziert: false}), true);
+});
+
+test('gleitetJetzt: gleiche Strecke -> kein Durchlass (kein Gleiten)', () => {
+  assert.equal(gleitetJetzt({hubVorher: 414, hubJetzt: 414, offen: false, bewegungReduziert: false}), false);
+});
+
+test('gleitetJetzt: offener Chat nie (er muss Treffer annehmen)', () => {
+  assert.equal(gleitetJetzt({hubVorher: 0, hubJetzt: 414, offen: true, bewegungReduziert: false}), false);
+});
+
+test('gleitetJetzt: Bewegung reduzieren -> der Rahmen springt, kein Durchlass', () => {
+  assert.equal(gleitetJetzt({hubVorher: 0, hubJetzt: 414, offen: false, bewegungReduziert: true}), false);
+});
+
+test('gleitetJetzt Rückweg GLEIT_DURCHLASS_AN=false: nie', () => {
+  assert.equal(gleitetJetzt({hubVorher: 0, hubJetzt: 414, offen: false, bewegungReduziert: false, an: false}), false);
+});

@@ -570,3 +570,46 @@ export function urteilsTakt(aenderungen, {ewVorher = '', ewJetzt = '', an = LEIS
   }
   return takt;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * WÄHREND ANNA GLEITET, NIMMT IHR RAHMEN KEINEN TIPP AN (derselbe Job).
+ *
+ * Auch mit dem sofortigen Urteil oben beginnt das Gleiten erst im nächsten
+ * gemalten Bild. Bis dahin, und während der 280 ms des Gleitens, steht der
+ * Rahmen noch an der alten Stelle. Erscheint die Leiste unter ihm, liegt er
+ * über ihrem Knopf. Auf dem Handy sind das wenige Bilder; Linux-WebKit malt
+ * nach einem Scroll aber bis 1,2 s kein Bild, und so lange war der Knopf
+ * gedeckt (live 09.11.: 1471 und 2576 ms auf /pages/schlaf-zellen-schutz-b).
+ *
+ * Darum setzt das Signal, sobald sich die Strecke des GESCHLOSSENEN Rahmens
+ * ändert, GLEIT_ATTRIBUT am <html>. app.css nimmt dem Rahmen dann die
+ * Treffer (pointer-events none): ein Tipp auf den Knopf unter der gleitenden
+ * Blase landet im Knopf. Zu sehen ist Anna weiter, sie gleitet wie bisher.
+ * Das Attribut fällt, sobald am Rahmen bzw. Träger keine Animation mehr läuft
+ * (getAnimations). Ein Tipp auf Anna selbst während dieser 280 ms öffnet den
+ * Chat nicht; danach wieder.
+ *
+ * Nie bei offenem Chat (der gleitet nie, und ein offenes Fenster ohne
+ * Treffer wäre unbedienbar) und nie bei „Bewegung reduzieren“ (dann springt
+ * der Rahmen, es gibt kein Gleiten).
+ *
+ * RÜCKWEG: GLEIT_DURCHLASS_AN = false (dann setzt niemand das Attribut).
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Code-Schalter des Durchlasses beim Gleiten. false = Stand vor dem 09.11. */
+export const GLEIT_DURCHLASS_AN = true;
+
+/** Am <html>: Annas geschlossener Rahmen gleitet gerade, er nimmt keinen Tipp an (app.css). */
+export const GLEIT_ATTRIBUT = 'data-chat-gleitet';
+
+/**
+ * Beginnt mit dieser Änderung ein Gleiten, das den Durchlass braucht?
+ *
+ * @param {{hubVorher: number, hubJetzt: number, offen: boolean,
+ *   bewegungReduziert: boolean, an?: boolean}} lage
+ * @returns {boolean}
+ */
+export function gleitetJetzt({hubVorher, hubJetzt, offen, bewegungReduziert, an = GLEIT_DURCHLASS_AN}) {
+  if (!an || offen || bewegungReduziert) return false;
+  return (Number(hubVorher) || 0) !== (Number(hubJetzt) || 0);
+}
