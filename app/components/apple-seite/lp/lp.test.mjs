@@ -108,11 +108,30 @@ test('Kurs-Lektionsbilder: schärfere Datei, Anzeigebreite gleich, kein srcset (
     scharfeLektionsbilder(`<img alt="1 > 0 src=b width=9" data-mce-src="${cdn}x.webp" src="${cdn}Christian_480x480.webp?v=1" width="233">`),
     `<img alt="1 > 0 src=b width=9" data-mce-src="${cdn}x.webp" src="${cdn}Christian.webp?v=1&amp;width=466" width="233">`,
   );
+  // Porträt ohne größeres Original: das größere Foto Christian.webp in derselben Anzeigebreite 232 (s07-r17)
+  assert.equal(
+    scharfeLektionsbilder(`<img alt="Christian Bauer" src="${cdn}Christian-Bauer-290x300_1_240x240.webp?v=1667505773" left="" float:="">`),
+    `<img width="232" height="297" alt="Christian Bauer" src="${cdn}Christian.webp?v=1667505773&amp;width=464" left="" float:="">`,
+  );
+  // Deckel (s07-r17): Quelle byte-gleich, Breite = Dateibreite / 1,8, Marke für die Zentrierung
+  assert.equal(
+    scharfeLektionsbilder(`<img src="${cdn}chlorella_algen-1024x576.jpg_1.webp?v=1667505820" alt="Chlorella" class="text-center">`),
+    `<img data-bild-deckel width="568" height="320" src="${cdn}chlorella_algen-1024x576.jpg_1.webp?v=1667505820" alt="Chlorella" class="text-center">`,
+  );
+  assert.equal(
+    scharfeLektionsbilder(`<img class="text-center" alt="Zeolith" src="${cdn}Zeolithe-1024x576.jpg_1.webp?v=1667505832">`),
+    `<img data-bild-deckel width="568" height="320" class="text-center" alt="Zeolith" src="${cdn}Zeolithe-1024x576.jpg_1.webp?v=1667505832">`,
+  );
+  assert.equal(
+    scharfeLektionsbilder(`<img alt="Dose" src="${cdn}61brbD89MGL._AC_SL1500.jpg?v=1701215564">`),
+    `<img data-bild-deckel width="533" height="768" alt="Dose" src="${cdn}61brbD89MGL._AC_SL1500.jpg?v=1701215564">`,
+  );
   // Byte-gleich bleiben: unbekannte Datei (auch mit Größen-Namen), fremder Host, vorhandenes srcset, width nicht positiv-numerisch,
   // height ohne width, Tabelleneintrag ohne Breite, img im Attributwert, anderer Tagname, Text ohne Bild
   for (const roh of [
-    `<img src="${cdn}chlorella_algen-1024x576.jpg_1.webp?v=1">`,
-    `<img src="${cdn}Christian-Bauer-290x300_1_240x240.webp?v=2">`,
+    `<img src="${cdn}chlorella_algen-1024x576.jpg_1.webp?v=1" width="300">`,
+    `<img src="${cdn}Zeolithe-1024x576.jpg_1.webp?v=1" style="width: 50%">`,
+    `<img src="${cdn}Christian-Bauer-290x300_1.webp?v=2">`,
     `<img src="${cdn}banner_1920x1080.jpg?v=1">`,
     '<img src="https://i.ytimg.com/vi/x/hqdefault.jpg">',
     `<img src="${cdn}Christian_480x480.webp" srcset="${cdn}Christian_480x480.webp 1x">`,
