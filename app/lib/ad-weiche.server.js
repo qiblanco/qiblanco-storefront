@@ -394,6 +394,13 @@ export const AUSSCHLUSS_SEGMENTE = [
   // (gemessen am Testserver 27.10. 08:31Z). Additiv, reversibel: Zeilen löschen.
   '/pages/qi-master',
   '/pages/qi-master-lp',
+  // BLACK-FRIDAY-PRE-ACCESS (Elina EL-20261109-640599de, 09.11.2026): die Kette lautet „Anzeige mit
+  // UTM/fbclid -> Pre-Access-Anmeldeseite -> Formular -> /pages/bf-deals“. Gemessen live am 09.11. 18:40Z:
+  // /pages/pre-access?utm_medium=paid&fbclid=x gab 302 auf LP A mit lp_m=w, die Anzeige erreichte das
+  // Formular nie. Die B-Fassung (EL-20261109-bda7a985) und die Deal-Seite ebenso. Additiv, reversibel: Zeilen löschen.
+  '/pages/pre-access',
+  '/pages/pre-access-b',
+  '/pages/bf-deals',
   // '/pages/qi-alpha-b' deckt seit dem 27.10.2026 die Zeile '/pages/Qi-Alpha-B'
   // oben (Vergleich Schreibweise-frei).
   '/go',

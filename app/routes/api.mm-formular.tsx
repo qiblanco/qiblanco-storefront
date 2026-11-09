@@ -55,7 +55,17 @@ export async function action({request, context}: ActionFunctionArgs) {
   // Zweiter Weg der Storefront-Formulare (Elina EL-20261107-af9594f2, Punkt 4): dieselben Felder wie direkt an
   // /f/<id>, nur wenn gesendet. anmelde_id macht die Doppelzustellung harmlos (der Endpunkt verwirft Dubletten).
   const zusatz: Record<string, string> = {anmelde_id: w('anmelde_id', 64), frage: w('frage', 2000),
-    webinar_id: w('webinar_id', 120), utm_content: w('utm_content', 64), variant_id: w('variant_id', 120)};
+    webinar_id: w('webinar_id', 120), utm_content: w('utm_content', 150), variant_id: w('variant_id', 120),
+    // Herkunft der Eintragung (Elina EL-20261109-640599de): UTM-Werte, Art der Klick-Kennung und Referrer der Seite.
+    utm_source: w('utm_source', 150), utm_medium: w('utm_medium', 150), utm_campaign: w('utm_campaign', 150),
+    utm_term: w('utm_term', 150), klick: w('klick', 80), referrer: w('referrer', 300)};
+  // Ohne JavaScript bleiben die Felder leer: dann die UTM-Werte aus der Adresse der Seite (Referer-Kopf dieser Anfrage).
+  try {
+    const seitenQuery = new URL(request.headers.get('Referer') || '').searchParams;
+    for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']) {
+      if (!zusatz[k]) zusatz[k] = (seitenQuery.get(k) ?? '').trim().slice(0, 150);
+    }
+  } catch { /* kein lesbarer Referer-Kopf */ }
   for (const [k, v] of Object.entries(zusatz)) if (v) (nutzlast as Record<string, string>)[k] = v;
   let antwort: {ok?: boolean; fehler?: string} = {};
   let status = 0;
