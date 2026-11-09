@@ -1,6 +1,7 @@
 import {VideoGalerie} from '~/components/reusables/VideoGalerie';
 import {VORSCHAU_KACHELN, VORSCHAU_KOPF} from '~/components/reusables/video-galerie-daten';
 import videoGalerieStyles from '~/styles/video-galerie.css?url';
+import elinaBewegungStyles from '~/styles/elina-bewegung.css?url';
 
 /*
  * /pages/video-galerie-vorschau — Vorschau der neuen Sektion „Video-Galerie /
@@ -15,7 +16,10 @@ import videoGalerieStyles from '~/styles/video-galerie.css?url';
  * Rückbau: diese Datei löschen; ohne Aufrufer stört der Baustein nicht.
  */
 export function links() {
-  return [{rel: 'stylesheet', href: videoGalerieStyles}];
+  return [
+    {rel: 'stylesheet', href: videoGalerieStyles},
+    {rel: 'stylesheet', href: elinaBewegungStyles},
+  ];
 }
 
 /** @type {MetaFunction} */

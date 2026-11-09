@@ -104,7 +104,6 @@
   bottom: 0;
   left: -8%;
   right: -8%;
-  will-change: transform;
 }
 
 .vg__bild,
@@ -288,3 +287,14 @@
   }
 }
 
+/* Ruhige Fassung bei „Bewegung reduzieren“: kein Parallax (der Baustein schreibt
+ * dann ohnehin nichts), Einrasten bleibt, weil es Bedienung ist, keine Bewegung. */
+@media (prefers-reduced-motion: reduce) {
+  .vg__medien {
+    transform: none !important;
+  }
+
+  .vg__pfeil {
+    transition: none;
+  }
+}

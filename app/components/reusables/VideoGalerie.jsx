@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useId, useRef, useState} from 'react';
 import {IG_TESTIMONIALS} from '~/data/ig-testimonials';
+import {useElinaBewegung} from '~/lib/useElinaBewegung';
 
 /*
  * VideoGalerie — die wiederverwendbare Sektion „Video-Galerie / Stimmen-Karussell“
@@ -44,6 +45,16 @@ import {IG_TESTIMONIALS} from '~/data/ig-testimonials';
  * Ohne src ausgeliefert; die Adresse wird erst gesetzt, wenn die Kachel
  * sichtbar wird, und das Video pausiert, sobald sie den Blick verlässt oder der
  * Tab im Hintergrund ist. Bis das Video wirklich läuft, steht das Standbild.
+ *
+ * EINBLENDEN BEIM SCROLLEN nach Elinas Design-Dauerregel (EL-20261108-5bf00bf2) über
+ * den geprüften Baukasten (app/lib/elina-bewegung.js): die Überschrift blendet ein
+ * und gleitet 20 px hoch, die Kacheln folgen leicht versetzt. Steht die Galerie
+ * beim Laden schon im Bild, ist sie sofort da. Bei „Bewegung reduzieren“ steht
+ * alles still, ohne JavaScript ist alles sichtbar.
+ *
+ * EINBAU AUF EINER SEITE: <VideoGalerie kopf="…" kacheln={…} /> und in links()
+ * beide Stylesheets laden, ~/styles/video-galerie.css und ~/styles/elina-bewegung.css
+ * (Muster: pages.video-galerie-vorschau.jsx).
  *
  * Rückbau: diese Datei, app/styles/video-galerie.css, app/components/reusables/video-galerie-daten.js
  * und die Vorschau-Route pages.video-galerie-vorschau.jsx löschen.
@@ -100,11 +111,13 @@ export function VideoGalerie({kopf, kacheln, kennung, ebene = 'h2'}) {
   const Kopf = ebene === 'h1' ? 'h1' : 'h2';
   const liste = (kacheln || []).filter((k) => k && k.clip && k.beitragUrl);
   const kopfId = useId();
+  const wurzelRef = useRef(null);
   const bahnRef = useRef(null);
   const masse = useRef({kacheln: [], breite: 0});
   const ziehen = useRef(null);
   const klickSperre = useRef(false);
   const [rand, setRand] = useState({links: true, rechts: false});
+  useElinaBewegung(wurzelRef, [liste.length]);
 
   const vermessen = useCallback(() => {
     const bahn = bahnRef.current;
@@ -478,12 +491,13 @@ export function VideoGalerie({kopf, kacheln, kennung, ebene = 'h2'}) {
   return (
     <section
       className="vg"
+      ref={wurzelRef}
       aria-labelledby={kopf ? kopfId : undefined}
       data-section="video-galerie"
       id={kennung}
     >
       {kopf ? (
-        <Kopf className="vg__kopf" id={kopfId}>
+        <Kopf className="vg__kopf" id={kopfId} data-eb="">
           {kopf}
         </Kopf>
       ) : null}
@@ -502,6 +516,7 @@ export function VideoGalerie({kopf, kacheln, kennung, ebene = 'h2'}) {
         <ul
           className="vg__bahn vg-slider"
           data-slider="video-galerie"
+          data-eb="gruppe"
           ref={bahnRef}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
