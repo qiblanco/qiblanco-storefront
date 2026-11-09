@@ -28,6 +28,15 @@
  * FAQPage nur mit allen sichtbaren Fragen). Jeder Abschnitt bleibt für sich
  * die Antwort auf seine Frage. Die Chunk-Autarkie gilt also weiter.
  *
+ * NACHTRAG 2026-11-09, AUCH DIE AUFGEGANGENEN ABSCHNITTE (Job 20261105-seo-
+ * was-ist-elektrosmog-faqpage-alle-sichtbaren-fragen): Ist eine Frageseite
+ * per 301 in eine andere aufgegangen (app/lib/zusammenlegungen.js), zeigt die
+ * Zielseite ihre Frage als H2. Diese Frage kommt jetzt als weitere `Question`
+ * ins Schema, mit dem Antwortsatz des Abschnitts. Route und Schema lesen
+ * dieselbe Liste (`anhangSeiten`). Der Import von zusammenlegungen.js zieht
+ * react-router mit (für `redirect`), React selbst nicht; `node --test` lädt
+ * beides.
+ *
  * ── DAS SCHEMA WIRD AUS DEM SICHTBAREN TEXT GEBAUT, NICHT DANEBEN ─────────
  *
  * `name` ist `seite.frage` — derselbe String, den die Route als H1 rendert.
@@ -72,6 +81,8 @@ import {
 } from './faq-schema.js';
 import {absoluteCanonical} from './seo.js';
 import {MARKE} from './seiten-seo.js';
+import {seiteFuer} from '../data/fragen.js';
+import {aufgegangenIn} from './zusammenlegungen.js';
 
 /**
  * WO DIE FRAGESEITEN GESAMMELT STEHEN. Bis 2026-09-25 war das der eigene Hub
@@ -148,18 +159,72 @@ export function warumTeilfrageOhneSchema(s) {
 }
 
 /**
+ * Die Frageseiten, die per 301 in diese Seite aufgegangen sind
+ * (app/lib/zusammenlegungen.js), in der Reihenfolge dieser Liste. Die Route
+ * rendert jede als Abschnitt (FrageAbschnitt: H2 = Frage, erster Absatz =
+ * Antwortsatz), das Schema führt jede als weitere `Question`. Beide lesen
+ * diese eine Funktion.
+ *
+ * NACHTRAG 2026-11-09 (Job 20261105-seo-was-ist-elektrosmog-faqpage-alle-
+ * sichtbaren-fragen): /pages/was-ist-elektrosmog zeigte seit PR #815 zwei
+ * Fragen und trug nur eine im Schema. Die Antwort im Schema ist der
+ * Antwortsatz des Abschnitts (data-geo="antwort"), wie bei der Hauptfrage.
+ * @param {object} s
+ * @returns {object[]}
+ */
+export function anhangSeiten(s) {
+  if (!s?.pfad) return [];
+  return aufgegangenIn(s.pfad)
+    .filter((pfad) => pfad.startsWith('/pages/'))
+    .map((pfad) => seiteFuer(pfad.slice('/pages/'.length)))
+    .filter(Boolean);
+}
+
+/**
+ * Die sichtbaren Anhang-Fragen als Paare (Frage, Antwortsatz).
+ * @param {object} s
+ * @param {object[]} [anhaenge]
+ * @returns {Array<{q: string, a: string}>}
+ */
+export function anhangPaare(s, anhaenge = anhangSeiten(s)) {
+  return anhaenge
+    .map((a) => ({q: a?.frage, a: a?.antwort}))
+    .filter((p) => typeof p.q === 'string' && p.q.trim() && typeof p.a === 'string' && p.a.trim());
+}
+
+/**
+ * Warum fällt eine Anhang-Frage aus dem Schema? Wie
+ * `warumTeilfrageOhneSchema`: leer heißt, jede sichtbare Anhang-Frage steht
+ * im Schema. Das Deny-Netz ist dasselbe geerbte.
+ * @param {object} s
+ * @param {object[]} [anhaenge]
+ */
+export function warumAnhangOhneSchema(s, anhaenge = anhangSeiten(s)) {
+  return anhangPaare(s, anhaenge)
+    .map((p) => ({
+      frage: p.q,
+      muster: FORBIDDEN_PATTERNS.filter((re) => re.test(`${p.q}\n${p.a}`)).map((re) => re.source),
+    }))
+    .filter((x) => x.muster.length > 0);
+}
+
+/**
  * `FAQPage` mit der Hauptfrage als erster `Question` — oder null, wenn das
  * geerbte Deny-Netz auf dem Hauptpaar greift. Trägt die Seite sichtbare
  * Teilfragen (Feld `teilfragen`), folgen sie als weitere `Question`, jede mit
- * ihrem Absatz als Antwort: das Schema trägt alle sichtbaren Fragen der Seite
- * und keine unsichtbare (Musterregel 5 und 6 der Gewinner-Analyse).
+ * ihrem Absatz als Antwort. Danach folgen die Fragen der aufgegangenen
+ * Abschnitte (`anhangSeiten`), in der Reihenfolge der Seite. Das Schema trägt
+ * alle sichtbaren Fragen der Seite und keine unsichtbare (Musterregel 5 und 6
+ * der Gewinner-Analyse).
  * @param {object} s
  * @param {{datePublished?: string, dateModified?: string}} [datum]
+ * @param {object[]} [anhaenge] Standard: `anhangSeiten(s)`
  * @returns {object|null}
  */
-export function frageSchema(s, datum = {}) {
+export function frageSchema(s, datum = {}, anhaenge = anhangSeiten(s)) {
   if (warumKeinSchema(s).length > 0) return null;
-  const schema = buildFaqPageJsonLd([{q: s.frage, a: s.antwort}, ...teilfragenPaare(s)], {
+  const paare = [{q: s.frage, a: s.antwort}, ...teilfragenPaare(s), ...anhangPaare(s, anhaenge)];
+  const schema = buildFaqPageJsonLd(paare, {
     inLanguage: 'de-DE',
     author: MARKE,
     ...(datum.datePublished ? {datePublished: datum.datePublished} : {}),

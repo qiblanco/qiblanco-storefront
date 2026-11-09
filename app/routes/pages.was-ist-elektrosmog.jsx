@@ -3,7 +3,7 @@ import {FrageAbschnitt} from '~/components/campaign/FrageAbschnitt';
 import fragenStyles from '~/styles/fragen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {seiteFuer} from '~/data/fragen';
-import {frageSchema} from '~/lib/fragen-schema';
+import {frageSchema, anhangSeiten} from '~/lib/fragen-schema';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
 
@@ -107,16 +107,22 @@ export const meta = () => {
  * Anker #was-senkt-elektrosmog-im-alltag; Job 20261007-seo-zusammenlegung-
  * duenne-seiten-301-umsetzen). Die Seite trägt die Frageseiten-Stile, der
  * Abschnitt bekommt deshalb deren Klassen.
+ *
+ * SEIT 2026-11-09 KOMMEN DIE ABSCHNITTE AUS `anhangSeiten(SEITE)` (Job
+ * 20261105-seo-was-ist-elektrosmog-faqpage-alle-sichtbaren-fragen), also aus
+ * app/lib/zusammenlegungen.js. Dieselbe Liste baut die weiteren `Question`
+ * im FAQPage-Schema (`frageSchema` in meta oben). Seite und Schema zeigen so
+ * dieselben Fragen. Die Abschnitte tragen keine eigene Überschrift oder
+ * Antwort (Props `frage`/`antwort`), sonst wiche das Schema vom Sichtbaren ab.
  */
-const AUFGEGANGEN = seiteFuer('was-senkt-elektrosmog-im-alltag');
-
 export default function FrageRoute() {
   return (
     <FrageSeite
       seite={SEITE}
-      anhang={
+      anhang={anhangSeiten(SEITE).map((a) => (
         <FrageAbschnitt
-          seite={AUFGEGANGEN}
+          key={a.slug}
+          seite={a}
           klassen={{
             abschnitt: 'frg__aufgegangen',
             inhalt: 'frg__inhalt',
@@ -124,7 +130,7 @@ export default function FrageRoute() {
             quellen: 'frg__quellen',
           }}
         />
-      }
+      ))}
     />
   );
 }

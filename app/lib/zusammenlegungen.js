@@ -112,6 +112,24 @@ export function ankerFuer(pfad) {
 }
 
 /**
+ * Die alten Adressen, die in `ziel` aufgegangen sind, in der Reihenfolge
+ * dieser Liste. Leer, wenn nichts dort aufgegangen ist.
+ *
+ * Seit 09.11.2026 (Job 20261105-seo-was-ist-elektrosmog-faqpage-alle-
+ * sichtbaren-fragen): Die Zielseite rendert daraus ihre übernommenen
+ * Abschnitte, und das FAQPage-Schema liest dieselbe Liste
+ * (`anhangSeiten()` in fragen-schema.js). So zeigen Seite und Schema
+ * dieselben Fragen, aus einer einzigen Liste statt aus zweien.
+ * @param {string} ziel
+ * @returns {string[]}
+ */
+export function aufgegangenIn(ziel) {
+  return Object.keys(ZUSAMMENGELEGT).filter(
+    (pfad) => ZUSAMMENGELEGT[pfad].ziel === ziel,
+  );
+}
+
+/**
  * Der Eintrag zu einer alten Adresse — oder undefined.
  * @param {string} pfad
  */

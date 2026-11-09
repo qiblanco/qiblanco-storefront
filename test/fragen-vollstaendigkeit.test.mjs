@@ -32,6 +32,9 @@ import {FORBIDDEN_PATTERNS} from '../app/lib/faq-schema.js';
 import {
   frageSchema,
   teilfragenPaare,
+  anhangSeiten,
+  anhangPaare,
+  warumAnhangOhneSchema,
   warumTeilfrageOhneSchema,
   warumKeinSchema,
   antwortIstEinSatz,
@@ -39,7 +42,7 @@ import {
   HUB_ANKER,
 } from '../app/lib/fragen-schema.js';
 import {NUR_ROUTE_SEITEN} from '../app/lib/seo.js';
-import {zusammenlegungFuer} from '../app/lib/zusammenlegungen.js';
+import {zusammenlegungFuer, aufgegangenIn} from '../app/lib/zusammenlegungen.js';
 
 const WURZEL = path.resolve(import.meta.dirname, '..');
 const DATUM = {
@@ -229,20 +232,92 @@ test('das Seiten-Schema trägt die Hauptfrage und jede sichtbare Teilfrage, als 
       [],
       `${s.slug}: eine sichtbare Teilfrage fällt still aus dem Schema`,
     );
+    // SEIT 2026-11-09 (Job 20261105-seo-was-ist-elektrosmog-faqpage-alle-
+    // sichtbaren-fragen): auch die Frage eines aufgegangenen Abschnitts
+    // (app/lib/zusammenlegungen.js) ist sichtbar und gehört ins Schema.
+    const anhang = anhangPaare(s);
+    assert.deepEqual(
+      warumAnhangOhneSchema(s),
+      [],
+      `${s.slug}: die Frage eines aufgegangenen Abschnitts fällt still aus dem Schema`,
+    );
+    const sichtbar = 1 + paare.length + anhang.length;
     assert.equal(
       schema.mainEntity.length,
-      1 + paare.length,
-      `${s.slug}: ${schema.mainEntity.length} Fragen im Schema, sichtbar sind ${1 + paare.length}`,
+      sichtbar,
+      `${s.slug}: ${schema.mainEntity.length} Fragen im Schema, sichtbar sind ${sichtbar}`,
     );
     // Markup, das etwas anderes sagt als die Seite, ist die schlechteste aller
-    // Welten: als Täuschung angreifbar und als Inhalt wertlos.
+    // Welten: als Täuschung angreifbar und als Inhalt wertlos. Die Reihenfolge
+    // ist die der Seite: H1, Teilfragen im Antwortteil, dann die Anhänge.
     assert.equal(schema.mainEntity[0].name, norm(s.frage));
     assert.equal(schema.mainEntity[0].acceptedAnswer.text, norm(s.antwort));
-    paare.forEach((p, i) => {
+    [...paare, ...anhang].forEach((p, i) => {
       assert.equal(schema.mainEntity[i + 1].name, norm(p.q));
       assert.equal(schema.mainEntity[i + 1].acceptedAnswer.text, norm(p.a));
     });
   }
+});
+
+// DIE NAHT ZWISCHEN ZUSAMMENLEGUNG, ROUTE UND SCHEMA (seit 2026-11-09). Geht
+// eine Frageseite per 301 in eine andere Frageseite auf, zeigt die Zielseite
+// ihre Frage als H2 (FrageAbschnitt) und das Schema führt sie als Question.
+// Beides liest `anhangSeiten()` — ein Träger, nicht zwei Listen. Der Arm
+// erhebt seinen Gegenstand aus den Daten statt ihn zu nennen.
+test('jede in eine Frageseite aufgegangene Frage steht als Abschnitt UND im Schema', (t) => {
+  const ziele = FRAGEN.filter((s) => aufgegangenIn(s.pfad).length > 0);
+  if (ziele.length === 0) {
+    t.skip('KEINE AUSSAGE: keine Frageseite ist heute Ziel einer Zusammenlegung.');
+    return;
+  }
+  for (const s of ziele) {
+    const quellen = aufgegangenIn(s.pfad);
+    const seiten = anhangSeiten(s);
+    assert.deepEqual(
+      seiten.map((a) => a.pfad),
+      quellen.filter((p) => seiteFuer(p.slice('/pages/'.length))),
+      `${s.slug}: anhangSeiten() verliert eine aufgegangene Frageseite`,
+    );
+    const route = lies('app', 'routes', `pages.${s.slug}.jsx`);
+    assert.match(
+      route,
+      /anhangSeiten\(SEITE\)\.map\(/,
+      `${s.slug}: die Route rendert die Anhänge nicht aus anhangSeiten() — ` +
+        'Schema und Seite lesen dann zwei Listen',
+    );
+    assert.match(route, /<FrageAbschnitt\b[^>]*\bseite=\{a\}/, `${s.slug}: kein FrageAbschnitt je Anhang`);
+    const namen = frageSchema(s, DATUM).mainEntity.map((q) => q.name);
+    for (const a of seiten) {
+      assert.ok(namen.includes(a.frage), `${s.slug}: „${a.frage}" sichtbar, aber nicht im Schema`);
+    }
+  }
+});
+
+test('ROT-ARM: ein Anhang mit Deny-Muster wird laut, nicht still', () => {
+  const gast = FRAGEN[0];
+  const anhang = {
+    slug: 'attrappe-anhang',
+    frage: 'Ist der Anhang sauber?',
+    antwort: 'Nein, er ist energetisch aufgeladen.',
+    "begruendung": ['-'],
+    beleg: ['-'],
+    offen: [],
+    weiter: [],
+    quellen: [],
+    pfad: '/pages/attrappe-anhang',
+  };
+  assert.deepEqual(warumAnhangOhneSchema(gast, [anhang]), [
+    {frage: 'Ist der Anhang sauber?', muster: ['energetisch']},
+  ]);
+  const ohne = frageSchema(gast, DATUM, [])?.mainEntity.length;
+  const mit = frageSchema(gast, DATUM, [anhang])?.mainEntity.length;
+  // Das Netz nimmt das unsaubere Paar heraus: das Schema hat dann WENIGER
+  // Fragen als die Seite zeigt — genau das, was der Vollständigkeitstest oben
+  // für jede echte Seite rot macht.
+  assert.equal(mit, ohne);
+  const sauber = {...anhang, antwort: 'Ja, er ist sauber.'};
+  assert.equal(frageSchema(gast, DATUM, [sauber]).mainEntity.length, ohne + 1);
+  assert.equal(frageSchema(gast, DATUM, [sauber]).mainEntity.at(-1).name, sauber.frage);
 });
 
 test('Teilfragen gehören zu einem vorhandenen Absatz und sind Fragen', () => {
@@ -289,8 +364,10 @@ test('ROT-ARM: eine sichtbare Teilfrage mit Deny-Muster wird laut, nicht still',
   assert.notEqual(schema.mainEntity.length, 1 + teilfragenPaare(attrappe).length);
 });
 
-test('GRÜN-ARM: eine Seite ohne Teilfragen trägt unverändert genau eine Question', () => {
-  const ohne = FRAGEN.filter((s) => teilfragenPaare(s).length === 0);
+test('GRÜN-ARM: eine Seite ohne Teilfragen und ohne Anhang trägt unverändert genau eine Question', () => {
+  const ohne = FRAGEN.filter(
+    (s) => teilfragenPaare(s).length === 0 && anhangPaare(s).length === 0,
+  );
   assert.ok(ohne.length > 0, 'keine Seite ohne Teilfragen mehr — der Arm hat seinen Gegenstand verloren');
   for (const s of ohne) {
     assert.equal(frageSchema(s, DATUM).mainEntity.length, 1, `${s.slug}: mehr als eine Question`);
