@@ -58,5 +58,15 @@
 .pab__text{padding-top:.5rem}
 }
 @media (min-width:1280px){.pab{--titel:60px;--betrag:60px}}
+/* Mobil unter 900px alles mittig, Desktop bleibt linksbuendig (Elina EL-20261109-d1679392) */
+@media (max-width:899.98px){
+.pab__text{text-align:center}
+.pab__dach{flex-direction:column;justify-content:center;gap:.5rem}
+.pab h1.pab__titel{text-align:center}
+.pab__uhr,.pab__zelle{text-align:center}
+.pab .mm-formular,.pab .mm-formular__titel,.pab .mm-formular__label,.pab .mm-formular__hinweis,.pab .mm-formular__einwilligung,.pab .mm-formular__meldung{text-align:center}
+.pab .mm-formular__input{text-align:center}
+.pab__vertrauen,.pab__vertrauen li{text-align:center}
+}
 /* Ruhige Fassung (D7): bei "Bewegung reduzieren" steht alles still und ist sofort da (Einblenden regelt elina-bewegung.css). */
 @media (prefers-reduced-motion:reduce){.pab *,.pab *::before,.pab *::after{transition:none!important;animation:none!important}.pab [data-eb]{opacity:1!important;transform:none!important}}
