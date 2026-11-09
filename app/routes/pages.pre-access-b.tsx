@@ -40,7 +40,7 @@ type Uhr = {
   titel: string;
   offen: string;
   datum: string;
-  gross?: boolean;
+  haupt?: boolean;
 };
 
 const UHREN: Uhr[] = [
@@ -49,7 +49,7 @@ const UHREN: Uhr[] = [
     titel: 'Pre-Access startet in',
     offen: 'Pre-Access läuft',
     datum: 'Freitag, 13. November 2026 · 00:00 Uhr',
-    gross: true,
+    haupt: true,
   },
   {
     ziel: '2026-11-26T23:00:00Z',
@@ -110,7 +110,7 @@ function Countdown({uhr, jetzt}: {uhr: Uhr; jetzt: number | null}) {
       <div
         className={
           'pab__uhr ' +
-          (uhr.gross ? 'pab__uhr--gross' : 'pab__uhr--klein') +
+          (uhr.haupt ? 'pab__uhr--haupt' : 'pab__uhr--klein') +
           (offen ? ' ist-offen' : '')
         }
         role="timer"
