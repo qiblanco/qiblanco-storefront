@@ -337,9 +337,9 @@ export function startLaenge(kacheln, vorwahl = null) {
  * @returns {{variantId: string|null, ausverkauft: boolean}}
  */
 export function lieferbarWunsch(variante, laengen = [], laengeWahl = null) {
-  const gewaehlt = (laengen ?? []).find((l) => l.cm === laengeWahl) ?? null;
-  if (gewaehlt && !gewaehlt.verfuegbar) {
-    return {variantId: gewaehlt.varianteId ?? null, ausverkauft: Boolean(gewaehlt.varianteId)};
+  const wahlLaenge = (laengen ?? []).find((l) => l.cm === laengeWahl) ?? null;
+  if (wahlLaenge && !wahlLaenge.verfuegbar) {
+    return {variantId: wahlLaenge.varianteId ?? null, ausverkauft: Boolean(wahlLaenge.varianteId)};
   }
   return {
     variantId: variante?.id ?? null,
