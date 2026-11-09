@@ -12,3 +12,11 @@
   font-size: var(--tas-fs-4);
   line-height: 1.2;
 }
+
+/* Necklace 2.0 lädt diese Datei ebenfalls, alpha-qione.css aber nicht. Bezahlart
+ * mit drei Karten untereinander wie auf den QiOne®-Seiten: nebeneinander ragte
+ * der Titel „Klarna Ratenzahlung“ bei 1024 px 21 px aus der Karte, und die Seite
+ * ließ sich seitlich schieben. */
+.av-seite[data-konfigurator='necklace-2'] [data-konfigurator-schritt='bezahlart'] .tas-karten.av-karten--drei {
+  grid-template-columns: minmax(0, 1fr);
+}
