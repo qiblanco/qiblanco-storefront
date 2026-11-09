@@ -20,13 +20,37 @@
  * Läuft nur im Browser (useEffect). Server-HTML zeigt alles; versteckt wird erst nach dem Mount.
  */
 import {useEffect} from 'react';
-import './elina-bewegung.js';
+
+/* NICHT als Seiteneffekt-Import (`import './elina-bewegung.js'`): package.json sagt
+ * "sideEffects": false, dann wirft der Produktions-Build den Import still weg. Gemessen
+ * am 09.11.2026 auf qiblanco.com/pages/video-galerie-vorschau: window.ElinaBewegung
+ * undefined, kein Einblenden; im Dev-Server lief es. Ein dynamischer Import ist ein
+ * eigener Einstieg und bleibt im Build. */
+let laden = null;
+function bewegung() {
+  if (typeof window === 'undefined') return Promise.resolve(null);
+  if (window.ElinaBewegung) return Promise.resolve(window.ElinaBewegung);
+  if (!laden) {
+    laden = import('./elina-bewegung.js').then(
+      () => window.ElinaBewegung || null,
+      () => null,
+    );
+  }
+  return laden;
+}
 
 export function useElinaBewegung(wurzelRef, bezug = []) {
   useEffect(() => {
-    const B = typeof window !== 'undefined' ? window.ElinaBewegung : null;
-    if (!B || !wurzelRef.current) return undefined;
-    return B.starte(wurzelRef.current);
+    let aus = false;
+    let stop = null;
+    bewegung().then((B) => {
+      if (aus || !B || !wurzelRef.current) return;
+      stop = B.starte(wurzelRef.current);
+    });
+    return () => {
+      aus = true;
+      if (typeof stop === 'function') stop();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, bezug);
 }
