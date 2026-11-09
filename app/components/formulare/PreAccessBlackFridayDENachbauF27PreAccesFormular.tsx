@@ -27,7 +27,7 @@ export const KONFIG: MmFormularKonfig = {
   "einwilligungId": "306b8446a221",
   "dankeTitel": "",
   "dankeText": "Fast fertig... Bitte bestätige deine Mail-Adresse, um deinen Zugriff auf die Deals zu erhalten. Checke auch deinen Spam-Ordner.",
-  "erfolgsseite": "https://qiblanco.com/pages/bf-deals?el=BF2025",
+  "erfolgsseite": "https://qiblanco.com/pages/bf-deals",
   "liste": "PRE-BF DE",
   "tags": [
     "#prebf"
