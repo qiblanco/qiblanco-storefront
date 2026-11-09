@@ -58,6 +58,10 @@ export const INTERN_UA_MARKER = [
 export const INTERN_NETZE = [
   '65.108.150.121/32',
   '2a01:4f9:c014:781e::/64',
+  // ax41 (Rechenknoten): seit der Playwright-Weiche (2026-10-29) rechnet
+  // jeder Browser des Gehirns dort. SSoT-Commit ada8beeaf2.
+  '65.108.14.141/32',
+  '2a01:4f9:6a:4a6b::/64',
 ];
 
 /**
