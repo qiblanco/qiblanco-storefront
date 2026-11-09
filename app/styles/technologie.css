@@ -123,3 +123,31 @@
     max-width: min(100%, var(--max, 100%), calc(var(--qb, 9999) * 0.5px));
   }
 }
+
+/* ================================================================
+ * (3) Ein Bild-Radius, ein H2-Stil (Design-Gate, 2026-11-08)
+ * ================================================================
+ * Job 20261101-seo-gitterchip-zufahrt-ssr-link. Gemessen am Preview
+ * (design-rubrik, Desktop): Score 92 < 95 mit zwei Befunden, die nur diese
+ * Seite betreffen.
+ * - Bild-Radius: zehn Bilder trugen 4px aus der globalen img-Regel, zwei
+ *   per Inline-Stil 12px und 16px. Die Inline-Werte sind entfernt, der
+ *   Radius steht jetzt als EIN Token hier.
+ * - H2-Stil: die Ueberschrift im Mikroskop-Video (geteilte Komponente
+ *   ScrollMikroskopVideo, app.css .TextContent-Start h2 = 2.5rem) stand mit
+ *   40px neben 35.2px aller uebrigen H2. Nur im Seiten-Scope auf die
+ *   H2-Groesse aus reset.css (2.2rem) gesetzt; andere Seiten mit derselben
+ *   Komponente bleiben unberuehrt. Mobil gilt weiter die !important-Regel
+ *   aus reset.css (1.5rem).
+ */
+.tech-seite {
+  --tech-bild-radius: 4px;
+}
+
+.tech-seite .tech-bild {
+  border-radius: var(--tech-bild-radius);
+}
+
+.tech-seite .ScrollMikroskopvideo .VideoOverlay .TextContent-Start h2 {
+  font-size: 2.2rem;
+}

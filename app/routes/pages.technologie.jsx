@@ -234,7 +234,6 @@ export default function TechnologiePage() {
             datei="qiblanco-com-gehirn-frequenzen_jpg.webp"
             version="1666867432"
             alt="Frequenzentstehung im Gehirn"
-            style={{borderRadius: '12px'}}
           />
           <div>
             <h3 style={h3Style}>Frequenzentstehung im Gehirn</h3>
@@ -362,7 +361,7 @@ export default function TechnologiePage() {
             datei="qiblanco-com-leiternetzwerk_jpg.webp"
             version="1666867432"
             alt="Leiternetzwerk des Körpers"
-            style={{borderRadius: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)'}}
+            style={{boxShadow: '0 8px 32px rgba(0,0,0,0.1)'}}
           />
           <div>
             <h2 style={{marginBottom: '1rem'}}>Leiternetzwerk des Körpers</h2>
@@ -413,6 +412,22 @@ export default function TechnologiePage() {
                 und Zucker. Weit weniger bekannt ist, dass auch Metalle beim Erstarrungszustand aus der Schmelze ihre
                 Moleküle in kristalline Strukturen anordnen. Qi Blanco verwendet eine eigens entwickelte Legierung,
                 die maßgeblich auf Feingold, Kupfer und Kohlenstoff beruht.
+              </p>
+              {/* ZUFAHRT ZUR GITTERCHIP-SEITE (2026-11-08, Job 20261101-seo-
+                  gitterchip-zufahrt-ssr-link): Google kannte
+                  /pages/wie-funktioniert-der-gitterchip-im-qione nicht, weil
+                  kein ausgeliefertes HTML auf sie zeigte (der Link im
+                  Video-Dialog der Kaufseite ist ein Portal, nicht im SSR).
+                  Er steht hier, weil der Satz davor die Legierung nennt, aus
+                  der der Chip besteht. Im Inhalt, nicht in Kopf oder Fuß: nur
+                  dort zählt seiten_zufahrt ihn. Rückweg: diesen Absatz
+                  entfernen (hb-deploy revert). */}
+              <p style={pStyle} data-zufahrt="gitterchip">
+                Aus dieser Legierung entsteht der Gitterchip® im QiOne® 2 Pro.{' '}
+                <Link to="/pages/wie-funktioniert-der-gitterchip-im-qione">
+                  So schützt dich der Gitterchip®
+                </Link>
+                : Sein statisches Feld bringt Ordnung ins Wasser.
               </p>
               <TechBild
                 datei="KristallineStrukturSalz_png.webp"
