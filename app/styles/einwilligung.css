@@ -38,7 +38,16 @@ html[data-qb-einwilligung-offen] body {
   padding-bottom: var(--qb-ew-hoehe, 0px);
 }
 
-html[data-qb-einwilligung-offen] .qb-kaufleiste {
+/* Jede feste Leiste unten steht ueber dem Banner, nicht nur .qb-kaufleiste. Erkannt wird sie
+   als EIGENSCHAFT, nicht am Klassennamen: data-qb-chat-weicht traegt jede feste Leiste mit
+   Kaufknopf im sichtbaren Zustand, damit Annas Widget ueber sie ausweicht (kaufknopf-chat.js
+   AUSWEICH_SELEKTOR). Eine neue Leiste, die Anna ausweichen laesst, weicht damit auch dem Banner.
+   Anlass 09.11.2026 (Job 20261109-kaufleiste-mobil-hinter-einwilligungsleiste-szs-start-prio7):
+   live 390x844 lagen szs-fest (Haupt-LP, -b), qb-rs-sticky (Startseite) und tas-schlussleiste
+   (/products/qione-2-pro) ganz hinter dem Banner, Knopf 0 von 5 Trefferpunkten frei.
+   .qb-kaufleiste bleibt genannt: sie behaelt die Hebung auch im ausgeblendeten Zustand.
+   Rueckweg: nur `.qb-kaufleiste` im Selektor stehen lassen (Stand vor dem 09.11.). */
+html[data-qb-einwilligung-offen] :is(.qb-kaufleiste, [data-qb-chat-weicht]) {
   bottom: var(--qb-ew-hoehe, 0px);
 }
 
