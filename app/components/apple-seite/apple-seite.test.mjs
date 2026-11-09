@@ -439,6 +439,32 @@ test('#172 root.jsx setzt die Kopf-Links nach <Links /> und stellt den Provider 
    bildZuerst wird in den Kopfdaten gesetzt, je Seite (PR2a: Startseite A und B,
    drei Detailseiten = die Fläche aus Christians Screenshot). ---------------- */
 
+test('LP-Komponenten: Superhuman, Kakao-Kurs, Webinar und Exclusive Solutions rendern den Kopf mit Bild vor Knopf', async () => {
+  const komponenten = {
+    superhuman: ['SuperhumanApple', '{seite: "superhuman"}'],
+    'zeremonie-kakao-kurs': ['KakaoKursApple', '{seite: "zeremonie-kakao-kurs"}'],
+    'webinar-die-nacht-entscheidet': ['NachtWebinarApple', '{seite: "webinar-die-nacht-entscheidet", daten: {}}'],
+    'exclusive-solutions': ['ExclusiveSolutionsApple', '{seite: "exclusive-solutions", products: []}'],
+  };
+  for (const [seite, [name, props]] of Object.entries(komponenten)) {
+    const mod = await renderModul(
+      `import {createElement} from 'react';
+       import {renderToStaticMarkup} from 'react-dom/server';
+       import {createMemoryRouter, RouterProvider} from 'react-router';
+       import {${name}} from '~/components/apple-seite/lp/${name}';
+       import {Aside} from '~/components/Aside';
+       const router = createMemoryRouter([{path: '/', element: createElement(Aside.Provider, null, createElement(${name}, ${props}))}]);
+       export const html = renderToStaticMarkup(createElement(RouterProvider, {router}));`,
+    );
+    const kopf = mod.html.slice(mod.html.indexOf('data-section="as-hero"'));
+    assert.ok(kopf.length > 0, `${seite}: Kopf gefunden`);
+    const bild = kopf.indexOf('</figure>');
+    const knopf = kopf.indexOf('class="as-knoepfe"');
+    assert.ok(bild > 0 && knopf > 0, `${seite}: Bild und Knöpfe im Kopf`);
+    assert.ok(bild < knopf, `${seite}: Bild steht vor dem Knopf`);
+  }
+});
+
 test('Kopfdaten: Startseite (A und B) und die drei Detailseiten setzen bildZuerst', async () => {
   const start = await import(pathToFileURL(join(HIER, 'startseite/startseite-daten.js')).href);
   const det = {

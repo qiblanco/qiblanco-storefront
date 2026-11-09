@@ -127,6 +127,7 @@ export function SuperhumanApple({seite}) {
       <link rel="stylesheet" href={superhumanStyles} />
       <AppleSeite seite={seite}>
         <AppleHero
+          bildZuerst
           overline="Kostenloser Videokurs"
           titel="In 5 Stufen zum Superhuman"
           unter="Der kostenlose Videokurs von Gründer Christian Bernd Bauer"

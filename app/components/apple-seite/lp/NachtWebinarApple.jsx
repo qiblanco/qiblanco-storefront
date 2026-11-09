@@ -108,6 +108,7 @@ export function NachtWebinarApple({seite, daten}) {
       <AppleSeite seite={seite}>
         <div data-webinar={THEMA} data-webinar-seite="anmeldung">
           <AppleHero
+            bildZuerst
             overline="Kostenloses Live-Webinar mit Christian"
             titel="Die Nacht entscheidet"
             unter={VERSPRECHEN}
