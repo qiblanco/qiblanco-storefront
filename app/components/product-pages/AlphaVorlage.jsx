@@ -10,6 +10,7 @@ import {MarkeR, mitMarkeR} from '~/components/reusables/MarkeR';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {Schlussleiste} from '~/components/reusables/Schlussleiste';
+import {LinkPerMail} from '~/components/reusables/LinkPerMail';
 import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {PRODUCT_VARIANT_FRAGMENT} from '~/lib/qioneProductQuery';
 import {
@@ -688,6 +689,13 @@ export function AlphaVorlage({
             <p className="tas-klein">{mitMarkeR(ZUSAMMENFASSUNG.ruecknahme)}</p>
           ) : null}
           {vertrauen}
+          {/* „Link per E-Mail schicken“, nur im Instagram-/Facebook-Browser
+              (CJ-Großjob 20260930 s06), wie unter dem Kaufknopf in
+              ProductForm.jsx. Fehlte hier seit dem Konfigurator (#1083,
+              29.10.2026); rtbefund-buendel-worker-pool-h56001d-20261027 s03.
+              Höchstens einmal je Seite: die Schlussleiste wiederholt den
+              Kaufknopf, nicht dieses Formular. */}
+          <LinkPerMail art="seite" />
         </div>
       </section>
 
