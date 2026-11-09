@@ -408,6 +408,14 @@ export const WEITER = [
     titel: 'Die Technologie',
     text: 'Wie der Gitterchip® gebaut ist und was er mit geordnetem Wasser zu tun hat.',
   },
+  {
+    to: '/pages/kritik',
+    // Hebel GS-139 (Auftrag 20261109-gs139-kritik-inhaltslinks-bau): Ankertext
+    // aus dem Titel der Zielseite, ohne das Wort „Kritik“ (Brain-Regel
+    // bestmoegliches-licht-kritik-nicht-selbst-verbreiten).
+    titel: 'Zellversuche: was sie sagen und was nicht',
+    text: 'Sieben Fragen, die du dir vielleicht auch stellst, beantwortet mit den Zahlen der Studien und 20 Tagen zum Selbstprüfen.',
+  },
 ];
 
 /* ======================================================================== */

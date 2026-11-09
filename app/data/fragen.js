@@ -60,6 +60,7 @@
  *   beleg_titel?: string,
  *   beleg: string[], fundstellen?: string[], offen: string[],
  *   offen_links?: Array<{pfad: string, text: string}>,
+ *   "begruendung_links"?: Array<{pfad: string, text: string}>,
  *   weiter: Array<{pfad: string, text: string}>, quellen: string[],
  *   pfad: string}} FrageSeite
  */
@@ -532,10 +533,16 @@ export const FRAGEN = [
       "Hinter Qi Blanco steht die Qi Blanco UG (haftungsbeschränkt) mit Sitz in der Brunnrangenstraße 25 in 97711 Maßbach. Eingetragen ist sie beim Amtsgericht Schweinfurt unter HRB 7306, die Umsatzsteuer-Identifikationsnummer lautet DE306530406, und Geschäftsführer ist Dipl.-Ing. Christian Bernd Bauer. Das alles kannst du im Handelsregister nachschlagen, ohne uns zu fragen.",
       "Gegründet haben Qi Blanco Christian und Anna, und die beiden zeigen ihr Gesicht: Jeden Sonntag sind sie bei Coming Home eine Stunde live.",
       "Hinter unserem Schmuck und dem QiHome® Air stehen zehn Jahre Forschung, entwickelt und gefertigt in Deutschland. Das Gehäuse ist aus Chirurgenstahl, der Gitterchip® aus einer eigens entwickelten 750er Goldlegierung, und Oberflächenveredler und Goldschmiede vollenden jedes Stück von Hand.",
-      "Das Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch hat unsere Produkte in fünf Arbeiten untersucht. Alle fünf sind in Fachzeitschriften erschienen, jede mit Jahr und Seitenzahl, und alle fünf kannst du bei uns im Original lesen.",
+      "Das Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch hat unsere Produkte in fünf Arbeiten untersucht. Alle fünf sind in Fachzeitschriften erschienen, jede mit Jahr und Seitenzahl, und alle fünf kannst du bei uns im Original lesen. Die sieben Fragen, die du dir dazu vielleicht stellst, beantworten wir in „Zellversuche: was sie sagen und was nicht“.",
       "Viele unserer Kundinnen und Kunden erzählen uns, was sie mit ihrem QiOne® oder ihrem QiHome® Air erleben. Einige berichten darüber unter eigenem Namen auf ihren eigenen Konten, und diese Berichte haben wir bei den Erfahrungen gesammelt. In Deutschland sind inzwischen über 450 QiHome® Air im Einsatz.",
       "Jedes Stück kannst du 20 Tage ab Erhalt tragen und ohne Angabe von Gründen zurückgeben, du bekommst dann den Kaufpreis erstattet. Das ist mehr als das gesetzliche Widerrufsrecht von 14 Tagen, und beide Fristen gelten nebeneinander.",
       "Unsere Bewertungen kommen aus unserem Google-Unternehmensprofil. Jede stammt von einem Google-Konto und ist dort öffentlich nachlesbar, und für eine Bewertung gibt es bei uns weder Gutschein noch Rabatt."
+    ],
+    "begruendung_links": [
+      {
+        "pfad": "/pages/kritik",
+        "text": "Zellversuche: was sie sagen und was nicht"
+      }
     ],
     "teilfragen": [
       "Welches Unternehmen steht hinter Qi Blanco?",
