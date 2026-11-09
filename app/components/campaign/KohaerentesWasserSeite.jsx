@@ -375,7 +375,7 @@ function BegriffPhysik() {
 
 const BEWEGT = '.kw-figur, .kw-karte';
 
-export function KohaerentesWasserSeite() {
+export function KohaerentesWasserSeite({kurzVerweis = ''} = {}) {
   const winkel = BILD.winkel;
   const seite = useRef(null);
   // Jede Grafik beginnt, wenn der Leser sie erreicht (Apple-Befund 31.10.2026).
@@ -391,6 +391,12 @@ export function KohaerentesWasserSeite() {
             <p className="kw-kurz__titel">{SEITE.kurzTitel}</p>
             <p>
               <Text>{SEITE.kurz}</Text>
+              {kurzVerweis ? (
+                <>
+                  {' '}
+                  <Text>{kurzVerweis}</Text>
+                </>
+              ) : null}
             </p>
           </div>
           <p className="kw-meta">
