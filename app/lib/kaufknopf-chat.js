@@ -481,3 +481,92 @@ export function ausweichStrecke({
   }
   return {hub: basis, frei: false};
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * DIE LEISTE BEWEGT SICH: SOFORT URTEILEN, NICHT IM NÄCHSTEN BILD (Job
+ * 20261109-anna-weicht-gehobener-kaufleiste-erst-nach-2s).
+ *
+ * Seit #1425 hebt einwilligung.css jede Leiste mit data-qb-chat-weicht um
+ * --qb-ew-hoehe, solange die Einwilligungsleiste offen ist. Live gemessen am
+ * 09.11.2026 (WebKit 390x844, Erstbesucher, /pages/schlaf-zellen-schutz-b,
+ * Stelle 0,3): nach dem Scroll wich Anna zuerst einem Knopf im Inhalt aus
+ * (Hub 165, Rahmen 450–672). 250 ms später erschien die Leiste bei 432–518,
+ * Knopf 441–510, also genau unter dem Rahmen. Den richtigen Hub (414) schrieb
+ * das Signal erst 924 ms danach. Der Grund: Erscheinen und Hebung der Leiste
+ * kamen nur über requestAnimationFrame an. Linux-WebKit malt direkt nach
+ * einem Scroll 0,6–1,2 s lang kein Bild (rAF-Lücken gemessen 613 und
+ * 1202 ms, Chromium höchstens 76 ms), und so lange stand Anna auf dem Knopf.
+ * Die Probe probe_kaufleiste_frei.py urteilte in dieser Ruhe und fand
+ * 3 von 3 Läufen den Knopf 0/5 frei.
+ *
+ * Darum urteilt das Signal bei allem, was eine Leiste bewegt, SOFORT im
+ * Rückruf des MutationObservers. Der läuft nach dem Commit und vor dem
+ * Zeichnen, unabhängig vom Bildtakt:
+ *  - das Attribut data-qb-chat-weicht kommt oder geht (Leiste erscheint
+ *    bzw. verschwindet);
+ *  - der Inhalt einer Leiste ändert sich, oder ein Knoten mit Leiste wird
+ *    eingehängt oder entfernt (Leisten, die nur sichtbar im DOM stehen);
+ *  - data-qb-einwilligung-offen am <html> kommt oder geht (die Hebung);
+ *  - --qb-ew-hoehe am <html> ändert ihren WERT (die Strecke der Hebung).
+ *    Andere Stil-Schreiber am <html>, das Signal selbst eingeschlossen
+ *    (--qb-chat-hub), lösen nichts aus: sonst urteilte es bei jedem eigenen
+ *    Schreiben noch einmal.
+ * Alles andere bleibt bei einem Urteil pro Bild. Gemessen wird damit nie pro
+ * Scroll-Bild, nur je Ereignis an einer Leiste.
+ *
+ * RÜCKWEG: LEISTE_SOFORT_AN = false. Dann gilt wieder ein Urteil pro Bild
+ * für jede Änderung, Stand vor diesem Bau.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Code-Schalter des sofortigen Urteils an Leisten. false = Stand vor dem 09.11. */
+export const LEISTE_SOFORT_AN = true;
+
+/** Das Merkmal der Leisten (AUSWEICH_SELEKTOR ohne Klammern). */
+export const AUSWEICH_ATTRIBUT = 'data-qb-chat-weicht';
+
+/** Am <html>, solange die Einwilligungsleiste offen ist (public/qb-einwilligung.js). */
+export const EINWILLIGUNG_OFFEN_ATTRIBUT = 'data-qb-einwilligung-offen';
+
+/** Inline am <html>: die Höhe der offenen Einwilligungsleiste, um die die Leisten steigen. */
+export const EINWILLIGUNG_HOEHE_VARIABLE = '--qb-ew-hoehe';
+
+/**
+ * Wann urteilt das Signal nach einer Folge von Änderungen? Reine Entscheidung
+ * über Beschreibungen der MutationRecords, damit sie ohne Browser prüfbar ist.
+ *
+ * @param {Array<{attribut: string|null, leiste: boolean}>} aenderungen
+ *   attribut: Name des geänderten Attributs, null bei childList;
+ *   leiste: die Änderung betrifft eine Leiste (Ziel liegt in einer, oder ein
+ *   ein- bzw. ausgehängter Knoten ist oder trägt eine).
+ * @param {{ewVorher?: string, ewJetzt?: string, an?: boolean}} [hoehe]
+ *   --qb-ew-hoehe vor und nach der Folge (nur für `style` am <html> gelesen).
+ * @returns {'sofort'|'bild'|'nichts'}
+ */
+export function urteilsTakt(aenderungen, {ewVorher = '', ewJetzt = '', an = LEISTE_SOFORT_AN} = {}) {
+  let takt = 'nichts';
+  for (const a of aenderungen || []) {
+    const attribut = a?.attribut ?? null;
+    if (attribut === null) {
+      if (an && a?.leiste) return 'sofort';
+      takt = 'bild';
+      continue;
+    }
+    // `class` am <html> (Docked-Klasse des Loaders): wie bisher ein Urteil pro Bild.
+    if (attribut === 'class') {
+      takt = 'bild';
+      continue;
+    }
+    // Ohne Schalter beobachtet niemand die übrigen Attribute (Stand vor dem 09.11.).
+    if (!an) continue;
+    if (attribut === 'style') {
+      // Nur die Höhe der Einwilligungsleiste zählt; das eigene Schreiben nicht.
+      if (ewVorher !== ewJetzt) return 'sofort';
+      continue;
+    }
+    if (attribut === AUSWEICH_ATTRIBUT || attribut === EINWILLIGUNG_OFFEN_ATTRIBUT) {
+      return 'sofort';
+    }
+    takt = 'bild';
+  }
+  return takt;
+}

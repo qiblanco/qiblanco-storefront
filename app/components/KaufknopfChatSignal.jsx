@@ -1,12 +1,16 @@
 import {useEffect} from 'react';
 import {
+  AUSWEICH_ATTRIBUT,
   AUSWEICH_SELEKTOR,
   ausweichStrecke,
   BEREIT_ATTRIBUT,
   DOCK_KLASSE,
+  EINWILLIGUNG_HOEHE_VARIABLE,
+  EINWILLIGUNG_OFFEN_ATTRIBUT,
   HUB_ATTRIBUT,
   HUB_VARIABLE,
   KAUFKNOPF_SELEKTOR,
+  LEISTE_SOFORT_AN,
   LP_KAUFAUSGANG_VORFILTER,
   OEFFENTLICH_KNOPF_VORFILTER,
   RAHMEN_ID,
@@ -20,6 +24,7 @@ import {
   ruhelage,
   TRAEGER_ID,
   UEBERDECKUNG_ATTRIBUT,
+  urteilsTakt,
   verschiebungKetteY,
 } from '~/lib/kaufknopf-chat';
 
@@ -329,18 +334,68 @@ export function KaufknopfChatSignal() {
      *    Kaufknöpfe kommen per Client-Navigation;
      *  - ResizeObserver an <body>: Inhalt oberhalb des Knopfs lädt nach
      *    (Bilder) und schiebt ihn, ohne dass gescrollt wird. Er urteilt
-     *    sofort (siehe `sofort` oben), alle anderen über `anfordern`.
+     *    sofort (siehe `sofort` oben);
+     *  - eine Leiste bewegt sich: data-qb-chat-weicht kommt oder geht, ihr
+     *    Inhalt wird ein- oder ausgehängt, data-qb-einwilligung-offen oder der
+     *    Wert von --qb-ew-hoehe am <html> ändert sich. Auch das urteilt sofort,
+     *    nicht im nächsten Bild: Linux-WebKit malt nach einem Scroll bis 1,2 s
+     *    lang kein Bild, und so lange stand Anna auf dem Knopf der gehobenen
+     *    Leiste (lib/kaufknopf-chat.js, urteilsTakt).
+     * Alle anderen urteilen über `anfordern`.
      */
     window.addEventListener('scroll', anfordern, {passive: true});
     window.addEventListener('resize', anfordern);
     window.addEventListener('blur', beiBlur);
 
-    // Nur childList: `style` im ganzen Baum zu beobachten hiesse, bei jedem
-    // Bild eines Scroll-Videos neu zu messen.
-    const waechter = new MutationObserver(anfordern);
-    waechter.observe(document.body, {subtree: true, childList: true});
-    const wurzelWaechter = new MutationObserver(anfordern);
-    wurzelWaechter.observe(wurzel, {attributes: true, attributeFilter: ['class']});
+    // Ist oder trägt der Knoten eine Leiste? Nur für ein- und ausgehängte
+    // Elemente gefragt, und nur bei childList (lazy, siehe unten).
+    const traegtLeiste = (knoten) =>
+      knoten?.nodeType === 1 &&
+      (knoten.matches(AUSWEICH_SELEKTOR) || !!knoten.querySelector(AUSWEICH_SELEKTOR));
+    // Beschreibung eines MutationRecords für urteilsTakt (lib). `leiste` wird
+    // erst gelesen, wenn die Entscheidung es braucht: die meisten Einträge
+    // sind Einhängungen fern jeder Leiste.
+    const beschreibe = (e) => ({
+      attribut: e.type === 'attributes' ? e.attributeName : null,
+      get leiste() {
+        return (
+          e.type === 'childList' &&
+          (!!e.target.closest?.(AUSWEICH_SELEKTOR) ||
+            Array.prototype.some.call(e.addedNodes, traegtLeiste) ||
+            Array.prototype.some.call(e.removedNodes, traegtLeiste))
+        );
+      },
+    });
+    const ewHoeheLesen = () =>
+      wurzel.style.getPropertyValue(EINWILLIGUNG_HOEHE_VARIABLE).trim();
+    let ewHoehe = ewHoeheLesen();
+    const nachAenderung = (eintraege) => {
+      const ewVorher = ewHoehe;
+      ewHoehe = ewHoeheLesen();
+      const takt = urteilsTakt(eintraege.map(beschreibe), {ewVorher, ewJetzt: ewHoehe});
+      if (takt === 'sofort') sofort();
+      else if (takt === 'bild') anfordern();
+    };
+
+    // childList und nur das Leisten-Merkmal: `style` im ganzen Baum zu
+    // beobachten hiesse, bei jedem Bild eines Scroll-Videos neu zu messen.
+    const waechter = new MutationObserver(nachAenderung);
+    waechter.observe(document.body, {
+      subtree: true,
+      childList: true,
+      ...(LEISTE_SOFORT_AN ? {attributeFilter: [AUSWEICH_ATTRIBUT]} : {}),
+    });
+    // Am <html>: die Docked-Klasse, die Hebung der Leisten über der offenen
+    // Einwilligungsleiste und (über `style`) deren Höhe. Welche Änderung
+    // zählt, entscheidet urteilsTakt; das eigene Schreiben von --qb-chat-hub
+    // löst nichts aus.
+    const wurzelWaechter = new MutationObserver(nachAenderung);
+    wurzelWaechter.observe(wurzel, {
+      attributes: true,
+      attributeFilter: LEISTE_SOFORT_AN
+        ? ['class', EINWILLIGUNG_OFFEN_ATTRIBUT, 'style']
+        : ['class'],
+    });
     const groesse =
       typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(sofort);
     groesse?.observe(document.body);

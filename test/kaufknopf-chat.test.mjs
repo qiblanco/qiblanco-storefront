@@ -422,3 +422,54 @@ test('Träger: CSS-Hälfte nie ohne JS-Hälfte (sonst sinkt Anna auf die Leiste)
   assert.match(komponente, /closest\(`#\$\{TRAEGER_ID\}`\)/);
   assert.match(komponente, /verschiebungKetteY\(/);
 });
+
+/* ───── Die Leiste bewegt sich: sofort urteilen (Job 20261109-anna-weicht-gehobener-
+ * kaufleiste-erst-nach-2s). Live WebKit 09.11.: die Leiste erschien bei 432–518 unter
+ * Annas Rahmen, das Urteil kam erst 924 ms später im nächsten gemalten Bild. ───── */
+import {
+  AUSWEICH_ATTRIBUT,
+  EINWILLIGUNG_OFFEN_ATTRIBUT,
+  urteilsTakt,
+} from '../app/lib/kaufknopf-chat.js';
+
+const eintrag = (attribut, leiste = false) => ({attribut, leiste});
+
+test('urteilsTakt: Leiste erscheint oder verschwindet (Merkmal kommt/geht) -> sofort', () => {
+  assert.equal(urteilsTakt([eintrag(AUSWEICH_ATTRIBUT)]), 'sofort');
+  // auch wenn ein gewöhnliches Einhängen im selben Stapel steht
+  assert.equal(urteilsTakt([eintrag(null), eintrag(AUSWEICH_ATTRIBUT)]), 'sofort');
+});
+
+test('urteilsTakt: Inhalt einer Leiste ein-/ausgehängt -> sofort, sonst ein Urteil pro Bild', () => {
+  assert.equal(urteilsTakt([eintrag(null, true)]), 'sofort');
+  assert.equal(urteilsTakt([eintrag(null, false)]), 'bild');
+});
+
+test('urteilsTakt: Einwilligungsleiste geht auf oder zu (Hebung) -> sofort', () => {
+  assert.equal(urteilsTakt([eintrag(EINWILLIGUNG_OFFEN_ATTRIBUT)]), 'sofort');
+});
+
+test('urteilsTakt: --qb-ew-hoehe ändert ihren Wert -> sofort; anderes Stil-Schreiben -> nichts', () => {
+  assert.equal(urteilsTakt([eintrag('style')], {ewVorher: '', ewJetzt: '262px'}), 'sofort');
+  assert.equal(urteilsTakt([eintrag('style')], {ewVorher: '262px', ewJetzt: '240px'}), 'sofort');
+  // das eigene Schreiben von --qb-chat-hub: Höhe unverändert, kein neues Urteil (keine Schleife)
+  assert.equal(urteilsTakt([eintrag('style')], {ewVorher: '262px', ewJetzt: '262px'}), 'nichts');
+});
+
+test('urteilsTakt: Docked-Klasse am <html> bleibt ein Urteil pro Bild', () => {
+  assert.equal(urteilsTakt([eintrag('class')]), 'bild');
+});
+
+test('urteilsTakt: leerer Stapel -> nichts', () => {
+  assert.equal(urteilsTakt([]), 'nichts');
+  assert.equal(urteilsTakt(undefined), 'nichts');
+});
+
+test('urteilsTakt Rückweg LEISTE_SOFORT_AN=false: Stand vor dem 09.11. (childList und class pro Bild, Rest nichts)', () => {
+  const aus = {an: false, ewVorher: '', ewJetzt: '262px'};
+  assert.equal(urteilsTakt([eintrag(null, true)], aus), 'bild');
+  assert.equal(urteilsTakt([eintrag('class')], aus), 'bild');
+  assert.equal(urteilsTakt([eintrag(AUSWEICH_ATTRIBUT)], aus), 'nichts');
+  assert.equal(urteilsTakt([eintrag(EINWILLIGUNG_OFFEN_ATTRIBUT)], aus), 'nichts');
+  assert.equal(urteilsTakt([eintrag('style')], aus), 'nichts');
+});
