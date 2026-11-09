@@ -2,7 +2,7 @@
    Entwurf, d4b574b1 Termine, 7b510b53 Sparbetrag, 5ecead8d + 8ae83097 Korrekturen; gebaut EL-20261109-bda7a985).
    Mobile First (Elinas Design-Dauerregel EL-20261108-5bf00bf2), gleiche Gestaltung wie die US-B-Seite qi-blanco.com/pages/pre-access-b.
    Nur fuer diese Seite geladen. Bewegung: app/styles/elina-bewegung.css + useElinaBewegung. */
-.pab{--g:#f2bf72;--grund:#0c0a08;--hell:#f5efe6;--matt:rgba(245,239,230,.78);--satz:24px;--titel:34px;--betrag:68px;--zahl:44px;position:relative;width:100%;margin:0;background:var(--grund);color:var(--hell);font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif;overflow:hidden;overflow:clip;text-align:left}
+.pab{--g:#f2bf72;--grund:#0c0a08;--hell:#f5efe6;--matt:rgba(245,239,230,.78);--satz:clamp(20px,calc(20px + (100vw - 320px) * .1),24px);--titel:clamp(29px,calc(29px + (100vw - 320px) * .125),34px);--betrag:clamp(56px,calc(56px + (100vw - 320px) * .3),68px);--zahl:clamp(36px,calc(36px + (100vw - 320px) * .2),44px);position:relative;width:100%;margin:0;background:var(--grund);color:var(--hell);font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif;overflow:hidden;overflow:clip;text-align:left}
 .pab *{box-sizing:border-box}
 .pab__innen{max-width:82rem;margin:0 auto;padding:1.5rem 1.125rem 3.5rem;display:grid;gap:1.75rem}
 /* Zeilenlaenge begrenzt: Textspalte hoechstens 40rem (am Desktop ohnehin schmaler, wirkt nur unter 960px) */
@@ -51,7 +51,7 @@
 .pab .mm-falle{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
 .pab__vertrauen{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1rem;margin:2rem 0 0!important;padding:1.25rem 0 0!important;border-top:1px solid rgba(245,239,230,.2);list-style:none;color:var(--hell);font-size:16px;line-height:1.35}
 .pab__vertrauen li{margin:0;padding:0;list-style:none}
-@media (max-width:359px){.pab{--satz:20px;--titel:29px;--betrag:56px;--zahl:36px}}
+/* 320-359px: Groessen gleiten (clamp) statt Sprung an 359px; ab 360px exakt wie bisher */
 @media (min-width:600px){.pab{--satz:24px;--titel:46px;--zahl:52px}.pab__innen{padding:2rem 2rem 4.5rem}}
 @media (min-width:960px){
 .pab{--titel:48px;--betrag:60px}
