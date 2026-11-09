@@ -1,0 +1,107 @@
+/* elina-bewegung.css: Scroll-Effekte nach Elinas Design-Dauerregel (EL-20261108-5bf00bf2).
+ *
+ * Gehört zu elina-bewegung.js. Ohne das Skript ist alles sichtbar und nichts bewegt sich.
+ * Bewegt wird nur transform und opacity (läuft auf dem iPhone ohne Ruckeln).
+ *
+ *   data-eb            Einblenden + leicht Hochgleiten, einmal beim Hereinscrollen
+ *   data-eb="gruppe"   dasselbe für die Kinder, leicht versetzt nacheinander
+ *   data-eb="zoom"     Rahmen; img/video darin zoomt mit dem Scrollen minimal heran (1 -> 1,06)
+ *   data-eb="linie"    waagerechte Linie füllt sich mit dem Scrollen von links
+ *   data-eb="linie-senkrecht"  senkrechte Linie (Zeitstrahl, Schritte) füllt sich von oben
+ *
+ * Werte zum Feinstellen je Seite (am Element oder an :root):
+ *   --eb-dauer  --eb-weg  --eb-versatz  --eb-zoom  --eb-linie-farbe  --eb-linie-grund
+ */
+:root {
+  --eb-dauer: 0.7s;
+  --eb-weg: 20px;
+  --eb-versatz: 90ms;
+  --eb-zoom: 0.06;
+  --eb-kurve: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --eb-linie-farbe: currentColor;
+  --eb-linie-grund: rgba(127, 127, 127, 0.18);
+}
+
+/* 1. Einblenden + Hochgleiten. Versteckt wird erst, wenn das Skript läuft (html.eb-an). */
+.eb-an [data-eb=""]:not(.eb-da),
+.eb-an [data-eb="auf"]:not(.eb-da),
+.eb-an [data-eb="gruppe"]:not(.eb-da) > * {
+  opacity: 0;
+  transform: translate3d(0, var(--eb-weg), 0);
+}
+/* Der Übergang gilt nur fürs Aufdecken: das Verstecken beim Start ist sofort (kein Ausblenden zu sehen). */
+.eb-an [data-eb=""].eb-da,
+.eb-an [data-eb="auf"].eb-da,
+.eb-an [data-eb="gruppe"].eb-da > * {
+  transition: opacity var(--eb-dauer) var(--eb-kurve), transform var(--eb-dauer) var(--eb-kurve);
+  transition-delay: calc(var(--eb-i, 0) * var(--eb-versatz));
+}
+/* Schon beim Laden sichtbar (erster Bildschirm): ohne Übergang, sofort da. */
+.eb-an .eb-sofort,
+.eb-an .eb-sofort > * {
+  transition: none !important;
+}
+
+/* 2. Bild-Zoom mit dem Scrollen. --eb-p (0..1) setzt das Skript (ein Wert je sichtbarem Element und Bild). */
+[data-eb="zoom"] {
+  overflow: hidden;
+}
+.eb-an [data-eb="zoom"] img,
+.eb-an [data-eb="zoom"] video {
+  transform: scale(calc(1 + var(--eb-zoom) * var(--eb-p, 0)));
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+}
+
+/* 3. Linie / Fortschritt füllt sich mit dem Scrollen. */
+[data-eb="linie"],
+[data-eb="linie-senkrecht"] {
+  position: relative;
+  background: var(--eb-linie-grund);
+}
+[data-eb="linie"] { min-height: 2px; }
+[data-eb="linie-senkrecht"] { min-width: 2px; }
+[data-eb="linie"]::after,
+[data-eb="linie-senkrecht"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--eb-linie-farbe);
+  border-radius: inherit;
+}
+[data-eb="linie"]::after { transform-origin: 0 50%; }
+[data-eb="linie-senkrecht"]::after { transform-origin: 50% 0; }
+.eb-an [data-eb="linie"]::after { transform: scaleX(var(--eb-p, 0)); }
+.eb-an [data-eb="linie-senkrecht"]::after { transform: scaleY(var(--eb-p, 0)); }
+
+/* 4. Ruhige Fassung bei "Bewegung reduzieren". Das Skript setzt html.eb-an dann gar nicht erst (alles steht still
+ *    und ist sofort da, Linien voll). Dieser Block ist der zweite Gürtel, falls die Einstellung erst später
+ *    umgestellt wird (Hausrezept homepage-bauer SKILL-SCROLL-ANIMATIONEN 1b). */
+@media (prefers-reduced-motion: reduce) {
+  .eb-an [data-eb=""],
+  .eb-an [data-eb="auf"],
+  .eb-an [data-eb="gruppe"] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .eb-an [data-eb="zoom"] img,
+  .eb-an [data-eb="zoom"] video {
+    transform: none !important;
+    animation: none !important;
+  }
+  .eb-an [data-eb="linie"]::after,
+  .eb-an [data-eb="linie-senkrecht"]::after {
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+/* Drucken: alles sichtbar. */
+@media print {
+  .eb-an [data-eb]:not(.eb-da),
+  .eb-an [data-eb="gruppe"] > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
