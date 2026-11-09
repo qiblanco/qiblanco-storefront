@@ -1,0 +1,81 @@
+/* /pages/pre-access-b — B-Fassung der Eintragungsseite Black Friday Pre-Sale DACH (Elina 09.11.2026: EL-20261109-3f406304
+   Entwurf, d4b574b1 Termine, 7b510b53 Sparbetrag, 5ecead8d + 8ae83097 Korrekturen; gebaut EL-20261109-bda7a985).
+   Mobile First (Elinas Design-Dauerregel EL-20261108-5bf00bf2), gleiche Gestaltung wie die US-B-Seite qi-blanco.com/pages/pre-access-b.
+   Nur fuer diese Seite geladen. Bewegung: app/styles/elina-bewegung.css + useElinaBewegung. */
+.pab{--g:#f2bf72;--grund:#0c0a08;--hell:#f5efe6;--matt:rgba(245,239,230,.78);--satz:clamp(20px,calc(20px + (100vw - 320px) * .1),24px);--titel:clamp(29px,calc(29px + (100vw - 320px) * .125),34px);--betrag:clamp(56px,calc(56px + (100vw - 320px) * .3),68px);--zahl:clamp(36px,calc(36px + (100vw - 320px) * .2),44px);position:relative;width:100%;margin:0;background:var(--grund);color:var(--hell);font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif;overflow:hidden;overflow:clip;text-align:left}
+.pab *{box-sizing:border-box}
+.pab__innen{max-width:82rem;margin:0 auto;padding:1.5rem 1.125rem 3.5rem;display:grid;gap:1.75rem}
+/* Zeilenlaenge begrenzt: Textspalte hoechstens 40rem (am Desktop ohnehin schmaler, wirkt nur unter 960px) */
+.pab__text{max-width:40rem}
+.pab__bild{position:relative;margin:0;border-radius:24px;aspect-ratio:1/1;background:#15110d;overflow:hidden;box-shadow:0 0 0 1px rgba(242,191,114,.14),0 30px 80px -30px rgba(0,0,0,.9)}
+.pab__bild img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 40%;border-radius:inherit}
+.pab__bild::after{content:"";position:absolute;inset:auto 0 0 0;height:38%;background:linear-gradient(transparent,rgba(12,10,8,.82));pointer-events:none}
+.pab__bildzeile{position:absolute;z-index:1;left:1.25rem;right:1.25rem;bottom:1.1rem;margin:0;color:var(--g);font-size:15px;font-weight:700;letter-spacing:.04em;line-height:1.35;text-transform:uppercase}
+.pab__dach{display:flex;align-items:center;gap:.6rem;margin:0 0 1.25rem;color:var(--g);font-size:15px;font-weight:700;letter-spacing:.1em;line-height:1.3;text-transform:uppercase}
+.pab__dach svg{flex:none;width:22px;height:22px}
+.pab h1.pab__titel{margin:0 0 1.25rem;padding:0;color:var(--hell)!important;font-family:inherit!important;font-size:var(--satz)!important;line-height:1.3!important;font-weight:300!important;letter-spacing:0;text-transform:none!important}
+.pab__titel-oben,.pab__cta{display:block;font-size:var(--satz);font-weight:300;line-height:1.3;color:var(--hell)}
+.pab__titel-oben{white-space:nowrap}
+.pab__titel-unten{display:block;margin-top:.4rem;font-size:var(--titel);font-weight:700;font-style:normal;line-height:1.12;color:var(--g);white-space:nowrap;letter-spacing:-.015em}
+.pab__spar{display:block;margin-top:1.25rem}
+.pab__spar-vor{display:block;margin:0 0 .25rem;font-size:24px;font-weight:400;line-height:1.3;color:var(--hell)}
+.pab__spar-betrag{display:inline-block;font-size:var(--betrag);font-weight:700;line-height:1.05;letter-spacing:-.02em;color:var(--g);background:linear-gradient(100deg,#c48a3a 0%,#f2bf72 40%,#ffe0a8 55%,#f2bf72 70%,#c48a3a 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.pab__cta{margin:0 0 1.75rem}
+.pab__uhr{border-radius:20px;margin:0 0 1rem;text-align:left}
+.pab__uhr--haupt{padding:1.25rem 1.25rem 1.1rem;border:1px solid rgba(242,191,114,.6);background:linear-gradient(180deg,rgba(242,191,114,.08),rgba(242,191,114,.02))}
+.pab__uhr--klein{padding:1rem 1.25rem;border:1px solid rgba(245,239,230,.14);background:rgba(245,239,230,.03);margin-bottom:2rem}
+.pab__uhrtitel{margin:0 0 .75rem;color:var(--g);font-size:18px;font-weight:700;line-height:1.3}
+.pab__uhr--klein .pab__uhrtitel{color:var(--hell);margin-bottom:.5rem}
+.pab__zellen{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:0}
+.pab__zelle{text-align:left}
+.pab__zahl{display:block;color:var(--hell);font-size:var(--zahl);line-height:1.05;font-weight:300;font-variant-numeric:tabular-nums}
+.pab__uhr--klein .pab__zahl{font-size:24px;font-weight:400}
+.pab__einheit{display:block;margin-top:.5rem;color:var(--matt);font-size:13px;line-height:1.2;letter-spacing:.1em;text-transform:uppercase}
+.pab__datum{margin:.75rem 0 0;color:var(--matt);font-size:15px;line-height:1.3}
+.pab__offen{display:none;margin:0;color:var(--g);font-size:var(--zahl);line-height:1.15;font-weight:300}
+.pab__uhr--klein .pab__offen{font-size:24px}
+.pab__uhr.ist-offen .pab__zellen,.pab__uhr.ist-offen .pab__uhrtitel{display:none}
+.pab__uhr.ist-offen .pab__offen{display:block}
+.pab .mm-formular{position:relative;display:grid;gap:.875rem;max-width:none;margin:0;text-align:left}
+.pab .mm-formular__feld{margin:0}
+.pab .mm-formular__label{display:flex;flex-direction:column;gap:.4rem;margin:0;color:var(--matt);font-size:15px;line-height:1.3}
+.pab .mm-formular__input{width:100%;min-height:50px;margin:0;padding:.8rem 1rem;border:1px solid rgba(245,239,230,.22);border-radius:12px;background:rgba(245,239,230,.06);color:var(--hell);font-family:inherit;font-size:16px;box-shadow:none}
+.pab .mm-formular__input::placeholder{color:rgba(245,239,230,.42)}
+.pab .mm-formular__input:focus{outline:2px solid var(--g);outline-offset:1px;border-color:transparent}
+.pab .mm-formular .mm-formular__knopf{display:block;justify-self:stretch;width:100%;min-height:54px;margin-top:.25rem;padding:.9rem 1.5rem;border:0;border-radius:999px;background:var(--g);color:#171310;font-family:inherit;font-size:16px;line-height:1.3;font-weight:700;cursor:pointer;box-shadow:0 10px 30px -12px rgba(242,191,114,.5)}
+.pab .mm-formular .mm-formular__knopf:hover{filter:brightness(1.05)}
+.pab .mm-formular .mm-formular__knopf:disabled{opacity:.6;cursor:default}
+.pab .mm-formular__einwilligung{margin:.75rem 0 0;color:rgba(245,239,230,.8);font-size:15px;line-height:1.65;opacity:1}
+.pab .mm-formular__meldung{margin:0;color:#ffb4a8;font-size:15px}
+.pab .mm-formular__meldung:empty{display:none}
+.pab .mm-falle{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+.pab__vertrauen{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1rem;margin:2rem 0 0!important;padding:1.25rem 0 0!important;border-top:1px solid rgba(245,239,230,.2);list-style:none;color:var(--hell);font-size:16px;line-height:1.35}
+.pab__vertrauen li{margin:0;padding:0;list-style:none}
+/* 320-359px: Groessen gleiten (clamp) statt Sprung an 359px; ab 360px exakt wie bisher */
+@media (min-width:600px){.pab{--satz:24px;--titel:46px;--zahl:52px}.pab__innen{padding:2rem 2rem 4.5rem}}
+@media (min-width:960px){
+.pab{--titel:48px;--betrag:60px}
+.pab__innen{grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:3.5rem;align-items:start;padding:3rem 2.5rem 5.5rem}
+.pab__bild{position:sticky;top:6rem;border-radius:32px;aspect-ratio:4/5}
+.pab__text{padding-top:.5rem}
+}
+@media (min-width:1280px){.pab{--titel:60px;--betrag:60px}}
+/* Mobil unter 900px alles mittig, Desktop bleibt linksbuendig (Elina EL-20261109-d1679392) */
+@media (max-width:899.98px){
+.pab__text{text-align:center;margin-inline:auto}
+.pab__dach{flex-direction:column;justify-content:center;gap:.5rem}
+.pab h1.pab__titel{text-align:center}
+.pab__uhr,.pab__zelle{text-align:center}
+.pab .mm-formular,.pab .mm-formular__titel,.pab .mm-formular__label,.pab .mm-formular__hinweis,.pab .mm-formular__einwilligung,.pab .mm-formular__meldung{text-align:center}
+.pab .mm-formular__input{text-align:center}
+.pab__vertrauen,.pab__vertrauen li{text-align:center}
+}
+/* Desktop ab 960px: Bild links steht beim Scrollen (wie Qi-Alpha), rechts scrollt der Inhalt vorbei; Spalten oben buendig.
+   Mobil unveraendert untereinander, Bild scrollt mit (Elina EL-20261109-09dd1818). */
+@media (min-width:960px){
+.pab__innen{align-items:start}
+.pab__innen>.pab__bild{position:sticky;top:32px;height:calc(100vh - 64px);max-height:860px;aspect-ratio:auto}
+.pab__innen>.pab__bild img{height:100%;object-fit:cover}
+}
+/* Ruhige Fassung (D7): bei "Bewegung reduzieren" steht alles still und ist sofort da (Einblenden regelt elina-bewegung.css). */
+@media (prefers-reduced-motion:reduce){.pab *,.pab *::before,.pab *::after{transition:none!important;animation:none!important}.pab [data-eb]{opacity:1!important;transform:none!important}}
