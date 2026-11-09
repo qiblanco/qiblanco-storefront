@@ -15,8 +15,6 @@ import {
   OEFFENTLICH_KNOPF_VORFILTER,
   RAHMEN_ID,
   farbeDeckt,
-  GLEIT_ATTRIBUT,
-  gleitetJetzt,
   hatKnopfOptik,
   istLpKaufausgang,
   istOeffentlichesProduktziel,
@@ -201,47 +199,6 @@ export function KaufknopfChatSignal() {
     // eines MutationObservers läuft vor dem Zeichnen.
     const rahmenWaechter = new MutationObserver(() => sofort());
 
-    // Durchlass beim Gleiten (lib, gleitetJetzt): solange am Rahmen bzw. Träger
-    // eine Animation läuft, steht GLEIT_ATTRIBUT am <html> und app.css nimmt dem
-    // Rahmen die Treffer. Geprüft wird nach GLEIT_PRUEF_MS (länger als die
-    // 280 ms des Gleitens) und dann wieder, solange es läuft; nach
-    // GLEIT_DECKEL_MS fällt es in jedem Fall (ein Hintergrund-Tab malt nie).
-    const GLEIT_PRUEF_MS = 320;
-    const GLEIT_DECKEL_MS = 3000;
-    let letzterHub = 0;
-    let gleitUhr = 0;
-    let gleitSeit = 0;
-    const bewegt = () => {
-      const r = document.getElementById(RAHMEN_ID);
-      const t = r ? r.closest(`#${TRAEGER_ID}`) : null;
-      return [r, t].some(
-        (el) =>
-          el &&
-          typeof el.getAnimations === 'function' &&
-          el.getAnimations().some((a) => a.pending || a.playState === 'running'),
-      );
-    };
-    const gleitEnde = () => {
-      if (gleitUhr) window.clearTimeout(gleitUhr);
-      gleitUhr = 0;
-      if (wurzel.hasAttribute(GLEIT_ATTRIBUT)) wurzel.removeAttribute(GLEIT_ATTRIBUT);
-    };
-    const gleitPruefen = () => {
-      gleitUhr = 0;
-      if (!wurzel.hasAttribute(GLEIT_ATTRIBUT)) return;
-      if (Date.now() - gleitSeit < GLEIT_DECKEL_MS && bewegt()) {
-        gleitUhr = window.setTimeout(gleitPruefen, GLEIT_PRUEF_MS);
-        return;
-      }
-      gleitEnde();
-    };
-    const gleitStart = () => {
-      if (!wurzel.hasAttribute(GLEIT_ATTRIBUT)) wurzel.setAttribute(GLEIT_ATTRIBUT, '');
-      gleitSeit = Date.now();
-      if (gleitUhr) window.clearTimeout(gleitUhr);
-      gleitUhr = window.setTimeout(gleitPruefen, GLEIT_PRUEF_MS);
-    };
-
     const schreibe = () => {
       const rahmen = document.getElementById(RAHMEN_ID);
       if (rahmen !== beobachteterRahmen) {
@@ -313,23 +270,6 @@ export function KaufknopfChatSignal() {
         if (offen) wurzel.setAttribute(OFFEN_ATTRIBUT, '');
         else wurzel.removeAttribute(OFFEN_ATTRIBUT);
       }
-      // Der offene Chat nimmt immer Treffer an; ein neues Gleiten bekommt den
-      // Durchlass (lib, gleitetJetzt).
-      if (offen) {
-        gleitEnde();
-      } else if (
-        hub !== letzterHub &&
-        gleitetJetzt({
-          hubVorher: letzterHub,
-          hubJetzt: hub,
-          offen,
-          bewegungReduziert: !!window.matchMedia?.('(prefers-reduced-motion: reduce)')
-            .matches,
-        })
-      ) {
-        gleitStart();
-      }
-      letzterHub = hub;
       if (unterdruecken === wurzel.hasAttribute(UEBERDECKUNG_ATTRIBUT)) return;
       if (unterdruecken) wurzel.setAttribute(UEBERDECKUNG_ATTRIBUT, '');
       else wurzel.removeAttribute(UEBERDECKUNG_ATTRIBUT);
@@ -469,8 +409,6 @@ export function KaufknopfChatSignal() {
       wurzelWaechter.disconnect();
       groesse?.disconnect();
       if (angefordert) window.cancelAnimationFrame(angefordert);
-      // Ein hängender Durchlass nähme dem Chat dauerhaft die Treffer.
-      gleitEnde();
       // Ein hängendes Attribut würde den Chat dauerhaft abschalten.
       wurzel.removeAttribute(UEBERDECKUNG_ATTRIBUT);
       // ... bzw. dauerhaft verschoben stehen lassen.

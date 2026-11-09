@@ -982,19 +982,6 @@ html[data-chat-offen] #qiblanco-salesbot-widget-traeger {
     transition: none !important;
   }
 }
-/* WAEHREND ANNA GLEITET, GEHT DER TIPP DURCH (Job 20261109-anna-weicht-
- * gehobener-kaufleiste-erst-nach-2s). Bis das Gleiten im naechsten gemalten
- * Bild beginnt und waehrend der 280 ms steht der Rahmen noch ueber dem Knopf
- * der Leiste, die unter ihm erschienen ist (live WebKit 09.11.: bis 2,6 s, weil
- * Linux-WebKit nach einem Scroll so lange kein Bild malt). KaufknopfChatSignal
- * setzt `data-chat-gleitet`, solange am Rahmen bzw. Traeger eine Animation
- * laeuft, nie bei offenem Chat. Anna bleibt sichtbar, nur der Tipp geht zum
- * Knopf darunter. `!important`, weil der Loader pointer-events inline setzt.
- * RUECKWEG: GLEIT_DURCHLASS_AN = false in app/lib/kaufknopf-chat.js, oder
- * diesen Block loeschen. */
-html[data-chat-gleitet] #qiblanco-salesbot-widget-frame {
-  pointer-events: none !important;
-}
 
 .overlay {
   background: rgba(0, 0, 0, 0.2);
