@@ -68,5 +68,12 @@
 .pab .mm-formular__input{text-align:center}
 .pab__vertrauen,.pab__vertrauen li{text-align:center}
 }
+/* Desktop ab 960px: Bild links steht beim Scrollen (wie Qi-Alpha), rechts scrollt der Inhalt vorbei; Spalten oben buendig.
+   Mobil unveraendert untereinander, Bild scrollt mit (Elina EL-20261109-09dd1818). */
+@media (min-width:960px){
+.pab__innen{align-items:start}
+.pab__innen>.pab__bild{position:sticky;top:32px;height:calc(100vh - 64px);max-height:860px;aspect-ratio:auto}
+.pab__innen>.pab__bild img{height:100%;object-fit:cover}
+}
 /* Ruhige Fassung (D7): bei "Bewegung reduzieren" steht alles still und ist sofort da (Einblenden regelt elina-bewegung.css). */
 @media (prefers-reduced-motion:reduce){.pab *,.pab *::before,.pab *::after{transition:none!important;animation:none!important}.pab [data-eb]{opacity:1!important;transform:none!important}}
