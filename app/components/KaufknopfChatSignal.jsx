@@ -369,12 +369,20 @@ export function KaufknopfChatSignal() {
     const ewHoeheLesen = () =>
       wurzel.style.getPropertyValue(EINWILLIGUNG_HOEHE_VARIABLE).trim();
     let ewHoehe = ewHoeheLesen();
-    const nachAenderung = (eintraege) => {
-      const ewVorher = ewHoehe;
-      ewHoehe = ewHoeheLesen();
-      const takt = urteilsTakt(eintraege.map(beschreibe), {ewVorher, ewJetzt: ewHoehe});
+    const urteile = (takt) => {
       if (takt === 'sofort') sofort();
       else if (takt === 'bild') anfordern();
+    };
+    // Die gemerkte Höhe schreibt NUR der Beobachter am <html> fort, der den
+    // `style`-Eintrag sieht. Der am <body> läuft in derselben Runde zuerst
+    // (Erstellungsreihenfolge) und verbrauchte sonst die Änderung, bevor ihr
+    // Eintrag geurteilt ist (Gegenprüfung 09.11., Befund 4).
+    const nachAenderung = (eintraege) =>
+      urteile(urteilsTakt(eintraege.map(beschreibe), {ewVorher: ewHoehe, ewJetzt: ewHoehe}));
+    const nachWurzelAenderung = (eintraege) => {
+      const ewVorher = ewHoehe;
+      ewHoehe = ewHoeheLesen();
+      urteile(urteilsTakt(eintraege.map(beschreibe), {ewVorher, ewJetzt: ewHoehe}));
     };
 
     // childList und nur das Leisten-Merkmal: `style` im ganzen Baum zu
@@ -389,7 +397,7 @@ export function KaufknopfChatSignal() {
     // Einwilligungsleiste und (über `style`) deren Höhe. Welche Änderung
     // zählt, entscheidet urteilsTakt; das eigene Schreiben von --qb-chat-hub
     // löst nichts aus.
-    const wurzelWaechter = new MutationObserver(nachAenderung);
+    const wurzelWaechter = new MutationObserver(nachWurzelAenderung);
     wurzelWaechter.observe(wurzel, {
       attributes: true,
       attributeFilter: LEISTE_SOFORT_AN
