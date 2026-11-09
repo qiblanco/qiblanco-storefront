@@ -1506,6 +1506,23 @@ button[aria-label="Close" i],
   width: 100%;
   transition: 0.2s all ease;
 }
+/* Unter 750 px gibt es dieses Panel nicht (Job 20261106-megamenue-label-
+   mobil360-ueberstand). Seine Ausloeser in `.header-menu-desktop` stehen dort
+   auf `display: none` (Regel `@media (max-width: 749px)` weiter unten), das
+   Panel selbst wurde aber weiter gerendert. Gemessen 2026-11-06 live auf
+   /pages/das-beispiel: die Bildspalte fiel auf 52 px (360), 61 px (414) und
+   92 px (600), das Label "QiOne 2 Pro®" brach je Zeichen um, wurde 270 px hoch
+   und ragte auf 360 px 101 px ueber das Panel (Gate 12 overlay-ueberstand-
+   stacking). Ein Kunde konnte es nie oeffnen.
+   Die Kante ist DIESELBE wie die der Ausloeser (749/750), damit es keinen
+   Streifen gibt, in dem das Menue ohne Panel oder das Panel ohne Menue steht.
+   Die Links bleiben im ausgelieferten HTML (SSR, siehe SubmenuPortal in
+   Header.jsx); mobil fuehrt das eigene Akkordeon dieselben Ziele. */
+@media (max-width: 749px) {
+  .submenu {
+    display: none;
+  }
+}
 .submenu ul {
   display: flex;
   flex-wrap: wrap;
