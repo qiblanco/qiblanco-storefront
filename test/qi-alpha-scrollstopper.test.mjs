@@ -21,8 +21,12 @@ import {fileURLToPath} from 'node:url';
 import {dirname, join} from 'node:path';
 import {
   IOS_LAUFBAHN_PX,
+  LAUFBAHN_PX,
   iosLaufbahn,
   iosSchrittPx,
+  istAndroid,
+  taktGruppe,
+  taktLaufbahn,
 } from '../app/components/campaign/the-alpha-takt-ios.js';
 import {istIos} from '../app/components/campaign/the-alpha-video-ios.js';
 
@@ -227,20 +231,45 @@ test('Pruefschalter ?takt: alt, Zahl im Rahmen, sonst Standard', () => {
   assert.equal(iosLaufbahn(''), IOS_LAUFBAHN_PX);
 });
 
-test('Takt nur auf iOS: Android und Desktop bleiben', () => {
+test('Takt je Gerätegruppe: iPhone 1000, Android eigene Zahl, Desktop ohne', () => {
   assert.equal(istIos({userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) CriOS/141.0'}), true);
   assert.equal(istIos({userAgent: 'Mozilla/5.0 (Linux; Android 14; SM-S928B) Chrome/141.0 Mobile'}), false);
   assert.equal(istIos({userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', maxTouchPoints: 0}), false);
+  const samsung = {userAgent: 'Mozilla/5.0 (Linux; Android 14; SAMSUNG SM-S911B) SamsungBrowser/26.0 Chrome/122.0 Mobile'};
+  const mac = {userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/141.0', maxTouchPoints: 0};
+  assert.equal(istAndroid(samsung), true);
+  assert.equal(istAndroid(mac), false);
+  assert.equal(taktGruppe(samsung, false), 'android');
+  assert.equal(taktGruppe(mac, false), 'desktop');
+  assert.equal(taktGruppe(samsung, true), 'iphone', 'iOS gewinnt');
+  // iPhone und Desktop unverändert (Christian 09.11.: nur Samsung zu schnell).
+  assert.equal(LAUFBAHN_PX.iphone, 1000);
+  assert.equal(IOS_LAUFBAHN_PX, 1000);
+  assert.equal(taktLaufbahn('desktop', ''), false);
+  assert.equal(taktLaufbahn('desktop', '?takt=1400'), false, 'Desktop bleibt auch mit Prüfschalter');
   const jsx = lies('app/components/campaign/TheAlphaPremium.jsx');
-  assert.match(jsx, /kette && istIos\(navigator\) \? iosLaufbahn/);
-  assert.match(jsx, /el\.classList\.add\('tap-ios-takt'\)/);
+  assert.match(jsx, /taktGruppe\(navigator, istIos\(navigator\)\)/);
+  assert.match(jsx, /gruppe === 'android' \? 'tap-android-takt' : 'tap-ios-takt'/);
+});
+
+// Takt am Samsung (Christian 09.11.2026: „dass man nicht mit einem Wisch die
+// ganze Homepage durchscrollt“). Gemessen: ein langer Android-Wisch trägt
+// 986 px (Samsung-Profil, Nachlauf wie Chrome Android).
+test('Android-Laufbahn ist länger als ein langer Android-Wisch (986 px)', () => {
+  assert.ok(LAUFBAHN_PX.android > 986);
+  assert.equal(taktLaufbahn('android', ''), LAUFBAHN_PX.android);
+  assert.equal(taktLaufbahn('android', '?takt=alt'), false);
+  assert.equal(taktLaufbahn('android', '?takt=1500'), 1500);
+  for (const zahl of [0, 1, 2, 3, 4, 7, 12]) {
+    assert.ok((zahl + 1) * iosSchrittPx(92.5, zahl, LAUFBAHN_PX.android) >= LAUFBAHN_PX.android);
+  }
 });
 
 test('Takt arbeitet nicht gegen den Schwung: kein Snap, Halt nur am Video', () => {
   const css = lies('app/styles/the-alpha-premium.css');
   assert.doesNotMatch(css, /scroll-snap-type\s*:\s*y/);
-  const regel = css.match(/\.tap-js\.tap-kette\.tap-ios-takt\s*\{([^}]*)\}/);
-  assert.ok(regel, 'Regel .tap-ios-takt fehlt');
+  const regel = css.match(/\.tap-js\.tap-kette\.tap-ios-takt,\s*\.tap-js\.tap-kette\.tap-android-takt\s*\{([^}]*)\}/);
+  assert.ok(regel, 'Regel .tap-ios-takt / .tap-android-takt fehlt');
   assert.match(regel[1], /--tap-schritt-zeile:\s*185px/);
   assert.doesNotMatch(regel[1], /overflow|snap/);
 });

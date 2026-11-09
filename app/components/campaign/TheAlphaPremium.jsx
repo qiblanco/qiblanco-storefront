@@ -5,7 +5,7 @@ import {TheAlphaKauf} from '~/components/campaign/TheAlphaKauf';
 import {kaufZiel, RESERVIERUNG_PARAM} from '~/lib/qi-alpha-reservierung';
 import {TapTon, TapFilmTon, videoQuellen} from '~/components/campaign/TheAlphaTon';
 import {tapStopper} from '~/components/campaign/the-alpha-stopper';
-import {iosLaufbahn, iosSchrittPx} from '~/components/campaign/the-alpha-takt-ios';
+import {iosSchrittPx, taktGruppe, taktLaufbahn} from '~/components/campaign/the-alpha-takt-ios';
 import {istIos, LEINWAND_ZEIT} from '~/components/campaign/the-alpha-video-ios';
 import {
   THE_ALPHA_KOPF,
@@ -190,9 +190,11 @@ function useTapFilm(wurzel, szene) {
     const filmNachBuehne = [];
     // Video in der Kette: Bühne davor, Bühne danach (Fenster des Stoppers).
     const filme = [];
-    // Takt am iPhone (the-alpha-takt-ios.js): mehr Scrollweg, kein Snap.
-    const laufbahnIos = kette && istIos(navigator) ? iosLaufbahn(window.location.search) : false;
-    if (laufbahnIos) el.classList.add('tap-ios-takt');
+    // Takt je Gerätegruppe (the-alpha-takt-ios.js, LAUFBAHN_PX): iPhone und
+    // Android mehr Scrollweg, kein Snap; Desktop ohne Laufbahn.
+    const gruppe = taktGruppe(navigator, istIos(navigator));
+    const laufbahn = kette ? taktLaufbahn(gruppe, window.location.search) : false;
+    if (laufbahn) el.classList.add(gruppe === 'android' ? 'tap-android-takt' : 'tap-ios-takt');
     if (kette) {
       el.classList.add('tap-kette');
       szenen.forEach((s, i) => {
@@ -208,7 +210,7 @@ function useTapFilm(wurzel, szene) {
       });
       aufraeumen.push(() => {
         el.classList.remove('tap-kette');
-        el.classList.remove('tap-ios-takt');
+        el.classList.remove('tap-ios-takt', 'tap-android-takt');
         szenen.forEach((s) =>
           s.classList.remove('tap-nachruecken', 'tap-nach-buehne', 'tap-nach-video', 'tap-aus', 'tap-wartet'),
         );
@@ -279,10 +281,10 @@ function useTapFilm(wurzel, szene) {
     };
     const masse = () => {
       for (const s of buehnen) {
-        if (laufbahnIos) s.b.style.removeProperty('--tap-schritt');
+        if (laufbahn) s.b.style.removeProperty('--tap-schritt');
         s.px = parseFloat(getComputedStyle(s.b).getPropertyValue('--tap-schritt')) || 48;
-        if (laufbahnIos && !s.ende) {
-          s.px = iosSchrittPx(s.px, s.zahl, laufbahnIos);
+        if (laufbahn && !s.ende) {
+          s.px = iosSchrittPx(s.px, s.zahl, laufbahn);
           s.b.style.setProperty('--tap-schritt', `${s.px}px`);
         }
       }
