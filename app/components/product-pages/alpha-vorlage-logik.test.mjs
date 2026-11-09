@@ -287,3 +287,22 @@ test('Stufen-Wahl (Necklace 2): nur vorhandene Längen je Material, ungültige L
   // 45 cm gibt es in beiden: bleibt stehen.
   assert.deepEqual(L.stufenWahl(product, stufen, {Material: 'Stahl', 'Länge': '45 cm'}, 'Material', 'Gold'), {Material: 'Gold', 'Länge': '45 cm'});
 });
+
+test('Wieder lieferbar (20261109): gewählte Variante und ausverkauft aus der Auswahl', () => {
+  // Gerät ohne Set: die Variante der Auswahl.
+  assert.deepEqual(L.lieferbarWunsch({id: 'g1', availableForSale: true}), {variantId: 'g1', ausverkauft: false});
+  assert.deepEqual(L.lieferbarWunsch({id: 'g2', availableForSale: false}), {variantId: 'g2', ausverkauft: true});
+  assert.deepEqual(L.lieferbarWunsch(null), {variantId: null, ausverkauft: false});
+  // Kette im Set: ausverkaufte Länge gewählt -> die Kettenvariante dieser Länge.
+  const kette = {
+    variants: {nodes: [v('k40', 'XS - 40 cm', []), v('k75', 'XL - 75 cm', [], false)]},
+  };
+  const k = L.laengenKacheln(kette);
+  const set = {id: 'set', availableForSale: true};
+  assert.deepEqual(L.lieferbarWunsch(set, k, 75), {variantId: 'k75', ausverkauft: true});
+  // lieferbare Länge: das Set gilt, es ist kaufbar.
+  assert.deepEqual(L.lieferbarWunsch(set, k, 40), {variantId: 'set', ausverkauft: false});
+  // Ersatzliste ohne Variante: nie ein Wunsch ohne Kennung.
+  const ersatz = L.laengenKacheln(null, ['60']);
+  assert.deepEqual(L.lieferbarWunsch(set, ersatz, 60), {variantId: 'set', ausverkauft: false});
+});

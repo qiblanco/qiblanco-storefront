@@ -79,6 +79,10 @@
   color: var(--tas-grau);
   cursor: not-allowed;
 }
+/* Ausverkauft, aber wählbar für „wieder lieferbar“ (nur bei offenem Weg). */
+.av-seite .tas-karte[data-av-ausverkauft] {
+  color: var(--tas-grau);
+}
 .av-anleitung {
   margin: var(--tas-s-2) 0 0;
   color: var(--tas-grau);

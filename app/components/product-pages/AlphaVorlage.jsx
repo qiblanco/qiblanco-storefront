@@ -11,6 +11,7 @@ import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {Schlussleiste} from '~/components/reusables/Schlussleiste';
 import {LinkPerMail} from '~/components/reusables/LinkPerMail';
+import {WiederLieferbar, useWiederLieferbarAn} from '~/components/reusables/WiederLieferbar';
 import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {PRODUCT_VARIANT_FRAGMENT} from '~/lib/qioneProductQuery';
 import {
@@ -20,6 +21,7 @@ import {
   kettenKacheln,
   laengenAttribut,
   laengenKacheln,
+  lieferbarWunsch,
   mitBreite,
   mitRate,
   schrittAbschnitt,
@@ -239,6 +241,11 @@ export function AlphaVorlage({
   // Kette im Set: ohne lieferbare Länge kein Kauf (nie eine Länge versprechen,
   // die nicht da ist).
   const kaufbar = linien.length > 0 && (!laengen.length || Boolean(laenge));
+  // „Benachrichtige mich, wenn wieder lieferbar“ (Job 20261109-wiederlieferbar-
+  // in-alphavorlage): erst wenn der Weg das Formular zeigt, wird eine
+  // ausverkaufte Karte wählbar. Bei Weg 'aus' bleibt alles wie vorher.
+  const vormerken = useWiederLieferbarAn();
+  const wunsch = lieferbarWunsch(variante, laengen, laengeWahl);
   const kettenBilder =
     kette?.art === 'gold' && KETTE_GOLD?.bilder ? KETTE_GOLD.bilder : KETTE?.bilder ?? [];
   const setBilder = KETTE_IM_SET?.bilder ?? [];
@@ -444,6 +451,7 @@ export function AlphaVorlage({
                         key={w.name}
                         an={wahl[stufe.option] === w.name}
                         aus={!w.verfuegbar}
+                        vormerkbar={vormerken}
                         onClick={() => setWahl(stufenWahl(product, STUFEN, wahl, stufe.option, w.name))}
                         titel={einzeln.name ?? w.name}
                         preis={
@@ -486,6 +494,7 @@ export function AlphaVorlage({
                       key={w.name}
                       an={wahl[o.name] === w.name}
                       aus={!w.verfuegbar}
+                      vormerkbar={vormerken}
                       onClick={() => setWahl({...wahl, [o.name]: w.name})}
                       titel={anzeigeName(VARIANTE, w.name)}
                       text={
@@ -525,8 +534,9 @@ export function AlphaVorlage({
                 {laengen.map((l) => (
                   <Karte
                     key={l.schluessel}
-                    an={laenge?.cm === l.cm}
+                    an={laengeWahl === l.cm && (l.verfuegbar || vormerken)}
                     aus={!l.verfuegbar}
+                    vormerkbar={vormerken}
                     onClick={() => setLaengeWahl(l.cm)}
                     titel={`${l.cm} cm`}
                     text={
@@ -685,6 +695,10 @@ export function AlphaVorlage({
             ))}
           </ul>
           <div className="tas-kaufknopf av-kaufknopf">{kaufknopf}</div>
+          {/* „Benachrichtige mich, wenn wieder lieferbar“ wie in ProductForm.jsx:
+              EINMAL unter dem Hauptknopf, nicht in der Schlussleiste. Rendert
+              nichts, solange die Wahl lieferbar ist oder /w den Weg 'aus' meldet. */}
+          <WiederLieferbar variantId={wunsch.variantId} ausverkauft={wunsch.ausverkauft} />
           {ZUSAMMENFASSUNG.ruecknahme ? (
             <p className="tas-klein">{mitMarkeR(ZUSAMMENFASSUNG.ruecknahme)}</p>
           ) : null}
@@ -981,15 +995,28 @@ function BandLoop({loop}) {
 }
 
 /** Auswahl-Karte im Alpha-Stil (gleiches Markup wie TheAlphaShop). */
-function Karte({an, aus = false, onClick, titel, text = null, preis = null, data = {}}) {
+// vormerkbar: eine ausverkaufte Karte bleibt wählbar (nur bei offenem Weg
+// „wieder lieferbar“); sie trägt dann data-av-ausverkauft statt aria-disabled.
+function Karte({
+  an,
+  aus = false,
+  vormerkbar = false,
+  onClick,
+  titel,
+  text = null,
+  preis = null,
+  data = {},
+}) {
+  const gesperrt = aus && !vormerkbar;
   return (
     <button
       type="button"
       role="radio"
       aria-checked={an}
-      aria-disabled={aus || undefined}
+      aria-disabled={gesperrt || undefined}
       className="tas-karte"
-      onClick={aus ? undefined : onClick}
+      onClick={gesperrt ? undefined : onClick}
+      data-av-ausverkauft={aus && vormerkbar ? '' : undefined}
       {...data}
     >
       <span className="tas-karte-kopf">

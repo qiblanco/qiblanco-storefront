@@ -71,6 +71,41 @@ function anzeigeVollstaendig(anzeige) {
   );
 }
 
+/** Zeigt der Weg das Formular? Weg 'eigen' (oder Vorschau hier) und Texte vollständig. */
+function formularAn(wege) {
+  const anzeige = wege ? wege.anzeige[LIEFERBAR_FORMULAR] : null;
+  return (
+    anzeigeVollstaendig(anzeige) &&
+    (wege.formulare[LIEFERBAR_FORMULAR] === 'eigen' || vorschauEigen(LIEFERBAR_FORMULAR))
+  );
+}
+
+/**
+ * Für Vorlagen, in denen ausverkaufte Varianten sonst nicht wählbar sind
+ * (AlphaVorlage.jsx, Job 20261109-wiederlieferbar-in-alphavorlage): true erst,
+ * wenn das Formular erscheinen würde. Dann darf die Vorlage eine ausverkaufte
+ * Karte wählbar machen, damit jemand für genau diese Variante den Wunsch
+ * eintragen kann. Serverrender, erster Browser-Render und Weg 'aus' geben false:
+ * die Seite bleibt dann wie vorher. Derselbe /w-Abruf wie überall (einer je Seite).
+ */
+export function useWiederLieferbarAn() {
+  const [an, setAn] = useState(false);
+  useEffect(() => {
+    let aktiv = true;
+    holeWege()
+      .then((wege) => {
+        if (aktiv) setAn(Boolean(formularAn(wege)));
+      })
+      .catch(() => {
+        if (aktiv) setAn(false);
+      });
+    return () => {
+      aktiv = false;
+    };
+  }, []);
+  return an;
+}
+
 /**
  * @param {{variantId?: string, ausverkauft: boolean}} props
  *   variantId    Storefront-gid der gewählten Variante
@@ -89,12 +124,11 @@ export function WiederLieferbar({variantId, ausverkauft}) {
     holeWege()
       .then((wege) => {
         if (!aktiv) return;
-        const anzeige = wege ? wege.anzeige[LIEFERBAR_FORMULAR] : null;
-        const zeigen =
-          anzeigeVollstaendig(anzeige) &&
-          (wege.formulare[LIEFERBAR_FORMULAR] === 'eigen' ||
-            vorschauEigen(LIEFERBAR_FORMULAR));
-        setLage(zeigen ? {anzeige, versatz: wege.versatz} : null);
+        setLage(
+          formularAn(wege)
+            ? {anzeige: wege.anzeige[LIEFERBAR_FORMULAR], versatz: wege.versatz}
+            : null,
+        );
       })
       .catch(() => {
         if (aktiv) setLage(null);
