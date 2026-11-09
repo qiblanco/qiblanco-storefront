@@ -5,8 +5,10 @@
  * Kacheln je Breite: Handy eine mittige Kachel (80 % der Breite), links und
  * rechts schaut je ein Nachbar an, zusammen ca. 1,2 sichtbar. Mittig, weil das
  * Shop-Tor (D2_hero_zentriert, Christian 26.10.2026) das größte Bild am Handy
- * mittig verlangt. Kleines Tablet ca.
- * 2,3, Tablet und kleiner Laptop ca. 4,3, ab 1280 px fünf ganze Kacheln.
+ * mittig verlangt. Kleines Tablet ca. 2,3, Tablet und Handy quer ca. 3,3,
+ * kleiner Laptop ca. 4,3, ab 1280 px fünf ganze Kacheln. Keine Kachel wird
+ * breiter als 360 px, sonst wären die 720-px-Clips bei doppelter Pixeldichte
+ * hochskaliert (Formate-Prüfung: tablet-900 und mobil-quer-883 bei 2,3).
  * Die Kachelbreite rechnet aus der Innenbreite der Bahn (100 %), dem linken
  * Rand und der Lücke: b = (100 % + Rand - Lücke × (n - 1)) / Sicht. */
 
@@ -221,6 +223,7 @@
 
 @media (min-width: 750px) {
   .vg {
+    --vg-kachel: calc((100% + var(--vg-rand) - var(--vg-luecke) * 3) / 3.3);
     --vg-rand: 24px;
     --vg-luecke: 12px;
     --vg-radius: 24px;

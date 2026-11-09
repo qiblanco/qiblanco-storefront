@@ -540,7 +540,7 @@ export function VideoGalerie({kopf, kacheln, kennung, ebene = 'h2'}) {
                     srcSet={[360, 540, 720]
                       .map((b) => `${bildBreite(k.poster, b)} ${b}w`)
                       .join(', ')}
-                    sizes="(min-width: 1280px) 210px, (min-width: 1024px) 22vw, (min-width: 600px) 40vw, 80vw"
+                    sizes="(min-width: 1280px) 210px, (min-width: 1024px) 22vw, (min-width: 750px) 29vw, (min-width: 600px) 42vw, 80vw"
                     alt={`Standbild aus dem Video von @${k.name}`}
                     width="720"
                     height="1280"
