@@ -80,3 +80,4 @@
 .bfd--gross .bfd__neu{font-size:32px}
 .bfd__vertrauen{grid-template-columns:repeat(4,auto);justify-content:center;gap:1rem 2.5rem;text-align:center}
 }
+@media (prefers-reduced-motion:reduce){.bfd__kachel,.bfd__pfeil,.bfd__pille{transition:none!important}.bfd__kachel:hover .bfd__pfeil{transform:none!important}}
