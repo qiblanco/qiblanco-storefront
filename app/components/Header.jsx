@@ -485,6 +485,12 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           backdropFilter: scrolled
             ? 'var(--kopf-gescrollt-glas)'
             : 'var(--kopf-ruhe-glas)',
+          // Safari vor 18 (iOS 17 und älter) kennt nur die Präfix-Form;
+          // ohne sie fehlt dort das Milchglas und der Text scheint scharf
+          // durch den zu 90 % durchsichtigen Kopf. Immer gleich backdropFilter.
+          WebkitBackdropFilter: scrolled
+            ? 'var(--kopf-gescrollt-glas)'
+            : 'var(--kopf-ruhe-glas)',
         }}
       >
         <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
