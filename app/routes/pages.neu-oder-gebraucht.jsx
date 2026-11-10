@@ -2,7 +2,7 @@ import {NeuOderGebrauchtSeite} from '~/components/campaign/NeuOderGebrauchtSeite
 import nogStyles from '~/styles/neu-oder-gebraucht.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
-import {FRAGEN} from '~/data/kauf-tatsachen';
+import {FRAGEN, FRAGE_GEBRAUCHT} from '~/data/kauf-tatsachen';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
 
@@ -77,11 +77,22 @@ export function links() {
 // Positiv seit 2026-11-01 (s14, Christians Nachtrag 28.09.): der Titel trägt
 // weiter „neu oder gebraucht", denn so wird gesucht, und nennt dann, was der
 // Direktkauf bringt. Keine Zeile über den Privatkauf.
+// Titel und h1 bleiben unverändert (Gewinnerbegriff „qi blanco gebraucht").
+// Die Beschreibung nennt seit 2026-11-10 vorn den allgemeinen Suchbegriff
+// (SEO-Maßnahme M-SP-20261017-neu-oder-gebraucht, „emf armband gebraucht").
 const TITEL =
   'Qi Blanco neu oder gebraucht? 20 Tage testen, Geld zurück | Qi Blanco';
 const BESCHREIBUNG =
-  '20 Tage zu Hause testen, 100 % Geld-zurück-Garantie, mindestens zwei ' +
-  'Jahre Gewährleistung und Versand bei Qi Blanco, jede Angabe mit Quelle.';
+  'EMF-Armband neu oder gebraucht? 20 Tage zu Hause testen, 100 % ' +
+  'Geld-zurück-Garantie, mindestens zwei Jahre Gewährleistung und Versand ' +
+  'bei Qi Blanco, jede Angabe mit Quelle.';
+
+/**
+ * DIE GEBRAUCHTKAUF-FRAGE steht in „Kurz gefragt" vorn (FRAGE_GEBRAUCHT,
+ * app/data/kauf-tatsachen.js) und im FAQPage-Schema an derselben Stelle:
+ * dieselbe Liste geht an die Komponente und an das Schema.
+ */
+const ZUSATZ = [FRAGE_GEBRAUCHT];
 
 /**
  * SCHEMA-DATEN. `datePublished` ist der Tag der Veröffentlichung,
@@ -91,7 +102,7 @@ const BESCHREIBUNG =
  * DIESER SEITE ÄNDERT, ZIEHT `NOG_GEAENDERT` IM SELBEN COMMIT NACH.
  */
 const NOG_VEROEFFENTLICHT = '2026-09-12';
-const NOG_GEAENDERT = '2026-11-01';
+const NOG_GEAENDERT = '2026-11-10';
 
 /**
  * DAS FAQPage-SCHEMA WIRD AUS DEM SICHTBAREN TEXT GEBAUT: `FRAGEN` ist
@@ -102,13 +113,14 @@ const NOG_GEAENDERT = '2026-11-01';
  * DER STILLE VERLUST IST DER TEURE FALL: `buildFaqPageJsonLd` wirft Items
  * aus, die das Deny-Netz treffen, und liefert dann ein kürzeres Schema — die
  * Seite bliebe sichtbar und würde nur für Google ärmer, ohne Fehlermeldung.
- * Am 2026-09-12 und wieder am 2026-11-01 passieren alle fünf Fragen das Netz; der Test
- * test/neu-oder-gebraucht.test.mjs hält mit einem Soll von fünf
+ * Am 2026-09-12 und wieder am 2026-11-01 passieren alle fünf Fragen das Netz,
+ * am 2026-11-10 alle sechs (mit der Gebrauchtkauf-Frage); der Test
+ * test/neu-oder-gebraucht.test.mjs hält mit einem Soll von fünf bzw. sechs
  * Question-Einträgen dagegen.
  */
 /** @type {MetaFunction} */
 export const meta = () => {
-  const schema = buildFaqPageJsonLd(FRAGEN, {
+  const schema = buildFaqPageJsonLd([...ZUSATZ, ...FRAGEN], {
     inLanguage: 'de-DE',
     author: 'Qi Blanco',
     datePublished: isoMitZone(NOG_VEROEFFENTLICHT),
@@ -129,7 +141,7 @@ export const meta = () => {
 };
 
 export default function NeuOderGebrauchtRoute() {
-  return <NeuOderGebrauchtSeite />;
+  return <NeuOderGebrauchtSeite zusatzFragen={ZUSATZ} />;
 }
 
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
