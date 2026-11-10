@@ -231,7 +231,7 @@ test('E1: Anteil über 20.000 Besucher liegt bei 15 % (+-1 Pkt.)', () => {
   for (let i = 0; i < n; i += 1) {
     const ip = `100.${(i >> 16) & 255}.${(i >> 8) & 255}.${i & 255}`;
     // Nur Arm B zählt: seit B2 ist „umgeleitet" nicht mehr dasselbe wie „B".
-    if (entscheideMitE1(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {})?.arm === 'b') b += 1;
+    if (entscheideMitE1(reqK(LP_A, {ip, ua: `Mozilla/5.0 (iPhone; UA-${i % 7})`}), {})?.arm === 'b') b += 1;
   }
   const anteil = b / n;
   assert.ok(anteil > 0.14 && anteil < 0.16, `Anteil ${anteil}`);
@@ -269,7 +269,7 @@ test('E1: Pin ?lp_exp=a|b dominiert den Würfel, auch für eigenen Verkehr', () 
 test('E1: ohne Client-IP keine Zuteilung (A), Datenrequests und POST nie', () => {
   // Scharf gemacht: ein UA, dessen Eimer OHNE IP in B läge — nur die IP-Pflicht hält ihn auf A.
   let uaOhne = '';
-  for (let i = 0; i < 5000 && !uaOhne; i += 1) if (besucherEimer('', `UA-${i}`) < E1.anteil_prozent) uaOhne = `UA-${i}`;
+  for (let i = 0; i < 5000 && !uaOhne; i += 1) if (besucherEimer('', `Mozilla/5.0 (iPhone; UA-${i})`) < E1.anteil_prozent) uaOhne = `Mozilla/5.0 (iPhone; UA-${i})`;
   assert.ok(uaOhne);
   assert.equal(entscheideMitE1(reqK(LP_A, {ip: '', ua: uaOhne}), {}), null);
   const ip = ipMit(true);
@@ -304,11 +304,11 @@ test('E1 beendet (20.10.2026): Schalter aus, niemand kommt mehr nach B, B2 unver
   let b2 = 0;
   for (let i = 0; i < 20000; i += 1) {
     const ip = `100.${(i >> 16) & 255}.${(i >> 8) & 255}.${i & 255}`;
-    const e = entscheideLpExperiment(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {}, E1_AKTIV, true, false, false, false);
+    const e = entscheideLpExperiment(reqK(LP_A, {ip, ua: `Mozilla/5.0 (iPhone; UA-${i % 7})`}), {}, E1_AKTIV, true, false, false, false);
     if (e?.arm === 'b') b += 1;
     if (e?.arm === 'b2') b2 += 1;
     // Je Besucher: B2 bleibt byte-gleich zugeteilt (Arm UND Ziel), ob E1 läuft oder nicht.
-    const mit = entscheideMitE1(reqK(LP_A, {ip, ua: `UA-${i % 7}`}), {});
+    const mit = entscheideMitE1(reqK(LP_A, {ip, ua: `Mozilla/5.0 (iPhone; UA-${i % 7})`}), {});
     if (mit?.arm === 'b2' || e?.arm === 'b2') {
       assert.deepEqual(e, mit, `B2-Zuteilung je Besucher (${ip})`);
     }
@@ -420,7 +420,7 @@ test('B2: dieselben Ausnahmen wie E1 (eigener Verkehr, ohne IP, .data, _data, PO
   const ipI = ipInB2('QiBlancoInternal/1.0 (design-watch)');
   assert.equal(entscheideMitE1(reqK(LP_A, {ip: ipI, ua: 'QiBlancoInternal/1.0 (design-watch)'}), {}), null);
   let uaOhne = '';
-  for (let i = 0; i < 5000 && !uaOhne; i += 1) if (besucherEimer('', `UA-${i}`) >= 100 - E2.anteil_prozent) uaOhne = `UA-${i}`;
+  for (let i = 0; i < 5000 && !uaOhne; i += 1) if (besucherEimer('', `Mozilla/5.0 (iPhone; UA-${i})`) >= 100 - E2.anteil_prozent) uaOhne = `Mozilla/5.0 (iPhone; UA-${i})`;
   assert.ok(uaOhne);
   assert.equal(entscheideMitE1(reqK(LP_A, {ip: '', ua: uaOhne}), {}), null);
   assert.equal(entscheideMitE1(reqK(`${LP_A}.data`, {ip}), {}), null);
@@ -630,4 +630,101 @@ test('Kurz-Arme: Ad-Weiche schließt K50 und K25 aus (sonst Schleife)', () => {
     assert.equal(istAusgeschlossen(p), true);
     assert.equal(entscheideAdWeiche(`${BASIS}${p}?utm_medium=paid&fbclid=X&lp_m=c`), null);
   }
+});
+
+// ═══ Gemeinsamer Bot-Ausschluss vor allen Eimer-Zweigen (Job 20261021-szs-b2-weiche-bot-ausschluss) ═══
+// Vertrag in heatmap-manager/config/experimente.yaml (szs-e2-gs126, szs-e6-gs082):
+// „Crawler, Vorschau-Bots und interner Verkehr immer A". Bis zum 10.11.2026 schloss
+// entscheideLpExperiment nur den eigenen Verkehr aus: ein Googlebot mit Eimer 30..44
+// bekam den 302 auf B (Marker g), mit Eimer >= 85 den auf B2 (Marker z).
+const BOT_UAS = Object.freeze({
+  googlebot:
+    'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.71 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+  adsbot: 'AdsBot-Google (+http://www.google.com/adsbot.html)',
+  facebookexternalhit: 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+  metaexternalagent: 'meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler)',
+  whatsapp: 'WhatsApp/2.23.20.0',
+  telegrambot: 'TelegramBot (like TwitterBot)',
+  bingbot: 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)',
+  headless: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/120.0.0.0 Safari/537.36',
+});
+
+/** Echte Besucher: In-App-Browser von Meta (der größte Anteil auf B), Safari, Chrome, ein CUBOT-Gerät. */
+const MENSCH_UAS = Object.freeze([
+  'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [FBAN/FBIOS;FBAV/470.0.0.40.97;FBBV/621398385;FBDV/iPhone14,5;FBMD/iPhone;FBSN/iOS;FBSV/17.5;FBSS/3;FBID/phone;FBLC/de_DE;FBOP/5]',
+  'Mozilla/5.0 (Linux; Android 14; SM-S918B Build/UP1A.231005.007; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/125.0.6422.165 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/468.0.0.55.105;]',
+  'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 330.0.3.17.105 (iPhone14,7; iOS 17_4; de_DE; de; scale=3.00; 1170x2532; 601222020)',
+  'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+  'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36',
+  'Mozilla/5.0 (Linux; Android 11; CUBOT KINGKONG 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (iPhone)',
+]);
+
+/** Je Eimer-Zweig: Schalter (b, b2, k50, k25, e6) und der Eimer-Bereich, der den Arm trägt. */
+const ZWEIGE = Object.freeze([
+  {arm: 'b', schalter: [true, false, false, false, false], von: 0, bis: E1.anteil_prozent},
+  {arm: 'b2', schalter: [false, true, false, false, false], von: 100 - E2.anteil_prozent, bis: 100},
+  {arm: 'k50', schalter: [false, false, true, false, false], von: 0, bis: 15},
+  {arm: 'k25', schalter: [false, false, false, true, false], von: 15, bis: 30},
+  {arm: 'b', name: 'e6', schalter: [false, false, false, false, true], von: E6.eimer_ab, bis: E6.eimer_ab + E6.anteil_prozent},
+]);
+
+const entscheideZweig = (req, z, env = {}) => entscheideLpExperiment(req, env, ...z.schalter);
+
+/** Hausfremde IP (198.18.0.0/15, Benchmark-Netz), deren Eimer für diese UA im Bereich [von, bis) liegt. */
+function ipImBereich(ua, von, bis) {
+  for (let i = 1; i < 60000; i += 1) {
+    const ip = `198.18.${i >> 8}.${i & 255}`;
+    const e = besucherEimer(ip, ua);
+    if (e >= von && e < bis) return ip;
+  }
+  throw new Error(`keine IP für [${von}, ${bis})`);
+}
+
+test('B2: Crawler bleiben auf A (Googlebot im B2-Eimer bekommt keinen 302)', () => {
+  const z = ZWEIGE.find((x) => x.arm === 'b2');
+  const ip = ipImBereich(BOT_UAS.googlebot, z.von, z.bis);
+  assert.equal(entscheideZweig(reqK(LP_A, {ip, ua: BOT_UAS.googlebot}), z), null);
+});
+
+test('Bot-Ausschluss: Crawler und Vorschau-Bots bleiben in JEDEM Eimer-Zweig auf A (B, B2, K50, K25, E6)', () => {
+  for (const z of ZWEIGE) {
+    // Gegenprobe gegen einen leeren Test: ein Mensch im selben Eimer-Bereich sieht den Arm.
+    const ipMensch = ipImBereich(MENSCH_UAS[0], z.von, z.bis);
+    assert.equal(entscheideZweig(reqK(LP_A, {ip: ipMensch, ua: MENSCH_UAS[0]}), z)?.arm, z.arm, `Mensch ${z.name || z.arm}`);
+    for (const [name, ua] of Object.entries(BOT_UAS)) {
+      const ip = ipImBereich(ua, z.von, z.bis);
+      assert.equal(entscheideZweig(reqK(`${LP_A}?utm_source=facebook&fbclid=X`, {ip, ua}), z), null, `${name} in ${z.name || z.arm}`);
+    }
+  }
+});
+
+test('Bot-Ausschluss: echte Besucher werden je Besucher genau so zugeteilt wie vorher (Eimer-Regel, 8 x 3000 Besucher)', () => {
+  for (const z of ZWEIGE) {
+    let imArm = 0;
+    for (const ua of MENSCH_UAS) {
+      for (let i = 1; i <= 3000; i += 1) {
+        const ip = `198.19.${i >> 8}.${i & 255}`;
+        const e = besucherEimer(ip, ua);
+        const soll = e >= z.von && e < z.bis ? z.arm : undefined;
+        const ist = entscheideZweig(reqK(LP_A, {ip, ua}), z);
+        assert.equal(ist?.arm, soll, `${z.name || z.arm} ${ua.slice(0, 40)} ${ip}`);
+        if (ist) {
+          assert.equal(ist.eimer, e);
+          imArm += 1;
+        }
+      }
+    }
+    assert.ok(imArm > 0, `${z.name || z.arm}: kein Besucher im Arm, Test wäre leer`);
+  }
+});
+
+test('Bot-Ausschluss: Pins bleiben für Messwerkzeuge (HeadlessChrome) erreichbar', () => {
+  const z = ZWEIGE.find((x) => x.name === 'e6');
+  const ip = ipImBereich(BOT_UAS.headless, 50, 85);
+  const e = entscheideZweig(reqK(`${LP_A}?lp_exp=b`, {ip, ua: BOT_UAS.headless}), z);
+  assert.equal(e?.arm, 'b');
+  assert.equal(e?.eimer, -1);
+  assert.equal(entscheideZweig(reqK(`${LP_A}?lp_exp=a`, {ip, ua: BOT_UAS.headless}), z), null);
 });
