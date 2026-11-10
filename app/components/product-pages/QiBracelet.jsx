@@ -195,146 +195,89 @@ function MainFeatures() {
 }
 
 
+/*
+ * Größenhilfe der alten Seite (C, /products/qibracelet-b, und Rückweg des
+ * Schalters KONFIGURATOR_QIBRACELET). Sie sagt dasselbe wie der Konfigurator
+ * (qibracelet-alpha-daten.js, VARIANTE): EIN Maßsystem (Breite, nicht
+ * Umfang), eine Spalte, die kleinere Größe an der Grenze, und dass man den
+ * Reif selbst enger drücken darf. Bis 2026-10 standen hier zwei gleichrangige
+ * Spalten (Loose/Tight Fit), ein Maßband-Bild (Umfang) und der Satz
+ * „L dehnen … Tight Fit“. Repair 20261023-repair-qibracelet-groessenhilfe-
+ * eindeutig-machen: zwei von zwei Größenfällen im Support (90 Tage) maßen
+ * 5,5 cm, nahmen „Loose Fit“ = M und bekamen einen zu weiten Reif.
+ */
 function PerfektePassform() {
   return (
     <>
       <div className="NormalSectionSize">
-        <h2 className="text-center">
-          Finde die perfekte Passform für dein QiBracelet®
-        </h2>
+        <h2 className="text-center">Welche Größe brauche ich?</h2>
       </div>
       <div className="PerfektePassform NormalSectionSize">
         <p>
-          Miss die <b>Breite deines Handgelenks</b> mit einem Lineal aus. Nimm
-          das Lineal und lege es an der{' '}
-          <b>breitesten Stelle deines Handgelenks</b> an. Das ist normalerweise
-          dort, wo du knorrige Knochen an beiden Seiten des Armes fühlen kannst.{' '}
-          <b>Schließe dann ein Auge</b> und <b>lies die Zahl vom Lineal</b> ab.
+          Miss die <b>Breite</b> deines Handgelenks, nicht den Umfang. Leg ein
+          Lineal an die breiteste Stelle deines Handgelenks, dort, wo du an
+          beiden Seiten die Knöchel spürst. Schließ ein Auge und lies ab, auf
+          den halben Zentimeter gerundet.
         </p>
-        <img
-          src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/massband-bracelet.webp?v=1760784243"
-          alt="Zeichnung: Maßband um das Handgelenk, um den Umfang für das QiBracelet® zu messen"
-        />
         <p>
-          Natürlich kann das QiBracelet® <b>gedehnt</b> oder <b>verengt</b>{' '}
-          werden, um eine ideale Passform zu gewährleisten. Sollte dein
-          Handgelenk ca. 7 cm betragen, dann kannst du L <b>dehnen</b> und
-          erhältst somit einen{' '}
-          <b>
-            <i>Tight Fit.</i>
-          </b>{' '}
+          Liegst du bei 5,5 oder 6,5 cm, nimm die <b>kleinere Größe</b>. Sie
+          liegt an. Der Reif ist dafür gebaut, dass du ihn anpasst: Mit beiden
+          Händen drückst du ihn enger oder dehnst ihn weiter. Das darfst du.
         </p>
       </div>
       <div className="NormalSectionSize">
-        <div class="bracelet-table-wrapper">
-          <div class="bracelet-table">
-            <div class="bracelet-row bracelet-header">
-              <div></div>
-              <div>
-                <h3>Loose Fit</h3>
+        <div className="bracelet-table-wrapper">
+          <div className="bracelet-table" role="table" aria-label="QiBracelet® Größe nach Breite des Handgelenks">
+            <div className="bracelet-row bracelet-header" role="row">
+              <div role="columnheader">
+                <h3>Breite deines Handgelenks</h3>
               </div>
-              <div>
-                <h3>Tight Fit</h3>
-              </div>
-            </div>
-
-            <div class="bracelet-row bracelet-subheader">
-              <div>
-                <span>
-                  Deine Handge-
-                  <br />
-                  lenks
-                </span>
-                <b>breite</b>
-              </div>
-              <div>
-                <span>QiBracelet® </span>
-                <b>bewegt sich</b>
-              </div>
-              <div>
-                <span>QiBracelet® </span>
-                <b>liegt an</b>
+              <div role="columnheader">
+                <h3>Größe</h3>
               </div>
             </div>
 
-            <div class="bracelet-row">
-              <div>
-                <b>4,5 cm</b>
+            <div className="bracelet-row" role="row">
+              <div role="cell">
+                <strong>4,5 bis 5 cm</strong>
               </div>
-              <div>
+              <div role="cell">
                 <strong>S</strong>
               </div>
-              <div></div>
             </div>
 
-            <div class="bracelet-row">
-              <div>
-                <b>5 cm</b>
-              </div>
-              <div>
-                <b>S</b>
-              </div>
-              <div>
-                <strong>S (verengt)</strong>
-              </div>
-            </div>
-
-            <div class="bracelet-row">
-              <div>
+            <div className="bracelet-row" role="row">
+              <div role="cell">
                 <strong>5,5 cm</strong>
               </div>
-              <div>
-                <strong>M</strong>
-              </div>
-              <div>
+              <div role="cell">
                 <strong>S</strong>
               </div>
             </div>
 
-            <div class="bracelet-row">
-              <div>
+            <div className="bracelet-row" role="row">
+              <div role="cell">
                 <strong>6 cm</strong>
               </div>
-              <div>
+              <div role="cell">
                 <strong>M</strong>
-              </div>
-              <div>
-                <strong>M (verengt)</strong>
               </div>
             </div>
 
-            <div class="bracelet-row">
-              <div>
+            <div className="bracelet-row" role="row">
+              <div role="cell">
                 <strong>6,5 cm</strong>
               </div>
-              <div>
-                <strong>L</strong>
-              </div>
-              <div>
+              <div role="cell">
                 <strong>M</strong>
               </div>
             </div>
 
-            <div class="bracelet-row">
-              <div>
-                <strong>7 cm</strong>
+            <div className="bracelet-row" role="row">
+              <div role="cell">
+                <strong>7 bis 7,5 cm</strong>
               </div>
-              <div>
-                <strong>L</strong>
-              </div>
-              <div>
-                <strong>L (verengt)</strong>
-              </div>
-            </div>
-
-            <div class="bracelet-row">
-              <div>
-                <strong>7,5 cm</strong>
-              </div>
-              <div>
-                <strong>L (gedehnt)</strong>
-              </div>
-              <div>
+              <div role="cell">
                 <strong>L</strong>
               </div>
             </div>
