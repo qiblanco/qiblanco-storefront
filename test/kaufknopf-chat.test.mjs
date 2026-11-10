@@ -481,5 +481,6 @@ test('Preis: das Merkmal sitzt an allen Preisblöcken der Kaufseiten', async () 
   }
   const signal = await readFile(new URL('../app/components/KaufknopfChatSignal.jsx', import.meta.url), 'utf8');
   assert.match(signal, /PREIS_SELEKTOR/);
+  assert.match(signal, /selectNodeContents\(p\)/, 'Inhalt, nicht Kasten');
   assert.match(signal, /^\s+preise,\n/m);
 });

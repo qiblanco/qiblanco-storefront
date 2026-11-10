@@ -288,7 +288,9 @@ export const PFEIL_SELEKTOR = 'button.SliderButton';
  * nichts gekauft.
  *
  * Der Preis zählt in jeder Lage wie ein Kaufknopf: in der Ruhelage und
- * hochgerutscht. RÜCKWEG: PREIS_WEICHT_AN = false, dann zählt nur der Knopf
+ * hochgerutscht. Als Rechteck gilt sein INHALT (Range über die Kinder), nicht
+ * der Kasten: .tas-preiszeile ist ein Block über die ganze Zeile, der Betrag
+ * darin steht links, und Anna soll nicht über leeren Raum springen. RÜCKWEG: PREIS_WEICHT_AN = false, dann zählt nur der Knopf
  * wie vor diesem Bau.
  */
 export const PREIS_SELEKTOR = 'main [data-qb-preis]';
