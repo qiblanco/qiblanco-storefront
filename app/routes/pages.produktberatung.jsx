@@ -436,7 +436,9 @@ export const meta = ({location}) => {
   const such = new URLSearchParams(location?.search || '');
   const persoenlich = such.has('verwalten') || such.has('b');
   return [
-    {title: TITEL},
+    // <title> in Kurzform (GEO-Regel R3, höchstens 60 Zeichen; Job 20261031-m5f2-produktberatung-title-nach-gs107):
+    // derselbe Wortlaut wie TITEL, nur „Minuten" -> „Min.", der Suchbegriff bleibt vorn. og:title trägt weiter TITEL.
+    {title: 'Produktberatung: 20 Min. mit Christian per Zoom | Qi Blanco'},
     {name: 'description', content: BESCHREIBUNG},
     canonicalLink(PFAD),
     ...(persoenlich ? [{name: 'robots', content: 'noindex, nofollow'}] : []),
