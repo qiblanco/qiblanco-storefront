@@ -189,8 +189,13 @@ export const FRAGE_GEBRAUCHT = {
     'Bei Qi Blanco bekommst du dein Elektrosmog-Armband QiBracelet® neu ' +
     'und im Original mit eigener Seriennummer: 20 Tage zu Hause testen, ' +
     '100 % Geld-zurück-Garantie und mindestens zwei Jahre Gewährleistung.',
-  beleg: 'Produktseite QiBracelet®',
-  belegPfad: '/products/qibracelet',
+  // Beleg = AGB (seit 2026-11-10, Gegenprüfung K3): dort stehen die
+  // freiwillige 20-Tage-Zufriedenheitsgarantie mit vollem Kaufpreis zurück und
+  // die Gewährleistung (§ 9). Die Produktseite /products/qibracelet nennt die
+  // Geld-zurück-Garantie nicht; die Seriennummer steht auf dieser Seite unter
+  // „Originalware mit eigener Seriennummer“ (VORTEILE).
+  beleg: 'AGB: 20-Tage-Zufriedenheitsgarantie und Gewährleistung',
+  belegPfad: '/pages/agb',
 };
 
 /**
