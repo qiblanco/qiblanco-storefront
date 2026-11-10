@@ -16,6 +16,7 @@ import {ohneProsa} from './_quelltext.mjs';
 
 import {
   FRAGEN,
+  FRAGE_GEBRAUCHT,
   FRISTEN,
   VORTEILE,
   IM_PREIS,
@@ -108,15 +109,49 @@ test('alle fünf Fragen passieren das Deny-Netz', () => {
   assert.ok(schema, 'kein Schema entstanden');
   assert.equal(schema.mainEntity.length, FRAGEN.length);
   assert.equal(FRAGEN.length, 5);
+  // Mit der Gebrauchtkauf-Frage (2026-11-10) sind es sechs, und keine fällt
+  // aus dem Netz.
+  const mit = buildFaqPageJsonLd([FRAGE_GEBRAUCHT, ...FRAGEN], {inLanguage: 'de-DE'});
+  assert.equal(mit.mainEntity.length, 6);
+  assert.equal(mit.mainEntity[0].name, FRAGE_GEBRAUCHT.q);
 });
 
 test('jede Schema-Frage steht auch sichtbar auf der Seite', () => {
   // Die Komponente rendert {f.q} und {f.a} aus derselben Liste. Faellt der
   // Abschnitt weg, ist das Schema eine Auszeichnung für unsichtbaren Text.
-  assert.match(KOMPONENTE, /FRAGEN\.map/);
+  assert.match(KOMPONENTE, /const fragen = \[\.\.\.zusatzFragen, \.\.\.FRAGEN\]/);
+  assert.match(KOMPONENTE, /fragen\.map/);
   assert.match(KOMPONENTE, /\{f\.q\}/);
   assert.match(KOMPONENTE, /\{f\.a\}/);
-  assert.match(ROUTE, /buildFaqPageJsonLd\(FRAGEN/);
+  // NAHT Route -> Komponente (seit 2026-11-10): übergibt die Route
+  // zusatzFragen, baut sie das Schema aus GENAU dieser Liste vor FRAGEN.
+  // Ohne Übergabe (Gewinnerfassung) bleibt es buildFaqPageJsonLd(FRAGEN, …).
+  const zusatz = ROUTE.match(/zusatzFragen=\{(\w+)\}/);
+  if (zusatz) {
+    assert.ok(
+      ROUTE.includes(`buildFaqPageJsonLd([...${zusatz[1]}, ...FRAGEN]`),
+      `Schema ohne die sichtbaren zusatzFragen ${zusatz[1]}`,
+    );
+  } else {
+    assert.match(ROUTE, /buildFaqPageJsonLd\(FRAGEN,/);
+  }
+});
+
+test('die Gebrauchtkauf-Frage: Antwort im ersten Satz, nur über unser Angebot', () => {
+  const {q, a} = FRAGE_GEBRAUCHT;
+  assert.match(q, /EMF-Armband/);
+  assert.match(q, /gebraucht/);
+  const erster = a.split(/(?<=\.)\s+/)[0];
+  // Echtheit, Rückgabe, Garantie und Gewährleistung im ERSTEN Satz.
+  for (const teil of [/im Original/, /Seriennummer/, /20 Tage zu Hause testen/, /100 % Geld-zurück-Garantie/, /Gewährleistung/]) {
+    assert.match(erster, teil);
+  }
+  assert.match(erster, /Elektrosmog-Armband/);
+  assert.equal(FRAGE_GEBRAUCHT.belegPfad, '/products/qibracelet');
+  // Nicht in FRAGEN: die Gewinnerfassung rendert FRAGEN unverändert.
+  assert.ok(!FRAGEN.some((f) => f.id === FRAGE_GEBRAUCHT.id));
+  // Christian 28.09.: kein Satz über den Gebrauchtmarkt.
+  assert.ok(!/privat|Kleinanzeige|Gebrauchtmarkt|Verkäufer|eBay/i.test(a));
 });
 
 test('das Schema trägt Autor und Datum als Konstanten, nicht als Uhr', () => {
@@ -206,7 +241,7 @@ test('die Gründe für den Direktkauf stehen in Christians Reihenfolge', () => {
 
 test('Christians beanstandete Sätze stehen nirgends mehr', () => {
   const sichtbar = [
-    ...FRAGEN.flatMap((f) => [f.q, f.a]),
+    ...[FRAGE_GEBRAUCHT, ...FRAGEN].flatMap((f) => [f.q, f.a]),
     ...FRISTEN.flatMap((f) => [f.titel, f.text]),
     ...VORTEILE.flatMap((g) => [g.titel, g.text]),
     ...IM_PREIS.map((p) => p.text),
@@ -251,7 +286,7 @@ test('kein Vorwurf wird wiederholt und kein Kritiker genannt', () => {
   // Wer die Vorwuerfe nachdruckt, verstaerkt die Verbindung. Geprueft wird
   // der ganze sichtbare Text, nicht nur eine Ueberschrift.
   const sichtbar = [
-    ...FRAGEN.flatMap((f) => [f.q, f.a]),
+    ...[FRAGE_GEBRAUCHT, ...FRAGEN].flatMap((f) => [f.q, f.a]),
     ...FRISTEN.flatMap((f) => [f.titel, f.text]),
     ...IM_PREIS.map((p) => p.text),
     ...VORTEILE.flatMap((g) => [g.titel, g.text]),
@@ -276,7 +311,7 @@ test('kein Vorwurf wird wiederholt und kein Kritiker genannt', () => {
 
 test('keine Wirkaussage auf dieser Flaeche', () => {
   const sichtbar = [
-    ...FRAGEN.map((f) => f.a),
+    ...[FRAGE_GEBRAUCHT, ...FRAGEN].map((f) => f.a),
     ...FRISTEN.map((f) => f.text),
     ...IM_PREIS.map((p) => p.text),
     ...VORTEILE.map((g) => g.text),
@@ -293,7 +328,7 @@ test('keine Rueckgabequote — auch nicht geschaetzt', () => {
   // Sie ist heute nicht belastbar messbar (Shopify-Lesepfad erreicht 57,4
   // Tage). Eine Zahl aus einem Zwei-Monats-Fenster saehe wie eine Messung aus.
   const alles = [
-    ...FRAGEN.map((f) => f.a),
+    ...[FRAGE_GEBRAUCHT, ...FRAGEN].map((f) => f.a),
     ...FRISTEN.map((f) => f.text),
     ...IM_PREIS.map((p) => p.text),
     ...VORTEILE.flatMap((g) => [g.titel, g.text]),
