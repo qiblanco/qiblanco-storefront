@@ -468,7 +468,9 @@ export const FAQ_KAUF = [
     // die Vergleichsachsen und wertet nicht.
     auch: {
       pfad: '/pages/healy-alternative',
-      text: 'Healy und Qi Blanco im Vergleich: Bauart, Preis, Rückgabe und Belege',
+      // LINKTEXT 2026-11-10 (SEO-Maßnahmen L22/L26 healy-alternative): der
+      // Suchbegriff „Healy Alternative" steht vorn, die Achsen bleiben.
+      text: 'Healy Alternative im Vergleich: Bauart, Preis, Rückgabe und Belege',
     },
   },
   {
