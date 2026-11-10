@@ -998,6 +998,16 @@ html[data-chat-offen] #qiblanco-salesbot-widget-traeger {
   z-index: var(--z-dialog);
 }
 
+/* Schließfläche als RÜCKWAND über die ganze Fläche, hinter der Schublade
+   (sie steht im DOM vor dem <aside>, beide ohne z-index: das <aside> liegt
+   oben). Ein Tipp neben die Schublade schließt, an jeder Breite, auch neben
+   dem Desktop-Panel und bei angedocktem Chat.
+   Vorher `width: calc(100% - var(--aside-width))`: auf dem Handy negativ, die
+   44-px-Mindestgröße weiter unten machte daraus einen Streifen links, der
+   ganz unter der 100vw breiten Schublade lag, sichtbar im Sinne des Layouts
+   und nie treffbar (schliesskreuz-wache, 56 Befunde seit 2026-10-23, Job
+   schliesskreuz-wache-20261106-83369c50). Leitsatz overlay_ordnung: kein
+   Bedienelement sichtbar und zugleich nicht treffbar. */
 .overlay .close-outside {
   background: transparent;
   border: none;
@@ -1006,7 +1016,7 @@ html[data-chat-offen] #qiblanco-salesbot-widget-traeger {
   left: 0;
   position: absolute;
   top: 0;
-  width: calc(100% - var(--aside-width));
+  width: 100%;
 }
 
 .overlay .light {
