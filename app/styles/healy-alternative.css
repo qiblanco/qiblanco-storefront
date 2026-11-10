@@ -173,6 +173,21 @@
   margin-top: var(--hea-s1);
 }
 
+/* Quelle je Tabellenzeile (seit 2026-11-10): eigene Zeile unter dem Zelltext,
+   klein und gedaempft wie die Quellenzeile; die Nummer springt in die Liste. */
+.hea__zquelle {
+  display: block;
+  margin-top: var(--hea-s1);
+  font-size: var(--hea-fs-xs);
+  color: var(--hea-muted);
+}
+
+.hea__zquelle a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .hea h3.hea__klasse { margin-top: var(--hea-s4); }
 
 /* ─── Vergleichstabelle ───────────────────────────────────────────────────── */

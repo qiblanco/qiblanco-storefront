@@ -10,8 +10,21 @@ import {isoMitZone} from '~/lib/datum';
  * Auftrag: GEO-Grossjob 20261007-GROSSJOB-geo-manager-chatgpt-perplexity-grok-
  * gemini-sichtbarkeit, Segment s04 (Christian, 07.10.2026: „Vergleichs- bzw.
  * Alternativseiten … faktisch und fair, keine Herabsetzung, Kritik an uns nach
- * außen nie zitieren"). Die Frage steht in Adresse und H1, die Antwort im
- * ersten Absatz: so schneiden Antwortsysteme Texte in zitierbare Stücke.
+ * außen nie zitieren"). Die Antwort steht im ersten Absatz: so schneiden
+ * Antwortsysteme Texte in zitierbare Stücke.
+ *
+ * HAUPTBEGRIFF „Healy Alternative" (seit 2026-11-10, SEO-Maßnahmen L22 und
+ * L26 M-SP-20261017-healy-alternative in EINEM Eingriff, Job seo-2026-w46-
+ * l22-healy-alternative-75f9): Titel, H1, meta description und erster Satz
+ * führen ihn vorn, in der Schreibweise, in der gesucht wird. Gemessen vor dem
+ * Umbau (Search Console, Seite x Suchanfrage, 09.10.-06.11.2026): einziger
+ * sichtbarer Begriff „healy alternative", 2 Impressionen auf Platz 6,0, also
+ * nicht in den Top 3. Die Frage „Was ist eine gute Alternative zu Healy?"
+ * bleibt als erste Antwort im ersten Absatz und in den Fragen.
+ *
+ * QUELLE JE ZEILE: jede Tabellenzelle verweist auf ihren Eintrag in QUELLEN
+ * (Feld `quellen` je Zeile, 1-basiert wie die sichtbare Nummerierung).
+ * Wer QUELLEN umsortiert, zieht die Nummern in VERGLEICH nach.
  *
  * INHALT UND DARSTELLUNG IN EINER DATEI, mit Absicht: hb-deploy Gate 2 gibt
  * app/data/ nur je Datei frei (ALLOW_GLOB), die Freigabezeile läge in
@@ -41,18 +54,18 @@ import {isoMitZone} from '~/lib/datum';
 
 export const PFAD = '/pages/healy-alternative';
 const VEROEFFENTLICHT = '2026-10-07';
-const GEAENDERT = '2026-10-07';
+const GEAENDERT = '2026-11-10';
 const STAND = '7. Oktober 2026';
 
 export const SEITE = {
   pfad: PFAD,
-  titel: 'Alternative zu Healy: Healy und Qi Blanco im Vergleich | Qi Blanco',
+  titel: 'Healy Alternative ohne Akku und App: der Vergleich | Qi Blanco',
   vorspann: 'Healy im Vergleich',
-  h1: 'Was ist eine gute Alternative zu Healy?',
+  h1: 'Healy Alternative ohne Akku und App',
   beschreibung:
-    'Eine gute Alternative zu Healy ist der QiOne® 2 Pro von Qi Blanco: Schmuck ohne Akku, ohne App und ohne Folgekosten. Bauart, Preis, Rückgabe und Belege im Vergleich, mit Quellen.',
+    'Healy Alternative ohne Akku, App und Folgekosten: der QiOne® 2 Pro von Qi Blanco. Bauart, Tragen, Preis und Rückgabe im Vergleich, mit Quelle in jeder Zeile.',
   antwort: [
-    'Eine gute Alternative zu Healy für alle, die etwas tragen wollen, ohne es zu laden oder per App zu steuern, ist der QiOne® 2 Pro von Qi Blanco. Das ist ein Anhänger aus Chirurgenstahl mit einem Chip aus 750er Gold, den du Tag und Nacht trägst.',
+    'Eine gute Healy Alternative ist der QiOne® 2 Pro von Qi Blanco, wenn du etwas tragen willst, ohne es zu laden oder per App zu steuern. Das ist ein Anhänger aus Chirurgenstahl mit einem Chip aus 750er Gold, den du Tag und Nacht trägst.',
     'Healy ist ein kleines Gerät mit Akku für Mikrostrom-Frequenz-Programme. Du steuerst es über eine App auf dem Smartphone und wählst dort ein Programm aus.',
     'Viele, die nach einer Alternative zu Healy suchen, fragen nach Schutz vor Strahlung von Handy, WLAN und 5G und nach mehr Energie. Mehr als 14.000 Menschen tragen heute einen QiOne®, und in 171 ausgewerteten Erfahrungsberichten ging es am häufigsten um mehr Ruhe, tieferen Schlaf und mehr Energie.',
   ],
@@ -68,49 +81,66 @@ export const SEITE = {
  */
 export const STIMME = null;
 
-/** Die Vergleichstabelle. `qione` = null heißt: der Wert kommt live (Preis). */
+/**
+ * Die Vergleichstabelle. `qione` = null heißt: der Wert kommt live (Preis).
+ * `quellen`: Nummern in QUELLEN (1-basiert) je Spalte.
+ */
 export const VERGLEICH = [
   {
     id: 'bauart',
     merkmal: 'Bauart',
     healy: 'Kleines Gerät mit Akku für Mikrostrom-Frequenz-Programme, Healy Discover 55 × 57 × 13 mm und 32 g.',
     qione: 'Anhänger aus 316L-Chirurgenstahl mit Gitterchip® aus 750er Gold, ohne Elektronik.',
+    quellen: {healy: [2], qione: [8]},
   },
   {
     id: 'anwendung',
     merkmal: 'Anwendung',
-    healy: 'Programmauswahl in der Healy-App, im Lieferumfang von Healy Discover Anschlusskabel, Klebeelektroden und zwei Armbänder.',
-    qione: 'Als Anhänger an jeder Stelle am Körper, auch beim Duschen, Schwimmen und in der Sauna.',
+    healy: 'Du wählst ein Programm in der Healy-App, es wird auf das Gerät übertragen, und du stellst die Intensität ein.',
+    qione: 'Nichts einzustellen und nichts zu bedienen.',
+    quellen: {healy: [3], qione: [8]},
+  },
+  {
+    id: 'tragen',
+    merkmal: 'Tragen',
+    healy: 'Laut Healy kompakt, tragbar und leicht. Im Lieferumfang von Healy Discover Anschlusskabel, Klebeelektroden und zwei Armbänder.',
+    qione: 'Als Anhänger an jeder Stelle am Körper, Tag und Nacht, auch beim Duschen, Schwimmen und in der Sauna.',
+    quellen: {healy: [2, 7], qione: [8]},
   },
   {
     id: 'strom',
     merkmal: 'Strom und App',
     healy: 'Healy Discover mit Akku (145 mAh), Laden per Micro-USB, Steuerung über die Healy-App für Apple und Android.',
     qione: 'Kein Akku, kein Laden, keine App.',
+    quellen: {healy: [2], qione: [8]},
   },
   {
     id: 'preis',
     merkmal: 'Preis',
     healy: 'Editionen ab 820 € (Healy Discover), die größte ab 4.545 € (Healy Obsidian), mit 19 % Mehrwertsteuer. Weitere Programmgruppen einzeln oder im Monatsabo.',
     qione: null,
+    quellen: {healy: [1, 4], qione: [8]},
   },
   {
     id: 'kauf',
     merkmal: 'Kauf',
     healy: 'Im Healy Shop Europa. Zum Kauf brauchst du dort einen Empfehlungslink, Healy hilft bei der Suche nach einem Sponsor.',
     qione: 'Direkt bei Qi Blanco im Online-Shop.',
+    quellen: {healy: [6], qione: [8]},
   },
   {
     id: 'frist',
     merkmal: 'Rückgabe',
     healy: '14 Tage Widerruf ab Erhalt, in Deutschland werden 5 € Rücksendekosten abgezogen.',
     qione: '20 Tage ab Ankunft, du bekommst den vollen Kaufpreis zurück.',
+    quellen: {healy: [5], qione: [12]},
   },
   {
     id: 'belege',
     merkmal: 'Belege',
     healy: 'Healy nennt mehr als 20 abgeschlossene Studien zu Healy und MagHealy.',
     qione: 'Fünf veröffentlichte Arbeiten des Dartsch Scientific Instituts, davon vier Zellstudien im Labor.',
+    quellen: {healy: [7], qione: [11]},
   },
 ];
 
@@ -227,11 +257,12 @@ export const QUELLEN = [
   {titel: 'Healy Programmgruppen, Preise im Abo', von: 'Healy World', url: 'https://eu.healy.shop/de/produkt-kategorie/programmgruppen/'},
   {titel: 'Healy Rückgaberecht', von: 'Healy World', url: 'https://eu.healy.shop/de/rueckgaberecht/'},
   {titel: 'Healy Kasse: Kauf mit Empfehlungslink', von: 'Healy World', url: 'https://eu.healy.shop/de/checkout/'},
-  {titel: 'Healy World Startseite: Angabe zu den Studien', von: 'Healy World', url: 'https://eu.healy.shop/de/'},
+  {titel: 'Healy World Startseite: Angabe zu den Studien, Gerät kompakt und tragbar', von: 'Healy World', url: 'https://eu.healy.shop/de/'},
   {titel: 'QiOne® 2 Pro: Material, Tragen und Preis', von: 'Qi Blanco', to: '/products/qione-2-pro'},
   {titel: 'Studie Immunzellen, Japan Journal of Medicine 2021, DOI 10.31488/JJM.165', von: 'Dartsch Scientific Institut', to: '/pages/studie-immunzellen'},
   {titel: 'Studie Nutzererfahrung, Advances in Bioengineering & Biomedical Science Research 2024', von: 'Dartsch Scientific Institut', to: '/pages/studie-nutzererfahrung'},
   {titel: 'Alle fünf Arbeiten im Überblick', von: 'Qi Blanco', to: '/pages/studien'},
+  {titel: 'Häufige Fragen: Rückgabe in 20 Tagen', von: 'Qi Blanco', to: '/pages/faq'},
 ];
 
 /* ======================================================================== */
@@ -322,6 +353,25 @@ export function strukturierteDaten(preis) {
 /* ======================================================================== */
 
 /**
+ * Quellverweis in einer Tabellenzelle: „Quelle 2" bzw. „Quellen 2, 3", jede
+ * Nummer springt auf ihren Eintrag in der Quellenliste (id quelle-N).
+ */
+function ZellQuelle({nummern = []}) {
+  if (!nummern.length) return null;
+  return (
+    <span className="hea__zquelle">
+      {nummern.length > 1 ? 'Quellen ' : 'Quelle '}
+      {nummern.map((n, i) => (
+        <span key={n}>
+          {i ? ', ' : null}
+          <a href={`#quelle-${n}`}>{n}</a>
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/**
  * TRACKING-NAHT: keine Cookies, kein neuer Identitäts- oder Tracking-Schlüssel,
  * kein eigener Pixel. Die Knöpfe führen per <Link> auf die Kaufseiten; die
  * R1/R2/R3-Kette hängt pfad-agnostisch im root-Layout. Externe Links (Healy)
@@ -377,12 +427,16 @@ export function HealyAlternativeSeite({products = []}) {
               {VERGLEICH.map((z) => (
                 <tr key={z.id}>
                   <th scope="row">{z.merkmal}</th>
-                  <td data-label="Healy">{z.healy}</td>
+                  <td data-label="Healy">
+                    {z.healy}
+                    <ZellQuelle nummern={z.quellen.healy} />
+                  </td>
                   <td data-label="QiOne® 2 Pro">
                     {z.qione ??
                       (preis
                         ? `${preis} einmalig, ohne Folgekosten.`
                         : 'Einmal bezahlt, ohne Folgekosten.')}
+                    <ZellQuelle nummern={z.quellen.qione} />
                   </td>
                 </tr>
               ))}
@@ -475,8 +529,8 @@ export function HealyAlternativeSeite({products = []}) {
         <div className="hea__inhalt">
           <h2>Quellen</h2>
           <ol className="hea__quellen">
-            {QUELLEN.map((q) => (
-              <li key={q.titel}>
+            {QUELLEN.map((q, i) => (
+              <li key={q.titel} id={`quelle-${i + 1}`}>
                 {q.url ? (
                   <a href={q.url} target="_blank" rel="noopener noreferrer nofollow">
                     {q.titel}
