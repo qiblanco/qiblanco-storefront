@@ -9,26 +9,27 @@
  * Videoquellen der Seiten tot, alle auf qiblanco.com. Der Spieler bleibt dann
  * mitten im Video stehen. Mit jedem Cache-Verfall fällt eine weitere Quelle aus.
  *
- * WAS HIER STEHT: je imgix-Pfad dasselbe Video als Shopify-Video
- * (Shopify Files, GL-PRO-0015). Die Dateien sind aus den noch ausgelieferten
- * imgix-Segmenten zusammengesetzt (je Zeitabschnitt die höchste noch lieferbare
- * Stufe, auf 1080 Pixel an der kurzen Seite gerechnet). cdn.shopify.com steht
- * schon in img-src und media-src der CSP (entry.server.jsx).
+ * WAS HIER STEHT: je Videopfad (der alte imgix-Pfad, als Name behalten)
+ * dasselbe Video als Shopify-Video (Shopify Files, GL-PRO-0015). Die Dateien
+ * sind aus den damals noch ausgelieferten imgix-Segmenten zusammengesetzt
+ * (je Zeitabschnitt die höchste noch lieferbare Stufe, auf 1080 Pixel an der
+ * kurzen Seite gerechnet). cdn.shopify.com steht in img-src und media-src der
+ * CSP (entry.server.jsx).
  *
- * SCHALTER (Rückweg ohne Revert): VIDEO_QUELLE = 'imgix' stellt jede Einbindung
- * byte-gleich auf die imgix-URLs von vorher zurück. Ein Pfad ohne Eintrag
- * in SHOPIFY_VIDEOS bleibt immer auf imgix.
+ * IMGIX IST AUSGEBAUT (Elina EL-20261014-aea9424f, Punkt 4; imgix gekündigt
+ * zum 20.10.2026, Grossjob 20261021-imgix-rueckfall-und-csp-entfernen-nach-
+ * kuendigung s02): kein Schalter, kein Host, kein Rückfall mehr. Ein Pfad ohne
+ * Eintrag in SHOPIFY_VIDEOS liefert KEINE Quelle (hls/mp4 null, quelle
+ * 'fehlt'); <ImgixVideo> zeigt dann sein Ersatzbild statt eines leeren
+ * Spielers, und test/video-quellen.test.mjs wird rot (jeder in app/
+ * verwendete Pfad ist dort geerntet). Rückweg: `hb-deploy revert`.
  *
  * BEWUSST OHNE IMPORT: so prüft `node --test test/video-quellen.test.mjs` die
  * Regeln hermetisch.
  */
 
-export const VIDEO_QUELLE = 'shopify';
-
-export const IMGIX_HOST = 'https://qiblanco-video.imgix.net/';
-
 /*
- * Je imgix-Pfad: HLS-Manifest und mp4-Fassung des Shopify-Videos.
+ * Je Videopfad: HLS-Manifest und mp4-Fassung des Shopify-Videos.
  * gid und Upload-Zeitpunkt im Kommentar, damit die Datei im Admin auffindbar ist.
  */
 export const SHOPIFY_VIDEOS = {
@@ -70,14 +71,16 @@ export const SHOPIFY_VIDEOS = {
  * fiele dort auf 'unbekannt' und risse die Medien-Zeitreihe. Woher das Video
  * wirklich kommt, sagt `quelle` (am <video> als data-video-quelle).
  */
-/** {hls, mp4, familie, quelle} für einen imgix-Pfad. Nie null. */
+/** Antwort für einen Pfad ohne Shopify-Eintrag: keine Quelle, nie eine imgix-URL. */
+export const KEINE_QUELLE = Object.freeze({hls: null, mp4: null, familie: 'imgix', quelle: 'fehlt'});
+
+/**
+ * {hls, mp4, familie, quelle} für einen Videopfad. Nie null; ohne Eintrag in
+ * SHOPIFY_VIDEOS hls/mp4 null und quelle 'fehlt'.
+ */
 export function videoQuellen(videoPath) {
-  const s = VIDEO_QUELLE === 'shopify' ? SHOPIFY_VIDEOS[videoPath] : null;
+  // hasOwn: ein Pfad wie 'toString' darf nicht in den Prototyp greifen.
+  const s = Object.hasOwn(SHOPIFY_VIDEOS, videoPath) ? SHOPIFY_VIDEOS[videoPath] : null;
   if (s) return {hls: s.hls, mp4: s.mp4, familie: 'imgix', quelle: 'shopify'};
-  return {
-    hls: `${IMGIX_HOST}${videoPath}?fm=hls`,
-    mp4: `${IMGIX_HOST}${videoPath}?fm=mp4`,
-    familie: 'imgix',
-    quelle: 'imgix',
-  };
+  return {...KEINE_QUELLE};
 }

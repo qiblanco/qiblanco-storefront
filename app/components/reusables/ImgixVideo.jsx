@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from 'react';
 import {videoQuellen} from '~/data/video-quellen';
 import {hatHoerbarenTon} from '~/lib/video-ton';
 import {
+  ERSATZBILD_KANTE,
   Ersatzbild,
   bevorzugtRuhe,
   useErsatzbild,
@@ -58,15 +59,13 @@ const SOUND_STORAGE_PREFIX = 'qb-video-sound:';
  * - Die imgix-URL bleibt unverändert: jede neue Parameterkombination löst bei
  *   imgix eine neue, bezahlte Kodierung aus.
  *
- * STUFENDECKEL NUR AUF DER SHOPIFY-QUELLE: `capLevelToPlayerSize` wählt die
- * Stufe nach Spielergröße, `maxDevicePixelRatio` 1,5 hält sie auf dem Handy
- * (DPR 3) unter 1080. Gemessen am 29.09.2026 mit diesem Deckel: Desktop 480x480,
- * 1,6 MB statt 14,4 MB in 10 s. Auf imgix bleibt er aus: das Konto ist seit dem
- * 29.09.2026 gekappt, nie erzeugte kleine Stufen antworten dort mit HTTP 402,
- * und das Video blieb mit Deckel nach dem ersten Segment stehen. Shopify liefert
- * alle Stufen (1080/720/480) vollständig. Kippt VIDEO_QUELLE zurück auf
- * 'imgix', gilt wieder die Konfiguration ohne Deckel
- * (Folgeauftrag 20260929-imgix-dach-videospieler-stufendeckel-nach-kontingent).
+ * STUFENDECKEL: `capLevelToPlayerSize` wählt die Stufe nach Spielergröße,
+ * `maxDevicePixelRatio` 1,5 hält sie auf dem Handy (DPR 3) unter 1080.
+ * Gemessen am 29.09.2026 mit diesem Deckel: Desktop 480x480, 1,6 MB statt
+ * 14,4 MB in 10 s. Shopify liefert alle Stufen (1080/720/480) vollständig.
+ * Bis zum imgix-Ausbau (10.11.2026, imgix gekündigt zum 20.10.) galt der
+ * Deckel nur für die Shopify-Quelle, weil imgix kleine Stufen mit HTTP 402
+ * verweigerte; seitdem gibt es nur noch die Shopify-Quelle.
  */
 const HLS_KONFIG = {
   maxBufferLength: 10,
@@ -194,10 +193,13 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
   // lassen: dieser Wechsel ist ein Domaintausch, kein Formatwechsel.
   //
   // KONTINGENT-KAPPUNG 2026-10-03 (Regelkreis video-spielbarkeit, Arm BREIT):
-  // imgix antwortet auf nicht gecachte Segmente mit HTTP 402, das Video
-  // bleibt stehen. Die Quelle kommt deshalb aus app/data/video-quellen.js:
-  // dasselbe Video als Shopify-Video, Rückweg dort per VIDEO_QUELLE.
+  // imgix antwortete auf nicht gecachte Segmente mit HTTP 402. Die Quelle
+  // kommt seitdem aus app/data/video-quellen.js (dasselbe Video als
+  // Shopify-Video). Seit dem imgix-Ausbau (10.11.2026) gibt es dort keinen
+  // Rückfall mehr: ohne Shopify-Eintrag ist quelle 'fehlt', und statt eines
+  // leeren Spielers steht unten das Ersatzbild.
   const {hls: hlsUrl, mp4: mp4Url, quelle} = videoQuellen(videoPath);
+  const ohneQuelle = !hlsUrl && !mp4Url;
 
   // Gemessene Ton-Wahrheit (SSoT app/lib/video-ton.js). Konstant je
   // videoPath, daher kein State und kein Effekt — das Video rendert
@@ -214,6 +216,9 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
     let beobachter = null;
     let rueckfall = null;
     let abgebaut = false;
+
+    // Keine Quelle (Pfad ohne Shopify-Eintrag): es gibt kein <video>.
+    if (ohneQuelle) return;
 
     // Ruhe gewünscht oder Datensparen/2G (leitung.js): die Drehung gar nicht
     // laden, das Ersatzbild bleibt stehen. Spart nebenbei Kontingent. Nur mit
@@ -265,15 +270,11 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
         ohneHlsJs();
         return;
       }
-      hls = new Hls(
-        quelle === 'shopify'
-          ? {
-              ...HLS_KONFIG,
-              ...HLS_STUFENDECKEL,
-              ...(stufe === 'langsam' ? HLS_STUFENDECKEL_LANGSAM : {}),
-            }
-          : HLS_KONFIG,
-      );
+      hls = new Hls({
+        ...HLS_KONFIG,
+        ...HLS_STUFENDECKEL,
+        ...(stufe === 'langsam' ? HLS_STUFENDECKEL_LANGSAM : {}),
+      });
       if (mitErsatz) {
         // Fataler Fehler (Netz, Manifest, Medien): hls.js gibt auf, das
         // <video> selbst meldet dann nicht zwingend etwas.
@@ -307,7 +308,7 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
       if (rueckfall) clearTimeout(rueckfall);
       if (hls) hls.destroy();
     };
-  }, [hlsUrl, mp4Url, quelle, mitErsatz]);
+  }, [hlsUrl, mp4Url, ohneQuelle, mitErsatz]);
 
   // Ton-Zustand ans DOM-Element durchreichen (Property, nicht Attribut —
   // das Attribut bleibt für die Autoplay-Erlaubnis unveraendert `muted`).
@@ -342,6 +343,43 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
       }
       return nachher;
     });
+  }
+
+  /*
+   * OHNE QUELLE (seit dem imgix-Ausbau 10.11.2026): ein Pfad ohne Eintrag in
+   * SHOPIFY_VIDEOS bekommt keinen Spieler ohne src und keinen Ton-Knopf,
+   * sondern das Ersatzbild (bzw. fallbackImage) in derselben Hülle, im Fluss,
+   * damit die Hülle ihre Höhe behält. Die Hülle trägt die Video-Anker mit
+   * data-video-quelle="fehlt", damit eine Messung den Fall sieht; der Pixel
+   * zählt sie nicht als Medium (qpx.js wählt nur `video, [data-bild]`).
+   * test/video-quellen.test.mjs hält jeden verwendeten Pfad gegen
+   * SHOPIFY_VIDEOS, der Fall soll also nie live gehen.
+   */
+  if (ohneQuelle) {
+    const bild = mitErsatz ? ersatz.bild : fallbackImage;
+    const kante = mitErsatz ? ersatz.kante ?? ERSATZBILD_KANTE : undefined;
+    return (
+      <div
+        className={`${className} ImgixVideo-wrap`}
+        data-video={videoPath}
+        data-video-familie="imgix"
+        data-video-quelle="fehlt"
+        data-qb-360={mitErsatz ? ersatz.drehung : undefined}
+        data-qb-360-zustand={mitErsatz ? 'bild' : undefined}
+      >
+        {bild ? (
+          <img
+            data-qb-ersatzbild=""
+            src={bild}
+            alt={mitErsatz ? ersatz.alt : ''}
+            width={kante}
+            height={kante}
+            decoding="async"
+            style={{display: 'block', width: '100%', height: 'auto', objectFit: 'contain'}}
+          />
+        ) : null}
+      </div>
+    );
   }
 
   return (

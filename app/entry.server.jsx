@@ -473,13 +473,10 @@ export default async function handleRequest(
       'https://otlp-http-production.shopifysvc.com',
       'https://qiblanco-only-rating-serpapi.vercel.app',
       'https://*.reputon.com',
-      // Video-Auslieferung, seit 2026-09-18 auf imgix.net (Vorgang
-      // EL-20260814-9a7f9a50). Der Wildcard *.imgix.video stand hier für den
-      // 302 auf stream.media.imgix.video, den der .video-Weg für HLS machte.
-      // Auf .net gibt es diesen Sprung nicht: Manifest UND Segmente liegen auf
-      // qiblanco-video.imgix.net und werden relativ referenziert (gemessen
-      // 2026-09-18). Ein Host genügt, der Wildcard entfällt.
-      'https://qiblanco-video.imgix.net',
+      // Der imgix-Video-Host stand hier bis zum 10.11.2026. imgix ist zum
+      // 20.10.2026 gekündigt und aus dem Video-Baustein ausgebaut (Elina
+      // EL-20261014-aea9424f, Punkt 4); jedes Video kommt von cdn.shopify.com
+      // (app/data/video-quellen.js).
       'https://qiblanco.activehosted.com',
       // Eigener Anmelde-Endpunkt (ac-eingang, Stufe E1 der AC-Ablösung, s11):
       // GET /w (Weiche je Formular) und POST /f/<id>. STELLE 2 VON 2 — die
@@ -703,9 +700,9 @@ export default async function handleRequest(
       'blob:',
       'https://cdn.shopify.com',
       // Safari spielt HLS nativ über video.src — das faellt auf mediaSrc,
-      // nicht auf connectSrc. Beide Listen müssen denselben Host tragen,
-      // sonst läuft das Video in genau einem Browser nicht.
-      'https://qiblanco-video.imgix.net',
+      // nicht auf connectSrc. Beide Listen müssen den Video-Host tragen
+      // (heute cdn.shopify.com), sonst läuft das Video in genau einem Browser
+      // nicht. Der imgix-Host ist seit dem 10.11.2026 raus (gekündigt).
     ],
     fontSrc: [
       /*
