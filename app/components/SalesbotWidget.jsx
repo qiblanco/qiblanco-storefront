@@ -1,5 +1,10 @@
 import {useEffect} from 'react';
-import {loaderNachziehen} from '~/lib/salesbot-widget';
+import {
+  loaderJetztEinfuegen,
+  loaderNachziehen,
+  salesbotDienstPruefUrl,
+  SALESBOT_DIENST_FRIST_MS,
+} from '~/lib/salesbot-widget';
 
 /** Die id, die der Loader seinem iframe gibt. */
 const RAHMEN_ID = 'qiblanco-salesbot-widget-frame';
@@ -21,7 +26,8 @@ const LOADER_DATEN = {
  * Grossjob 20260728-leon-chatbot-live-pages-chatbot, Segment s05.
  *
  * Gerendert wird genau EIN inertes <script type="text/plain">-Merkmal; der
- * echte Loader kommt nach `load` (Begründung im Effekt). Das Skript erzeugt clientseitig ein iframe auf `<origin>/widget/embed` und
+ * echte Loader kommt aus dem Effekt, früh bei antwortendem Dienst, sonst
+ * nach `load` (Begründung im Effekt). Das Skript erzeugt clientseitig ein iframe auf `<origin>/widget/embed` und
  * gibt window.location.href als `pageUrl` mit; daraus löst der Bot seinen
  * Rechtsraum auf (bekannter Host → dessen Region, fremder Host →
  * fail-closed).
@@ -85,7 +91,8 @@ export function SalesbotWidget({origin, nonce}) {
     waechter.observe(document.body, {childList: true});
 
     /**
-     * LADEN ERST NACH `load` (seit 2026-10-30, Job
+     * LADEN NACH `load`, ODER FRÜHER, WENN DER DIENST ANTWORTET (Frühstart
+     * unten, seit 10.11.2026). Nach `load` seit 2026-10-30, Job
      * 20261030-folge-dienste-auf-eigene-domain-nach-dns). Vorher stand hier ein
      * SSR-Tag mit `defer`. Gemessen im Eltern-Auftrag
      * vom 30.10. (Kaufweg ohne sslip.io): verwirft
@@ -128,10 +135,58 @@ export function SalesbotWidget({origin, nonce}) {
         document.body.appendChild(tag);
       }
     };
-    if (document.readyState === 'complete') {
+
+    /**
+     * FRÜH LADEN, WENN DER DIENST ANTWORTET (s05, 10.11.2026; Begründung und
+     * Messung bei SALESBOT_DIENST_FRIST_MS in lib/salesbot-widget.js).
+     * Der fetch an `/healthz` hält `load` nicht auf. Antwortet der Dienst
+     * binnen der Frist, kommt der Loader sofort; verwirft das Netz den Abruf
+     * still, bricht die Uhr ihn ab, und der Loader wartet wie seit #1316 auf
+     * `load`. `einmal` hält beide Wege auf genau einen Ladeversuch.
+     */
+    let erledigt = false;
+    let abgebaut = false;
+    const einmal = () => {
+      if (erledigt || abgebaut) return;
+      erledigt = true;
+      window.removeEventListener('load', einmal);
       laden();
+    };
+    const abbruch =
+      typeof AbortController === 'function' ? new AbortController() : null;
+    let uhr = null;
+    if (loaderJetztEinfuegen({readyState: document.readyState, dienstAntwortet: false})) {
+      einmal();
     } else {
-      window.addEventListener('load', laden, {once: true});
+      window.addEventListener('load', einmal, {once: true});
+      const pruefUrl = salesbotDienstPruefUrl(origin);
+      if (pruefUrl && abbruch && typeof fetch === 'function') {
+        uhr = window.setTimeout(() => abbruch.abort(), SALESBOT_DIENST_FRIST_MS);
+        // no-cors: die Antwort bleibt undurchsichtig, gebraucht wird nur
+        // „kam an". Ohne Cookies, ohne Cache: gefragt ist der Dienst jetzt.
+        fetch(pruefUrl, {
+          mode: 'no-cors',
+          credentials: 'omit',
+          cache: 'no-store',
+          signal: abbruch.signal,
+        })
+          .then(() => {
+            window.clearTimeout(uhr);
+            if (
+              loaderJetztEinfuegen({
+                readyState: document.readyState,
+                dienstAntwortet: true,
+              })
+            ) {
+              einmal();
+            }
+          })
+          .catch(() => {
+            // Still verworfen, abgebrochen oder an der CSP gescheitert: der
+            // Loader bleibt beim Weg nach `load`.
+            window.clearTimeout(uhr);
+          });
+      }
     }
 
     /**
@@ -146,7 +201,10 @@ export function SalesbotWidget({origin, nonce}) {
      * Testseite den Assistenten wieder aufbaut statt stumm zu bleiben.
      */
     return () => {
-      window.removeEventListener('load', laden);
+      abgebaut = true;
+      window.removeEventListener('load', einmal);
+      if (uhr) window.clearTimeout(uhr);
+      if (abbruch) abbruch.abort();
       waechter.disconnect();
       // ALLE Rahmen, nicht nur den ersten: sollte doch einmal ein Duplikat
       // entstehen, darf es die Seite nicht überleben.
@@ -164,7 +222,7 @@ export function SalesbotWidget({origin, nonce}) {
   // Skript mit fremdem Typ nicht. Das Tag bleibt als Merkmal im HTML, weil die
   // Auslieferungs-Wache (qi-salesbot/data/widget-auslieferungs-vertrag.json,
   // an_muster/traeger_muster) und die Pixelmaske genau dieses Tag lesen.
-  // Geladen wird oben im Effekt, nach `load`.
+  // Geladen wird oben im Effekt: sofort, wenn der Dienst antwortet, sonst nach `load`.
   return (
     <script
       type="text/plain"

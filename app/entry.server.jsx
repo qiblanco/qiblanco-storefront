@@ -694,6 +694,11 @@ export default async function handleRequest(
       'https://pixel.uppromote.com',
       // First-Party-Pixel (qpx): Receiver-Origin nur, wenn per env gesetzt.
       ...qpxConnectSrc(context.env),
+      // Eigener Sales-Chat-Assistent: SalesbotWidget fragt vor `load`
+      // `<origin>/healthz` (Frühstart, lib/salesbot-widget.js). Fehlt die
+      // Origin hier, scheitert der fetch an der CSP, und Anna kommt still
+      // erst nach `load`.
+      ...salesbotWidgetCspQuellen(context.env),
     ],
     mediaSrc: [
       "'self'",
