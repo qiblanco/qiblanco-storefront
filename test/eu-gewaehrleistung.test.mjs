@@ -1177,19 +1177,19 @@ const ALLE_FLAECHEN = jsxDateien(
   ['app', 'components', 'campaign'],
 );
 
-/* AUSNAHME MIT GRUND, je Datei benannt: Flaechen mit Apple-Kopf, auf denen
- * die Pflichtmitteilung UNTER DEM KAUFKNOPF haengt (ProductForm-Default),
+/* AUSNAHME MIT GRUND, je Datei benannt: Flächen mit Apple-Kopf, auf denen
+ * die Pflichtmitteilung UNTER DEM KAUFKNOPF hängt (ProductForm-Default),
  * nicht als Listenpunkt mit Schild-Symbol. Grund: Christian 27.10.2026 Z1
  * „keine gimgis vor den aufzählungspunkten“ (Shop-Regel D1, shop-tor ruft
  * STOP am Symbol .eu-gwl__zeichen im Kopf) und 29.10.2026 Z7/Z9 „mit apple
  * desighn“ (S6). Vorbild ist die Apple-Seite A (products.qibracelet.jsx:
  * vertrauen={<EuGewaehrleistungsHinweis />} unter dem Knopf), wie zuvor
  * schon /products/the-alpha (Hinweis unter dem Knopf). Elinas Regel
- * EL-20260909-8c4001d1 gilt fuer alle anderen Flaechen unveraendert.
+ * EL-20260909-8c4001d1 gilt für alle anderen Flächen unverändert.
  * Eintrag: Job 20261023-repair-qibracelet-groessenhilfe-eindeutig-machen s06. */
 const HINWEIS_UNTER_DEM_KNOPF = {
   'app/components/product-pages/QiBraceletSeite.jsx':
-    'Rueckweg von KONFIGURATOR_QIBRACELET, Kopf nach Shop-Regeln D1/S6 (10.11.2026)',
+    'Rückweg von KONFIGURATOR_QIBRACELET, Kopf nach Shop-Regeln D1/S6 (10.11.2026)',
 };
 
 test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
@@ -1233,15 +1233,15 @@ test('jede Kaufflaeche MIT Nutzen-Liste trägt den Punkt IN der Liste', () => {
   }
 
   for (const {pfad, code} of mitListe) {
-    // APPLE-KOPF (seit 10.11.2026): hier haengt die Mitteilung unter dem
-    // Kaufknopf statt in der Liste. Gepruefte Zusage dafuer: genau einmal
-    // auf der Flaeche, also kein Listenpunkt UND der Default nicht aus.
+    // APPLE-KOPF (seit 10.11.2026): hier hängt die Mitteilung unter dem
+    // Kaufknopf statt in der Liste. Geprüfte Zusage dafür: genau einmal
+    // auf der Fläche, also kein Listenpunkt UND der Default nicht aus.
     if (HINWEIS_UNTER_DEM_KNOPF[pfad]) {
       assert.doesNotMatch(
         code,
         /<EuGewaehrleistungsListenpunkt\s*\/>/,
         `${pfad} steht in HINWEIS_UNTER_DEM_KNOPF und montiert trotzdem den ` +
-          'Listenpunkt -- dann stuende die Mitteilung zweimal auf der Seite.',
+          'Listenpunkt -- dann stünde die Mitteilung zweimal auf der Seite.',
       );
       assert.doesNotMatch(
         code,
