@@ -120,9 +120,19 @@ test('die belegten Produkt- und Studienpaare sind ausgezeichnet', () => {
   assert.equal(SEITEN_PAARE['/products/qione-2-pro'], '/products/qione');
   assert.equal(SEITEN_PAARE['/products/qihome-air'], '/products/qihome');
   assert.equal(SEITEN_PAARE['/products/qione-kette'], '/products/necklace');
-  assert.equal(SEITEN_PAARE['/products/crystal-cacao-create'],
-               '/products/crystal-cacao-create');
   assert.equal(SEITEN_PAARE['/pages/studien'], '/pages/studies');
+});
+
+// Crystal-Spiegel (seit 17.10.2026): die DE-Seiten kanonisieren auf
+// crystal-cacao.com und stehen in KEINER hreflang-Gruppe. Bis 2026-11-10 fuehrte
+// der SSoT beide Paare hreflang-tauglich, und das US-Snippet nannte sie als
+// deutsche Fassung - einseitig (K2-Befund us:hreflang W43-W46, Job
+// seo-2026-w43-k2-hreflang-gegenseitigkeit-zwi). Seitdem `hreflang: false`.
+test('fremd-kanonische Crystal-Spiegel-Seiten stehen in keiner hreflang-Gruppe', () => {
+  for (const pfad of ['/products/crystal-cacao-awake', '/products/crystal-cacao-create']) {
+    assert.equal(SEITEN_PAARE[pfad], undefined, `${pfad} kanonisiert fremd`);
+    assert.deepEqual(hreflangLinks(pfad), [], `${pfad} darf nichts ausgeben`);
+  }
 });
 
 test('ausgezeichneter Pfad nennt beide Seiten absolut und gegenseitig', () => {
