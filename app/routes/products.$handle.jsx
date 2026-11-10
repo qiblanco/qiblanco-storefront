@@ -1,5 +1,5 @@
 import {useRef} from 'react';
-import {useLoaderData} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import {redirect} from 'react-router';
 import {
   getSelectedProductOptions,
@@ -321,6 +321,48 @@ export default function Product() {
   );
 }
 
+/**
+ * NACHFOLGER AUSVERKAUFTER PRODUKTE (Job 20261105-qione1-ausverkauft-weg-zum-
+ * nachfolger). /products/qione-1 antwortet seit dem Rückweg vom 05.11.2026
+ * (PR #1365) wieder selbst, ist aber nicht kaufbar: der Knopf zeigt
+ * „Ausverkauft“, und im Inhalt führte kein Link zum Nachfolger. Wer dort
+ * landet, stand in einer Sackgasse. Der Hinweis steht deshalb direkt unter
+ * dem Knopf, nur solange die gewählte Variante ausverkauft ist, und nur für
+ * Produkte mit Eintrag in dieser Liste. Wird der Vorgänger wieder kaufbar,
+ * verschwindet er von selbst.
+ *
+ * Eine Liste im Code statt eines Shopify-Metafelds: es gibt heute genau ein
+ * Paar, und die Seite braucht keinen zweiten Abfrageweg. Kommt ein zweites
+ * Paar dazu, eine Zeile ergänzen.
+ */
+const NACHFOLGER = {
+  'qione-1': {handle: 'qione-2-pro', name: 'QiOne® 2 Pro'},
+};
+
+function NachfolgerHinweis({handle, ausverkauft}) {
+  const nachfolger = NACHFOLGER[handle];
+  if (!ausverkauft || !nachfolger) return null;
+  return (
+    <p className="mt-2" data-nachfolger={nachfolger.handle}>
+      Es gibt einen Nachfolger:{' '}
+      {/* Farbe und Unterstreichung wie der Gewährleistungs-Link darunter
+          (eu-gewaehrleistung.css): ohne sie las sich der Link im Vorschau-
+          Bild vom 10.11. wie Fließtext, und niemand hätte getippt. */}
+      <Link
+        to={`/products/${nachfolger.handle}`}
+        prefetch="intent"
+        style={{
+          color: 'var(--color-accent-ink)',
+          textDecoration: 'underline',
+          fontWeight: 600,
+        }}
+      >
+        {nachfolger.name} ansehen
+      </Link>
+    </p>
+  );
+}
+
 function StandardProduct({product, kaufleiste = false}) {
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -379,7 +421,12 @@ function StandardProduct({product, kaufleiste = false}) {
             unterKaufknopf={
               istBegrenztesAngebot(product.handle) ? (
                 <p className="mt-2">{ANGEBOT_HINWEIS}</p>
-              ) : null
+              ) : (
+                <NachfolgerHinweis
+                  handle={product.handle}
+                  ausverkauft={!selectedVariant?.availableForSale}
+                />
+              )
             }
           />
         </div>
