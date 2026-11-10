@@ -164,7 +164,7 @@ export const QUELLEN = {
   },
   "pollack2006": {
     "art": "fachliteratur_hypothese",
-    "zitat": "Zheng, Chai und Pollack: Surfaces and interfacial water, evidence that hydrophilic surfaces have long-range impact, Advances in Colloid and Interface Science 127, 2006, doi:10.1016/j.cis.2006.07.002",
+    "zitat": "Zheng, Chin, Khijniak, Khijniak und Pollack: Surfaces and interfacial water, evidence that hydrophilic surfaces have long-range impact, Advances in Colloid and Interface Science 127, 2006, doi:10.1016/j.cis.2006.07.002",
     "url": "https://doi.org/10.1016/j.cis.2006.07.002",
     "prüfung": "https://api.crossref.org/works/10.1016/j.cis.2006.07.002"
   },

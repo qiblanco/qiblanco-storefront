@@ -552,6 +552,15 @@ export const FAQ_KAUF = [
   },
   {
     q: 'Warum kosten Elektrosmog-Schutzprodukte so viel?',
+    // FRAGE NEU 2026-11-10 (Job 20261019-ki-lernschleife-bau-dach-589a3d, KI-Lernschleife
+    // frageseite:dach-preis): Die Frage steht so, wie sie gesucht wird; die alte Frage steht
+    // in `quelle`. Die Suchfrage gilt einer Produktklasse, die Antwort unserem Stück, deshalb
+    // beginnt der erste Satz mit „Bei Qi Blanco“ (vorher „Weil in dem Stück …“). NICHT „in
+    // jedem Stück“: das schlösse Ketten ohne Gitterchip ein, und ein Chirurgenstahl-Gehäuse
+    // beim Qi Alpha ist im Repo nicht belegt (Gegenprüfung 2026-11-10). Die übrigen Sätze sind
+    // wortgleich. Der KI-Klang-Richter verwarf am 2026-11-10 Bestand und Fassung gleich
+    // (Stelle ab Satz 3); die Umschrift ist offene Flanke am Job.
+    //
     // Sprungziel /pages/faq#warum-kosten-elektrosmog-schutzprodukte-so-viel,
     // seit 2026-11-10. Der Eintrag ist der vierte seines Blocks und startet
     // zugeklappt; FaqBlock öffnet ihn, wenn die Adresse auf seinen Anker zeigt
@@ -567,17 +576,8 @@ export const FAQ_KAUF = [
     quelle:
       'app/data/product-faqs.js Material-Item (ungeflaggt) für Chirurgenstahl/750er Goldlegierung/ ' +
       'Handarbeit; „keine Elektronik" ebenda. Der Evidenz-Satz ist derselbe wie oben und wird ' +
-      'NICHT abgeschwächt, weil hier von Geld die Rede ist. FRAGE NEU 2026-11-10 (Job ' +
-      '20261019-ki-lernschleife-bau-dach-589a3d, KI-Lernschleife frageseite:dach-preis): Die Frage ' +
-      'steht jetzt so, wie sie gesucht wird. Vorher lautete sie „Warum kostet das so viel?" ' +
-      '(origin/main 8c3c4c06). Die Suchfrage gilt einer ganzen Produktklasse, die Antwort gilt ' +
-      'unserem Stück. Deshalb nennt der erste Satz „Bei Qi Blanco" (vorher „Weil in dem Stück ' +
-      'wertvolles Material und Handarbeit stecken und du nur einmal zahlst."), dieselben drei Gründe ' +
-      'für dasselbe Stück. NICHT „in jedem Stück": das schlösse Ketten ohne Gitterchip® ein, und ein ' +
-      'Chirurgenstahl-Gehäuse beim Qi Alpha® ist im Repo nicht belegt (Gegenprüfung 2026-11-10). ' +
-      'Die übrigen Sätze sind wortgleich. Ein KI-Klang-Richter verwarf am 2026-11-10 ' +
-      'Bestand und Fassung gleich (Rechtfertigungston ab Satz 3); die Umschrift ist nicht Teil ' +
-      'dieses Auftrags und steht als offene Flanke am Job.',
+      'NICHT abgeschwächt, weil hier von Geld die Rede ist. Frage bis 2026-11-10: „Warum kostet ' +
+      'das so viel?" (origin/main 8c3c4c06).',
   },
   {
     q: 'Was kostet der Versand und wie lange dauert er?',
