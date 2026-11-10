@@ -14,15 +14,13 @@ import {QiBracelet} from '~/components/product-pages/QiBracelet';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {ImgixVideo} from '~/components/reusables/ImgixVideo';
 import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
-import {Preisanker} from '~/components/reusables/Preisanker';
-import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
-import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
+import {ProductPrice} from '~/components/ProductPrice';
+import {useMarktLand} from '~/lib/markt-land';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import igStyles from '~/styles/ig-testimonials.css?url';
 import pdpQiStyles from '~/styles/pdp-qi.css?url';
 import kaufZuerstStyles from '~/styles/qb-pdp-kauf-zuerst.css?url';
 import rand360Styles from '~/styles/qb-360-rand.css?url';
-import preisankerStyles from '~/styles/qb-preisanker.css?url';
 import {kaufZuerstAttribute} from '~/components/product-pages/pdpKaufZuerst';
 import produktVideoStyles from '~/styles/produkt-videos.css?url';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
@@ -95,10 +93,6 @@ export function qiBraceletSeiteLinks() {
     // repair-qihome-air-animation-schwarz-preisanker-ultimate-power).
     // Rückweg: diese Zeile entfernen.
     {rel: 'stylesheet', href: rand360Styles},
-    // Preisanker-Dreizeiler (Job 20261026-design-preisanker-google-
-    // bewertungen-link-einheitlich-alle-produkte). Scope `.qb-preisanker`.
-    // Rückweg: diese Zeile und <Preisanker> unten entfernen.
-    {rel: 'stylesheet', href: preisankerStyles},
     // Video-Kachel im Vorschaustreifen + Video-Dialog (Maßnahme „Produktseite,
     // die verkauft“, 26.09.2026). Eigene Klassen (.qb-pv-*).
     {rel: 'stylesheet', href: produktVideoStyles},
@@ -214,21 +208,33 @@ export function QiBraceletSeite({
             Hero-Punkte der Landingpage-Fassung. */}
         {beschreibung}
 
-        {/* PREISANKER (Christian 26.10.2026: "das braucht es nun für qione 2
-            pro, qi bracelet und necklace auch"): "4.8 ★★★★★ Google
-            Bewertungen" / "+ 14.000 Nutzer" / Preis, eine Farbe und eine
-            Schrift, ohne Banner. Ersetzt die Sterne-Zeile unter dem Titel und
-            den Absatz "Mehr als 14.000+ aktive Nutzer". */}
-        <Preisanker preis={preis} banner={null} />
+        {/* DER PREIS STEHT ALLEIN (Christian 29.10.2026 Z7/Z9, Shop-Regel S6
+            apple_ohne_preisanker; Job 20261023-repair-qibracelet-
+            groessenhilfe-eindeutig-machen s06). Bis zum 10.11.2026 stand hier
+            der Preisanker-Dreizeiler „4.8 ★★★★★ Google Bewertungen / + 14.000
+            Nutzer / Preis“ (reusables/Preisanker.jsx, 26.10.2026). Diese Seite
+            ist der Rückweg des Schalters KONFIGURATOR_QIBRACELET: steht er
+            nicht auf on, rendert /products/qibracelet genau diesen Kopf, und
+            dann gilt Christians „das passt nich mehr hin“. Vorbild ist der
+            Konfigurator (A): Preis ohne Sterne, ohne Nutzerzahl, ohne Schild.
+            Die Bewertungen stehen weiter unten (GoogleRezensionenBereich). */}
+        <ProductPrice
+          handle={preis.handle}
+          price={preis.price}
+          compareAtPrice={preis.compareAtPrice}
+        />
         <ProductForm
           productOptions={productOptions}
           selectedVariant={selectedVariant}
-          /* Elina EL-20260909-8c4001d1: die Mitteilung hängt auf dieser
-             Kaufflaeche IN der Nutzen-Liste darunter. Hier abgeschaltet --
-             sonst stuende sie zweimal auf der Seite. Der Default bleibt
-             true; jede Flaeche OHNE eigene Nutzen-Liste behaelt sie an
-             dieser Stelle (Begründung in ProductForm.jsx). */
-          gewaehrleistungsHinweis={false}
+          /* Die EU-Pflichtmitteilung hängt wieder unter dem Kaufknopf
+             (Default von ProductForm), wie auf der Apple-Seite A
+             (products.qibracelet.jsx: vertrauen={<EuGewaehrleistungsHinweis />}).
+             Bis zum 10.11.2026 stand sie als Listenpunkt mit Schild-Symbol
+             in der Nutzen-Liste darunter (Elina EL-20260909-8c4001d1). Ein
+             Symbol vor einem Listenpunkt im Kopf ruft seit Christians Z1 vom
+             27.10.2026 („keine gimgis vor den aufzählungspunkten“, Shop-Regel
+             D1) STOP; die Mitteilung selbst bleibt einmal auf der Seite,
+             direkt am Kaufknopf. */
         />
         <BenefitList />
       </div>
@@ -313,67 +319,51 @@ export function QiBraceletSeite({
   );
 }
 
+/*
+ * NUTZEN-LISTE OHNE SYMBOLE (Christian 27.10.2026 Z1: „keine gimgis vor den
+ * aufzählungspunkten“, Shop-Regel D1; Z7/Z9 vom 29.10.2026: im Kopf einer
+ * Apple-Kaufseite keine Bewertungs- oder Nutzerzahl, Shop-Regel S6).
+ *
+ * Bis zum 10.11.2026 standen hier KaufZusagePunkte (Rücknahme, Raten, „447
+ * Google-Bewertungen, im Schnitt 4,8 von 5“), drei Versandzeilen und der
+ * Gewährleistungs-Punkt, jeder mit einem Symbol davor. Geblieben sind die
+ * Zusagen als reine Textzeilen, wie die Versandzeile der Apple-Seite A
+ * (`tas-versand`, ohne Symbol). Der Bewertungs-Punkt ist weg: die
+ * Bewertungen stehen weiter unten auf der Seite. Die Pflichtmitteilung hängt
+ * unter dem Kaufknopf (ProductForm, Default).
+ *
+ * KaufZusagePunkte selbst bleibt unverändert, andere Seiten nutzen es. Die
+ * Messanker data-qb-kaufzusage (ruecknahme, raten) bleiben an denselben
+ * Zeilen. Raten wie dort nur im Markt DE (Fußnote 2: deutscher Wohnsitz).
+ *
+ * ZEILE_OHNE_SYMBOL hebt die Symbol-Spalte von `.BenefitList li` (app.css)
+ * auf: ohne Symbol bliebe sonst der hängende Einzug, und am Handy stünde
+ * die zweite Zeile einer langen Zusage eingerückt unter der ersten.
+ */
+const ZEILE_OHNE_SYMBOL = {paddingLeft: 0, textIndent: 0};
+
 function BenefitList() {
+  const marktLand = useMarktLand();
   return (
     <div className="BenefitList">
       <ul>
-        {/* Rücknahme, Raten und der Weg zu den Bewertungen OBEN in der Liste,
-            also direkt unter dem Kaufknopf (Job 20260926-growth-kaufweg-
-            vertrauen-dach, Begründung in reusables/KaufZusage.jsx). */}
-        <KaufZusagePunkte />
-        <li>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="1.23em"
-            height="1em"
-            viewBox="0 0 1728 1408"
-          >
-            <path
-              fill="currentColor"
-              d="M576 1152q0-52-38-90t-90-38t-90 38t-38 90t38 90t90 38t90-38t38-90M192 640h384V384H418q-13 0-22 9L201 588q-9 9-9 22zm1280 512q0-52-38-90t-90-38t-90 38t-38 90t38 90t90 38t90-38t38-90M1728 64v1024q0 15-4 26.5t-13.5 18.5t-16.5 11.5t-23.5 6t-22.5 2t-25.5 0t-22.5-.5q0 106-75 181t-181 75t-181-75t-75-181H704q0 106-75 181t-181 75t-181-75t-75-181h-64q-3 0-22.5.5t-25.5 0t-22.5-2t-23.5-6t-16.5-11.5T4 1114.5T0 1088q0-26 19-45t45-19V704q0-8-.5-35t0-38t2.5-34.5t6.5-37t14-30.5t22.5-30l198-198q19-19 50.5-32t58.5-13h160V64q0-26 19-45t45-19h1024q26 0 45 19t19 45"
-            ></path>
-          </svg>
+        <li data-qb-kaufzusage="ruecknahme" style={ZEILE_OHNE_SYMBOL}>
+          <b>20 Tage zu Hause testen</b>, 100% Geld-zurück-Garantie
+        </li>
+        {marktLand === 'DE' ? (
+          <li data-qb-kaufzusage="raten" style={ZEILE_OHNE_SYMBOL}>
+            <b>In Raten zahlen</b>, mit 0&nbsp;% Finanzierung mit PayPal und Klarna
+          </li>
+        ) : null}
+        <li style={ZEILE_OHNE_SYMBOL}>
           <b>Kostenloser Versand</b> innerhalb Deutschlands
         </li>
-        <li>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="1em"
-            height="1em"
-            viewBox="0 0 24 24"
-          >
-            <path
-              fill="currentColor"
-              d="M12 20a8 8 0 0 0 8-8a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10a10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67l-.75 1.23L11 13V7z"
-            ></path>
-          </svg>
+        <li style={ZEILE_OHNE_SYMBOL}>
           <b>In 2-3 Tagen</b> bei Dir
         </li>
-        <li>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="1.15em"
-            height="1em"
-            viewBox="0 0 2048 1792"
-          >
-            <path
-              fill="currentColor"
-              d="M1811 1555q19-19 45-19t45 19l128 128l-90 90l-83-83l-83 83q-18 19-45 19t-45-19l-83-83l-83 83q-19 19-45 19t-45-19l-83-83l-83 83q-19 19-45 19t-45-19l-83-83l-83 83q-19 19-45 19t-45-19l-83-83l-83 83q-19 19-45 19t-45-19l-83-83l-83 83q-19 19-45 19t-45-19l-83-83l-83 83q-19 19-45 19t-45-19L19 1645l90-90l83 83l83-83q19-19 45-19t45 19l83 83l83-83q19-19 45-19t45 19l83 83l83-83q19-19 45-19t45 19l83 83l83-83q19-19 45-19t45 19l83 83l83-83q19-19 45-19t45 19l83 83l83-83q19-19 45-19t45 19l83 83zm-1574-38q-19 19-45 19t-45-19L19 1389l90-90l83 82l83-82q19-19 45-19t45 19l83 82l64-64v-293L302 710q-17-26-7-56.5t40-40.5l177-58V256h128V128h256V0h256v128h256v128h128v299l177 58q30 10 40 40.5t-7 56.5l-210 314v293l19-18q19-19 45-19t45 19l83 82l83-82q19-19 45-19t45 19l128 128l-90 90l-83-83l-83 83q-18 19-45 19t-45-19l-83-83l-83 83q-19 19-45 19t-45-19l-83-83l-83 83q-19 19-45 19t-45-19l-83-83l-83 83q-19 19-45 19t-45-19l-83-83l-83 83q-19 19-45 19t-45-19l-83-83l-83 83q-19 19-45 19t-45-19l-83-83zM640 384v128l384-128l384 128V384h-128V256H768v128z"
-            ></path>
-          </svg>
+        <li style={ZEILE_OHNE_SYMBOL}>
           <b>100% Versicherter Versand</b>
         </li>
-        {/* Elina EL-20260909-8c4001d1: die Pflichtmitteilung ist hier der
-            4. Punkt DERSELBEN Liste -- nicht mehr ein eigener Block unter
-            dem Kauf-Knopf. Bestellt war "exakt gleiches Design": Abstand,
-            Schrift und Icon-Hoehe sind deshalb GEERBT (eine <li> in dieser
-            <ul>), nicht nachgebaut. Nachgebaute Zahlen sehen am Tag des Baus
-            gleich aus und laufen danach still auseinander.
-            Bauform + Begründung stehen EINMAL in EuGewaehrleistungsLabel.jsx
-            (EuGewaehrleistungsListenpunkt), damit alle Kaufflaechen sie
-            teilen. Der Default in ProductForm ist oben abgeschaltet; ohne das
-            stuende die Mitteilung zweimal auf der Seite. */}
-        <EuGewaehrleistungsListenpunkt />
       </ul>
     </div>
   );
