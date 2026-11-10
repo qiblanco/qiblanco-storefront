@@ -14,10 +14,11 @@
  * der Seite. Läge die Origin-Logik zweimal im Code, wäre genau dieser stille
  * Ausfall eine Frage der Zeit.
  *
- * `connect-src` ist bewusst NICHT dabei: die Chat-API läuft same-origin
- * INNERHALB des iframe (auf der Bot-Domain), nicht vom Storefront-Dokument
- * aus. Das Eltern-Dokument redet mit dem Bot ausschließlich über
- * postMessage (Grössenwechsel des iframe) — das braucht keine CSP-Direktive.
+ * Die Chat-API läuft same-origin INNERHALB des iframe (auf der Bot-Domain),
+ * nicht vom Storefront-Dokument aus; das Eltern-Dokument redet mit dem Bot
+ * über postMessage. Seit 10.11.2026 steht die Origin trotzdem auch in
+ * `connect-src`, als dritter Verbraucher: SalesbotWidget fragt vor `load`
+ * `<origin>/healthz` (Frühstart, siehe SALESBOT_DIENST_FRIST_MS unten).
  */
 
 /**
@@ -148,4 +149,49 @@ export function istSalesbotDeutscherShop(language) {
  */
 export function loaderNachziehen({rahmenDa, nachzugUnterwegs}) {
   return !rahmenDa && !nachzugUnterwegs;
+}
+
+/**
+ * FRÜHSTART DES LOADERS, solange der Dienst antwortet (s05 des Auftrags
+ * 20261030-folge-dienste-auf-eigene-domain-nach-dns, 10.11.2026).
+ *
+ * Seit #1316 kam der Loader immer erst nach `load`. Das schützt vor einem
+ * Netz, das unseren Server still verwirft, kostet aber auf langsamen Leitungen
+ * Sekunden: gemessen auf der Startseite (iPhone, Lighthouse-Mobilprofil
+ * 1,6 Mbit/s, 150 ms) stand der Rahmen nach 6,8 s statt 3,6 s, weil `load`
+ * auf die schweren Medien wartet. Die Sprechblasen erscheinen erst 3 s nach
+ * dem Rahmen.
+ *
+ * Darum fragt SalesbotWidget zuerst `<origin>/healthz` per fetch. Ein fetch
+ * hält `load` nicht auf. Antwortet der Dienst binnen SALESBOT_DIENST_FRIST_MS,
+ * kommt der Loader sofort; sonst wartet er wie bisher auf `load`. Ein vor
+ * `load` eingefügtes Skript hält `load` bis zu seinem Ende auf: bei
+ * erreichbarem Dienst ist das gewollt, bei stillem Netz passiert es nie.
+ *
+ * Die Prüfadresse braucht `connect-src` (entry.server.jsx, über
+ * salesbotWidgetCspQuellen). Ohne diese Zeile scheitert der fetch an der CSP,
+ * und der Loader fällt still auf den alten Weg nach `load` zurück.
+ */
+export const SALESBOT_DIENST_FRIST_MS = 1500;
+
+/**
+ * @param {string} origin Origin des Widgets (salesbotWidgetOrigin)
+ * @returns {string} Prüfadresse, '' ohne Origin
+ */
+export function salesbotDienstPruefUrl(origin) {
+  return origin ? `${origin}/healthz` : '';
+}
+
+/**
+ * Darf der Loader jetzt eingefügt werden?
+ *
+ * Ja, wenn die Seite fertig geladen ist (`readyState` 'complete', auch nach
+ * einer Client-Navigation) oder wenn der Dienst geantwortet hat. Sonst nein:
+ * dann wartet der Loader auf `load`.
+ *
+ * @param {{readyState: string, dienstAntwortet: boolean}} lage
+ * @returns {boolean}
+ */
+export function loaderJetztEinfuegen({readyState, dienstAntwortet}) {
+  return readyState === 'complete' || dienstAntwortet === true;
 }
