@@ -558,7 +558,7 @@ export const FAQ_KAUF = [
     // (location.hash beim Laden und bei hashchange).
     anker: 'warum-kosten-elektrosmog-schutzprodukte-so-viel',
     a:
-      'Bei Qi Blanco stecken in jedem Stück wertvolles Material und Handarbeit, und du zahlst nur einmal. Das ' +
+      'Bei Qi Blanco stecken in dem Stück wertvolles Material und Handarbeit, und du zahlst nur einmal. Das ' +
       'Gehäuse ist aus Chirurgenstahl, der Gitterchip® aus einer maßgeschneiderten 750er ' +
       'Goldlegierung, und fertiggestellt wird er von Oberflächenveredlern und Goldschmieden in ' +
       'Handarbeit. Nach dem Kauf kommt nichts mehr dazu, keine Batterie, kein Abo und nichts zum ' +
@@ -571,9 +571,11 @@ export const FAQ_KAUF = [
       '20261019-ki-lernschleife-bau-dach-589a3d, KI-Lernschleife frageseite:dach-preis): Die Frage ' +
       'steht jetzt so, wie sie gesucht wird. Vorher lautete sie „Warum kostet das so viel?" ' +
       '(origin/main 8c3c4c06). Die Suchfrage gilt einer ganzen Produktklasse, die Antwort gilt ' +
-      'unserem Stück. Deshalb nennt der erste Satz „Bei Qi Blanco" und „jedes Stück" (vorher „Weil ' +
-      'in dem Stück wertvolles Material und Handarbeit stecken und du nur einmal zahlst."), dieselben ' +
-      'drei Gründe. Die übrigen Sätze sind wortgleich. Ein KI-Klang-Richter verwarf am 2026-11-10 ' +
+      'unserem Stück. Deshalb nennt der erste Satz „Bei Qi Blanco" (vorher „Weil in dem Stück ' +
+      'wertvolles Material und Handarbeit stecken und du nur einmal zahlst."), dieselben drei Gründe ' +
+      'für dasselbe Stück. NICHT „in jedem Stück": das schlösse Ketten ohne Gitterchip® ein, und ein ' +
+      'Chirurgenstahl-Gehäuse beim Qi Alpha® ist im Repo nicht belegt (Gegenprüfung 2026-11-10). ' +
+      'Die übrigen Sätze sind wortgleich. Ein KI-Klang-Richter verwarf am 2026-11-10 ' +
       'Bestand und Fassung gleich (Rechtfertigungston ab Satz 3); die Umschrift ist nicht Teil ' +
       'dieses Auftrags und steht als offene Flanke am Job.',
   },

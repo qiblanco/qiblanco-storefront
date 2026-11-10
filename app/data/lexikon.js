@@ -476,6 +476,10 @@ export const LEXIKON = [
   // GEO R9 und gegen Christians Wort vom 25.09. Alle Sätze stehen wortgleich auf
   // jener Seite; die Quellen sind dieselben Arbeiten wie dort. `anker` gibt der
   // H3 der Hub-Karte die id (Sprungziel /pages/lexikon#hexagonales-wasser).
+  // EINE ABWEICHUNG VOM WORTLAUT: die Grenze endet mit „das Modell von Pollack"
+  // statt „das Modell". Auf der Seite liefert die Zwischenüberschrift „Die
+  // Wabenschicht: das Modell von Pollack" den Bezug; die Hub-Karte zeigt nur
+  // die Grenze und hätte sonst ein Modell ohne Namen (Gegenprüfung 2026-11-10).
   // Der Satz „Hexagonal beschreibt die Form, kohärent das Verhalten, EZ den Ort."
   // steht in der Grenz-Begründung und nicht als Übertragung: er grenzt den
   // Begriff vom kohärenten Wasser ab, und nur dort fängt er das Deny-Muster
@@ -500,7 +504,7 @@ export const LEXIKON = [
     "uebertragung_begruendung": [
       "Für die Ordnung an Oberflächen beschreibt ein Modell die Wabenschicht."
     ],
-    "grenze": "Gemessen sind das Sechseck im Eis, die eisähnlichen Inseln im flüssigen Wasser und die geordnete Zone an Oberflächen. Die Wabenschicht im Inneren der Zone beschreibt das Modell.",
+    "grenze": "Gemessen sind das Sechseck im Eis, die eisähnlichen Inseln im flüssigen Wasser und die geordnete Zone an Oberflächen. Die Wabenschicht im Inneren der Zone beschreibt das Modell von Pollack.",
     "grenze_begruendung": [
       "Hexagonal beschreibt die Form, kohärent das Verhalten, EZ den Ort.",
       "Prof. Dr. Gerald H. Pollack beschreibt EZ-Wasser als Stapel sechseckiger Wabenschichten. Er nennt diesen Zustand die vierte Phase des Wassers, zwischen Eis und flüssigem Wasser.",
