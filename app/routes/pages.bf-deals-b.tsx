@@ -314,7 +314,7 @@ export default function BfDealsB() {
   const jetzt = useJetzt();
   return (
     <div className="bfd" id="bfd" lang="de" ref={wurzel}>
-      <div className="bfd__innen">
+      <section className="bfd__innen" aria-label="Black Friday Deals">
         <header className="bfd__kopf">
           <div className="bfd__kopftext">
             <p className="bfd__dach">
@@ -359,7 +359,7 @@ export default function BfDealsB() {
             <b>4,8/5</b> 14.000+ Anwender
           </li>
         </ul>
-      </div>
+      </section>
     </div>
   );
 }

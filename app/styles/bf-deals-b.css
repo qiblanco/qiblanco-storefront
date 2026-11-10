@@ -17,7 +17,7 @@
 .bfd__uhrtitel{margin:0 0 .7rem;color:var(--g);font-size:17px;font-weight:700;line-height:1.3}
 .bfd__zellen{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:0}
 .bfd__zahl{display:block;color:var(--hell);font-size:var(--zahl);line-height:1.05;font-weight:300;font-variant-numeric:tabular-nums}
-.bfd__einheit{display:block;margin-top:.45rem;color:var(--matt);font-size:12px;line-height:1.2;letter-spacing:.1em;text-transform:uppercase}
+.bfd__einheit{display:block;margin-top:.45rem;color:var(--matt);font-size:14px;line-height:1.2;letter-spacing:.1em;text-transform:uppercase}
 .bfd__datum{margin:.7rem 0 0;color:var(--matt);font-size:14px;line-height:1.3}
 .bfd__offen{display:none;margin:0;color:var(--g);font-size:28px;line-height:1.2;font-weight:300}
 .bfd__uhr.ist-offen .bfd__zellen,.bfd__uhr.ist-offen .bfd__uhrtitel{display:none}
@@ -29,7 +29,7 @@
 .bfd__kachel:focus-visible{outline:2px solid var(--g);outline-offset:3px}
 .bfd__bild{position:relative;margin:0;aspect-ratio:1/1;border-radius:18px;overflow:hidden;background:#15110d}
 .bfd__bild img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
-.bfd__plakette{position:absolute;z-index:1;top:.75rem;left:.75rem;padding:.35rem .75rem;border-radius:999px;background:linear-gradient(180deg,var(--g1),var(--g2));color:#171310;font-size:15px;font-weight:700;line-height:1.2;letter-spacing:.01em;box-shadow:0 6px 18px -8px rgba(0,0,0,.7)}
+.bfd__plakette{position:absolute;z-index:1;top:.75rem;left:.75rem;padding:.35rem .75rem;border-radius:999px;background:linear-gradient(180deg,var(--g1),var(--g2));color:#171310;font-size:16px;font-weight:700;line-height:1.2;letter-spacing:.01em;box-shadow:0 6px 18px -8px rgba(0,0,0,.7)}
 .bfd__text{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:0 .5rem}
 .bfd__zeile{margin:0;color:var(--g);font-size:14px;font-weight:700;letter-spacing:.1em;line-height:1.3;text-transform:uppercase}
 .bfd__name{margin:0;color:var(--hell);font-size:var(--name);font-weight:700;line-height:1.2;letter-spacing:-.01em}
@@ -78,7 +78,7 @@
 .bfd--breit .bfd__bild{aspect-ratio:4/3}
 .bfd--breit .bfd__bild img{object-position:50% 30%}
 .bfd--breit .bfd__text{padding:0 2rem 0 .5rem}
-.bfd--breit .bfd__name{font-size:36px}
+.bfd__name,.bfd--breit .bfd__name{font-size:32px}
 .bfd--breit .bfd__neu{font-size:32px}
 .bfd__vertrauen{grid-template-columns:repeat(4,auto);justify-content:center;gap:1rem 2.5rem;text-align:center}
 }
