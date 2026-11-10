@@ -345,7 +345,18 @@ function NachfolgerHinweis({handle, ausverkauft}) {
   return (
     <p className="mt-2" data-nachfolger={nachfolger.handle}>
       Es gibt einen Nachfolger:{' '}
-      <Link to={`/products/${nachfolger.handle}`} prefetch="intent">
+      {/* Farbe und Unterstreichung wie der Gewährleistungs-Link darunter
+          (eu-gewaehrleistung.css): ohne sie las sich der Link im Vorschau-
+          Bild vom 10.11. wie Fließtext, und niemand hätte getippt. */}
+      <Link
+        to={`/products/${nachfolger.handle}`}
+        prefetch="intent"
+        style={{
+          color: 'var(--color-accent-ink)',
+          textDecoration: 'underline',
+          fontWeight: 600,
+        }}
+      >
         {nachfolger.name} ansehen
       </Link>
     </p>
