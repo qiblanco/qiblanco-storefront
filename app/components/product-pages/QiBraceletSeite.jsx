@@ -218,11 +218,13 @@ export function QiBraceletSeite({
             dann gilt Christians „das passt nich mehr hin“. Vorbild ist der
             Konfigurator (A): Preis ohne Sterne, ohne Nutzerzahl, ohne Schild.
             Die Bewertungen stehen weiter unten (GoogleRezensionenBereich). */}
-        <ProductPrice
-          handle={preis.handle}
-          price={preis.price}
-          compareAtPrice={preis.compareAtPrice}
-        />
+        <div className="qb-preis-allein" style={PREIS_ALLEIN}>
+          <ProductPrice
+            handle={preis.handle}
+            price={preis.price}
+            compareAtPrice={preis.compareAtPrice}
+          />
+        </div>
         <ProductForm
           productOptions={productOptions}
           selectedVariant={selectedVariant}
@@ -341,6 +343,15 @@ export function QiBraceletSeite({
  * die zweite Zeile einer langen Zusage eingerückt unter der ersten.
  */
 const ZEILE_OHNE_SYMBOL = {paddingLeft: 0, textIndent: 0};
+
+/*
+ * Der Preis allein: Abstand und Reihenfolge, die vorher der Preisanker trug
+ * (qb-preisanker.css: margin 16px 0). `order: 1` hält ihn am Desktop mit
+ * Kauf-zuerst direkt unter dem Titel (qb-pdp-kauf-zuerst.css ordnet nur
+ * direkte Kinder von .product-main); ohne Abstand stand er 0 px unter dem H1
+ * (shop-tor D4 A1 „Gedränge“). 16 px = zwei Schritte des 8er-Rasters.
+ */
+const PREIS_ALLEIN = {order: 1, margin: 'calc(2 * var(--qb-ref-raster, 8px)) 0'};
 
 function BenefitList() {
   const marktLand = useMarktLand();
