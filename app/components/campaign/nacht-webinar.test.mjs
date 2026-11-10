@@ -97,7 +97,7 @@ test('LEAD: qpx immer, Meta nur bei gebootetem Pixel', () => {
   const fenster = {fbq: (...a) => fbq.push(a)};
   let aus = L.leadSenden({qpxTrack, fenster, webinarId: TERMIN.webinar_id, utm: '', eventId: 'e1'});
   assert.deepEqual(aus, {qpx: true, meta: false});
-  assert.deepEqual(qpx[0], ['lead', {formular: 'webinar-nacht', webinar_id: TERMIN.webinar_id}]);
+  assert.deepEqual(qpx[0], ['lead', {formular: 'webinar-nacht', webinar_id: TERMIN.webinar_id, event_id: 'e1'}]);
   assert.equal(fbq.length, 0);
   fenster._qiblancoMetaPixelBooted = true;
   aus = L.leadSenden({qpxTrack, fenster, webinarId: TERMIN.webinar_id, utm: 'wns-a1', eventId: 'e2'});
@@ -106,6 +106,58 @@ test('LEAD: qpx immer, Meta nur bei gebootetem Pixel', () => {
   assert.deepEqual(fbq[0], ['track', 'Lead', L.META_LEAD, {eventID: 'e2'}]);
   const kaputt = L.leadSenden({qpxTrack: () => { throw new Error('x'); }, fenster: {}, webinarId: ''});
   assert.deepEqual(kaputt, {qpx: false, meta: false});
+});
+
+// s02 (Grossjob webinar-livegang-longevity-esmog-wasser-2026-11-15): CompleteRegistration nach dem Double-Opt-In.
+test('BESTAETIGUNG: qpx einmal, Meta erst nach Pixel-Boot und nur einmal, dieselbe Id', () => {
+  const qpx = [];
+  const fbq = [];
+  const qpxTrack = (...a) => qpx.push(a);
+  const fenster = {fbq: (...a) => fbq.push(a)};
+  let g = L.bestaetigungSenden({qpxTrack, fenster, webinarId: TERMIN.webinar_id, eventId: 'qbm-1', gesendet: {qpx: false, meta: false}});
+  assert.deepEqual(g, {qpx: true, meta: false});
+  assert.deepEqual(qpx, [['complete_registration', {formular: 'webinar-nacht', webinar_id: TERMIN.webinar_id, event_id: 'qbm-1'}]]);
+  assert.equal(fbq.length, 0);
+  g = L.bestaetigungSenden({qpxTrack, fenster, webinarId: TERMIN.webinar_id, eventId: 'qbm-1', gesendet: g});
+  assert.equal(qpx.length, 1);
+  assert.equal(fbq.length, 0);
+  fenster._qiblancoMetaPixelBooted = true;
+  g = L.bestaetigungSenden({qpxTrack, fenster, webinarId: TERMIN.webinar_id, eventId: 'qbm-1', gesendet: g});
+  assert.deepEqual(g, {qpx: true, meta: true});
+  assert.deepEqual(fbq, [['track', 'CompleteRegistration', L.META_COMPLETE_REGISTRATION, {eventID: 'qbm-1'}]]);
+  g = L.bestaetigungSenden({qpxTrack, fenster, webinarId: TERMIN.webinar_id, eventId: 'qbm-1', gesendet: g});
+  assert.equal(fbq.length, 1);
+  assert.equal(qpx.length, 1);
+  const ohneId = L.bestaetigungSenden({qpxTrack, fenster, webinarId: '', eventId: '', gesendet: {qpx: false, meta: false}});
+  assert.deepEqual(ohneId, {qpx: false, meta: false});
+  const kaputt = L.bestaetigungSenden({
+    qpxTrack: () => { throw new Error('x'); },
+    fenster: {_qiblancoMetaPixelBooted: true, fbq: () => { throw new Error('y'); }},
+    webinarId: '', eventId: 'qbm-2', gesendet: {qpx: false, meta: false},
+  });
+  assert.deepEqual(kaputt, {qpx: false, meta: false});
+});
+
+test('BESTAETIGUNG: Adresse ohne angemeldet=bestaetigt, Rest bleibt', () => {
+  const b = 'https://qiblanco.com/pages/webinar-die-nacht-entscheidet';
+  assert.equal(L.adresseOhneBestaetigung(`${b}?angemeldet=bestaetigt`), '/pages/webinar-die-nacht-entscheidet');
+  assert.equal(
+    L.adresseOhneBestaetigung(`${b}?utm_content=wns-1&angemeldet=bestaetigt#anmelden`),
+    '/pages/webinar-die-nacht-entscheidet?utm_content=wns-1#anmelden',
+  );
+  assert.equal(L.adresseOhneBestaetigung(b), null);
+  assert.equal(L.adresseOhneBestaetigung(`${b}?angemeldet=ja`), null);
+  assert.equal(L.adresseOhneBestaetigung('kein url'), null);
+});
+
+test('BESTAETIGUNG: beide Fassungen rufen den Haken, Lead-Id aus meta-event-id.js', () => {
+  const seite = readFileSync(join(hier, 'NachtWebinarSeite.jsx'), 'utf8');
+  const apple = readFileSync(join(hier, '../apple-seite/lp/NachtWebinarApple.jsx'), 'utf8');
+  for (const q of [seite, apple]) assert.match(q, /useBestaetigung\(daten\.bestaetigt, /);
+  assert.match(seite, /return META_EVENT_ID_PRAEFIX \+ uuid\(\);/);
+  assert.doesNotMatch(seite, /crypto\.randomUUID/);
+  assert.match(seite, /subscribeConsentChanges\(/);
+  assert.match(seite, /window\.history\.replaceState\(window\.history\.state, '', neu\)/);
 });
 
 test('T und Nutzlast: Serverzeit, alle Vertragsfelder', () => {

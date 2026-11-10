@@ -4,7 +4,9 @@ import {ANMELDE_ENDPUNKT, holeAnmeldewege} from '~/components/reusables/Anmeldew
 import {qpxTrack} from '~/lib/qpx-commerce';
 import {FORMULAR, OEFFNET_BALD, THEMA, anzeigeVollstaendig, antwortZustand, icsText} from './nacht-webinar';
 import {kalenderErlaubt, leadSenden, nutzlast, terminAus, terminText, utmContent} from './nacht-webinar';
-import {PUFFER_TEXT} from './nacht-webinar';
+import {PUFFER_TEXT, adresseOhneBestaetigung, bestaetigungSenden} from './nacht-webinar';
+import {META_EVENT_ID_PRAEFIX, uuid} from '~/lib/meta-event-id';
+import {subscribeConsentChanges} from '~/components/MetaPixel';
 import {beobachten, starteNachschicken, zustellen} from '~/components/reusables/anmelde-puffer';
 
 /**
@@ -105,12 +107,54 @@ export function KalenderKnopf({termin}) {
   );
 }
 
+/** qbm-<uuid> wie ViewContent/AddToCart (app/lib/meta-event-id.js): Browser und Server tragen dieselbe Id. */
 function eventId() {
-  try {
-    return crypto.randomUUID();
-  } catch {
-    return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  }
+  return META_EVENT_ID_PRAEFIX + uuid();
+}
+
+/**
+ * CompleteRegistration auf der Bestätigungs-Landung (danke_url ?angemeldet=bestaetigt),
+ * genau einmal je Seitenaufruf (Webinar-Livegang longevity-esmog-wasser, Segment s02).
+ * qpx sofort, Meta sobald der Pixel gebootet ist. MetaPixel.jsx bootet ihn in einem Effekt
+ * der Wurzel, der nach diesem Kind-Effekt läuft, oder erst nach der Zustimmung auf dieser
+ * Seite. Darum hängt der Versuch an denselben Consent-Meldungen (subscribeConsentChanges,
+ * kein zweites Tor) und läuft eine Runde später (setTimeout 0), wenn MetaPixel gebootet hat.
+ * Danach steht ?angemeldet=bestaetigt nicht mehr in der Adresse; die Ansicht bleibt.
+ */
+export function useBestaetigung(bestaetigt, webinarId) {
+  const id = useRef('');
+  const gesendet = useRef({qpx: false, meta: false});
+  const webinar = useRef(webinarId);
+  webinar.current = webinarId;
+
+  useEffect(() => {
+    if (!bestaetigt) return undefined;
+    if (!id.current) id.current = eventId();
+    try {
+      const neu = adresseOhneBestaetigung(window.location.href);
+      if (neu) window.history.replaceState(window.history.state, '', neu);
+    } catch {
+      // Die Adresse bleibt dann stehen; die Ansicht ist davon unberührt.
+    }
+    let zeit = null;
+    const versuchen = () => {
+      zeit = null;
+      gesendet.current = bestaetigungSenden({
+        qpxTrack,
+        fenster: window,
+        webinarId: webinar.current || '',
+        eventId: id.current,
+        gesendet: gesendet.current,
+      });
+    };
+    const ab = subscribeConsentChanges(() => {
+      if (!gesendet.current.meta && zeit === null) zeit = setTimeout(versuchen, 0);
+    });
+    return () => {
+      ab();
+      if (zeit !== null) clearTimeout(zeit);
+    };
+  }, [bestaetigt]);
 }
 
 /** Das Formular. Texte, Termin und Einwilligung stammen aus /w (lage). */
@@ -291,6 +335,7 @@ export function useWebinarLage(daten) {
 /** @param {{daten: {anzeige: object|null, weg: string, stand: string, bestaetigt: boolean}}} props */
 export function NachtWebinarSeite({daten}) {
   const {lage, setLage, versatz, termin} = useWebinarLage(daten);
+  useBestaetigung(daten.bestaetigt, termin ? termin.webinar_id : '');
 
   return (
     <div className="wn" data-webinar={THEMA} data-webinar-seite="anmeldung">
