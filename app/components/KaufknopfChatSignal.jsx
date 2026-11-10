@@ -16,6 +16,7 @@ import {
   istOeffentlichesProduktziel,
   OFFEN_ATTRIBUT,
   PFEIL_SELEKTOR,
+  PREIS_SELEKTOR,
   rahmenOffen,
   ruhelage,
   TRAEGER_ID,
@@ -237,6 +238,21 @@ export function KaufknopfChatSignal() {
           }
         });
       }
+      // Der Preis der Kaufseite zählt wie ein Kaufknopf (lib, PREIS_SELEKTOR):
+      // Anna weicht ihm aus, statt auf ihm zu landen. Nur im Fenster. Gemessen
+      // wird der INHALT, nicht der Kasten: die Preiszeile der Alpha-Vorlage ist
+      // ein Block über die ganze Breite (736 px bei 768), der Preis darin 180 px.
+      const preise = [];
+      if (rahmen) {
+        const inhalt = document.createRange();
+        document.querySelectorAll(PREIS_SELEKTOR).forEach((p) => {
+          inhalt.selectNodeContents(p);
+          const r = inhalt.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < fensterHoehe) {
+            preise.push(r);
+          }
+        });
+      }
       // Ausweichen statt Verschwinden (lib, ausweichStrecke): die kleinste
       // Strecke nach oben, deren Ziellage nichts deckt. frei=false ist der
       // Rückfall: dann blendet das Signal wie vor #80 aus (offen, angedockt
@@ -246,6 +262,7 @@ export function KaufknopfChatSignal() {
         leisten,
         knoepfe,
         pfeile,
+        preise,
         fensterHoehe,
         angedockt,
       });

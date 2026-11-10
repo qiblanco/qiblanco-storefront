@@ -445,7 +445,7 @@ export function TheAlphaShop({
                 </li>
               ))}
             </ul>
-            <p className="tas-preiszeile">
+            <p className="tas-preiszeile" data-qb-preis="">
               <span className="tas-preis" data-tas-preis="">
                 {betragText(hauptPreis, waehrung)}
               </span>
