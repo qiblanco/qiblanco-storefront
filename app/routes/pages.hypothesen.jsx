@@ -110,12 +110,18 @@ export const meta = () => [
   // Seite sichtbar trägt (R4). Arm A eines A/B, Kontrolle Arm B bis 28 Tage
   // nach Livegang. Vorher: 'Qi Blanco – unsere Hypothesen: das Wirkmodell in sechs Annahmen | Qi Blanco'
   // Meta vorher: 'Das Wirkmodell hinter Qi Blanco in sechs Hypothesen: …' (168 Zeichen)
+  // 2026-11-10 (Maßnahme M-SP-20261017-hypothesen, Grossjob
+  // seo-2026-w43-l26-hypothesen-aef6): die Beschreibung beginnt mit der Frage
+  // der Suchenden, die die neue Sektion „hyp-frage“ beantwortet. Titel und h1
+  // bleiben (Auflage). Meta vorher: 'Sechs Annahmen, nach denen wir bauen: was
+  // für jede spricht, was offen ist. Quellen im Volltext, eigene Messungen an
+  // Zellkulturen, keine klinische Studie.'
   {title: 'Sechs Hypothesen zur Wirkung, mit allen Quellen | Qi Blanco'},
   {
     name: 'description',
     content:
-      'Sechs Annahmen, nach denen wir bauen: was für jede spricht, was ' +
-      'offen ist. Quellen im Volltext, eigene Messungen an Zellkulturen, ' +
+      'Wie funktioniert ein Schutz gegen Elektrosmog am Körper? Unser ' +
+      'Wirkmodell in sechs Annahmen mit Quellen. Gemessen an Zellkulturen, ' +
       'keine klinische Studie.',
   },
   // Die Autorenangabe. Sie stand hier schon, als die Seite noch auf noindex
