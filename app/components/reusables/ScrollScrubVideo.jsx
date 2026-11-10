@@ -44,6 +44,14 @@ import {NAEHE_RAND, NAEHE_RAND_BISHER, useNaeheLaden} from './useNaeheLaden';
  *    dem End-Text, nie ein schwarzes Feld (data-ssv-zustand="standbild").
  *  Ohne diese Props verhält sich der Baustein wie bisher.
  *
+ * Start- und Endbild sind Schmuck (10.11.2026, Alt-Text am Kundenrand): sie
+ * sind das erste bzw. letzte Bild des Films und stehen nur an seiner Stelle.
+ * Die Aussage tragen die Overlay-Texte als echter Text im HTML (Start-Titel,
+ * End-Titel und End-Satz; im Standbild ist der End-Text sichtbar). Ein alt
+ * würde dem Screenreader dieselbe Aussage ein zweites Mal vorlesen. Deshalb
+ * alt="" plus role="presentation"; ohne die Markierung zählt die Wochenwache
+ * alt-text-wache-woechentlich das Bild als „leer, nicht dekorativ“.
+ *
  * Encoding-Vertrag (homepage-bauer SKILL-SCROLL-ANIMATIONEN.md): Quellen
  * muessen H.264 8-bit yuv420p ALL-INTRA ohne Audio-Track sein — pruefbar via
  * `codemeister scroll-video probe`. Andere Encodings ruckeln beim Scrubbing
@@ -401,6 +409,7 @@ export function ScrollScrubVideo({
               className="ScrollScrubVideo-startbild"
               src={poster}
               alt=""
+              role="presentation"
               loading="lazy"
               decoding="async"
               style={STANDBILD_STIL}
@@ -412,6 +421,7 @@ export function ScrollScrubVideo({
               className="ScrollScrubVideo-standbild"
               src={endbild}
               alt=""
+              role="presentation"
               decoding="async"
               style={STANDBILD_STIL}
             />
