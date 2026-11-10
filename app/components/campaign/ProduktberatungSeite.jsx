@@ -405,7 +405,7 @@ function ZeitHinweis({zone}) {
  * vor, die Seite springt zu den Terminen. Gezählt wird der Tipp wie der Knopf in
  * A als Klick im Kopf (Haus-Beacon: pb-kopf|anker).
  */
-function NaechsterTermin({termine, zone}) {
+function NaechsterTermin({termine, zone, messfixtur}) {
   const tag = nachTag(inAnzeige(termine, zone))[0];
   if (!tag) return null;
   const nimmZeit = (e, t) => {
@@ -419,7 +419,7 @@ function NaechsterTermin({termine, zone}) {
     window.requestAnimationFrame(() => ziel?.scrollIntoView({block: 'start'}));
   };
   return (
-    <div className="pb__naechster">
+    <div className="pb__naechster" data-messfixtur={messfixtur || undefined}>
       <p className="pb__naechster-titel">
         Nächster Termin:{' '}
         <span className="pb__naechster-tag">{tagName(tag.datum)}</span>
@@ -716,7 +716,12 @@ function Buchen({daten, fehler, zone, mitWahl, laedtNach = false}) {
 
   if (daten.ladeFehler) {
     return (
-      <section className="pb__termine" data-section="pb-termine" id="termine">
+      <section
+        className="pb__termine"
+        data-section="pb-termine"
+        id="termine"
+        data-messfixtur={daten.messfixtur || undefined}
+      >
         <div className="pb__inhalt pb__inhalt--breit">
           <h2>Termine</h2>
           {/* Der Fehlersatz bleibt der Rückfall: ohne JavaScript und wenn auch das Nachladen scheitert. */}
@@ -735,7 +740,12 @@ function Buchen({daten, fehler, zone, mitWahl, laedtNach = false}) {
 
   if (!daten.termine.length) {
     return (
-      <section className="pb__termine" data-section="pb-termine" id="termine">
+      <section
+        className="pb__termine"
+        data-section="pb-termine"
+        id="termine"
+        data-messfixtur={daten.messfixtur || undefined}
+      >
         <div className="pb__inhalt pb__inhalt--breit">
           <h2>Termine</h2>
           <p>
@@ -749,7 +759,12 @@ function Buchen({daten, fehler, zone, mitWahl, laedtNach = false}) {
 
   if (!daten.buchungMoeglich) {
     return (
-      <section className="pb__termine" data-section="pb-termine" id="termine">
+      <section
+        className="pb__termine"
+        data-section="pb-termine"
+        id="termine"
+        data-messfixtur={daten.messfixtur || undefined}
+      >
         <div className="pb__inhalt pb__inhalt--breit">
           <h2>Die nächsten Termine</h2>
           <Unterzeile schlussMin={daten.buchungsschlussMin} />
@@ -762,7 +777,12 @@ function Buchen({daten, fehler, zone, mitWahl, laedtNach = false}) {
   }
 
   return (
-    <section className="pb__termine" data-section="pb-termine" id="termine">
+    <section
+      className="pb__termine"
+      data-section="pb-termine"
+      id="termine"
+      data-messfixtur={daten.messfixtur || undefined}
+    >
       <div className="pb__inhalt pb__inhalt--breit">
         <Form method="post" className="pb__form" preventScrollReset>
           <input type="hidden" name="intent" value="buchen" />
@@ -1297,8 +1317,15 @@ export function ProduktberatungSeite({variante = 'a'} = {}) {
 export function useProduktberatung(b) {
   const roh = useLoaderData();
   const ergebnis = useAktionsergebnisUeberRevalidierung();
-  const zone = useKundenZone();
-  const jetzt = useJetzt();
+  // Messfixtur des Formate-Prüfers (nur lokale Bank, Loader von
+  // pages.produktberatung.jsx): festes `jetzt` und feste Zone aus dem Loader
+  // statt Browser-Uhr und Rechner-Zone, sonst hinge das Bild an der Uhr.
+  // Die Hooks laufen trotzdem (feste Reihenfolge), ihr Wert wird nur ersetzt.
+  const fest = roh.messfixtur ? Date.parse(roh.jetzt) : null;
+  const zoneBrowser = useKundenZone();
+  const jetztBrowser = useJetzt();
+  const zone = fest != null ? roh.messfixturZone || '' : zoneBrowser;
+  const jetzt = fest != null && Number.isFinite(fest) ? fest : jetztBrowser;
   const laedtNach = useNachladen(Boolean(roh.ladeFehler));
   // Abgedatete Termine fallen hier heraus, für Buchen UND Umbuchen; leere Tageskarten mit ihnen.
   const daten = {
@@ -1326,7 +1353,11 @@ export function useProduktberatung(b) {
   // Arm B: der nächste Termin im Kopf, nur wenn wirklich gebucht werden kann (sonst der Knopf wie in A).
   const naechster =
     b && buchenAnsicht && daten.buchungMoeglich && daten.termine.length ? (
-      <NaechsterTermin termine={daten.termine} zone={zone} />
+      <NaechsterTermin
+        termine={daten.termine}
+        zone={zone}
+        messfixtur={daten.messfixtur}
+      />
     ) : null;
   return {mitte, buchenAnsicht, naechster};
 }

@@ -17,6 +17,10 @@ import {
   holeJson,
   holeMitWiederholung,
   istFluechtig,
+  istMessfixtur,
+  messfixturTermine,
+  PB_MESSFIXTUR_NAME,
+  PB_MESSFIXTUR_ZONE,
   termineBrauchbar,
 } from '~/lib/produktberatung-abruf.server';
 
@@ -210,9 +214,15 @@ export async function loader(args) {
 async function ladeSeite({request, context}) {
   const url = new URL(request.url);
   const pfad = armPfad(url);
+  // Messfixtur des Formate-Prüfers (nur lokale Bank, s. istMessfixtur in
+  // produktberatung-abruf.server.js): feste Termine, fester Zeitpunkt, kein
+  // Abruf, keine Experiment-Weiche (jeder Arm misst sich selbst). Persönliche
+  // Aufrufe (?b=, ?verwalten, ?status) laufen unverändert.
+  const mess =
+    istMessfixtur(request) && !PERSOENLICH.some((p) => url.searchParams.has(p));
   // SEITEN-EXPERIMENT pb-e1-gs107: nur auf dem Pfad von A, nie bei Mail-Link, Verwalten oder Bestätigung.
   const exp =
-    pfad === PFAD && !PERSOENLICH.some((p) => url.searchParams.has(p))
+    !mess && pfad === PFAD && !PERSOENLICH.some((p) => url.searchParams.has(p))
       ? entscheideSeitenExperiment(request, context.env, 'pb-e1-gs107')
       : null;
   if (exp)
@@ -294,6 +304,26 @@ async function ladeSeite({request, context}) {
       termine: [],
       buchungMoeglich: false,
       ladeFehler: istFluechtig(r),
+    };
+  }
+
+  if (mess) {
+    const f = messfixturTermine();
+    return {
+      pfad,
+      jetzt: f.jetzt,
+      verwalten: false,
+      vorwahl,
+      von,
+      status,
+      api,
+      buchung: null,
+      termine: f.termine,
+      buchungMoeglich: f.buchungMoeglich,
+      buchungsschlussMin: f.buchungsschlussMin,
+      ladeFehler: false,
+      messfixtur: PB_MESSFIXTUR_NAME,
+      messfixturZone: PB_MESSFIXTUR_ZONE,
     };
   }
 
