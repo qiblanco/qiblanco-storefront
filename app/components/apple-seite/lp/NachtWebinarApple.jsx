@@ -9,6 +9,7 @@ import {
   KalenderKnopf,
   MITNEHMEN,
   VERSPRECHEN,
+  useBestaetigung,
   useWebinarLage,
 } from '~/components/campaign/NachtWebinarSeite';
 import {THEMA, terminText} from '~/components/campaign/nacht-webinar';
@@ -101,6 +102,7 @@ function Pruefer() {
 
 export function NachtWebinarApple({seite, daten}) {
   const {lage, setLage, versatz, termin} = useWebinarLage(daten);
+  useBestaetigung(daten.bestaetigt, termin ? termin.webinar_id : '');
   return (
     <>
       <link rel="stylesheet" href={lpAppleStyles} />

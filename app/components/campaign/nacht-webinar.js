@@ -14,6 +14,10 @@ export const THEMA = 'longevity-esmog-wasser';
 export const OHNE_TERMIN = 'Den nächsten Termin geben wir in Kürze bekannt.';
 export const OEFFNET_BALD = 'Die Anmeldung öffnet in Kürze.';
 export const META_LEAD = {content_name: 'Webinar Die Nacht entscheidet', content_category: 'webinar'};
+/** Bestätigte Anmeldung (Double-Opt-In): dieselben Parameter wie Lead, dazu status. */
+export const META_COMPLETE_REGISTRATION = {...META_LEAD, status: 'bestaetigt'};
+/** qpx-Ereignis der bestätigten Anmeldung (hyros-eigenbau receiver VALID_EVENTS). */
+export const QPX_COMPLETE_REGISTRATION = 'complete_registration';
 
 /** Abstand zum Start, ab dem die Seite den Kalendereintrag nicht mehr selbst baut. */
 export const KALENDER_SICHERHEIT_MS = 5 * 60 * 1000;
@@ -162,12 +166,16 @@ export function icsText(termin, jetztMs) {
  * Lead-Ereignis nach einer Annahme (VERTRAG §4): eigener Empfänger über qpx,
  * Meta nur bei schon gebootetem Pixel (dasselbe Tor wie MetaPixel.jsx).
  * Kein Cookie, kein Speicher, kein neuer Schlüssel.
+ * eventId ist seit s02 (Grossjob webinar-livegang-longevity-esmog-wasser-2026-11-15)
+ * eine qbm-<uuid> aus app/lib/meta-event-id.js und geht als event_id auch an
+ * qpx: capi-rueckspeisung meldet den Lead damit server-seitig mit derselben Id.
  * @param {{qpxTrack: Function, fenster: object, webinarId: string, utm: string, eventId: string}} o
  * @returns {{qpx: boolean, meta: boolean}}
  */
 export function leadSenden({qpxTrack, fenster, webinarId, utm, eventId}) {
   const props = {formular: FORMULAR, webinar_id: webinarId || ''};
   if (utm) props.utm_content = utm;
+  if (eventId) props.event_id = eventId;
   const aus = {qpx: false, meta: false};
   try {
     qpxTrack('lead', props);
@@ -178,6 +186,60 @@ export function leadSenden({qpxTrack, fenster, webinarId, utm, eventId}) {
   if (fenster && fenster._qiblancoMetaPixelBooted && typeof fenster.fbq === 'function') {
     try {
       fenster.fbq('track', 'Lead', {...META_LEAD}, {eventID: eventId});
+      aus.meta = true;
+    } catch {
+      // wie oben
+    }
+  }
+  return aus;
+}
+
+/** Der Abfrage-Schalter der danke_url (ac-eingang formulare.yaml, Formular webinar-nacht). */
+export const BESTAETIGT_PARAM = 'angemeldet';
+export const BESTAETIGT_WERT = 'bestaetigt';
+
+/**
+ * Adresse ohne ?angemeldet=bestaetigt, alle anderen Parameter und der Anker
+ * bleiben. Neuladen nach der Bestätigung zählt dann nicht ein zweites Mal.
+ * -> die neue Adresse (Pfad+Suche+Anker), oder null, wenn nichts zu tun ist.
+ */
+export function adresseOhneBestaetigung(href) {
+  try {
+    const u = new URL(href);
+    if (u.searchParams.get(BESTAETIGT_PARAM) !== BESTAETIGT_WERT) return null;
+    u.searchParams.delete(BESTAETIGT_PARAM);
+    const suche = u.searchParams.toString();
+    return `${u.pathname}${suche ? `?${suche}` : ''}${u.hash}`;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * CompleteRegistration nach dem Double-Opt-In (Landung auf der danke_url).
+ * qpx bekommt das Ereignis einmal je Aufruf (gesendet.qpx), Meta erst, wenn der
+ * Pixel gebootet ist (dasselbe Tor wie MetaPixel.jsx; vorher meta=false, der
+ * Aufrufer versucht es nach der Zustimmung erneut). Beide tragen dieselbe
+ * qbm-Id: Meta bereinigt Browser und Server über event_name + event_id.
+ * Kein Cookie, kein Speicher, kein neuer Schlüssel; ein Fehler bricht nie die Seite.
+ * @param {{qpxTrack: Function, fenster: object, webinarId: string, eventId: string,
+ *          gesendet: {qpx: boolean, meta: boolean}}} o
+ * @returns {{qpx: boolean, meta: boolean}} neuer Stand von gesendet
+ */
+export function bestaetigungSenden({qpxTrack, fenster, webinarId, eventId, gesendet}) {
+  const aus = {qpx: Boolean(gesendet && gesendet.qpx), meta: Boolean(gesendet && gesendet.meta)};
+  if (!eventId) return aus;
+  if (!aus.qpx) {
+    try {
+      qpxTrack(QPX_COMPLETE_REGISTRATION, {formular: FORMULAR, webinar_id: webinarId || '', event_id: eventId});
+      aus.qpx = true;
+    } catch {
+      // Tracking darf die Bestätigung nie brechen.
+    }
+  }
+  if (!aus.meta && fenster && fenster._qiblancoMetaPixelBooted && typeof fenster.fbq === 'function') {
+    try {
+      fenster.fbq('track', 'CompleteRegistration', {...META_COMPLETE_REGISTRATION}, {eventID: eventId});
       aus.meta = true;
     } catch {
       // wie oben
