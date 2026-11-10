@@ -152,6 +152,7 @@ function trackerPuffer(search) {
   } catch {
     // Der Tracker darf an fehlenden Browser-APIs scheitern, NACHDEM er gepuffert hat.
   }
+  trackerPuffer.ankunft = fenster.__qbAdAnkunft;
   const roh = speicher.get('qiblanco_checkout_attribution');
   return roh ? JSON.parse(roh) : null;
 }
@@ -203,4 +204,19 @@ test('qpx_eh kippt den Ankunfts-Marker ad_params_seen nicht', () => {
   assert.notEqual(adParamsSeenMarker({searchParams: new URLSearchParams('qpx_eh=garbage')}), 'yes_query');
   assert.notEqual(adParamsSeenMarker({searchParams: new URLSearchParams(`qpx_eh=${EH}`)}), 'yes_query');
   assert.equal(adParamsSeenMarker({searchParams: new URLSearchParams('utm_source=x')}), 'yes_query');
+});
+
+test('qpx_eh allein: Tracker meldet keine Ad-Ankunft, utm schon', () => {
+  trackerPuffer(`?qpx_eh=${EH}`);
+  assert.notEqual(trackerPuffer.ankunft, 'yes');
+  trackerPuffer('?utm_source=x');
+  assert.equal(trackerPuffer.ankunft, 'yes');
+});
+
+test('gespeicherter Record nur mit qpx_eh ist kein yes_cookie', () => {
+  const nur = {params: [['qpx_eh', EH]], href: 'https://qiblanco.com/', referrer: '', savedAt: 'x'};
+  const mit = {params: [['qpx_eh', EH], ['utm_source', 'x']], href: 'https://qiblanco.com/', referrer: '', savedAt: 'x'};
+  const keks = (r) => `${ATTRIBUTION_COOKIE_NAME}=${encodeURIComponent(JSON.stringify(r))}`;
+  assert.notEqual(adParamsSeenMarker({cookieHeader: keks(nur)}), 'yes_cookie');
+  assert.equal(adParamsSeenMarker({cookieHeader: keks(mit)}), 'yes_cookie');
 });

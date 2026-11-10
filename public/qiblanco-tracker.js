@@ -137,9 +137,18 @@
   // 'no' — sonst wäre ein gesperrter Speicher von einem echten Direktbesucher
   // nicht zu unterscheiden, also genau die Zweideutigkeit von oben, eine Ebene
   // tiefer.
+  // qpx_eh (Mail-Kontaktkennung) ist kein Ankunftssignal: ein Mailklick ist keine Ad-Ankunft.
+  function mitAnkunftsSignal(eintraege) {
+    if (!eintraege) return false;
+    for (var i = 0; i < eintraege.length; i++) {
+      if (eintraege[i] && eintraege[i][0] !== 'qpx_eh') return true;
+    }
+    return false;
+  }
+
   function ankunftsZustand() {
     // 1. Diese Seite trägt selbst Parameter — ohne jeden Speicher entschieden.
-    if (collectTrackedParams()) return 'yes';
+    if (mitAnkunftsSignal(collectTrackedParams())) return 'yes';
 
     // 2. Der Verweis auf diese Seite trug welche. Das ist der EINE Sprung
     //    zurück, den der Browser uns geschenkt gibt: bei gleicher Herkunft
@@ -157,7 +166,15 @@
       // Speicher gesperrt: niemand konnte nachsehen.
       return 'unknown';
     }
-    if (puffer) return 'yes';
+    if (puffer) {
+      var gepuffert = null;
+      try {
+        gepuffert = JSON.parse(puffer).params;
+      } catch {
+        return 'yes';
+      }
+      if (!Array.isArray(gepuffert) || mitAnkunftsSignal(gepuffert)) return 'yes';
+    }
 
     // ---- Ab hier ist der Puffer LEER. Das ist noch kein 'no'. -------------
     //
@@ -238,7 +255,7 @@
 
     var gefunden = false;
     new URLSearchParams(suche).forEach(function (wert, name) {
-      if (wert && isTrackingParamName(name)) gefunden = true;
+      if (wert && isTrackingParamName(name) && name !== 'qpx_eh') gefunden = true;
     });
     return gefunden;
   }

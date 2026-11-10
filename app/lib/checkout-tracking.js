@@ -937,8 +937,9 @@ function adParamsSeenRoh({searchParams, referer, cookieHeader, clientMarker}) {
   if (hatTrackingParam(refererSuchParameter(referer))) return 'yes_referer';
 
   if (
-    getStoredAttributionParamEntries(readStoredAttribution(cookieHeader))
-      .length > 0
+    getStoredAttributionParamEntries(readStoredAttribution(cookieHeader)).some(
+      ([name]) => !NUR_WARENKORB.has(name),
+    )
   ) {
     return 'yes_cookie';
   }
