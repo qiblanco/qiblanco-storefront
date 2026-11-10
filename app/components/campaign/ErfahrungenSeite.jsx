@@ -1,3 +1,4 @@
+import {Link} from 'react-router';
 import {AbsichtHinweis} from '~/components/reusables/AbsichtHinweis';
 import {YoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
 import {ERFAHRUNGS_BEITRAEGE} from '~/data/erfahrungen-beitraege';
@@ -158,6 +159,22 @@ export function ErfahrungenSeite() {
 
       {/* Trustpilot-Stimmen (Job 20261006-bau-trustpilot-scroller-ki-seiten-und-faq). */}
       <TrustpilotStimmen praefix="erf-" />
+
+      {/* Verweis auf die Nutzerstudie (2026-11-10, SEO-Maßnahme
+          M-SP-20261017-studie-nutzererfahrung, s02; Satz wörtlich aus deren
+          KONZEPT.md A2). Erst die Stimmen, danach der Beleg: die Studie
+          wertet genau solche frei geteilten Berichte aus. Linktext
+          „Nutzerstudie" trägt den Suchbegriff der Zielseite. */}
+      <section data-section="erf-nutzerstudie">
+        <div className="erf__schmal">
+          <p>
+            171 Erfahrungsberichte zu den Elektrosmog-Schutzprodukten QiOne® 2
+            Pro und QiBracelet® wertet eine{' '}
+            <Link to="/pages/studie-nutzererfahrung">Nutzerstudie</Link> von
+            Prof. Dr. Peter C. Dartsch aus.
+          </p>
+        </div>
+      </section>
 
       {/* Kurz gefragt (2026-10-07, s05): die vier Fragen hinter der Suche
           „qi blanco erfahrungen". Dieselbe Liste speist das FAQPage-Schema der

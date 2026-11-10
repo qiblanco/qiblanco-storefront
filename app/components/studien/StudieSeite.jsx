@@ -59,6 +59,13 @@ export function StudieSeite({studie}) {
         <header className="qb-st-kopf">
           <p className="qb-st-kicker">Fachpublikation · {e.produkt}</p>
           <h1>{studie.seo.h1}</h1>
+          {/* Optionaler Einstiegsabsatz direkt unter der h1 (2026-11-10,
+              M-SP-20261017-studie-nutzererfahrung). Nur eine Route setzt ihn
+              (pages.studie-nutzererfahrung.jsx); ohne `seo.einstieg` rendert
+              jede Studienseite unverändert. Stil: der bestehende Antwortsatz. */}
+          {studie.seo.einstieg ? (
+            <p className="qb-st-antwort-text">{studie.seo.einstieg}</p>
+          ) : null}
           <p className="qb-st-original" lang="en">
             {e.titelOriginal}
           </p>
