@@ -93,6 +93,30 @@ export const BEWERTUNGEN_SEITE = {
     ],
   },
 
+  /*
+   * ELEKTROSMOG-SCHUTZ, NEU AM 2026-11-10 (Grossjob seo-2026-w44-l26-
+   * bewertungen-4afb-sollseite-ohne-begriff-ohne-, s02, Maßnahme
+   * M-SP-20261017-bewertungen). Der Begriff „Elektrosmog-Schutz Bewertungen"
+   * stand nirgends auf der Seite. Gerendert von app/components/reusables/
+   * BewertungenElektrosmog.jsx, direkt nach BewertungenSeite (Route).
+   * Der erste Absatz (Google-Note mit Anzahl, Trustpilot-TrustScore mit Stand)
+   * wird in der Komponente gebaut: Zahlen nie als Literal hier.
+   * KEINE TRUSTPILOT-ANZAHL (Christian 2026-10-06, Kopf trustpilot-tatsachen.js).
+   * `ohneEinladung` steht nur, solange PROFIL.einladungen === 0.
+   * `freiwillig` ist wortgleich der Satz aus `herkunft` (Fassung 2026-11-05).
+   */
+  elektrosmog: {
+    titel: 'Bewertungen von Elektrosmog-Schutz: worauf es ankommt',
+    pruefbar:
+      'Eine Bewertung ist prüfbar, wenn du sie an ihrer Quelle im Original nachlesen kannst. Das gelingt auf einer fremden Plattform, die jede Stimme öffentlich zeigt.',
+    googleKonto: 'Bei Google steht hinter jeder Rezension ein Google-Konto.',
+    ohneEinladung: 'Auf Trustpilot sind alle Bewertungen ohne Einladung von uns geschrieben.',
+    freiwillig: 'Wer bewertet, tut das freiwillig und ohne Gegenleistung von uns.',
+    vergleich:
+      'Wenn du Anbieter von Elektrosmog-Schutz vergleichst, frag bei jeder Note nach ihrer Quelle. Eine Note mit Plattform und Stand kannst du selbst nachprüfen.',
+    link: {pfad: '/pages/qi-blanco-auf-trustpilot', text: 'Qi Blanco auf Trustpilot'},
+  },
+
   test: {
     titel: 'Selbst prüfen: 20 Tage',
     absaetze: [

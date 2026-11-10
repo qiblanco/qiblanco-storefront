@@ -503,7 +503,9 @@ export const FAQ_KAUF = [
     // live aus dem Google-Profil, mit Herkunft und Grenzen.
     weiter: {
       pfad: '/pages/bewertungen',
-      text: 'Alle Google-Bewertungen live, mit Note und Anzahl, und woher sie kommen',
+      // 2026-11-10 (Maßnahme M-SP-20261017-bewertungen): Linktext mit dem
+      // Begriff. Vorher: 'Alle Google-Bewertungen live, mit Note und Anzahl, und woher sie kommen'
+      text: 'Qi Blanco Bewertungen: Elektrosmog-Schutz bei Google und Trustpilot',
     },
     // DER ZWEITE WEG AUS DIESER ANTWORT, und der eingehende Link, den
     // /pages/was-auf-reddit-ueber-qi-blanco-steht braucht (Job 20261001-
