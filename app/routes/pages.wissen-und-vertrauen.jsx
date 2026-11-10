@@ -1,14 +1,15 @@
 import {WissenVertrauenHub} from '~/components/campaign/WissenVertrauenHub';
 import wvStyles from '~/styles/wissen-vertrauen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
-import {WV_HUB, WV_TITEL, wvSeiten} from '~/lib/hub-seiten';
+import {WV_FRAGE, WV_HUB, wvSeiten} from '~/lib/hub-seiten';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
 
 const PFAD = WV_HUB.pfad;
 
 /**
- * /pages/wissen-und-vertrauen — „Alle Antworten rund um Qi Blanco".
+ * /pages/wissen-und-vertrauen — „Ist Elektrosmog-Schutz wissenschaftlich belegt?"
+ * und darunter „Alle Antworten rund um Qi Blanco".
  *
  * Gebaut vom Großjob 20261006-GROSSJOB-seo-strategie-seiten-bewertung-crawl-
  * kannibalisierung, Segment s06. Anlass, gemessen in der Search Console am
@@ -34,11 +35,22 @@ const PFAD = WV_HUB.pfad;
  *
  * KEIN LOADER: der Inhalt ist ein committetes Datenmodul.
  */
-const TITEL = `${WV_TITEL}: alle Antworten rund um Qi Blanco`;
+/**
+ * DIE FRAGE VORN (SEO-Maßnahme M-SP-20261017-wissen-und-vertrauen, Job
+ * seo-2026-w43-l26-wissen-und-vertrauen-bdee-sollseite-ohne-begriff-ohne-n2,
+ * 2026-11-10). Die Seite stand seit dem 06.10. für keinen Begriff ohne Marke
+ * in der Suche. Titel, H1 und Beschreibung führen jetzt die Frage
+ * „Ist Elektrosmog-Schutz wissenschaftlich belegt?", der erste Absatz gibt die
+ * Antwort. Der Titel behält danach den Namen der Übersicht
+ * (WV_HUB.anker): mit genau diesem Text verlinken Fuß und „Weiterlesen"
+ * hierher, Ankertext und Titel bleiben so deckungsgleich. Ohne
+ * „| Qi Blanco"-Anhang, die Marke steht schon im Titel. Messung:
+ * seo-manager/exports/sollseiten-position.json, Wirkungskreislauf gleiche id.
+ */
+const TITEL = `${WV_FRAGE} ${WV_HUB.anker}`;
 const BESCHREIBUNG =
-  'Elektrosmog, Lexikon, Studien, Erfahrungen, Bewertungen und Trustpilot: ' +
-  'jede Frage rund um Qi Blanco mit ihrer eigenen Seite und einem Satz dazu, ' +
-  'was du dort findest.';
+  `${WV_FRAGE} Im Labor an Zellkulturen gemessen, am Menschen offen. ` +
+  'Dazu jede Frage rund um Qi Blanco mit ihrer eigenen Seite.';
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR — siehe pages.kritik.jsx. Wer
@@ -46,7 +58,7 @@ const BESCHREIBUNG =
  * selben Commit nach.
  */
 const VEROEFFENTLICHT = '2026-10-06';
-const GEAENDERT = '2026-10-07';
+const GEAENDERT = '2026-11-10';
 
 export function links() {
   return [{rel: 'stylesheet', href: wvStyles}];
@@ -78,7 +90,7 @@ function schema() {
 /** @type {MetaFunction} */
 export const meta = () => {
   return [
-    {title: `${TITEL} | ${MARKE}`},
+    {title: TITEL},
     {name: 'description', content: BESCHREIBUNG},
     canonicalLink(PFAD),
     ...teilbildTags(PFAD),

@@ -1,5 +1,5 @@
 import {Link} from 'react-router';
-import {WV_GRUPPEN, WV_TITEL, WV_HUB} from '~/lib/hub-seiten';
+import {WV_FRAGE, WV_GRUPPEN, WV_TITEL} from '~/lib/hub-seiten';
 
 /**
  * /pages/wissen-und-vertrauen — die Übersicht der Wissens- und
@@ -25,7 +25,26 @@ export function WissenVertrauenHub() {
       <section className="wv__kopf" data-section="wv-kopf">
         <div className="wv__inhalt">
           <p className="wv__vorspann">{WV_TITEL}</p>
-          <h1>{WV_HUB.anker}</h1>
+          <h1>{WV_FRAGE}</h1>
+          {/* DIE ANTWORT ZUERST (SEO-Maßnahme M-SP-20261017-wissen-und-
+              vertrauen, 2026-11-10): der erste Absatz beantwortet die Frage
+              der H1, was gemessen ist und was offen ist, mit dem Link auf
+              die Studien. Jede Angabe steht wortgleich oder sinngleich schon
+              auf /pages/studien (EVIDENZSTUFE_ANTWORT, EVIDENZSTUFE_FRAGEN)
+              und /pages/kritik; hier steht nichts, was dort nicht steht.
+              Der Satz „In zwei dieser Arbeiten …" ist der Satz aus
+              KritikSeite.jsx. */}
+          <p className="wv__lead">
+            Im Labor gemessen, am Menschen offen: Vier von fünf veröffentlichten{' '}
+            <Link prefetch="intent" to="/pages/studien">
+              Arbeiten zu den Qi-Blanco-Geräten
+            </Link>{' '}
+            untersuchen Zellkulturen, eine kontrollierte Studie am Menschen gibt
+            es nicht. In zwei dieser Arbeiten hielten Zellen unter
+            Handystrahlung mit dem QiOne® 2 Pro deutlich besser stand als ohne.
+            Ob es zu dir passt, prüfst du an dir selbst: 20 Tage tragen, und
+            wenn es nichts für dich ist, ohne Angabe von Gründen zurückgeben.
+          </p>
           <p className="wv__lead">
             Was Elektrosmog ist, wie ein Schutz funktioniert und was andere mit
             Qi Blanco erlebt haben: jede dieser Fragen hat ihre eigene Seite.

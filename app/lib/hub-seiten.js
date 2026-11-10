@@ -227,6 +227,13 @@ export const WV_HUB = {
 /** Überschrift der Fußspalte und Name der Übersicht. */
 export const WV_TITEL = 'Wissen & Vertrauen';
 
+/**
+ * Die Frage, die Titel und H1 der Übersicht vorn tragen (SEO-Maßnahme
+ * M-SP-20261017-wissen-und-vertrauen, 2026-11-10). Linktexte in Fuß und
+ * „Weiterlesen" bleiben WV_HUB.anker; nur /pages/kritik verlinkt mit der Frage.
+ */
+export const WV_FRAGE = 'Ist Elektrosmog-Schutz wissenschaftlich belegt?';
+
 export const WV_GRUPPEN = [
   {
     id: 'wissen',

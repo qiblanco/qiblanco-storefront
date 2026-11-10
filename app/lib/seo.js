@@ -866,7 +866,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/kritik',
-    lastmod: '2026-09-11T23:11:54Z',
+    lastmod: '2026-11-10T23:55:00Z',
     grund:
       'Eigene indexierbare Antwort auf "Qi Blanco Kritik" (Job 20260911-BAU-' +
       'kritikseite-freischalten-…-s02; Christian 2026-09-11 nach dem Lesen ' +
@@ -1247,7 +1247,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/wissen-und-vertrauen',
-    lastmod: '2026-10-07T04:30:00Z',
+    lastmod: '2026-11-10T23:55:00Z',
     grund:
       'Die Übersicht „Alle Antworten rund um Qi Blanco" (Großjob ' +
       '20261006-GROSSJOB-seo-strategie-seiten-bewertung-crawl-' +
