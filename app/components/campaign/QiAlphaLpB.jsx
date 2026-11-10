@@ -126,11 +126,9 @@ const QA_LEINWAND_STIL = {...LEINWAND_STIL, bottom: 'auto', height: 'auto'};
 function QaSchleifenVideo({video}) {
   const ref = useRef(null);
   const dekoder = useFilmDekoder(ref, video.src);
-  useVideoNachholen(ref);
+  useVideoNachholen(ref, true, {beiAbgelehnt: dekoder.abgelehnt, gesperrt: dekoder.zeigt});
   const zeigtRef = useRef(dekoder.zeigt);
   zeigtRef.current = dekoder.zeigt;
-  const abgelehntRef = useRef(dekoder.abgelehnt);
-  abgelehntRef.current = dekoder.abgelehnt;
   useEffect(() => {
     const el = ref.current;
     if (!el || typeof IntersectionObserver === 'undefined') return undefined;
@@ -139,7 +137,7 @@ function QaSchleifenVideo({video}) {
       ([eintrag]) => {
         // Dreht schon der dekodierte Film, bleibt das <video> still.
         if (eintrag.isIntersecting) {
-          if (!zeigtRef.current()) el.play().catch(() => abgelehntRef.current());
+          if (!zeigtRef.current()) el.play().catch(() => {});
         } else el.pause();
       },
       {threshold: 0.25},
