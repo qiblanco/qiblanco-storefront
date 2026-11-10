@@ -67,7 +67,7 @@
     "app/crystal-spiegel/lib/kachel-kasse.js": "07a1257d187cf747e4f292a5c9d2e7a797a1b3f4b4ee837d577ea122bc86a59f",
     "app/crystal-spiegel/lib/kakao-belege.js": "962244bddf7eddf6aec73219d6f391aae48f394b0f0d14ca323a3c96389cec24",
     "app/crystal-spiegel/lib/kakao-seo.js": "885c65fae9e0ff4a92e954715f4a33fa0f006a160be7ad2bccceef110ae8c7a2",
-    "app/crystal-spiegel/lib/kakao-zone.js": "0600c0f168587b03d1b0610c33cabc8325bc20d430a05117a8c7e4a78d4ed74d",
+    "app/crystal-spiegel/lib/kakao-zone.js": "a601882b2b085b3ab6176153023cf19cb5dcea2d8b28e0a1f5a4f984b33370c6",
     "app/crystal-spiegel/lib/kaufblock-fassung.js": "aced04fe6bc399852547c15c8395c4a8887fbd8175b51781693e19e24b9f4892",
     "app/crystal-spiegel/lib/kurs-eintragung.js": "1ccf25e6c1e147558e1c3fd8f6f12b59cb17236497bfea78d5016a79b41c9825",
     "app/crystal-spiegel/lib/produkt-schema.js": "81482b79c2606266fcd1fd0683894a68641e112c2db9b3b52ec45c662bb97658",
@@ -89,7 +89,7 @@
     "app/crystal-spiegel/styles/eu-gewaehrleistung.css": "b18e895bc6fda4c1aba234a148147d33d0b121633e488e773c2e713155fc0914",
     "app/crystal-spiegel/styles/ig-testimonials.css": "be188d08c2e8362500229ae7749cc7d536c3e16c9dd7d9fa7c37658ea597ae2a",
     "app/crystal-spiegel/styles/isolation.css": "a972cd73e077f6ef0da95b145b4b164bcb574487dffd0770b14d3bbacd819102",
-    "app/crystal-spiegel/styles/kakao-seiten.css": "9a74fe27acd739bfc7894886baa10e038bd65e7940357c14c5a56dfbd1cd5b5f",
+    "app/crystal-spiegel/styles/kakao-seiten.css": "1421e10024484c353fdb236c8a063d0e754fd73e510b36a3e408f4889115822f",
     "app/crystal-spiegel/styles/kakao-tiefe.css": "40a4c62fd6d906135c06223b00a60f613731c12a668265574bc6044fdadaf9ea",
     "app/crystal-spiegel/styles/qb-swipetab.css": "14bdb99db18c8c0f75af7e3302956975a01b416e985bcb5b256d61aece0a1d8e",
     "app/crystal-spiegel/styles/reset.css": "a5e490a13114e04772d58f616e77ca06a4be60d057b7f799b33906367934cfce",
@@ -109,7 +109,7 @@
     "components",
     "utilities"
   ],
-  "quelle_commit": "279dcb39245337aa9acf5cde767faa6b9ececcd9",
+  "quelle_commit": "9bb3cb3f45d15f098d7c59f96e6e3e36547b27f1",
   "quelle_repo": "crystal-cacao-node/repo",
   "seiten": {
     "awake": {
