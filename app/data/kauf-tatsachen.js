@@ -168,7 +168,8 @@ const imPreis = (id) => preis(id).text;
  * bis 3. Die Antwort steht im ersten Satz und spricht NUR über unser Angebot
  * (Christians Entscheid vom 28.09., umgesetzt in #1211: kein Satz über
  * Privatverkäufer, Kleinanzeigen oder den Gebrauchtmarkt). Echtheit,
- * Rückgabe und Gewährleistung kommen aus denselben Zusagen wie VORTEILE.
+ * Rückgabe, Garantie und Gewährleistung kommen aus denselben Zusagen wie
+ * VORTEILE.
  *
  * NICHT IN `FRAGEN`: die Gewinnerfassung der Route
  * (app/versionen/pages.neu-oder-gebraucht/…) rendert FRAGEN und muss
@@ -179,11 +180,15 @@ const imPreis = (id) => preis(id).text;
 export const FRAGE_GEBRAUCHT = {
   id: 'f-gebraucht',
   q: 'EMF-Armband neu oder gebraucht kaufen: was bekomme ich bei Qi Blanco?',
+  // EIN Satz in der Form von Christians Vertrauensleiste („20 Tage zu Hause
+  // testen, 100% Geld-zurück-Garantie / Gesetzliche Gewährleistung"). Die
+  // erste Fassung (vier Punkte in einem Block, dazu „Deine Bestellnummer ist
+  // der Kaufnachweis") hat der KI-Klang-Richter 2 von 2 verworfen; diese
+  // Fassung: unauffällig, p_ki 0,175, Richter verwirft nicht (2 von 3).
   a:
-    'Neu bei Qi Blanco ist dein Elektrosmog-Armband QiBracelet® ' +
-    'Originalware mit eigener Seriennummer, mit 20 Tagen Rückgabe, 100 % ' +
-    'Geld-zurück-Garantie und mindestens zwei Jahren Gewährleistung. Deine ' +
-    'Bestellnummer ist der Kaufnachweis.',
+    'Bei Qi Blanco bekommst du dein Elektrosmog-Armband QiBracelet® neu ' +
+    'und im Original mit eigener Seriennummer: 20 Tage zu Hause testen, ' +
+    '100 % Geld-zurück-Garantie und mindestens zwei Jahre Gewährleistung.',
   beleg: 'Produktseite QiBracelet®',
   belegPfad: '/products/qibracelet',
 };

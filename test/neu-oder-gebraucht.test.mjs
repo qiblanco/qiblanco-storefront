@@ -143,7 +143,7 @@ test('die Gebrauchtkauf-Frage: Antwort im ersten Satz, nur über unser Angebot',
   assert.match(q, /gebraucht/);
   const erster = a.split(/(?<=\.)\s+/)[0];
   // Echtheit, Rückgabe, Garantie und Gewährleistung im ERSTEN Satz.
-  for (const teil of [/Originalware/, /Seriennummer/, /20 Tagen Rückgabe/, /100 % Geld-zurück-Garantie/, /Gewährleistung/]) {
+  for (const teil of [/im Original/, /Seriennummer/, /20 Tage zu Hause testen/, /100 % Geld-zurück-Garantie/, /Gewährleistung/]) {
     assert.match(erster, teil);
   }
   assert.match(erster, /Elektrosmog-Armband/);
