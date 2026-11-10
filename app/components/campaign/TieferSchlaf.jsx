@@ -699,7 +699,9 @@ function FinalCTA() {
                 <span className="lp-vp-final-cta__price-value">{price}</span>
                 {compare && <sup className="lp-vp-final-cta__compare">{compare}</sup>}
               </div>
-              <span className="lp-vp-final-cta__price-meta">einmalig · inkl. MwSt.</span>
+              {/* Kein MwSt-Hinweis am Preis, die MwSt steht erst im Checkout
+                  (Shop-Regel S1, Christian 27.10.2026). */}
+              <span className="lp-vp-final-cta__price-meta">einmalig</span>
               <div className="lp-vp-final-cta__pay">
                 <img
                   src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/800px-Klarna_Payment_Badge.svg_7f45bfec-1ac3-4234-9914-98cf49b040f4.png?v=1671199816"
