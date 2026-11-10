@@ -1,12 +1,13 @@
 /* bf-deals-b.css: Black-Friday-Deal-Übersicht DACH, B-Fassung (Elina EL-20261109-79b117c7, gehört zu EL-20261109-bda7a985).
  * 1:1 aus der Master-Vorlage bfd.css (gleicher Aufbau wie qi-blanco.com/pages/bf-deals-b), nur Text/Preise/Links je Markt.
  * Rückbau: diese Datei und app/routes/pages.bf-deals-b.tsx löschen. */
-.bfd{--g:#f2bf72;--g1:#f6cc86;--g2:#e7ad5c;--grund:#0c0a08;--hell:#f5efe6;--matt:rgba(245,239,230,.72);--rand:rgba(245,239,230,.14);--satz:22px;--titel:34px;--betrag:64px;--name:22px;--zahl:36px;position:relative;width:var(--bfd-breite,100vw);margin-left:calc(50% - var(--bfd-breite,100vw)/2);margin-top:-1px;background:var(--grund);color:var(--hell);font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif;overflow:hidden;overflow:clip;text-align:center}
+.bfd{--g:#f2bf72;--g1:#f6cc86;--g2:#e7ad5c;--grund:#0c0a08;--hell:#f5efe6;--matt:rgba(245,239,230,.72);--rand:rgba(245,239,230,.14);--satz:22px;--titel:34px;--betrag:34px;--name:22px;--zahl:34px;position:relative;width:var(--bfd-breite,100vw);margin-left:calc(50% - var(--bfd-breite,100vw)/2);margin-top:-1px;background:var(--grund);color:var(--hell);font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif;overflow:hidden;overflow:clip;text-align:center}
 .bfd *{box-sizing:border-box}
 .bfd__innen{max-width:72rem;margin:0 auto;padding:2rem 1.125rem 3.5rem}
 .bfd__kopf{display:grid;gap:1.5rem;justify-items:center;margin:0 0 2.25rem}
 .bfd__dach{display:flex;flex-direction:column;align-items:center;gap:.5rem;margin:0 0 1.1rem;color:var(--g);font-size:14px;font-weight:700;letter-spacing:.1em;line-height:1.3;text-transform:uppercase}
 .bfd__dach svg{flex:none;width:22px;height:22px}
+.bfd__dach span{display:inline-flex;flex-direction:column;align-items:center;gap:.5rem}
 .bfd h1.bfd__titel{margin:0;padding:0;color:var(--hell)!important;font-family:inherit!important;font-size:var(--satz)!important;line-height:1.3!important;font-weight:300!important;letter-spacing:0;text-transform:none!important}
 .bfd__titel-oben{display:block;font-size:var(--satz);font-weight:300;line-height:1.3;color:var(--hell)}
 .bfd__titel-unten{display:block;margin-top:.3rem;font-size:var(--titel);font-weight:700;line-height:1.12;color:var(--g);letter-spacing:-.015em}
@@ -30,7 +31,7 @@
 .bfd__bild img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
 .bfd__plakette{position:absolute;z-index:1;top:.75rem;left:.75rem;padding:.35rem .75rem;border-radius:999px;background:linear-gradient(180deg,var(--g1),var(--g2));color:#171310;font-size:15px;font-weight:700;line-height:1.2;letter-spacing:.01em;box-shadow:0 6px 18px -8px rgba(0,0,0,.7)}
 .bfd__text{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:0 .5rem}
-.bfd__zeile{margin:0;color:var(--g);font-size:13px;font-weight:700;letter-spacing:.1em;line-height:1.3;text-transform:uppercase}
+.bfd__zeile{margin:0;color:var(--g);font-size:14px;font-weight:700;letter-spacing:.1em;line-height:1.3;text-transform:uppercase}
 .bfd__name{margin:0;color:var(--hell);font-size:var(--name);font-weight:700;line-height:1.2;letter-spacing:-.01em}
 .bfd__preis{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:.25rem .7rem;margin:.2rem 0 0}
 .bfd__alt{color:var(--matt);font-size:16px;font-weight:400;text-decoration:line-through;text-decoration-thickness:1px}
@@ -52,9 +53,9 @@
 .bfd__vertrauen{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1rem;margin:2.5rem 0 0!important;padding:1.4rem 0 0!important;border-top:1px solid rgba(245,239,230,.2);list-style:none;color:var(--hell);font-size:15px;line-height:1.35}
 .bfd__vertrauen li{margin:0;padding:0;list-style:none}
 .bfd__vertrauen b{color:var(--g);font-weight:700}
-@media (max-width:359px){.bfd{--satz:19px;--titel:29px;--betrag:52px;--name:20px;--zahl:30px}}
+@media (max-width:359px){.bfd{--satz:19px;--titel:29px;--betrag:29px;--name:20px;--zahl:29px}}
 @media (min-width:600px){
-.bfd{--satz:24px;--titel:46px;--betrag:72px;--zahl:40px}
+.bfd{--satz:24px;--titel:46px;--betrag:46px;--zahl:40px}
 .bfd__innen{padding:2.5rem 2rem 4.5rem}
 .bfd__liste{grid-template-columns:1fr 1fr}
 .bfd__liste>li.bfd--breit{grid-column:1/-1}
@@ -64,10 +65,11 @@
 .bfd--breit .bfd__neu{font-size:28px}
 }
 @media (min-width:960px){
-.bfd{--titel:56px;--betrag:80px}
+.bfd{--titel:56px;--betrag:56px}
 .bfd__innen{padding:3.5rem 2.5rem 5.5rem}
 .bfd__kopf{grid-template-columns:minmax(0,1fr) auto;align-items:center;justify-items:stretch;gap:3rem;margin-bottom:3rem;text-align:left}
 .bfd__dach{flex-direction:row;gap:.6rem}
+.bfd__dach span{flex-direction:row;gap:.6rem}
 .bfd__uhr{width:24rem;text-align:center}
 .bfd__liste{gap:1.5rem}
 .bfd__text{align-items:flex-start;text-align:left;padding:0 .75rem}

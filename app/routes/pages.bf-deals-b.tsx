@@ -318,17 +318,19 @@ export default function BfDealsB() {
         <header className="bfd__kopf">
           <div className="bfd__kopftext">
             <p className="bfd__dach">
-              <svg
-                viewBox="0 0 16 16"
-                aria-hidden="true"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-              >
-                <rect x="3" y="7" width="10" height="7.5" rx="1.6" />
-                <path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" />
-              </svg>
-              <span>Black Friday 2026 · Pre-Access</span>
+              <span>
+                <svg
+                  viewBox="0 0 16 16"
+                  aria-hidden="true"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                >
+                  <rect x="3" y="7" width="10" height="7.5" rx="1.6" />
+                  <path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" />
+                </svg>
+                Black Friday 2026 · Pre-Access
+              </span>
             </p>
             <h1 className="bfd__titel">
               <span className="bfd__titel-oben">Deine exklusiven</span>{' '}
