@@ -34,3 +34,32 @@ test('ImgixVideo: sparen lädt die Drehung nicht, langsam deckelt hls.js auf DPR
   assert.match(c, /stufe === 'langsam' \? HLS_STUFENDECKEL_LANGSAM : \{\}/);
   assert.match(c, /const HLS_STUFENDECKEL_LANGSAM = \{\s*maxDevicePixelRatio: 1,\s*\};/);
 });
+
+test('Produkt360Video: sparen nimmt die Quelle zurück und bricht den Abruf ab', () => {
+  const c = lies('./Produkt360Video.jsx');
+  assert.match(c, /src=\{nah && !sparen \? video\.src : undefined\}/);
+  assert.match(c, /if \(!el\.getAttribute\('src'\) && el\.currentSrc\) el\.load\(\);/);
+  assert.match(c, /if \(!el \|\| !nah \|\| sparen \|\| sparenRef\.current\) return;/);
+  // Rennen im ersten Commit (sofort): die Ref steht vor dem Abspiel-Effekt.
+  assert.match(c, /sparenRef\.current = true;\s*setSparen\(true\);/);
+  assert.ok(
+    c.indexOf('sparenRef.current = true;') < c.indexOf('if (!el || !nah || sparen || sparenRef.current) return;'),
+    'der Leitungs-Effekt muss vor dem Abspiel-Effekt stehen',
+  );
+});
+
+// Nach PR #1226 (useFilmDekoder): bei sparen holt auch der WebCodecs-Weg die
+// mp4 nicht. Die Quelle des Dekoders ist dann null; wechselt sie während eines
+// laufenden Abrufs auf null, bricht useFilmDekoder ihn ab (stoppen() im
+// Aufräumen des src-Effekts).
+test('useFilmDekoder hält bei sparen still: Produkt360Video und ImgixVideo', () => {
+  const p = lies('./Produkt360Video.jsx');
+  assert.match(p, /useFilmDekoder\(ref, nah && !sparen \? video\.src : null\)/);
+  const i = lies('./ImgixVideo.jsx');
+  assert.match(i, /const \[sparen, setSparen\] = useState\(false\);/);
+  assert.match(i, /if \(mitErsatz && leitung\(\) === 'sparen'\) setSparen\(true\);/);
+  assert.match(
+    i,
+    /useFilmDekoder\(videoRef, mitErsatz && !sparen \? videoQuellen\(videoPath\)\.mp4 : null, mitErsatz\)/,
+  );
+});

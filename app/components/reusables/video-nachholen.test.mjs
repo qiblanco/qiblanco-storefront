@@ -63,7 +63,7 @@ test('useVideoNachholen: meldet die Ablehnung und ruht, solange der Dekoder zeig
 
 test('ImgixVideo: Dekoder nur bei einer 360-Drehung (mit Ersatzbild)', () => {
   const c = lies('./ImgixVideo.jsx');
-  assert.match(c, /useFilmDekoder\(videoRef, mitErsatz \? videoQuellen\(videoPath\)\.mp4 : null, mitErsatz\)/);
+  assert.match(c, /useFilmDekoder\(videoRef, mitErsatz && !sparen \? videoQuellen\(videoPath\)\.mp4 : null, mitErsatz\)/);
   assert.match(c, /beiAbgelehnt: dekoder\.abgelehnt, gesperrt: dekoder\.zeigt/);
   assert.match(c, /mitErsatz && \(\s*<canvas/);
 });
