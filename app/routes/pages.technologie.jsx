@@ -645,9 +645,9 @@ export default function TechnologiePage() {
       <section style={{padding: '3rem 1.5rem 0'}} data-section="healy-vergleich">
         <div className="NormalSectionSize" style={{maxWidth: '860px'}}>
           <p style={pStyle}>
-            Healy ist ein Gerät mit Akku, das du über eine App steuerst. Der QiOne® 2 Pro ist ein Anhänger
-            ohne Elektronik. Was das für Preis, Rückgabe und Belege heißt, zeigt der Vergleich zur{' '}
-            <Link to="/pages/healy-alternative">Healy Alternative</Link>.
+            Healy steuerst du über eine App, und das Gerät braucht einen Akku. Den QiOne® 2 Pro hängst du
+            einfach um, er kommt ohne App und ohne Akku aus. Wer zwischen beiden schwankt, findet Preis und Rückgabe im{' '}
+            <Link to="/pages/healy-alternative">Vergleich zur Healy Alternative</Link>.
           </p>
         </div>
       </section>

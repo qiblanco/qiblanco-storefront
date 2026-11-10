@@ -63,9 +63,9 @@ export const SEITE = {
   vorspann: 'Healy im Vergleich',
   h1: 'Healy Alternative ohne Akku und App',
   beschreibung:
-    'Healy Alternative ohne Akku, App und Folgekosten: der QiOne® 2 Pro von Qi Blanco. Bauart, Tragen, Preis und Rückgabe im Vergleich, mit Quelle in jeder Zeile.',
+    'Healy Alternative ohne Akku und ohne App: der QiOne® 2 Pro. Du hängst ihn um und trägst ihn Tag und Nacht, auch unter der Dusche und in der Sauna.',
   antwort: [
-    'Eine gute Healy Alternative ist der QiOne® 2 Pro von Qi Blanco, wenn du etwas tragen willst, ohne es zu laden oder per App zu steuern. Das ist ein Anhänger aus Chirurgenstahl mit einem Chip aus 750er Gold, den du Tag und Nacht trägst.',
+    'Eine Healy Alternative, die du einfach umhängst: Der QiOne® 2 Pro von Qi Blanco braucht keinen Akku und keine App. Er ist ein Anhänger aus Chirurgenstahl mit einem Chip aus 750er Gold, und du trägst ihn Tag und Nacht.',
     'Healy ist ein kleines Gerät mit Akku für Mikrostrom-Frequenz-Programme. Du steuerst es über eine App auf dem Smartphone und wählst dort ein Programm aus.',
     'Viele, die nach einer Alternative zu Healy suchen, fragen nach Schutz vor Strahlung von Handy, WLAN und 5G und nach mehr Energie. Mehr als 14.000 Menschen tragen heute einen QiOne®, und in 171 ausgewerteten Erfahrungsberichten ging es am häufigsten um mehr Ruhe, tieferen Schlaf und mehr Energie.',
   ],
@@ -103,7 +103,7 @@ export const VERGLEICH = [
   {
     id: 'tragen',
     merkmal: 'Tragen',
-    healy: 'Laut Healy kompakt, tragbar und leicht. Im Lieferumfang von Healy Discover Anschlusskabel, Klebeelektroden und zwei Armbänder.',
+    healy: 'Healy beschreibt sein Gerät als kompakt, tragbar und leicht. Zu Healy Discover gehören Anschlusskabel, Klebeelektroden und zwei Armbänder.',
     qione: 'Als Anhänger an jeder Stelle am Körper, Tag und Nacht, auch beim Duschen, Schwimmen und in der Sauna.',
     quellen: {healy: [2, 7], qione: [8]},
   },
