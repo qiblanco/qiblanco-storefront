@@ -110,7 +110,7 @@ export const meta = () => [
   // Seite sichtbar trägt (R4). Arm A eines A/B, Kontrolle Arm B bis 28 Tage
   // nach Livegang. Vorher: 'Qi Blanco – unsere Hypothesen: das Wirkmodell in sechs Annahmen | Qi Blanco'
   // Meta vorher: 'Das Wirkmodell hinter Qi Blanco in sechs Hypothesen: …' (168 Zeichen)
-  // 2026-11-10 (Massnahme M-SP-20261017-hypothesen, Grossjob
+  // 2026-11-10 (Maßnahme M-SP-20261017-hypothesen, Grossjob
   // seo-2026-w43-l26-hypothesen-aef6): die Beschreibung beginnt mit der Frage
   // der Suchenden, die die neue Sektion „hyp-frage“ beantwortet. Titel und h1
   // bleiben (Auflage). Meta vorher: 'Sechs Annahmen, nach denen wir bauen: was

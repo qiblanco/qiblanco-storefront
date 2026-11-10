@@ -99,7 +99,7 @@ export function HypothesenSeite() {
 
       {/* ------------------------------------------------------ Einstiegsfrage */}
       {/* DIE FRAGE DER SUCHENDEN, ALS ANNAHME BEANTWORTET (2026-11-10, Grossjob
-          seo-2026-w43-l26-hypothesen-aef6, Massnahme M-SP-20261017-hypothesen,
+          seo-2026-w43-l26-hypothesen-aef6, Maßnahme M-SP-20261017-hypothesen,
           Konzept claude-jobs/<jid>/KONZEPT.md Abschnitt 1a). Die Seite trug
           das Wort der Suchenden („Schutz gegen Elektrosmog“) bis dahin in
           keiner Überschrift. Diese Sektion steht NACH dem Kopf: h1, Lead und
