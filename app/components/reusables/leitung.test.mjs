@@ -39,7 +39,13 @@ test('Produkt360Video: sparen nimmt die Quelle zurück und bricht den Abruf ab',
   const c = lies('./Produkt360Video.jsx');
   assert.match(c, /src=\{nah && !sparen \? video\.src : undefined\}/);
   assert.match(c, /if \(!el\.getAttribute\('src'\) && el\.currentSrc\) el\.load\(\);/);
-  assert.match(c, /if \(!el \|\| !nah \|\| sparen\) return;/);
+  assert.match(c, /if \(!el \|\| !nah \|\| sparen \|\| sparenRef\.current\) return;/);
+  // Rennen im ersten Commit (sofort): die Ref steht vor dem Abspiel-Effekt.
+  assert.match(c, /sparenRef\.current = true;\s*setSparen\(true\);/);
+  assert.ok(
+    c.indexOf('sparenRef.current = true;') < c.indexOf('if (!el || !nah || sparen || sparenRef.current) return;'),
+    'der Leitungs-Effekt muss vor dem Abspiel-Effekt stehen',
+  );
 });
 
 // Nach PR #1226 (useFilmDekoder): bei sparen holt auch der WebCodecs-Weg die

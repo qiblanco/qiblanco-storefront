@@ -184,10 +184,18 @@ export function Produkt360Video({
    * im Markup: dann bricht load() den laufenden Abruf ab. Der WebCodecs-Weg
    * (useFilmDekoder) bekommt dann keine Quelle; ein schon laufender Abruf
    * endet mit dem Wechsel auf null.
+   * `sparenRef` schließt das Rennen im ersten Commit: mit `sofort` ist `nah`
+   * gleich wahr, der Abspiel-Effekt darunter läuft im selben Commit, bevor
+   * `sparen` als Zustand ankommt. Ein abgelehntes play() (iOS) startete dann
+   * den Dekoder-Abruf, gemessen 1 mp4-fetch auf der Startseite (10.11.2026).
+   * Effekte laufen in Deklarationsreihenfolge, die Ref steht also schon.
    */
   const [sparen, setSparen] = useState(false);
+  const sparenRef = useRef(false);
   useEffect(() => {
-    if (leitung() === 'sparen') setSparen(true);
+    if (leitung() !== 'sparen') return;
+    sparenRef.current = true;
+    setSparen(true);
   }, []);
   const video = DREHUNG_VIDEO[drehung] ?? DREHUNG_VIDEO.qione;
   const basis = ERSATZBILD_360[drehung] ?? QIONE_ERSATZ;
@@ -208,7 +216,7 @@ export function Produkt360Video({
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || !nah || sparen) return;
+    if (!el || !nah || sparen || sparenRef.current) return;
     const ruhe = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     let wartet = false;
 
