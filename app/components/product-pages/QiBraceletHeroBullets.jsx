@@ -43,10 +43,13 @@ export const BULLET_TEXTE = {
  * (Provenienz ehrlich), Inhalt sonst unveraendert. Ausnahme: die Zeile
  * "In 2-7 Tagen nach Versand" ist entfernt, sie widersprach der sichtbaren
  * Lieferzeit-SSoT 2-3 Tage (Job 20260927-pages-qibracelet-versteckte-2-7-zeile-entfernen).
+ * Aus "inkl. MwSt, weltweiter Versand" wurde "Weltweiter Versand" (Shop-Regel S1,
+ * Christian 27.10.2026; wie descriptionHtml der PDP seit Z233, Job
+ * 20261029-lp-mwst-hinweis-raus-s1-folge-partner).
  */
 const LEGACY_HIDDEN = `<p class="p1"><br></p>
 <p class="qi-price qi-price_fundable"><meta charset="utf-8"><span>1.578</span><span>,-\u20AC</span></p>
-<p class="p1">inkl. MwSt, weltweiter Versand<br>Versandkostenfrei innerhalb Deutschlands; nach \u00D6sterreich und in die Schweiz fallen Versandkosten laut Versandpolicy an (Zoll- und Importgeb\u00FChren sind im Preis enthalten)<br><br><br></p>
+<p class="p1">Weltweiter Versand<br>Versandkostenfrei innerhalb Deutschlands; nach \u00D6sterreich und in die Schweiz fallen Versandkosten laut Versandpolicy an (Zoll- und Importgeb\u00FChren sind im Preis enthalten)<br><br><br></p>
 <p class="qi-status qi-available">In drei Gr\u00F6\u00DFen erh\u00E4ltlich: S, M und L<br></p>
 <p style="color: #729f49;" class="qi-status qi-available"><span>Wirkung in Zellstudien best\u00E4tigt</span></p>
 <br><meta charset="utf-8">

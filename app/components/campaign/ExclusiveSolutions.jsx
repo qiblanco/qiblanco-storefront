@@ -946,7 +946,7 @@ export function GeldheldenPakete({products, schild = true}) {
           ))}
         </div>
         <p className="ghx-pakete__footnote">
-          {schild ? 'Alle Preise inkl. MwSt. ' : ''}Einmalig, kein Abo, kein Verschleiß. 20 Tage risikofrei. 100% Versicherter Versand
+          Einmalig, kein Abo, kein Verschleiß. 20 Tage risikofrei. 100% Versicherter Versand
         </p>
       </div>
       {toast && (
