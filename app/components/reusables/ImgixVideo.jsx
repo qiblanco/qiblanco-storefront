@@ -174,7 +174,14 @@ export function ImgixVideo({videoPath, fallbackImage, className = '', ersatz = n
   // nachholen; Ersatzbild bleibt, bis es läuft (video360-ersatzbild.jsx).
   // Apple-Upgrade (01.11.2026): bei einer 360-Drehung dreht nach der Ablehnung
   // derselbe Film sofort über WebCodecs (useFilmDekoder.js), ohne Tippen.
-  const dekoder = useFilmDekoder(videoRef, mitErsatz ? videoQuellen(videoPath).mp4 : null, mitErsatz);
+  // Datensparen/2G (leitung.js): der Dekoder holt die mp4 nicht. Der Zustand
+  // kommt erst nach der Hydration; ein schon laufender Abruf endet mit dem
+  // Wechsel der Quelle auf null.
+  const [sparen, setSparen] = useState(false);
+  useEffect(() => {
+    if (mitErsatz && leitung() === 'sparen') setSparen(true);
+  }, [mitErsatz]);
+  const dekoder = useFilmDekoder(videoRef, mitErsatz && !sparen ? videoQuellen(videoPath).mp4 : null, mitErsatz);
   useVideoNachholen(videoRef, true, {beiAbgelehnt: dekoder.abgelehnt, gesperrt: dekoder.zeigt});
   // DOMAIN-WECHSEL 2026-09-18 (Vorgang EL-20260814-9a7f9a50, Elina).
   // imgix führt die Video-Auslieferung auf imgix.net zusammen; die eigene
