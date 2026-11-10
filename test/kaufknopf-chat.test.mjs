@@ -422,3 +422,64 @@ test('Träger: CSS-Hälfte nie ohne JS-Hälfte (sonst sinkt Anna auf die Leiste)
   assert.match(komponente, /closest\(`#\$\{TRAEGER_ID\}`\)/);
   assert.match(komponente, /verschiebungKetteY\(/);
 });
+
+// ─── Preis (Job 20261106-salesbot-blasen-verdecken-preis-tablet768) ──────────
+// Gemessen live 10.11.2026, /pages/qione-2-pro-b, 768x1024, Zustimmung alle:
+// Rahmen in Ruhelage [463,787, 298x230], Kaufknopf [440,807, 328x70],
+// Preisblock „1.087 € 1.238 €“ [440,685, 328x102]. Hub live 219 px: Anna
+// wich dem Knopf aus und landete auf dem Preis.
+const RAHMEN_768 = {left: 463, top: 787, right: 761, bottom: 1017};
+const KNOPF_768 = {left: 440, top: 807, right: 768, bottom: 877};
+const PREIS_768 = {left: 440, top: 685, right: 768, bottom: 787};
+const tablet = {leisten: [], pfeile: [], fensterHoehe: 1024, angedockt: false};
+const deckt = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+
+test('Preis: Stand vor dem Bau landet Anna auf dem Preis (Rot, qione-2-pro-b@768)', async () => {
+  const {ausweichStrecke, verschoben} = await import('../app/lib/kaufknopf-chat.js');
+  const alt = ausweichStrecke({...tablet, ruhe: RAHMEN_768, knoepfe: [KNOPF_768], preise: [PREIS_768],
+    preisWeicht: false});
+  assert.equal(alt.hub, Math.ceil(1017 - 807 + ABSTAND_PX));
+  assert.equal(deckt(verschoben(RAHMEN_768, alt.hub), PREIS_768), true, 'der gemessene Befund');
+});
+
+test('Preis: Anna weicht Knopf UND Preis aus und deckt keinen von beiden', async () => {
+  const {ausweichStrecke, verschoben} = await import('../app/lib/kaufknopf-chat.js');
+  const {hub, frei} = ausweichStrecke({...tablet, ruhe: RAHMEN_768, knoepfe: [KNOPF_768], preise: [PREIS_768]});
+  assert.equal(frei, true);
+  assert.equal(hub, Math.ceil(1017 - 685 + ABSTAND_PX));
+  const ziel = verschoben(RAHMEN_768, hub);
+  assert.equal(deckt(ziel, PREIS_768), false);
+  assert.equal(deckt(ziel, KNOPF_768), false);
+  assert.ok(ziel.top >= 8, 'bleibt im Fenster');
+});
+
+test('Preis: ein Preis allein unter der Ruhelage verdrängt die Blase ebenfalls', async () => {
+  const {ausweichStrecke} = await import('../app/lib/kaufknopf-chat.js');
+  const preis = {left: 440, top: 900, right: 768, bottom: 950};
+  const {hub, frei} = ausweichStrecke({...tablet, ruhe: RAHMEN_768, knoepfe: [], preise: [preis]});
+  assert.equal(frei, true);
+  assert.equal(hub, Math.ceil(1017 - 900 + ABSTAND_PX));
+  // links neben dem Rahmen verdrängt er nichts
+  assert.deepEqual(ausweichStrecke({...tablet, ruhe: RAHMEN_768, knoepfe: [],
+    preise: [{left: 16, top: 900, right: 300, bottom: 950}]}), {hub: 0, frei: true});
+});
+
+test('Preis: ohne Preis-Rechtecke bleibt alles wie vorher (kein Seiteneffekt)', async () => {
+  const {ausweichStrecke} = await import('../app/lib/kaufknopf-chat.js');
+  assert.deepEqual(ausweichStrecke({...tablet, ruhe: RAHMEN_768, knoepfe: [KNOPF_768]}),
+    {hub: Math.ceil(1017 - 807 + ABSTAND_PX), frei: true});
+});
+
+test('Preis: das Merkmal sitzt an allen Preisblöcken der Kaufseiten', async () => {
+  const {readFile} = await import('node:fs/promises');
+  const {PREIS_SELEKTOR} = await import('../app/lib/kaufknopf-chat.js');
+  assert.equal(PREIS_SELEKTOR, 'main [data-qb-preis]');
+  for (const datei of ['../app/components/ProductPrice.jsx', '../app/components/product-pages/AlphaVorlage.jsx',
+    '../app/components/campaign/TheAlphaShop.jsx']) {
+    const src = await readFile(new URL(datei, import.meta.url), 'utf8');
+    assert.match(src, /data-qb-preis=""/, datei);
+  }
+  const signal = await readFile(new URL('../app/components/KaufknopfChatSignal.jsx', import.meta.url), 'utf8');
+  assert.match(signal, /PREIS_SELEKTOR/);
+  assert.match(signal, /^\s+preise,\n/m);
+});

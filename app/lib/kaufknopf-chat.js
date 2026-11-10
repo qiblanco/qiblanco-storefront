@@ -268,6 +268,34 @@ export const HUB_VARIABLE = '--qb-chat-hub';
  */
 export const PFEIL_SELEKTOR = 'button.SliderButton';
 
+/**
+ * DER PREIS GEHÖRT ZUM KAUFKNOPF (Job 20261106-salesbot-blasen-verdecken-preis-
+ * tablet768). Gemessen live 06.11. und 10.11.2026 auf /pages/qione-2-pro-b bei
+ * 768x1024: Anna wich dem Knopf „In den Warenkorb legen“ (Oberkante 807) um
+ * 219 px aus und landete damit genau auf dem Preis „1.087 € 1.238 €“
+ * (Rechteck 440,685 328x102). Bei elementFromPoint trafen 7 von 15
+ * Rasterpunkten des Preises das iframe, 20 s lang. Der Knopf war frei, der
+ * Preis darüber nicht. Christians Regel „der Kaufknopf geht vor der Einladung“
+ * gilt für den Preis genauso: er ist die Zahl, die der Kunde vor dem Klick
+ * liest. Die Einladung deckt ihn nicht.
+ *
+ * Als EIGENSCHAFT, nicht als Klasse: data-qb-preis sitzt am Preisblock der
+ * Kaufseiten (ProductPrice.jsx, .product-price, und die Preiszeile der
+ * Alpha-Vorlage und der Qi-Alpha-Kaufseite, .tas-preiszeile). Nur im
+ * Seiteninhalt (main): der Preis in der Kaufleiste liegt in der Leiste und ist
+ * dort schon Hindernis, der Preis im Warenkorb gehört nicht zur Seite.
+ * Vergleichstabellen (qb-gv, avv) tragen das Merkmal nicht, denn dort wird
+ * nichts gekauft.
+ *
+ * Der Preis zählt in jeder Lage wie ein Kaufknopf: in der Ruhelage und
+ * hochgerutscht. RÜCKWEG: PREIS_WEICHT_AN = false, dann zählt nur der Knopf
+ * wie vor diesem Bau.
+ */
+export const PREIS_SELEKTOR = 'main [data-qb-preis]';
+
+/** Code-Schalter: der Preis ist Hindernis wie ein Kaufknopf. */
+export const PREIS_WEICHT_AN = true;
+
 /** Am <html>: der Chat ist offen, er gleitet nicht (app.css). */
 export const OFFEN_ATTRIBUT = 'data-chat-offen';
 
@@ -435,10 +463,12 @@ function deckt(rahmen, k) {
  *   leisten: Array<{left:number, top:number, right:number, bottom:number}>,
  *   knoepfe: Array<{left:number, top:number, right:number, bottom:number}>,
  *   pfeile?: Array<{left:number, top:number, right:number, bottom:number}>,
+ *   preise?: Array<{left:number, top:number, right:number, bottom:number}>,
  *   fensterHoehe: number,
  *   angedockt: boolean,
  *   an?: boolean,
  *   ausweichen?: boolean,
+ *   preisWeicht?: boolean,
  * }} lage
  * @returns {{hub: number, frei: boolean}} hub = px nach oben (0 = Ruhelage);
  *   frei = false heißt: keine Strecke ist frei, der Rückfall blendet aus.
@@ -448,12 +478,16 @@ export function ausweichStrecke({
   leisten,
   knoepfe,
   pfeile = [],
+  preise = [],
   fensterHoehe,
   angedockt,
   an = HOCHRUTSCHEN_AN,
   ausweichen = AUSWEICHEN_AN,
+  preisWeicht = PREIS_WEICHT_AN,
 }) {
   const basis = chatHub({ruhe, leisten, fensterHoehe, angedockt, an});
+  // Der Preis zählt wie ein Kaufknopf (PREIS_SELEKTOR): in jeder Lage.
+  const sperren = preisWeicht ? [...knoepfe, ...(preise || [])] : knoepfe;
   // Offen, angedockt oder ohne Rahmen: nichts zu entscheiden (ueberdecktKaufknopf
   // blendet dort ebenfalls nie aus).
   if (!ruhe || rahmenOffen({rahmen: ruhe, fensterHoehe, angedockt})) {
@@ -462,13 +496,13 @@ export function ausweichStrecke({
   if (!(ruhe.bottom > ruhe.top && ruhe.right > ruhe.left)) {
     return {hub: basis, frei: true};
   }
-  const hindernisse = (hub) => (hub > 0 ? [...knoepfe, ...pfeile] : knoepfe);
+  const hindernisse = (hub) => (hub > 0 ? [...sperren, ...pfeile] : sperren);
   const frei = (hub) =>
     !hindernisse(hub).some((k) => deckt(verschoben(ruhe, hub), k));
   if (!an || !ausweichen) return {hub: basis, frei: frei(basis)};
   const hoechstens = Math.floor(ruhe.top - RAND_PX);
   const kandidaten = [basis];
-  for (const k of [...knoepfe, ...pfeile]) {
+  for (const k of [...sperren, ...pfeile]) {
     if (!(k.bottom > k.top && k.right > k.left)) continue;
     // Nur, was waagrecht unter dem Rahmen liegt, kann ihn verdrängen.
     if (k.right <= ruhe.left - ABSTAND_PX || k.left >= ruhe.right + ABSTAND_PX) continue;

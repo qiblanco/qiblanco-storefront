@@ -398,7 +398,7 @@ export function AlphaVorlage({
                 Christian 29.10.2026 Z2: „das passt nich mehr hin … dauerhaft
                 löaschen“; Shop-Regel S6_apple_ohne_preisanker hält es fest. */}
             {variante?.price ? (
-              <p className="tas-preiszeile av-preiszeile">
+              <p className="tas-preiszeile av-preiszeile" data-qb-preis="">
                 <span className="tas-preis" data-tas-preis="" data-av-preis="">
                   {betragText(hauptPreis, waehrung)}
                 </span>

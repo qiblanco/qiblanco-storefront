@@ -120,8 +120,10 @@ export function ProductPrice({price, compareAtPrice, handle, taxRate, centGenau 
     taxRate != null,
   );
 
+  // data-qb-preis: Annas Einladung weicht dem Preis aus wie dem Kaufknopf
+  // (lib/kaufknopf-chat.js, PREIS_SELEKTOR).
   return (
-    <div className="product-price">
+    <div className="product-price" data-qb-preis="">
       {compareAtFormatted ? (
         <div className="product-price-on-sale">
           {taxedPrice ? <span className="gradient-price">{taxedPrice}</span> : null}
