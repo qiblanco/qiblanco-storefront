@@ -45,6 +45,7 @@
  * unveraendert weiter (zielUrl-Invariante) und ist damit für die
  * Storefront→Checkout→Backend-Kette transparent.
  */
+import {isbot} from 'isbot';
 import {zielUrl} from './go-router-logic.js';
 import {buyerIpAusRequest, istInternerZugriff} from './interner-verkehr.js';
 
@@ -418,7 +419,7 @@ export function experimentE6Aktiv(env, codeSchalter = E6_AKTIV, e1An = experimen
  * sehen soll, sonst null. Ohne
  * Client-IP gibt es keine stabile Zuteilung — dann A (Fail-Richtung auf den
  * Bestand). Pins: ?lp_exp=a | b | b2 | k50 | k25; ein Pin auf einen abgeschalteten Arm
- * zeigt A.
+ * zeigt A. Crawler und Vorschau-Bots (isbot) sehen ohne Pin immer A.
  */
 export function entscheideLpExperiment(
   request,
@@ -454,6 +455,18 @@ export function entscheideLpExperiment(
   if (pin === 'k50') return k50An ? {ziel: nachK50(), eimer: -1, arm: 'k50'} : null;
   if (pin === 'k25') return k25An ? {ziel: nachK25(), eimer: -1, arm: 'k25'} : null;
   const ua = request.headers?.get?.('user-agent') || '';
+  // GEMEINSAMER BOT-AUSSCHLUSS VOR ALLEN EIMER-ZWEIGEN (Job 20261021-szs-b2-
+  // weiche-bot-ausschluss, 10.11.2026). experimente.yaml sagt für jeden Arm
+  // dieser Seite „Crawler, Vorschau-Bots und interner Verkehr immer A"; bis
+  // hierher galt das nur für den eigenen Verkehr, ein Googlebot im Eimer 30..44
+  // bekam den 302 auf B. Dieselbe Erkennung wie experiment-weiche.server.js
+  // (isbot, schon in entry.server.jsx) und dieselbe Stelle: NACH den Pins, damit
+  // Messwerkzeuge (HeadlessChrome) jeden Arm per ?lp_exp= erreichen, VOR dem
+  // Eimer, damit jeder heutige und künftige Arm ihn erbt. Echte Besucher: Eimer
+  // und Reihenfolge unverändert (Test „echte Besucher ... genau so zugeteilt").
+  // Die Zählung verwarf Bots schon vorher (events.db ist_bot, Hausfilter
+  // hm_daten), die Messung ändert sich dadurch nicht.
+  if (isbot(ua)) return null;
   const ip = request.headers?.get ? buyerIpAusRequest(request) : '';
   if (istInternerZugriff({userAgent: ua, ip})) return null;
   if (!ip) return null;
