@@ -172,19 +172,59 @@ test('5 — Struktur der Seite: Blöcke vollständig, Closer am Ende', () => {
   // anderes an, als sie auszeichnet.
   assert.equal(FAQ_ALLE.length, FAQ_BLOECKE.reduce((n, b) => n + b.items.length, 0));
 
-  // SPRUNGZIELE (`anker`, seit 2026-10-09): nur am ersten Eintrag eines Blocks,
-  // denn nur der startet offen. Ein Anker auf einer zugeklappten Frage führte
-  // auf eine Überschrift ohne sichtbare Antwort. Eindeutig und als id brauchbar.
+  // SPRUNGZIELE (`anker`, seit 2026-10-09): eindeutig und als id brauchbar.
+  // Bis 2026-11-10 durfte ein Anker nur am ersten Eintrag eines Blocks stehen,
+  // denn nur der startet offen, und ein Sprung auf eine zugeklappte Frage
+  // führte auf eine Überschrift ohne sichtbare Antwort. Seit 2026-11-10 (Job
+  // 20261019-ki-lernschleife-bau-dach-589a3d) öffnet FaqBlock den Eintrag, auf
+  // den die Adresse zeigt. Ein Anker an einem späteren Eintrag ist deshalb nur
+  // zulässig, solange dieser Mechanismus im Quelltext steht (Quelltext-Arm,
+  // vorher Arm i == 0).
   const anker = [];
+  let ankerHinterDemErsten = false;
   for (const block of FAQ_BLOECKE) {
     block.items.forEach((item, i) => {
       if (item.anker === undefined) return;
       assert.match(item.anker, /^[a-z0-9-]+$/, `Anker unbrauchbar: ${item.anker}`);
-      assert.equal(i, 0, `Anker "${item.anker}" steht nicht am offenen ersten Eintrag von ${block.id}`);
+      if (i > 0) ankerHinterDemErsten = true;
       anker.push(item.anker);
     });
   }
   assert.equal(new Set(anker).size, anker.length, 'Ein Anker ist doppelt vergeben');
+  if (ankerHinterDemErsten) {
+    const code = SEITE_CODE();
+    assert.match(code, /<h3 id=\{item\.anker \|\| undefined\}/, 'die H3 trägt den Anker nicht als id');
+    assert.match(code, /window\.location\.hash/, 'FaqBlock liest die Adresse nicht: Anker an zugeklappter Frage');
+    assert.match(code, /addEventListener\('hashchange'/, 'FaqBlock reagiert nicht auf einen späteren Sprung');
+    assert.match(
+      code,
+      /findIndex\(\(item\) => item\.anker === ziel\)[\s\S]{0,80}setOffenerIndex\(i\)/,
+      'FaqBlock öffnet den angesprungenen Eintrag nicht',
+    );
+  }
+});
+
+/** FaqSeite.jsx ohne Kommentare: gemessen wird der Code, nicht seine Erklärung. */
+function SEITE_CODE() {
+  return readFileSync(new URL('../app/components/faq/FaqSeite.jsx', import.meta.url), 'utf8')
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ')
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/^\s*\/\/.*$/gm, ' ');
+}
+
+test('5b — die Preisfrage steht als Suchfrage mit eigenem Anker (KI-Lernschleife frageseite:dach-preis)', () => {
+  // Die ziel-Probe der Lernschleife (seo-manager/bin/ki_lernschleife.py ziel)
+  // sucht genau diesen Wortlaut als Überschrift; der Anker ist das Sprungziel.
+  const kauf = FAQ_BLOECKE.find((b) => b.id === 'kauf');
+  assert.ok(kauf, 'Block kauf fehlt');
+  const eintrag = kauf.items.find(
+    (item) => item.q === 'Warum kosten Elektrosmog-Schutzprodukte so viel?',
+  );
+  assert.ok(eintrag, 'Die Preisfrage steht nicht als Suchfrage im Block kauf');
+  assert.equal(eintrag.anker, 'warum-kosten-elektrosmog-schutzprodukte-so-viel');
+  assert.match(eintrag.a, /^Bei Qi Blanco /, 'Die Antwort sagt nicht, für welches Stück sie gilt');
+  assert.match(eintrag.quelle, /Warum kostet das so viel\?/, 'Die alte Frage fehlt als Provenienz');
+  assert.ok(!FAQ_ALLE.some((item) => item.q === 'Warum kostet das so viel?'), 'Die alte Frage steht noch da');
 });
 
 test('6 — die Route ist indexierbar gebaut: Canonical ja, noindex nein', () => {

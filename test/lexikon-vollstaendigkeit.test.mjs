@@ -174,3 +174,44 @@ test('ROT-ARM: ein Eintrag ohne Grenze faellt aus dem Schema', () => {
   assert.equal(istSchemaSicher(ohne), false);
   assert.match(ungedeckteMuster(ohne)[0], /kein Feld/);
 });
+
+test('ANKER-ARM: optionale H3-Anker sind eindeutig, und der Hub rendert sie als id', () => {
+  // Seit 2026-11-10 (Job 20261019-ki-lernschleife-bau-dach-589a3d). Ein Anker
+  // darf weder doppelt vorkommen noch mit einer li-id (slug) kollidieren: zwei
+  // gleiche ids machen das Sprungziel unbestimmt.
+  const anker = LEXIKON.filter((e) => e.anker !== undefined).map((e) => e.anker);
+  for (const a of anker) assert.match(a, /^[a-z0-9-]+$/, `Anker unbrauchbar: ${a}`);
+  const ids = [...anker, ...LEXIKON.map((e) => e.slug)];
+  assert.equal(new Set(ids).size, ids.length, 'Ein Anker ist doppelt oder gleich einem slug');
+  if (anker.length) {
+    const hub = fs
+      .readFileSync(path.join(WURZEL, 'app', 'components', 'campaign', 'LexikonHub.jsx'), 'utf8')
+      .replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ');
+    assert.match(hub, /<h3 id=\{e\.anker \|\| undefined\}>/, 'der Hub rendert den Anker nicht an der H3');
+  }
+});
+
+test('hexagonales Wasser: Karte auf die BESTEHENDE Seite, keine zweite Lexikon-Seite (KI-Lernschleife)', () => {
+  // ki_lernschleife.py ziel sucht den Begriff wörtlich als Überschrift
+  // (lexikon-eintrag:hexagonales-wasser). Die Karte zeigt auf die seit
+  // 2026-10-09 bestehende Seite; eine eigene /pages/lexikon-hexagonales-wasser
+  // wäre eine zweite, dünne Seite zum selben Begriff (GEO R9, Christian 25.09.).
+  const e = LEXIKON.find((x) => x.begriff === 'hexagonales Wasser');
+  assert.ok(e, 'Der Begriff „hexagonales Wasser" fehlt im Lexikon');
+  assert.equal(e.pfad, '/pages/was-ist-hexagonales-wasser');
+  assert.equal(e.anker, 'hexagonales-wasser');
+  assert.ok(
+    !fs.existsSync(path.join(WURZEL, 'app', 'routes', 'pages.lexikon-hexagonales-wasser.jsx')),
+    'eine zweite Seite zum Begriff ist entstanden',
+  );
+  // Jeder Satz der Karte steht wortgleich auf der bestehenden Seite.
+  const seite = fs
+    .readFileSync(path.join(WURZEL, 'app', 'data', 'hexagonales-wasser-seite.js'), 'utf8')
+    .replace(/\s*\{q:[a-z0-9-]+\}/g, '');
+  const saetze = [e.definition, ...e.gebrauch, ...e.physik, e.uebertragung_satz,
+    ...e.uebertragung_begruendung, e.grenze, ...e.grenze_begruendung]
+    .flatMap((t) => t.split(/(?<=[.:])\s+/));
+  for (const satz of saetze) {
+    assert.ok(seite.includes(satz), `Satz steht nicht auf der bestehenden Seite: ${satz}`);
+  }
+});

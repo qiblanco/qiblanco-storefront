@@ -460,7 +460,8 @@ export const FAQ_KAUF = [
     // Kontextlinks von indexierten Seiten). Der Vergleich stellt die
     // Rückgabe beider Anbieter Zeile an Zeile, dazu Preis, Bauart und Belege:
     // dieselbe Kaufentscheidung wie diese Antwort, aus der anderen Richtung.
-    // WARUM HIER UND NICHT BEI „Warum kostet das so viel?": nur der ERSTE
+    // WARUM HIER UND NICHT BEI DER PREISFRAGE (bis 2026-11-10 „Warum kostet das
+    // so viel?"): nur der ERSTE
     // Eintrag jedes Blocks startet offen, die übrigen tragen `hidden`.
     // seiten_zufahrt zählt einen Link im zugeklappten Teil nicht als
     // Kontextlink (Vorschau 2026-10-07: 1 von 2). Der Linktext nennt nur
@@ -550,9 +551,14 @@ export const FAQ_KAUF = [
       'Kundenfrage („kann man den qi one auch in der schweiz über klarna in raten zahlen?").',
   },
   {
-    q: 'Warum kostet das so viel?',
+    q: 'Warum kosten Elektrosmog-Schutzprodukte so viel?',
+    // Sprungziel /pages/faq#warum-kosten-elektrosmog-schutzprodukte-so-viel,
+    // seit 2026-11-10. Der Eintrag ist der vierte seines Blocks und startet
+    // zugeklappt; FaqBlock öffnet ihn, wenn die Adresse auf seinen Anker zeigt
+    // (location.hash beim Laden und bei hashchange).
+    anker: 'warum-kosten-elektrosmog-schutzprodukte-so-viel',
     a:
-      'Weil in dem Stück wertvolles Material und Handarbeit stecken und du nur einmal zahlst. Das ' +
+      'Bei Qi Blanco stecken in jedem Stück wertvolles Material und Handarbeit, und du zahlst nur einmal. Das ' +
       'Gehäuse ist aus Chirurgenstahl, der Gitterchip® aus einer maßgeschneiderten 750er ' +
       'Goldlegierung, und fertiggestellt wird er von Oberflächenveredlern und Goldschmieden in ' +
       'Handarbeit. Nach dem Kauf kommt nichts mehr dazu, keine Batterie, kein Abo und nichts zum ' +
@@ -561,7 +567,15 @@ export const FAQ_KAUF = [
     quelle:
       'app/data/product-faqs.js Material-Item (ungeflaggt) für Chirurgenstahl/750er Goldlegierung/ ' +
       'Handarbeit; „keine Elektronik" ebenda. Der Evidenz-Satz ist derselbe wie oben und wird ' +
-      'NICHT abgeschwächt, weil hier von Geld die Rede ist.',
+      'NICHT abgeschwächt, weil hier von Geld die Rede ist. FRAGE NEU 2026-11-10 (Job ' +
+      '20261019-ki-lernschleife-bau-dach-589a3d, KI-Lernschleife frageseite:dach-preis): Die Frage ' +
+      'steht jetzt so, wie sie gesucht wird. Vorher lautete sie „Warum kostet das so viel?" ' +
+      '(origin/main 8c3c4c06). Die Suchfrage gilt einer ganzen Produktklasse, die Antwort gilt ' +
+      'unserem Stück. Deshalb nennt der erste Satz „Bei Qi Blanco" und „jedes Stück" (vorher „Weil ' +
+      'in dem Stück wertvolles Material und Handarbeit stecken und du nur einmal zahlst."), dieselben ' +
+      'drei Gründe. Die übrigen Sätze sind wortgleich. Ein KI-Klang-Richter verwarf am 2026-11-10 ' +
+      'Bestand und Fassung gleich (Rechtfertigungston ab Satz 3); die Umschrift ist nicht Teil ' +
+      'dieses Auftrags und steht als offene Flanke am Job.',
   },
   {
     q: 'Was kostet der Versand und wie lange dauert er?',

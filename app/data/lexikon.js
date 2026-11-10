@@ -27,7 +27,11 @@
  *   gebrauch: string[], physik_groesse: string, physik: string[],
  *   uebertragung_satz: string, uebertragung_begruendung: string[],
  *   grenze: string, grenze_begruendung: string[], quellen: string[],
- *   verlinkt_auf: string[], pfad: string}} LexikonEintrag
+ *   verlinkt_auf: string[], pfad: string, anker?: string,
+ *   frage?: string}} LexikonEintrag
+ *
+ * `anker` (optional, seit 2026-11-10): id an der H3 der Hub-Karte. Fehlt er,
+ * trägt nur das <li> eine id (den slug).
  */
 
 /**
@@ -229,6 +233,48 @@ export const QUELLEN = {
     "zitat": "Platon: Timaios, um 360 v. Chr., die älteste ausgearbeitete Lehre von der Ordnung des Kosmos",
     "url": "https://www.gutenberg.org/ebooks/1572",
     "prüfung": "https://www.gutenberg.org/ebooks/1572"
+  },
+  "kuhs1981": {
+    "art": "fachliteratur",
+    "zitat": "Kuhs und Lehmann: Bond-lengths, bond angles and transition barrier in ice Ih by neutron scattering, Nature 294, 1981, doi:10.1038/294432a0",
+    "url": "https://doi.org/10.1038/294432a0",
+    "prüfung": "https://api.crossref.org/works/10.1038/294432a0"
+  },
+  "libbrecht2005": {
+    "art": "fachliteratur",
+    "zitat": "Libbrecht: The physics of snow crystals, Reports on Progress in Physics 68, 2005, doi:10.1088/0034-4885/68/4/R03",
+    "url": "https://doi.org/10.1088/0034-4885/68/4/R03",
+    "prüfung": "https://api.crossref.org/works/10.1088/0034-4885/68/4/R03"
+  },
+  "nilsson2015": {
+    "art": "fachliteratur",
+    "zitat": "Nilsson und Pettersson: The structural origin of anomalous properties of liquid water, Nature Communications 6, 2015, doi:10.1038/ncomms9998",
+    "url": "https://doi.org/10.1038/ncomms9998",
+    "prüfung": "https://api.crossref.org/works/10.1038/ncomms9998"
+  },
+  "fecko2003": {
+    "art": "fachliteratur",
+    "zitat": "Fecko et al.: Ultrafast Hydrogen-Bond Dynamics in the Infrared Spectroscopy of Water, Science 301, 2003, doi:10.1126/science.1087251",
+    "url": "https://doi.org/10.1126/science.1087251",
+    "prüfung": "https://api.crossref.org/works/10.1126/science.1087251"
+  },
+  "huang2009": {
+    "art": "fachliteratur",
+    "zitat": "Huang et al.: The inhomogeneous structure of water at ambient conditions, PNAS 106, 2009, doi:10.1073/pnas.0904743106",
+    "url": "https://doi.org/10.1073/pnas.0904743106",
+    "prüfung": "https://api.crossref.org/works/10.1073/pnas.0904743106"
+  },
+  "miranda1998": {
+    "art": "fachliteratur",
+    "zitat": "Miranda, Xu, Shen und Salmeron: Icelike Water Monolayer Adsorbed on Mica at Room Temperature, Physical Review Letters 81, 1998, doi:10.1103/PhysRevLett.81.5876",
+    "url": "https://doi.org/10.1103/PhysRevLett.81.5876",
+    "prüfung": "https://api.crossref.org/works/10.1103/PhysRevLett.81.5876"
+  },
+  "pollack2013": {
+    "art": "fachliteratur_hypothese",
+    "zitat": "Gerald H. Pollack: The Fourth Phase of Water: Beyond Solid, Liquid, and Vapor, Ebner & Sons, 2013, ISBN 978-0-9626895-4-3",
+    "url": "https://openlibrary.org/isbn/9780962689543",
+    "prüfung": "https://openlibrary.org/isbn/9780962689543.json"
   }
 };
 
@@ -421,6 +467,60 @@ export const LEXIKON = [
       "/pages/hypothesen"
     ],
     "pfad": "/pages/lexikon-kohaerentes-wasser"
+  },
+  // HEXAGONALES WASSER (seit 2026-11-10, Job 20261019-ki-lernschleife-bau-dach-589a3d,
+  // KI-Lernschleife lexikon-eintrag:hexagonales-wasser). KEINE EIGENE EINTRAGSSEITE:
+  // slug und pfad zeigen auf die BESTEHENDE Seite /pages/was-ist-hexagonales-wasser
+  // (Route pages.was-ist-hexagonales-wasser.jsx, Inhalt app/data/hexagonales-wasser-
+  // seite.js). Eine zweite, dünne Seite /pages/lexikon-hexagonales-wasser wäre
+  // GEO R9 und gegen Christians Wort vom 25.09. Alle Sätze stehen wortgleich auf
+  // jener Seite; die Quellen sind dieselben Arbeiten wie dort. `anker` gibt der
+  // H3 der Hub-Karte die id (Sprungziel /pages/lexikon#hexagonales-wasser).
+  // Der Satz „Hexagonal beschreibt die Form, kohärent das Verhalten, EZ den Ort."
+  // steht in der Grenz-Begründung und nicht als Übertragung: er grenzt den
+  // Begriff vom kohärenten Wasser ab, und nur dort fängt er das Deny-Muster
+  // /koh(ä|ae)rent/ ein (lexikon-schema.js, Schärfung vom 2026-09-15).
+  {
+    "slug": "was-ist-hexagonales-wasser",
+    "begriff": "hexagonales Wasser",
+    "anker": "hexagonales-wasser",
+    "definition": "Hexagonales Wasser ist Wasser, dessen Moleküle sich zu Sechsecken ordnen. Im Eis ist diese Ordnung gemessen, und jede Schneeflocke zeigt sie: Sie wächst als sechseckiges Prisma.",
+    "gebrauch": [
+      "Hexagonal heißt sechseckig. Gemeint ist die Ordnung der Moleküle, nicht die Form eines Tropfens.",
+      "Strukturiert ist ein Sammelbegriff für Wasser mit mehr Ordnung als gewöhnlich und hat keine feste Definition. Hexagonales Wasser ist damit eine Form von strukturiertem Wasser."
+    ],
+    "physik_groesse": "Abstände und Winkel im Eisgitter aus der Neutronenbeugung, in Nanometern und Grad; Größe der eisähnlichen Bereiche im flüssigen Wasser in Nanometern; Breite der geordneten Zone an Oberflächen in Mikrometern",
+    "physik": [
+      "Ein Wassermolekül kann über Wasserstoffbrücken an bis zu vier Nachbarn binden. Im Eis stehen diese vier im Tetraederwinkel um das Molekül. Sechs Moleküle schließen sich so zu einem Ring, und die Ringe stapeln sich zu einem Gitter aus Waben.",
+      "Deshalb heißt das gewöhnliche Eis Eis Ih. Das h steht für hexagonal.",
+      "Im flüssigen Wasser lösen sich die Brücken ständig und bilden sich neu, in Billionstel Sekunden. Ordnung gibt es trotzdem. Röntgenmessungen zeigen eisähnlich geordnete Bereiche von rund einem Nanometer, die sich mit ungeordneten abwechseln.",
+      "Auf Glimmer bildet Wasser bei Raumtemperatur eine eisähnlich geordnete Lage, sobald die Oberfläche voll bedeckt ist."
+    ],
+    "uebertragung_satz": "Wasser ordnet sich an drei Orten sechseckig oder eisähnlich, und jeder hat seine Messung.",
+    "uebertragung_begruendung": [
+      "Für die Ordnung an Oberflächen beschreibt ein Modell die Wabenschicht."
+    ],
+    "grenze": "Gemessen sind das Sechseck im Eis, die eisähnlichen Inseln im flüssigen Wasser und die geordnete Zone an Oberflächen. Die Wabenschicht im Inneren der Zone beschreibt das Modell.",
+    "grenze_begruendung": [
+      "Hexagonal beschreibt die Form, kohärent das Verhalten, EZ den Ort.",
+      "Prof. Dr. Gerald H. Pollack beschreibt EZ-Wasser als Stapel sechseckiger Wabenschichten. Er nennt diesen Zustand die vierte Phase des Wassers, zwischen Eis und flüssigem Wasser.",
+      "Belebtes Wasser ist ein Handelsbegriff für Wasser, das mit Geräten aufbereitet wird. Hexagonal beschreibt die Ordnung der Moleküle. Der eine Begriff nennt ein Verfahren, der andere eine Struktur."
+    ],
+    "quellen": [
+      "kuhs1981",
+      "libbrecht2005",
+      "nilsson2015",
+      "fecko2003",
+      "huang2009",
+      "miranda1998",
+      "pollack2006",
+      "pollack2013"
+    ],
+    "verlinkt_auf": [
+      "/pages/lexikon-kohaerentes-wasser",
+      "/pages/hypothesen"
+    ],
+    "pfad": "/pages/was-ist-hexagonales-wasser"
   },
   {
     "slug": "lexikon-elektrosmog",

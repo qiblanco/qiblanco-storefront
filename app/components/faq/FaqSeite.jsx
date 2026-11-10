@@ -1,4 +1,4 @@
-import {Fragment, useId, useState} from 'react';
+import {Fragment, useEffect, useId, useState} from 'react';
 import {Link} from 'react-router';
 import {FAQ_BLOECKE} from '~/data/faq-seite';
 import {FRAGEN} from '~/data/fragen';
@@ -85,9 +85,11 @@ function FaqEintrag({item, id, offen, onToggle}) {
   const antwortId = `${id}-antwort`;
   return (
     <div className="faq-eintrag">
-      {/* `item.anker` (optional) macht die Frage per #anker ansteuerbar. Er
-          steht nur an Fragen, die der Anfang ihres Blocks sind und damit offen
-          starten: ein Sprung auf eine zugeklappte Frage zeigte keine Antwort. */}
+      {/* `item.anker` (optional) macht die Frage per #anker ansteuerbar. Bis
+          2026-11-10 stand er nur an Fragen, die ihren Block anfangen und damit
+          offen starten: ein Sprung auf eine zugeklappte Frage zeigte keine
+          Antwort. Seitdem öffnet FaqBlock den Eintrag, auf den die Adresse
+          zeigt, und ein Anker darf an jeder Frage stehen. */}
       <h3 id={item.anker || undefined} style={{margin: 0}}>
         <button
           type="button"
@@ -135,6 +137,29 @@ function FaqBlock({block}) {
   // ohne Klick echte Antworten statt einer Liste zugeklappter Zeilen.
   const [offenerIndex, setOffenerIndex] = useState(0);
   const basisId = useId();
+
+  // SPRUNG AUF EINE ZUGEKLAPPTE FRAGE (seit 2026-11-10, Job 20261019-ki-
+  // lernschleife-bau-dach-589a3d): zeigt die Adresse auf den `anker` eines
+  // Eintrags dieses Blocks, öffnet der Block genau diesen Eintrag, beim Laden
+  // und bei jedem späteren Sprung (hashchange). Die Antwort steht ohnehin im
+  // Server-HTML (Bauentscheidung 1); hier geht es nur darum, dass ein Mensch
+  // nach dem Sprung die Antwort sieht und nicht nur die Überschrift.
+  useEffect(() => {
+    const oeffneAusAdresse = () => {
+      let ziel = window.location.hash.slice(1);
+      try {
+        ziel = decodeURIComponent(ziel);
+      } catch {
+        return;
+      }
+      if (!ziel) return;
+      const i = block.items.findIndex((item) => item.anker === ziel);
+      if (i >= 0) setOffenerIndex(i);
+    };
+    oeffneAusAdresse();
+    window.addEventListener('hashchange', oeffneAusAdresse);
+    return () => window.removeEventListener('hashchange', oeffneAusAdresse);
+  }, [block.items]);
 
   return (
     <section className="faq-block">
