@@ -49,7 +49,7 @@
     "app/crystal-spiegel/components/reusables/AmazonStil.jsx": "4f532bc566173bb9eb8708fc6f0da8906a97f95746bb73a0bd0449513a6f313e",
     "app/crystal-spiegel/components/reusables/Belege.jsx": "51ea31b70c69da0da7abb890e2be4ba91151c9364f8bf3e158320e7e0d2c33c0",
     "app/crystal-spiegel/components/reusables/IgTestimonialSlideshow.jsx": "c71c4d33be9d6bf4d0cb68631e84e12c7ef85f66a54128542436463e78e64846",
-    "app/crystal-spiegel/components/reusables/KursEintragung.jsx": "e38475db545ad4b41b604f83f45b13bfedbe8904553582d01d6d3c9bbf2bf372",
+    "app/crystal-spiegel/components/reusables/KursEintragung.jsx": "1a6dbb8b26d1e4aac6fd4698299075280db3bd33d5ef857bc77e6823af3a7530",
     "app/crystal-spiegel/components/reusables/PodcastEinstieg.jsx": "6fe428f455c3dfc3a24817afa833b4449346992fba387f5ac10c8d799c97c80a",
     "app/crystal-spiegel/components/reusables/ZubereitungHinweis.jsx": "ced9f528b381dccdbd50bebb4ee664314722c56141ad2fe8860b6b8e9884a3e1",
     "app/crystal-spiegel/components/startseite/Analyseprofile.jsx": "7518f54890606d9ee7caf321c4783e96587580b50c68a545e8b1fdf7603838d1",
@@ -69,7 +69,7 @@
     "app/crystal-spiegel/lib/kakao-seo.js": "885c65fae9e0ff4a92e954715f4a33fa0f006a160be7ad2bccceef110ae8c7a2",
     "app/crystal-spiegel/lib/kakao-zone.js": "0600c0f168587b03d1b0610c33cabc8325bc20d430a05117a8c7e4a78d4ed74d",
     "app/crystal-spiegel/lib/kaufblock-fassung.js": "aced04fe6bc399852547c15c8395c4a8887fbd8175b51781693e19e24b9f4892",
-    "app/crystal-spiegel/lib/kurs-eintragung.js": "218230ed36d4c387909eb96c3dbd79b98697a5c3cc76b785c9f75b38d509992c",
+    "app/crystal-spiegel/lib/kurs-eintragung.js": "1ccf25e6c1e147558e1c3fd8f6f12b59cb17236497bfea78d5016a79b41c9825",
     "app/crystal-spiegel/lib/produkt-schema.js": "81482b79c2606266fcd1fd0683894a68641e112c2db9b3b52ec45c662bb97658",
     "app/crystal-spiegel/lib/produkt-seo.js": "b3cc52e91c19ce39d54bbb08418ae4db0aada590b18d5218ffc3b248e38b002e",
     "app/crystal-spiegel/lib/seo.js": "1be420eabc715b5aec3a67bd484f55048faa628cbef3f3fb1546b461e1d16a0c",
@@ -89,7 +89,7 @@
     "app/crystal-spiegel/styles/eu-gewaehrleistung.css": "b18e895bc6fda4c1aba234a148147d33d0b121633e488e773c2e713155fc0914",
     "app/crystal-spiegel/styles/ig-testimonials.css": "be188d08c2e8362500229ae7749cc7d536c3e16c9dd7d9fa7c37658ea597ae2a",
     "app/crystal-spiegel/styles/isolation.css": "a972cd73e077f6ef0da95b145b4b164bcb574487dffd0770b14d3bbacd819102",
-    "app/crystal-spiegel/styles/kakao-seiten.css": "f23e75527b6e56e6acd58cfb594283256b746bae1eff8a9cba163ab3284a63ef",
+    "app/crystal-spiegel/styles/kakao-seiten.css": "9a74fe27acd739bfc7894886baa10e038bd65e7940357c14c5a56dfbd1cd5b5f",
     "app/crystal-spiegel/styles/kakao-tiefe.css": "40a4c62fd6d906135c06223b00a60f613731c12a668265574bc6044fdadaf9ea",
     "app/crystal-spiegel/styles/qb-swipetab.css": "14bdb99db18c8c0f75af7e3302956975a01b416e985bcb5b256d61aece0a1d8e",
     "app/crystal-spiegel/styles/reset.css": "a5e490a13114e04772d58f616e77ca06a4be60d057b7f799b33906367934cfce",
@@ -109,7 +109,7 @@
     "components",
     "utilities"
   ],
-  "quelle_commit": "a8b51af73c7379df0ec7adcb671dd4d05d70e194",
+  "quelle_commit": "279dcb39245337aa9acf5cde767faa6b9ececcd9",
   "quelle_repo": "crystal-cacao-node/repo",
   "seiten": {
     "awake": {
