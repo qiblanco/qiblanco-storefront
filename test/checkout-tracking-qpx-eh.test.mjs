@@ -12,6 +12,7 @@ import {
   ATTRIBUTION_COOKIE_NAME,
   buildAttributionCartAttributes,
   appendTrackingToCheckoutUrl,
+  adParamsSeenMarker,
 } from '../app/lib/checkout-tracking.js';
 
 const EH = '0123456789abcdef';
@@ -169,4 +170,37 @@ test('Tracker verwirft qpx_eh im Klartext, puffert utm weiter', () => {
   const m = new Map(rec.params);
   assert.equal(m.has('qpx_eh'), false);
   assert.equal(m.get('utm_source'), 'mail-manager');
+});
+
+// Adversariale Pruefung (Job 20261024-...-el35724d07): qpx_eh darf nur als eigenes, formgeprueftes
+// Attribut reisen -- nicht ungeprueft im landing_page/referrer, und es ist kein Signal fuer sich.
+test('landing_page und referrer tragen kein qpx_eh (auch kein Klartext)', () => {
+  const record = {
+    params: [['utm_source', 'mail-manager']],
+    href: 'https://qiblanco.com/?utm_source=mail-manager&qpx_eh=name%40example.com',
+    referrer: `https://qiblanco.com/x?qpx_eh=${EH}`,
+    savedAt: '2026-11-10T00:00:00.000Z',
+  };
+  const cookieHeader = `${ATTRIBUTION_COOKIE_NAME}=${encodeURIComponent(JSON.stringify(record))}`;
+  const attrs = buildAttributionCartAttributes({searchParams: new URLSearchParams(), cookieHeader, includeCookies: true});
+  const lp = attr(attrs, 'landing_page')?.value || '';
+  assert.ok(lp.includes('utm_source=mail-manager'), lp);
+  assert.ok(!lp.includes('qpx_eh'), lp);
+  assert.ok(!(attr(attrs, 'referrer')?.value || '').includes('qpx_eh'));
+});
+
+test('qpx_eh allein ist kein Signal: kein landing_page/referrer', () => {
+  const record = {params: [['qpx_eh', EH]], href: `https://qiblanco.com/?qpx_eh=${EH}`,
+    referrer: 'https://webmail.example.org/inbox', savedAt: '2026-11-10T00:00:00.000Z'};
+  const cookieHeader = `${ATTRIBUTION_COOKIE_NAME}=${encodeURIComponent(JSON.stringify(record))}`;
+  const attrs = buildAttributionCartAttributes({searchParams: new URLSearchParams(), cookieHeader, includeCookies: true});
+  assert.equal(attr(attrs, 'qpx_eh')?.value, EH);
+  assert.equal(attr(attrs, 'landing_page'), undefined);
+  assert.equal(attr(attrs, 'referrer'), undefined);
+});
+
+test('qpx_eh kippt den Ankunfts-Marker ad_params_seen nicht', () => {
+  assert.notEqual(adParamsSeenMarker({searchParams: new URLSearchParams('qpx_eh=garbage')}), 'yes_query');
+  assert.notEqual(adParamsSeenMarker({searchParams: new URLSearchParams(`qpx_eh=${EH}`)}), 'yes_query');
+  assert.equal(adParamsSeenMarker({searchParams: new URLSearchParams('utm_source=x')}), 'yes_query');
 });

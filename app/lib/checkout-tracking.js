@@ -198,6 +198,10 @@ const SENSITIVE_QUERY_PARAM_NAMES = new Set([
   'passwd',
   'pwd',
   'secret',
+  // qpx_eh (Mail-Kontaktkennung) geht NUR als eigenes, formgeprueftes Warenkorb-Attribut. In landing_page/
+  // referrer haette sie keine Formwache (Klartext moeglich) -- dort wird sie entfernt (adversariale Pruefung
+  // Job 20261024-storefront-mailkennung-warenkorb-vorschau-el35724d07).
+  'qpx_eh',
   'token',
   'access_token',
   'id_token',
@@ -331,7 +335,9 @@ export function buildAttributionCartAttributes({
   //      referrer plötzlich für jeden organischen Besucher mitgeschrieben,
   //      also eine stille Ausweitung der Datenmenge statt eines Fixes.
   // Regression: test/checkout-tracking-signallos.test.mjs
-  const hasTrackingSignal = attributes.length > 0;
+  // qpx_eh allein ist kein Signal: sonst schriebe ein Mail-Klick zusaetzlich landing_page/referrer
+  // (z. B. eine Webmail-URL) -- eine stille Ausweitung der Datenmenge.
+  const hasTrackingSignal = attributes.some(({key}) => !NUR_WARENKORB.has(key));
 
   if (hasTrackingSignal) {
     // Job 20260809-fj1 (2026-08-10): `landing_page`/`referrer` trugen bisher den
@@ -973,7 +979,7 @@ function refererSuchParameter(referer) {
  */
 function hatTrackingParam(eintraege) {
   for (const [name, value] of eintraege) {
-    if (value && isTrackingParamName(name)) return true;
+    if (value && isTrackingParamName(name) && !NUR_WARENKORB.has(name)) return true;
   }
   return false;
 }
