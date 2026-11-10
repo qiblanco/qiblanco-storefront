@@ -13,17 +13,16 @@ import bfDealsBStyles from '../styles/bf-deals-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
 
 // Bilder: Shopify-Dateien DACH (Medien aufs CDN, nicht ins Repo). Die zwei neuen Bundle-Bilder und das Kakao-Set-Bild
-// (EL-20261109-79b117c7 bzw. b0f2e574) lädt ein Nachlauf in die DACH-Dateien; bis dahin stehen bei den Bundles die
-// bisherigen Freisteller, und das Kakao-Bild bleibt leer (die Kachel zeigt dann nur den dunklen Grund). Vor dem
-// Livegang alle drei auf die neuen Dateien setzen. Werte ohne Query.
+// (EL-20261109-79b117c7 bzw. b0f2e574) liegen seit 10.11.2026 in den DACH-Dateien (cdn-upload, werk/bild-urls.json).
+// Werte ohne Query; die Kachel hängt ?width= an.
 const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
 const BILDER: Record<string, string> = {
-  'bundle-2x-qione-2-pro': CDN + '2xQiOne2Profreistehend_1.png',
-  'bundle-qione-2-pro-necklace':
-    CDN + 'QiOne_NecklaceBundlev3Transparent_1.png',
+  'bundle-2x-qione-2-pro': CDN + 'bundle-2x-qione-2-pro.webp',
+  'bundle-qione-2-pro-necklace': CDN + 'bundle-qione-2-pro-necklace.webp',
   QiBracelet1: CDN + 'QiBracelet1.webp',
   QiHome1: CDN + 'QiHome1.webp',
-  'crystal-cacao-set-awake-create-dunkel-gold-4x3': '',
+  'crystal-cacao-set-awake-create-dunkel-gold-4x3':
+    CDN + 'crystal-cacao-set-awake-create-dunkel-gold-4x3.webp',
 };
 
 export function links() {

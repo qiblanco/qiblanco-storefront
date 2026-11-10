@@ -80,4 +80,11 @@
 .bfd--breit .bfd__neu{font-size:32px}
 .bfd__vertrauen{grid-template-columns:repeat(4,auto);justify-content:center;gap:1rem 2.5rem;text-align:center}
 }
+/* Shopify-Theme (US): .rte a:not(.btn) setzt border-bottom + padding-bottom 1px an jeden Link im Seitenrumpf.
+ * Gemessen live 10.11.2026: unterstrichener Kakao-Titel, helle Unterkante und fehlender Innenabstand unten an den Kacheln.
+ * Hier gezielt zurückgenommen (Hydrogen DE kennt .rte nicht, dort wirkungsgleich). */
+.bfd a.bfd__kachel:not(.btn){border-bottom:1px solid var(--rand);padding-bottom:1.4rem}
+.bfd a.bfd__kachel:not(.btn):hover{border-bottom-color:rgba(242,191,114,.55)}
+.bfd a.bfd__link:not(.btn){border-bottom:0;padding-bottom:0}
+@media (min-width:600px){.bfd .bfd--breit a.bfd__kachel:not(.btn){padding-bottom:.9rem}}
 @media (prefers-reduced-motion:reduce){.bfd__kachel,.bfd__pfeil,.bfd__pille{transition:none!important}.bfd__kachel:hover .bfd__pfeil{transform:none!important}}
