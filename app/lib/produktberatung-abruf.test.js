@@ -108,3 +108,143 @@ test('jeder Versuch nennt dem Endpunkt seine Nummer (X-PB-Versuch), Accept bleib
   );
   assert.ok(aufrufe.every((a) => a.headers.Accept === 'application/json'));
 });
+
+// ─── Messfixtur des Formate-Prüfers (Job 20261110-gate12-messfixtur-produktberatung-termine) ───
+// Mutanten, die rot werden müssen: istMessfixtur ohne Host-Prüfung (Kunde mit
+// Kopf sieht Fixtur), Fixtur-Termine vor jetzt + Buchungsschluss (Abdaten
+// leert die Liste), Loader ruft /api/termine trotz Kopf, Browser nimmt Date.now().
+import {readFileSync} from 'node:fs';
+import {
+  istMessfixtur,
+  messfixturTermine,
+  PB_MESSFIXTUR_JETZT,
+  PB_MESSFIXTUR_NAME,
+  PB_MESSFIXTUR_SCHLUSS_MIN,
+  PB_MESSFIXTUR_ZONE,
+} from './produktberatung-abruf.server.js';
+import {istMessfixtur as istMessfixturLive} from './coming-home-live.server.js';
+
+const KOPF = 'x-hbfmt-messfixtur';
+const anfrage = (url, kopf) =>
+  new Request(url, {headers: kopf ? {[KOPF]: kopf} : {}});
+
+test('Messfixtur: dieselbe Funktion wie /pages/live (gemeinsam, nicht kopiert)', () => {
+  assert.equal(istMessfixtur, istMessfixturLive);
+});
+
+test('Messfixtur: nur Kopf 1 an der lokalen Bank', () => {
+  assert.equal(
+    istMessfixtur(anfrage('http://localhost:3000/pages/produktberatung', '1')),
+    true,
+  );
+  assert.equal(
+    istMessfixtur(
+      anfrage('http://127.0.0.1:3000/pages/produktberatung-b', '1'),
+    ),
+    true,
+  );
+  assert.equal(
+    istMessfixtur(anfrage('http://localhost:3000/pages/produktberatung')),
+    false,
+  );
+  assert.equal(
+    istMessfixtur(anfrage('http://localhost:3000/pages/produktberatung', '0')),
+    false,
+  );
+});
+
+test('Messfixtur NEGATIV-KONTROLLE: Host nicht localhost -> echte Termine', () => {
+  assert.equal(
+    istMessfixtur(anfrage('https://qiblanco.com/pages/produktberatung', '1')),
+    false,
+  );
+  assert.equal(
+    istMessfixtur(anfrage('https://qiblanco.com/pages/produktberatung-b', '1')),
+    false,
+  );
+  assert.equal(
+    istMessfixtur(
+      anfrage('https://localhost.qiblanco.com/pages/produktberatung', '1'),
+    ),
+    false,
+  );
+});
+
+test('Messfixtur: feste Termine in der Form von /api/termine, alle noch buchbar', () => {
+  const a = messfixturTermine();
+  const b = messfixturTermine();
+  assert.deepEqual(a, b);
+  assert.notEqual(a.termine, b.termine);
+  assert.equal(a.termine.length, 9);
+  assert.equal(new Set(a.termine.map((t) => t.datum)).size, 3);
+  assert.equal(a.jetzt, PB_MESSFIXTUR_JETZT);
+  assert.equal(a.buchungMoeglich, true);
+  assert.equal(a.buchungsschlussMin, PB_MESSFIXTUR_SCHLUSS_MIN);
+  assert.ok(termineBrauchbar({status: 200, body: {termine: a.termine}}));
+  const grenze = Date.parse(a.jetzt) + a.buchungsschlussMin * 60000;
+  for (const t of a.termine) {
+    assert.deepEqual(Object.keys(t).sort(), [
+      'datum',
+      'slot_ende',
+      'slot_start',
+      'utc',
+      'zeit',
+    ]);
+    assert.equal(Date.parse(t.slot_start), Date.parse(t.utc), t.slot_start);
+    assert.equal(
+      Date.parse(t.slot_ende) - Date.parse(t.slot_start),
+      20 * 60000,
+    );
+    assert.equal(t.slot_start.slice(0, 10), t.datum);
+    assert.equal(t.slot_start.slice(11, 16), t.zeit);
+    assert.equal(new Date(t.utc).getUTCDay(), 4, 'Donnerstag');
+    assert.ok(Date.parse(t.utc) > grenze, `${t.utc} würde abgedatet`);
+  }
+  assert.equal(PB_MESSFIXTUR_NAME, 'produktberatung');
+  assert.equal(PB_MESSFIXTUR_ZONE, 'Europe/Berlin');
+});
+
+test('Messfixtur: Loader nimmt die Fixtur vor /api/termine, persönliche Aufrufe bleiben', () => {
+  const route = readFileSync(
+    new URL('../routes/pages.produktberatung.jsx', import.meta.url),
+    'utf8',
+  );
+  const mess = route.indexOf('if (mess) {');
+  const abruf = route.indexOf('`${api}/api/termine`');
+  assert.ok(mess > 0 && abruf > mess, 'Fixtur-Zweig steht vor dem Abruf');
+  assert.match(
+    route,
+    /const mess =\s*istMessfixtur\(request\) &&\s*!PERSOENLICH\.some/,
+  );
+  assert.match(route, /const exp =\s*!mess &&/);
+  assert.match(
+    route,
+    /messfixtur: PB_MESSFIXTUR_NAME,\s*messfixturZone: PB_MESSFIXTUR_ZONE,/,
+  );
+});
+
+test('Messfixtur: Browser-Uhr und Zone fest, Marker an den Termin-Bereichen', () => {
+  const seite = readFileSync(
+    new URL('../components/campaign/ProduktberatungSeite.jsx', import.meta.url),
+    'utf8',
+  );
+  assert.match(
+    seite,
+    /const fest = roh\.messfixtur \? Date\.parse\(roh\.jetzt\) : null;/,
+  );
+  assert.match(
+    seite,
+    /const zone = fest != null \? roh\.messfixturZone \|\| '' : zoneBrowser;/,
+  );
+  assert.match(
+    seite,
+    /const jetzt = fest != null && Number\.isFinite\(fest\) \? fest : jetztBrowser;/,
+  );
+  const marker =
+    seite.match(/data-messfixtur=\{daten\.messfixtur \|\| undefined\}/g) || [];
+  assert.equal(marker.length, 4, 'alle vier Zustände des Termin-Bereichs');
+  assert.match(
+    seite,
+    /className="pb__naechster" data-messfixtur=\{messfixtur \|\| undefined\}/,
+  );
+});
