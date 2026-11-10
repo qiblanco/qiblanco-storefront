@@ -42,6 +42,22 @@ const EINLEITUNGEN = {
     'gesprochen haben.',
 };
 
+// DER WEG ZUR SEITE HINTER DEM BLOG, je Blog-Handle (SEO-Maßnahme L19, Job
+// seo-2026-w44-l19-neue-seite-nie-von-google-ge, 2026-11-10): Google kannte
+// /pages/coming-home 40 Tage nach Livegang nicht („URL ist Google nicht
+// bekannt"), weil keine indexierte Seite sie aus dem Inhalt verlinkte. Dieser
+// Blog ist indexiert und das Thema dasselbe. Eine EIGENE Zeile unter der
+// Einleitung, damit deren Wortlaut (PR #1403) unverändert bleibt. Ein Blog
+// ohne Eintrag bekommt keine Zeile.
+const ANMELDEWEGE = {
+  'coming-home': {
+    vorher: 'Dabei sein kostet nichts. Den Zoom-Link bekommst du mit der ',
+    pfad: '/pages/coming-home',
+    linktext: 'Anmeldung zur Sonntagsrunde',
+    nachher: '.',
+  },
+};
+
 export const links = () => [
   {rel: 'stylesheet', href: blogStyles},
   // Eigenes Blatt für die Strang-Gruppierung: siehe Kopf dort. Es trägt
@@ -290,12 +306,22 @@ export default function Blog() {
   // Ein Blog ohne Eintrag bekommt GAR KEINE Einleitung statt einer fremden.
   const einleitung =
     blog.seo?.description?.trim() || EINLEITUNGEN[blog.handle] || '';
+  const anmeldeweg = ANMELDEWEGE[blog.handle];
 
   return (
     <div className="blog-wissen">
       <div className="blog">
         <h1>{blog.title}</h1>
         {einleitung ? <p className="blog-einleitung">{einleitung}</p> : null}
+        {anmeldeweg ? (
+          <p className="blog-anmeldeweg">
+            {anmeldeweg.vorher}
+            <Link className="article-weiter-produkt" to={anmeldeweg.pfad}>
+              {anmeldeweg.linktext}
+            </Link>
+            {anmeldeweg.nachher}
+          </p>
+        ) : null}
         {einstieg?.length ? (
           <Wegweiser blogHandle={blog.handle} weg={einstieg} />
         ) : null}
