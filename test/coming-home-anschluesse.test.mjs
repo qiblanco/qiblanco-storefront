@@ -19,6 +19,16 @@ import {readFileSync} from 'node:fs';
 // entscheideAdWeiche(), kein Abruf und kein Zulauf auf einen echten Shop.
 import {entscheideAdWeiche, istAusgeschlossen, LP_A_PFAD} from '../app/lib/ad-weiche.server.js';
 import {NUR_ROUTE_SEITEN} from '../app/lib/seo.js';
+import {
+  MESSFIXTUR_FIXTUR,
+  MESSFIXTUR_JETZT,
+  MESSFIXTUR_KOPF,
+  MESSFIXTUR_NAME,
+  istMessfixtur,
+  messfixturDaten,
+  seitenDaten as liveSeitenDaten,
+} from '../app/lib/coming-home-live.server.js';
+import {ohneProsa as ohneProsaMf} from './_quelltext.mjs';
 
 const PFAD = '/pages/coming-home';
 const PAID = ['utm_medium=paid&utm_source=facebook', 'utm_medium=paid&utm_source=google', 'gclid=TESTS04CH'];
@@ -171,7 +181,8 @@ test('NEGATIV-KONTROLLE /pages/live: die alte Fassung bleibt per Schalter erreic
   // Ohne diesen Bestand wäre SEITE_NEU_AN = false kein Rückweg.
   assert.match(route, /Du fragst, wir antworten\. Auch die unbequemen Fragen\./);
   assert.match(route, /'Die erste Zusammenfassung erscheint nach dem nächsten Sonntag\.'/);
-  assert.match(route, /function Rueckblick\(\{rueckblicke, gesamt, ladeFehler\}\)/);
+  // Seit der Messfixtur (Job 20261019-repair-gate12-...) trägt sie dazu den Marker-Parameter.
+  assert.match(route, /function Rueckblick\(\{rueckblicke, gesamt, ladeFehler(, messfixtur)?\}\)/);
   // Und der Test der gestrichenen Sätze sähe sie, stünden sie in der neuen Fassung.
   assert.ok(/unbequem/i.test(route.slice(route.indexOf('function Kopf()'))));
 });
@@ -190,4 +201,100 @@ test('/pages/live: Termin gilt 90 Minuten, Überschriften im Artikel werden h4',
   }];
   assert.equal(m.seitenDaten(artikel, new Date('2026-10-25T12:29:00Z')).naechster.quelle, 'blog');
   assert.equal(m.seitenDaten(artikel, new Date('2026-10-25T12:31:00Z')).naechster.quelle, 'annahme');
+});
+
+/**
+ * MESSFIXTUR /pages/live des Formate-Prüfers (Job 20261019-repair-gate12-
+ * live-pixelsoll-datengetrieben-terminwechsel, s02).
+ *
+ * WAS DIESER TEST BEWEIST: der Kopf x-hbfmt-messfixtur: 1 schaltet die Seite
+ * NUR an der lokalen Bank (localhost/127.0.0.1/::1) auf feste Daten. Auf
+ * qiblanco.com, auf einer Oxygen-Vorschau und unter einem Host, der nur mit
+ * "localhost." anfängt, bleiben es Shop-Daten, auch wenn jemand den Kopf
+ * mitschickt. Die Fixtur zeigt den vollen Zustand (Vorschau mit Uhrzeit,
+ * Titel und Auszug, drei Rückblicke) zu einem festen Zeitpunkt, und der
+ * Loader nimmt diesen Zeitpunkt statt der Uhr.
+ *
+ * NEGATIV-KONTROLLEN SIND TRAGEND: "Bank erkannt" wäre auch grün, wenn
+ * istMessfixtur() immer true gäbe (Mutant aus s01: rot).
+ *
+ * Steht hier statt in einer eigenen Datei, weil diese Datei schon in der
+ * Scope-Allowlist von hb-deploy steht (homepage-bauer/config/deploy.conf).
+ */
+const mfReq = (url, kopf) => ({
+  url,
+  headers: new Headers(kopf === undefined ? {} : {[MESSFIXTUR_KOPF]: kopf}),
+});
+
+test('Bank localhost mit Kopf -> Fixtur', () => {
+  assert.equal(istMessfixtur(mfReq('http://localhost:3241/pages/live', '1')), true);
+});
+test('Bank 127.0.0.1 mit Kopf -> Fixtur', () => {
+  assert.equal(istMessfixtur(mfReq('http://127.0.0.1:3241/pages/live', '1')), true);
+});
+test('Bank ::1 mit Kopf -> Fixtur', () => {
+  assert.equal(istMessfixtur(mfReq('http://[::1]:3241/pages/live', '1')), true);
+});
+test('Bank ohne Kopf -> Shop-Daten', () => {
+  assert.equal(istMessfixtur(mfReq('http://localhost:3241/pages/live')), false);
+});
+test('Bank mit anderem Wert -> Shop-Daten', () => {
+  assert.equal(istMessfixtur(mfReq('http://localhost:3241/pages/live', '0')), false);
+});
+test('qiblanco.com mit Kopf -> Shop-Daten', () => {
+  assert.equal(istMessfixtur(mfReq('https://qiblanco.com/pages/live', '1')), false);
+});
+test('Oxygen-Vorschau mit Kopf -> Shop-Daten', () => {
+  assert.equal(istMessfixtur(mfReq('https://x.o2.myshopify.dev/pages/live', '1')), false);
+});
+test('localhost als Subdomain -> Shop-Daten', () => {
+  assert.equal(
+    istMessfixtur(mfReq('https://localhost.qiblanco.com/pages/live', '1')),
+    false,
+  );
+});
+test('kaputte URL -> Shop-Daten', () => {
+  assert.equal(istMessfixtur(mfReq('nicht-url', '1')), false);
+});
+test('Name ist der, den homepage-bauer probe_live_pixelsoll_haelt erwartet', () => {
+  assert.equal(MESSFIXTUR_NAME, 'coming-home-live');
+  assert.equal(MESSFIXTUR_KOPF, 'x-hbfmt-messfixtur');
+});
+
+test('Fixtur zeigt den vollen Zustand zu festem Zeitpunkt', () => {
+  assert.ok(!Number.isNaN(new Date(MESSFIXTUR_JETZT).getTime()));
+  const {artikel, ladeFehler, jetzt} = messfixturDaten();
+  assert.equal(ladeFehler, false);
+  assert.equal(jetzt.toISOString(), new Date(MESSFIXTUR_JETZT).toISOString());
+  const d = liveSeitenDaten(artikel, jetzt);
+  assert.equal(d.naechster.quelle, 'blog');
+  assert.ok(d.naechster.uhrzeit, 'Vorschau mit Uhrzeit');
+  assert.ok(d.naechster.titel, 'Vorschau mit Titel');
+  assert.ok(d.naechster.teaser, 'Vorschau mit Auszug');
+  assert.equal(d.naechster.extern, null);
+  assert.equal(d.rueckblicke.length, 3);
+  assert.ok(d.rueckblicke[0].html.length > 100, 'neuester Rückblick mit Inhalt');
+});
+
+test('Fixtur hängt nicht an der Uhr: zwei Aufrufe liefern dieselben Daten', () => {
+  const a = messfixturDaten();
+  const b = messfixturDaten();
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(liveSeitenDaten(a.artikel, a.jetzt))),
+    JSON.parse(JSON.stringify(liveSeitenDaten(b.artikel, b.jetzt))),
+  );
+  assert.equal(MESSFIXTUR_FIXTUR, 'drei');
+});
+
+test('Loader: Kopf vor Blog und Uhr, Marker an termin und rueckblick', () => {
+  const quelle = ohneProsaMf(
+    readFileSync(new URL('../app/routes/pages.live.jsx', import.meta.url), 'utf8'),
+  );
+  assert.match(quelle, /const mess = istMessfixtur\(request\)/);
+  assert.match(quelle, /seitenDaten\(artikel, jetzt\)/);
+  // Keine zweite Uhr in der Route, die am Messkopf vorbeiliefe.
+  assert.equal((quelle.match(/new Date\(\)/g) || []).length, 1);
+  assert.doesNotMatch(quelle, /Date\.now\(/);
+  // Termin-Bereich und beide Rückblick-Fassungen tragen den Marker.
+  assert.equal((quelle.match(/data-messfixtur=\{messfixtur \|\| undefined\}/g) || []).length, 3);
 });

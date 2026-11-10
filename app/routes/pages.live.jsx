@@ -22,6 +22,9 @@ import {
   artikelLaden,
   bestaetigeZustand,
   eingabePruefen,
+  istMessfixtur,
+  MESSFIXTUR_NAME,
+  messfixturDaten,
   seitenDaten,
   tokenAusCookie,
   tokenCookie,
@@ -314,8 +317,13 @@ export async function loader({request, context}) {
   }
 
   if (BLOG_HANDLE !== BLOG_HANDLE_SERVER) throw new Error('BLOG_HANDLE driftet');
-  const {artikel, ladeFehler} = await artikelLaden(context);
-  const seite = seitenDaten(artikel, new Date());
+  // Messfixtur des Formate-Prüfers (nur lokale Bank, s. istMessfixtur):
+  // feste Artikel, fester Zeitpunkt, kein Abruf. Sonst Blog und Uhr.
+  const mess = istMessfixtur(request);
+  const {artikel, ladeFehler, jetzt} = mess
+    ? messfixturDaten()
+    : {...(await artikelLaden(context)), jetzt: new Date()};
+  const seite = seitenDaten(artikel, jetzt);
   if (!SPEZIAL_AN) {
     seite.naechster = seite.naechster && {...seite.naechster, extern: null};
     seite.weitere = seite.weitere.map((w) => ({...w, extern: null}));
@@ -332,6 +340,7 @@ export async function loader({request, context}) {
       rueckblicke,
       ladeFehler,
       schritt,
+      messfixtur: mess ? MESSFIXTUR_NAME : null,
       appleSeite: appleSeiteLaden(context, 'live'),
     },
     schritt ? {headers: KOPF_PRIVAT} : undefined,
@@ -423,7 +432,7 @@ export default function Live() {
   return (
     <div className="lv">
       <Kopf />
-      <Termin naechster={d.naechster} weitere={d.weitere} />
+      <Termin naechster={d.naechster} weitere={d.weitere} messfixtur={d.messfixtur} />
       <section
         className="lv-abschnitt lv-dunkel"
         id="anmelden"
@@ -443,6 +452,7 @@ export default function Live() {
         rueckblicke={d.rueckblicke}
         gesamt={d.rueckblickeGesamt}
         ladeFehler={d.ladeFehler}
+        messfixtur={d.messfixtur}
       />
     </div>
   );
@@ -454,7 +464,7 @@ function LiveNeu({d}) {
   return (
     <div className="lv" data-ch-live-fassung="neu-20261020">
       <KopfNeu />
-      <Termin naechster={d.naechster} weitere={d.weitere} />
+      <Termin naechster={d.naechster} weitere={d.weitere} messfixtur={d.messfixtur} />
       <section
         className="lv-abschnitt lv-dunkel"
         id="anmelden"
@@ -474,6 +484,7 @@ function LiveNeu({d}) {
         rueckblicke={d.rueckblicke}
         gesamt={d.rueckblickeGesamt}
         ladeFehler={d.ladeFehler}
+        messfixtur={d.messfixtur}
       />
     </div>
   );
@@ -499,7 +510,7 @@ function LiveApple({d}) {
       <AppleSeite seite="live">
         <div className="lv lva" data-ch-live-fassung="neu-20261020">
           <KopfApple />
-          <Termin naechster={d.naechster} weitere={d.weitere} />
+          <Termin naechster={d.naechster} weitere={d.weitere} messfixtur={d.messfixtur} />
           <section
             className="lv-abschnitt lv-dunkel"
             id="anmelden"
@@ -519,6 +530,7 @@ function LiveApple({d}) {
             rueckblicke={d.rueckblicke}
             gesamt={d.rueckblickeGesamt}
             ladeFehler={d.ladeFehler}
+            messfixtur={d.messfixtur}
           />
         </div>
         <AppleAnna />
@@ -674,11 +686,12 @@ function BildOben() {
  * Er steht trotzdem im HTML (für Leser ohne Klick, Suchmaschinen und
  * KI-Abruf). Mit false steht die neueste wie bis #959 offen da.
  */
-function Zusammenfassungen({rueckblicke, gesamt, ladeFehler}) {
+function Zusammenfassungen({rueckblicke, gesamt, ladeFehler, messfixtur}) {
   return (
     <section
       className="lv-abschnitt"
       data-ch-live="rueckblick"
+      data-messfixtur={messfixtur || undefined}
       data-ch-live-anzahl={rueckblicke.length}
       data-ch-live-gesamt={gesamt}
       data-ch-live-ladefehler={ladeFehler ? 'ja' : 'nein'}
@@ -781,9 +794,13 @@ function Kopf() {
   );
 }
 
-function Termin({naechster, weitere}) {
+function Termin({naechster, weitere, messfixtur}) {
   return (
-    <section className="lv-abschnitt lv-termin" data-ch-live="termin">
+    <section
+      className="lv-abschnitt lv-termin"
+      data-ch-live="termin"
+      data-messfixtur={messfixtur || undefined}
+    >
       <div className="lv-innen lv-innen-schmal">
         <h2 className="lv-h2">Der nächste Termin</h2>
         {naechster?.extern ? (
@@ -948,11 +965,12 @@ function SpezialHinweis({spezial}) {
   );
 }
 
-function Rueckblick({rueckblicke, gesamt, ladeFehler}) {
+function Rueckblick({rueckblicke, gesamt, ladeFehler, messfixtur}) {
   return (
     <section
       className="lv-abschnitt"
       data-ch-live="rueckblick"
+      data-messfixtur={messfixtur || undefined}
       data-ch-live-anzahl={rueckblicke.length}
       data-ch-live-gesamt={gesamt}
       data-ch-live-ladefehler={ladeFehler ? 'ja' : 'nein'}

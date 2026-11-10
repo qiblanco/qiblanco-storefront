@@ -39,6 +39,9 @@
  * Blog durch die Testdaten unten (Sicht-Tor und Design-Messung der Zustaende,
  * nie erfundene Artikel im echten Blog). Auf Oxygen ist keine der beiden
  * gesetzt.
+ * MESSFIXTUR: Kopf x-hbfmt-messfixtur: 1 an einer Anfrage an localhost
+ * rendert feste Daten zu festem Zeitpunkt (istMessfixtur, unten). Er hat
+ * Vorrang vor COMING_HOME_FIXTUR.
  */
 
 export const ENDPUNKT = 'https://live.65-108-150-121.sslip.io';
@@ -481,6 +484,53 @@ export async function artikelLaden(context) {
   } catch {
     return {artikel: [], ladeFehler: true};
   }
+}
+
+// ─── Messfixtur (Formate-Prüfer, nur auf der lokalen Bank) ─────────────────
+//
+// Job 20261019-repair-gate12-live-pixelsoll-datengetrieben-terminwechsel.
+// /pages/live ist absichtlich datengetrieben: Termin und Rückblicke kommen aus
+// dem Blog, das Datum hängt an der Uhr. Jede neue Woche machte deshalb das
+// Pixel-Soll von Gate 12 ungültig und sperrte fremde Merges. Der
+// Formate-Prüfer (homepage-bauer format_pruefer MESSFIXTUR_HEADER) schickt den
+// Kopf unten NUR an den Ursprung der Bank. Die Seite nimmt ihn nur an, wenn die
+// Anfrage selbst an localhost/127.0.0.1/::1 ging. Auf Oxygen ist der Host nie
+// einer davon: ein Kunde, der den Kopf mitschickt, sieht trotzdem Shop-Daten.
+// Dann gilt: fester Zeitpunkt, Artikel aus fixturArtikel(MESSFIXTUR_FIXTUR),
+// kein Storefront-API-Abruf, und die Bereiche termin und rueckblick tragen
+// data-messfixtur="coming-home-live" (der Prüfer schreibt das in den Beleg).
+// Den echten Inhalt misst der Rand (coming-home/pruefungen/probe_live_seite.py).
+export const MESSFIXTUR_KOPF = 'x-hbfmt-messfixtur';
+export const MESSFIXTUR_NAME = 'coming-home-live';
+/** Voller Zustand: Vorschau mit Uhrzeit, Titel und Auszug, drei Rückblicke. */
+export const MESSFIXTUR_FIXTUR = 'drei';
+// Fester Zeitpunkt der Messung (ein Dienstag, der Termin ist Sonntag, 25.10.).
+// WER IHN ODER DIE FIXTUR ÄNDERT, ÄNDERT DAS PIXEL-SOLL VON /pages/live
+// (per PR + hb-pixelsoll deklariere --pr).
+export const MESSFIXTUR_JETZT = '2026-10-20T08:00:00Z';
+const BANK_HOSTS = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
+
+/** true nur für Kopf `1` an einer Anfrage, die an die lokale Bank ging. */
+export function istMessfixtur(request) {
+  const wert = request?.headers?.get?.(MESSFIXTUR_KOPF);
+  if (wert !== '1') return false;
+  let host = '';
+  try {
+    host = new URL(request.url).hostname.toLowerCase();
+  } catch {
+    return false;
+  }
+  return BANK_HOSTS.has(host);
+}
+
+/** Artikel und Zeitpunkt der Messfixtur: {artikel, ladeFehler, jetzt}. */
+export function messfixturDaten() {
+  const jetzt = new Date(MESSFIXTUR_JETZT);
+  return {
+    artikel: fixturArtikel(MESSFIXTUR_FIXTUR, jetzt),
+    ladeFehler: false,
+    jetzt,
+  };
 }
 
 // ─── Testdaten (nur mit COMING_HOME_FIXTUR, nie auf Oxygen) ─────────────────
