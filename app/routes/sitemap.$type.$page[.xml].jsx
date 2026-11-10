@@ -175,14 +175,14 @@ export async function loader({request, params, context: {storefront}}) {
     return artikelPfad(karte, handle) ?? OHNE_BLOG;
   };
 
-  // KEINE `locales`: die Sitemap traegt keine hreflang-Alternaten. Bis
+  // KEINE `locales`: die Sitemap trägt keine hreflang-Alternaten. Bis
   // 2026-11-10 stand hier die Hydrogen-Schablone ['EN-US', 'EN-CA', 'FR-CA'];
-  // jede Adresse trug drei Alternaten auf Praefix-Pfade, die der Catch-All
+  // jede Adresse trug drei Alternaten auf Präfix-Pfade, die der Catch-All
   // (~/lib/catchall.server, D-063) per 302 auf die deutsche Seite schickt, und
   // sie widersprachen dem HTML-hreflang. Das Sprachpaar steht an GENAU einer
   // Stelle: im Kopf jeder Seite, aus ~/lib/hreflang (SSoT
   // homepage-bauer/shop-switch/shop-mapping.yaml). Eine zweite Kopie hier
-  // waere eine zweite Stelle, die still davon abweicht. Riegel:
+  // wäre eine zweite Stelle, die still davon abweicht. Riegel:
   // test/sitemap-alternaten.test.mjs.
   const response = await getSitemap({
     storefront,
@@ -331,7 +331,7 @@ function nurRouteSeiten() {
  *
  * IDEMPOTENT: steht der Pfad schon im Rumpf (weil doch ein Shopify-Objekt
  * existiert), wird nichts ergänzt — sonst stünde die URL doppelt.
- * KEINE hreflang-Alternates, wie seit 2026-11-10 fuer die ganze Sitemap
+ * KEINE hreflang-Alternates, wie seit 2026-11-10 für die ganze Sitemap
  * (siehe getSitemap-Aufruf im Loader).
  *
  * @param {string} body Sitemap-XML nach dem Versteckt-Filter
