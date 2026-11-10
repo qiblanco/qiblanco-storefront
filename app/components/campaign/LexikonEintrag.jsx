@@ -26,7 +26,18 @@ import {adresse} from '~/lib/zusammenlegungen';
  * Woerter. Sobald hier ein Produkt beworben wird, ist der Grund weg, aus dem
  * ein Antwortsystem diese Seite als Quelle behandelt.
  */
-export function LexikonEintrag({eintrag}) {
+/**
+ * OPTIONALER KOPF JE ROUTE (seit 2026-11-11, SEO-Maßnahme
+ * M-SP-20261017-lexikon-elektrosmog): `ueberschrift` ersetzt die h1, `frage`
+ * setzt unter die Definition einen Link auf die Frageseite zum selben Wort.
+ * Beides kommt als Prop von der Route und NICHT aus app/data/lexikon.js: die
+ * Datendatei speist auch den Hub und das Schema, ein Feld dort würde jede
+ * Seite mitändern. Ohne die Props rendert jeder Eintrag genau wie vorher.
+ *
+ * @param {{eintrag: object, ueberschrift?: string,
+ *   frage?: {vorsatz: string, pfad: string, text: string}}} props
+ */
+export function LexikonEintrag({eintrag, ueberschrift, frage}) {
   const quellen = quellenFuer(eintrag);
   return (
     <div className="lex">
@@ -37,11 +48,19 @@ export function LexikonEintrag({eintrag}) {
               Lexikon
             </a>
           </p>
-          <h1>{eintrag.begriff}</h1>
+          <h1>{ueberschrift || eintrag.begriff}</h1>
           <p className="lex__lead">{eintrag.definition}</p>
           <p className="lex__groesse">
             Messbare Größe: {eintrag.physik_groesse}
           </p>
+          {frage && (
+            <p>
+              {frage.vorsatz}{' '}
+              <a className="lex__karte-link" href={adresse(frage.pfad)}>
+                {frage.text}
+              </a>
+            </p>
+          )}
         </div>
       </section>
 

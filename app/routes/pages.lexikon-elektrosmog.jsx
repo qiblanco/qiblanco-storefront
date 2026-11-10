@@ -59,8 +59,24 @@ if (!EINTRAG) {
   );
 }
 
-const TITEL = `Elektrosmog: was das heißt | Qi Blanco`;
-const BESCHREIBUNG = `«Elektrosmog» ist ein Sammelwort für die elektromagnetischen Felder im Alltag.`;
+/**
+ * ROLLE DIESER SEITE: die Kurzdefinition (SEO-Maßnahme
+ * M-SP-20261017-lexikon-elektrosmog, Job
+ * seo-2026-w43-l26-lexikon-elektrosmog-ef44-sollseite-ohne-begriff-ohne-n2).
+ * Titel, Beschreibung und h1 führen „Elektrosmog Definition“ vorn. Die
+ * Langfrage „Was ist Elektrosmog?“ gehört /pages/was-ist-elektrosmog. Google
+ * zeigte für sie trotzdem meist diese Seite (Search Console 01.10. bis 05.11.:
+ * 30 von 35 Impressionen). Deshalb gibt der Kopf sie per Link ab, und der Text
+ * wird hier NICHT zur Langantwort ausgebaut.
+ */
+const TITEL = `Elektrosmog Definition: was das Wort meint | Qi Blanco`;
+const BESCHREIBUNG = `Elektrosmog Definition in einem Satz: ein Sammelwort für die elektromagnetischen Felder im Alltag, von WLAN bis Stromleitung.`;
+const UEBERSCHRIFT = 'Elektrosmog: Definition';
+const FRAGE = {
+  vorsatz: 'Wo die Felder entstehen und welche Grenzwerte gelten:',
+  pfad: '/pages/was-ist-elektrosmog',
+  text: 'Was ist Elektrosmog?',
+};
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich
@@ -69,7 +85,7 @@ const BESCHREIBUNG = `«Elektrosmog» ist ein Sammelwort für die elektromagneti
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-15';
-const GEAENDERT = '2026-09-15';
+const GEAENDERT = '2026-11-11';
 
 export function links() {
   return [{rel: 'stylesheet', href: lexikonStyles}];
@@ -96,7 +112,9 @@ export const meta = () => {
 };
 
 export default function LexikonEintragRoute() {
-  return <LexikonEintrag eintrag={EINTRAG} />;
+  return (
+    <LexikonEintrag eintrag={EINTRAG} ueberschrift={UEBERSCHRIFT} frage={FRAGE} />
+  );
 }
 
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
