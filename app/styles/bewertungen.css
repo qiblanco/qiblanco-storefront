@@ -361,3 +361,31 @@ body:has(.bew) .footer p,
 body:has(.bew) .footer li {
   color: inherit;
 }
+
+/* ─── Trustpilot-Scroller in Seiten-Tokens (2026-11-10, Maßnahme
+   M-SP-20261017-bewertungen, s02) ──────────────────────────────────────────
+   design-rubrik am 10.11.2026 (Vorschau 90, live 92 am 20.10.): „2 gesättigte
+   Akzent-Farbwelten" = das Google-Blau #1565c0 von „weiterlesen" im
+   ReviewsSlider, und „H2-Ausrichtung gemischt" = die zentrierte h2 des
+   Scrollers (Tailwind `text-center!`). Hier erbt „weiterlesen" die
+   Gold-Tinte (wie erfahrungen.css, AA-fest auf hellem Grund), und Überschrift
+   samt Begleitzeilen folgen der EINEN Regel dieser Seite: linksbündig, in
+   der Textspalte.
+   `!important` nur, weil die Utility-Klassen der Komponente es tragen. */
+.bew .TrustpilotStimmen button[aria-expanded] {
+  color: var(--qb-akzent-tinte);
+}
+/* In @layer base: Tailwind v4 legt `text-center!` in @layer utilities ab. Bei
+   `!important` gewinnt die FRÜHERE Layer, ungeschichtetes `!important` verliert
+   (gemessen 10.11.: ungeschichtet blieb die h2 zentriert). */
+@layer base {
+  /* Dieselbe Spalte wie .bew__inhalt (Breite minus Innenabstand, mittig),
+     damit die Überschrift an derselben Kante beginnt wie alle anderen h2. Der
+     Scroller selbst bleibt breit. */
+  .bew .TrustpilotStimmen h2,
+  .bew .TrustpilotStimmen > p {
+    text-align: left !important;
+    max-width: calc(var(--bew-breite-schmal) - 2 * var(--bew-s2)) !important;
+    margin-inline: auto !important;
+  }
+}
