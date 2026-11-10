@@ -147,7 +147,8 @@ test('die Gebrauchtkauf-Frage: Antwort im ersten Satz, nur über unser Angebot',
     assert.match(erster, teil);
   }
   assert.match(erster, /Elektrosmog-Armband/);
-  assert.equal(FRAGE_GEBRAUCHT.belegPfad, '/products/qibracelet');
+  assert.equal(FRAGE_GEBRAUCHT.belegPfad, '/pages/agb');
+  assert.match(FRAGE_GEBRAUCHT.beleg, /Zufriedenheitsgarantie/);
   // Nicht in FRAGEN: die Gewinnerfassung rendert FRAGEN unverändert.
   assert.ok(!FRAGEN.some((f) => f.id === FRAGE_GEBRAUCHT.id));
   // Christian 28.09.: kein Satz über den Gebrauchtmarkt.
