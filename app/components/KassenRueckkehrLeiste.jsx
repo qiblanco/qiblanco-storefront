@@ -103,11 +103,21 @@ function Leiste({onSchliessen}) {
   return (
     // div statt aside: app.css gestaltet `aside` global als Schublade
     // (Warenkorb, Suche, Menü) und färbt sie um.
+    //
+    // data-section = Anzeige- und Klickspur ohne eigenen Pixel-Code: qpx
+    // beobachtet jedes [data-section] (auch spät gemountete, MutationObserver)
+    // und bucht behavior_section seen/dwell/clicks und behavior_click.section_id.
+    // Kein Vorfahr trägt data-section (PageLayout -> main), kein globales CSS
+    // greift auf [data-section]; der Design-Kollektor zählt die Leiste nur in
+    // der gepinnten Messung (?kasse_leiste=1) als eine Sektion mehr.
+    // data-kassen-rueckkehr-leiste bleibt: die Live-Probe liest es.
+    // (Job 20261030-kassen-rueckkehr-leiste-data-section-spur-bau-deploy)
     <div
       className="kassen-leiste"
       role="region"
       aria-label="Dein Warenkorb"
       data-kassen-rueckkehr-leiste=""
+      data-section="kassen-rueckkehr-leiste"
     >
       <div className="kassen-leiste__text">
         <p className="kassen-leiste__kopf">Dein Warenkorb ist noch da.</p>
