@@ -1,4 +1,5 @@
 import {BewertungenSeite} from '~/components/campaign/BewertungenSeite';
+import {BewertungenElektrosmog} from '~/components/reusables/BewertungenElektrosmog';
 import bewertungenStyles from '~/styles/bewertungen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {MARKE, seitenSignale, teilbildTags} from '~/lib/seiten-seo';
@@ -72,8 +73,13 @@ export function links() {
  * 2026-10-06 auf der Seite, ohne Gesamtzahl.
  */
 const TITEL = 'Qi Blanco Bewertungen und Reviews: was Kundinnen und Kunden schreiben';
+// SEIT 2026-11-10 MIT „ELEKTROSMOG-SCHUTZ" (Grossjob seo-2026-w44-l26-
+// bewertungen-4afb-sollseite-ohne-begriff-ohne-, s02, Maßnahme
+// M-SP-20261017-bewertungen). Titel und h1 bleiben unverändert (Markenbegriffe,
+// Gewinnerschutz). Vorher:
+// 'Echte Google-Bewertungen zu Qi Blanco, live mit Note und Anzahl, dazu Reviews von Trustpilot. Woher sie kommen und wie du es 20 Tage selbst prüfst.'
 const BESCHREIBUNG =
-  'Echte Google-Bewertungen zu Qi Blanco, live mit Note und Anzahl, dazu Reviews von Trustpilot. Woher sie kommen und wie du es 20 Tage selbst prüfst.';
+  'Google-Bewertungen zu Qi Blanco live, dazu Trustpilot. Worauf es bei Bewertungen von Elektrosmog-Schutz ankommt und wie du 20 Tage selbst prüfst.';
 
 /**
  * DER EINZIGE LOADER-WERT DIESER SEITE IST DER TAG DER AUSLIEFERUNG (2026-09-25,
@@ -118,8 +124,17 @@ export const meta = () => [
   ),
 ];
 
+/**
+ * Der Abschnitt zu Elektrosmog-Schutz steht NACH BewertungenSeite, als eigene
+ * Komponente (Kopf von BewertungenElektrosmog.jsx: keine Campaign-Datei).
+ */
 export default function BewertungenRoute() {
-  return <BewertungenSeite />;
+  return (
+    <>
+      <BewertungenSeite />
+      <BewertungenElektrosmog />
+    </>
+  );
 }
 
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
