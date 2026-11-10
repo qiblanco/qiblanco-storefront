@@ -47,8 +47,15 @@ import {TrustpilotStimmen} from '~/components/reusables/TrustpilotStimmen';
  *  - KEINE Rückgabequote. Sie ist heute nicht belastbar messbar; die
  *    Begründung steht im Kopf des Datenmoduls.
  */
-export function NeuOderGebrauchtSeite() {
+/**
+ * `zusatzFragen` (seit 2026-11-10, Gebrauchtkauf-Frage FRAGE_GEBRAUCHT): stehen
+ * in „Kurz gefragt" VOR den fünf Fragen. Ohne Angabe rendert die Seite wie
+ * bisher; die Gewinnerfassung der Route übergibt nichts. Wer hier etwas
+ * übergibt, baut das FAQPage-Schema aus derselben Liste.
+ */
+export function NeuOderGebrauchtSeite({zusatzFragen = []} = {}) {
   const g = useGoogleRating();
+  const fragen = [...zusatzFragen, ...FRAGEN];
 
   return (
     <div className="nog">
@@ -115,7 +122,7 @@ export function NeuOderGebrauchtSeite() {
         <div className="nog__inhalt">
           <h2>Kurz gefragt</h2>
           <dl className="nog__fragen">
-            {FRAGEN.map((f) => (
+            {fragen.map((f) => (
               <div className="nog__frage" key={f.id} id={f.id}>
                 <dt>{f.q}</dt>
                 <dd>

@@ -160,6 +160,35 @@ export const RUECKWEG = [
 const imPreis = (id) => preis(id).text;
 
 /**
+ * DIE GEBRAUCHTKAUF-FRAGE (SEO-Maßnahme M-SP-20261017-neu-oder-gebraucht,
+ * Job seo-2026-w43-l26-neu-oder-gebraucht-26c6-…-n2, 2026-11-10).
+ *
+ * Gesucht wird „emf armband gebraucht" bzw. „elektrosmog armband gebraucht";
+ * die Seite steht für die Markenfrage „qi blanco gebraucht" schon auf Platz 2
+ * bis 3. Die Antwort steht im ersten Satz und spricht NUR über unser Angebot
+ * (Christians Entscheid vom 28.09., umgesetzt in #1211: kein Satz über
+ * Privatverkäufer, Kleinanzeigen oder den Gebrauchtmarkt). Echtheit,
+ * Rückgabe und Gewährleistung kommen aus denselben Zusagen wie VORTEILE.
+ *
+ * NICHT IN `FRAGEN`: die Gewinnerfassung der Route
+ * (app/versionen/pages.neu-oder-gebraucht/…) rendert FRAGEN und muss
+ * unverändert bleiben. Eine Route, die diese Frage zeigt, übergibt sie der
+ * Komponente als `zusatzFragen` UND baut das Schema aus derselben Liste
+ * (test/neu-oder-gebraucht.test.mjs hält beides gleich).
+ */
+export const FRAGE_GEBRAUCHT = {
+  id: 'f-gebraucht',
+  q: 'EMF-Armband neu oder gebraucht kaufen: was bekomme ich bei Qi Blanco?',
+  a:
+    'Neu bei Qi Blanco ist dein Elektrosmog-Armband QiBracelet® ' +
+    'Originalware mit eigener Seriennummer, mit 20 Tagen Rückgabe, 100 % ' +
+    'Geld-zurück-Garantie und mindestens zwei Jahren Gewährleistung. Deine ' +
+    'Bestellnummer ist der Kaufnachweis.',
+  beleg: 'Produktseite QiBracelet®',
+  belegPfad: '/products/qibracelet',
+};
+
+/**
  * KURZ GEFRAGT — die fünf Fragen in ihrer knappsten Form.
  *
  * DIESE LISTE IST DER TRÄGER DES FAQPage-SCHEMAS, und sie wird SICHTBAR
