@@ -417,3 +417,35 @@ body:has(.faq-a1) footer {
   font-size: var(--f-fs-base);
   color: var(--f-muted-hell);
 }
+
+/* ─── Trustpilot-Block auf der FAQ (2026-11-10) ──────────────────────────── */
+/* Job 20261019-ki-lernschleife-bau-dach-589a3d-s02. Gemessen an der Vorschau
+   (design-rubrik, 2026-11-10): Score 89 < Premium 95, und die zwei Abzüge
+   jenseits der Hülle kamen beide aus dem eingebetteten TrustpilotStimmen-
+   Block: (1) seine H2 steht zentriert, alle anderen H2 der Seite links
+   (durchdacht 85: „H2-Ausrichtung gemischt"), (2) „weiterlesen" in den Karten
+   ist Google-Blau #1565c0, eine zweite gesättigte Akzentwelt neben unserem Gold
+   (harmonisch 75). Die Komponente steht auf sechs Seiten und bleibt unberührt;
+   diese Regeln gelten nur hier, weil nur pages.faq.jsx diese Datei lädt.
+   Das Blau ist KEIN Markenzeichen (anders als die Zahlungslogos im Footer,
+   siehe oben), sondern eine Linkfarbe; Gold-Tinte ist auf der Karte #f3f6f9
+   AA-fest wie das Blau.
+   WARUM @layer base: die `!`-Klassen der Komponente (text-center!, mx-auto!,
+   max-w-none!) sind Tailwind-Utilities, also `!important` in @layer utilities.
+   Eine ungeschichtete !important-Regel VERLIERT gegen eine geschichtete
+   (bei !important kehrt sich die Layer-Rangfolge um; gemessen 2026-11-10:
+   H2 blieb zentriert). In @layer base, das app.css vor utilities deklariert
+   (`@layer theme, base, components, utilities`), gewinnt sie. */
+@layer base {
+  .faq-a1 [data-qb-trustpilot-scroller] > h2,
+  .faq-a1 [data-qb-trustpilot-scroller] > p {
+    text-align: start !important;
+    width: min(100% - var(--f-s4), var(--f-breite-schmal));
+    max-width: none !important;
+    margin-inline: auto !important;
+  }
+}
+
+.faq-a1 [data-qb-trustpilot-scroller] button[aria-expanded] {
+  color: var(--f-akzent-tinte);
+}

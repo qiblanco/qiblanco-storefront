@@ -887,7 +887,8 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon',
-    lastmod: '2026-10-07T04:30:00Z',
+    // 2026-11-10: Karte „hexagonales Wasser" (Job 20261019-ki-lernschleife-bau-dach-589a3d).
+    lastmod: '2026-11-10T03:00:00Z',
     grund:
       'Der Hub des Lexikons (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +

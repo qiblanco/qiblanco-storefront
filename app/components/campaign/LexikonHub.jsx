@@ -86,7 +86,11 @@ export function LexikonHub() {
                 zusammenlegungFuer(e.pfad)?.ziel === '/pages/lexikon';
               return (
                 <li key={e.slug} id={e.slug} className="lex__karte">
-                  <h3>
+                  {/* `e.anker` (optional, seit 2026-11-10): eigene id an der
+                      Überschrift, Sprungziel /pages/lexikon#<anker>. Die id
+                      des <li> bleibt der slug, auf ihr landen die 301 der
+                      zusammengelegten Begriffsseiten. */}
+                  <h3 id={e.anker || undefined}>
                     {hier ? (
                       e.begriff
                     ) : (
