@@ -714,6 +714,10 @@ export const FRAGEN = [
         "text": "Studien zu Elektrosmog-Schutz"
       },
       {
+        "pfad": "/pages/hypothesen",
+        "text": "Wie Elektrosmog-Schutz wirken soll: unser Wirkmodell als Annahme"
+      },
+      {
         "pfad": "/pages/wissen-und-vertrauen",
         "text": "Alle Antworten rund um Qi Blanco"
       }

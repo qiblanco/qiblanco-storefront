@@ -97,6 +97,55 @@ export function HypothesenSeite() {
         </div>
       </section>
 
+      {/* ------------------------------------------------------ Einstiegsfrage */}
+      {/* DIE FRAGE DER SUCHENDEN, ALS ANNAHME BEANTWORTET (2026-11-10, Grossjob
+          seo-2026-w43-l26-hypothesen-aef6, Massnahme M-SP-20261017-hypothesen,
+          Konzept claude-jobs/<jid>/KONZEPT.md Abschnitt 1a). Die Seite trug
+          das Wort der Suchenden („Schutz gegen Elektrosmog“) bis dahin in
+          keiner Überschrift. Diese Sektion steht NACH dem Kopf: h1, Lead und
+          die vier Abgrenzungs-Notizen rahmen die Antwort als Modell, nicht als
+          Befund (Auflage aus seo-manager/conf/sollseiten-begriffe.yaml). Der
+          Text folgt dem Konzept wörtlich bis auf einen Satz: „Das ist eine
+          Annahme, kein Befund.“ wurde zu „Diese Annahme ist noch nicht
+          belegt.“, weil stil-pruefe seit dem Konzept die Formel „X, kein Y“
+          (Arm F8) sperrt. Jede Aussage hat ihre Belegstelle in den sechs
+          Hypothesen weiter unten. KEIN Kaufknopf, kein Produktlink.
+          Rückweg: diese Sektion entfernen (hb-deploy revert). */}
+      <section data-section="hyp-frage">
+        <div className="hyp__inhalt">
+          <h2>Wie funktioniert ein Schutz gegen Elektrosmog am Körper?</h2>
+          <p>
+            Unser Modell nimmt an, dass ein Schutz gegen Elektrosmog am Körper
+            über das Wasser in den Zellen wirkt und die Strahlung selbst nicht
+            abschirmt. Diese Annahme ist noch nicht belegt.
+          </p>
+          <p>
+            Abstand senkt die Feldstärke, die bei dir ankommt. Unser Anhänger
+            setzt nach unserem Modell an einer anderen Stelle an. Das Modell
+            dahinter hat sechs Glieder.
+          </p>
+          <p>
+            Wasser ordnet sich an vielen wasserliebenden Oberflächen. Wie weit
+            diese Ordnung reicht und woher sie kommt, ist umstritten. In der
+            Zelle liegt Wasser fast überall an Oberflächen. Mobilfunkstrahlung
+            kann in Zell- und Tierversuchen oxidativen Stress auslösen, ein
+            Konsens dazu fehlt. Ein präzise geschnittenes Gitter soll
+            benachbartem Wasser als Vorlage dienen, ohne Strom. Für diesen
+            Schritt gibt es noch keine eigene Messung, und die eine Arbeit zu
+            reinem Gold fand dort keine geordnete Zone. Genau dort setzt unsere
+            nächste Messung an.
+          </p>
+          <p>
+            In Zellkulturen unter Mobilfunkstrahlung fiel der gemessene
+            Zellschaden mit unserem Anhänger geringer aus als ohne. Diese
+            Studien haben wir beauftragt und bezahlt, die Fallzahlen sind klein,
+            und eine unabhängige Wiederholung steht aus. Sie zeigen einen
+            Unterschied im Zellzustand, nicht den Weg dorthin. Am Menschen ist
+            nichts davon gemessen.
+          </p>
+        </div>
+      </section>
+
       {/* ------------------------------------------------------------ Absicht */}
       {/* WER UND WARUM — vor allem anderen.
           Christian, 2026-09-11: eine Hypothese ohne Absender liest sich wie
