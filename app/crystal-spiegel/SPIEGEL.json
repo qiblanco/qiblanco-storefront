@@ -55,7 +55,7 @@
     "app/crystal-spiegel/components/startseite/Analyseprofile.jsx": "7518f54890606d9ee7caf321c4783e96587580b50c68a545e8b1fdf7603838d1",
     "app/crystal-spiegel/components/startseite/KaffeeVergleich.jsx": "d35b53b6019a45043856f1b3bda45ac82d5b5fe7fe9b2ce573aca60e9448c317",
     "app/crystal-spiegel/components/startseite/SortenSlider.jsx": "825c00eac336d7de51995cbb1ad719f29174dd354798990d16ea5602842ed98a",
-    "app/crystal-spiegel/components/startseite/Startseite.jsx": "17d8b07afdf57919fddb24be07f5b6b0608b66053a8430888d0e998711ac98ee",
+    "app/crystal-spiegel/components/startseite/Startseite.jsx": "653e619e525e1e1a27132428aeb0d76c4724b57c31fa32f8482cfb6ce242d66c",
     "app/crystal-spiegel/components/startseite/Verkaufsauftritt.jsx": "a03f8f07cd4f56690e6fbcdb41cbcbf182c1620515ac4c72aa2fc792aed2be30",
     "app/crystal-spiegel/data/ig-testimonials.js": "d1ae95c96a8fd1bb9b952140491c0060f2d03d7b7be8a0d7c46ab2e9d778b383",
     "app/crystal-spiegel/data/kakao-stimmen.js": "d23122789a2225d127859766d77880e6d204d7ee2bc516b3e77f3d0f44263956",
@@ -93,7 +93,7 @@
     "app/crystal-spiegel/styles/kakao-tiefe.css": "40a4c62fd6d906135c06223b00a60f613731c12a668265574bc6044fdadaf9ea",
     "app/crystal-spiegel/styles/qb-swipetab.css": "14bdb99db18c8c0f75af7e3302956975a01b416e985bcb5b256d61aece0a1d8e",
     "app/crystal-spiegel/styles/reset.css": "a5e490a13114e04772d58f616e77ca06a4be60d057b7f799b33906367934cfce",
-    "app/crystal-spiegel/styles/startseite.css": "837b9cc3bf9eb313a13843a0cbff3629685b5e1ba3dbe284e93741acdc454c91"
+    "app/crystal-spiegel/styles/startseite.css": "40740026f15f2a199902b5e4a0505c520af8a8dfc4434f4902f6b066117cc409"
   },
   "erzeuger": "crystal-cacao-node/bin/spiegel-nachzug",
   "keyframes": {
@@ -109,7 +109,7 @@
     "components",
     "utilities"
   ],
-  "quelle_commit": "8d9acafb3e894b191e51236e867b7d048e9ba3a0",
+  "quelle_commit": "a8b51af73c7379df0ec7adcb671dd4d05d70e194",
   "quelle_repo": "crystal-cacao-node/repo",
   "seiten": {
     "awake": {
