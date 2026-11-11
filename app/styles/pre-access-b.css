@@ -50,7 +50,8 @@
 .pab .mm-formular__meldung:empty{display:none}
 .pab .mm-falle{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
 .pab__vertrauen{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1rem;margin:2rem 0 0!important;padding:1.25rem 0 0!important;border-top:1px solid rgba(245,239,230,.2);list-style:none;color:var(--hell);font-size:16px;line-height:1.35}
-.pab__vertrauen li{margin:0;padding:0;list-style:none}
+.pab__vertrauen li{margin:0;padding:0;list-style:none;color:#D9D3C7}
+/* Vertrauensraster heller (Elina EL-20261111-6b342bd9): app.css 'p, li' faerbte die Zeilen #4A4741, Groesse bleibt */
 /* 320-359px: Groessen gleiten (clamp) statt Sprung an 359px; ab 360px exakt wie bisher */
 @media (min-width:600px){.pab{--satz:24px;--titel:46px;--zahl:52px}.pab__innen{padding:2rem 2rem 4.5rem}}
 @media (min-width:960px){
