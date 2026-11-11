@@ -13,7 +13,7 @@
 // Rueckbau: diese Datei und app/styles/pre-access-b.css loeschen.
 import {useEffect, useRef, useState} from 'react';
 import {useLoaderData} from 'react-router';
-import {istMessfixtur} from '~/lib/coming-home-live.server';
+import {istMessfixtur} from '../lib/coming-home-live.server';
 import {MailManagerFormular} from '../components/MailManagerFormular';
 import {KONFIG} from '../components/formulare/PreAccessBlackFridayDENachbauF27PreAccesFormular';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
