@@ -285,7 +285,17 @@
   color: var(--v3-muted);
   letter-spacing: 0.02em;
 }
-.lp-v3 .v3-hero__trust li::before { content: '·\00a0'; color: var(--v3-akzent-tief); }
+/* Trennpunkt als gezeichneter Kreis wie die Referenz schlaf-zellen-schutz.css
+   (.lp-a-hero__trust): kein Zeichen vor dem Listenpunkt (shop-tor D1, Christian 27.10.2026). */
+.lp-v3 .v3-hero__trust li::before {
+  content: '';
+  display: inline-block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--v3-akzent-tief);
+  margin-right: var(--v3-s1);
+  vertical-align: 2px;
+}
 .lp-v3 .v3-hero__figur { max-width: var(--v3-breite); margin: 0 auto; }
 
 /* ─── 2 HIGHLIGHTS (M2/M7: Beweis-Kacheln, gestaffelter Reveal) ──────────── */
