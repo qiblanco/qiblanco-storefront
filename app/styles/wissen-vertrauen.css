@@ -162,7 +162,8 @@
   border-top: 1px solid var(--wv-linie);
 }
 
-.wv__kontakt a {
+.wv__kontakt a,
+.wv__lead a {
   color: var(--wv-text);
 }
 
