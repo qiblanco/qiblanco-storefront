@@ -1,7 +1,7 @@
 import {Link, useLoaderData} from 'react-router';
 import {Image} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {blogMeta} from '~/lib/blog-seo';
+import {blogMeta, blogTeilbild} from '~/lib/blog-seo';
 import {artikelHreflangLinks} from '~/lib/hreflang';
 import {artikelInhaltAufraeumen} from '~/lib/blog-inhalt';
 import {tagLang} from '~/lib/datum';
@@ -23,7 +23,7 @@ export const links = () => [{rel: 'stylesheet', href: blogStyles}];
 /**
  * @type {MetaFunction<typeof loader>}
  */
-export const meta = ({data, location}) => {
+export const meta = ({data, location, params}) => {
   const basis = blogMeta({
     pfad: location?.pathname ?? '/blogs',
     titel: data?.article?.seo?.title || data?.article?.title,
@@ -35,7 +35,10 @@ export const meta = ({data, location}) => {
     // ihn weiterhin, falls das Feld eines Tages gepflegt wird.
     beschreibung:
       data?.article?.seo?.description?.trim() || data?.article?.excerpt,
-    bildUrl: data?.article?.image?.url,
+    // Ohne Beitragsbild das Teilbild des Blogs (Vorgang #129, 2026-11-11:
+    // Coming Home führt an keinem Artikel ein Bild). Nur der Kopf, nicht das
+    // BlogPosting-Schema: dort wäre der Rückfall ein falsches Artikelbild.
+    bildUrl: data?.article?.image?.url || blogTeilbild(params?.blogHandle),
     typ: 'article',
   });
 
