@@ -1,5 +1,6 @@
 import {useId} from 'react';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
+import {GoogleBewertungsleiste} from '~/components/reusables/GoogleBewertungsleiste';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {faqPageJsonLdString} from '~/lib/faq-schema';
 import {absaetze, bandSeite, bildSrcSet, mitBreite} from './apple-seite-logik';
@@ -15,7 +16,7 @@ import {absaetze, bandSeite, bildSrcSet, mitBreite} from './apple-seite-logik';
  *   AppleFakten    Faktenkacheln: Zahl, Titel, ein Satz
  *   AppleBildBand  Bild und Text nebeneinander, abwechselnd links/rechts
  *   AppleKapitel   Kapitel mit Gold-Etikett, Absätze, Quellen
- *   AppleStimmen   Kundenstimmen im Wortlaut (keine Sterne als Kaufargument)
+ *   AppleStimmen   die Bewertungsleiste (GoogleBewertungsleiste, Standard)
  *   AppleFaq       Fragen als Klappen, Antworten im Server-HTML
  *   AppleCtaBand   dunkles Band mit einer Handlung
  *   AppleAnna      „Eine Frage? Frag Anna.“ (der Chat selbst läuft global
@@ -247,31 +248,22 @@ export function AppleKapitel({etikett, titel, absaetze: teile, quellen = [], bil
 /* ---- Stimmen --------------------------------------------------------------- */
 
 /**
- * Kundenstimmen im Wortlaut mit Herkunft. Keine Sterne, keine Note: der
- * Beweis steht im Satz des Kunden, nicht in einer Zahl (kein Preisanker).
- * @param {{titel: string, stimmen: Array<{text: string, quelle: string}>, link?: {text: string, href: string}}} props
+ * Bewertungsposition des Baukastens = DIE Bewertungsleiste (Standard-
+ * Komponente GoogleBewertungsleiste, Christian 11.11.2026): echte
+ * Google-Bewertungen, nur 5 Sterne, neueste zuerst, 20 im Slider,
+ * Überschrift „4,8 ★★★★★ bei Google". Die früheren drei festen Stimmen-Karten
+ * ohne Sterne (30.10.2026, #1097) sind abgelöst; `stimmen` aus den Seitendaten
+ * wird nicht mehr gerendert. Ein gesetzter `titel` bleibt die Variante
+ * „Das sagen Menschen, die ihn tragen." mit der Sternezeile darunter, aber
+ * nur wenn die Seite ihn ausdrücklich als `leisteTitel` übergibt: an allen
+ * Positionen gleich heißt, die Standard-Überschrift ist die Google-Note.
+ * @param {{titel?: string, stimmen?: Array, leisteTitel?: string|null}} props
  */
-export function AppleStimmen({titel, stimmen, link = null}) {
-  if (!stimmen?.length) return null;
+export function AppleStimmen({leisteTitel = null}) {
   return (
-    <section className="as-sektion" data-section="as-stimmen">
-      <h2 className="as-h2">{mitMarkeR(titel)}</h2>
-      <ul className="as-stimmen">
-        {stimmen.map((s) => (
-          <li key={s.text} className="as-stimme">
-            <blockquote className="as-stimme-text">
-              <p>{mitMarkeR(s.text)}</p>
-            </blockquote>
-            <p className="as-stimme-quelle">{s.quelle}</p>
-          </li>
-        ))}
-      </ul>
-      {link?.href ? (
-        <a className="as-link" href={link.href}>
-          {mitMarkeR(link.text)}
-        </a>
-      ) : null}
-    </section>
+    <div className="as-sektion as-bewertungsleiste" data-section="as-stimmen">
+      <GoogleBewertungsleiste titel={leisteTitel} dataSection="as-bewertungsleiste" />
+    </div>
   );
 }
 
