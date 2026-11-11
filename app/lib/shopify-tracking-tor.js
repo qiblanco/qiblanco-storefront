@@ -212,9 +212,12 @@ export function shopifyServerErlaubt(request, env) {
   const {motor} = motorFuer(request.url, kopf);
   const wahl = wahlAusCookie(kopf, Date.now(), {fassung: motor === 'eigen'});
   if (policyForCountry(buyerCountry(request), env) === 'optout') {
+    // Global Privacy Control (Z11 s02): ohne gespeicherte Wahl gilt das Signal als Ablehnung von
+    // Marketing, wie im Motor (qb-einwilligung.js, method 'implied').
+    const gpc = request.headers.get('Sec-GPC') === '1';
     return {
       _shopify_analytics: !wahl || wahl.statistics,
-      _shopify_marketing: !wahl || wahl.marketing,
+      _shopify_marketing: wahl ? wahl.marketing : !gpc,
     };
   }
   return {

@@ -184,3 +184,17 @@ test('shopifyServerTorEinbauen: Dokument ohne Wahl verliert Statistik-Cookies un
   tor.shopifyServerTorEinbauen(sf2, mitWahl, {});
   assert.equal((await sf2.forward()).headers.getSetCookie().length, 1);
 });
+
+test('shopifyServerErlaubt: GPC ohne Wahl in einer Opt-out-Region sperrt Marketing (Z11 s02)', () => {
+  const env = {PUBLIC_CONSENT_STRICT_REGIONS: 'DE,AT,CH'};
+  const ohne = new Request('https://example.test/', {headers: {'oxygen-buyer-country': 'US'}});
+  const gpc = new Request('https://example.test/', {headers: {'oxygen-buyer-country': 'US', 'Sec-GPC': '1'}});
+  const gpcMitWahl = new Request('https://example.test/', {
+    headers: {'oxygen-buyer-country': 'US', 'Sec-GPC': '1', Cookie: wahl({s: true, m: true, utc: Date.now() - 1000})},
+  });
+  const gpcDe = new Request('https://example.test/', {headers: {'oxygen-buyer-country': 'DE', 'Sec-GPC': '1'}});
+  assert.deepEqual(tor.shopifyServerErlaubt(ohne, env), {_shopify_analytics: true, _shopify_marketing: true});
+  assert.deepEqual(tor.shopifyServerErlaubt(gpc, env), {_shopify_analytics: true, _shopify_marketing: false});
+  assert.deepEqual(tor.shopifyServerErlaubt(gpcMitWahl, env), {_shopify_analytics: true, _shopify_marketing: true});
+  assert.deepEqual(tor.shopifyServerErlaubt(gpcDe, env), {_shopify_analytics: false, _shopify_marketing: false});
+});

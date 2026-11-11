@@ -40,7 +40,7 @@ export const TEXTE = {
   en: {
     bereich: 'Cookie notice',
     kurz:
-      'You can keep reading and shopping right away. If you allow statistics and advertising, we see which content helps you and show you more relevant offers.',
+      'You can keep reading and shopping right away. We use statistics and advertising cookies to see which content helps you and to show you more relevant offers. You decide what stays on.',
     einstellen: 'Cookie settings',
     notwendig: 'Accept necessary cookies',
     alle: 'Accept all',
@@ -60,6 +60,32 @@ export const TEXTE = {
     fussLink: 'Cookie settings',
   },
 };
+
+/**
+ * ZUSATZ (Z11 s02, 2026-11-11): Texte, die nur in einer Lage erscheinen, getrennt von TEXTE,
+ * damit Christians deutscher Wortlaut und sein texte_hash byte-gleich bleiben.
+ *   optout       Opt-out-Weg für Besucher aus Opt-out-Regionen (Regelwerk je Region, Lücke 2).
+ *                Englisch ist die übliche Formel der US-Opt-out-Regeln.
+ *   platzhalter  Platzhalter an einer blockierten Einbettung (Lücke 3), Knopf darunter.
+ * Der englische Kurztext oben steht wörtlich wie im Global Englisch-Shop (s07; dort texte_hash 9f044c89 nach
+ * der Liquid-Rechnung; hier rechnet texteHash über den ganzen TEXTE.en-Block und ergibt e5492878).
+ */
+export const ZUSATZ = {
+  de: {
+    optout: 'Meine Daten nicht verkaufen oder teilen',
+    platzhalter: 'Das Video kommt von YouTube. Es lädt erst, wenn du Marketing-Cookies erlaubst.',
+    platzhalterKnopf: 'Erlauben und abspielen',
+  },
+  en: {
+    optout: 'Do Not Sell or Share My Personal Information',
+    platzhalter: 'This video is hosted by YouTube. It loads once you allow marketing cookies.',
+    platzhalterKnopf: 'Allow and play',
+  },
+};
+
+export function zusatzFuer(sprache) {
+  return ZUSATZ[sprache] || ZUSATZ.de;
+}
 
 export function texteFuer(sprache) {
   return TEXTE[sprache] || TEXTE.de;
@@ -121,6 +147,11 @@ const esc = (s) =>
  */
 export function hinweisHtml(sprache, {entschieden = false} = {}) {
   const t = texteFuer(sprache);
+  const z = zusatzFuer(sprache);
+  // Opt-out-Weg (Lücke 2): im Server-HTML verborgen; qb-einwilligung.js zeigt ihn nur, wenn das Regelwerk
+  // der Region Opt-out ist (data-qb-region außerhalb der strict-Liste).
+  const optout =
+    `<p class="qb-ew-optout" data-qb-optout hidden><a href="#" data-qb-wahl="optout">${esc(z.optout)}</a></p>`;
   const kat = ['preferences', 'statistics', 'marketing']
     .map(
       (k) =>
@@ -131,13 +162,14 @@ export function hinweisHtml(sprache, {entschieden = false} = {}) {
   return (
     `<div id="qb-einwilligung" data-qb-einwilligung="banner" role="region" aria-label="${esc(t.bereich)}"` +
     ` data-qb-fassung="${EINWILLIGUNG_FASSUNG}" data-qb-sprache="${sprache}" data-qb-texte-hash="${texteHash(sprache)}"` +
+    ` lang="${sprache}" data-qb-ph-text="${esc(z.platzhalter)}" data-qb-ph-knopf="${esc(z.platzhalterKnopf)}"` +
     `${entschieden ? ' hidden' : ''}>` +
     `<p class="qb-ew-text">${esc(t.kurz)} <a href="/pages/cookie-erklaerung">${esc(t.erklaerung)}</a></p>` +
     `<div class="qb-ew-knoepfe">` +
     `<button type="button" class="qb-ew-knopf qb-ew-knopf--leise" data-qb-wahl="einstellungen">${esc(t.einstellen)}</button>` +
     `<button type="button" class="qb-ew-knopf qb-ew-knopf--grau" data-qb-wahl="notwendig">${esc(t.notwendig)}</button>` +
     `<button type="button" class="qb-ew-knopf qb-ew-knopf--gold" data-qb-wahl="alle">${esc(t.alle)}</button>` +
-    `</div></div>` +
+    `</div>${optout}</div>` +
     `<div id="qb-einwilligung-dialog" data-qb-einwilligung="dialog" role="dialog" aria-modal="false" aria-labelledby="qb-ew-titel" hidden>` +
     `<button type="button" class="qb-ew-zu" data-qb-wahl="zu" aria-label="${esc(t.zu)}">×</button>` +
     // Kein <h2>: der Hinweis steht als erstes body-Kind im Server-HTML JEDER Seite; ein h2 dort änderte die
@@ -150,6 +182,6 @@ export function hinweisHtml(sprache, {entschieden = false} = {}) {
     `<div class="qb-ew-knoepfe">` +
     `<button type="button" class="qb-ew-knopf qb-ew-knopf--grau" data-qb-wahl="auswahl">${esc(t.speichern)}</button>` +
     `<button type="button" class="qb-ew-knopf qb-ew-knopf--gold" data-qb-wahl="alle">${esc(t.alle)}</button>` +
-    `</div><p class="qb-ew-links"><a href="/pages/cookie-erklaerung">${esc(t.erklaerung)}</a> · <a href="/pages/datenschutz">${esc(t.datenschutz)}</a></p></div>`
+    `</div>${optout}<p class="qb-ew-links"><a href="/pages/cookie-erklaerung">${esc(t.erklaerung)}</a> · <a href="/pages/datenschutz">${esc(t.datenschutz)}</a></p></div>`
   );
 }
