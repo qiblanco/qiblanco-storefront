@@ -119,3 +119,24 @@
     padding: var(--bw-s6);
   }
 }
+
+/* Der Anmeldeweg unter der Einleitung (nur /blogs/coming-home, SEO-Maßnahme
+   L19): rückt an die Einleitung heran und übernimmt deren Abstand zum
+   Raster. Der Link sieht aus wie der Quellen-Link des Wegweisers, also
+   derselbe eine Gold-Akzent, kein zweiter Farbwert. Hier und nicht in
+   blog.css, weil nur diese Route dieses Blatt lädt. */
+.blog-wissen .blog-einleitung:has(+ .blog-anmeldeweg) {
+  margin-bottom: var(--bw-s2);
+}
+
+.blog-wissen .blog-anmeldeweg {
+  font-size: var(--bw-fs-md);
+  line-height: 1.6;
+  margin: 0 0 var(--bw-s6);
+  max-width: var(--measure-text);
+}
+
+.blog-wissen .blog-anmeldeweg a {
+  color: var(--bw-akzent-tinte);
+  text-decoration: underline;
+}
