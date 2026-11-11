@@ -23,6 +23,10 @@ import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
 const ENDPUNKT = 'https://anmelden.dienst.qiblanco.com';
 const BILD =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/productohoto_48a1ddae-fff5-4e7f-bc61-385f08a6ad26.png';
+// Rechner ab 960px: Hero-Banner mit allen Deal-Produkten auf dem Podest statt Bild "Frau mit Kette"; am Handy bleibt BILD
+// (Elina EL-20261111-67f3d4b4, freigegeben 11.11.; Bild 2:3 aus dem Hero EL-20261111-fa3a55e7 mit Euro-Zeichen 472298df).
+const HERO_DESKTOP =
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/bf26-pre-access-hero-desktop-de.jpg?v=1794434438';
 
 export function links() {
   return [
@@ -167,16 +171,25 @@ export default function PreAccessB() {
   return (
     <div className="pab" id="pab" ref={wurzel}>
       <div className="pab__innen" data-section="pre-access-b">
-        <figure className="pab__bild" data-eb="zoom">
-          <img
-            src={`${BILD}?width=1100`}
-            srcSet={`${BILD}?width=600 600w, ${BILD}?width=1100 1100w, ${BILD}?width=1600 1600w`}
-            sizes="(min-width: 960px) 48vw, 100vw"
-            width={1100}
-            height={1100}
-            alt="Frau trägt den QiOne® 2 Pro Anhänger an einer Kette"
-            fetchPriority="high"
-          />
+        <figure className="pab__bild pab__bild--hero" data-eb="zoom">
+          <picture>
+            <source
+              media="(min-width: 960px)"
+              srcSet={`${HERO_DESKTOP}&width=720 720w, ${HERO_DESKTOP}&width=1100 1100w`}
+              sizes="46vw"
+              width={1100}
+              height={1650}
+            />
+            <img
+              src={`${BILD}?width=1100`}
+              srcSet={`${BILD}?width=600 600w, ${BILD}?width=1100 1100w, ${BILD}?width=1600 1600w`}
+              sizes="(min-width: 960px) 48vw, 100vw"
+              width={1100}
+              height={1100}
+              alt="Black Friday Pre-Sale bei Qi Blanco mit dem QiOne® 2 Pro"
+              fetchPriority="high"
+            />
+          </picture>
           <figcaption className="pab__bildzeile">
             Black Friday 2026 · bis zu 500 € sparen
           </figcaption>
