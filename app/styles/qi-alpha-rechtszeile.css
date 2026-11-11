@@ -4,12 +4,29 @@
  * Alpha-Stil, Schrift klein und hell, Abstand ruhig. Auf der Kaufseite hält
  * sie mobil die Höhe der festen Schlussleiste frei (61 px, the-alpha-shop.css),
  * damit kein Verweis unter dem Kaufknopf liegt.
+ *
+ * SCHRIFT AUS DER SKALA DER KAUFSEITE (11.11.2026, Job 20261111-folge-qi-alpha-
+ * designscore-97-typo-skala): 14 px = --tas-fs-2, das Kleingedruckte der Seite
+ * (the-alpha-produkt.css); 12 px = --tas-fs-1. Die Variablen selbst erreichen
+ * diese Zeile nicht, sie steht NEBEN .tas-seite, nicht darin.
+ *
+ * AUS DEMSELBEN GRUND greift hier die Hausregel, die die Seite selbst in
+ * .tas-seite aufhebt (`.tas-seite :where(p, li, …)`): reset.css
+ * `p, li { font-size: 1.2rem; line-height: 1.4; color: --color-dark }`
+ * direkt aufs Element. Jeder
+ * Verweis stand dadurch seit dem 31.10. bei 19,2 px statt klein, eine zehnte
+ * Schriftgröße auf der Kaufseite (Design-Rubrik live 97 statt 99). Deshalb
+ * `font-size`, `line-height` und `color: inherit` an <li> und Absatz (ohne
+ * die Farbe stünde --color-dark, Dunkelgrau, auf dem Schwarz der Zeile). Die Selektoren der Verweise sind
+ * Kind-Selektoren: sie sollen die Zeile treffen, nicht den EU-Hinweis
+ * (<dialog>) darin. Die Farben stimmen erst, seit die Zeile kein <footer>
+ * mehr ist (QiAlphaRechtsZeile.jsx, FEHLER-DB F-2584).
  */
 .qar {
   background: #000;
   color: rgba(255, 255, 255, 0.72);
   padding: 28px 20px 32px;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   line-height: 1.5;
   text-align: center;
 }
@@ -24,12 +41,15 @@
   list-style: none;
 }
 
-.qar-liste li {
+.qar-liste > li {
   margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
 }
 
-.qar-liste a,
-.qar .eu-gwl__link {
+.qar-liste > li > a,
+.qar-gwl > p > .eu-gwl__link {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -42,25 +62,46 @@
   cursor: pointer;
 }
 
-.qar-liste a:hover,
-.qar-liste a:focus-visible,
-.qar .eu-gwl__link:hover,
-.qar .eu-gwl__link:focus-visible {
+.qar-liste > li > a:hover,
+.qar-liste > li > a:focus-visible,
+.qar-gwl > p > .eu-gwl__link:hover,
+.qar-gwl > p > .eu-gwl__link:focus-visible {
   color: #fff;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
 /* EuGewaehrleistungsLink setzt einen Absatz um den Knopf. */
-.qar-gwl p {
+.qar-gwl > p {
   display: inline;
   margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
 }
 
 .qar-marke {
   margin: 8px 0 0;
   color: rgba(255, 255, 255, 0.48);
   font-size: 0.75rem;
+}
+
+/*
+ * Der Gewährleistungs-Hinweis aus dieser Zeile, wie aus der Kasse: Text in
+ * der Größe des Dialogs (16 px), linksbündig statt mittig wie die Zeile.
+ */
+.qar .eu-gwl-dialog {
+  text-align: start;
+}
+
+.qar .eu-gwl-dialog__absatz,
+.qar .eu-gwl-dialog__fuss {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.qar .eu-gwl-dialog__fuss {
+  color: inherit;
 }
 
 @media (max-width: 749px) {
