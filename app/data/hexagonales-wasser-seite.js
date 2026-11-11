@@ -318,8 +318,8 @@ export const FRAGEN = [
   },
   {
     q: 'Woher bekomme ich hexagonales Wasser?',
-    a: 'Vollständig hexagonal ist Wasser als Eis, jede Schneeflocke zeigt es. Flüssiges Wasser ordnet sich dort, wo es eine wasserliebende Oberfläche berührt, etwa ein Gel. Mitten im Glas formen sich die eisähnlichen Bereiche ständig neu.',
-    quellen: ['kuhs1981', 'libbrecht2005', 'zheng2006', 'huang2009', 'fecko2003'],
+    a: 'Vollständig hexagonal ist Wasser als Eis, jede Schneeflocke zeigt es. Flüssiges Wasser ordnet sich dort, wo es eine wasserliebende Oberfläche berührt, etwa ein Gel. Sechseckig ist diese Ordnung nach dem Modell von Prof. Dr. Gerald H. Pollack. Mitten im Glas formen sich die eisähnlichen Bereiche ständig neu.',
+    quellen: ['kuhs1981', 'libbrecht2005', 'zheng2006', 'pollack2013', 'huang2009', 'fecko2003'],
   },
   {
     q: 'Ist hexagonales Wasser wissenschaftlich belegt?',
@@ -333,7 +333,7 @@ export const FRAGEN = [
   },
   {
     q: 'Was bringt hexagonales Wasser?',
-    a: 'Geordnetes Wasser verhält sich messbar anders als gewöhnliches Wasser. Die geordnete Zone an Oberflächen, die Prof. Dr. Pollack als sechseckige Wabenschicht beschreibt, ist meist negativ geladen, das Wasser davor positiv. Sie schiebt Teilchen aus dem Wasser hinaus und schluckt UV-Licht bei rund 270 Nanometern.',
+    a: 'Geordnetes Wasser verhält sich messbar anders als gewöhnliches Wasser. Die geordnete Zone an Oberflächen, die Prof. Dr. Pollack als sechseckige Wabenschicht beschreibt, ist meist negativ geladen, das Wasser davor positiv. Sie schiebt gelöste und schwebende Teilchen aus sich hinaus und schluckt UV-Licht bei rund 270 Nanometern.',
     quellen: ['pollack2013', 'das2013', 'zheng2003', 'chai2008'],
   },
   {
