@@ -9,7 +9,7 @@
 // Bewegung: Baukasten elina-design-regel (useElinaBewegung), erster Bildschirm ohne Animation.
 // Messfixtur (Gate 12, wie /pages/live und /pages/produktberatung): nur mit Kopf x-hbfmt-messfixtur: 1 UND Host localhost
 // (istMessfixtur) stehen beide Uhren auf MESSFIXTUR_JETZT, Server und Browser, Marker data-messfixtur="pre-access-countdown".
-// Kunden (qiblanco.com) erfuellen die Host-Bedingung nie: Uhr laeuft, kein Marker.
+// Kunden (qiblanco.com) erfuellen die Host-Bedingung nie: Uhr läuft, kein Marker.
 // Rueckbau: diese Datei und app/styles/pre-access-b.css loeschen.
 import {useEffect, useRef, useState} from 'react';
 import {useLoaderData} from 'react-router';
