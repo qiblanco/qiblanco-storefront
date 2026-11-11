@@ -204,8 +204,8 @@ function FooterWissenVertrauen() {
 }
 
 // Newsletter = AC-Formular 15. Die Weiche (Stufe E1 der AC-Ablösung, s11)
-// zeigt das eigene Formular, sobald der Anmelde-Endpunkt 15 auf 'eigen'
-// meldet; sonst und bei jedem Fehler das Embed wie bisher.
+// zeigt das eigene Formular; das Embed nur, wenn der Anmelde-Endpunkt 15
+// ausdrücklich auf 'ac' meldet (Elina EL-20261110-5a9e5746 Punkt 3).
 function NewsletterForm() {
   return (
     <AnmeldeWeiche formId="15" ac={<NewsletterAcEmbed />} dunkel />
