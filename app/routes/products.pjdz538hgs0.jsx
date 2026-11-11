@@ -2,12 +2,21 @@ import {useLoaderData} from 'react-router';
 import {MARKE} from '~/lib/produkt-seo';
 import tenYearsDealStyles from '~/styles/ten-years-deal-page.css?url';
 import {PRODUCT_QUERY} from '~/lib/qioneProductQuery';
-import {konfiguratorAn, ladeProduktSeite} from '~/lib/produkt-seite-laden.server';
+import {
+  konfiguratorAn,
+  ladeProduktSeite,
+} from '~/lib/produkt-seite-laden.server';
 import {
   ladeHeutigeSeite,
   StandardProduct,
 } from '~/components/product-pages/AngebotHeutigeSeite';
 import {AngebotKonfigurator} from '~/components/product-pages/AngebotKonfigurator';
+import {
+  bfDeal,
+  bfDealSeite,
+} from '~/components/black-friday-2026/bf-deals-daten';
+import {ladeBfDealAlpha} from '~/components/black-friday-2026/bf-deal-seite.server';
+import {BfDealAlpha} from '~/components/black-friday-2026/BfDealSeite';
 import * as ALPHA_DATEN from '~/components/product-pages/pjdz538hgs0-alpha-daten';
 
 /*
@@ -19,13 +28,33 @@ import * as ALPHA_DATEN from '~/components/product-pages/pjdz538hgs0-alpha-daten
  * Schalter das Apple-Gerüst (AngebotKonfigurator, Daten pjdz538hgs0-alpha-daten.js).
  * Beide Fassungen bleiben noindex (lib/seo.js NICHT_INDEXIERBARE_PRODUKTE).
  * Rückweg: Schalter aus, dann die heutige Seite.
+ *
+ * BF-DEAL-WEICHE (Elina EL-20261111-aff06215, bis 30.11.2026 23:59 Berlin):
+ * führt bf-deals-daten.js (BF_DEAL_SEITEN) diese Adresse, zeigt sie im
+ * Euro-Markt dieselbe Deal-Fassung wie /products/734husd8hh (BF-Preis,
+ * Warenkorb-Link „Jetzt kaufen“, Deal-Galerie). Ohne Eintrag, nach dem Ende
+ * oder in einem anderen Markt bleibt es beim Weg darunter. Die Weiche kommt
+ * zuerst und ohne Eintrag (Seite unverändert), der Eintrag als eigener
+ * Schritt in der Datenstelle.
  */
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
 }
 
 /** @type {MetaFunction<typeof loader>} */
-export const meta = ({data}) => [
+export const meta = ({data}) => {
+  if (data?.bfDealSeite) {
+    const name =
+      data.bfDealSeite.name ?? bfDeal(data.bfDealSeite.deal)?.name ?? '';
+    return [
+      {title: `Black Friday: ${name} | ${MARKE}`},
+      {name: 'robots', content: 'noindex,nofollow'},
+    ];
+  }
+  return metaNormal({data});
+};
+
+const metaNormal = ({data}) => [
   {title: `${data?.product?.title ?? ''} | ${MARKE}`},
   // Statisches Literal (gleicher Wert wie lib/seo.js): die Gates lesen es
   // (design-zufahrt, Link-Ziel-Ausnahme in test/produkt-seo.test.mjs).
@@ -36,6 +65,12 @@ export const meta = ({data}) => [
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  const dealSeite = bfDealSeite('pjdz538hgs0');
+  if (dealSeite) {
+    // null = Markt ohne Deal (nicht Euro): dann der Weg wie vorher.
+    const deal = await ladeBfDealAlpha(args, dealSeite);
+    if (deal) return deal;
+  }
   if (konfiguratorAn(args.context.env, 'pjdz538hgs0')) {
     return ladeProduktSeite(args, {
       handle: 'pjdz538hgs0',
@@ -49,9 +84,23 @@ export async function loader(args) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, konfigurator, ketten} = useLoaderData();
+  const {
+    product,
+    konfigurator,
+    ketten,
+    bfDealSeite: dealSeite,
+  } = useLoaderData();
+  if (dealSeite) {
+    return <BfDealAlpha seite={dealSeite} product={product} ketten={ketten} />;
+  }
   if (konfigurator) {
-    return <AngebotKonfigurator product={product} ketten={ketten} daten={ALPHA_DATEN} />;
+    return (
+      <AngebotKonfigurator
+        product={product}
+        ketten={ketten}
+        daten={ALPHA_DATEN}
+      />
+    );
   }
   return <StandardProduct product={product} />;
 }
