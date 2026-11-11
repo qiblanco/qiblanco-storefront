@@ -41,6 +41,15 @@ import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
 import produktAppleStyles from '~/styles/produkt-apple.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
+import {
+  bfDeal,
+  bfDealMarktPasst,
+  bfDealPreiseSetzen,
+  bfDealSeite,
+} from '~/components/black-friday-2026/bf-deals-daten';
+import {ladeBfDealAlpha} from '~/components/black-friday-2026/bf-deal-seite.server';
+import {BfDealAlpha} from '~/components/black-friday-2026/BfDealSeite';
+import {BfDealRahmen, DealGalerie} from '~/components/black-friday-2026/DealGalerie';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
@@ -49,6 +58,15 @@ export function links() {
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
+  // BF-Deal-Seiten (Elina EL-20261111-aff06215): noindex, keine Kanonische,
+  // keine Produkt-Auszeichnung mit dem Shopify-Preis des Basisprodukts.
+  if (data?.bfDealSeite) {
+    const name = data.bfDealSeite.name ?? bfDeal(data.bfDealSeite.deal)?.name ?? '';
+    return [
+      {title: `Black Friday: ${name} | ${MARKE}`},
+      {name: 'robots', content: 'noindex,nofollow'},
+    ];
+  }
   if (data?.campaignDeal) {
     return [
       {title: `${data.campaignDeal.displayTitle} - 10 Jahre Jubiläums Sale`},
@@ -181,6 +199,21 @@ export async function loader(args) {
   const alterPfad = `/products/${args.params.handle}`;
   if (zusammenlegungFuer(alterPfad)) leiteUm(args.request, alterPfad);
 
+  // BF-DEAL-SEITEN DE (Elina EL-20261111-aff06215, bis 30.11.2026 23:59 Berlin):
+  // die Deal-Adresse antwortet selbst mit 200 und rendert die Seite des
+  // Basisprodukts mit BF-Preis, Warenkorb-Link und Deal-Galerie. Vor der
+  // Produkt-Query, weil das Bundle-Produkt hinter dem Handle Entwurf bzw.
+  // archiviert ist (404 -> Shopify-Weiterleitung auf eine falsche Seite).
+  // Danach fällt der Handle wieder in den Weg darunter (404/Weiterleitung).
+  const dealSeite = bfDealSeite(args.params.handle);
+  // Nur im Euro-Markt (Deutsch-Shop); sonst 404 wie vor dem Deal.
+  if (dealSeite?.art?.startsWith('alpha')) {
+    const deal = await ladeBfDealAlpha(args, dealSeite);
+    if (!deal) throw new Response(null, {status: 404});
+    return deal;
+  }
+  if (dealSeite) return ladeBfDealStandard(args, dealSeite);
+
   const campaignDeal = getTenYearsDealByHandle(args.params.handle);
 
   if (campaignDeal) {
@@ -296,9 +329,40 @@ function RenderProductPage({product}) {
   )
 } */
 
+/**
+ * BF-Deal-Seite in der Standard-Fassung (Kakao): Daten des Basisprodukts mit
+ * BF-Preis und UVP aus der Datenstelle. Ausserhalb des Loaders, damit dessen
+ * Reihenfolge (10-Jahre-Zaun vor Redirect und Produkt-Query) unberuehrt bleibt.
+ * @param {LoaderFunctionArgs} args
+ */
+async function ladeBfDealStandard(args, dealSeite) {
+  const basisDaten = await loadCriticalData({
+    ...args,
+    params: {...args.params, handle: dealSeite.basis},
+  });
+  if (!bfDealMarktPasst(basisDaten.product)) throw new Response(null, {status: 404});
+  return {
+    ...basisDaten,
+    product: bfDealPreiseSetzen(basisDaten.product, dealSeite),
+    bfDealSeite: dealSeite,
+  };
+}
+
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, campaignDeal, appleSeite} = useLoaderData();
+  const {product, campaignDeal, appleSeite, bfDealSeite: dealSeite, ketten} = useLoaderData();
+
+  if (dealSeite?.art?.startsWith('alpha')) {
+    return <BfDealAlpha seite={dealSeite} product={product} ketten={ketten} />;
+  }
+  if (dealSeite) {
+    return (
+      <BfDealRahmen seite={dealSeite}>
+        <link rel="stylesheet" href={kaufleisteStyles} />
+        <StandardProduct product={product} kaufleiste />
+      </BfDealRahmen>
+    );
+  }
 
   if (campaignDeal) {
     return <TenYearsDealPage deal={campaignDeal} />;
@@ -447,6 +511,8 @@ function StandardProduct({product, kaufleiste = false}) {
         }}
       />
     </div>
+    {/* BF-Deal-Galerie unter der Kaufbox (nur auf einer BF-Deal-Seite). */}
+    <DealGalerie />
     {kaufleiste ? (
       <Kaufleiste
         kaufbox={kaufbox}
