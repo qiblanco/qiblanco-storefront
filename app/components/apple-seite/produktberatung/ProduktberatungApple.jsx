@@ -1,11 +1,9 @@
 import serviceAppleStyles from '~/styles/service-apple.css?url';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
-import {useGoogleRating} from '~/lib/googleRating';
+import {GoogleBewertungsleiste} from '~/components/reusables/GoogleBewertungsleiste';
 import {
   FOTO,
   FRAGEN,
-  STIMMEN,
-  STIMMEN_B,
   useProduktberatung,
 } from '~/components/campaign/ProduktberatungSeite';
 import {AppleSeite} from '../AppleSeite';
@@ -16,8 +14,6 @@ import {
   FRAGEN_TITEL,
   KOPF,
   SCHLUSS,
-  STIMMEN_LINK,
-  STIMMEN_TITEL,
   reihenfolge,
 } from './produktberatung-daten';
 
@@ -198,34 +194,13 @@ function Ablauf() {
   );
 }
 
-function Stimmen({b}) {
-  const g = useGoogleRating();
-  const stimmen = b ? STIMMEN_B : STIMMEN;
-  if (!stimmen.length) return null;
+// Bewertungsposition = DIE Bewertungsleiste (GoogleBewertungsleiste, Christian 11.11.2026: „an allen
+// Positionen gleich“). Die frueher handverlesenen Karten (STIMMEN/STIMMEN_B) sind abgeloest.
+function Stimmen() {
   return (
-    <section className="as-sektion" data-section="pb-stimmen">
-      <h2 className="as-h2">{STIMMEN_TITEL}</h2>
-      <ul className="as-stimmen">
-        {stimmen.map((r) => (
-          <li key={r.id} className="as-stimme">
-            <blockquote className="as-stimme-text pba-stimme-text">
-              {r.text.split('\n').map((zeile) => (
-                <p key={zeile.slice(0, 32)}>{zeile}</p>
-              ))}
-            </blockquote>
-            <p className="as-stimme-quelle">{r.name}, Google-Rezension</p>
-          </li>
-        ))}
-      </ul>
-      <a
-        className="as-link"
-        href={g.url}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {STIMMEN_LINK}
-      </a>
-    </section>
+    <div className="as-sektion" data-section="pb-stimmen">
+      <GoogleBewertungsleiste dataSection="pb-bewertungsleiste" />
+    </div>
   );
 }
 
