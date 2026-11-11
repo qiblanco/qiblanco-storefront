@@ -7482,3 +7482,81 @@ select.b2b-netto__eingabe {
   height: 1px;
   overflow: hidden;
 }
+
+/* ---- GoogleBewertungsleiste (Standard-Komponente, Job 20261111-prio1-
+   bewertungsslider): EINE Leiste an jeder Bewertungsposition. Block-
+   Eigenschaften (Breite, Abstand) nur auf .qb-gbl, nie auf eine Hälfte
+   (Bewertungsblock-Lehre, Gate 19). Die Karten selbst sind die des
+   ReviewsSlider (ReputonWidget.jsx). ---------------------------------------- */
+.qb-gbl {
+  --qb-gbl-tinte: #1d1d1f;
+  --qb-gbl-grau: #6e6e73;
+  --qb-gbl-fs-titel: 1.75rem;
+  --qb-gbl-fs-titel-gross: 2.5rem;
+  --qb-gbl-fs-zeile: 1.25rem;
+  --qb-gbl-fs-unter: 0.9375rem;
+  --qb-gbl-s-1: 8px;
+  --qb-gbl-s-2: 16px;
+  --qb-gbl-s-3: 24px;
+  --qb-gbl-s-8: 64px;
+  --qb-gbl-breite: 1200px;
+  width: 100%;
+  max-width: var(--qb-gbl-breite);
+  margin: 0 auto;
+  padding: var(--qb-gbl-s-8) var(--qb-gbl-s-2);
+  box-sizing: border-box;
+  color: var(--qb-gbl-tinte);
+}
+.qb-gbl__titel {
+  margin: 0;
+  font-size: var(--qb-gbl-fs-titel);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-wrap: balance;
+}
+.qb-gbl__titel-link,
+.qb-gbl__zeile {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--qb-gbl-s-1) 12px;
+  color: inherit;
+  text-decoration: none;
+}
+.qb-gbl__titel-link:is(:hover, :focus-visible) .qb-gbl__bei,
+.qb-gbl__zeile:is(:hover, :focus-visible) .qb-gbl__bei {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.qb-gbl__zeile {
+  display: flex;
+  margin-top: var(--qb-gbl-s-2);
+  font-size: var(--qb-gbl-fs-zeile);
+  font-weight: 600;
+}
+.qb-gbl__sterne {
+  display: inline-flex;
+  line-height: 1;
+}
+.qb-gbl__unter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--qb-gbl-s-1);
+  margin: var(--qb-gbl-s-2) 0 var(--qb-gbl-s-3);
+  font-size: var(--qb-gbl-fs-unter);
+  color: var(--qb-gbl-grau);
+  text-align: center;
+}
+@media (min-width: 750px) {
+  .qb-gbl__titel {
+    font-size: var(--qb-gbl-fs-titel-gross);
+  }
+  .qb-gbl {
+    padding-left: var(--qb-gbl-s-3);
+    padding-right: var(--qb-gbl-s-3);
+  }
+}

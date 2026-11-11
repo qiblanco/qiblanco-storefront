@@ -4,8 +4,7 @@ import {CdnBild} from '~/components/reusables/CdnBild';
 import {produktLink, BLOCK_PUBLIC} from '~/components/reusables/blockLinks';
 import {vergleichSpalten} from '~/components/reusables/amazonstil-daten';
 import {faqPageJsonLdString} from '~/lib/faq-schema';
-import {GOOGLE_REVIEWS_URL} from '~/lib/googleRating';
-import {StarRating} from '~/components/reusables/StarRating';
+import {GoogleBewertungsleiste} from '~/components/reusables/GoogleBewertungsleiste';
 import {useMarktLand} from '~/lib/markt-land';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
@@ -240,32 +239,15 @@ export function AlphaWissen({kapitel, bilder = [], studien = null}) {
  *   stimmen: Array<{text: string, quelle: string}>}}} props
  */
 export function AlphaStimmen({daten, igProdukt = null}) {
-  if (!daten?.stimmen?.length) return null;
-  const titel = daten.ueberschrift.replace('{bewertung}', daten.note ?? '4,8');
+  // Bewertungsposition der Apple-Kaufseiten = DIE Bewertungsleiste
+  // (GoogleBewertungsleiste, Christian 11.11.2026): an allen Positionen
+  // gleich. Die drei festen Karten aus daten.stimmen sind abgelöst.
   return (
     <div className="avs" data-av-stimmen="">
-      {/* Die Überschrift ist der Weg zu Google (Sterne-Klick wie im Preisanker). */}
-      <h2 className="tas-box-titel">
-        <a className="avs-titel-link" href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer">
-          {mitMarkeR(titel)}
-        </a>
-      </h2>
-      <ul className="avs-liste">
-        {daten.stimmen.map((s) => (
-          <li key={s.text} className="avs-stimme">
-            <span className="avs-sterne">
-              <StarRating value={5} size={16} />
-            </span>
-            <blockquote className="avs-text">
-              <p>{mitMarkeR(s.text)}</p>
-            </blockquote>
-            <p className="avs-quelle">{s.quelle}</p>
-          </li>
-        ))}
-      </ul>
+      <GoogleBewertungsleiste dataSection="av-bewertungsleiste" />
       {igProdukt ? (
         <div className="avs-ig">
-          <IgTestimonialSlideshow produkt={igProdukt} ueberschrift={daten.instagram ?? undefined} />
+          <IgTestimonialSlideshow produkt={igProdukt} ueberschrift={daten?.instagram ?? undefined} />
         </div>
       ) : null}
     </div>
