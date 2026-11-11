@@ -221,3 +221,32 @@ test('hexagonales Wasser: Karte auf die BESTEHENDE Seite, keine zweite Lexikon-S
     assert.ok(seite.includes(soll), `Satz steht nicht auf der bestehenden Seite: ${satz}`);
   }
 });
+
+test('ROLLE KURZDEFINITION: /pages/lexikon-elektrosmog führt die Definition vorn und gibt die Langfrage ab', () => {
+  // Seit 2026-11-11 (SEO-Maßnahme M-SP-20261017-lexikon-elektrosmog). Die
+  // Frage „Was ist Elektrosmog?" gehört /pages/was-ist-elektrosmog; diese
+  // Seite trägt nur die Definition. Der Kopf kommt als Prop von der Route,
+  // damit Hub, Schema und die übrigen Einträge unverändert bleiben.
+  const route = fs.readFileSync(
+    path.join(WURZEL, 'app', 'routes', 'pages.lexikon-elektrosmog.jsx'),
+    'utf8',
+  );
+  assert.match(route, /const TITEL = `Elektrosmog Definition/, 'Titel führt „Elektrosmog Definition" nicht vorn');
+  assert.match(route, /const BESCHREIBUNG = `Elektrosmog Definition/, 'Beschreibung führt den Begriff nicht vorn');
+  assert.match(route, /pfad: '\/pages\/was-ist-elektrosmog'/, 'die Langfrage wird nicht abgegeben');
+  assert.match(route, /text: 'Was ist Elektrosmog\?'/, 'Linktext ist nicht die Frage');
+  assert.match(route, /ueberschrift=\{UEBERSCHRIFT\} frage=\{FRAGE\}/, 'Route reicht den Kopf nicht durch');
+  assert.ok(
+    fs.existsSync(path.join(WURZEL, 'app', 'routes', 'pages.was-ist-elektrosmog.jsx')) ||
+      zielName('/pages/was-ist-elektrosmog'),
+    'Ziel der Abgabe ist nicht belegt',
+  );
+  // Die Komponente faellt ohne Props auf den bisherigen Kopf zurück: alle
+  // anderen Einträge rendern wie vorher.
+  const komp = fs.readFileSync(
+    path.join(WURZEL, 'app', 'components', 'campaign', 'LexikonEintrag.jsx'),
+    'utf8',
+  );
+  assert.match(komp, /<h1>\{ueberschrift \|\| eintrag\.begriff\}<\/h1>/);
+  assert.match(komp, /\{frage && \(/);
+});

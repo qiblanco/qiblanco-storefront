@@ -1022,7 +1022,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-elektrosmog',
-    lastmod: '2026-10-06T20:05:00Z',
+    lastmod: '2026-11-11T00:00:00Z',
     grund:
       'Lexikon-Eintrag „Elektrosmog“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
