@@ -7,8 +7,13 @@
 // Browser sendet direkt an den Endpunkt wie dort. Countdowns: Pre-Access Fr 13.11.2026 00:00 MEZ = 2026-11-12T23:00:00Z,
 // Black Friday Fr 27.11.2026 00:00 MEZ = 2026-11-26T23:00:00Z. Vorschau eines anderen Zeitpunkts: ?pab_jetzt=2026-11-14T12:00:00Z
 // Bewegung: Baukasten elina-design-regel (useElinaBewegung), erster Bildschirm ohne Animation.
+// Messfixtur (Gate 12, wie /pages/live und /pages/produktberatung): nur mit Kopf x-hbfmt-messfixtur: 1 UND Host localhost
+// (istMessfixtur) stehen beide Uhren auf MESSFIXTUR_JETZT, Server und Browser, Marker data-messfixtur="pre-access-countdown".
+// Kunden (qiblanco.com) erfuellen die Host-Bedingung nie: Uhr läuft, kein Marker.
 // Rueckbau: diese Datei und app/styles/pre-access-b.css loeschen.
 import {useEffect, useRef, useState} from 'react';
+import {useLoaderData} from 'react-router';
+import {istMessfixtur} from '../lib/coming-home-live.server';
 import {MailManagerFormular} from '../components/MailManagerFormular';
 import {KONFIG} from '../components/formulare/PreAccessBlackFridayDENachbauF27PreAccesFormular';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
@@ -30,6 +35,16 @@ export const meta = () => [
   {title: 'Black Friday Pre-Sale | Qi Blanco'},
   {name: 'robots', content: 'noindex,nofollow'},
 ];
+
+const MESSFIXTUR_NAME = 'pre-access-countdown';
+// Fester Zeitpunkt der Bank: Uhr des Pixel-Solls vom 10.11. (1 Tag 23 Std / 15 Tage 23 Std), vor beiden Zielen.
+const MESSFIXTUR_JETZT = '2026-11-10T23:30:00Z';
+
+export function loader({request}: {request: Request}) {
+  if (istMessfixtur(request))
+    return {messfixtur: MESSFIXTUR_NAME, jetzt: MESSFIXTUR_JETZT};
+  return {messfixtur: null, jetzt: null};
+}
 
 export function headers() {
   return {'X-Robots-Tag': 'noindex, nofollow'};
@@ -73,9 +88,11 @@ function zwei(n: number) {
 }
 
 // Server-HTML zeigt 00; erst nach dem Laden rechnet der Browser (kein Hydration-Unterschied).
-function useJetzt() {
-  const [jetzt, setJetzt] = useState<number | null>(null);
+// Messfixtur: fest ist der Zeitpunkt aus dem Loader, auf dem Server und im Browser gleich, ohne Takt.
+function useJetzt(fest: number | null) {
+  const [jetzt, setJetzt] = useState<number | null>(fest);
   useEffect(() => {
+    if (fest !== null) return;
     let versatz = 0;
     try {
       const q = new URLSearchParams(window.location.search).get('pab_jetzt');
@@ -88,11 +105,19 @@ function useJetzt() {
     tick();
     const id = window.setInterval(tick, 1000);
     return () => window.clearInterval(id);
-  }, []);
+  }, [fest]);
   return jetzt;
 }
 
-function Countdown({uhr, jetzt}: {uhr: Uhr; jetzt: number | null}) {
+function Countdown({
+  uhr,
+  jetzt,
+  messfixtur,
+}: {
+  uhr: Uhr;
+  jetzt: number | null;
+  messfixtur: string | null;
+}) {
   const rest =
     jetzt === null ? null : Math.floor((Date.parse(uhr.ziel) - jetzt) / 1000);
   const offen = rest !== null && rest <= 0;
@@ -106,7 +131,7 @@ function Countdown({uhr, jetzt}: {uhr: Uhr; jetzt: number | null}) {
   if (rest === null) teile.splice(0, 4, '00', '00', '00', '00');
   // data-eb sitzt auf der Huelle: der Wechsel auf ist-offen schreibt className neu und darf eb-da nicht loeschen.
   return (
-    <div data-eb="">
+    <div data-eb="" data-messfixtur={messfixtur ?? undefined}>
       <div
         className={
           'pab__uhr ' +
@@ -135,7 +160,10 @@ function Countdown({uhr, jetzt}: {uhr: Uhr; jetzt: number | null}) {
 export default function PreAccessB() {
   const wurzel = useRef<HTMLDivElement>(null);
   useElinaBewegung(wurzel);
-  const jetzt = useJetzt();
+  const d = useLoaderData<typeof loader>();
+  const fest = d?.jetzt ? Date.parse(d.jetzt) : null;
+  const jetzt = useJetzt(Number.isFinite(fest) ? fest : null);
+  const messfixtur = d?.messfixtur ?? null;
   return (
     <div className="pab" id="pab" ref={wurzel}>
       <div className="pab__innen" data-section="pre-access-b">
@@ -180,7 +208,12 @@ export default function PreAccessB() {
             Deals.
           </p>
           {UHREN.map((u) => (
-            <Countdown key={u.ziel} uhr={u} jetzt={jetzt} />
+            <Countdown
+              key={u.ziel}
+              uhr={u}
+              jetzt={jetzt}
+              messfixtur={messfixtur}
+            />
           ))}
           <div data-eb="">
             <MailManagerFormular konfig={KONFIG} direkt={ENDPUNKT} />
