@@ -78,5 +78,13 @@
 .pab__innen>.pab__bild{position:sticky;top:32px;height:calc(100vh - 64px);max-height:860px;aspect-ratio:auto}
 .pab__innen>.pab__bild img{height:100%;object-fit:cover}
 }
+/* Rechner ab 960px: Hero-Banner (Deal-Produkte auf dem Podest, Text im Bild) statt Bild "Frau mit Kette"; Handy unveraendert
+   (Elina EL-20261111-67f3d4b4). Bildzeile und Abdunklung unten nur am Handy, das Banner traegt seinen Text selbst. */
+.pab__bild picture{display:block;width:100%;height:100%}
+@media (min-width:960px){
+.pab__bild--hero{background:#0c0a08}
+.pab__bild--hero img{object-position:50% 50%}
+.pab__bild--hero::after,.pab__bild--hero .pab__bildzeile{display:none}
+}
 /* Ruhige Fassung (D7): bei "Bewegung reduzieren" steht alles still und ist sofort da (Einblenden regelt elina-bewegung.css). */
 @media (prefers-reduced-motion:reduce){.pab *,.pab *::before,.pab *::after{transition:none!important;animation:none!important}.pab [data-eb]{opacity:1!important;transform:none!important}}
