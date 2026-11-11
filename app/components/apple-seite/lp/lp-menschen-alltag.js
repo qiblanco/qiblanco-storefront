@@ -13,7 +13,12 @@ import {MENSCHEN_ALLTAG_TEXTE as T} from '../../campaign/menschenAlltagTexte.js'
  * (wenige Worte, kein Satz zweimal): der Revolutions-Aufruf aus dem
  * Produkt-Block, die Rückgabe-Zusage im Einwand-Block, die das CTA-Band
  * trägt, und der Absicherungssatz „kein Heilversprechen“ (sprach-pruefe,
- * Klasse absicherung; der Laborbezug steht im Satz davor). Die Marken tragen ® (Schreibweise der SEGMENT-GRUNDLAGE).
+ * Klasse absicherung; der Laborbezug steht im Satz davor).
+ *
+ * ZWEI KAUFKNÖPFE, nicht drei (Kopf und Schlussband): mit einem dritten
+ * goldenen Knopf im Band „Drei Formen“ war Gold die häufigste Hintergrundfarbe
+ * der Seite, und die Design-Rubrik maß den Haupttext gegen Gold (3,0:1,
+ * Vorschau 96 am 11.11.). Die Marken tragen ® (Schreibweise der SEGMENT-GRUNDLAGE).
  *
  * AUSSORTIERT gegenüber C: Bewertungsblock mit Google-Note und Sternen,
  * „+ 14.000 aktive Nutzer“, Schild „Bestseller“ (Christian 29.10.2026, kein
@@ -94,7 +99,6 @@ export const MENSCHEN_ALLTAG_SEKTIONEN = Object.freeze([
     titel: T.produkte.ueberschrift,
     text: [produkte[0], saetze(produkte[1], 1)],
     bild: BILD.hand,
-    cta: ZIEL.qione,
   },
   {
     art: 'cta',
