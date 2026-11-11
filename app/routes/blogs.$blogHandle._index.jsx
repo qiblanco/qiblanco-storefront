@@ -316,7 +316,7 @@ export default function Blog() {
         {anmeldeweg ? (
           <p className="blog-anmeldeweg">
             {anmeldeweg.vorher}
-            <Link className="article-weiter-produkt" to={anmeldeweg.pfad}>
+            <Link to={anmeldeweg.pfad}>
               {anmeldeweg.linktext}
             </Link>
             {anmeldeweg.nachher}
