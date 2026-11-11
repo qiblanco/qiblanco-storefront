@@ -2,6 +2,8 @@ import {createContext, useContext, useRef} from 'react';
 import {useElinaBewegung} from '~/components/reusables/useElinaBewegung';
 import elinaBewegungStyles from '~/styles/elina-bewegung.css?url';
 import dealGalerieStyles from '~/styles/bf-deal-galerie.css?url';
+import dealDunkelStyles from '~/styles/bf-deal-dunkel.css?url';
+import {BfCountdownLeiste} from '~/components/black-friday-2026/BfCountdownLeiste';
 import {andereDeals} from '~/components/black-friday-2026/bf-deals-daten';
 import {betragText} from '~/lib/betrag-text';
 
@@ -23,27 +25,30 @@ export function useBfDealSeite() {
   return useContext(BfDealKontext);
 }
 
-/** Stylesheets der Deal-Seite (Galerie + Elinas Bewegungs-Baukasten). */
+/** Stylesheets der Deal-Seite (Galerie, dunkler Look, Elinas Bewegungs-Baukasten). */
 export function BfDealStile() {
   return (
     <>
       <link rel="stylesheet" href={elinaBewegungStyles} />
       <link rel="stylesheet" href={dealGalerieStyles} />
+      <link rel="stylesheet" href={dealDunkelStyles} />
     </>
   );
 }
 
 /**
  * Rahmen jeder BF-Deal-Seite: Kontext, Stylesheets und ein Wurzel-Element
- * `.bf-deal-seite[data-bf-deal-seite=<handle>]`, an dem eine eigene Optik der
- * Deal-Seiten (z. B. der dunkle Look, EL-20261111-a9af196f) ansetzen kann,
- * ohne die normalen Produktseiten zu berühren.
+ * `.bf-deal-seite[data-bf-deal-seite=<handle>]`. Daran hängt der dunkle Look
+ * (bf-deal-dunkel.css, Elina EL-20261111-a9af196f) für jede Fassung der
+ * Deal-Seite, ohne die normalen Produktseiten zu berühren. Ganz oben steht die
+ * rote Countdown-Leiste (EL-20261111-cfcd9c5d).
  */
 export function BfDealRahmen({seite, children}) {
   return (
     <BfDealKontext.Provider value={seite}>
       <BfDealStile />
-      <div className="bf-deal-seite" data-bf-deal-seite={seite.handle}>
+      <div className="bf-deal-seite bf-deal-seite--dunkel" data-bf-deal-seite={seite.handle}>
+        <BfCountdownLeiste />
         {children}
       </div>
     </BfDealKontext.Provider>

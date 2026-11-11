@@ -14,23 +14,15 @@
 // großen roten Countdown (#B92200, weiß, sekundengenau) bis Black-Friday-Start 27.11. 00:00, ab dann bis Sale-Ende.
 // Rückbau: diese Datei und app/styles/bf-deals-b.css löschen.
 import {useEffect, useRef, useState} from 'react';
-import {bfDealSeite} from '../components/black-friday-2026/bf-deals-daten';
+import {BF_GOLD_BILDER, bfDealSeite} from '../components/black-friday-2026/bf-deals-daten';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
 import bfDealsBStyles from '../styles/bf-deals-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
 
-// Bilder: Shopify-Dateien DACH (Medien aufs CDN, nicht ins Repo). Die zwei neuen Bundle-Bilder und das Kakao-Set-Bild
-// (EL-20261109-79b117c7 bzw. b0f2e574) liegen seit 10.11.2026 in den DACH-Dateien (cdn-upload, werk/bild-urls.json).
-// Werte ohne Query; die Kachel hängt ?width= an.
-const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
-const BILDER: Record<string, string> = {
-  'bundle-2x-qione-2-pro': CDN + 'bundle-2x-qione-2-pro.webp',
-  'bundle-qione-2-pro-necklace': CDN + 'bundle-qione-2-pro-necklace.webp',
-  QiBracelet1: CDN + 'QiBracelet1.webp',
-  QiHome1: CDN + 'QiHome1.webp',
-  'crystal-cacao-set-awake-create-dunkel-gold-4x3':
-    CDN + 'crystal-cacao-set-awake-create-dunkel-gold-4x3.webp',
-};
+// Bilder (Elina EL-20261111-a9af196f + EL-20261111-83f5cc6d): die BF-Gold-Bilder aus der EINEN Datenstelle
+// bf-deals-daten.js (BF_GOLD_BILDER), dieselben wie Deal-Galerie und Deal-Seiten. Werte ohne Query; die Kachel hängt
+// ?width= an. Die Kakao-Kachel zeigt das Bild des gewählten Sets.
+const BILDER: Record<string, string> = BF_GOLD_BILDER;
 
 export function links() {
   return [
@@ -49,7 +41,7 @@ export function headers() {
 }
 
 // aus: Größe ausverkauft (Bestand 0) - Pille bleibt sichtbar, ist aber nicht wählbar und führt in keinen Warenkorb.
-type Set = {pille: string; neu: string; alt: string; link: string; aus?: boolean};
+type Set = {pille: string; neu: string; alt: string; link: string; aus?: boolean; bild?: string};
 type Kachel = {
   breit: boolean;
   zeile: string;
@@ -84,7 +76,7 @@ const KACHELN: Kachel[] = [
     zeile: 'Bestseller · Für zwei',
     name: '2x QiOne® 2 Pro',
     rabatt: '−500 €',
-    bild: 'bundle-2x-qione-2-pro',
+    bild: '2x-qione-2-pro',
     bildAlt: 'Zwei QiOne® 2 Pro Anhänger nebeneinander',
     alt: '2.476 €',
     neu: '1.976 €',
@@ -95,7 +87,7 @@ const KACHELN: Kachel[] = [
     zeile: 'Set · Mit Kette',
     name: 'QiOne® 2 Pro + Necklace',
     rabatt: '−250 €',
-    bild: 'bundle-qione-2-pro-necklace',
+    bild: 'qione-2-pro-necklace',
     bildAlt: 'QiOne® 2 Pro Anhänger mit Kette',
     alt: '1.332 €',
     neu: '1.082 €',
@@ -113,7 +105,7 @@ const KACHELN: Kachel[] = [
     zeile: 'Am Handgelenk',
     name: 'QiBracelet®',
     rabatt: '−200 €',
-    bild: 'QiBracelet1',
+    bild: 'qibracelet',
     bildAlt: 'QiBracelet® Armreif',
     alt: '1.578 €',
     neu: '1.378 €',
@@ -129,7 +121,7 @@ const KACHELN: Kachel[] = [
     zeile: 'Für dein Zuhause',
     name: 'QiHome® Air',
     rabatt: '−400 €',
-    bild: 'QiHome1',
+    bild: 'qihome-air',
     bildAlt: 'QiHome® Air',
     alt: '4.983 €',
     neu: '4.583 €',
@@ -140,23 +132,26 @@ const KACHELN: Kachel[] = [
     zeile: 'Kauf 2, zahl 1 · Bio-Kakao',
     name: 'Crystal Cacao · Awake & Create',
     rabatt: '−76 €',
-    bild: 'crystal-cacao-set-awake-create-dunkel-gold-4x3',
+    bild: 'kakao-awake-create',
     bildAlt: 'Crystal Cacao Awake und Create, zwei Kakao-Packungen im Set',
     sets: [
       {
         pille: '1x Create + 1x Awake',
+        bild: 'kakao-awake-create',
         neu: '76 €',
         alt: '152 €',
         link: 'https://crystal-cacao.com/cart/54540698485004:1,44685294567692:1?discount=BF26-KAKAO-NKSKX',
       },
       {
         pille: '2x Awake',
+        bild: 'kakao-2x-awake',
         neu: '76 €',
         alt: '152 €',
         link: 'https://crystal-cacao.com/cart/54540698485004:2?discount=BF26-KAKAO-NKSKX',
       },
       {
         pille: '2x Create',
+        bild: 'kakao-2x-create',
         neu: '76 €',
         alt: '152 €',
         link: 'https://crystal-cacao.com/cart/44685294567692:2?discount=BF26-KAKAO-NKSKX',
@@ -225,9 +220,8 @@ function Countdown({jetzt}: {jetzt: number | null}) {
   );
 }
 
-function Bild({k}: {k: Kachel}) {
-  const u = BILDER[k.bild];
-  const wahl = Boolean(k.sets);
+function Bild({k, bild}: {k: Kachel; bild?: string}) {
+  const u = BILDER[bild ?? k.bild];
   // Shopify-Bilder skaliert das CDN per ?width=; ein Pfad ab „/“ wäre eine feste Datei ohne Skalierung.
   const lokal = u.startsWith('/');
   return (
@@ -238,7 +232,7 @@ function Bild({k}: {k: Kachel}) {
           srcSet={
             lokal
               ? undefined
-              : `${u}?width=500 500w, ${u}?width=900 900w, ${u}?width=1300 1300w`
+              : `${u}?width=500 500w, ${u}?width=900 900w, ${u}?width=1200 1200w`
           }
           sizes={
             lokal
@@ -247,8 +241,8 @@ function Bild({k}: {k: Kachel}) {
                 ? '(min-width: 960px) 36rem, (min-width: 600px) 46vw, 92vw'
                 : '(min-width: 960px) 34rem, (min-width: 600px) 46vw, 92vw'
           }
-          width={wahl ? 1200 : 900}
-          height={900}
+          width={1200}
+          height={1200}
           alt={k.bildAlt}
           loading="lazy"
           decoding="async"
@@ -334,7 +328,7 @@ function SetKachel({k}: {k: Kachel}) {
   return (
     <li className={klasse}>
       <div className="bfd__kachel" data-eb="">
-        <Bild k={k} />
+        <Bild k={k} bild={s.bild} />
         <div className="bfd__text">
           <p className="bfd__zeile">{k.zeile}</p>
           <h2 className="bfd__name">
