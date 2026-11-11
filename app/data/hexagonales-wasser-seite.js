@@ -65,7 +65,7 @@ export const SEITE = {
   // im Titel. Beantwortet im Abschnitt `herstellen` und in den Fragen.
   titel: 'Was ist hexagonales Wasser? Wie es entsteht | Qi Blanco',
   beschreibung:
-    'Hexagonales Wasser einfach erklärt: wo das Sechseck gemessen ist, wie es durch Kälte, Oberflächen und Licht entsteht und was es von kohärentem Wasser trennt.',
+    'Hexagonales Wasser einfach erklärt: wo das Sechseck gemessen ist, wie Kälte, Oberflächen und Licht Wasser ordnen und was es von kohärentem Wasser trennt.',
   marke: 'Deep Dive',
   h1: 'Was ist hexagonales Wasser?',
   unterzeile:
@@ -145,11 +145,11 @@ export const TEIL_EINFACH = {
       id: 'herstellen',
       titel: 'Kann man hexagonales Wasser herstellen?',
       absaetze: [
-        'Ja, auf drei Wegen, und jeder ist gemessen: Kälte, wasserliebende Oberflächen und Licht.',
+        'Vollständig hexagonal wird Wasser beim Gefrieren. Flüssiges Wasser lässt sich auf drei gemessenen Wegen ordnen: durch Kälte, an wasserliebenden Oberflächen und mit Licht.',
         'Kälte ordnet am stärksten. Gefriert Wasser, bildet es das sechseckige Gitter des Eises {q:kuhs1981}. Auch im flüssigen Wasser gilt: Je kälter es ist, desto deutlicher treten die eisähnlichen Bereiche hervor {q:huang2009}.',
-        'An wasserliebenden Oberflächen ordnet sich Wasser von selbst. Dort wächst eine geordnete Zone von typischerweise mehreren hundert Mikrometern {q:zheng2006}. Gele und Kunststoffe sind solche Flächen, auch manche Metalle {q:chai2012}.',
+        'An wasserliebenden Oberflächen ordnet sich Wasser von selbst. Dort wächst eine geordnete Zone von typischerweise mehreren hundert Mikrometern {q:zheng2006}. Gele und wasserliebende Kunststoffe wie die Membran Nafion sind solche Flächen {q:zheng2006}, auch manche Metalle {q:chai2012}.',
         'Licht lässt diese Zone wachsen, am stärksten Infrarot, also Wärmestrahlung. Nach einer Stunde war sie im Versuch sechsmal so breit {q:chai2009}.',
-        'Die Ordnung hält dort, wo Wasser eine Oberfläche berührt. Mitten im Glas bauen sich die Brücken in Billionstel Sekunden um {q:fecko2003}.',
+        'Aus sechseckigen Wabenschichten besteht diese Zone nach dem Modell von Prof. Dr. Gerald H. Pollack {q:pollack2013}. Mitten im Glas, fern jeder Oberfläche, bauen sich die Brücken in Billionstel Sekunden um {q:fecko2003}.',
       ],
     },
   ],
@@ -313,17 +313,17 @@ export const FRAGEN = [
   // des Wassers, nie mit einer Wirkung im Körper.
   {
     q: 'Wie kann man hexagonales Wasser herstellen?',
-    a: 'Mit Kälte, an wasserliebenden Oberflächen und mit Licht. Gefriert Wasser, wird es zu hexagonalem Eis. Flüssiges Wasser ordnet sich an wasserliebenden Oberflächen zu einer Zone von mehreren hundert Mikrometern. Infrarot lässt diese Zone wachsen, im Versuch nach einer Stunde auf das Sechsfache.',
-    quellen: ['kuhs1981', 'zheng2006', 'chai2009'],
+    a: 'Vollständig hexagonal wird Wasser beim Gefrieren: Es wird zu Eis Ih. Flüssiges Wasser ordnet sich an wasserliebenden Oberflächen zu einer Zone von mehreren hundert Mikrometern. Infrarot lässt diese Zone wachsen, im Versuch nach einer Stunde auf das Sechsfache. Sechseckig aufgebaut ist die Zone nach dem Modell von Prof. Dr. Gerald H. Pollack.',
+    quellen: ['kuhs1981', 'zheng2006', 'chai2009', 'pollack2013'],
   },
   {
     q: 'Woher bekomme ich hexagonales Wasser?',
     a: 'Vollständig hexagonal ist Wasser als Eis, jede Schneeflocke zeigt es. Flüssiges Wasser ordnet sich dort, wo es eine wasserliebende Oberfläche berührt, etwa ein Gel. Mitten im Glas formen sich die eisähnlichen Bereiche ständig neu.',
-    quellen: ['kuhs1981', 'libbrecht2005', 'zheng2006', 'huang2009'],
+    quellen: ['kuhs1981', 'libbrecht2005', 'zheng2006', 'huang2009', 'fecko2003'],
   },
   {
     q: 'Ist hexagonales Wasser wissenschaftlich belegt?',
-    a: 'Ja, an drei Orten ist es gemessen: im Eis, als eisähnliche Bereiche im flüssigen Wasser und als geordnete Zone an Oberflächen. Die Wabenschicht im Inneren dieser Zone beschreibt das Modell von Prof. Dr. Gerald H. Pollack.',
+    a: 'Ja. Gemessen sind das sechseckige Gitter im Eis, eisähnlich geordnete Bereiche im flüssigen Wasser, eine eisähnliche Lage auf Glimmer und eine geordnete Zone vor wasserliebenden Oberflächen. Aus sechseckigen Wabenschichten besteht diese Zone nach dem Modell von Prof. Dr. Gerald H. Pollack.',
     quellen: ['kuhs1981', 'huang2009', 'miranda1998', 'zheng2006', 'pollack2013'],
   },
   {
@@ -333,7 +333,7 @@ export const FRAGEN = [
   },
   {
     q: 'Was bringt hexagonales Wasser?',
-    a: 'Geordnetes Wasser verhält sich messbar anders als gewöhnliches Wasser. Die geordnete Zone an Oberflächen, die Prof. Dr. Pollack als sechseckige Wabenschicht beschreibt, ist negativ geladen, das Wasser davor positiv. Sie schiebt gelöste Teilchen hinaus und schluckt UV-Licht bei rund 270 Nanometern.',
+    a: 'Geordnetes Wasser verhält sich messbar anders als gewöhnliches Wasser. Die geordnete Zone an Oberflächen, die Prof. Dr. Pollack als sechseckige Wabenschicht beschreibt, ist meist negativ geladen, das Wasser davor positiv. Sie schiebt Teilchen aus dem Wasser hinaus und schluckt UV-Licht bei rund 270 Nanometern.',
     quellen: ['pollack2013', 'das2013', 'zheng2003', 'chai2008'],
   },
   {
