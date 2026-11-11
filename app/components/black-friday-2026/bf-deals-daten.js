@@ -34,7 +34,7 @@ export const BF_DEALS = [
     uvp: 2476,
     bild: CDN + 'bundle-2x-qione-2-pro.webp',
     bildAlt: 'Zwei QiOne® 2 Pro Anhänger nebeneinander',
-    seite: 'jhsdhze783',
+    seite: '8kendiw34hd',
     link: '/cart/39680087326790:2?discount=BF26-2XPRO-HDRSN',
   },
   {
@@ -45,7 +45,7 @@ export const BF_DEALS = [
     uvp: 1332,
     bild: CDN + 'bundle-qione-2-pro-necklace.webp',
     bildAlt: 'QiOne® 2 Pro Anhänger mit Kette',
-    seite: '734husd8hh',
+    seite: 'pjdz538hgs0',
     // Je Kettenlänge (cm) der Link mit der Kette dieser Größe. M (50) und XL (75)
     // ausverkauft: kein Link, die Seite sperrt die Länge.
     linkJeLaenge: {
@@ -98,13 +98,14 @@ export const BF_DEALS = [
  * Seite gerendert wird, `art` die Fassung (alpha-angebot, alpha-qibracelet,
  * alpha-qihome, standard).
  */
-// 8kendiw34hd und pjdz538hgs0 (die bisherigen Ziele der Weiterleitung) stehen
-// noch NICHT in dieser Liste: ihre Deal-Fassung geht als eigener Schritt live
-// (Folgeauftrag zu EL-20261111-aff06215): Route verdrahten wie
-// products.$handle.jsx (bfDealSeite -> ladeBfDealAlpha -> BfDealAlpha) und hier:
-//   '8kendiw34hd': {deal: '2x-qione-2-pro', basis: '8kendiw34hd', art: 'alpha-angebot'},
-//   pjdz538hgs0: {deal: 'qione-2-pro-necklace', basis: 'pjdz538hgs0', art: 'alpha-angebot'},
+// 8kendiw34hd und pjdz538hgs0 haben eigene Routen (products.8kendiw34hd.jsx,
+// products.pjdz538hgs0.jsx); die leihen die Deal-Fassung von jhsdhze783 bzw.
+// 734husd8hh. Ihr Eintrag hier macht sie zum Klickziel von bf-deals und der
+// Galerie (Elina EL-20261111-cc43922e: Bild, Titel und „Jetzt kaufen“ führen auf
+// 8kendiw34hd / pjdz538hgs0). jhsdhze783 / 734husd8hh bleiben als Mail-Adressen.
 export const BF_DEAL_SEITEN = {
+  '8kendiw34hd': {deal: '2x-qione-2-pro', basis: '8kendiw34hd', art: 'alpha-angebot'},
+  pjdz538hgs0: {deal: 'qione-2-pro-necklace', basis: 'pjdz538hgs0', art: 'alpha-angebot'},
   jhsdhze783: {deal: '2x-qione-2-pro', basis: '8kendiw34hd', art: 'alpha-angebot'},
   '734husd8hh': {deal: 'qione-2-pro-necklace', basis: 'pjdz538hgs0', art: 'alpha-angebot'},
   '687ghgf4ed': {deal: 'qibracelet', basis: 'qibracelet', art: 'alpha-qibracelet'},
