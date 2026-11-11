@@ -39,7 +39,8 @@
 .bfd__pfeil{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;margin-top:.6rem;border-radius:50%;background:linear-gradient(180deg,var(--g1),var(--g2));color:#171310;box-shadow:0 10px 26px -12px rgba(242,191,114,.55);transition:transform .3s ease}
 .bfd__pfeil svg{width:20px;height:20px}
 .bfd__kachel:hover .bfd__pfeil{transform:translate3d(3px,0,0)}
-.bfd--wahl .bfd__kachel{position:relative}
+.bfd--wahl .bfd__kachel,
+.bfd--groesse .bfd__kachel{position:relative}
 .bfd--wahl .bfd__bild{aspect-ratio:4/3}
 .bfd--wahl .bfd__bild img{object-position:50% 50%}
 .bfd__link{color:inherit!important;text-decoration:none!important}
@@ -50,6 +51,7 @@
 .bfd__pille{min-height:44px;margin:0;padding:.55rem 1rem;border:1px solid rgba(242,191,114,.45);border-radius:999px;background:rgba(245,239,230,.04);color:var(--hell);font-family:inherit;font-size:14px;font-weight:700;line-height:1.2;cursor:pointer;transition:background-color .2s ease,color .2s ease,border-color .2s ease}
 .bfd__pille[aria-pressed="true"]{border-color:transparent;background:linear-gradient(180deg,var(--g1),var(--g2));color:#171310}
 .bfd__pille:focus-visible{outline:2px solid var(--g);outline-offset:3px}
+.bfd__pille:disabled{opacity:.45;text-decoration:line-through;cursor:not-allowed}
 .bfd__vertrauen{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1rem;margin:2.5rem 0 0!important;padding:1.4rem 0 0!important;border-top:1px solid rgba(245,239,230,.2);list-style:none;color:var(--hell);font-size:15px;line-height:1.35}
 .bfd__vertrauen li{margin:0;padding:0;list-style:none}
 .bfd__vertrauen b{color:var(--g);font-weight:700}

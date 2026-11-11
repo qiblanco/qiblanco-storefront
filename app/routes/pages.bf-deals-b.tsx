@@ -42,7 +42,8 @@ export function headers() {
   return {'X-Robots-Tag': 'noindex, nofollow'};
 }
 
-type Set = {pille: string; neu: string; alt: string; link: string};
+// aus: Größe ausverkauft (Bestand 0) - Pille bleibt sichtbar, ist aber nicht wählbar und führt in keinen Warenkorb.
+type Set = {pille: string; neu: string; alt: string; link: string; aus?: boolean};
 type Kachel = {
   breit: boolean;
   zeile: string;
@@ -54,6 +55,9 @@ type Kachel = {
   neu?: string;
   link?: string;
   sets?: Set[];
+  // Größenwahl (EL-20261111-9065b985): gleiche Pillen wie die Kakao-Sets, ein Warenkorb-Link je Größe.
+  groessen?: Set[];
+  start?: number;
 };
 
 const UHR = {
@@ -73,7 +77,7 @@ const KACHELN: Kachel[] = [
     bildAlt: 'Zwei QiOne® 2 Pro Anhänger nebeneinander',
     alt: '2.476 €',
     neu: '1.976 €',
-    link: '/products/jhsdhze783?el=BF2026',
+    link: '/cart/39680087326790:2?discount=BF26-2XPRO-HDRSN',
   },
   {
     breit: false,
@@ -84,7 +88,14 @@ const KACHELN: Kachel[] = [
     bildAlt: 'QiOne® 2 Pro Anhänger mit Kette',
     alt: '1.332 €',
     neu: '1.082 €',
-    link: '/products/734husd8hh?el=BF2026',
+    start: 1,
+    groessen: [
+      {pille: 'XS · 40 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,39285852176454:1?discount=BF26-PROKETTE-PMB52'},
+      {pille: 'S · 45 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,31887553396806:1?discount=BF26-PROKETTE-PMB52'},
+      {pille: 'M · 50 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,39285855223878:1?discount=BF26-PROKETTE-PMB52', aus: true},
+      {pille: 'L · 60 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,31887553429574:1?discount=BF26-PROKETTE-PMB52'},
+      {pille: 'XL · 75 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,39285858140230:1?discount=BF26-PROKETTE-PMB52', aus: true},
+    ],
   },
   {
     breit: false,
@@ -95,7 +106,12 @@ const KACHELN: Kachel[] = [
     bildAlt: 'QiBracelet® Armreif',
     alt: '1.578 €',
     neu: '1.378 €',
-    link: '/products/687ghgf4ed?el=BF2026',
+    start: 1,
+    groessen: [
+      {pille: 'S', neu: '1.378 €', alt: '1.578 €', link: '/cart/43666904056076:1?discount=BF26-BRACELET-GM5JJ'},
+      {pille: 'M', neu: '1.378 €', alt: '1.578 €', link: '/cart/43666904088844:1?discount=BF26-BRACELET-GM5JJ'},
+      {pille: 'L', neu: '1.378 €', alt: '1.578 €', link: '/cart/43673322160396:1?discount=BF26-BRACELET-GM5JJ'},
+    ],
   },
   {
     breit: true,
@@ -106,33 +122,33 @@ const KACHELN: Kachel[] = [
     bildAlt: 'QiHome® Air',
     alt: '4.983 €',
     neu: '4.583 €',
-    link: '/products/56huz67dds?el=BF2026',
+    link: '/cart/32238705967174:1?discount=BF26-QIHOME-2DP8H',
   },
   {
     breit: true,
-    zeile: 'Neu im Set · Bio-Kakao',
+    zeile: 'Kauf 2, zahl 1 · Bio-Kakao',
     name: 'Crystal Cacao · Awake & Create',
-    rabatt: '−30 €',
+    rabatt: '−76 €',
     bild: 'crystal-cacao-set-awake-create-dunkel-gold-4x3',
     bildAlt: 'Crystal Cacao Awake und Create, zwei Kakao-Packungen im Set',
     sets: [
       {
         pille: '1x Create + 1x Awake',
-        neu: '122 €',
+        neu: '76 €',
         alt: '152 €',
-        link: 'https://crystal-cacao.com/products/bundle-1x-awake-1x-create?el=BF2026',
+        link: 'https://crystal-cacao.com/cart/54540698485004:1,44685294567692:1?discount=BF26-KAKAO-NKSKX',
       },
       {
         pille: '2x Awake',
-        neu: '122 €',
+        neu: '76 €',
         alt: '152 €',
-        link: 'https://crystal-cacao.com/products/bundle-2x-awake?el=BF2026',
+        link: 'https://crystal-cacao.com/cart/54540698485004:2?discount=BF26-KAKAO-NKSKX',
       },
       {
         pille: '2x Create',
-        neu: '122 €',
+        neu: '76 €',
         alt: '152 €',
-        link: 'https://crystal-cacao.com/products/mengenrabatt-2x?el=BF2026',
+        link: 'https://crystal-cacao.com/cart/44685294567692:2?discount=BF26-KAKAO-NKSKX',
       },
     ],
   },
@@ -247,11 +263,14 @@ const Pfeil = () => (
 );
 
 function SetKachel({k}: {k: Kachel}) {
-  const sets = k.sets as Set[];
-  const [wahl, setWahl] = useState(0);
+  const sets = (k.sets || k.groessen) as Set[];
+  const [wahl, setWahl] = useState(k.start ?? 0);
   const s = sets[wahl];
+  const klasse = k.sets
+    ? 'bfd--breit bfd--wahl'
+    : `${k.breit ? 'bfd--breit' : 'bfd--klein'} bfd--groesse`;
   return (
-    <li className="bfd--breit bfd--wahl">
+    <li className={klasse}>
       <div className="bfd__kachel" data-eb="">
         <Bild k={k} />
         <div className="bfd__text">
@@ -261,13 +280,16 @@ function SetKachel({k}: {k: Kachel}) {
               {k.name}
             </a>
           </h2>
-          <div className="bfd__pillen" role="group" aria-label="Set wählen">
+          <div className="bfd__pillen" role="group" aria-label={k.sets ? 'Set wählen' : 'Größe wählen'}>
             {sets.map((x, i) => (
               <button
                 type="button"
                 className="bfd__pille"
                 aria-pressed={i === wahl}
                 key={x.link}
+                disabled={x.aus}
+                aria-label={x.aus ? `${x.pille}, ausverkauft` : undefined}
+                title={x.aus ? 'ausverkauft' : undefined}
                 onClick={() => setWahl(i)}
               >
                 {x.pille}
@@ -345,7 +367,7 @@ export default function BfDealsB() {
         </header>
         <ul className="bfd__liste" aria-label="Black-Friday-Angebote">
           {KACHELN.map((k) =>
-            k.sets ? (
+            k.sets || k.groessen ? (
               <SetKachel key={k.name} k={k} />
             ) : (
               <LinkKachel key={k.name} k={k} />
