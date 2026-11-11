@@ -74,13 +74,15 @@ export async function action({request, context}: ActionFunctionArgs) {
       method: 'POST',
       headers: {'Content-Type': 'application/json', Accept: 'application/json',
         ...weiterleitungsHeader(request, (context as unknown as {env?: Record<string, unknown>})?.env ?? {})},
-      body: JSON.stringify(nutzlast), signal: AbortSignal.timeout(8000),
+      body: JSON.stringify(nutzlast), signal: AbortSignal.timeout(20000),
     });
     status = r.status;
     antwort = await r.json().catch(() => ({}));
   } catch (e) {
     // Netz/Endpunkt weg: KEIN automatischer Zweitversuch hier. Wiederholen darf nur, wer eine anmelde_id
-    // mitschickt (der Rückfall-Puffer im Browser); ohne sie wäre es eine doppelte Anmeldung.
+    // mitschickt (der Rückfall-Puffer im Browser); ohne sie wäre es eine doppelte Anmeldung. Der Ausgang ist offen: die
+    // Anmeldung kann gespeichert sein, darum sagt das Formular hier nicht „nicht angekommen“ (Elina EL-20261103-ca2f6465).
+    // Frist über dem längsten Weg des Endpunkts: 15 s Datenbank-Warten plus Urteil.
     protokoll('nicht_erreichbar', 0, String((e as Error)?.message ?? e).slice(0, 160));
     return antworte(false, '', 'nicht_erreichbar', 0);
   }
@@ -95,4 +97,3 @@ export async function action({request, context}: ActionFunctionArgs) {
 export async function loader() {
   return new Response('Nicht gefunden', {status: 404});
 }
-
