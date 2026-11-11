@@ -191,6 +191,25 @@ export default function TechnologiePage() {
             />
           </div>
         </div>
+        {/* BEGRIFFSLINK „hexagonales Wasser" (seit 2026-11-11, SEO-Maßnahme
+            L22-was-ist-hexagonales-wa-38a1: Platz 13,1 für den Begriff, zwei
+            bis drei Kontextlinks mit dem Begriff im Linktext von indexierten
+            Seiten). Er steht unter dem Paar inkohärent/kohärent, weil die
+            Zielseite hexagonal und kohärent trennt. Der Satz steht für sich:
+            kein Bezug auf die Signal- und Körperbilder davor (Vier-Augen-
+            Prüfung 2026-11-11). Im Inhalt, nicht in Kopf, Fuß oder Leiste.
+            Rückweg: diesen Block entfernen (hb-deploy revert). */}
+        <div
+          className="NormalSectionSize"
+          style={{maxWidth: '860px', marginTop: '2rem'}}
+          data-section="hexagonal-verweis"
+        >
+          <p style={pStyle}>
+            Im Eis ordnen sich Wassermoleküle zu Sechsecken. Wie sich hexagonal und kohärent unterscheiden und was
+            davon gemessen ist:{' '}
+            <Link to="/pages/was-ist-hexagonales-wasser">hexagonales Wasser einfach erklärt</Link>.
+          </p>
+        </div>
       </section>
 
       {/* ── FREQUENZEN ── */}

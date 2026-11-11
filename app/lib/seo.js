@@ -1236,7 +1236,8 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/was-ist-hexagonales-wasser',
-    lastmod: '2026-10-09T15:00:00Z',
+    // 2026-11-11: Abschnitt „herstellen" und fünf Fragen (SEO-Maßnahme L22-was-ist-hexagonales-wa-38a1).
+    lastmod: '2026-11-11T12:00:00Z',
     grund:
       'Die Seite „Hexagonales Wasser" für Christians Auftrag vom ' +
       '23.09.2026 („Platz eins in SEO und GEO"). ' +
