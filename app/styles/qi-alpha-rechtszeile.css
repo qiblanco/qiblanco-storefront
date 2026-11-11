@@ -89,7 +89,8 @@
 /*
  * Der Gewährleistungs-Hinweis aus dieser Zeile, wie aus der Kasse: Text in
  * der Größe des Dialogs (16 px), Farben aus eu-gewaehrleistung.css, der
- * Dialog-Grund wie im Browser-Standard (dialog { color: CanvasText }).
+ * Dialog-Grund wie im Browser-Standard (dialog { color: CanvasText }),
+ * linksbündig statt mittig wie die Zeile.
  */
 .qar .eu-gwl-dialog__absatz,
 .qar .eu-gwl-dialog__fuss {
@@ -103,6 +104,7 @@
 
 .qar .eu-gwl-dialog {
   color: CanvasText !important;
+  text-align: start;
 }
 
 .qar .eu-gwl-dialog .eu-gwl-dialog__titel,
