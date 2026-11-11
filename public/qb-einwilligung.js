@@ -42,15 +42,13 @@
     return '';
   }
   var roh = '';
-  // Steht ein altes host-only CookieConsent neben dem Domain-Cookie, gilt das jüngere (utc).
+  // Gelesen wird wie am Server (cookieAusHeader) das ERSTE CookieConsent (Naht-Test C1). Doppelt steht es nur
+  // im Übergang host-only -> Domain; setzeRoh räumt das host-only Cookie bei jedem Schreiben weg.
   function leseCookie() {
-    var alle = d.cookie.split(/;\s*/), best = null;
-    for (var i = 0; i < alle.length; i++) {
-      if (alle[i].indexOf('CookieConsent=') !== 0) continue;
-      var c = leseWert(alle[i].slice(14));
-      if (c && (!best || c.utc > best.utc)) { best = c; roh = alle[i].slice(14); }
-    }
-    return best;
+    var m = d.cookie.match(/(?:^|;\s*)CookieConsent=([^;]*)/);
+    if (!m) return null;
+    roh = m[1];
+    return leseWert(m[1]);
   }
   function leseWert(s) {
     try { s = decodeURIComponent(s); } catch (e) {}
