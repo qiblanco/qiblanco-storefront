@@ -5,8 +5,8 @@
 // gilt hier sofort mit; die B-Adresse bleibt als Vorschau bestehen.
 // noindex wie die B-Fassung: die Deals sind bis 27.11. nur für Pre-Access-Mitglieder gedacht.
 // Rückbau: diese Datei löschen, dann rendert pages.$handle.jsx wieder die Shopify-Seite.
-// loader mit (EL-20261111-f72ec899): er sagt der Seite, welche BF-Deal-Seiten der Shop schon ausliefert.
-export {default, links, loader} from './pages.bf-deals-b';
+// Kein loader mehr (EL-20261111-cc43922e): die Kachel-Ziele stehen fest in bf-deals-daten.js.
+export {default, links} from './pages.bf-deals-b';
 
 export const meta = () => [
   {title: 'Black Friday Deals | Qi Blanco'},

@@ -2,7 +2,7 @@ import {createContext, useContext, useRef} from 'react';
 import {useElinaBewegung} from '~/components/reusables/useElinaBewegung';
 import elinaBewegungStyles from '~/styles/elina-bewegung.css?url';
 import dealGalerieStyles from '~/styles/bf-deal-galerie.css?url';
-import {andereDeals} from '~/components/black-friday-2026/bf-deals-daten';
+import {andereDeals, bfDealZiel} from '~/components/black-friday-2026/bf-deals-daten';
 import {betragText} from '~/lib/betrag-text';
 
 /*
@@ -79,7 +79,7 @@ export function DealGalerie({seite: seiteProp = null, titel = 'Sieh dir unsere a
       <ul className="bfg__bahn" data-eb="gruppe">
         {deals.map((d) => (
           <li key={d.id} className="bfg__kachel" data-bf-deal-kachel={d.id}>
-            <a className="bfg__bildlink" href={`/products/${d.seite}`} tabIndex={-1} aria-hidden="true">
+            <a className="bfg__bildlink" href={`/products/${bfDealZiel(d)}`} tabIndex={-1} aria-hidden="true">
               <figure className="bfg__bild">
                 <img
                   src={`${d.bild}?width=600`}
@@ -96,7 +96,7 @@ export function DealGalerie({seite: seiteProp = null, titel = 'Sieh dir unsere a
             </a>
             <div className="bfg__text">
               <h3 className="bfg__name">
-                <a href={`/products/${d.seite}`}>{d.name}</a>
+                <a href={`/products/${bfDealZiel(d)}`}>{d.name}</a>
               </h3>
               <p className="bfg__preise">
                 <s className="bfg__alt">{betragText(d.uvp, 'EUR')}</s>{' '}
@@ -104,7 +104,7 @@ export function DealGalerie({seite: seiteProp = null, titel = 'Sieh dir unsere a
               </p>
               <a
                 className="bfg__knopf"
-                href={`/products/${d.seite}`}
+                href={`/products/${bfDealZiel(d)}`}
                 aria-label={`Jetzt ansehen: ${d.name}`}
               >
                 Jetzt ansehen

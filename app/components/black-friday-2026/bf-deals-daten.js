@@ -35,6 +35,7 @@ export const BF_DEALS = [
     bild: CDN + 'bundle-2x-qione-2-pro.webp',
     bildAlt: 'Zwei QiOne® 2 Pro Anhänger nebeneinander',
     seite: 'jhsdhze783',
+    ziel: '8kendiw34hd',
     link: '/cart/39680087326790:2?discount=BF26-2XPRO-HDRSN',
   },
   {
@@ -46,6 +47,7 @@ export const BF_DEALS = [
     bild: CDN + 'bundle-qione-2-pro-necklace.webp',
     bildAlt: 'QiOne® 2 Pro Anhänger mit Kette',
     seite: '734husd8hh',
+    ziel: 'pjdz538hgs0',
     // Je Kettenlänge (cm) der Link mit der Kette dieser Größe. M (50) und XL (75)
     // ausverkauft: kein Link, die Seite sperrt die Länge.
     linkJeLaenge: {
@@ -216,6 +218,23 @@ export function bfDealLink(seite, lines) {
     return deal.linkJeLaenge[cm] ?? null;
   }
   return deal.link ?? null;
+}
+
+/**
+ * Handle der Deal-Seite, auf die Übersicht (bf-deals), Galerie und Pre-Access
+ * verlinken (Elina EL-20261111-cc43922e: Bild, Titel und „Jetzt kaufen“ führen
+ * IMMER auf die BF-Deal-Seite, nie auf die Originalseite, nie direkt zur Kasse).
+ * `ziel` ist Elinas Adresse (2x QiOne 2 Pro -> 8kendiw34hd, Necklace ->
+ * pjdz538hgs0). Solange diese Adresse noch keine Deal-Fassung trägt (sie steht
+ * noch nicht in BF_DEAL_SEITEN), führt der Link auf die gleichwertige
+ * Deal-Adresse `seite`, die dieselbe Deal-Fassung rendert; mit dem Eintrag in
+ * BF_DEAL_SEITEN schaltet der Link von selbst um.
+ * @param {{seite: string, ziel?: string} | null} deal
+ * @returns {string | null}
+ */
+export function bfDealZiel(deal) {
+  if (!deal) return null;
+  return deal.ziel && BF_DEAL_SEITEN[deal.ziel] ? deal.ziel : deal.seite;
 }
 
 /** Galerie-Kacheln ohne den aktuellen Deal. */
