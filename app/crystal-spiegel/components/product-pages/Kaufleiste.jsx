@@ -1,7 +1,7 @@
 // ERZEUGT von crystal-cacao-node/bin/spiegel-nachzug aus crystal-cacao-node/repo/app/components/product-pages/Kaufleiste.jsx
 // NICHT VON HAND AENDERN: die Quelle ist crystal-cacao.com, Herkunft in SPIEGEL.json.
 import {useEffect, useRef, useState} from 'react';
-import {AddToCartButton} from '~/components/AddToCartButton';
+import {AddToCartButton} from '~/crystal-spiegel/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {cacaoSizeOptions} from '~/crystal-spiegel/components/CacaoProductForm';
 import {useMarktLand} from '~/lib/markt-land';
