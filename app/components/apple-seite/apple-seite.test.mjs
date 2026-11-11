@@ -209,6 +209,20 @@ test('SSR: Marker, alle Sektionen, ein H1, Antworten im HTML, CSS-Link', async (
   assert.doesNotMatch(html, /★|Ultimate Power/);
 });
 
+/* STANDARD-KOMPONENTE (Christian 11.11.2026, Job 20261111-prio1-bewertungsslider-original-google-5-
+   sterne-neueste-20-ueberall-gleich): die Bewertungsposition des Baukastens ist DIE Bewertungsleiste
+   (GoogleBewertungsleiste: Google-Note, fünf goldene Sterne, Slider mit den neuesten 20 Fünf-Sterne-
+   Bewertungen). Am 30.10. (#1097) hatte der Baukasten sie durch drei feste Karten ohne Sterne und ohne
+   Slider ersetzt, und kein Test hielt dagegen. Dieser Arm wird rot, sobald die Stimmen-Position wieder
+   eigene Karten rendert statt der Leiste (homepage-bauer/wissen/bewertungsleiste-standard.md). */
+test('Stimmen-Position rendert die Bewertungsleiste (Standard), keine eigenen Karten', async () => {
+  const html = await renderSeite({seite: 'start-b', sektionen: ALLE});
+  assert.match(html, /data-bewertungsleiste="google"/);
+  assert.match(html, /class="qb-gbl__note">4,8</);
+  assert.match(html, />bei Google</);
+  assert.doesNotMatch(html, /class="as-stimme"|Endlich wieder durchschlafen/);
+});
+
 test('SSR: Weiche aus = heutige Seite byte-gleich, kein Marker, kein CSS', async () => {
   const aus = await renderSeite({__weiche: true, an: false, seite: 'start-b', sektionen: ALLE, alt: null});
   assert.equal(aus, '');

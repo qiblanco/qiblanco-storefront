@@ -7560,3 +7560,14 @@ select.b2b-netto__eingabe {
     padding-right: var(--qb-gbl-s-3);
   }
 }
+/* Variante links (Christian 11.11.2026, Bewertungsleiste): auf Seiten, deren Ueberschriften links stehen
+   (Produktberatung, .as-h2 links), steht auch die Leiste links. Eine Regel je Sektionstyp (design-rubrik). */
+.qb-gbl--links .qb-gbl__titel,
+.qb-gbl--links .qb-gbl__unter {
+  text-align: left;
+}
+.qb-gbl--links .qb-gbl__titel-link,
+.qb-gbl--links .qb-gbl__zeile,
+.qb-gbl--links .qb-gbl__unter {
+  justify-content: flex-start;
+}
