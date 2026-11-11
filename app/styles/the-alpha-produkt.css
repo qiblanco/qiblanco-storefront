@@ -160,6 +160,13 @@
      die Kante ragte, hätte keinen Grund mehr und stünde als Schwarz da. */
   isolation: isolate;
   overflow: hidden;
+  /* Ecken-Dauerregel (Elina EL-20261111-9de914fc): alle vier Ecken gleich
+     rund, Film innerhalb der Rundung beschnitten. Safari beschneidet ein
+     Video mit `mix-blend-mode` (eigene Compositing-Ebene) NICHT an
+     overflow + border-radius; am Desktop ragte der Loop links über die
+     Rundung (rechts rund, links eckig). clip-path schneidet in jedem
+     Browser, auch die Compositing-Ebene. */
+  clip-path: inset(0 round var(--tas-radius));
   padding: var(--tas-s-6) var(--tas-s-3) 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);

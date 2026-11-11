@@ -81,6 +81,13 @@
 /* Rechner ab 960px: Hero-Banner (Deal-Produkte auf dem Podest, Text im Bild) statt Bild "Frau mit Kette"; Handy unveraendert
    (Elina EL-20261111-67f3d4b4). Bildzeile und Abdunklung unten nur am Handy, das Banner traegt seinen Text selbst. */
 .pab__bild picture{display:block;width:100%;height:100%}
+/* Ecken-Dauerregel (Elina EL-20261111-9de914fc): alle vier Ecken gleich rund, Bild innerhalb der Rundung beschnitten.
+   Das Bild zoomt beim Scrollen (transform, eigene Ebene); Safari schneidet so eine Ebene an overflow + border-radius
+   nicht sicher ab. isolation hilft Safari beim Rahmen, clip-path am unbewegten <picture> schneidet in jedem Browser;
+   der Schatten des Rahmens bleibt, weil er am <figure> sitzt. */
+.pab__bild{isolation:isolate}
+.pab__bild>picture{clip-path:inset(0 round 24px)}
+@media (min-width:960px){.pab__bild>picture{clip-path:inset(0 round 32px)}}
 @media (min-width:960px){
 .pab__bild--hero{background:#0c0a08}
 .pab__bild--hero img{object-position:50% 50%}
