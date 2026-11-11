@@ -238,6 +238,14 @@
   font-size: 1rem;
   line-height: normal;
   max-height: 92vh;
+  /*
+   * ZENTRIERT -- das ist der Browser-Standard fuer <dialog>, und reset.css
+   * (`* { margin: 0 }`) hatte ihn still abgeschaltet: gemessen 11.11.2026
+   * stand der Kasten auf qiblanco.com bei 390 und 1440 oben links (x=0, y=0),
+   * aus der Kaufzone wie aus dem Fuss. `margin: auto` gibt ihm die Mitte
+   * zurueck; geschlossen ist der Dialog display:none, kein Seitenbild aendert sich.
+   */
+  margin: auto;
   padding: 0;
   border: 0;
   border-radius: 10px;
@@ -400,6 +408,80 @@
 .eu-gwl-dialog__fuss {
   margin: 0.75rem 0 0;
   text-align: center;
+}
+
+/* ------------------------------------------------------------------ */
+/* Hausfuss-Schutz: der Dialog des Fuss-Links steht IM <footer>        */
+/* ------------------------------------------------------------------ */
+
+/*
+ * WARUM DIESER BLOCK: EuGewaehrleistungsLink (Footer.jsx, "4. Gesetzliche
+ * Gewaehrleistung") rendert seinen <dialog> als Geschwister seines <p>, also
+ * innerhalb von <footer class="footer"> und .footer-disclaimer. Dort greifen
+ * Regeln, die den DUNKLEN Seitenfuss meinen, auch im WEISSEN Kasten:
+ *   app.css `footer * { color: rgba(255,255,255,.8) !important }`
+ *     -> jeder Dialogtext weiss auf weiss, gemessen 11.11.2026 1,0:1 auf
+ *        Startseite und qione-2-pro, 390 und 1440 (Job
+ *        20261111-folge-hausfuss-gwl-dialog-weiss-auf-weiss)
+ *   app.css `.footer-disclaimer p { opacity: .7; line-height: 1.65;
+ *     margin-top: .75rem; max-width: var(--measure-text) }`
+ *     -> Absaetze und Fusszeile blass und anders gesetzt
+ *   app.css `footer.footer :focus-visible { outline-color: Kauf-Gold }`
+ *     -> Fokusring fuer dunklen Grund auf weissem Kasten
+ *
+ * Die Globalregeln BLEIBEN (homepage-bauer FEHLER-DB F-2584: viele
+ * Abhaengigkeiten im Seitenfuss-Bestand). Hier werden nur die Werte, die der
+ * Dialog oben selbst setzt, fuer den Fall `footer` noch einmal gesetzt --
+ * gegen `!important` geht das nur mit `!important` und hoeherer Spezifitaet
+ * ((0,1,1) und mehr schlaegt `footer *` mit (0,0,1)).
+ *
+ * WER OBEN EINE DIALOGFARBE AENDERT, AENDERT SIE HIER MIT. Die Probe
+ * homepage-bauer/pruefungen/probe_hausfuss_gwl_dialog_kontrast.py oeffnet den
+ * Dialog aus dem Fuss und misst jeden Text gegen seinen Grund (>= 4,5:1).
+ */
+footer .eu-gwl-dialog {
+  color: #2c2a26 !important;
+}
+
+footer .eu-gwl-dialog * {
+  color: inherit !important;
+}
+
+footer .eu-gwl-dialog .eu-gwl-dialog__zu,
+footer .eu-gwl-dialog .eu-gwl-dialog__titel,
+footer .eu-gwl-dialog .eu-gwl-dialog__absatz {
+  color: #2c2a26 !important;
+}
+
+footer .eu-gwl-dialog .eu-gwl-dialog__amtstitel {
+  color: #6b665e !important;
+}
+
+footer .eu-gwl-dialog .eu-gwl__link {
+  color: var(--color-accent-ink, var(--qb-akzent-tinte)) !important;
+}
+
+/* .footer-disclaimer p (0,1,1) -> hier (0,1,2) bzw. (0,2,1). */
+footer .eu-gwl-dialog p {
+  opacity: 1;
+}
+
+footer .eu-gwl-dialog .eu-gwl-dialog__absatz {
+  margin-top: 0;
+  line-height: 1.55;
+  max-width: 62ch;
+}
+
+footer .eu-gwl-dialog .eu-gwl-dialog__fuss {
+  font-size: inherit;
+  line-height: inherit;
+  max-width: none;
+}
+
+/* footer.footer :focus-visible (0,2,1) -> hier (0,3,1): im weissen Kasten
+   gilt wieder die Tinte, wie ausserhalb des Fusses. */
+footer.footer .eu-gwl-dialog :focus-visible {
+  outline-color: var(--color-accent-ink, var(--qb-akzent-tinte));
 }
 
 @media (prefers-reduced-motion: reduce) {
