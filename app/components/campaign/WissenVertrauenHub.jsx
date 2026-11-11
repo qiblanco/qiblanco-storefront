@@ -1,5 +1,14 @@
 import {Link} from 'react-router';
-import {WV_FRAGE, WV_GRUPPEN, WV_TITEL} from '~/lib/hub-seiten';
+import {WV_GRUPPEN, WV_TITEL} from '~/lib/hub-seiten';
+
+/**
+ * Die Frage, die Titel und H1 dieser Übersicht vorn tragen (SEO-Maßnahme
+ * M-SP-20261017-wissen-und-vertrauen, 2026-11-11). Sie steht HIER und nicht in
+ * app/lib/hub-seiten.js: die Datei liest der Fuß jeder Seite, und eine
+ * Konstante, die nur diese Seite braucht, gehört in deren eigene Komponente.
+ * Linktexte in Fuß und „Weiterlesen" bleiben WV_HUB.anker.
+ */
+export const WV_FRAGE = 'Ist Elektrosmog-Schutz wissenschaftlich belegt?';
 
 /**
  * /pages/wissen-und-vertrauen — die Übersicht der Wissens- und

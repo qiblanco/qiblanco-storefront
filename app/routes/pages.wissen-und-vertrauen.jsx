@@ -1,7 +1,10 @@
-import {WissenVertrauenHub} from '~/components/campaign/WissenVertrauenHub';
+import {
+  WissenVertrauenHub,
+  WV_FRAGE,
+} from '~/components/campaign/WissenVertrauenHub';
 import wvStyles from '~/styles/wissen-vertrauen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
-import {WV_FRAGE, WV_HUB, wvSeiten} from '~/lib/hub-seiten';
+import {WV_HUB, wvSeiten} from '~/lib/hub-seiten';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
 import {isoMitZone} from '~/lib/datum';
 
@@ -58,7 +61,7 @@ const BESCHREIBUNG =
  * selben Commit nach.
  */
 const VEROEFFENTLICHT = '2026-10-06';
-const GEAENDERT = '2026-11-10';
+const GEAENDERT = '2026-11-11';
 
 export function links() {
   return [{rel: 'stylesheet', href: wvStyles}];
