@@ -85,7 +85,7 @@
     "app/crystal-spiegel/styles/amazonstil-laden.css": "a8bb0e5c569bc0943756c256c11642a3db3f6f371cf433e0a86f05db6cea040b",
     "app/crystal-spiegel/styles/amazonstil.css": "060fda783ac6e838045a8ca62908b5f9c4e4be155ddbc7d81e46dd730faaec70",
     "app/crystal-spiegel/styles/app.css": "3f7c79fc91a7432ebbeb508697179b945686650f7d484795140455bdf65812ef",
-    "app/crystal-spiegel/styles/einwilligung.css": "ed1aadab29bb549ccf886106edb025070425b770bed995a4c2d2aa6434a6d525",
+    "app/crystal-spiegel/styles/einwilligung.css": "7fac0fb10166cbf0d9204d238d5bc6401393d6730ccf73b7377eea3e9baab080",
     "app/crystal-spiegel/styles/eu-gewaehrleistung.css": "b18e895bc6fda4c1aba234a148147d33d0b121633e488e773c2e713155fc0914",
     "app/crystal-spiegel/styles/ig-testimonials.css": "be188d08c2e8362500229ae7749cc7d536c3e16c9dd7d9fa7c37658ea597ae2a",
     "app/crystal-spiegel/styles/isolation.css": "a972cd73e077f6ef0da95b145b4b164bcb574487dffd0770b14d3bbacd819102",
@@ -109,7 +109,7 @@
     "components",
     "utilities"
   ],
-  "quelle_commit": "4dcd46899d79707852b99069ce972d13f95bc6c3",
+  "quelle_commit": "54d349a141eee3c18c55380ff6b92dabb3058a6e",
   "quelle_repo": "crystal-cacao-node/repo",
   "seiten": {
     "awake": {
