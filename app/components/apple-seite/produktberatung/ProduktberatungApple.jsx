@@ -199,7 +199,7 @@ function Ablauf() {
 function Stimmen() {
   return (
     <div className="as-sektion" data-section="pb-stimmen">
-      <GoogleBewertungsleiste dataSection="pb-bewertungsleiste" />
+      <GoogleBewertungsleiste dataSection="pb-bewertungsleiste" klasse="qb-gbl--links" />
     </div>
   );
 }
