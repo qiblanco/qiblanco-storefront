@@ -106,9 +106,13 @@ export const KURZABSATZ =
  * „jede mit einer geraden Antwort: was gemessen ist, was offen ist und was du
  * selbst nachprüfen kannst" (Selbstkommentar + Dreierformel) sind ersetzt.
  * Dass manches offen ist, sagen die Fragen selbst (K4 trägt ton `offen`).
+ * OHNE „vielleicht" 2026-11-10 (Job seo-2026-w43-l26-wissen-und-vertrauen-bdee-
+ * sollseite-ohne-begriff-ohne-n2): das Shop-Tor (Gate 30, Regel S4 kein
+ * Weichmacher im Kopf) rief für diesen Satz STOP, live wie im Zweig.
+ * „die du dir vielleicht auch stellst" heißt jetzt „die sich dabei stellen".
  */
 export const EINSTIEG =
-  'Bevor du dich entscheidest, willst du überzeugt sein, und das verstehen wir gut. Hier stehen sieben Fragen, die du dir vielleicht auch stellst, und zu jeder, was wir gemessen haben und was du selbst nachprüfen kannst.';
+  'Bevor du dich entscheidest, willst du überzeugt sein, und das verstehen wir gut. Hier stehen sieben Fragen, die sich dabei stellen, und zu jeder, was wir gemessen haben und was du selbst nachprüfen kannst.';
 
 /**
  * Die drei Antwortstufen. Mehr gibt es nicht — eine Frage, die keine dieser

@@ -345,6 +345,17 @@ export function KritikSeite() {
             auf der <a href="/pages/studien">Übersicht unserer Studien</a>. Die
             häufigsten Fragen dazu beantwortet die <a href="/pages/faq">FAQ</a>.
           </p>
+          {/* SEO-Maßnahme M-SP-20261017-wissen-und-vertrauen (2026-11-10):
+              ein Link mit der Frage als Linktext auf die Übersicht, die sie
+              im Titel und im ersten Satz beantwortet. Bestehende Sätze und
+              Linktexte dieser Seite bleiben unverändert. */}
+          <p>
+            <a href="/pages/wissen-und-vertrauen">
+              Ist Elektrosmog-Schutz wissenschaftlich belegt?
+            </a>{' '}
+            Die kurze Antwort findest du in der Übersicht Wissen &amp; Vertrauen,
+            zusammen mit allen weiteren Seiten zum Thema.
+          </p>
         </div>
       </section>
     </div>
