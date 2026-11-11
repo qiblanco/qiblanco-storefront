@@ -251,7 +251,10 @@ export async function loader(args) {
       ? {
           einwilligung: {
             motor: 'eigen',
-            sprache: spracheFuer(new URL(args.request.url).pathname),
+            sprache: spracheFuer(
+              new URL(args.request.url).pathname,
+              args.request.headers.get('Accept-Language') || '',
+            ),
             entschieden: wahlGilt(
               leseEinwilligung(cookieAusHeader(cookieHeader)),
               EINWILLIGUNG_FASSUNG,

@@ -2,6 +2,41 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import {youtubeWatchtimeAnbinden, mitJsApi, ladeUhr} from '~/lib/video-watchtime';
 import {VIDEO_LQIP} from '~/data/video-lqip';
 import {posterGleicherHerkunft, vorschauUrl} from '~/lib/youtube-einbettung';
+import {ZUSATZ} from '~/lib/einwilligung-texte';
+
+/*
+ * ZUSTIMMUNG VOR DEM PLAYER (Z11 s02, 2026-11-11, Luecke 3 "Platzhalter wie Cookiebot"):
+ * Die Fassade laedt vor dem Tipp nichts von YouTube (Poster gleicher Herkunft). Ohne Erlaubnis
+ * fuer Marketing laedt auch der Tipp den Player nicht: an seiner Stelle erscheint ueber dem Poster
+ * ein Kasten mit Text und Knopf ("Erlauben und abspielen"). Der Knopf erlaubt Marketing zusaetzlich
+ * (die uebrigen Kategorien bleiben wie gewaehlt, Protokoll 'auswahl') und startet das Video.
+ * Die Regel liefert der Einwilligungs-Motor (qbEinwilligung.erlaubt: Region + Wahl, wie die Leser);
+ * ohne Motor (Rueckweg Cookiebot) gilt Cookiebot.consent.marketing.
+ */
+function marketingErlaubt() {
+  if (typeof window === 'undefined') return true;
+  const q = window.qbEinwilligung;
+  if (q && typeof q.erlaubt === 'function') return !!q.erlaubt('marketing');
+  const c = window.Cookiebot;
+  return !!(c && c.consent && c.consent.marketing);
+}
+
+function erlaubeMarketing() {
+  const q = window.qbEinwilligung;
+  if (q && typeof q.erlaube === 'function') return q.erlaube('marketing');
+  const c = window.Cookiebot;
+  if (c && typeof c.submitCustomConsent === 'function') {
+    c.submitCustomConsent(!!c.consent?.preferences, !!c.consent?.statistics, true);
+  }
+}
+
+function platzhalterTexte() {
+  const b = typeof document !== 'undefined' ? document.getElementById('qb-einwilligung') : null;
+  return {
+    text: (b && b.getAttribute('data-qb-ph-text')) || ZUSATZ.de.platzhalter,
+    knopf: (b && b.getAttribute('data-qb-ph-knopf')) || ZUSATZ.de.platzhalterKnopf,
+  };
+}
 
 /*
  * YoutubeTimestamp — das wiederverwendbare Muster „YouTube-Video als
@@ -498,6 +533,22 @@ export function YoutubeTimestamp({
   playInhalt = '\u25B6',
 }) {
   const [laueft, setLaueft] = useState(false);
+  /* Z11: `gesperrt` = Marketing nicht erlaubt (erst nach dem Hydrieren bekannt, SSR rendert ohne),
+   * `fragt` = der Tipp kam ohne Erlaubnis, der Zustimmungs-Kasten steht. */
+  const [gesperrt, setGesperrt] = useState(false);
+  const [fragt, setFragt] = useState(false);
+  useEffect(() => {
+    const pruefe = () => setGesperrt(!marketingErlaubt());
+    pruefe();
+    document.addEventListener('qb:einwilligung', pruefe);
+    window.addEventListener('CookiebotOnAccept', pruefe);
+    window.addEventListener('CookiebotOnDecline', pruefe);
+    return () => {
+      document.removeEventListener('qb:einwilligung', pruefe);
+      window.removeEventListener('CookiebotOnAccept', pruefe);
+      window.removeEventListener('CookiebotOnDecline', pruefe);
+    };
+  }, []);
   /* `zeigt` ist NICHT „der Player existiert", sondern „der Player hat Bild".
    * Der Unterschied zwischen den beiden ist genau das Schwarz, um das es
    * in diesem Job geht. */
@@ -955,8 +1006,43 @@ export function YoutubeTimestamp({
           : 'wartet'
       : 'vorschau',
     'data-qb-video-ausloeser': ausloeser || undefined,
+    'data-qb-platzhalter': gesperrt && !laueft ? 'marketing' : undefined,
     style: eigenesKleid ? {display: 'block', width: '100%'} : undefined,
   };
+
+  const starte = () => {
+    if (!widgetId.current) widgetId.current = naechsteWidgetId++;
+    if (klickZeit.current == null) klickZeit.current = {t: ladeUhr(), objekt};
+    setFragt(false);
+    setLaueft(true);
+  };
+
+  if (fragt && !laueft) {
+    const t = platzhalterTexte();
+    return (
+      <div
+        {...huellenProps}
+        data-qb-video-zustand="zustimmung"
+        style={{...(huellenProps.style || {}), position: 'relative'}}
+      >
+        {stapel}
+        <div className="qb-ew-platzhalter qb-ew-platzhalter--video" role="group" aria-label={titel}>
+          <p>{t.text}</p>
+          <button
+            type="button"
+            className="qb-ew-knopf qb-ew-knopf--gold"
+            data-qb-platzhalter-zustimmung="marketing"
+            onClick={() => {
+              erlaubeMarketing();
+              starte();
+            }}
+          >
+            {t.knopf}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (laueft) {
     return <div {...huellenProps}>{stapel}</div>;
@@ -967,9 +1053,11 @@ export function YoutubeTimestamp({
       type="button"
       {...huellenProps}
       onClick={() => {
-        if (!widgetId.current) widgetId.current = naechsteWidgetId++;
-        if (klickZeit.current == null) klickZeit.current = {t: ladeUhr(), objekt};
-        setLaueft(true);
+        if (!marketingErlaubt()) {
+          setFragt(true);
+          return;
+        }
+        starte();
       }}
       {...absichtsSignale}
       aria-label={`Video abspielen: ${titel}`}

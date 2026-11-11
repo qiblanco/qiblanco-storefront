@@ -245,3 +245,54 @@ html[data-qb-einwilligung-offen] :is(.qb-kaufleiste, [data-qb-chat-weicht]) {
     flex-wrap: nowrap;
   }
 }
+
+/* ---- Z11 s02 (2026-11-11): Opt-out-Weg und Platzhalter ------------------------------------
+   Opt-out-Weg: nur in Opt-out-Regionen sichtbar (qb-einwilligung.js nimmt hidden weg), als leiser
+   Textlink unter den Knöpfen. Platzhalter: steht an Stelle einer blockierten Einbettung (Motor) bzw.
+   über dem Poster der YouTube-Fassade nach dem Tipp ohne Marketing-Erlaubnis. Er sitzt AUSSERHALB von
+   .qb-einwilligung-wurzel, deshalb die Grund-Tokens direkt. */
+.qb-ew-optout {
+  margin: 0;
+  flex-basis: 100%;
+  text-align: center;
+  font-size: var(--qb-ref-fs-1);
+}
+
+.qb-ew-optout[hidden] {
+  display: none;
+}
+
+.qb-ew-optout a {
+  color: var(--qb-akzent-tinte);
+  text-decoration: underline;
+}
+
+.qb-ew-platzhalter {
+  --qb-ew-abstand: var(--qb-ref-raster);
+  --qb-ew-ziel: calc(var(--qb-ref-raster) * 5.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--qb-ew-abstand) * 1.5);
+  box-sizing: border-box;
+  padding: calc(var(--qb-ew-abstand) * 3);
+  background: var(--qb-flaeche);
+  color: var(--qb-text);
+  font-size: var(--qb-ref-fs-2);
+  line-height: 1.45;
+  text-align: center;
+  border-radius: var(--qb-radius-klein);
+}
+
+.qb-ew-platzhalter p {
+  margin: 0;
+  max-width: calc(var(--qb-ew-abstand) * 60);
+}
+
+.qb-ew-platzhalter--video {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: color-mix(in srgb, var(--qb-flaeche) 92%, transparent);
+}
