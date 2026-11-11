@@ -374,8 +374,6 @@ export default async function handleRequest(
       'https://cdn.grw.reputon.com',
       'https://qiblanco-only-rating-serpapi.vercel.app',
       'https://qiblanco.activehosted.com',
-      'https://consent.cookiebot.com',
-      'https://consentcdn.cookiebot.com',
       'blob:',
       'https://www.googletagmanager.com',
       'https://www.google-analytics.com',
@@ -401,7 +399,6 @@ export default async function handleRequest(
       'https://cdn.shopify.com',
       'https://*.reputon.com',
       'https://qiblanco.activehosted.com',
-      'https://consentcdn.cookiebot.com',
       'https://fonts.googleapis.com',
       /*
        * fonts.bunny.net STEHT HIER BEWUSST NICHT, und das ist seit dem
@@ -431,7 +428,6 @@ export default async function handleRequest(
       'https://www.youtube-nocookie.com',
       'https://player.vimeo.com',
       'https://*.reputon.com',
-      'https://consentcdn.cookiebot.com',
       'https://client.gorgias.chat',
       'https://*.gorgias.chat',
       // Meta-Pixel, STELLE 3 VON 3. www.facebook.com steht seit dem
@@ -666,8 +662,6 @@ export default async function handleRequest(
       // bisher keine Meldung gemessen.
       'https://pagead2.googlesyndication.com',
       'https://*.clarity.ms',
-      'https://consent.cookiebot.com',
-      'https://consentcdn.cookiebot.com',
       'https://config.gorgias.chat',
       'https://config.gorgias.help',
       'https://*.gorgias.chat',

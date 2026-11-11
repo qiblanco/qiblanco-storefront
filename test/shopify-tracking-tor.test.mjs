@@ -92,20 +92,21 @@ test('shopifyDarfTracken: am Server false', () => {
   assert.equal(tor.shopifyDarfTracken(), false);
 });
 
-test('shopifyServerErlaubt: Rückweg-Motor cookiebot prüft keine Fassung, Motor eigen schon', () => {
+test('shopifyServerErlaubt: Cookiebot-Überschreibung ist ausgebaut (11.11.2026), Fassung gilt immer', () => {
   const cookiebotWahl = wahl({s: true, m: false, qbv: null, utc: Date.now() - 1000});
+  const erwartet = {_shopify_analytics: false, _shopify_marketing: false};
   const viaQuery = new Request('https://example.test/?qb_einwilligung=cookiebot', {
     headers: {'oxygen-buyer-country': 'DE', Cookie: cookiebotWahl},
   });
-  assert.deepEqual(tor.shopifyServerErlaubt(viaQuery, {}), {_shopify_analytics: true, _shopify_marketing: false});
+  assert.deepEqual(tor.shopifyServerErlaubt(viaQuery, {}), erwartet);
   const viaCookie = new Request('https://example.test/', {
     headers: {'oxygen-buyer-country': 'CH', Cookie: `qb_einwilligung_motor=cookiebot; ${cookiebotWahl}`},
   });
-  assert.deepEqual(tor.shopifyServerErlaubt(viaCookie, {}), {_shopify_analytics: true, _shopify_marketing: false});
+  assert.deepEqual(tor.shopifyServerErlaubt(viaCookie, {}), erwartet);
   const eigen = new Request('https://example.test/', {
     headers: {'oxygen-buyer-country': 'CH', Cookie: cookiebotWahl},
   });
-  assert.deepEqual(tor.shopifyServerErlaubt(eigen, {}), {_shopify_analytics: false, _shopify_marketing: false});
+  assert.deepEqual(tor.shopifyServerErlaubt(eigen, {}), erwartet);
 });
 
 test('istLoeschung', () => {

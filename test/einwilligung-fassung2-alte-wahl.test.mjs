@@ -111,11 +111,12 @@ test('A6 doppelt kodiertes qbv wird wie im Browser nur einmal dekodiert', () => 
   assert.equal(hasCookiebotMarketingConsent(c), false);
 });
 
-test('A4 Motor cookiebot (Rückweg): Cookiebot prüft selbst, Lesart wie vor Fassung 2.0', () => {
-  const c = cookie({qbv: ''}) + '; qb_einwilligung_motor=cookiebot';
-  assert.equal(hasCookiebotMarketingConsent(c), true);
-  assert.equal(consentStateFromCookies(c), 'granted');
-  assert.equal(hatMarketingConsent(c), true);
+test('A4 Motor cookiebot ist ausgebaut (11.11.2026): altes Motor-Cookie ändert die Lesart nicht', () => {
+  const ohne = cookie({qbv: ''});
+  const c = ohne + '; qb_einwilligung_motor=cookiebot';
+  assert.equal(hasCookiebotMarketingConsent(c), false);
+  assert.equal(consentStateFromCookies(c), consentStateFromCookies(ohne));
+  assert.equal(hatMarketingConsent(c), false);
 });
 
 // ---------------------------------------------------------------------------

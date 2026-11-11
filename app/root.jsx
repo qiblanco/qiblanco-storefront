@@ -121,12 +121,11 @@ import {
   useShopifyTrackingTor,
 } from '~/lib/shopify-tracking-tor';
 import {publicSkript} from '~/lib/public-skript';
-import {einschubWeicheQuelle} from '~/lib/einschub-weiche';
 import {
   ladeGoogleRating,
   GOOGLE_RATING_FALLBACK_VOLL,
 } from '~/lib/googleRating.server';
-import {data as mitKoepfen, redirect} from 'react-router';
+import {redirect} from 'react-router';
 import {pruefeAdWeiche} from '~/lib/ad-weiche.server';
 import {
   salesbotWidgetOrigin,
@@ -242,8 +241,10 @@ export async function loader(args) {
   const {storefront, env} = args.context;
 
   // EINWILLIGUNGS-MOTOR (Grossjob Cookiebot-Ablösung, BAUVERTRAG Abschnitt 1):
-  // Query vor Sitzungs-Cookie vor Konstante. Im Motor 'cookiebot' kommt KEIN
-  // Feld dazu, damit das ausgelieferte HTML dort unverändert bleibt.
+  // seit 11.11.2026 gibt es nur noch den eigenen Hinweis. Cookiebot und die
+  // Überschreibung ?qb_einwilligung=cookiebot sind ausgebaut (Job
+  // 20261111-cookiebot-code-entfernen-drei-laeden-nach-7-stabilen-tagen);
+  // motorFuer liefert immer 'eigen'.
   const cookieHeader = args.request.headers.get('Cookie') || '';
   const einwilligungsMotor = motorFuer(args.request.url, cookieHeader);
   const einwilligung =
@@ -347,12 +348,7 @@ export async function loader(args) {
       language: args.context.storefront.i18n.language,
     },
   };
-  // ?qb_einwilligung=eigen|cookiebot merkt sich die Wahl für die Sitzung.
-  return einwilligungsMotor.setzeCookie
-    ? mitKoepfen(antwort, {
-        headers: {'Set-Cookie': einwilligungsMotor.setzeCookie},
-      })
-    : antwort;
+  return antwort;
 }
 
 /**
@@ -403,86 +399,6 @@ function loadDeferredData({context}) {
     isLoggedIn: customerAccount.isLoggedIn(),
     footer,
   };
-}
-
-const COOKIEBOT_CBID = '66dc4c98-f24c-4dfe-a18b-ac77444136c5';
-
-/**
- * Hängt den Cookiebot-Loader zur Laufzeit als LETZTES Kind des <head> an,
- * statt ihn von React rendern zu lassen.
- *
- * DAS PROBLEM, gemessen am 2026-09-13 (Job
- * 20260913-cookiebot-autoblocking-bricht-hydration-jede-seite-prio20):
- * Cookiebot schiebt seine beiden eigenen Skripte (configuration.js und
- * uc.js?...&init=false) zur Laufzeit per insertBefore VOR DAS ERSTE
- * <script>-ELEMENT IM <head>. Dadurch verschieben sich alle head-Kinder
- * dahinter — und React hydriert genau diese Kinder. Faellt der Einschub in
- * Reacts Hydrationsfenster, bricht die Hydration mit 15x "Minified React error
- * #418" + 1x #423, auf JEDER Seite des Ladens. Live gemessen: 5 von 9 Aufrufen
- * über drei Seitenformen. Die Design-Rubrik zog dafür 60 der 100
- * Hygiene-Punkte (2 distinkte Fehler x 2 Viewports x 15) — rund -5
- * Score-Punkte shopweit, dauerhaft.
- *
- * WARUM DER LOADER NICHT MEHR IM JSX STEHT: als JSX-<script> war er selbst das
- * erste head-Skript, der Einschub landete also direkt vor ihm auf Index 12/13
- * von 31. Ihn im JSX ans head-Ende zu schieben reichte NICHT — er blieb Teil
- * von Reacts Baum, und React setzte ihn beim Rendern wieder nach vorn
- * (ausgeliefert auf Element-Index 40 von 41, zur Laufzeit Einschub auf 26/27).
- * Als DOM-Knoten ausserhalb von Reacts Baum bleibt er, wo er angehängt wurde.
- *
- * WIE DER FIX WIRKT — und das ist ehrlich eine ZEITLICHE, keine strukturelle
- * Wirkung: der Bootstrap steht am Ende des <head>, uc.js wird dadurch spaeter
- * angefordert und fällt seltener in Reacts Hydrationsfenster. Auf demselben
- * lokalen Produktionsbau gemessen: /search vorher 3 von 4 Aufrufen kaputt,
- * nachher 0 von 6; Startseite 1 von 14; Produktseite mit warmem Browser 1 von 8
- * (Kontrolle mit geblocktem Cookiebot: 0 von 8). Ein Rest bleibt.
- *
- * DER STRUKTURELLE FIX, falls jemand hier weitermacht: solange irgendein von
- * React gerendertes <script> im <head> steht (heute 3x JSON-LD + die
- * Drittanbieter-Loader), hat Cookiebot ein Ziel VOR React-Knoten. Erst wenn
- * keines mehr dort steht, ist der von Cookiebot angehängte Knoten selbst das
- * erste head-Skript und es verschiebt sich nichts mehr.
- *
- * AN DER EINWILLIGUNG ÄNDERT DAS NICHTS: derselbe Loader, dieselbe cbid,
- * data-blockingmode bleibt "auto". Ein per DOM erzeugtes externes Skript ist
- * von sich aus async — genau wie das bisherige `async`-Attribut. Der Bootstrap
- * läuft beim Parsen des <head>, alle Drittanbieter-Skripte sind `defer` und
- * laufen erst nach dem vollständigen Parsen.
- *
- * DER REST, DEN DIESER FIX NICHT ERWISCHT HAT (gemessen 2026-09-13, Job
- * 20260913-restbruch-hydration-standardseiten-ursache-unbekannt): der head-Fix
- * hat den Einschubort nicht beseitigt, sondern VERLEGT. Cookiebots eigene
- * Skripte landen heute per appendChild am head-ENDE — dieser Weg ist zu. Der
- * BANNER ist aber ein anderer Knoten auf einem anderen Weg: er kommt aus
- * cc.js und geht nach body-Index 0, in 178 von 178 beobachteten Einschueben.
- * Dagegen hängt dieser Bootstrap jetzt zusaetzlich die EINSCHUB-WEICHE ein
- * (app/lib/einschub-weiche.js), die den Banner ans body-ENDE umlenkt.
- *
- * Vor jeder Änderung hier messen:
- * homepage-bauer/pruefungen/probe_hydration_cookiebot_naht.py
- */
-function cookiebotBootstrap(nonce) {
-  return (
-    // ZUERST die Weiche, DANN der Loader — und zwar in dieser Reihenfolge in
-    // EINEM Skript. Nur so steht beweisbar fest, dass die Weiche hängt, bevor
-    // uc.js ueberhaupt angefordert ist. Begründung vollstaendig in
-    // app/lib/einschub-weiche.js.
-    einschubWeicheQuelle() +
-    '(function(){var s=document.createElement("script");' +
-    's.id="Cookiebot";s.src="https://consent.cookiebot.com/uc.js";' +
-    's.type="text/javascript";' +
-    's.setAttribute("data-cbid",' +
-    JSON.stringify(COOKIEBOT_CBID) +
-    ');s.setAttribute("data-blockingmode","auto");' +
-    (nonce
-      ? 's.setAttribute("nonce",' +
-        JSON.stringify(nonce) +
-        ');s.nonce=' +
-        JSON.stringify(nonce) +
-        ';'
-      : '') +
-    'document.head.appendChild(s);})();'
-  );
 }
 
 /**
@@ -605,8 +521,9 @@ export function Layout({children}) {
 
   // ── HYDRATIONS-SIGNAL ────────────────────────────────────────────────────
   // Dieser Effekt läuft NACH dem Hydration-Commit — das ist seine Definition,
-  // und deshalb ist er hier das Messgerät und keine Schätzung. Die
-  // Einschub-Weiche (app/lib/einschub-weiche.js) parkt Cookiebots Banner nur
+  // und deshalb ist er hier das Messgerät und keine Schätzung. (Die
+  // Einschub-Weiche ist seit 11.11.2026 mit Cookiebot ausgebaut; das Signal
+  // bleibt für weitere Leser stehen.) Die Weiche parkte Cookiebots Banner nur
   // bis zu diesem Moment am body-Ende und schiebt ihn danach auf body-Index 0
   // zurück, wo er hingehört: die Tab-Reihenfolge folgt der Dokumentreihenfolge,
   // am Ende wäre die Einwilligung mit der Tastatur nicht mehr erreichbar
@@ -850,14 +767,6 @@ export function Layout({children}) {
         )}
         {shouldLoadThirdPartyScripts && (
           <>
-            {!einwilligungEigen && (
-              <script
-                src={publicSkript('/cookiebot-shopify-consent-sync.js')}
-                nonce={nonce}
-                defer
-                suppressHydrationWarning
-              />
-            )}
             <script
               src={publicSkript('/qiblanco-tracker.js')}
               nonce={nonce}
@@ -987,20 +896,6 @@ export function Layout({children}) {
         */}
         {salesbotAktiv && (
           <SalesbotWidget origin={data.salesbotWidgetOrigin} nonce={nonce} />
-        )}
-        {/*
-          COOKIEBOT WIRD HIER NICHT ALS <script> GERENDERT, sondern von einem
-          Bootstrap als letztes Kind des <head> angehängt — die Begründung
-          steht vollständig über `cookiebotBootstrap` weiter oben. Kurz: wäre
-          der Tag Teil von Reacts Baum, verschöben Cookiebots eigene Einschuebe
-          die head-Kinder und zerlegten die Hydration auf jeder Seite.
-        */}
-        {shouldLoadThirdPartyScripts && !einwilligungEigen && (
-          <script
-            nonce={nonce}
-            suppressHydrationWarning
-            dangerouslySetInnerHTML={{__html: cookiebotBootstrap(nonce)}}
-          />
         )}
         {metaRumpf}
         {/* Setzt `data-dialog-offen` am <html>, solange eine modale Flaeche

@@ -603,8 +603,7 @@ function FooterMenu() {
         </NavLink>
       ))}
       {/* Widerruf-Link (Grossjob Cookiebot-Ablösung s02, BAUVERTRAG Abschnitt 4):
-          in beiden Motoren auf jeder Seite. Motor eigen: der eigene Dialog,
-          Motor cookiebot: Cookiebots eigenes erneutes Fragen. */}
+          auf jeder Seite, öffnet den Dialog des eigenen Hinweises. */}
       <button
         type="button"
         className="footer-menu__einwilligung"

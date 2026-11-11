@@ -316,10 +316,11 @@ test('hatMarketingConsent: erkennt Cookiebot marketing=true, sonst false', () =>
   assert.equal(hatMarketingConsent('CookieConsent=necessary=true%2Cmarketing=false'), false);
   assert.equal(hatMarketingConsent(EIN_JA), true);
   assert.equal(hatMarketingConsent(EIN_JA.replace('marketing:true', 'marketing:false')), false);
-  // Motor 'cookiebot' (Rückweg): Lesart wie vor Fassung 2.0.
+  // Motor 'cookiebot' ist seit 11.11.2026 ausgebaut: ein altes Sitzungs-Cookie
+  // qb_einwilligung_motor=cookiebot ändert die Lesart nicht mehr.
   assert.equal(
     hatMarketingConsent('CookieConsent=necessary=true%2Cmarketing=true; qb_einwilligung_motor=cookiebot'),
-    true,
+    hatMarketingConsent('CookieConsent=necessary=true%2Cmarketing=true'),
   );
 });
 
