@@ -7,9 +7,14 @@
 // Countdown: Black Friday Fr 27.11.2026 00:00 MEZ = 2026-11-26T23:00:00Z. Vorschau eines anderen Zeitpunkts:
 // ?pab_jetzt=2026-11-28T12:00:00Z. Bewegung: Baukasten elina-design-regel (useElinaBewegung), Kopf ohne Animation.
 // Kacheln (EL-20261111-72d11cd3): Titel-Link zur Deal-Seite liegt über ::after auf der ganzen Fläche (auch Bild);
-// darüber Pillen und der Knopf „Jetzt kaufen“ (Warenkorb-Link mit Deal-Code).
+// darüber Pillen und der Knopf „Jetzt kaufen“.
+// Umbau Elina EL-20261111-f72ec899: (1) Rabatt-Plakette Rot #B92200 mit weißer Schrift, deutlich größer; (2) „Jetzt kaufen“
+// führt auf die BF-Deal-Seite des Deals (dort geht es per Warenkorb-Link mit BF-Endpreis weiter) - solange die Deal-Seite
+// im Shop noch nicht veröffentlicht ist, bleibt der Warenkorb-Link (siehe dealSeite); (3) die Seite beginnt ganz oben mit dem
+// großen roten Countdown (#B92200, weiß, sekundengenau) bis Black-Friday-Start 27.11. 00:00, ab dann bis Sale-Ende.
 // Rückbau: diese Datei und app/styles/bf-deals-b.css löschen.
 import {useEffect, useRef, useState} from 'react';
+import {useLoaderData} from 'react-router';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
 import bfDealsBStyles from '../styles/bf-deals-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
@@ -61,11 +66,16 @@ type Kachel = {
   start?: number;
 };
 
+// Countdown (EL-20261111-f72ec899): bis Black-Friday-Start Fr 27.11.2026 00:00 Berlin, ab dann bis Sale-Ende; danach
+// verschwindet er. Sale-Ende 30.11.2026 23:59 Berlin ist vorläufig (Bestätigung Elina offen, gleicher Wert wie die rote
+// Leiste der Deal-Seiten EL-20261111-cfcd9c5d, bf_countdown.py SALE_ENDE['de']) - nur UHR.ende ändern.
 const UHR = {
   ziel: '2026-11-26T23:00:00Z',
+  ende: '2026-11-30T22:59:00Z',
   titel: 'Black Friday für alle in',
-  offen: 'Black Friday läuft',
   datum: 'Freitag, 27. November 2026 · 00:00 Uhr',
+  titelSale: 'Black Friday endet in',
+  datumSale: 'Montag, 30. November 2026 · 23:59 Uhr',
 };
 const EINHEITEN = ['Tage', 'Std', 'Min', 'Sek'];
 const KACHELN: Kachel[] = [
@@ -180,9 +190,13 @@ function useJetzt() {
 }
 
 function Countdown({jetzt}: {jetzt: number | null}) {
+  // Phase: vor dem Start zählt die Uhr bis UHR.ziel, ab dem Start bis UHR.ende; nach dem Ende kein Countdown mehr.
+  const sale = jetzt !== null && jetzt >= Date.parse(UHR.ziel);
+  if (jetzt !== null && jetzt >= Date.parse(UHR.ende)) return null;
   const rest =
-    jetzt === null ? null : Math.floor((Date.parse(UHR.ziel) - jetzt) / 1000);
-  const offen = rest !== null && rest <= 0;
+    jetzt === null
+      ? null
+      : Math.floor((Date.parse(sale ? UHR.ende : UHR.ziel) - jetzt) / 1000);
   const r = rest !== null && rest > 0 ? rest : 0;
   const teile =
     rest === null
@@ -194,22 +208,19 @@ function Countdown({jetzt}: {jetzt: number | null}) {
           zwei(r % 60),
         ];
   return (
-    <div
-      className={'bfd__uhr' + (offen ? ' ist-offen' : '')}
-      role="timer"
-      aria-live="off"
-    >
-      <p className="bfd__uhrtitel">{UHR.titel}</p>
-      <div className="bfd__zellen">
-        {EINHEITEN.map((e, i) => (
-          <div className="bfd__zelle" key={e}>
-            <span className="bfd__zahl">{teile[i]}</span>
-            <span className="bfd__einheit">{e}</span>
-          </div>
-        ))}
+    <div className="bfd__uhr" role="timer" aria-live="off">
+      <div className="bfd__uhr-innen">
+        <p className="bfd__uhrtitel">{sale ? UHR.titelSale : UHR.titel}</p>
+        <div className="bfd__zellen">
+          {EINHEITEN.map((e, i) => (
+            <div className="bfd__zelle" key={e}>
+              <span className="bfd__zahl">{teile[i]}</span>
+              <span className="bfd__einheit">{e}</span>
+            </div>
+          ))}
+        </div>
+        <p className="bfd__datum">{sale ? UHR.datumSale : UHR.datum}</p>
       </div>
-      <p className="bfd__offen">{UHR.offen}</p>
-      <p className="bfd__datum">{UHR.datum}</p>
     </div>
   );
 }
@@ -249,10 +260,60 @@ function Bild({k}: {k: Kachel}) {
 }
 
 // Kaufknopf (Elina EL-20261111-72d11cd3, Dauerregel): Text statt Pfeil-Kreis, Kit-Gold #F2BF72 mit dunkler Schrift,
-// volle Breite der Textspalte. Ziel = Warenkorb-Link mit Deal-Code (BF-Endpreis). Bild und Titel fuehren auf die Deal-Seite.
+// volle Breite der Textspalte. Ziel (EL-20261111-f72ec899): die BF-Deal-Seite des Deals; dort führt „In den Warenkorb“
+// per Warenkorb-Link mit BF-Endpreis weiter. In den MAILS bleibt „Jetzt kaufen“ direkt zur Kasse.
 const KAUFEN = 'Jetzt kaufen';
-// Deal-Seite je Kachel (Bild + Titel). Die BF-Bundle-Produkte bleiben Entwurf (EL-20261111-9065b985), darum die normale
-// Produktseite des Deals; Kakao: die Set-Seite der gewaehlten Pille auf crystal-cacao.com.
+// BF-Deal-Seite je Deal: dieselben Adressen wie „Zum Deal“ in den Serien-Mails (mail-manager config/bf-serie-inhalte.json,
+// mm_bf_serie.deal_seite: /products/<handle>?el=BF2025). Kakao: je Set eine eigene Deal-Seite.
+const DEAL_HANDLE: Record<string, string> = {
+  '2x QiOne® 2 Pro': 'jhsdhze783',
+  'QiOne® 2 Pro + Necklace': '734husd8hh',
+  'QiBracelet®': '687ghgf4ed',
+  'QiHome® Air': '56huz67dds',
+  '1x Create + 1x Awake': 'awcr37shyj',
+  '2x Awake': 'aw783hfn',
+  '2x Create': '37cr378n',
+};
+const DEAL_EL = 'BF2025';
+const DEAL_QUERY =
+  'query BfDealSeiten { ' +
+  Object.values(DEAL_HANDLE)
+    .map((h, i) => `d${i}: product(handle: "${h}") { handle }`)
+    .join(' ') +
+  ' }';
+
+// Die Storefront-API kennt nur veröffentlichte Produkte. Eine Deal-Seite im Entwurf wäre eine 404, die archivierte
+// 2x-QiOne-Seite leitet heute auf das alte Dauerangebot um. Darum führt eine Kachel erst auf ihre Deal-Seite, wenn der
+// Shop sie ausliefert; bis dahin bleibt „Jetzt kaufen“ der Warenkorb-Link mit Deal-Code. Mit dem Veröffentlichen schaltet
+// die Kachel von selbst um, ohne neuen Deploy.
+export async function loader({
+  context,
+}: {
+  context: {storefront: {query: (q: string) => Promise<unknown>}};
+}) {
+  const live: string[] = [];
+  try {
+    const d = (await context.storefront.query(DEAL_QUERY)) as Record<
+      string,
+      {handle?: string} | null
+    > | null;
+    for (const p of Object.values(d || {}))
+      if (p && p.handle) live.push(p.handle.toLowerCase());
+  } catch {
+    // Messausfall der Storefront: Warenkorb-Links bleiben (kein Link ins Leere).
+  }
+  return {dealLive: live};
+}
+
+function dealSeite(schluessel: string, live: string[]): string | null {
+  const h = DEAL_HANDLE[schluessel];
+  return h && live.includes(h.toLowerCase())
+    ? `/products/${h}?el=${DEAL_EL}`
+    : null;
+}
+
+// Bisherige Ziele für Bild und Titel, solange die Deal-Seite noch nicht veröffentlicht ist: die normale Produktseite;
+// Kakao: die Set-Seite der gewählten Pille auf crystal-cacao.com.
 const SEITE: Record<string, string> = {
   '2x QiOne® 2 Pro': '/products/qione-2-pro?el=BF2026',
   'QiOne® 2 Pro + Necklace': '/products/qione-2-pro?el=BF2026',
@@ -274,10 +335,11 @@ function Kaufen({href, name}: {href: string; name: string}) {
   );
 }
 
-function SetKachel({k}: {k: Kachel}) {
+function SetKachel({k, live}: {k: Kachel; live: string[]}) {
   const sets = (k.sets || k.varianten) as Set[];
   const [wahl, setWahl] = useState(k.start ?? 0);
   const s = sets[wahl];
+  const deal = dealSeite(s.pille, live) || dealSeite(k.name, live);
   const klasse = k.sets
     ? 'bfd--breit bfd--wahl'
     : `${k.breit ? 'bfd--breit' : 'bfd--klein'} bfd--groesse`;
@@ -290,7 +352,7 @@ function SetKachel({k}: {k: Kachel}) {
           <h2 className="bfd__name">
             <a
               className="bfd__link"
-              href={SET_SEITE[s.pille] || SEITE[k.name] || s.link}
+              href={deal || SET_SEITE[s.pille] || SEITE[k.name] || s.link}
             >
               {k.name}
             </a>
@@ -315,14 +377,15 @@ function SetKachel({k}: {k: Kachel}) {
             <s className="bfd__alt">{s.alt}</s>
             <span className="bfd__neu">{s.neu}</span>
           </p>
-          <Kaufen href={s.link} name={k.name} />
+          <Kaufen href={deal || s.link} name={k.name} />
         </div>
       </div>
     </li>
   );
 }
 
-function LinkKachel({k}: {k: Kachel}) {
+function LinkKachel({k, live}: {k: Kachel; live: string[]}) {
+  const deal = dealSeite(k.name, live);
   return (
     <li className={k.breit ? 'bfd--breit' : 'bfd--klein'}>
       <div className="bfd__kachel" data-eb="">
@@ -330,7 +393,10 @@ function LinkKachel({k}: {k: Kachel}) {
         <div className="bfd__text">
           <p className="bfd__zeile">{k.zeile}</p>
           <h2 className="bfd__name">
-            <a className="bfd__link" href={SEITE[k.name] || (k.link as string)}>
+            <a
+              className="bfd__link"
+              href={deal || SEITE[k.name] || (k.link as string)}
+            >
               {k.name}
             </a>
           </h2>
@@ -338,7 +404,7 @@ function LinkKachel({k}: {k: Kachel}) {
             <s className="bfd__alt">{k.alt}</s>
             <span className="bfd__neu">{k.neu}</span>
           </p>
-          <Kaufen href={k.link as string} name={k.name} />
+          <Kaufen href={deal || (k.link as string)} name={k.name} />
         </div>
       </div>
     </li>
@@ -349,8 +415,12 @@ export default function BfDealsB() {
   const wurzel = useRef<HTMLDivElement>(null);
   useElinaBewegung(wurzel);
   const jetzt = useJetzt();
+  // pages.bf-deals.tsx spiegelt diese Seite samt loader; fehlt er (alte Spiegel-Datei), bleiben die Warenkorb-Links.
+  const daten = useLoaderData() as {dealLive?: string[]} | undefined;
+  const live = daten?.dealLive || [];
   return (
     <div className="bfd" id="bfd" lang="de" ref={wurzel}>
+      <Countdown jetzt={jetzt} />
       <section className="bfd__innen" aria-label="Black Friday Deals">
         <header className="bfd__kopf">
           <div className="bfd__kopftext">
@@ -377,14 +447,13 @@ export default function BfDealsB() {
               Spare bis zu <span className="bfd__spar-betrag">500&nbsp;€</span>
             </p>
           </div>
-          <Countdown jetzt={jetzt} />
         </header>
         <ul className="bfd__liste" aria-label="Black-Friday-Angebote">
           {KACHELN.map((k) =>
             k.sets || k.varianten ? (
-              <SetKachel key={k.name} k={k} />
+              <SetKachel key={k.name} k={k} live={live} />
             ) : (
-              <LinkKachel key={k.name} k={k} />
+              <LinkKachel key={k.name} k={k} live={live} />
             ),
           )}
         </ul>
