@@ -148,7 +148,7 @@ export function hinweisHtml(sprache, {entschieden = false} = {}) {
   const t = texteFuer(sprache);
   const z = zusatzFuer(sprache);
   // Opt-out-Weg (Lücke 2): im Server-HTML verborgen; qb-einwilligung.js zeigt ihn nur, wenn das Regelwerk
-  // der Region Opt-out ist (data-qb-region ausserhalb der strict-Liste).
+  // der Region Opt-out ist (data-qb-region außerhalb der strict-Liste).
   const optout =
     `<p class="qb-ew-optout" data-qb-optout hidden><a href="#" data-qb-wahl="optout">${esc(z.optout)}</a></p>`;
   const kat = ['preferences', 'statistics', 'marketing']

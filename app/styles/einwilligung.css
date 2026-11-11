@@ -249,7 +249,7 @@ html[data-qb-einwilligung-offen] :is(.qb-kaufleiste, [data-qb-chat-weicht]) {
 /* ---- Z11 s02 (2026-11-11): Opt-out-Weg und Platzhalter ------------------------------------
    Opt-out-Weg: nur in Opt-out-Regionen sichtbar (qb-einwilligung.js nimmt hidden weg), als leiser
    Textlink unter den Knöpfen. Platzhalter: steht an Stelle einer blockierten Einbettung (Motor) bzw.
-   über dem Poster der YouTube-Fassade nach dem Tipp ohne Marketing-Erlaubnis. Er sitzt AUSSERHALB von
+   über dem Poster der YouTube-Fassade nach dem Tipp ohne Marketing-Erlaubnis. Er sitzt außerhalb von
    .qb-einwilligung-wurzel, deshalb die Grund-Tokens direkt. */
 .qb-ew-optout {
   margin: 0;

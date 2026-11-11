@@ -93,7 +93,7 @@
 
   // Regelwerk je Region wie Cookiebot.regulations. Dieselbe Regel wie die Leser (regionPolicy in
   // qiblanco-google-tracking.js, MetaPixel.jsx, consent-policy.js): ohne strict-Liste oder ohne Region
-  // gilt Opt-in für alle (fail-closed); eine Region ausserhalb der Liste ist Opt-out.
+  // gilt Opt-in für alle (fail-closed); eine Region außerhalb der Liste ist Opt-out.
   var de = d.documentElement;
   function regelwerk() {
     var region = (de.getAttribute('data-qb-region') || '').trim().toUpperCase();
