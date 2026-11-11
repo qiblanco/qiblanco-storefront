@@ -4,6 +4,9 @@ import {HydrationsRettung} from '~/components/reusables/HydrationsRettung';
 import lpAStyles from '~/styles/schlaf-zellen-schutz.css?url';
 import lpASeiteStyles from '~/styles/schlaf-zellen-schutz-seite.css?url';
 import menschenAlltagStyles from '~/styles/menschen-alltag.css?url';
+import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
+import {LpApple} from '~/components/apple-seite/lp/LpApple';
+import {MENSCHEN_ALLTAG_SEKTIONEN} from '~/components/apple-seite/lp/lp-menschen-alltag';
 
 /**
  * STUFE B des Funnel-Managers: /pages/menschen-alltag — „Menschen und Alltag
@@ -54,7 +57,17 @@ export const headers = () => ({
   'Cache-Control': 'no-store',
 });
 
+/*
+ * APPLE-FASSUNG (Grossjob 20261029-GROSSJOB-alle-shop-seiten-apple-niveau-
+ * ausser-seo-geo, s07-r19, nach dem Ende von GS-262): der Schalter steht in
+ * app/lib/apple-seiten.js. An: die Apple-Fassung ohne Produktabfrage. Aus:
+ * die Seite unverändert (C, Rückweg: Befehl „zurück“ in
+ * homepage-bauer/bin/apple-seite). noindex, no-store und Titel gelten für
+ * beide Fassungen.
+ */
 export async function loader({context}) {
+  const appleSeite = appleSeiteLaden(context, appleSeiteFuerPfad('/pages/menschen-alltag'));
+  if (appleSeite.an) return {appleSeite, products: []};
   let data;
   try {
     data = await context.storefront.query(CAMPAIGN_PRODUCTS_QUERY, {
@@ -66,10 +79,11 @@ export async function loader({context}) {
       '[preis-fallback] Campaign-Query (Stufe B) fehlgeschlagen:',
       fehler?.message || fehler,
     );
-    return {products: []};
+    return {products: [], appleSeite};
   }
 
   return {
+    appleSeite,
     products: [data.qione, data.bracelet, data.qihome]
       .filter(Boolean)
       .map((product) => ({
@@ -80,7 +94,8 @@ export async function loader({context}) {
 }
 
 export default function MenschenAlltagRoute() {
-  const {products} = useLoaderData();
+  const {products, appleSeite} = useLoaderData();
+  if (appleSeite?.an) return <LpApple seite={appleSeite.seite} sektionen={MENSCHEN_ALLTAG_SEKTIONEN} />;
   return (
     <>
       {/* Dieselbe Hydrations-Rettung wie A (Begründung in der Komponente). */}
