@@ -195,7 +195,7 @@ function Ablauf() {
 }
 
 // Bewertungsposition = DIE Bewertungsleiste (GoogleBewertungsleiste, Christian 11.11.2026: „an allen
-// Positionen gleich“). Die frueher handverlesenen Karten (STIMMEN/STIMMEN_B) sind abgeloest.
+// Positionen gleich“). Die früher handverlesenen Karten (STIMMEN/STIMMEN_B) sind abgelöst.
 function Stimmen() {
   return (
     <div className="as-sektion" data-section="pb-stimmen">
