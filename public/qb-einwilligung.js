@@ -35,7 +35,7 @@
   // Basis-Domains der Läden: CookieConsent gilt dort für alle Subdomains (checkout.<basis> u. a.).
   var BASIS = ['qiblanco.com', 'qi-blanco.com', 'crystal-cacao.com'];
   function cookieDomain() {
-    var h = location.hostname;
+    var h = (w.location && w.location.hostname) || '';
     for (var i = 0; i < BASIS.length; i++) {
       if (h === BASIS[i] || h.slice(-(BASIS[i].length + 1)) === '.' + BASIS[i]) return '.' + BASIS[i];
     }
@@ -63,7 +63,7 @@
   }
   // Schreibt den Rohwert als Domain-Cookie und räumt ein host-only CookieConsent weg (keine Doppelung).
   function setzeRoh(wert) {
-    var dom = cookieDomain(), rest = '; path=/; max-age=31536000; SameSite=Lax' + (location.protocol === 'https:' ? '; Secure' : '');
+    var dom = cookieDomain(), rest = '; path=/; max-age=31536000; SameSite=Lax' + (w.location && w.location.protocol === 'https:' ? '; Secure' : '');
     if (dom) d.cookie = 'CookieConsent=; path=/; max-age=0';
     d.cookie = 'CookieConsent=' + wert + rest + (dom ? '; domain=' + dom : '');
   }
