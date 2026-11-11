@@ -49,8 +49,8 @@ const PFAD = WV_HUB.pfad;
  */
 const TITEL = `${WV_FRAGE} ${WV_HUB.anker}`;
 const BESCHREIBUNG =
-  `${WV_FRAGE} Im Labor an Zellkulturen gemessen, am Menschen offen. ` +
-  'Dazu jede Frage rund um Qi Blanco mit ihrer eigenen Seite.';
+  `${WV_FRAGE} Zwei Laborarbeiten messen Zellen unter Handystrahlung, ` +
+  'am Menschen ist es offen. Dazu alle Fragen rund um Qi Blanco.';
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR — siehe pages.kritik.jsx. Wer
