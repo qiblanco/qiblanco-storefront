@@ -5,13 +5,13 @@ import {posterGleicherHerkunft, vorschauUrl} from '~/lib/youtube-einbettung';
 import {ZUSATZ} from '~/lib/einwilligung-texte';
 
 /*
- * ZUSTIMMUNG VOR DEM PLAYER (Z11 s02, 2026-11-11, Luecke 3 "Platzhalter wie Cookiebot"):
- * Die Fassade laedt vor dem Tipp nichts von YouTube (Poster gleicher Herkunft). Ohne Erlaubnis
- * fuer Marketing laedt auch der Tipp den Player nicht: an seiner Stelle erscheint ueber dem Poster
- * ein Kasten mit Text und Knopf ("Erlauben und abspielen"). Der Knopf erlaubt Marketing zusaetzlich
- * (die uebrigen Kategorien bleiben wie gewaehlt, Protokoll 'auswahl') und startet das Video.
- * Die Regel liefert der Einwilligungs-Motor (qbEinwilligung.erlaubt: Region + Wahl, wie die Leser);
- * ohne Motor (Rueckweg Cookiebot) gilt Cookiebot.consent.marketing.
+ * ZUSTIMMUNG VOR DEM PLAYER (Z11 s02, 2026-11-11, Lücke 3 „Platzhalter wie Cookiebot“):
+ * Die Fassade lädt vor dem Tipp nichts von YouTube (Poster gleicher Herkunft). Ohne Erlaubnis
+ * für Marketing lädt auch der Tipp den Player nicht: an seiner Stelle erscheint über dem Poster
+ * ein Kasten mit Text und Knopf („Erlauben und abspielen“). Der Knopf erlaubt Marketing zusätzlich
+ * (die übrigen Kategorien bleiben wie gewählt, Protokoll 'auswahl') und startet das Video.
+ * Die Regel liefert der Einwilligungs-Motor (qbEinwilligung.erlaubt: Region und Wahl, wie die Leser);
+ * ohne Motor (Rückweg Cookiebot) gilt Cookiebot.consent.marketing.
  */
 function marketingErlaubt() {
   if (typeof window === 'undefined') return true;
