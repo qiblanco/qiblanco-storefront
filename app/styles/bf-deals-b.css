@@ -36,14 +36,19 @@
 .bfd__preis{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:.25rem .7rem;margin:.2rem 0 0}
 .bfd__alt{color:var(--matt);font-size:16px;font-weight:400;text-decoration:line-through;text-decoration-thickness:1px}
 .bfd__neu{color:var(--g);font-size:24px;font-weight:700;line-height:1.2}
-.bfd__pfeil{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;margin-top:.6rem;border-radius:50%;background:linear-gradient(180deg,var(--g1),var(--g2));color:#171310;box-shadow:0 10px 26px -12px rgba(242,191,114,.55);transition:transform .3s ease}
-.bfd__pfeil svg{width:20px;height:20px}
-.bfd__kachel:hover .bfd__pfeil{transform:translate3d(3px,0,0)}
+/* Kaufknopf statt Pfeil-Kreis (Elina EL-20261111-72d11cd3): Kit-Gold #F2BF72, dunkle Schrift, volle Breite, ueber dem
+   Titel-Link (::after z-index 1), damit der Knopf in den Warenkorb fuehrt und der Rest der Kachel auf die Deal-Seite. */
+.bfd__kachel{position:relative}
+.bfd__kaufen{position:relative;z-index:2;box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;margin-top:.7rem;padding:.8rem 1.25rem;border:0;border-radius:999px;background:#f2bf72;color:#171310!important;font-size:17px;font-weight:700;line-height:1.2;letter-spacing:.01em;text-align:center;text-decoration:none!important;box-shadow:0 10px 26px -12px rgba(242,191,114,.55);transition:background-color .2s ease}
+.bfd__kaufen:hover{background:#f6cc86}
+.bfd__kaufen:focus-visible{outline:2px solid var(--hell);outline-offset:3px}
 .bfd--wahl .bfd__kachel,
 .bfd--groesse .bfd__kachel{position:relative}
 .bfd--wahl .bfd__bild{aspect-ratio:4/3}
 .bfd--wahl .bfd__bild img{object-position:50% 50%}
 .bfd__link{color:inherit!important;text-decoration:none!important}
+/* Titel-Link als Block (EL-20261111-fdf5742a-Hinweis): Inline-<a> in der h2 rueckt mit 43 px Kasten an die Goldzeile (shop-tor A1). */
+.bfd__name .bfd__link{display:block}
 .bfd__link::after{content:"";position:absolute;inset:0;z-index:1;border-radius:24px}
 .bfd__link:focus-visible{outline:none}
 .bfd__link:focus-visible::after{outline:2px solid var(--g);outline-offset:3px}
@@ -91,4 +96,4 @@
 .bfd a.bfd__kachel:not(.btn):hover{border-bottom-color:rgba(242,191,114,.55)}
 .bfd a.bfd__link:not(.btn){border-bottom:0;padding-bottom:0}
 @media (min-width:600px){.bfd .bfd--breit a.bfd__kachel:not(.btn){padding-bottom:.9rem}}
-@media (prefers-reduced-motion:reduce){.bfd__kachel,.bfd__pfeil,.bfd__pille{transition:none!important}.bfd__kachel:hover .bfd__pfeil{transform:none!important}}
+@media (prefers-reduced-motion:reduce){.bfd__kachel,.bfd__kaufen,.bfd__pille{transition:none!important}}

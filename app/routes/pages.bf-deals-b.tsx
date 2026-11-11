@@ -6,7 +6,8 @@
 // (pages.bf-deals.tsx); die B-Adresse bleibt als Vorschau.
 // Countdown: Black Friday Fr 27.11.2026 00:00 MEZ = 2026-11-26T23:00:00Z. Vorschau eines anderen Zeitpunkts:
 // ?pab_jetzt=2026-11-28T12:00:00Z. Bewegung: Baukasten elina-design-regel (useElinaBewegung), Kopf ohne Animation.
-// Die ganze Kachel ist der Link; bei der Set-Kachel liegt der Link über ::after auf der ganzen Fläche, die Pillen darüber.
+// Kacheln (EL-20261111-72d11cd3): Titel-Link zur Deal-Seite liegt über ::after auf der ganzen Fläche (auch Bild);
+// darüber Pillen und der Knopf „Jetzt kaufen“ (Warenkorb-Link mit Deal-Code).
 // Rückbau: diese Datei und app/styles/bf-deals-b.css löschen.
 import {useEffect, useRef, useState} from 'react';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
@@ -247,20 +248,31 @@ function Bild({k}: {k: Kachel}) {
   );
 }
 
-const Pfeil = () => (
-  <span className="bfd__pfeil" aria-hidden="true">
-    <svg
-      viewBox="0 0 20 20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4 10h11M11 5.5 15.5 10 11 14.5" />
-    </svg>
-  </span>
-);
+// Kaufknopf (Elina EL-20261111-72d11cd3, Dauerregel): Text statt Pfeil-Kreis, Kit-Gold #F2BF72 mit dunkler Schrift,
+// volle Breite der Textspalte. Ziel = Warenkorb-Link mit Deal-Code (BF-Endpreis). Bild und Titel fuehren auf die Deal-Seite.
+const KAUFEN = 'Jetzt kaufen';
+// Deal-Seite je Kachel (Bild + Titel). Die BF-Bundle-Produkte bleiben Entwurf (EL-20261111-9065b985), darum die normale
+// Produktseite des Deals; Kakao: die Set-Seite der gewaehlten Pille auf crystal-cacao.com.
+const SEITE: Record<string, string> = {
+  '2x QiOne® 2 Pro': '/products/qione-2-pro?el=BF2026',
+  'QiOne® 2 Pro + Necklace': '/products/qione-2-pro?el=BF2026',
+  'QiBracelet®': '/products/qibracelet?el=BF2026',
+  'QiHome® Air': '/products/qihome-air?el=BF2026',
+};
+const SET_SEITE: Record<string, string> = {
+  '1x Create + 1x Awake':
+    'https://crystal-cacao.com/products/bundle-1x-awake-1x-create?el=BF2026',
+  '2x Awake': 'https://crystal-cacao.com/products/bundle-2x-awake?el=BF2026',
+  '2x Create': 'https://crystal-cacao.com/products/mengenrabatt-2x?el=BF2026',
+};
+
+function Kaufen({href, name}: {href: string; name: string}) {
+  return (
+    <a className="bfd__kaufen" href={href} aria-label={`${KAUFEN}: ${name}`}>
+      {KAUFEN}
+    </a>
+  );
+}
 
 function SetKachel({k}: {k: Kachel}) {
   const sets = (k.sets || k.varianten) as Set[];
@@ -276,7 +288,10 @@ function SetKachel({k}: {k: Kachel}) {
         <div className="bfd__text">
           <p className="bfd__zeile">{k.zeile}</p>
           <h2 className="bfd__name">
-            <a className="bfd__link" href={s.link}>
+            <a
+              className="bfd__link"
+              href={SET_SEITE[s.pille] || SEITE[k.name] || s.link}
+            >
               {k.name}
             </a>
           </h2>
@@ -300,7 +315,7 @@ function SetKachel({k}: {k: Kachel}) {
             <s className="bfd__alt">{s.alt}</s>
             <span className="bfd__neu">{s.neu}</span>
           </p>
-          <Pfeil />
+          <Kaufen href={s.link} name={k.name} />
         </div>
       </div>
     </li>
@@ -310,23 +325,22 @@ function SetKachel({k}: {k: Kachel}) {
 function LinkKachel({k}: {k: Kachel}) {
   return (
     <li className={k.breit ? 'bfd--breit' : 'bfd--klein'}>
-      <a
-        className="bfd__kachel"
-        href={k.link}
-        data-eb=""
-        aria-label={`${k.name} – Zum Angebot ${k.rabatt}, ${k.neu}`}
-      >
+      <div className="bfd__kachel" data-eb="">
         <Bild k={k} />
         <div className="bfd__text">
           <p className="bfd__zeile">{k.zeile}</p>
-          <h2 className="bfd__name">{k.name}</h2>
+          <h2 className="bfd__name">
+            <a className="bfd__link" href={SEITE[k.name] || (k.link as string)}>
+              {k.name}
+            </a>
+          </h2>
           <p className="bfd__preis">
             <s className="bfd__alt">{k.alt}</s>
             <span className="bfd__neu">{k.neu}</span>
           </p>
-          <Pfeil />
+          <Kaufen href={k.link as string} name={k.name} />
         </div>
-      </a>
+      </div>
     </li>
   );
 }
