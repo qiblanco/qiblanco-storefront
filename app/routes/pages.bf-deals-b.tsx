@@ -9,12 +9,12 @@
 // Kacheln (EL-20261111-72d11cd3): Titel-Link zur Deal-Seite liegt über ::after auf der ganzen Fläche (auch Bild);
 // darüber Pillen und der Knopf „Jetzt kaufen“.
 // Umbau Elina EL-20261111-f72ec899: (1) Rabatt-Plakette Rot #B92200 mit weißer Schrift, deutlich größer; (2) „Jetzt kaufen“
-// führt auf die BF-Deal-Seite des Deals (dort geht es per Warenkorb-Link mit BF-Endpreis weiter) - solange die Deal-Seite
-// im Shop noch nicht veröffentlicht ist, bleibt der Warenkorb-Link (siehe dealSeite); (3) die Seite beginnt ganz oben mit dem
+// führt auf die BF-Deal-Seite des Deals (dort geht es per Warenkorb-Link mit BF-Endpreis weiter), seit EL-20261111-cc43922e
+// ausnahmslos, auch Bild und Titel (siehe dealSeite); (3) die Seite beginnt ganz oben mit dem
 // großen roten Countdown (#B92200, weiß, sekundengenau) bis Black-Friday-Start 27.11. 00:00, ab dann bis Sale-Ende.
 // Rückbau: diese Datei und app/styles/bf-deals-b.css löschen.
 import {useEffect, useRef, useState} from 'react';
-import {useLoaderData} from 'react-router';
+import {bfDealSeite} from '../components/black-friday-2026/bf-deals-daten';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
 import bfDealsBStyles from '../styles/bf-deals-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
@@ -263,68 +263,51 @@ function Bild({k}: {k: Kachel}) {
 // volle Breite der Textspalte. Ziel (EL-20261111-f72ec899): die BF-Deal-Seite des Deals; dort führt „In den Warenkorb“
 // per Warenkorb-Link mit BF-Endpreis weiter. In den MAILS bleibt „Jetzt kaufen“ direkt zur Kasse.
 const KAUFEN = 'Jetzt kaufen';
-// BF-Deal-Seite je Deal: dieselben Adressen wie „Zum Deal“ in den Serien-Mails (mail-manager config/bf-serie-inhalte.json,
-// mm_bf_serie.deal_seite: /products/<handle>?el=BF2025). Kakao: je Set eine eigene Deal-Seite.
-const DEAL_HANDLE: Record<string, string> = {
-  '2x QiOne® 2 Pro': 'jhsdhze783',
-  'QiOne® 2 Pro + Necklace': '734husd8hh',
-  'QiBracelet®': '687ghgf4ed',
-  'QiHome® Air': '56huz67dds',
-  '1x Create + 1x Awake': 'awcr37shyj',
-  '2x Awake': 'aw783hfn',
-  '2x Create': '37cr378n',
+// Link-Regel (Elina EL-20261111-cc43922e, ersetzt für SEITEN EL-20261111-72d11cd3): Bild, Titel UND „Jetzt kaufen“ führen
+// IMMER auf die BF-Deal-Seite des Deals, nie auf die Originalseite, nie direkt zur Kasse. Erst auf der Deal-Seite führt
+// „In den Warenkorb“ per Warenkorb-Link zur Kasse. In den MAILS bleibt „Jetzt kaufen“ der Warenkorb-Link.
+// Ziele DE: 2x QiOne 2 Pro -> 8kendiw34hd, QiOne 2 Pro + Necklace -> pjdz538hgs0, QiBracelet -> 687ghgf4ed,
+// QiHome Air -> 56huz67dds, Kakao -> die Deal-Seite des gewählten Sets. Die Deal-Seiten rendert die Storefront selbst
+// (BF_DEAL_SEITEN in bf-deals-daten.js), darum gibt es keine Shopify-Abfrage mehr: die frühere Prüfung „ist das
+// Produkt veröffentlicht“ war für die Entwurfs-Bundles immer falsch und ließ die Kacheln auf Originalseite und Kasse.
+// 2x QiOne / Necklace: Elinas Ziele 8kendiw34hd / pjdz538hgs0, sobald deren Deal-Fassung in BF_DEAL_SEITEN steht
+// (Folgeauftrag zu EL-20261111-aff06215); bis dahin die gleichwertigen Deal-Adressen jhsdhze783 / 734husd8hh, die dieselbe
+// Deal-Fassung rendern. Die Umschaltung geschieht mit dem Eintrag in bf-deals-daten.js von selbst, ohne Änderung hier.
+const DEAL_HANDLE: Record<string, string[]> = {
+  '2x QiOne® 2 Pro': ['8kendiw34hd', 'jhsdhze783'],
+  'QiOne® 2 Pro + Necklace': ['pjdz538hgs0', '734husd8hh'],
+  'QiBracelet®': ['687ghgf4ed'],
+  'QiHome® Air': ['56huz67dds'],
+  '1x Create + 1x Awake': ['awcr37shyj'],
+  '2x Awake': ['aw783hfn'],
+  '2x Create': ['37cr378n'],
 };
+// el-Kennung wie „Zum Deal“ in den Serien-Mails (mm_bf_serie.deal_seite: /products/<handle>?el=BF2025).
 const DEAL_EL = 'BF2025';
-const DEAL_QUERY =
-  'query BfDealSeiten { ' +
-  Object.values(DEAL_HANDLE)
-    .map((h, i) => `d${i}: product(handle: "${h}") { handle }`)
-    .join(' ') +
-  ' }';
 
-// Die Storefront-API kennt nur veröffentlichte Produkte. Eine Deal-Seite im Entwurf wäre eine 404, die archivierte
-// 2x-QiOne-Seite leitet heute auf das alte Dauerangebot um. Darum führt eine Kachel erst auf ihre Deal-Seite, wenn der
-// Shop sie ausliefert; bis dahin bleibt „Jetzt kaufen“ der Warenkorb-Link mit Deal-Code. Mit dem Veröffentlichen schaltet
-// die Kachel von selbst um, ohne neuen Deploy.
-export async function loader({
-  context,
-}: {
-  context: {storefront: {query: (q: string) => Promise<unknown>}};
-}) {
-  const live: string[] = [];
-  try {
-    const d = (await context.storefront.query(DEAL_QUERY)) as Record<
-      string,
-      {handle?: string} | null
-    > | null;
-    for (const p of Object.values(d || {}))
-      if (p && p.handle) live.push(p.handle.toLowerCase());
-  } catch {
-    // Messausfall der Storefront: Warenkorb-Links bleiben (kein Link ins Leere).
-  }
-  return {dealLive: live};
+function dealSeite(schluessel: string): string | null {
+  // bfDealSeite: nur Handles, die die Storefront als Deal-Seite ausliefert, und nur bis Deal-Ende (30.11. 23:59 Berlin).
+  const h = (DEAL_HANDLE[schluessel] ?? []).find((x) => bfDealSeite(x));
+  return h ? `/products/${h}?el=${DEAL_EL}` : null;
 }
 
-function dealSeite(schluessel: string, live: string[]): string | null {
-  const h = DEAL_HANDLE[schluessel];
-  return h && live.includes(h.toLowerCase())
-    ? `/products/${h}?el=${DEAL_EL}`
-    : null;
+// Der Spiegel pages.bf-deals.tsx reicht den loader durch; die Kachel-Ziele brauchen keine Daten mehr.
+export async function loader() {
+  return {};
 }
 
-// Bisherige Ziele für Bild und Titel, solange die Deal-Seite noch nicht veröffentlicht ist: die normale Produktseite;
-// Kakao: die Set-Seite der gewählten Pille auf crystal-cacao.com.
+// Rückfall NUR nach dem Deal-Ende: die normale Produktseite (Kakao: die Set-Seite auf crystal-cacao.com). Nie die Kasse.
 const SEITE: Record<string, string> = {
-  '2x QiOne® 2 Pro': '/products/qione-2-pro?el=BF2026',
-  'QiOne® 2 Pro + Necklace': '/products/qione-2-pro?el=BF2026',
-  'QiBracelet®': '/products/qibracelet?el=BF2026',
-  'QiHome® Air': '/products/qihome-air?el=BF2026',
+  '2x QiOne® 2 Pro': '/products/qione-2-pro',
+  'QiOne® 2 Pro + Necklace': '/products/qione-2-pro',
+  'QiBracelet®': '/products/qibracelet',
+  'QiHome® Air': '/products/qihome-air',
 };
 const SET_SEITE: Record<string, string> = {
   '1x Create + 1x Awake':
-    'https://crystal-cacao.com/products/bundle-1x-awake-1x-create?el=BF2026',
-  '2x Awake': 'https://crystal-cacao.com/products/bundle-2x-awake?el=BF2026',
-  '2x Create': 'https://crystal-cacao.com/products/mengenrabatt-2x?el=BF2026',
+    'https://crystal-cacao.com/products/bundle-1x-awake-1x-create',
+  '2x Awake': 'https://crystal-cacao.com/products/bundle-2x-awake',
+  '2x Create': 'https://crystal-cacao.com/products/mengenrabatt-2x',
 };
 
 function Kaufen({href, name}: {href: string; name: string}) {
@@ -335,11 +318,16 @@ function Kaufen({href, name}: {href: string; name: string}) {
   );
 }
 
-function SetKachel({k, live}: {k: Kachel; live: string[]}) {
+function SetKachel({k}: {k: Kachel}) {
   const sets = (k.sets || k.varianten) as Set[];
   const [wahl, setWahl] = useState(k.start ?? 0);
   const s = sets[wahl];
-  const deal = dealSeite(s.pille, live) || dealSeite(k.name, live);
+  const ziel =
+    dealSeite(s.pille) ||
+    dealSeite(k.name) ||
+    SET_SEITE[s.pille] ||
+    SEITE[k.name] ||
+    '/';
   const klasse = k.sets
     ? 'bfd--breit bfd--wahl'
     : `${k.breit ? 'bfd--breit' : 'bfd--klein'} bfd--groesse`;
@@ -352,7 +340,7 @@ function SetKachel({k, live}: {k: Kachel; live: string[]}) {
           <h2 className="bfd__name">
             <a
               className="bfd__link"
-              href={deal || SET_SEITE[s.pille] || SEITE[k.name] || s.link}
+              href={ziel}
             >
               {k.name}
             </a>
@@ -377,15 +365,15 @@ function SetKachel({k, live}: {k: Kachel; live: string[]}) {
             <s className="bfd__alt">{s.alt}</s>
             <span className="bfd__neu">{s.neu}</span>
           </p>
-          <Kaufen href={deal || s.link} name={k.name} />
+          <Kaufen href={ziel} name={k.name} />
         </div>
       </div>
     </li>
   );
 }
 
-function LinkKachel({k, live}: {k: Kachel; live: string[]}) {
-  const deal = dealSeite(k.name, live);
+function LinkKachel({k}: {k: Kachel}) {
+  const ziel = dealSeite(k.name) || SEITE[k.name] || '/';
   return (
     <li className={k.breit ? 'bfd--breit' : 'bfd--klein'}>
       <div className="bfd__kachel" data-eb="">
@@ -395,7 +383,7 @@ function LinkKachel({k, live}: {k: Kachel; live: string[]}) {
           <h2 className="bfd__name">
             <a
               className="bfd__link"
-              href={deal || SEITE[k.name] || (k.link as string)}
+              href={ziel}
             >
               {k.name}
             </a>
@@ -404,7 +392,7 @@ function LinkKachel({k, live}: {k: Kachel; live: string[]}) {
             <s className="bfd__alt">{k.alt}</s>
             <span className="bfd__neu">{k.neu}</span>
           </p>
-          <Kaufen href={deal || (k.link as string)} name={k.name} />
+          <Kaufen href={ziel} name={k.name} />
         </div>
       </div>
     </li>
@@ -415,9 +403,6 @@ export default function BfDealsB() {
   const wurzel = useRef<HTMLDivElement>(null);
   useElinaBewegung(wurzel);
   const jetzt = useJetzt();
-  // pages.bf-deals.tsx spiegelt diese Seite samt loader; fehlt er (alte Spiegel-Datei), bleiben die Warenkorb-Links.
-  const daten = useLoaderData() as {dealLive?: string[]} | undefined;
-  const live = daten?.dealLive || [];
   return (
     <div className="bfd" id="bfd" lang="de" ref={wurzel}>
       <Countdown jetzt={jetzt} />
@@ -451,9 +436,9 @@ export default function BfDealsB() {
         <ul className="bfd__liste" aria-label="Black-Friday-Angebote">
           {KACHELN.map((k) =>
             k.sets || k.varianten ? (
-              <SetKachel key={k.name} k={k} live={live} />
+              <SetKachel key={k.name} k={k} />
             ) : (
-              <LinkKachel key={k.name} k={k} live={live} />
+              <LinkKachel key={k.name} k={k} />
             ),
           )}
         </ul>
