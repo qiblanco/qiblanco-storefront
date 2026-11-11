@@ -47,8 +47,6 @@ export const HREFLANG_PAARE = {
   "/policies/refund-policy": "/policies/refund-policy",
   "/policies/shipping-policy": "/policies/shipping-policy",
   "/policies/terms-of-service": "/policies/terms-of-service",
-  "/products/crystal-cacao-awake": "/products/crystal-cacao-awake",
-  "/products/crystal-cacao-create": "/products/crystal-cacao-create",
   "/products/qibracelet": "/products/qibracelet",
   "/products/qihome-air": "/products/qihome",
   "/products/qione-2-pro": "/products/qione",
