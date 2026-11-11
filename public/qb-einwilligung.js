@@ -21,8 +21,17 @@
   // nachlädt (s06, gemessen 25.10.: nach "Alle akzeptieren" 1 Anfrage an consent.cookiebot.com).
   // Die CSP hält es nicht ('strict-dynamic'). Die Sperrliste muss vor gtm.js im dataLayer stehen;
   // sie gilt nur hier, also nur im Motor eigen. Rückweg Motor cookiebot: dieses Skript lädt dort nicht.
+  // Dazu Taboola (Vorlage cvt_31884966_95, Tag 96): es trägt im Container keine Zusatz-Einwilligung und
+  // feuerte, sobald GTM lädt, also schon bei "nur Statistik" (gemessen 11.11.: 3 Anfragen an taboola.com).
+  // Ohne Marketing-Erlaubnis steht es mit auf der Sperrliste; gesetzt beim Laden (gespeicherte Wahl,
+  // unten nach leseCookie) und in waehle() vor den Ereignissen, nach denen GTM lädt.
+  // Job 20261111-us-laden-tags-ausserhalb-theme-an-ablehnung-binden.
   w.dataLayer = w.dataLayer || [];
-  w.dataLayer.push({'gtm.blocklist': ['cvt_31884966_92']});
+  function gtmSperre(marketing) {
+    var liste = ['cvt_31884966_92'];
+    if (!marketing) liste.push('cvt_31884966_95');
+    w.dataLayer.push({'gtm.blocklist': liste});
+  }
   var JAHR = 31536000000;
   var nonce = (d.currentScript && (d.currentScript.nonce || d.currentScript.getAttribute('nonce'))) || '';
   function $(id) { return d.getElementById(id); }
@@ -109,6 +118,7 @@
   try { umziehen(); } catch (e) {}
   var bestand = leseCookie();
   if (bestand) setze(bestand, bestand.stamp || stempel());
+  gtmSperre(!!(bestand && bestand.marketing));
 
   // Regelwerk je Region wie Cookiebot.regulations. Dieselbe Regel wie die Leser (regionPolicy in
   // qiblanco-google-tracking.js, MetaPixel.jsx, consent-policy.js): ohne strict-Liste oder ohne Region
@@ -321,6 +331,7 @@
     implizit = false;
     if (vorher && ((vorher.preferences && !p) || (vorher.statistics && !s) || (vorher.marketing && !m))) methode = 'widerruf';
     setze({preferences: p, statistics: s, marketing: m}, stempel());
+    gtmSperre(!!m);
     schreibeCookie();
     schliesseDialog();
     zeige(banner(), false);
