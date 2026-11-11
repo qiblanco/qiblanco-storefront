@@ -12,10 +12,12 @@
  *
  * AUS DEMSELBEN GRUND greift hier die Hausregel, die die Seite selbst in
  * .tas-seite aufhebt (`.tas-seite :where(p, li, …)`): reset.css
- * `p, li { font-size: 1.2rem; line-height: 1.4 }` direkt aufs Element. Jeder
+ * `p, li { font-size: 1.2rem; line-height: 1.4; color: --color-dark }`
+ * direkt aufs Element. Jeder
  * Verweis stand dadurch seit dem 31.10. bei 19,2 px statt klein, eine zehnte
  * Schriftgröße auf der Kaufseite (Design-Rubrik live 97 statt 99). Deshalb
- * `font-size: inherit` an <li> und Absatz. Die Selektoren der Verweise sind
+ * `font-size`, `line-height` und `color: inherit` an <li> und Absatz (ohne
+ * die Farbe stünde --color-dark, Dunkelgrau, auf dem Schwarz der Zeile). Die Selektoren der Verweise sind
  * Kind-Selektoren: sie sollen die Zeile treffen, nicht den EU-Hinweis
  * (<dialog>) darin. Die Farben stimmen erst, seit die Zeile kein <footer>
  * mehr ist (QiAlphaRechtsZeile.jsx, FEHLER-DB F-2584).
@@ -43,6 +45,7 @@
   margin: 0;
   font-size: inherit;
   line-height: inherit;
+  color: inherit;
 }
 
 .qar-liste > li > a,
@@ -74,6 +77,7 @@
   margin: 0;
   font-size: inherit;
   line-height: inherit;
+  color: inherit;
 }
 
 .qar-marke {
@@ -94,6 +98,10 @@
 .qar .eu-gwl-dialog__fuss {
   font-size: inherit;
   line-height: inherit;
+}
+
+.qar .eu-gwl-dialog__fuss {
+  color: inherit;
 }
 
 @media (max-width: 749px) {
