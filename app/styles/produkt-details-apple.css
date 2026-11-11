@@ -68,16 +68,10 @@
 .pd-kaufleiste {
   display: none;
 }
-/* Die Leiste ist das letzte Kind von .as-seite. Der Schlussabstand
-   (apple-seite.css `.as-seite > :last-child`) bleibt beim Abschnitt davor,
-   die Leiste selbst steht ohne Abstand am Rand (Lehre s08: sonst schwebt sie
-   64 px hoch und liegt auf den Fuß-Links). */
-.as-seite > :nth-last-child(2):has(+ .pd-kaufleiste) {
-  margin-bottom: var(--as-s-8);
-}
-.as-seite > .pd-kaufleiste:last-child {
-  margin-bottom: 0;
-}
+/* Die Leiste ist das letzte Kind von .as-seite. Den Schlussabstand gibt
+   apple-seite.css dem Abschnitt davor, die Leiste steht ohne Abstand am Rand
+   (Lehre s08); erkannt wird sie dort am Merkmal aria-hidden bzw.
+   data-qb-chat-weicht, eine eigene Nullung ist nicht mehr nötig (09.11.2026). */
 @media screen and (max-width: 749px) {
   .pd-kaufleiste {
     position: fixed;
