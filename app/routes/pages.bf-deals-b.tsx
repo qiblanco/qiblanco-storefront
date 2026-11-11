@@ -14,11 +14,7 @@
 // großen roten Countdown (#B92200, weiß, sekundengenau) bis Black-Friday-Start 27.11. 00:00, ab dann bis Sale-Ende.
 // Rückbau: diese Datei und app/styles/bf-deals-b.css löschen.
 import {useEffect, useRef, useState} from 'react';
-import {
-  bfDeal,
-  bfDealSeite,
-  bfDealZiel,
-} from '../components/black-friday-2026/bf-deals-daten';
+import {bfDealSeite} from '../components/black-friday-2026/bf-deals-daten';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
 import bfDealsBStyles from '../styles/bf-deals-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
@@ -274,26 +270,30 @@ const KAUFEN = 'Jetzt kaufen';
 // QiHome Air -> 56huz67dds, Kakao -> die Deal-Seite des gewählten Sets. Die Deal-Seiten rendert die Storefront selbst
 // (BF_DEAL_SEITEN in bf-deals-daten.js), darum gibt es keine Shopify-Abfrage mehr: die frühere Prüfung „ist das
 // Produkt veröffentlicht“ war für die Entwurfs-Bundles immer falsch und ließ die Kacheln auf Originalseite und Kasse.
-// 2x QiOne / Necklace: solange 8kendiw34hd / pjdz538hgs0 noch keine Deal-Fassung tragen, führt bfDealZiel auf die
-// gleichwertige Deal-Adresse (jhsdhze783 / 734husd8hh) und schaltet mit ihrem Eintrag in BF_DEAL_SEITEN von selbst um.
-const DEAL_ID: Record<string, string> = {
-  '2x QiOne® 2 Pro': '2x-qione-2-pro',
-  'QiOne® 2 Pro + Necklace': 'qione-2-pro-necklace',
-  'QiBracelet®': 'qibracelet',
-  'QiHome® Air': 'qihome-air',
-};
-const SET_HANDLE: Record<string, string> = {
-  '1x Create + 1x Awake': 'awcr37shyj',
-  '2x Awake': 'aw783hfn',
-  '2x Create': '37cr378n',
+// 2x QiOne / Necklace: Elinas Ziele 8kendiw34hd / pjdz538hgs0, sobald deren Deal-Fassung in BF_DEAL_SEITEN steht
+// (Folgeauftrag zu EL-20261111-aff06215); bis dahin die gleichwertigen Deal-Adressen jhsdhze783 / 734husd8hh, die dieselbe
+// Deal-Fassung rendern. Die Umschaltung geschieht mit dem Eintrag in bf-deals-daten.js von selbst, ohne Änderung hier.
+const DEAL_HANDLE: Record<string, string[]> = {
+  '2x QiOne® 2 Pro': ['8kendiw34hd', 'jhsdhze783'],
+  'QiOne® 2 Pro + Necklace': ['pjdz538hgs0', '734husd8hh'],
+  'QiBracelet®': ['687ghgf4ed'],
+  'QiHome® Air': ['56huz67dds'],
+  '1x Create + 1x Awake': ['awcr37shyj'],
+  '2x Awake': ['aw783hfn'],
+  '2x Create': ['37cr378n'],
 };
 // el-Kennung wie „Zum Deal“ in den Serien-Mails (mm_bf_serie.deal_seite: /products/<handle>?el=BF2025).
 const DEAL_EL = 'BF2025';
 
 function dealSeite(schluessel: string): string | null {
-  const h = SET_HANDLE[schluessel] ?? bfDealZiel(bfDeal(DEAL_ID[schluessel] ?? ''));
-  // Nach dem Deal-Ende (30.11. 23:59 Berlin) liefert die Deal-Adresse 404: dann die Rückfall-Seite unten.
-  return h && bfDealSeite(h) ? `/products/${h}?el=${DEAL_EL}` : null;
+  // bfDealSeite: nur Handles, die die Storefront als Deal-Seite ausliefert, und nur bis Deal-Ende (30.11. 23:59 Berlin).
+  const h = (DEAL_HANDLE[schluessel] ?? []).find((x) => bfDealSeite(x));
+  return h ? `/products/${h}?el=${DEAL_EL}` : null;
+}
+
+// Der Spiegel pages.bf-deals.tsx reicht den loader durch; die Kachel-Ziele brauchen keine Daten mehr.
+export async function loader() {
+  return {};
 }
 
 // Rückfall NUR nach dem Deal-Ende: die normale Produktseite (Kakao: die Set-Seite auf crystal-cacao.com). Nie die Kasse.
