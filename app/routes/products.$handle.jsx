@@ -43,6 +43,7 @@ import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 import {
   bfDeal,
+  bfDealBildSetzen,
   bfDealMarktPasst,
   bfDealPreiseSetzen,
   bfDealSeite,
@@ -343,7 +344,7 @@ async function ladeBfDealStandard(args, dealSeite) {
   if (!bfDealMarktPasst(basisDaten.product)) throw new Response(null, {status: 404});
   return {
     ...basisDaten,
-    product: bfDealPreiseSetzen(basisDaten.product, dealSeite),
+    product: bfDealPreiseSetzen(bfDealBildSetzen(basisDaten.product, dealSeite), dealSeite),
     bfDealSeite: dealSeite,
   };
 }

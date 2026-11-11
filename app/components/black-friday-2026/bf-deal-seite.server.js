@@ -14,25 +14,18 @@ import * as DATEN_8K from '~/components/product-pages/8kendiw34hd-alpha-daten';
 import * as DATEN_PJDZ from '~/components/product-pages/pjdz538hgs0-alpha-daten';
 import * as DATEN_QIBRACELET from '~/components/product-pages/qibracelet-alpha-daten';
 import * as DATEN_QIHOME from '~/components/product-pages/qihome-air-alpha-daten';
-import {bfDeal, bfDealMarktPasst, bfDealPreiseSetzen} from '~/components/black-friday-2026/bf-deals-daten';
+import {bfDealBildSetzen, bfDealMarktPasst, bfDealPreiseSetzen} from '~/components/black-friday-2026/bf-deals-daten';
 
 /*
- * BILDER DER DEAL-SEITE: vorn steht das Deal-Bild der Galerie-Kachel (2000 px,
- * dieselbe Datei wie auf bf-deals-b). Produktfotos unter MIN_KANTE fallen auf
- * der Deal-Seite weg: gemessen 11.11.2026 (hb-formate, products-8kendiw34hd)
- * wird 2xQiOne2Pro.png (737 px) ab 600 px Breite hochskaliert und ist sichtbar
+ * BILDER DER DEAL-SEITE: vorn steht das BF-Gold-Bild des Deals (bf-deals-daten.js
+ * BF_GOLD_BILDER, Elina EL-20261111-a9af196f), auf jeder Fassung. Auf der
+ * Angebotsfassung (2x QiOne, QiOne + Necklace) fallen Produktfotos unter
+ * MIN_KANTE weg: gemessen 11.11.2026 (hb-formate, products-8kendiw34hd) wird
+ * 2xQiOne2Pro.png (737 px) ab 600 px Breite hochskaliert und ist sichtbar
  * unscharf. Die normalen Produktseiten behalten ihre Bilder.
  */
 const MIN_KANTE = 1600;
-
-function dealBilder(product, seite) {
-  const deal = bfDeal(seite.deal);
-  const nodes = product?.images?.nodes;
-  if (!deal?.bild || !Array.isArray(nodes)) return product;
-  const scharf = nodes.filter((b) => !(Number(b?.width) > 0) || Number(b.width) >= MIN_KANTE);
-  const vorn = {id: `bf-deal-bild-${deal.id}`, url: deal.bild, altText: deal.bildAlt, width: 2000, height: 2000};
-  return {...product, images: {...product.images, nodes: [vorn, ...scharf]}};
-}
+const scharf = (b) => !(Number(b?.width) > 0) || Number(b.width) >= MIN_KANTE;
 
 const ALPHA = {
   '8kendiw34hd': {query: QIONE_QUERY, daten: DATEN_8K},
@@ -59,7 +52,10 @@ export async function ladeBfDealAlpha(args, seite) {
   if (!bfDealMarktPasst(daten.product)) return null;
   return {
     ...daten,
-    product: bfDealPreiseSetzen(seite.art === 'alpha-angebot' ? dealBilder(daten.product, seite) : daten.product, seite),
+    product: bfDealPreiseSetzen(
+      bfDealBildSetzen(daten.product, seite, seite.art === 'alpha-angebot' ? scharf : null),
+      seite,
+    ),
     bfDealSeite: seite,
   };
 }

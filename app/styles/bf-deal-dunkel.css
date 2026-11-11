@@ -1,0 +1,238 @@
+/* bf-deal-dunkel.css: dunkler Look der BF-Deal-Seiten DE (Elina EL-20261111-a9af196f, Punkt 2).
+ * Wortlaut: "denselben dunklen Look wie Pre-Access-Seite und bf-deals (schwarzer Hintergrund, helle Schrift,
+ * Gold-/Rot-Akzente, roter Countdown oben, Galerie andere Deals), damit sie sich klar von den normalen
+ * Produktseiten unterscheiden. DE+US, mobile first."
+ * Farben 1:1 aus bf-deals-b.css (.bfd), nicht neu erfunden: Grund #0c0a08, Schrift #f5efe6, gedämpft
+ * rgba(245,239,230,.72), Ränder rgba(245,239,230,.14), Gold #f2bf72 (Verlauf #f6cc86 -> #e7ad5c), Bildfläche
+ * #15110d, Kaufknopf Gold mit Schrift #171310, Rot #B92200 mit weißer Schrift.
+ * Geladen NUR vom Rahmen der Deal-Seiten (BfDealRahmen, Weiche bfDealSeite): jede Regel hängt an
+ * .bf-deal-seite, die normalen Produktseiten sehen diese Datei nie. Gemeinsam für jede Fassung der
+ * Deal-Seite (Alpha-Angebot, Alpha-Produkt, Standard/Kakao), damit eine neue Deal-Seite den Look
+ * ohne eigene Regeln bekommt.
+ * Kein Übergang, keine Bewegung in dieser Datei (Bewegung: elina-bewegung.css). */
+
+/* 1) Grund und Tokens. Die Alpha-Seite (.tas-seite) definiert ihre Farb-Tokens am eigenen Element; darum stehen
+ *    sie hier auch an .bf-deal-seite .tas-seite (höhere Spezifität, gleiche Werte). */
+.bf-deal-seite,
+.bf-deal-seite .tas-seite {
+  --bfd-grund: #0c0a08;
+  --bfd-hell: #f5efe6;
+  --bfd-matt: rgba(245, 239, 230, 0.72);
+  --bfd-rand: rgba(245, 239, 230, 0.14);
+  --bfd-flaeche: #15110d;
+  --bfd-gold: #f2bf72;
+  --tas-weiss: #0c0a08;
+  --tas-flaeche: #15110d;
+  --tas-papier: #15110d;
+  --tas-band: #15110d;
+  --tas-tinte: #f5efe6;
+  --tas-grau: rgba(245, 239, 230, 0.72);
+  --tas-linie: rgba(245, 239, 230, 0.14);
+  --qb-akzent-tinte: #f2bf72;
+  --color-accent-ink: #f2bf72;
+  background-color: #0c0a08;
+  color: #f5efe6;
+}
+/* Volle Breite ohne waagerechtes Scrollen: der Grund reicht per Schatten bis an die Fensterränder, der
+ * Clip schneidet oben/unten ab. Kein 100vw-Rand, kein Layout-Eingriff. */
+.bf-deal-seite {
+  position: relative;
+  box-shadow: 0 0 0 100vmax #0c0a08;
+  clip-path: inset(0 -100vmax);
+  color-scheme: dark;
+}
+
+/* 2) Texte, die auf der hellen Seite mit --tas-weiss als SCHRIFT gesetzt waren (dunkles Band, rote Etiketten):
+ *    sie bleiben hell. */
+.bf-deal-seite .tas-licht-raster,
+.bf-deal-seite .tas-seite .tas-band-titel,
+.bf-deal-seite .tas-seite .tas-band-unter,
+.bf-deal-seite .taw-etikett {
+  color: #fff;
+}
+/* Etikett in Gold (alpha-vorlage-slots.css .av-seite .taw-etikett): dunkle Schrift wie der Kaufknopf. */
+.bf-deal-seite .av-seite .taw-etikett {
+  color: #171310;
+}
+.bf-deal-seite .tas-licht-raster {
+  border: 1px solid var(--bfd-rand);
+}
+
+/* 3) Überschriften und Fließtext: hell auf dunkel. Haus-Resets setzen Überschriften dunkel (teils !important). */
+.bf-deal-seite :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--bfd-hell) !important;
+}
+/* :where hält die Spezifität bei einer Klasse: schlägt app.css 'p, li' (#4A4741), lässt Bausteinfarben stehen. */
+.bf-deal-seite :where(p, li, dt, dd, label, legend, summary, figcaption, td, th, small) {
+  color: inherit;
+}
+.bf-deal-seite :where(a:not([class*='btn']):not(.bfg__knopf):not(.bf-deal-kaufen)) {
+  color: inherit;
+}
+/* Gold für Preise wie auf bf-deals (.bfd__neu). */
+.bf-deal-seite .tas-preis,
+.bf-deal-seite .bfg__neu {
+  color: var(--bfd-gold) !important;
+}
+
+/* 4) Helle Flächen der Bestandsbausteine (Karten, Kästen, Bewertungen) werden dunkle Flächen. */
+.bf-deal-seite :is(.bg-white, .bg-gray-50, .bg-gray-100, .bg-neutral-50, .bg-neutral-100, [class*='bg-[#f'], [class*='bg-[#F']) {
+  background-color: var(--bfd-flaeche) !important;
+}
+.bf-deal-seite :is(.text-black, .text-gray-900, .text-gray-800, .text-gray-700, .text-neutral-900, .text-neutral-800,
+    [class*='text-[#1'], [class*='text-[#2'], [class*='text-[#3'], [class*='text-[#4']) {
+  color: var(--bfd-hell) !important;
+}
+.bf-deal-seite :is(.text-gray-600, .text-gray-500, .text-neutral-600, .text-neutral-500, [class*='text-[#6'], [class*='text-[#5']) {
+  color: var(--bfd-matt) !important;
+}
+.bf-deal-seite :is(.border, .border-t, .border-b, [class*='border-gray'], [class*='border-neutral']) {
+  border-color: var(--bfd-rand) !important;
+}
+.bf-deal-seite :is(input, select, textarea) {
+  background-color: var(--bfd-flaeche);
+  color: var(--bfd-hell);
+  border-color: rgba(245, 239, 230, 0.32);
+}
+
+/* 5) Bildflächen der Produktgalerie: das BF-Gold-Bild hat den Rand #090806 und steht ganz im Bild. */
+.bf-deal-seite :is(.tas-galerie-haupt, .tas-box-flaeche, .taw-bild, .av-kachel) {
+  background-color: var(--bfd-flaeche);
+}
+.bf-deal-seite img[src*='mail-bf2026-'] {
+  background-color: #090806;
+  object-fit: contain;
+}
+
+/* 6) Deal-Galerie „Sieh dir unsere anderen Deals an“ im selben Look wie die bf-deals-Kacheln. */
+.bf-deal-seite .bfg {
+  color: var(--bfd-hell);
+}
+.bf-deal-seite .bfg__kachel {
+  background: rgba(245, 239, 230, 0.03);
+  border-color: var(--bfd-rand);
+}
+.bf-deal-seite .bfg .bfg__name,
+.bf-deal-seite .bfg .bfg__titel {
+  color: var(--bfd-hell);
+}
+.bf-deal-seite .bfg__alt {
+  color: var(--bfd-matt);
+}
+
+/* 7) Standard-Fassung (Kakao): Produktbereich und Beschreibung. */
+.bf-deal-seite .product,
+.bf-deal-seite .product-main,
+.bf-deal-seite .ProductDescription,
+.bf-deal-seite .ProductDescription * {
+  color: var(--bfd-hell);
+}
+.bf-deal-seite .ProductDescription :is(span, strong, b, em)[style*='color'] {
+  color: var(--bfd-hell) !important;
+}
+
+/* FAQ-Baustein (the-alpha-faq.css, eigene Tokens): die helle Fassung wird dunkel. */
+.bf-deal-seite .taf {
+  --taf-grund: #0c0a08;
+  --taf-tinte: #f5efe6;
+  --taf-gedaempft: rgba(245, 239, 230, 0.72);
+  --taf-antwort: rgba(245, 239, 230, 0.86);
+  --taf-linie: rgba(245, 239, 230, 0.14);
+}
+
+/* Bewertungsbausteine (Bewertungsleiste, Google-Plakette) setzen dunkle Schrift fest. */
+.bf-deal-seite .qb-gbl,
+.bf-deal-seite .qb-gbl__unter span,
+.bf-deal-seite .ReviewsSlider .font-medium,
+.bf-deal-seite .product-rating span,
+.bf-deal-seite .google-rating-badge__number,
+.bf-deal-seite .google-rating-badge__powered strong {
+  color: var(--bfd-hell) !important;
+}
+.bf-deal-seite .google-rating-badge__powered {
+  color: var(--bfd-matt) !important;
+}
+
+/* Preis der Standard-Fassung: Haus-Verlauf Rot/Rosa (app.css .gradient-price) wird Gold wie auf bf-deals. */
+.bf-deal-seite .gradient-price {
+  background: linear-gradient(180deg, #f6cc86 0%, #e7ad5c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Klebende Kaufleiste (qb-kaufleiste.css liest Haus-Tokens). */
+.bf-deal-seite .qb-kaufleiste {
+  --qb-grund: #0c0a08;
+  --qb-linie: rgba(245, 239, 230, 0.14);
+  --qb-text: #f5efe6;
+  --qb-text-gedaempft: rgba(245, 239, 230, 0.72);
+}
+
+/* 8) Rote Countdown-Leiste ganz oben (Baustein EL-20261111-cfcd9c5d, bf-countdown.css 1:1): Qi-Alpha-Rot #B92200,
+ *    weiße Schrift (6,4:1), im Fluss, nicht klebend, ohne Animation (erster Bildschirm). */
+.bf-deal-seite .bfc {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 10px 12px;
+  background: #b92200;
+  color: #fff;
+  text-align: center;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+/* Erster Block unter dem fixierten Kopf: app.css nimmt den Abstands-Leerblock für main > div > .tas-seite heraus
+ * (die Alpha-Seite hält selbst Abstand). Die Leiste steht davor und rückt deshalb selbst um die Lücke zwischen
+ * Nennhöhe (104 px) und gemessener Kopfhöhe nach unten; auf der Standard-Fassung verschmilzt der Rand mit dem
+ * Leerblock (es gilt der größere, gleiche Wert). */
+.bf-deal-seite > .bfc:first-child {
+  margin-top: max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px));
+}
+.bf-deal-seite .bfc[hidden] {
+  display: none;
+}
+.bf-deal-seite .bfc .bfc__innen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 0.4em;
+  row-gap: 2px;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(15px, 4.4vw, 17px);
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.bf-deal-seite .bfc__zeit {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+.bf-deal-seite .bfc__zeit:empty {
+  display: none;
+}
+@media (min-width: 600px) {
+  .bf-deal-seite .bfc {
+    padding: 11px 20px;
+  }
+  .bf-deal-seite .bfc .bfc__innen {
+    font-size: 18px;
+  }
+}
+@media (min-width: 960px) {
+  .bf-deal-seite .bfc {
+    min-height: 48px;
+    padding: 12px 24px;
+  }
+  .bf-deal-seite .bfc .bfc__innen {
+    font-size: 19px;
+  }
+}

@@ -17,12 +17,34 @@
  * Deal-Handles wieder 404 (Shopify-Weiterleitung wie vorher), und
  * 8kendiw34hd / pjdz538hgs0 zeigen wieder ihre normale Seite.
  *
- * Bilder: dieselben Shopify-Dateien wie die Kacheln auf /pages/bf-deals-b.
+ * Bilder (Elina EL-20261111-a9af196f + EL-20261111-83f5cc6d): die BF-Gold-Bilder
+ * aus BF_GOLD_BILDER, EINE Stelle für bf-deals, Deal-Galerie und Deal-Seiten.
+ * Die Originalproduktseiten behalten ihre Shopify-Bilder.
  */
 
 export const BF_DEAL_ENDE = '2026-11-30T22:59:59Z';
 
 const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
+
+/*
+ * BF-GOLD-BILDER (Elina EL-20261111-a9af196f, Punkt 1): dunkler Grund mit
+ * Goldlicht, 1200x1200, Shopify-Dateien DACH (Größe per ?width=). Bei 2x QiOne,
+ * QiBracelet und QiHome Air die Fassung mit Dartsch-Siegel (EL-20261111-21205271).
+ * Der Rand jedes Bildes ist #090806 (BF_GOLD_RAND): eine Bildfläche in anderem
+ * Seitenverhältnis zeigt das Bild ganz (object-fit: contain) auf genau diesem
+ * Ton, damit das Siegel unten rechts nie angeschnitten wird.
+ */
+export const BF_GOLD_RAND = '#090806';
+export const BF_GOLD_BILDER = {
+  '2x-qione-2-pro': CDN + 'mail-bf2026-2x-qione-2-pro-siegel.jpg',
+  'qione-2-pro-necklace': CDN + 'mail-bf2026-qione-2-pro-necklace.jpg',
+  qibracelet: CDN + 'mail-bf2026-qibracelet-siegel.jpg',
+  'qihome-air': CDN + 'mail-bf2026-qihome-air-siegel.jpg',
+  'kakao-awake-create': CDN + 'mail-bf2026-kakao-1x-awake-1x-create.jpg',
+  'kakao-2x-awake': CDN + 'mail-bf2026-kakao-2x-awake.jpg',
+  'kakao-2x-create': CDN + 'mail-bf2026-kakao-2x-create.jpg',
+};
+export const BF_GOLD_KANTE = 1200;
 
 /** Kachel-Gruppen der Galerie, in der Reihenfolge von bf-deals. */
 export const BF_DEALS = [
@@ -32,7 +54,7 @@ export const BF_DEALS = [
     rabatt: '−500 €',
     preis: 1976,
     uvp: 2476,
-    bild: CDN + 'bundle-2x-qione-2-pro.webp',
+    bild: BF_GOLD_BILDER['2x-qione-2-pro'],
     bildAlt: 'Zwei QiOne® 2 Pro Anhänger nebeneinander',
     seite: 'jhsdhze783',
     link: '/cart/39680087326790:2?discount=BF26-2XPRO-HDRSN',
@@ -43,7 +65,7 @@ export const BF_DEALS = [
     rabatt: '−250 €',
     preis: 1082,
     uvp: 1332,
-    bild: CDN + 'bundle-qione-2-pro-necklace.webp',
+    bild: BF_GOLD_BILDER['qione-2-pro-necklace'],
     bildAlt: 'QiOne® 2 Pro Anhänger mit Kette',
     seite: '734husd8hh',
     // Je Kettenlänge (cm) der Link mit der Kette dieser Größe. M (50) und XL (75)
@@ -60,7 +82,9 @@ export const BF_DEALS = [
     rabatt: '−200 €',
     preis: 1378,
     uvp: 1578,
-    bild: CDN + 'QiBracelet1.webp',
+    bild: BF_GOLD_BILDER.qibracelet,
+    // Das frühere Deal-Bild (helles Shop-Foto) fällt auf der Deal-Seite weg (Elina EL-20261111-83f5cc6d).
+    altBild: 'QiBracelet1.webp',
     bildAlt: 'QiBracelet® Armreif',
     seite: '687ghgf4ed',
     // Je Variante (Shopify-Varianten-Nummer von qibracelet S/M/L).
@@ -76,7 +100,8 @@ export const BF_DEALS = [
     rabatt: '−400 €',
     preis: 4583,
     uvp: 4983,
-    bild: CDN + 'QiHome1.webp',
+    bild: BF_GOLD_BILDER['qihome-air'],
+    altBild: 'QiHome1.webp',
     bildAlt: 'QiHome® Air',
     seite: '56huz67dds',
     link: '/cart/32238705967174:1?discount=BF26-QIHOME-2DP8H',
@@ -87,7 +112,7 @@ export const BF_DEALS = [
     rabatt: '−76 €',
     preis: 76,
     uvp: 152,
-    bild: CDN + 'crystal-cacao-set-awake-create-dunkel-gold-4x3.webp',
+    bild: BF_GOLD_BILDER['kakao-awake-create'],
     bildAlt: 'Crystal Cacao Awake und Create, zwei Kakao-Packungen im Set',
     seite: 'awcr37shyj',
   },
@@ -114,6 +139,8 @@ export const BF_DEAL_SEITEN = {
     basis: 'bundle-1x-awake-1x-create',
     art: 'standard',
     name: 'Crystal Cacao 1x Create + 1x Awake',
+    bild: BF_GOLD_BILDER['kakao-awake-create'],
+    bildAlt: 'Crystal Cacao Awake und Create, je eine Packung',
     link: 'https://crystal-cacao.com/cart/54540698485004:1,44685294567692:1?discount=BF26-KAKAO-NKSKX',
   },
   aw783hfn: {
@@ -121,6 +148,8 @@ export const BF_DEAL_SEITEN = {
     basis: 'bundle-2x-awake',
     art: 'standard',
     name: 'Crystal Cacao 2x Awake',
+    bild: BF_GOLD_BILDER['kakao-2x-awake'],
+    bildAlt: 'Zwei Packungen Crystal Cacao Awake',
     link: 'https://crystal-cacao.com/cart/54540698485004:2?discount=BF26-KAKAO-NKSKX',
   },
   '37cr378n': {
@@ -128,6 +157,8 @@ export const BF_DEAL_SEITEN = {
     basis: 'mengenrabatt-2x',
     art: 'standard',
     name: 'Crystal Cacao 2x Create',
+    bild: BF_GOLD_BILDER['kakao-2x-create'],
+    bildAlt: 'Zwei Packungen Crystal Cacao Create',
     link: 'https://crystal-cacao.com/cart/44685294567692:2?discount=BF26-KAKAO-NKSKX',
   },
 };
@@ -216,6 +247,53 @@ export function bfDealLink(seite, lines) {
     return deal.linkJeLaenge[cm] ?? null;
   }
   return deal.link ?? null;
+}
+
+/** BF-Gold-Bild einer Deal-Seite (Kakao: das Bild des Sets der Seite). */
+export function bfDealBild(seite) {
+  const deal = seite ? bfDeal(seite.deal) : null;
+  if (!deal) return null;
+  return {url: seite.bild ?? deal.bild, altText: seite.bildAlt ?? deal.bildAlt};
+}
+
+/**
+ * BF-Gold-Bild als erstes Bild der Deal-Seite (Elina EL-20261111-a9af196f): vorn
+ * in product.images und als Bild der gewählten Variante (die Standard-Seite
+ * zeigt selectedOrFirstAvailableVariant.image als Hauptbild). `filter` darf
+ * Produktfotos aussortieren (z. B. unscharfe auf der Angebotsfassung).
+ */
+export function bfDealBildSetzen(product, seite, filter = null) {
+  const b = bfDealBild(seite);
+  const nodes = product?.images?.nodes;
+  if (!b?.url || !Array.isArray(nodes)) return product;
+  const vorn = {
+    id: `bf-deal-bild-${seite.handle ?? seite.deal}`,
+    url: b.url,
+    altText: b.altText,
+    width: BF_GOLD_KANTE,
+    height: BF_GOLD_KANTE,
+  };
+  const alt = bfDeal(seite.deal)?.altBild;
+  const rest = (filter ? nodes.filter(filter) : nodes).filter(
+    (n) => n?.url !== b.url && !(alt && String(n?.url ?? '').split('?')[0].endsWith('/' + alt)),
+  );
+  const variante = (v) => (v && typeof v === 'object' ? {...v, image: vorn} : v);
+  // Das frühere Deal-Bild auch in Varianten-Bildern (Größenwahl, Nachbarvarianten) durch das Gold-Bild ersetzen,
+  // damit es nach einem Größenwechsel nicht zurückkommt.
+  const tausch = (wert, tiefe = 0) => {
+    if (!alt || tiefe > 8 || wert === null || typeof wert !== 'object') return wert;
+    if (Array.isArray(wert)) return wert.map((x) => tausch(x, tiefe + 1));
+    if (typeof wert.url === 'string' && wert.url.split('?')[0].endsWith('/' + alt)) return vorn;
+    const kopie = {};
+    for (const [k, v] of Object.entries(wert)) kopie[k] = tausch(v, tiefe + 1);
+    return kopie;
+  };
+  const neu = tausch(product);
+  return {
+    ...neu,
+    images: {...product.images, nodes: [vorn, ...rest]},
+    selectedOrFirstAvailableVariant: variante(neu.selectedOrFirstAvailableVariant),
+  };
 }
 
 /** Galerie-Kacheln ohne den aktuellen Deal. */
