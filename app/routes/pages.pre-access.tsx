@@ -6,7 +6,12 @@
 // Formular: Mail-Manager-Formular 27 (KONFIG), Erfolgsseite exakt https://qiblanco.com/pages/bf-deals (EL-20261109-4e7db5c4).
 // Bleibt noindex wie bisher (Eintrag in ~/lib/seo).
 // Rückbau: die Fassung vor EL-20261111-e0dc0a54 aus git zurückholen (Datei + app/styles/pre-access.css).
-export {default, links, meta} from './pages.pre-access-b';
+export {default, links} from './pages.pre-access-b';
+
+export const meta = () => [
+  {title: 'Black Friday Pre-Sale | Qi Blanco'},
+  {name: 'robots', content: 'noindex,nofollow'},
+];
 
 export function headers() {
   return {'X-Robots-Tag': 'noindex, nofollow'};

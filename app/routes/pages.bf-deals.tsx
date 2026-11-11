@@ -5,7 +5,12 @@
 // gilt hier sofort mit; die B-Adresse bleibt als Vorschau bestehen.
 // noindex wie die B-Fassung: die Deals sind bis 27.11. nur für Pre-Access-Mitglieder gedacht.
 // Rückbau: diese Datei löschen, dann rendert pages.$handle.jsx wieder die Shopify-Seite.
-export {default, links, meta} from './pages.bf-deals-b';
+export {default, links} from './pages.bf-deals-b';
+
+export const meta = () => [
+  {title: 'Black Friday Deals | Qi Blanco'},
+  {name: 'robots', content: 'noindex,nofollow'},
+];
 
 export function headers() {
   return {'X-Robots-Tag': 'noindex, nofollow'};
