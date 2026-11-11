@@ -459,7 +459,6 @@ export const LEXIKON = [
       "maddox1988"
     ],
     "verlinkt_auf": [
-      "/pages/was-ist-hexagonales-wasser",
       "/pages/wie-funktioniert-schutz-vor-elektrosmog",
       "/pages/gibt-es-studien-zu-elektrosmog-schutz",
       "/pages/ist-qi-blanco-serioes",

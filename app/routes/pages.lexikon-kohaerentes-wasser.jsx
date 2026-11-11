@@ -77,7 +77,7 @@ const BESCHREIBUNG = `«Kohärentes Wasser» bezeichnet die Vorstellung, Wasser 
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-15';
-const GEAENDERT = '2026-11-11';
+const GEAENDERT = '2026-09-15';
 
 export function links() {
   return [{rel: 'stylesheet', href: lexikonStyles}];

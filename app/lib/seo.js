@@ -888,8 +888,7 @@ export const NUR_ROUTE_SEITEN = [
   {
     pfad: '/pages/lexikon',
     // 2026-11-10: Karte „hexagonales Wasser" (Job 20261019-ki-lernschleife-bau-dach-589a3d).
-    // 2026-11-11: Karte „kohärentes Wasser" verweist auf „hexagonales Wasser" (SEO-Maßnahme L22-was-ist-hexagonales-wa-38a1).
-    lastmod: '2026-11-11T12:00:00Z',
+    lastmod: '2026-11-10T03:00:00Z',
     grund:
       'Der Hub des Lexikons (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -920,8 +919,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/lexikon-kohaerentes-wasser',
-    // 2026-11-11: Weiterlesen führt auf „hexagonales Wasser" (SEO-Maßnahme L22-was-ist-hexagonales-wa-38a1).
-    lastmod: '2026-11-11T12:00:00Z',
+    lastmod: '2026-10-16T13:00:00Z',
     grund:
       'Lexikon-Eintrag „kohärentes Wasser“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
