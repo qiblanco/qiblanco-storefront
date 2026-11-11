@@ -124,9 +124,17 @@ export const NUMMER = {
    * Stück x 159–1772, y 862–1146), 3:1 mit dem Stück mittig. `gravur` = Mitte
    * der Nummer in Anteilen des AUSSCHNITTS, nach der Spiegelung gemessen:
    * mittig auf dem Band.
+   * Seit 11.11.2026 die RICHTIGE Seite (Z77, Christian 26.10.: „es ist aktuell
+   * noch die falsche seite auf dem bild“): die Fläche mit der Editions-Gravur
+   * („111/111 – First Edition“ auf qi-alpha-03-rueckseite), gegenüber von
+   * „Qi Alpha ®“. Gerendert aus Lucas QiAlpha.blend ohne Schriftzug, in Lage,
+   * Ausschnitt und Lichtverlauf der Vorgängerdatei; Band-Mitte gemessen
+   * x 0,377 / y 0,500, die Gravur-Lage bleibt. Rückweg: Vorgänger
+   * qi-alpha-05-seite-gravurflaeche.jpg?v=1793021845 (Job
+   * 20261111-qi-alpha-gravurbild-richtige-seite-rendern-z77).
    */
   bildGravur: {
-    url: `${CDN}/files/qi-alpha-05-seite-gravurflaeche.jpg?v=1793021845&crop=region&crop_left=102&crop_top=716&crop_width=1728&crop_height=576`,
+    url: `${CDN}/files/qi-alpha-05-seite-gravurflaeche-edition.jpg?v=1794390489&crop=region&crop_left=102&crop_top=716&crop_width=1728&crop_height=576`,
     alt: 'Qi Alpha®, das ganze Stück mit deiner Seriennummer als Gravur',
     breite: 1200,
     hoehe: 400,
