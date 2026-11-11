@@ -98,10 +98,10 @@ export const BF_DEALS = [
  * Seite gerendert wird, `art` die Fassung (alpha-angebot, alpha-qibracelet,
  * alpha-qihome, standard).
  */
-// 8kendiw34hd und pjdz538hgs0 (die bisherigen Ziele der Weiterleitung) sind
-// verdrahtet (Route ruft bfDealSeite), stehen aber noch NICHT in dieser Liste:
-// ihre Deal-Fassung geht als eigener Schritt live (Pixel-Soll-Freigabe der
-// beiden Bestandsseiten, Folgeauftrag zu EL-20261111-aff06215). Dann hier:
+// 8kendiw34hd und pjdz538hgs0 (die bisherigen Ziele der Weiterleitung) stehen
+// noch NICHT in dieser Liste: ihre Deal-Fassung geht als eigener Schritt live
+// (Folgeauftrag zu EL-20261111-aff06215): Route verdrahten wie
+// products.$handle.jsx (bfDealSeite -> ladeBfDealAlpha -> BfDealAlpha) und hier:
 //   '8kendiw34hd': {deal: '2x-qione-2-pro', basis: '8kendiw34hd', art: 'alpha-angebot'},
 //   pjdz538hgs0: {deal: 'qione-2-pro-necklace', basis: 'pjdz538hgs0', art: 'alpha-angebot'},
 export const BF_DEAL_SEITEN = {
