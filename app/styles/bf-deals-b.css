@@ -1,7 +1,7 @@
 /* bf-deals-b.css: Black-Friday-Deal-Übersicht DACH, B-Fassung (Elina EL-20261109-79b117c7, gehört zu EL-20261109-bda7a985).
  * 1:1 aus der Master-Vorlage bfd.css (gleicher Aufbau wie qi-blanco.com/pages/bf-deals-b), nur Text/Preise/Links je Markt.
  * Rückbau: diese Datei und app/routes/pages.bf-deals-b.tsx löschen. */
-.bfd{--g:#f2bf72;--g1:#f6cc86;--g2:#e7ad5c;--grund:#0c0a08;--hell:#f5efe6;--matt:rgba(245,239,230,.72);--rand:rgba(245,239,230,.14);--satz:22px;--titel:34px;--betrag:34px;--name:22px;--zahl:34px;position:relative;width:var(--bfd-breite,100vw);margin-left:calc(50% - var(--bfd-breite,100vw)/2);margin-top:-1px;background:var(--grund);color:var(--hell);font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif;overflow:hidden;overflow:clip;text-align:center}
+.bfd{--g:#f2bf72;--g1:#f6cc86;--g2:#e7ad5c;--grund:#0c0a08;--hell:#f5efe6;--matt:rgba(245,239,230,.72);--rand:rgba(245,239,230,.14);--satz:clamp(19px,calc(19px + (100vw - 320px) * .075),22px);--titel:clamp(29px,calc(29px + (100vw - 320px) * .125),34px);--betrag:clamp(29px,calc(29px + (100vw - 320px) * .125),34px);--name:clamp(20px,calc(20px + (100vw - 320px) * .05),22px);--zahl:clamp(29px,calc(29px + (100vw - 320px) * .125),34px);position:relative;width:var(--bfd-breite,100vw);margin-left:calc(50% - var(--bfd-breite,100vw)/2);margin-top:-1px;background:var(--grund);color:var(--hell);font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif;overflow:hidden;overflow:clip;text-align:center}
 .bfd *{box-sizing:border-box}
 .bfd__innen{max-width:72rem;margin:0 auto;padding:2rem 1.125rem 3.5rem}
 .bfd__kopf{display:grid;gap:1.5rem;justify-items:center;margin:0 0 2.25rem}
@@ -53,7 +53,7 @@
 .bfd__vertrauen{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1rem;margin:2.5rem 0 0!important;padding:1.4rem 0 0!important;border-top:1px solid rgba(245,239,230,.2);list-style:none;color:var(--hell);font-size:15px;line-height:1.35}
 .bfd__vertrauen li{margin:0;padding:0;list-style:none}
 .bfd__vertrauen b{color:var(--g);font-weight:700}
-@media (max-width:359px){.bfd{--satz:19px;--titel:29px;--betrag:29px;--name:20px;--zahl:29px}}
+/* 320-359px: Groessen gleiten (clamp) statt Sprung an 359px (hb-formate breakpoint-deckung); ab 360px exakt wie bisher */
 @media (min-width:600px){
 .bfd{--satz:24px;--titel:46px;--betrag:46px;--zahl:40px}
 .bfd__innen{padding:2.5rem 2rem 4.5rem}
