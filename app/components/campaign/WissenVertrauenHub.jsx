@@ -35,15 +35,15 @@ export function WissenVertrauenHub() {
               Der Satz „In zwei dieser Arbeiten …" ist der Satz aus
               KritikSeite.jsx. */}
           <p className="wv__lead">
-            Im Labor gemessen, am Menschen offen: Vier von fünf veröffentlichten{' '}
+            Im Labor gemessen, am Menschen offen. Vier von fünf veröffentlichten{' '}
             <Link prefetch="intent" to="/pages/studien">
               Arbeiten zu den Qi-Blanco-Geräten
             </Link>{' '}
             untersuchen Zellkulturen, eine kontrollierte Studie am Menschen gibt
-            es nicht. In zwei dieser Arbeiten hielten Zellen unter
-            Handystrahlung mit dem QiOne® 2 Pro deutlich besser stand als ohne.
-            Ob es zu dir passt, prüfst du an dir selbst: 20 Tage tragen, und
-            wenn es nichts für dich ist, ohne Angabe von Gründen zurückgeben.
+            es nicht. In zwei dieser Arbeiten haben Zellen unter Handystrahlung
+            mit dem QiOne® 2 Pro deutlich besser standgehalten als ohne. Ob es
+            zu dir passt, prüfst du an dir selbst. 20 Tage tragen, und wenn es
+            nichts für dich ist, ohne Angabe von Gründen zurückgeben.
           </p>
           <p className="wv__lead">
             Was Elektrosmog ist, wie ein Schutz funktioniert und was andere mit

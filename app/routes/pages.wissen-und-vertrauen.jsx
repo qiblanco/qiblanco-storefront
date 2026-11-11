@@ -49,8 +49,8 @@ const PFAD = WV_HUB.pfad;
  */
 const TITEL = `${WV_FRAGE} ${WV_HUB.anker}`;
 const BESCHREIBUNG =
-  `${WV_FRAGE} Zwei Laborarbeiten messen Zellen unter Handystrahlung, ` +
-  'am Menschen ist es offen. Dazu alle Fragen rund um Qi Blanco.';
+  `${WV_FRAGE} Im Labor hielten Zellen unter Handystrahlung mit dem ` +
+  'QiOne® 2 Pro besser stand, am Menschen ist es offen.';
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR — siehe pages.kritik.jsx. Wer

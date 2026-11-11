@@ -350,12 +350,11 @@ export function KritikSeite() {
               im Titel und im ersten Satz beantwortet. Bestehende Sätze und
               Linktexte dieser Seite bleiben unverändert. */}
           <p>
-            Die kurze Antwort auf die Frage{' '}
             <a href="/pages/wissen-und-vertrauen">
               Ist Elektrosmog-Schutz wissenschaftlich belegt?
             </a>{' '}
-            steht zusammen mit allen weiteren Seiten zum Thema in der Übersicht
-            Wissen &amp; Vertrauen.
+            Die kurze Antwort findest du in der Übersicht Wissen &amp; Vertrauen,
+            zusammen mit allen weiteren Seiten zum Thema.
           </p>
         </div>
       </section>
