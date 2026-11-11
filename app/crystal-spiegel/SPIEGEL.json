@@ -1,6 +1,5 @@
 {
   "basis": [
-    "app/components/AddToCartButton.jsx",
     "app/components/Aside.jsx",
     "app/components/EuGewaehrleistungsLabel.jsx",
     "app/components/ProductFAQ.jsx",
@@ -33,8 +32,9 @@
     "app/lib/reihe-erst-jede-person.js"
   ],
   "dateien": {
+    "app/crystal-spiegel/components/AddToCartButton.jsx": "b9ee1ef881c609d4c07d86bbd0ed9aad367709738cfc3c5ddd83e7ac0b9a3f53",
     "app/crystal-spiegel/components/CacaoPriceDisplay.jsx": "d9f21fc9ab2274a58eadc30df54b4df606fa7e975d6e6e6beaafd4e5c4528824",
-    "app/crystal-spiegel/components/CacaoProductForm.jsx": "2883e1be7afcac5f713e4d440c91e257a2485a1f1a710813e8db7385d7fc7951",
+    "app/crystal-spiegel/components/CacaoProductForm.jsx": "b321ac7613c19a108325a0018d7cfdedc86e551f4e4dad6779804f72c823200a",
     "app/crystal-spiegel/components/KachelPreis.jsx": "2c2fe2ed7ed03e0d09792a034a51a96a877356b46d2681183aedd83735eeab7e",
     "app/crystal-spiegel/components/MockShopNotice.jsx": "a9706f5a120526f147321b261100e5d575cf2c2a10a22b08323bc47dcc2b593c",
     "app/crystal-spiegel/components/Preis.jsx": "54b2411c5bdaf1150f8542f34ea90c68352adfce3b746c8f63bc8e2b41d4107b",
@@ -42,7 +42,7 @@
     "app/crystal-spiegel/components/product-pages/Awake.jsx": "26b0ff4e73e5273fe53257fd339c36e0d1465385b6f06b8d21e24e4f051fc2ac",
     "app/crystal-spiegel/components/product-pages/Create.jsx": "08586d83d4761edcae14035888dd891e04821677f0757262fdaa23a873c0df91",
     "app/crystal-spiegel/components/product-pages/Kakao.jsx": "0fe118b5e060c96da7e002e4e899e3cf5de4aa4450aa922fd452a4f64a295eb4",
-    "app/crystal-spiegel/components/product-pages/Kaufleiste.jsx": "f830fb9805a2ad73770a8fde3b43b58b8999cd1928354d6e243789cb6f719141",
+    "app/crystal-spiegel/components/product-pages/Kaufleiste.jsx": "85d10c7ce8d294696c7eb70a7ac84f1fe79651adfef4d7c34456d8569f31d834",
     "app/crystal-spiegel/components/product-pages/SortenAufmacher.jsx": "9e590a51ebdeb9a2071ade0b71f8e0a90a3bfbc2a19e4cf3ec96d1dfa65d0917",
     "app/crystal-spiegel/components/product-pages/SortenSeite.jsx": "b63a5de2de391f10a47b82986ccf2ae6f76ca7b267bdcd706049ba3f995fa79a",
     "app/crystal-spiegel/components/reusables/AbsichtHinweis.jsx": "c839e5234868032e61861c94d6586133eaa93222f8a1fa46baea0908043efd87",
