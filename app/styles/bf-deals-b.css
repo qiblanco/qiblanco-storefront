@@ -59,7 +59,8 @@
 .bfd__pille:focus-visible{outline:2px solid var(--g);outline-offset:3px}
 .bfd__pille:disabled{opacity:.45;text-decoration:line-through;cursor:not-allowed}
 .bfd__vertrauen{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1rem;margin:2.5rem 0 0!important;padding:1.4rem 0 0!important;border-top:1px solid rgba(245,239,230,.2);list-style:none;color:var(--hell);font-size:15px;line-height:1.35}
-.bfd__vertrauen li{margin:0;padding:0;list-style:none}
+.bfd__vertrauen li{margin:0;padding:0;list-style:none;color:#D9D3C7}
+/* Vertrauensraster heller (Elina EL-20261111-6b342bd9): app.css 'p, li' faerbte die Zeilen #4A4741, Groesse bleibt */
 .bfd__vertrauen b{color:var(--g);font-weight:700}
 /* 320-359px: Groessen gleiten (clamp) statt Sprung an 359px (hb-formate breakpoint-deckung); ab 360px exakt wie bisher */
 @media (min-width:600px){
