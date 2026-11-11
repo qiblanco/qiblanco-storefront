@@ -56,7 +56,7 @@ type Kachel = {
   link?: string;
   sets?: Set[];
   // Größenwahl (EL-20261111-9065b985): gleiche Pillen wie die Kakao-Sets, ein Warenkorb-Link je Größe.
-  groessen?: Set[];
+  varianten?: Set[];
   start?: number;
 };
 
@@ -89,7 +89,7 @@ const KACHELN: Kachel[] = [
     alt: '1.332 €',
     neu: '1.082 €',
     start: 1,
-    groessen: [
+    varianten: [
       {pille: 'XS · 40 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,39285852176454:1?discount=BF26-PROKETTE-PMB52'},
       {pille: 'S · 45 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,31887553396806:1?discount=BF26-PROKETTE-PMB52'},
       {pille: 'M · 50 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,39285855223878:1?discount=BF26-PROKETTE-PMB52', aus: true},
@@ -107,7 +107,7 @@ const KACHELN: Kachel[] = [
     alt: '1.578 €',
     neu: '1.378 €',
     start: 1,
-    groessen: [
+    varianten: [
       {pille: 'S', neu: '1.378 €', alt: '1.578 €', link: '/cart/43666904056076:1?discount=BF26-BRACELET-GM5JJ'},
       {pille: 'M', neu: '1.378 €', alt: '1.578 €', link: '/cart/43666904088844:1?discount=BF26-BRACELET-GM5JJ'},
       {pille: 'L', neu: '1.378 €', alt: '1.578 €', link: '/cart/43673322160396:1?discount=BF26-BRACELET-GM5JJ'},
@@ -263,7 +263,7 @@ const Pfeil = () => (
 );
 
 function SetKachel({k}: {k: Kachel}) {
-  const sets = (k.sets || k.groessen) as Set[];
+  const sets = (k.sets || k.varianten) as Set[];
   const [wahl, setWahl] = useState(k.start ?? 0);
   const s = sets[wahl];
   const klasse = k.sets
@@ -367,7 +367,7 @@ export default function BfDealsB() {
         </header>
         <ul className="bfd__liste" aria-label="Black-Friday-Angebote">
           {KACHELN.map((k) =>
-            k.sets || k.groessen ? (
+            k.sets || k.varianten ? (
               <SetKachel key={k.name} k={k} />
             ) : (
               <LinkKachel key={k.name} k={k} />
