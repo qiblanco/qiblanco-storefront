@@ -18,6 +18,12 @@ import {EuGewaehrleistungsLink} from '~/components/EuGewaehrleistungsLabel';
  * letzten Bild und dem roten Knopf (Christian: Links-Leiste „muss weg auf der
  * LP“, „Nur die Links-Leiste“; Job 20261031-update-qi-alpha-lp-links-leiste-
  * seitenende-entfernen-r2). `seite="lp"` hat damit keinen Aufrufer mehr.
+ *
+ * ELEMENT <div>, NICHT <footer> (11.11.2026, Job 20261111-folge-qi-alpha-
+ * designscore-97-typo-skala; Hausregel FEHLER-DB F-2584): app.css färbt mit
+ * `footer * { color: … !important }` jedes <footer> im Dokument für den
+ * Hausfuß. Der EU-Hinweis, der sich aus dieser Zeile öffnet, stand dadurch
+ * weiß auf weißem Grund. role="navigation" trägt die Beschriftung.
  */
 const VERWEISE = [
   {to: '/pages/impressum', label: 'Impressum'},
@@ -31,9 +37,10 @@ const VERWEISE = [
 /** @param {{seite: 'lp' | 'kauf'}} props */
 export function QiAlphaRechtsZeile({seite}) {
   return (
-    <footer
+    <div
       className={`qar qar--${seite}`}
       data-qi-alpha-rechtszeile={seite}
+      role="navigation"
       aria-label="Rechtliches"
     >
       <ul className="qar-liste">
@@ -52,6 +59,6 @@ export function QiAlphaRechtsZeile({seite}) {
         )}
       </ul>
       <p className="qar-marke">© Qi Blanco</p>
-    </footer>
+    </div>
   );
 }
