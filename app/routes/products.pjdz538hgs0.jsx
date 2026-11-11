@@ -8,6 +8,9 @@ import {
   StandardProduct,
 } from '~/components/product-pages/AngebotHeutigeSeite';
 import {AngebotKonfigurator} from '~/components/product-pages/AngebotKonfigurator';
+import {bfDealSeite} from '~/components/black-friday-2026/bf-deals-daten';
+import {ladeBfDealAlpha} from '~/components/black-friday-2026/bf-deal-seite.server';
+import {BfDealAlpha} from '~/components/black-friday-2026/BfDealSeite';
 import * as ALPHA_DATEN from '~/components/product-pages/pjdz538hgs0-alpha-daten';
 
 /*
@@ -36,6 +39,14 @@ export const meta = ({data}) => [
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  // BF-DEAL (Elina EL-20261111-aff06215): bis 30.11.2026 23:59 Berlin trägt
+  // diese Adresse die Deal-Fassung (BF-Preis, Warenkorb-Link, Deal-Galerie),
+  // danach von selbst wieder die Seite darunter.
+  const dealSeite = bfDealSeite('pjdz538hgs0');
+  if (dealSeite) {
+    const deal = await ladeBfDealAlpha(args, dealSeite);
+    if (deal) return deal;
+  }
   if (konfiguratorAn(args.context.env, 'pjdz538hgs0')) {
     return ladeProduktSeite(args, {
       handle: 'pjdz538hgs0',
@@ -49,7 +60,8 @@ export async function loader(args) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, konfigurator, ketten} = useLoaderData();
+  const {product, konfigurator, ketten, bfDealSeite: dealSeite} = useLoaderData();
+  if (dealSeite) return <BfDealAlpha seite={dealSeite} product={product} ketten={ketten} />;
   if (konfigurator) {
     return <AngebotKonfigurator product={product} ketten={ketten} daten={ALPHA_DATEN} />;
   }

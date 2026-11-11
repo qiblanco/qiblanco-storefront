@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
+import {DealGalerie, useBfDealSeite} from '~/components/black-friday-2026/DealGalerie';
 import {useAside} from '~/components/Aside';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
 import {useMarktLand} from '~/lib/markt-land';
@@ -713,6 +714,10 @@ export function AlphaVorlage({
         </div>
       </section>
 
+      {/* BF-Deal-Galerie (Elina EL-20261111-aff06215): unter dem Warenkorb-Bereich,
+          über „What's in the Box“. Rendert nur auf einer BF-Deal-Seite (Kontext). */}
+      <DealGalerie />
+
       {BOX ? (
         <section
           className="tas-box av-box"
@@ -952,9 +957,63 @@ function bandQuelle(BAND) {
  * (video360-ersatzbild.jsx), bis das Video wirklich läuft.
  */
 function BandVideo({band}) {
-  if (band.art === 'loop') return <BandLoop loop={band} />;
-  if (band.art === 'qione') return <Produkt360Video className="av-band-video" />;
-  return <ImgixVideo videoPath={band.videoPath} ersatz={band.ersatz} className="av-band-video" />;
+  const dealSeite = useBfDealSeite();
+  let medium;
+  if (band.art === 'loop') medium = <BandLoop loop={band} />;
+  else if (band.art === 'qione') medium = <Produkt360Video className="av-band-video" />;
+  else medium = <ImgixVideo videoPath={band.videoPath} ersatz={band.ersatz} className="av-band-video" />;
+  return dealSeite ? <BfDealTippStartet>{medium}</BfDealTippStartet> : medium;
+}
+
+/*
+ * NUR AUF DEN BF-DEAL-SEITEN (Elina EL-20261111-aff06215): ein Tipp auf die
+ * Bühne startet das Video im Rahmen dieser Geste. Gemessen 11.11.2026
+ * (mobil-pruefstand, iOS Safari und iOS Chrome im Stromsparmodus, an der
+ * Vorschau UND an der unveränderten Live-Seite 8kendiw34hd): play() ohne
+ * Geste wird abgelehnt, der Film-Dekoder malt sein erstes Bild und steht,
+ * und der erste Tipp startet nichts, weil der Gesten-Weg bei gezeigter
+ * Leinwand aussetzt. Hier startet die erste Berührung das echte Video; sobald es läuft,
+ * tritt die stehende Leinwand zurück. `display: contents` lässt das Layout
+ * unberührt. Unter „Bewegung reduzieren“ startet nichts. Die normalen
+ * Produktseiten bleiben unverändert (Befund dort an Christian gemeldet).
+ */
+function BfDealTippStartet({children}) {
+  const huelleRef = useRef(null);
+  useEffect(() => {
+    const huelle = huelleRef.current;
+    if (!huelle) return undefined;
+    // Das Video ist Dekoration (aria-hidden), der Tipp ist eine Abkürzung für
+    // Touch; darum ein nativer Listener statt eines Bedienelements.
+    const starten = () => {
+      const v = huelle.querySelector('video');
+      if (!v || !v.paused) return;
+      if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return;
+      const leinwandWeg = () => {
+        const l = huelle.querySelector('canvas[data-qb-dekoder]');
+        if (l) l.style.display = 'none';
+      };
+      v.addEventListener('playing', leinwandWeg, {once: true});
+      try {
+        const p = v.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      } catch {
+        /* iOS wirft hier manchmal statt abzulehnen (WebKit-Bug 216887) */
+      }
+    };
+    // Wie der Gesten-Weg von Produkt360Video: die erste Berührung irgendwo auf
+    // der Seite zählt (auf iOS Chrome liegt über der Bühne eine Leiste, ein
+    // Tipp auf das Video trifft dort nicht das Video). touchend und click
+    // sind auf iOS Gesten, in denen play() erlaubt ist.
+    const arten = ['touchend', 'click'];
+    const an = {capture: true, passive: true};
+    arten.forEach((t) => document.addEventListener(t, starten, an));
+    return () => arten.forEach((t) => document.removeEventListener(t, starten, {capture: true}));
+  }, []);
+  return (
+    <div ref={huelleRef} className="bf-deal-tipp" style={{display: 'contents'}}>
+      {children}
+    </div>
+  );
 }
 
 /**
