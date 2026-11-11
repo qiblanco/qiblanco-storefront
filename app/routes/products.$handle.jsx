@@ -212,18 +212,7 @@ export async function loader(args) {
     if (!deal) throw new Response(null, {status: 404});
     return deal;
   }
-  if (dealSeite) {
-    const basisDaten = await loadCriticalData({
-      ...args,
-      params: {...args.params, handle: dealSeite.basis},
-    });
-    if (!bfDealMarktPasst(basisDaten.product)) throw new Response(null, {status: 404});
-    return {
-      ...basisDaten,
-      product: bfDealPreiseSetzen(basisDaten.product, dealSeite),
-      bfDealSeite: dealSeite,
-    };
-  }
+  if (dealSeite) return ladeBfDealStandard(args, dealSeite);
 
   const campaignDeal = getTenYearsDealByHandle(args.params.handle);
 
@@ -339,6 +328,25 @@ function RenderProductPage({product}) {
     <></>
   )
 } */
+
+/**
+ * BF-Deal-Seite in der Standard-Fassung (Kakao): Daten des Basisprodukts mit
+ * BF-Preis und UVP aus der Datenstelle. Ausserhalb des Loaders, damit dessen
+ * Reihenfolge (10-Jahre-Zaun vor Redirect und Produkt-Query) unberuehrt bleibt.
+ * @param {LoaderFunctionArgs} args
+ */
+async function ladeBfDealStandard(args, dealSeite) {
+  const basisDaten = await loadCriticalData({
+    ...args,
+    params: {...args.params, handle: dealSeite.basis},
+  });
+  if (!bfDealMarktPasst(basisDaten.product)) throw new Response(null, {status: 404});
+  return {
+    ...basisDaten,
+    product: bfDealPreiseSetzen(basisDaten.product, dealSeite),
+    bfDealSeite: dealSeite,
+  };
+}
 
 export default function Product() {
   /** @type {LoaderReturnData} */
