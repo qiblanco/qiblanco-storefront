@@ -43,7 +43,7 @@
   }
   var roh = '';
   // Gelesen wird wie am Server (cookieAusHeader) das ERSTE CookieConsent (Naht-Test C1). Doppelt steht es nur
-  // im Übergang host-only -> Domain; setzeRoh räumt das host-only Cookie bei jedem Schreiben weg.
+  // im Übergang host-only -> Domain; umziehen() und setzeRoh räumen das host-only Cookie weg.
   function leseCookie() {
     var m = d.cookie.match(/(?:^|;\s*)CookieConsent=([^;]*)/);
     if (!m) return null;
@@ -84,10 +84,31 @@
     CB.consented = !!(c.preferences || c.statistics || c.marketing);
     CB.declined = !CB.consented;
   }
+  // Übergang host-only -> Domain-Cookie, nur auf den Laden-Domains und nur, wenn nötig: das host-only
+  // Cookie wird gelöscht; trägt danach genau ein Domain-Cookie dieselbe Wahl, bleibt alles, wie es ist.
+  // Stehen zwei Cookies da (z. B. Wahl in einem Tab mit älterem Stand), gewinnt die jüngere Wahl (utc).
+  function alleRoh() {
+    var r = [], re = /(?:^|;\s*)CookieConsent=([^;]*)/g, m;
+    while ((m = re.exec(d.cookie))) r.push(m[1]);
+    return r;
+  }
+  function umziehen() {
+    if (!cookieDomain()) return;
+    var alle = alleRoh();
+    if (!alle.length) return;
+    var wahl = alle[0], wc = leseWert(wahl);
+    for (var i = 1; i < alle.length; i++) {
+      var c = leseWert(alle[i]);
+      if (c && (!wc || c.utc > wc.utc)) { wahl = alle[i]; wc = c; }
+    }
+    d.cookie = 'CookieConsent=; path=/; max-age=0';
+    var rest = alleRoh();
+    if (rest.length === 1 && rest[0] === wahl) return;
+    setzeRoh(wahl);
+  }
+  try { umziehen(); } catch (e) {}
   var bestand = leseCookie();
   if (bestand) setze(bestand, bestand.stamp || stempel());
-  // Altbestand host-only -> Domain-Cookie (einmal, gleicher Wert).
-  if (bestand && roh && cookieDomain()) { try { setzeRoh(roh); } catch (e) {} }
 
   // Regelwerk je Region wie Cookiebot.regulations. Dieselbe Regel wie die Leser (regionPolicy in
   // qiblanco-google-tracking.js, MetaPixel.jsx, consent-policy.js): ohne strict-Liste oder ohne Region
@@ -114,10 +135,11 @@
     CB.consent = {stamp: '0', necessary: true, preferences: true, statistics: true, marketing: false, method: 'implied'};
     CB.hasResponse = true; CB.consented = true; CB.declined = false; implizit = true;
   }
-  // Wie die Leser: Opt-out-Region = erlaubt, solange nicht abgelehnt; sonst nur mit Zustimmung.
+  // Wie die Leser (hasDeclined in qiblanco-google-tracking.js): in Opt-out-Regionen ist alles erlaubt,
+  // bis Marketing abgelehnt ist (dann alles aus); sonst nur mit Zustimmung je Kategorie.
   function darf(k) {
     if (k === 'necessary') return true;
-    if (REGEL.optout) return !(CB.hasResponse && !CB.consent[k]);
+    if (REGEL.optout) return !(CB.hasResponse && !CB.consent.marketing);
     return !!(CB.hasResponse && CB.consent[k]);
   }
 
@@ -129,12 +151,12 @@
   // Nach einer Wahl (und beim Wiederbesuch): Clarity und UET bekommen das Signal.
   function microsoft() {
     try {
-      if (CB.consent.statistics) {
+      if (darf('statistics')) {
         if (typeof w.clarity !== 'function') w.clarity = function () { (w.clarity.q = w.clarity.q || []).push(arguments); };
         w.clarity('consent');
       } else if (typeof w.clarity === 'function') w.clarity('consent', false);
     } catch (e) {}
-    try { w.uetq = w.uetq || []; w.uetq.push('consent', 'update', {ad_storage: CB.consent.marketing ? 'granted' : 'denied'}); } catch (e) {}
+    try { w.uetq = w.uetq || []; w.uetq.push('consent', 'update', {ad_storage: darf('marketing') ? 'granted' : 'denied'}); } catch (e) {}
   }
 
   function feuere(n) {
@@ -326,8 +348,9 @@
   // erlaubt(k): dieselbe Regel wie die Leser (Region + Wahl), für React-Bausteine wie die YouTube-Fassade.
   // erlaube(k): eine Kategorie zusätzlich erlauben (Platzhalter-Knopf), die übrigen bleiben wie gewählt.
   function erlaube(k) {
-    var c = CB.hasResponse && !implizit ? CB.consent : {preferences: REGEL.optout, statistics: REGEL.optout, marketing: REGEL.optout};
-    if (implizit) c = {preferences: true, statistics: true, marketing: false};
+    // Ohne eigene Wahl werden nur die erbetenen Kategorien gespeichert, nie mehr (eine Opt-out-Region
+    // erlaubt ohnehin alles bis zur Ablehnung; reist der Besucher in eine Opt-in-Region, gilt nur das Erbetene).
+    var c = CB.hasResponse && !implizit ? CB.consent : {preferences: false, statistics: false, marketing: false};
     waehle(k === 'preferences' || !!c.preferences, k === 'statistics' || !!c.statistics, k === 'marketing' || !!c.marketing, 'auswahl');
   }
   w.qbEinwilligung = {fassung: FASSUNG, motor: 'eigen', stand: stand, oeffneEinstellungen: oeffneEinstellungen,
@@ -343,7 +366,7 @@
     if (wahl === 'einstellungen') oeffneEinstellungen();
     // Opt-out-Weg (nur in Opt-out-Regionen sichtbar): Marketing aus ("Do Not Sell or Share"), der Rest bleibt.
     else if (wahl === 'optout') {
-      var o = CB.hasResponse && !implizit ? CB.consent : {preferences: true, statistics: true};
+      var o = CB.hasResponse && !implizit ? CB.consent : {preferences: false, statistics: false};
       waehle(!!o.preferences, !!o.statistics, false, 'auswahl');
     }
     else if (wahl === 'notwendig') waehle(false, false, false, 'notwendig');
@@ -393,6 +416,7 @@
       shopifyMitWarten();
     } else {
       platzhalter();
+      if (implizit) { microsoft(); shopifyMitWarten(); }
       zeige(b, !frueh);
       feuere('OnDialogInit');
       feuere('OnDialogDisplay');

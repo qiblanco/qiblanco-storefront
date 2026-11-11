@@ -692,6 +692,8 @@ export function YoutubeTimestamp({
    */
   const waermeVor = useCallback(() => {
     if (!vorwaermen || schonGewaermt.current) return;
+    // Ohne Marketing-Erlaubnis keine Verbindung zu YouTube, auch kein preconnect (Z11 s02, Platzhalter).
+    if (!marketingErlaubt()) return;
     schonGewaermt.current = true;
     try {
       if (willSparen()) return;

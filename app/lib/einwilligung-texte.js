@@ -67,7 +67,8 @@ export const TEXTE = {
  *   optout       Opt-out-Weg für Besucher aus Opt-out-Regionen (Regelwerk je Region, Lücke 2).
  *                Englisch ist die übliche Formel der US-Opt-out-Regeln.
  *   platzhalter  Platzhalter an einer blockierten Einbettung (Lücke 3), Knopf darunter.
- * Der englische Kurztext oben steht wörtlich wie im Global Englisch-Shop (s07, texte_hash 9f044c89).
+ * Der englische Kurztext oben steht wörtlich wie im Global Englisch-Shop (s07; dort texte_hash 9f044c89 nach
+ * der Liquid-Rechnung; hier rechnet texteHash über den ganzen TEXTE.en-Block und ergibt e5492878).
  */
 export const ZUSATZ = {
   de: {
