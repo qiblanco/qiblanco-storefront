@@ -2,7 +2,8 @@ import {redirect} from 'react-router';
 import TheAlpha from '~/components/campaign/TheAlpha';
 import {TheAlphaArm} from '~/components/campaign/TheAlphaArm';
 import {entscheideSeitenExperiment} from '~/lib/experiment-weiche.server';
-import {canonicalLink} from '~/lib/seo';
+import {absoluteCanonical, canonicalLink} from '~/lib/seo';
+import {ORG_ID, SITE_ID, brotkrume} from '~/lib/seiten-seo';
 import theAlphaPremiumStyles from '~/styles/the-alpha-premium.css?url';
 
 /*
@@ -52,21 +53,54 @@ export function links() {
   ];
 }
 
+const BESCHREIBUNG =
+  'Qi Alpha® mit Diamant, Limited 1st. Edition: 111 Stück, jedes mit eigener Nummer der Alpha-Serie. Jetzt exklusiv reservieren.';
+const TEILBILD =
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-01-front.jpg?v=1792849253';
+
+/*
+ * STRUKTURIERTE DATEN (Vorgang #129 der Schaltwarte, 2026-11-11): die Wache
+ * auffindbarkeit-beide-laeden meldete /pages/Qi-Alpha als einzige
+ * indexierbare Seite des Global Deutsch-Shops ohne JSON-LD. Diese Route
+ * exportiert ihr meta selbst und nutzt seitenSignale() nicht, weil sie
+ * og:title und og:image von Hand setzt (die große Funktion hätte beide
+ * doppelt geschrieben). Sie bekommt deshalb nur den Teil, der fehlte:
+ * WebPage + Brotkrume, mit denselben Ankern wie jede /pages-Seite
+ * (ORG_ID, SITE_ID, brotkrume aus ~/lib/seiten-seo, dort unverändert).
+ * Nur der <head>, an Inhalt und Gestaltung der Seite ändert sich nichts.
+ * Ein Product-Knoten gehört auf die Kaufseite /products/qi-alpha, nicht
+ * auf die Landingpage.
+ */
+function seitenSchema() {
+  const url = absoluteCanonical(KANON_PFAD);
+  const name = 'Qi Alpha®, Limited 1st. Edition 111/111';
+  return [
+    {
+      'script:ld+json': {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        '@id': `${url}#webpage`,
+        url,
+        name,
+        description: BESCHREIBUNG,
+        inLanguage: 'de-DE',
+        isPartOf: {'@id': SITE_ID},
+        publisher: {'@id': ORG_ID},
+        primaryImageOfPage: {'@type': 'ImageObject', url: TEILBILD},
+      },
+    },
+    {'script:ld+json': brotkrume({url, name: 'Qi Alpha®'})},
+  ];
+}
+
 /** @type {MetaFunction} */
 export const meta = () => [
   {title: 'Qi Alpha®, Limited 1st. Edition 111/111 | Qi Blanco'},
-  {
-    name: 'description',
-    content:
-      'Qi Alpha® mit Diamant, Limited 1st. Edition: 111 Stück, jedes mit eigener Nummer der Alpha-Serie. Jetzt exklusiv reservieren.',
-  },
+  {name: 'description', content: BESCHREIBUNG},
   {property: 'og:title', content: 'Qi Alpha®, Limited 1st. Edition 111/111'},
-  {
-    property: 'og:image',
-    content:
-      'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qi-alpha-01-front.jpg?v=1792849253',
-  },
+  {property: 'og:image', content: TEILBILD},
   canonicalLink(KANON_PFAD),
+  ...seitenSchema(),
 ];
 
 /** @param {LoaderFunctionArgs} args */

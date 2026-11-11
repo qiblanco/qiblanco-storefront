@@ -125,3 +125,15 @@ test('TW2 die Karte wird genau EINMAL gesetzt, nicht doppelt', () => {
   }
   assert.equal(d.filter((x) => x.property === 'og:image').length, 1);
 });
+
+// Vorgang #129 (2026-11-11): ein Blog ohne Beitragsbilder bekam kein og:image.
+test('blogTeilbild: nie leer, Coming Home mit eigenem Bild, sonst Markenbild', async () => {
+  const m = await import('../app/lib/blog-seo.js');
+  assert.match(m.blogTeilbild('coming-home'), /^https:\/\/cdn\.shopify\.com\/.*qiblanco-berlin/);
+  assert.equal(m.blogTeilbild('wissen'), m.MARKEN_TEILBILD_URL);
+  assert.equal(m.blogTeilbild(undefined), m.MARKEN_TEILBILD_URL);
+  assert.equal(m.blogTeilbild('irgendein-neuer-blog'), m.MARKEN_TEILBILD_URL);
+  const tags = m.blogMeta({pfad: '/blogs/coming-home/x', titel: 'X', bildUrl: m.blogTeilbild('coming-home'), typ: 'article'});
+  assert.ok(tags.some((t) => t.property === 'og:image'));
+  assert.ok(tags.some((t) => t.name === 'twitter:card'));
+});

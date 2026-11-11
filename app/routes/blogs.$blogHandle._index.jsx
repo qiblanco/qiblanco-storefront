@@ -1,7 +1,7 @@
 import {Link, useLoaderData} from 'react-router';
 import {Image, getPaginationVariables} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {blogIndexSignale, blogMeta} from '~/lib/blog-seo';
+import {blogIndexSignale, blogMeta, blogTeilbild} from '~/lib/blog-seo';
 import {absoluteCanonical} from '~/lib/seo';
 import {BESCHREIBUNGEN} from '~/lib/seiten-beschreibung';
 import {BLOG_BESTAND_FRAGMENT, istEigenstaendig} from '~/lib/blog-bestand';
@@ -100,7 +100,15 @@ export const meta = ({data, location, params}) => {
   // bleibt og:image weg — und mit ihm die twitter:card, die sonst ein großes
   // Bild ZUSAGEN würde, das es nicht gibt (blogMeta setzt beide in derselben
   // Bedingung).
-  const bildUrl = artikel.find((a) => a?.image?.url)?.image?.url;
+  //
+  // RÜCKFALL SEIT 2026-11-11 (Vorgang #129): führt KEIN Artikel ein Bild
+  // (Coming Home), kommt das Teilbild des Blogs, sonst das Markenbild
+  // (blogTeilbild in ~/lib/blog-seo). Der Satz oben „bleibt og:image weg"
+  // gilt damit nicht mehr; die twitter:card bleibt gedeckt, weil immer ein
+  // Bild da ist.
+  const bildUrl =
+    artikel.find((a) => a?.image?.url)?.image?.url ||
+    blogTeilbild(params?.blogHandle);
 
   // DIE SEITENZAHL MUSS HINTER absoluteCanonical() DRANGEHAENGT WERDEN, nicht
   // davor: jene Funktion SCHNEIDET den Query-String ab (app/lib/seo.js,

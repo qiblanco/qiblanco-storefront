@@ -119,6 +119,40 @@ export const MARKEN_TEILBILD_URL =
   'qiblanco-com-qione-2-pro-transparent_1.webp?width=1024';
 
 /**
+ * Teilbild je Blog, wenn weder der Artikel noch (auf der Übersicht) einer
+ * seiner Artikel ein Beitragsbild führt.
+ *
+ * WARUM (Vorgang #129 der Schaltwarte, 2026-11-11): der Blog Coming Home
+ * führt in Shopify KEIN Beitragsbild, an keinem seiner Wochenartikel. Die
+ * Artikelroute nahm nur `article.image`, die Blog-Übersicht nur das Bild des
+ * neuesten Artikels; beide hatten keinen Rückfall. Die Wache
+ * auffindbarkeit-beide-laeden zählte am 2026-11-11 zehn indexierbare Seiten
+ * ohne og:image, und jeder neue Wochenartikel kam dazu. Der Fix-Ort ist
+ * deshalb die Routen-Klasse, nicht der einzelne Artikel: auch ein künftiger
+ * Blog ohne Bilder bekommt hier sein Teilbild.
+ *
+ * Coming Home bekommt das Bild seiner eigenen Seite /pages/coming-home (Anna
+ * und Christian, BILD in app/routes/pages.coming-home.jsx), weil ein geteilter
+ * Link dort Menschen zeigen soll, kein Produkt. Jeder andere Blog fällt auf
+ * das Markenbild zurück. Es wird nichts erfunden: beide Bilder sind gepflegte
+ * Teilbilder des Hauses. In die strukturierten Daten (blog-schema.js) geht
+ * der Rückfall NICHT ein, dort stünde er als Bild DES Artikels.
+ */
+export const BLOG_TEILBILDER = {
+  'coming-home':
+    'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/' +
+    '2022-07-26-qiblanco-berlin-1001088.png?v=1679327456&width=1200',
+};
+
+/**
+ * @param {string|undefined|null} blogHandle
+ * @returns {string} absolute Bild-URL, nie leer
+ */
+export function blogTeilbild(blogHandle) {
+  return (blogHandle && BLOG_TEILBILDER[blogHandle]) || MARKEN_TEILBILD_URL;
+}
+
+/**
  * Brotkrume Startseite -> diese Seite.
  *
  * ZWEI STUFEN, nicht drei: zwischen der Startseite und einer Blog-Übersicht
