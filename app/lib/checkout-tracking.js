@@ -76,7 +76,48 @@ const TRACKING_PARAM_NAMES = new Set([
   // params-Schlüssel wie die Query, also kein Doppelzählen). Zwilling:
   // public/qiblanco-tracker.js.
   'gad_campaignid',
+  // Kontakt-Kennung aus dem eigenen Mailversand (Elinas Vorgang
+  // EL-20261023-35724d07, Punkt 2; Job 20261024-storefront-mailkennung-
+  // warenkorb-vorschau-el35724d07). Jeder Werbemail-Link trägt
+  // `?qpx_eh=<16 hex>`: den gesalzenen Hash der Empfängeradresse, nie die
+  // Adresse selbst (Absender mail-ledger/eigenversand/lib/mailklick_kennung.py,
+  // dieselbe Formel wie der Receiver). Bis hierher reiste er nur am Pixel-
+  // Ereignis als `email_hash`. Die Bestellung wurde erst serverseitig über den
+  // Hash der BESTELLadresse verbunden: wer mit einer anderen Adresse kaufte,
+  // als die Mail ging, riss die Kette. Als Warenkorb-Attribut wird er zum
+  // Order-note_attribute; own_source liest es als email-Kante.
+  //
+  // ZWEI GRENZEN, beide Absicht:
+  //   1. Nur ein Wert im Format 16 Kleinbuchstaben-Hex wird gespeichert oder
+  //      weitergereicht (WERT_FORMAT unten). Ein getippter Klartext wie
+  //      `?qpx_eh=name@example.com` fällt still weg.
+  //   2. Er geht NUR in die Warenkorb-Attribute, NICHT an die Checkout-URL
+  //      (NUR_WARENKORB unten). Dort braucht ihn niemand, und jede weitere
+  //      URL ist eine weitere Stelle, an der ein Fremd-Pixel ihn mitliest.
+  // Einwilligung: dieselbe wie bei allen Namen dieser Liste — die Attribute
+  // entstehen nur, wenn hasAttributionConsent() zustimmt.
+  // ZWILLING: public/qiblanco-tracker.js TRACKING_PARAM_NAMES (dort derselbe
+  // Format-Guard), Test: test/checkout-tracking-qpx-eh.test.mjs.
+  'qpx_eh',
 ]);
+
+// Wertformat je Name: ein Name, der hier steht, wird nur mit passendem Wert
+// gespeichert und weitergereicht. Namen ohne Eintrag bleiben wie bisher.
+const WERT_FORMAT = {
+  qpx_eh: /^[0-9a-f]{16}$/,
+};
+
+// Namen, die als Warenkorb-Attribut reisen, aber nie an die Checkout-URL.
+const NUR_WARENKORB = new Set(['qpx_eh']);
+
+/**
+ * @param {string} name
+ * @param {string | undefined} value
+ */
+function wertPasst(name, value) {
+  const format = WERT_FORMAT[name];
+  return !format || format.test(value);
+}
 
 const TRACKING_COOKIE_NAMES = new Set([
   '_fbc',
@@ -157,6 +198,10 @@ const SENSITIVE_QUERY_PARAM_NAMES = new Set([
   'passwd',
   'pwd',
   'secret',
+  // qpx_eh (Mail-Kontaktkennung) geht NUR als eigenes, formgeprueftes Warenkorb-Attribut. In landing_page/
+  // referrer haette sie keine Formwache (Klartext moeglich) -- dort wird sie entfernt (adversariale Pruefung
+  // Job 20261024-storefront-mailkennung-warenkorb-vorschau-el35724d07).
+  'qpx_eh',
   'token',
   'access_token',
   'id_token',
@@ -290,7 +335,9 @@ export function buildAttributionCartAttributes({
   //      referrer plötzlich für jeden organischen Besucher mitgeschrieben,
   //      also eine stille Ausweitung der Datenmenge statt eines Fixes.
   // Regression: test/checkout-tracking-signallos.test.mjs
-  const hasTrackingSignal = attributes.length > 0;
+  // qpx_eh allein ist kein Signal: sonst schriebe ein Mail-Klick zusaetzlich landing_page/referrer
+  // (z. B. eine Webmail-URL) -- eine stille Ausweitung der Datenmenge.
+  const hasTrackingSignal = attributes.some(({key}) => !NUR_WARENKORB.has(key));
 
   if (hasTrackingSignal) {
     // Job 20260809-fj1 (2026-08-10): `landing_page`/`referrer` trugen bisher den
@@ -468,6 +515,7 @@ function normalizeSearchParams(searchParams) {
  */
 function appendAllowedTrackingValue(target, name, value) {
   if (!value || !isTrackingParamName(name) || target.has(name)) return;
+  if (NUR_WARENKORB.has(name) || !wertPasst(name, value)) return;
   target.append(name, value);
 }
 
@@ -479,6 +527,7 @@ function appendAllowedTrackingValue(target, name, value) {
  */
 function setAllowedTrackingValue(target, name, value, {overwrite = false} = {}) {
   if (!value || !isTrackingParamName(name)) return;
+  if (!wertPasst(name, value)) return;
   if (!overwrite && target.has(name)) return;
   target.set(name, value);
 }
@@ -888,8 +937,9 @@ function adParamsSeenRoh({searchParams, referer, cookieHeader, clientMarker}) {
   if (hatTrackingParam(refererSuchParameter(referer))) return 'yes_referer';
 
   if (
-    getStoredAttributionParamEntries(readStoredAttribution(cookieHeader))
-      .length > 0
+    getStoredAttributionParamEntries(readStoredAttribution(cookieHeader)).some(
+      ([name]) => !NUR_WARENKORB.has(name),
+    )
   ) {
     return 'yes_cookie';
   }
@@ -930,7 +980,7 @@ function refererSuchParameter(referer) {
  */
 function hatTrackingParam(eintraege) {
   for (const [name, value] of eintraege) {
-    if (value && isTrackingParamName(name)) return true;
+    if (value && isTrackingParamName(name) && !NUR_WARENKORB.has(name)) return true;
   }
   return false;
 }

@@ -40,10 +40,25 @@
     // Eintrag wird sie nicht gespeichert und hängt allein an der Landeseite.
     // ZWILLING: app/lib/checkout-tracking.js TRACKING_PARAM_NAMES.
     gad_campaignid: true,
+    // Kontakt-Kennung aus dem eigenen Mailversand (Vorgang EL-20261023-35724d07):
+    // gesalzener 16-Hex-Hash der Empfängeradresse, nie die Adresse. Ohne diesen
+    // Eintrag wird er nicht gespeichert und erreicht die Bestellung nie.
+    // Gespeichert wird nur ein Wert im Format 16 Kleinbuchstaben-Hex (WERT_FORMAT).
+    // ZWILLING: app/lib/checkout-tracking.js TRACKING_PARAM_NAMES.
+    qpx_eh: true,
+  };
+
+  var WERT_FORMAT = {
+    qpx_eh: /^[0-9a-f]{16}$/,
   };
 
   function isTrackingParamName(name) {
     return TRACKING_PARAM_NAMES[name] || /^utm_[a-z0-9_]+$/i.test(name);
+  }
+
+  function wertPasst(name, value) {
+    var format = WERT_FORMAT[name];
+    return !format || format.test(value);
   }
 
   function collectTrackedParams() {
@@ -53,7 +68,9 @@
     var tracked = [];
 
     params.forEach(function (value, name) {
-      if (value && isTrackingParamName(name)) tracked.push([name, value]);
+      if (value && isTrackingParamName(name) && wertPasst(name, value)) {
+        tracked.push([name, value]);
+      }
     });
 
     return tracked.length ? tracked : null;
@@ -120,9 +137,18 @@
   // 'no' — sonst wäre ein gesperrter Speicher von einem echten Direktbesucher
   // nicht zu unterscheiden, also genau die Zweideutigkeit von oben, eine Ebene
   // tiefer.
+  // qpx_eh (Mail-Kontaktkennung) ist kein Ankunftssignal: ein Mailklick ist keine Ad-Ankunft.
+  function mitAnkunftsSignal(eintraege) {
+    if (!eintraege) return false;
+    for (var i = 0; i < eintraege.length; i++) {
+      if (eintraege[i] && eintraege[i][0] !== 'qpx_eh') return true;
+    }
+    return false;
+  }
+
   function ankunftsZustand() {
     // 1. Diese Seite trägt selbst Parameter — ohne jeden Speicher entschieden.
-    if (collectTrackedParams()) return 'yes';
+    if (mitAnkunftsSignal(collectTrackedParams())) return 'yes';
 
     // 2. Der Verweis auf diese Seite trug welche. Das ist der EINE Sprung
     //    zurück, den der Browser uns geschenkt gibt: bei gleicher Herkunft
@@ -140,7 +166,15 @@
       // Speicher gesperrt: niemand konnte nachsehen.
       return 'unknown';
     }
-    if (puffer) return 'yes';
+    if (puffer) {
+      var gepuffert = null;
+      try {
+        gepuffert = JSON.parse(puffer).params;
+      } catch {
+        return 'yes';
+      }
+      if (!Array.isArray(gepuffert) || mitAnkunftsSignal(gepuffert)) return 'yes';
+    }
 
     // ---- Ab hier ist der Puffer LEER. Das ist noch kein 'no'. -------------
     //
@@ -221,7 +255,7 @@
 
     var gefunden = false;
     new URLSearchParams(suche).forEach(function (wert, name) {
-      if (wert && isTrackingParamName(name)) gefunden = true;
+      if (wert && isTrackingParamName(name) && name !== 'qpx_eh') gefunden = true;
     });
     return gefunden;
   }
