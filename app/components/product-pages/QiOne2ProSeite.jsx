@@ -178,9 +178,9 @@ export function QiOne2ProSeite({
            Bewertungen" / "+ 14.000 Nutzer" / Preis + Banner, eine Farbe und
            eine Schrift. Er ersetzt die Sterne-Zeile unter dem Titel, den
            Absatz "Mehr als 14.000+ aktive Nutzer" und das rote Verlaufs-Label
-           am Preis; "Bestseller Angebot" steht jetzt im Banner des
-           Preisankers (reusables/Preisanker.jsx). */
-        preisanker={{banner: 'Bestseller'}}
+           am Preis. Kein Schild am Preis: Apple-Kaufseite (Christian
+           29.10.2026, shop-tor S6), auch nicht mit Schildchen-Standard B. */
+        preisanker={{banner: null}}
         /* DIE EINZIGE ABWEICHUNG ZWISCHEN DEN BEIDEN ROUTEN (Christian
            28.09.2026: "gleich bis auf den Beschreibungstext oben beim
            Produkt"). /products übergibt den Shopify-Beschreibungstext,

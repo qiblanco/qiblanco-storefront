@@ -1,5 +1,4 @@
 import {ProductPrice} from '~/components/ProductPrice';
-import {PreisSchilder} from '~/components/reusables/PreisSchild';
 import {
   GOOGLE_REVIEWS_URL,
   StarRating,
@@ -61,9 +60,12 @@ import {
  * (qb-preisanker.css, --qb-pa-farbe / --qb-pa-gewicht), auch ein
  * Angebotspreis: der Verlauf von `.gradient-price` gilt hier nicht.
  *
- * `banner={null}` lässt das Banner weg (QiBracelet, Kette); QiOne 2 Pro
- * übergibt "Bestseller Angebot". Jedes Banner im Preisanker hat dieselbe
- * Form und Farbe.
+ * KEIN SCHILD IM PREISANKER (Christian 29.10.2026, shop-tor S6: Apple-
+ * Kaufseiten zeigen kein Schild 'Ultimate Power'/'Bestseller', der Preis steht
+ * allein). Der Preisanker steht nur auf Apple-Kaufseiten (QiOne-Kaufbox,
+ * QiHome Air); mit dem Schildchen-Standard B (12.11.2026) zeigt er darum gar
+ * kein Schild mehr, weder Auszeichnung noch Preisvorteil. `banner` wird noch
+ * angenommen (ältere Aufrufer), aber nicht mehr angezeigt.
  *
  * @param {{
  *   preis: {handle?: string, price?: object, compareAtPrice?: object},
@@ -75,7 +77,7 @@ import {
 export function Preisanker({
   preis,
   nutzer = '+ 14.000 Nutzer',
-  banner = 'Ultimate Power',
+  banner = null, // eslint-disable-line no-unused-vars
   quelle = 'Google Bewertungen',
 }) {
   return (
@@ -98,16 +100,6 @@ export function Preisanker({
           handle={preis.handle}
           price={preis.price}
           compareAtPrice={preis.compareAtPrice}
-        />
-        {/* SCHILDCHEN VARIANTE B (Christian 12.11.2026, "die B-Juwelier-Effekt"):
-           das Banner ist eine Auszeichnung (Tinte-Pille, Kauf-Gold, Raute), ein
-           Vergleichspreis bekommt davor seinen Preisvorteil mit Zahl (Tiefrot).
-           Stil: app/styles/preis-schild.css. */}
-        <PreisSchilder
-          preis={preis?.price?.amount}
-          vergleich={preis?.compareAtPrice?.amount}
-          waehrung={preis?.price?.currencyCode || 'EUR'}
-          auszeichnung={banner}
         />
       </div>
     </div>
