@@ -105,6 +105,12 @@ import qiAlphaFunnelKopfStyles from '~/styles/qi-alpha-funnel-kopf.css?url';
 // Rückweg stehen in der Datei selbst.
 import consentDialogStyles from '~/styles/consent-dialog.css?url';
 import einwilligungStyles from '~/styles/einwilligung.css?url';
+// Gold-Knöpfe Variante B (Lichtkante + Glanz), Christian 12.11.2026, Job
+// 20261112-prio1-gold-knoepfe-variante-b-lichtkante-glanz-beide-shops-live.
+// Steht HINTER <Links />, damit auch Routen-CSS die Lichtkante nicht still
+// überschreibt; die Datei setzt nur Licht (Schatten, Glanz), nie Farbe oder
+// Größe. Rückweg: diesen Import und den <link> unten entfernen.
+import goldKnopfBStyles from '~/styles/gold-knopf-b.css?url';
 import {hreflangLinks} from '~/lib/hreflang';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
@@ -652,6 +658,7 @@ export function Layout({children}) {
         {rechtsseitenStil.map((href) => (
           <link key={href} rel="stylesheet" href={href} />
         ))}
+        <link rel="stylesheet" href={goldKnopfBStyles}></link>
       </head>
       <body>
         {einwilligungEigen && (

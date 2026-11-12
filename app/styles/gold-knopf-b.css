@@ -1,0 +1,338 @@
+/* Gold-Knöpfe Variante B — Lichtkante + Glanz (Global Deutsch-Shop).
+ * Christian 12.11.2026: "Ja, also bei den Knöpfen können wir Variante B umsetzen, die ist top."
+ * Job 20261112-prio1-gold-knoepfe-variante-b-lichtkante-glanz-beide-shops-live.
+ * Werte = Vorlage Knopf-Strategie (gold-hell b / gold-dunkel b), Technik = roter Qi-Alpha-Knopf A+B.
+ * Selektoren = Live-Inventur aller goldenen Knöpfe (am gerenderten DOM gefunden, nicht am Klassennamen).
+ * Fläche, Größe und Text bleiben unverändert: hier steht keine Farbe, keine Größe, kein Abstand.
+ * Neuer goldener Knopf: Klasse `knopf-gold` (Standard, design-meister DESIGNSTANDARD knopf_primaer)
+ * oder seinen Selektor unten ergänzen. Rückweg: diese Datei aus dem Layout nehmen.
+ */
+:root {
+  --gkb-kante-hell: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 rgba(133, 104, 40, 0.35);
+  --gkb-heben-hell: 0 8px 24px rgba(133, 104, 40, 0.22);
+  --gkb-glanz-hell: rgba(255, 255, 255, 0.42);
+  --gkb-kante-dunkel: inset 0 1px 0 rgba(255, 255, 255, 0.75), inset 0 -2px 0 rgba(90, 62, 12, 0.35);
+  --gkb-heben-dunkel: 0 0 0 4px rgba(242, 191, 114, 0.18);
+  --gkb-glanz-dunkel: rgba(255, 255, 255, 0.45);
+}
+
+@keyframes gkb-glanz {
+  0% { transform: translateX(-100%); }
+  30%, 100% { transform: translateX(100%); }
+}
+
+@keyframes gkb-glanz-hover {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+
+/* ---- Gold auf hellem Grund ---- */
+
+.qb-anmelden__knopf:not(#gkb),
+.btn--primary:not(#gkb),
+.as-knopf:not(.btn--secondary):not(#gkb),
+.lp-vp-btn--primary:not(#gkb),
+.lp-vp-btn--lg:not(#gkb),
+.avv-link:not(#gkb),
+.erf__weiter:not(#gkb),
+.bew__cta:not(#gkb),
+.qb-st-btn:not(.qb-st-btn-flach):not(#gkb),
+.sp__knopf:not(#gkb),
+.lg27-btn:not(.lg27-btn--zweit):not(#gkb),
+.uu-knopf:not(#gkb),
+.hea__knopf:not(#gkb),
+.knopf-gold:not(#gkb),
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb),
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb) {
+  isolation: isolate;
+  overflow: hidden;
+  box-shadow: var(--gkb-kante-hell);
+}
+
+@media (hover: hover) {
+  .qb-anmelden__knopf:not(#gkb):hover,
+  .btn--primary:not(#gkb):hover,
+  .as-knopf:not(.btn--secondary):not(#gkb):hover,
+  .lp-vp-btn--primary:not(#gkb):hover,
+  .lp-vp-btn--lg:not(#gkb):hover,
+  .avv-link:not(#gkb):hover,
+  .erf__weiter:not(#gkb):hover,
+  .bew__cta:not(#gkb):hover,
+  .qb-st-btn:not(.qb-st-btn-flach):not(#gkb):hover,
+  .sp__knopf:not(#gkb):hover,
+  .lg27-btn:not(.lg27-btn--zweit):not(#gkb):hover,
+  .uu-knopf:not(#gkb):hover,
+  .hea__knopf:not(#gkb):hover,
+  .knopf-gold:not(#gkb):hover,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb):hover,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb):hover {
+    box-shadow: var(--gkb-kante-hell), var(--gkb-heben-hell);
+  }
+}
+
+.qb-anmelden__knopf:not(#gkb)::before,
+.btn--primary:not(#gkb)::before,
+.as-knopf:not(.btn--secondary):not(#gkb)::before,
+.lp-vp-btn--primary:not(#gkb)::before,
+.lp-vp-btn--lg:not(#gkb)::before,
+.avv-link:not(#gkb)::before,
+.erf__weiter:not(#gkb)::before,
+.bew__cta:not(#gkb)::before,
+.qb-st-btn:not(.qb-st-btn-flach):not(#gkb)::before,
+.sp__knopf:not(#gkb)::before,
+.lg27-btn:not(.lg27-btn--zweit):not(#gkb)::before,
+.uu-knopf:not(#gkb)::before,
+.hea__knopf:not(#gkb)::before,
+.knopf-gold:not(#gkb)::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb)::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 32%, var(--gkb-glanz-hell) 50%, transparent 68%);
+  transform: translateX(-100%);
+  animation: gkb-glanz 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .qb-anmelden__knopf:not(#gkb):hover::before,
+  .btn--primary:not(#gkb):hover::before,
+  .as-knopf:not(.btn--secondary):not(#gkb):hover::before,
+  .lp-vp-btn--primary:not(#gkb):hover::before,
+  .lp-vp-btn--lg:not(#gkb):hover::before,
+  .avv-link:not(#gkb):hover::before,
+  .erf__weiter:not(#gkb):hover::before,
+  .bew__cta:not(#gkb):hover::before,
+  .qb-st-btn:not(.qb-st-btn-flach):not(#gkb):hover::before,
+  .sp__knopf:not(#gkb):hover::before,
+  .lg27-btn:not(.lg27-btn--zweit):not(#gkb):hover::before,
+  .uu-knopf:not(#gkb):hover::before,
+  .hea__knopf:not(#gkb):hover::before,
+  .knopf-gold:not(#gkb):hover::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb):hover::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb):hover::before {
+    animation: gkb-glanz-hover 1.2s ease-in-out infinite;
+  }
+}
+
+/* ---- Gold auf dunklem Grund ---- */
+
+.qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb),
+.as-dunkel .as-knopf:not(.btn--secondary):not(#gkb),
+.as-dunkel .btn--primary:not(#gkb),
+.bfg__knopf:not(#gkb),
+.bfd__kaufen:not(#gkb),
+.bkd__kaufen:not(#gkb),
+.bf-deal-kaufen:not(#gkb),
+.lp-vp-final-cta .lp-vp-btn--lg:not(#gkb),
+.lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb),
+#_form_15_submit:not(#gkb),
+.mm-formular__knopf:not(#gkb),
+.knopf-gold.knopf-gold--dunkel:not(#gkb) {
+  isolation: isolate;
+  overflow: hidden;
+  box-shadow: var(--gkb-kante-dunkel);
+}
+
+@media (hover: hover) {
+  .qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb):hover,
+  .as-dunkel .as-knopf:not(.btn--secondary):not(#gkb):hover,
+  .as-dunkel .btn--primary:not(#gkb):hover,
+  .bfg__knopf:not(#gkb):hover,
+  .bfd__kaufen:not(#gkb):hover,
+  .bkd__kaufen:not(#gkb):hover,
+  .bf-deal-kaufen:not(#gkb):hover,
+  .lp-vp-final-cta .lp-vp-btn--lg:not(#gkb):hover,
+  .lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb):hover,
+  #_form_15_submit:not(#gkb):hover,
+  .mm-formular__knopf:not(#gkb):hover,
+  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover {
+    box-shadow: var(--gkb-kante-dunkel), var(--gkb-heben-dunkel);
+  }
+}
+
+.qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb)::before,
+.as-dunkel .as-knopf:not(.btn--secondary):not(#gkb)::before,
+.as-dunkel .btn--primary:not(#gkb)::before,
+.bfg__knopf:not(#gkb)::before,
+.bfd__kaufen:not(#gkb)::before,
+.bkd__kaufen:not(#gkb)::before,
+.bf-deal-kaufen:not(#gkb)::before,
+.lp-vp-final-cta .lp-vp-btn--lg:not(#gkb)::before,
+.lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb)::before,
+#_form_15_submit:not(#gkb)::before,
+.mm-formular__knopf:not(#gkb)::before,
+.knopf-gold.knopf-gold--dunkel:not(#gkb)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 32%, var(--gkb-glanz-dunkel) 50%, transparent 68%);
+  transform: translateX(-100%);
+  animation: gkb-glanz 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb):hover::before,
+  .as-dunkel .as-knopf:not(.btn--secondary):not(#gkb):hover::before,
+  .as-dunkel .btn--primary:not(#gkb):hover::before,
+  .bfg__knopf:not(#gkb):hover::before,
+  .bfd__kaufen:not(#gkb):hover::before,
+  .bkd__kaufen:not(#gkb):hover::before,
+  .bf-deal-kaufen:not(#gkb):hover::before,
+  .lp-vp-final-cta .lp-vp-btn--lg:not(#gkb):hover::before,
+  .lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb):hover::before,
+  #_form_15_submit:not(#gkb):hover::before,
+  .mm-formular__knopf:not(#gkb):hover::before,
+  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover::before {
+    animation: gkb-glanz-hover 1.2s ease-in-out infinite;
+  }
+}
+
+/* Schrift Tinte (Vorlage B), nur wo die heutige Schrift auf Gold unter 4,5 : 1 liegt. Flaeche bleibt. */
+
+.lp-vp-btn--primary:not(#gkb),
+.lp-vp-btn--primary:not(#gkb):hover {
+  color: #2c2a26;
+}
+
+/* Bezugsrahmen fuer den Glanz, ohne Spezifitaet: eine eigene Lage der Seite (fixed, sticky, absolute) gewinnt. */
+
+:where(.qb-anmelden__knopf, .btn--primary, .as-knopf:not(.btn--secondary), .lp-vp-btn--primary, .lp-vp-btn--lg, .avv-link, .erf__weiter, .bew__cta, .qb-st-btn:not(.qb-st-btn-flach), .sp__knopf, .lg27-btn:not(.lg27-btn--zweit), .uu-knopf, .hea__knopf, .knopf-gold, #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary, #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary, .qb-anmelden--dunkel .qb-anmelden__knopf, .as-dunkel .as-knopf:not(.btn--secondary), .as-dunkel .btn--primary, .bfg__knopf, .bfd__kaufen, .bkd__kaufen, .bf-deal-kaufen, .lp-vp-final-cta .lp-vp-btn--lg, .lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit), #_form_15_submit, .mm-formular__knopf, .knopf-gold.knopf-gold--dunkel) {
+  position: relative;
+}
+
+/* Bezugsrahmen mit Vorrang: der Crystal-Spiegel setzt fremde Regeln per all:revert zurueck (#ccsp#ccsp *). */
+
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb),
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb) {
+  position: relative;
+}
+
+/* Gesperrt: kein Glanz. */
+.qb-anmelden__knopf:not(#gkb):disabled::before,
+.qb-anmelden__knopf:not(#gkb)[aria-disabled='true']::before,
+.btn--primary:not(#gkb):disabled::before,
+.btn--primary:not(#gkb)[aria-disabled='true']::before,
+.as-knopf:not(.btn--secondary):not(#gkb):disabled::before,
+.as-knopf:not(.btn--secondary):not(#gkb)[aria-disabled='true']::before,
+.lp-vp-btn--primary:not(#gkb):disabled::before,
+.lp-vp-btn--primary:not(#gkb)[aria-disabled='true']::before,
+.lp-vp-btn--lg:not(#gkb):disabled::before,
+.lp-vp-btn--lg:not(#gkb)[aria-disabled='true']::before,
+.avv-link:not(#gkb):disabled::before,
+.avv-link:not(#gkb)[aria-disabled='true']::before,
+.erf__weiter:not(#gkb):disabled::before,
+.erf__weiter:not(#gkb)[aria-disabled='true']::before,
+.bew__cta:not(#gkb):disabled::before,
+.bew__cta:not(#gkb)[aria-disabled='true']::before,
+.qb-st-btn:not(.qb-st-btn-flach):not(#gkb):disabled::before,
+.qb-st-btn:not(.qb-st-btn-flach):not(#gkb)[aria-disabled='true']::before,
+.sp__knopf:not(#gkb):disabled::before,
+.sp__knopf:not(#gkb)[aria-disabled='true']::before,
+.lg27-btn:not(.lg27-btn--zweit):not(#gkb):disabled::before,
+.lg27-btn:not(.lg27-btn--zweit):not(#gkb)[aria-disabled='true']::before,
+.uu-knopf:not(#gkb):disabled::before,
+.uu-knopf:not(#gkb)[aria-disabled='true']::before,
+.hea__knopf:not(#gkb):disabled::before,
+.hea__knopf:not(#gkb)[aria-disabled='true']::before,
+.knopf-gold:not(#gkb):disabled::before,
+.knopf-gold:not(#gkb)[aria-disabled='true']::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb):disabled::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb)[aria-disabled='true']::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb):disabled::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb)[aria-disabled='true']::before,
+.qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb):disabled::before,
+.qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb)[aria-disabled='true']::before,
+.as-dunkel .as-knopf:not(.btn--secondary):not(#gkb):disabled::before,
+.as-dunkel .as-knopf:not(.btn--secondary):not(#gkb)[aria-disabled='true']::before,
+.as-dunkel .btn--primary:not(#gkb):disabled::before,
+.as-dunkel .btn--primary:not(#gkb)[aria-disabled='true']::before,
+.bfg__knopf:not(#gkb):disabled::before,
+.bfg__knopf:not(#gkb)[aria-disabled='true']::before,
+.bfd__kaufen:not(#gkb):disabled::before,
+.bfd__kaufen:not(#gkb)[aria-disabled='true']::before,
+.bkd__kaufen:not(#gkb):disabled::before,
+.bkd__kaufen:not(#gkb)[aria-disabled='true']::before,
+.bf-deal-kaufen:not(#gkb):disabled::before,
+.bf-deal-kaufen:not(#gkb)[aria-disabled='true']::before,
+.lp-vp-final-cta .lp-vp-btn--lg:not(#gkb):disabled::before,
+.lp-vp-final-cta .lp-vp-btn--lg:not(#gkb)[aria-disabled='true']::before,
+.lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb):disabled::before,
+.lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb)[aria-disabled='true']::before,
+#_form_15_submit:not(#gkb):disabled::before,
+#_form_15_submit:not(#gkb)[aria-disabled='true']::before,
+.mm-formular__knopf:not(#gkb):disabled::before,
+.mm-formular__knopf:not(#gkb)[aria-disabled='true']::before,
+.knopf-gold.knopf-gold--dunkel:not(#gkb):disabled::before,
+.knopf-gold.knopf-gold--dunkel:not(#gkb)[aria-disabled='true']::before {
+  animation: none;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qb-anmelden__knopf:not(#gkb)::before,
+  .qb-anmelden__knopf:not(#gkb):hover::before,
+  .btn--primary:not(#gkb)::before,
+  .btn--primary:not(#gkb):hover::before,
+  .as-knopf:not(.btn--secondary):not(#gkb)::before,
+  .as-knopf:not(.btn--secondary):not(#gkb):hover::before,
+  .lp-vp-btn--primary:not(#gkb)::before,
+  .lp-vp-btn--primary:not(#gkb):hover::before,
+  .lp-vp-btn--lg:not(#gkb)::before,
+  .lp-vp-btn--lg:not(#gkb):hover::before,
+  .avv-link:not(#gkb)::before,
+  .avv-link:not(#gkb):hover::before,
+  .erf__weiter:not(#gkb)::before,
+  .erf__weiter:not(#gkb):hover::before,
+  .bew__cta:not(#gkb)::before,
+  .bew__cta:not(#gkb):hover::before,
+  .qb-st-btn:not(.qb-st-btn-flach):not(#gkb)::before,
+  .qb-st-btn:not(.qb-st-btn-flach):not(#gkb):hover::before,
+  .sp__knopf:not(#gkb)::before,
+  .sp__knopf:not(#gkb):hover::before,
+  .lg27-btn:not(.lg27-btn--zweit):not(#gkb)::before,
+  .lg27-btn:not(.lg27-btn--zweit):not(#gkb):hover::before,
+  .uu-knopf:not(#gkb)::before,
+  .uu-knopf:not(#gkb):hover::before,
+  .hea__knopf:not(#gkb)::before,
+  .hea__knopf:not(#gkb):hover::before,
+  .knopf-gold:not(#gkb)::before,
+  .knopf-gold:not(#gkb):hover::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb)::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb):hover::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb)::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb):hover::before,
+  .qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb)::before,
+  .qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb):hover::before,
+  .as-dunkel .as-knopf:not(.btn--secondary):not(#gkb)::before,
+  .as-dunkel .as-knopf:not(.btn--secondary):not(#gkb):hover::before,
+  .as-dunkel .btn--primary:not(#gkb)::before,
+  .as-dunkel .btn--primary:not(#gkb):hover::before,
+  .bfg__knopf:not(#gkb)::before,
+  .bfg__knopf:not(#gkb):hover::before,
+  .bfd__kaufen:not(#gkb)::before,
+  .bfd__kaufen:not(#gkb):hover::before,
+  .bkd__kaufen:not(#gkb)::before,
+  .bkd__kaufen:not(#gkb):hover::before,
+  .bf-deal-kaufen:not(#gkb)::before,
+  .bf-deal-kaufen:not(#gkb):hover::before,
+  .lp-vp-final-cta .lp-vp-btn--lg:not(#gkb)::before,
+  .lp-vp-final-cta .lp-vp-btn--lg:not(#gkb):hover::before,
+  .lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb)::before,
+  .lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb):hover::before,
+  #_form_15_submit:not(#gkb)::before,
+  #_form_15_submit:not(#gkb):hover::before,
+  .mm-formular__knopf:not(#gkb)::before,
+  .mm-formular__knopf:not(#gkb):hover::before,
+  .knopf-gold.knopf-gold--dunkel:not(#gkb)::before,
+  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover::before {
+    animation: none;
+  }
+}
