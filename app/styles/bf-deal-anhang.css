@@ -192,3 +192,9 @@
   --igt-muted: var(--bfd-matt);
   --igt-linie: var(--bfd-rand);
 }
+/* --igt-dunkel traegt im Original zwei Rollen: Titel (oben hell umgestellt) und Play-Zeichen auf dem
+ * goldenen Kreis. Das Zeichen bleibt dunkel auf Gold wie auf der Originalseite (Elina EL-20261112-f4a91091). */
+.bf-deal-seite .qb-igt__abzeichen,
+.bf-deal-seite .qb-igt__kachel--yt .qb-igt__zeichen > span {
+  color: var(--bfd-grund);
+}
