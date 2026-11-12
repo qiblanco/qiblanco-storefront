@@ -17,7 +17,7 @@ import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import {BfDealRahmen} from '~/components/black-friday-2026/DealGalerie';
-import {datenStudienNeutral} from '~/components/black-friday-2026/bf-studien-neutral';
+import {datenStudienNeutral} from '~/components/black-friday-2026/bf-kachel-neutral';
 
 /*
  * BF-DEAL-SEITE in der Alpha-Fassung (Elina EL-20261111-aff06215): dieselbe

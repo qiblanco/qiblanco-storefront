@@ -2,7 +2,7 @@
 // Studien-Kacheln der BF-Deal-Seiten, Zahlen und Studienlink bleiben.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {datenStudienNeutral, textNeutral} from '../app/components/black-friday-2026/bf-studien-neutral.js';
+import {datenStudienNeutral, textNeutral} from '../app/components/black-friday-2026/bf-kachel-neutral.js';
 import * as D8K from '../app/components/product-pages/8kendiw34hd-alpha-daten.js';
 import * as DPJDZ from '../app/components/product-pages/pjdz538hgs0-alpha-daten.js';
 import * as DBR from '../app/components/product-pages/qibracelet-alpha-daten.js';
