@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import {useMatches} from 'react-router';
-import {istBfFunnelSeite} from '~/components/Header';
+import {istBfFunnelSeite} from '~/lib/bf-funnel';
 import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {DealGalerie, useBfDealSeite} from '~/components/black-friday-2026/DealGalerie';

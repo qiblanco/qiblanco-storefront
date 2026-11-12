@@ -602,26 +602,14 @@ export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
  * Klassen .qfk), nur mit der Wortmarke „Qi Blanco“. Die Marke ist kein Link:
  * sie führt nicht zur Startseite, ein Tipp scrollt nach oben. Konto und
  * Warenkorb bleiben, die Kasse bleibt erreichbar.
- * WELCHE SEITE: die Route erklärt es selbst, wie `handle.filmSeite` in
- * root.jsx. Entweder `export const handle = {bfFunnel: true}` (feste
+ * WELCHE SEITE: die Route erklärt es selbst (app/lib/bf-funnel.js), wie
+ * `handle.filmSeite` in root.jsx. Entweder `export const handle = {bfFunnel: true}` (feste
  * Funnel-Seiten wie Pre-Access und bf-deals) oder `bfFunnel: true` in den
  * Loaderdaten (Deal-Seiten, nur im Aktionszeitraum und Euro-Markt). Kein Pfad
  * hier: ohne das Merkmal rendert jede Seite unverändert mit Hauskopf und Fuß.
  * Rückweg: das Merkmal in der Route entfernen (eine Seite) oder die Weiche in
  * PageLayout.jsx entfernen (alle).
  */
-
-/**
- * Trägt eine der aktuellen Routen das Funnel-Merkmal?
- * @param {Array<{handle?: unknown, data?: unknown}> | undefined} matches
- */
-export function istBfFunnelSeite(matches) {
-  return (matches || []).some(
-    (m) =>
-      /** @type {any} */ (m?.handle)?.bfFunnel === true ||
-      /** @type {any} */ (m?.data)?.bfFunnel === true,
-  );
-}
 
 /**
  * @param {Pick<HeaderProps, 'cart' | 'isLoggedIn'>}
