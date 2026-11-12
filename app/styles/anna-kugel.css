@@ -1,0 +1,333 @@
+/* ═══ DIE LEBENDIGE KUGEL — Standard für AI Anna ══════════════════════════════
+   Job 20261112-prio2-ai-anna-lebendige-kugel-standarddesign-frag-anna.
+   Christian 12.11.2026: „dass es mehr so eine wirklich eine lebendige Kugel
+   wird … ein Standarddesign … wie diese lebendige Kugel auszusehen hat. Dass es
+   im Prinzip ja auch unsere Planetenidee und unserer künstlichen Intelligenz
+   entspricht."
+
+   BASIS: die plastische Kugel bei „Noch eine Frage?" (.taf-kugel, Z174):
+   Lichtpunkt oben links, Gold #f4e7cf -> #c9a46f, weicher Schein.
+
+   EIN ELEMENT, VIER FASSUNGEN (data-variante), EINE KOMPONENTE
+   (app/components/anna-kugel/AnnaKugel.jsx):
+     atem       die Bestandskugel, atmet (Schein + 3 % Größe, 6 s)
+     planet     Tag-/Nachtseite, kühler Atmosphärensaum, Licht wandert
+     lichtkern  Planet + ein Lichtkern, der in der Kugel wandert (Empfehlung)
+     orbit      Kugel mit Umlaufbahn und einem kleinen Mond
+   Welche Fassung Standard ist, entscheidet EIN Wert: STANDARD in
+   AnnaKugel.jsx. Diese Datei bleibt dabei unberührt.
+
+   LAST: nur CSS, keine Bilder, kein JS, kein Canvas. Animiert werden nur
+   transform und opacity (Compositor, kein Layout, kein Repaint der Seite).
+   „Bewegung reduzieren": alles steht still, die Kugel bleibt plastisch.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.anna-kugel {
+  --ak-groesse: 56px;
+  --ak-takt: 6s;
+  --ak-licht: #fffaf0;
+  --ak-gold-hell: #f4e7cf;
+  --ak-gold: #c9a46f;
+  --ak-gold-tief: #9a7646;
+  --ak-schein: rgba(201, 164, 111, 0.38);
+  --ak-atmosphaere: rgba(173, 216, 255, 0.45);
+  --ak-kern-blau: rgba(173, 216, 255, 0.6);
+
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--ak-groesse);
+  height: var(--ak-groesse);
+  isolation: isolate;
+  vertical-align: middle;
+}
+
+/* Die Kugel als Knopf: Klick öffnet Annas Chat (Christian 12.11.2026).
+   Kein Knopf-Aussehen, nur die Kugel; der Fokusring folgt ihrer Form. */
+.anna-kugel--knopf {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  appearance: none;
+}
+.anna-kugel--knopf:focus-visible {
+  outline: 2px solid var(--ak-gold-tief);
+  outline-offset: 4px;
+}
+
+/* Die Überschrift neben der Kugel öffnet den Chat ebenso. */
+.anna-chat-text {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  appearance: none;
+}
+.anna-chat-text:focus-visible {
+  outline: 2px solid var(--ak-gold-tief, #9a7646);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Der Schein: weiches Licht um die Kugel, atmet mit. */
+.anna-kugel__schein {
+  position: absolute;
+  inset: -22%;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ak-schein) 0%, rgba(201, 164, 111, 0) 68%);
+  animation: ak-schein var(--ak-takt) ease-in-out infinite;
+}
+
+/* Der Körper: die plastische Kugel (Basis .taf-kugel). */
+.anna-kugel__koerper {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    #ffffff 0%,
+    var(--ak-gold-hell) 30%,
+    var(--ak-gold) 100%
+  );
+  box-shadow: 0 8px 24px rgba(201, 164, 111, 0.35);
+  animation: ak-atem var(--ak-takt) ease-in-out infinite;
+}
+
+/* Glanzpunkt, steht fest (das Licht kommt von aussen). */
+.anna-kugel__glanz {
+  position: absolute;
+  top: 12%;
+  left: 18%;
+  width: 34%;
+  height: 26%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 70%);
+  transform: rotate(-28deg);
+}
+
+.anna-kugel__flaeche,
+.anna-kugel__kern,
+.anna-kugel__kern2,
+.anna-kugel__bahn,
+.anna-kugel__bahn-vorn,
+.anna-kugel__mond-y {
+  display: none;
+}
+
+/* ---- planet: Tag/Nacht, Atmosphaere, langsam drehende Oberflaeche --------- */
+.anna-kugel[data-variante='planet'] .anna-kugel__koerper,
+.anna-kugel[data-variante='lichtkern'] .anna-kugel__koerper {
+  background: radial-gradient(
+    circle at 34% 28%,
+    var(--ak-licht) 0%,
+    var(--ak-gold-hell) 24%,
+    var(--ak-gold) 62%,
+    var(--ak-gold-tief) 100%
+  );
+  box-shadow:
+    inset -6px -8px 16px rgba(74, 52, 24, 0.28),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.5),
+    0 0 calc(var(--ak-groesse) * 0.14) var(--ak-atmosphaere),
+    0 8px 24px rgba(201, 164, 111, 0.3);
+}
+
+.anna-kugel[data-variante='planet'] .anna-kugel__flaeche,
+.anna-kugel[data-variante='lichtkern'] .anna-kugel__flaeche {
+  display: block;
+  position: absolute;
+  top: -10%;
+  left: -100%;
+  width: 300%;
+  height: 120%;
+  opacity: 0.16;
+  background: repeating-linear-gradient(
+    172deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.9) 9%,
+    rgba(255, 255, 255, 0) 18%,
+    rgba(154, 118, 70, 0.5) 26%,
+    rgba(255, 255, 255, 0) 33%
+  );
+  animation: ak-drehen calc(var(--ak-takt) * 4) linear infinite;
+}
+
+/* ---- lichtkern: ein Licht wandert in der Kugel (Anna denkt) -------------- */
+.anna-kugel[data-variante='lichtkern'] .anna-kugel__kern,
+.anna-kugel[data-variante='lichtkern'] .anna-kugel__kern2 {
+  display: block;
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+}
+
+.anna-kugel[data-variante='lichtkern'] .anna-kugel__kern {
+  background: radial-gradient(circle, rgba(255, 252, 240, 0.95) 0%, rgba(255, 244, 220, 0) 62%);
+  animation: ak-wandern calc(var(--ak-takt) * 1.5) ease-in-out infinite;
+}
+
+.anna-kugel[data-variante='lichtkern'] .anna-kugel__kern2 {
+  inset: 26%;
+  background: radial-gradient(circle, var(--ak-kern-blau) 0%, rgba(173, 216, 255, 0) 65%);
+  animation: ak-wandern2 calc(var(--ak-takt) * 2) ease-in-out infinite;
+}
+
+/* ---- orbit: Umlaufbahn mit Mond ----------------------------------------- */
+.anna-kugel[data-variante='orbit'] .anna-kugel__bahn,
+.anna-kugel[data-variante='orbit'] .anna-kugel__bahn-vorn {
+  display: block;
+  position: absolute;
+  top: 36%;
+  left: -26%;
+  z-index: 0;
+  width: 152%;
+  height: 28%;
+  border: 1px solid rgba(201, 164, 111, 0.55);
+  border-radius: 50%;
+  transform: rotate(-16deg);
+}
+
+/* Die vordere Haelfte der Bahn liegt VOR der Kugel (wie ein Ring). */
+.anna-kugel[data-variante='orbit'] .anna-kugel__bahn-vorn {
+  z-index: 2;
+  clip-path: inset(50% 0 0 0);
+}
+
+.anna-kugel[data-variante='orbit'] .anna-kugel__mond-y {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  animation: ak-mond-y calc(var(--ak-takt) * 0.75) ease-in-out infinite alternate;
+  animation-delay: calc(var(--ak-takt) * -0.375);
+}
+
+.anna-kugel__mond-x {
+  position: absolute;
+  width: 0;
+  height: 0;
+  animation: ak-mond-x calc(var(--ak-takt) * 0.75) ease-in-out infinite alternate;
+}
+
+.anna-kugel__mond {
+  position: absolute;
+  top: calc(var(--ak-groesse) * -0.055);
+  left: calc(var(--ak-groesse) * -0.055);
+  width: calc(var(--ak-groesse) * 0.11);
+  height: calc(var(--ak-groesse) * 0.11);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff 0%, var(--ak-gold-hell) 60%);
+  box-shadow: 0 0 6px rgba(255, 244, 220, 0.9);
+}
+
+/* ---- Bewegung ------------------------------------------------------------ */
+@keyframes ak-atem {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes ak-schein {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes ak-drehen {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(33.333%);
+  }
+}
+
+@keyframes ak-wandern {
+  0%,
+  100% {
+    transform: translate(-14%, -12%) scale(0.9);
+    opacity: 0.85;
+  }
+  33% {
+    transform: translate(12%, -4%) scale(1.05);
+    opacity: 1;
+  }
+  66% {
+    transform: translate(-2%, 14%) scale(0.95);
+    opacity: 0.75;
+  }
+}
+
+@keyframes ak-wandern2 {
+  0%,
+  100% {
+    transform: translate(18%, 16%);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(-16%, -6%);
+    opacity: 0.8;
+  }
+}
+
+/* Mond: zwei gegeneinander versetzte Halbschwingungen ergeben die Ellipse;
+   z-index springt in der Mitte, damit er hinter der Kugel vorbeizieht. */
+@keyframes ak-mond-x {
+  from {
+    transform: translateX(calc(var(--ak-groesse) * -0.76));
+  }
+  to {
+    transform: translateX(calc(var(--ak-groesse) * 0.76));
+  }
+}
+
+@keyframes ak-mond-y {
+  from {
+    transform: translateY(calc(var(--ak-groesse) * 0.14)) rotate(-16deg);
+    z-index: 2;
+  }
+  to {
+    transform: translateY(calc(var(--ak-groesse) * -0.14)) rotate(-16deg);
+    z-index: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anna-kugel *,
+  .anna-kugel *::before,
+  .anna-kugel *::after {
+    animation: none !important;
+  }
+  .anna-kugel[data-variante='orbit'] .anna-kugel__mond-x {
+    transform: translateX(calc(var(--ak-groesse) * 0.6));
+  }
+}

@@ -1,3 +1,5 @@
+@import './anna-kugel.css';
+
 /*
  * FRAGEN ZUM QI ALPHA — Akkordeon nach Apple-Art (TheAlphaFaq.jsx, Grossjob
  * 20261026-prio1-the-alpha-variante-a-designmeister-premium-gestaltung, s07).
@@ -30,8 +32,6 @@
   --taf-gedaempft: #6e6e73;
   --taf-antwort: #424245;
   --taf-linie: #d2d2d7;
-  --taf-kugel-a: #f4e7cf;
-  --taf-kugel-b: #c9a46f;
 
   background: var(--taf-grund);
   color: var(--taf-tinte);
@@ -187,17 +187,9 @@
 }
 
 .taf-kugel {
-  width: 56px;
-  height: 56px;
+  /* Die lebendige Kugel (anna-kugel.css, Job 20261112-…-frag-anna): diese
+     plastische Kugel war ihre Basis, Bild und Bewegung stehen jetzt dort. */
   margin-bottom: var(--taf-s-1);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 35% 30%,
-    #ffffff 0%,
-    var(--taf-kugel-a) 30%,
-    var(--taf-kugel-b) 100%
-  );
-  box-shadow: 0 8px 24px rgba(201, 164, 111, 0.35);
 }
 
 .taf-anna-titel {

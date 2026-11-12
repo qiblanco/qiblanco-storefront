@@ -1,4 +1,5 @@
 import {useId} from 'react';
+import {AnnaKugel, annaChatProps} from '~/components/anna-kugel/AnnaKugel';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {GoogleBewertungsleiste} from '~/components/reusables/GoogleBewertungsleiste';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
@@ -331,9 +332,13 @@ export function AppleAnna({
 }) {
   return (
     <section className="as-sektion as-anna" data-apple-anna="" data-section="as-anna">
-      <span className="as-anna-zeichen" aria-hidden="true" />
+      <AnnaKugel groesse={40} className="as-anna-zeichen" />
       <div>
-        <h3 className="as-anna-titel">{mitMarkeR(titel)}</h3>
+        <h3 className="as-anna-titel">
+          <button type="button" className="anna-chat-text" {...annaChatProps('titel')}>
+            {mitMarkeR(titel)}
+          </button>
+        </h3>
         <p className="as-absatz">{mitMarkeR(text)}</p>
       </div>
     </section>
