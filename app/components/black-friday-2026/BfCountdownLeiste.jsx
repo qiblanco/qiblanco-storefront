@@ -1,21 +1,17 @@
 import {useEffect, useState} from 'react';
+import {bfPhase, bfRestSekunden} from '~/components/black-friday-2026/bf-deals-daten';
 
 /*
  * Rote Countdown-Leiste ganz oben auf jeder BF-Deal-Seite DE (Elina EL-20261111-cfcd9c5d, gesetzt mit
- * EL-20261111-a9af196f „roter Countdown oben“). Baustein bf-countdown.js/-css aus
- * claude-jobs/el83-e-bf-verkaufsseiten-vorschau, als React-Komponente: dieselben Zeiten, Texte und Klassen.
- *   jetzt < PRESALE_ENDE -> „Pre-Sale endet in TT:HH:MM:SS“ (bis Black-Friday-Start Fr 27.11. 00:00 Berlin)
- *   jetzt < SALE_ENDE    -> „Black Friday endet in TT:HH:MM:SS“ (bis 30.11. 23:59 Berlin, wie bf-deals UHR.ende)
- *   danach               -> keine Leiste
- * Server-HTML: der Satz mit Datum, ohne Uhr (kein Hydration-Unterschied); die Uhr rechnet erst im Browser.
+ * EL-20261111-a9af196f „roter Countdown oben“). Phasen seit Elina EL-20261112-5c71f6ff aus
+ * bf-deals-daten.js (BF_PHASEN) (eine Stelle für alle BF-Seiten):
+ *   vor 13.11. 18:00 Berlin -> „Pre-Sale startet in TT:HH:MM:SS“ (Korrektur Elina EL-20261112-6b5fe5df)
+ *   bis 26.11. 23:59 Berlin -> „Pre-Sale endet in TT:HH:MM:SS“
+ *   bis 30.11. 23:59 Berlin -> „Black Friday endet in TT:HH:MM:SS“
+ *   danach                  -> keine Leiste
+ * Server-HTML: der Satz mit Datum, ohne Uhr; die Uhr rechnet erst im Browser.
  * Testzeit wie auf bf-deals: ?pab_jetzt=<ISO>. Kein Scroll-Zuhörer, nur ein 1-s-Takt. Stil in bf-deal-dunkel.css.
  */
-const PRESALE_ENDE = '2026-11-26T23:00:00Z';
-const SALE_ENDE = '2026-11-30T22:59:00Z';
-const TEXT_PRESALE = 'Pre-Sale endet in';
-const TEXT_SALE = 'Black Friday endet in';
-const OHNE_UHR = 'Pre-Sale endet am 27.11.2026 um 00:00 Uhr';
-
 function zwei(n) {
   return n < 10 ? '0' + n : String(n);
 }
@@ -23,7 +19,7 @@ function zwei(n) {
 /**
  * Die Uhr der Leiste als Haken, damit der Schluss-Banner (BfSchlussBanner.jsx,
  * Elina EL-20261112-452cdd56) dieselben Zeiten und Texte zeigt.
- * @returns {{vorbei: boolean, sale: boolean, tickt: boolean, text: string, zeit: string}}
+ * @returns {{vorbei: boolean, sale: boolean, tickt: boolean, text: string, zeit: string, phase: string}}
  */
 export function useBfUhr() {
   const [jetzt, setJetzt] = useState(null);
@@ -41,30 +37,30 @@ export function useBfUhr() {
     return () => window.clearInterval(id);
   }, []);
 
-  if (jetzt !== null && jetzt >= Date.parse(SALE_ENDE)) {
-    return {vorbei: true, sale: true, tickt: true, text: '', zeit: ''};
+  const phase = bfPhase(jetzt ?? Date.now());
+  if (!phase) {
+    return {vorbei: true, sale: true, tickt: true, text: '', zeit: '', phase: ''};
   }
-  const sale = jetzt !== null && jetzt >= Date.parse(PRESALE_ENDE);
-  let text = OHNE_UHR;
+  let text = phase.satz;
   let zeit = '';
   if (jetzt !== null) {
-    text = sale ? TEXT_SALE : TEXT_PRESALE;
-    const r = Math.max(0, Math.floor((Date.parse(sale ? SALE_ENDE : PRESALE_ENDE) - jetzt) / 1000));
+    text = phase.titel;
+    const r = bfRestSekunden(phase, jetzt);
     zeit = `${zwei(Math.floor(r / 86400))}:${zwei(Math.floor((r % 86400) / 3600))}:${zwei(
       Math.floor((r % 3600) / 60),
     )}:${zwei(r % 60)}`;
   }
-  return {vorbei: false, sale, tickt: jetzt !== null, text, zeit};
+  return {vorbei: false, sale: phase.id === 'sale', tickt: jetzt !== null, text, zeit, phase: phase.id};
 }
 
 export function BfCountdownLeiste() {
-  const {vorbei, sale, tickt, text, zeit} = useBfUhr();
+  const {vorbei, tickt, text, zeit, phase} = useBfUhr();
   if (vorbei) return null;
   return (
     <div
       className="bfc"
       data-bfc=""
-      data-bfc-phase={tickt ? (sale ? 'sale' : 'presale') : undefined}
+      data-bfc-phase={tickt ? phase : undefined}
       role="timer"
       aria-live="off"
       aria-label="Countdown Black Friday"

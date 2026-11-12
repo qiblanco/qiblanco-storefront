@@ -23,6 +23,7 @@ import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {AppleSeite} from '~/components/apple-seite/AppleSeite';
 import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
 import warenkorbAppleStyles from '~/styles/warenkorb-apple.css?url';
+import {bfDealCodesNachHinzufuegen} from '~/components/black-friday-2026/bf-deal-codes.server';
 
 /**
  * Route-gebundenes Stylesheet (Muster mm-lp.css): die vier Regeln von
@@ -102,10 +103,21 @@ export async function action({request, context}) {
         typeof inputs.discountCode === 'string' ? inputs.discountCode.trim() : '';
       const clearDiscountCodes = inputs.clearDiscountCodes === true;
 
+      // BF-Deal (Elina EL-20261112-5c71f6ff): der Knopf der Deal-Seite schickt nur
+      // die Deal-Kennung; die Codes setzt allein der Server dazu, zu den schon
+      // vorhandenen (Deals sind kombinierbar).
+      const bfDealId = typeof inputs.bfDeal === 'string' ? inputs.bfDeal : '';
+
       if (discountCode && result?.cart?.totalQuantity > 0) {
         result = await cart.updateDiscountCodes([discountCode]);
       } else if (clearDiscountCodes && result?.cart?.totalQuantity > 0) {
         result = await cart.updateDiscountCodes([]);
+      } else if (bfDealId && result?.cart?.totalQuantity > 0) {
+        const codes = bfDealCodesNachHinzufuegen(
+          (result.cart.discountCodes ?? []).map((c) => c.code),
+          bfDealId,
+        );
+        if (codes) result = await cart.updateDiscountCodes(codes);
       }
       break;
     }

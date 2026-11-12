@@ -269,6 +269,13 @@ export function AlphaVorlage({
         ? 'kette'
         : 'bezahlart';
   const seite = useRef(null);
+  const dealSeite = useBfDealSeite();
+  // Was der obere Knopf in den Warenkorb legt (Kettenlänge oder Größe), damit niemand blind kauft.
+  const wahlText = laenge
+    ? KETTE_IM_SET.name(laenge.cm)
+    : optionen.length
+      ? anzeigeName(VARIANTE, variante?.title)
+      : null;
   // Der eine Kaufknopf: in der Zusammenfassung und, mobil nach ihr, in der
   // Schlussleiste (dieselben Zeilen, dieselbe Beschriftung).
   const kaufknopf = (
@@ -417,6 +424,14 @@ export function AlphaVorlage({
                   </s>
                 ) : null}
               </p>
+            ) : null}
+            {/* BF-Deal-Seite (Elina EL-20261112-5c71f6ff): „In den Warenkorb“ direkt nach dem Preis,
+                zusätzlich zum Knopf unten und zur Kaufleiste; dieselben Zeilen wie unten. */}
+            {dealSeite && variante?.price ? (
+              <div className="av-kauf-oben" data-bf-kauf-oben="">
+                {kaufknopf}
+                {wahlText ? <p className="av-kauf-oben__wahl">Auswahl: {wahlText}</p> : null}
+              </div>
             ) : null}
             {stufeEins?.liefertext ? (
               <p className="tas-edition" data-av-lieferbar="">

@@ -113,8 +113,8 @@
 .bfg__knopf:hover { background: #f6cc86; }
 .bfg__knopf:focus-visible { outline: 2px solid #171310; outline-offset: 3px; }
 
-/* Kaufknopf auf Deal-Seiten ist ein Link (Warenkorb-Link mit BF-Code), gleiche Optik wie der Knopf. */
-a.bf-deal-kaufen {
+/* Kaufknopf auf Deal-Seiten: „In den Warenkorb“ (seit Elina EL-20261112-5c71f6ff ein Knopf, vorher Warenkorb-Link). */
+.bf-deal-kaufen {
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -123,6 +123,11 @@ a.bf-deal-kaufen {
   text-align: center;
   text-decoration: none !important;
 }
+
+/* Zusätzlicher Knopf direkt nach dem Preis (Elina EL-20261112-5c71f6ff), vor allem mobil. */
+.av-kauf-oben { margin: 0.75rem 0 0.25rem; }
+.av-kauf-oben form { margin: 0; }
+.av-kauf-oben__wahl { margin: 0.5rem 0 0; font-size: 0.875rem; opacity: 0.8; text-align: center; }
 
 @media (min-width: 600px) {
   .bfg__kachel { flex-basis: 44%; }
@@ -162,3 +167,33 @@ a.bf-deal-kaufen {
   color: var(--tas-grau, #6e6e73) !important;
   text-decoration: underline;
 }
+
+/* Kakao-Deal-Seite: „In den Warenkorb“ ist seit Elina EL-20261112-5c71f6ff ein Knopf in einem Formular
+   (vorher Warenkorb-Link a.bkd__kaufen in bf-kakao-deal.css): dieselbe Optik, Kit-Gold #F2BF72, dunkle Schrift. */
+.bf-deal-seite form:has(> .bkd__kaufen) { margin: 0; width: 100%; max-width: 28rem; }
+.bf-deal-seite .qb-kaufleiste form:has(> .bkd__kaufen--leiste) { width: auto; }
+.bf-deal-seite button.bkd__kaufen {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 28rem;
+  min-height: 52px;
+  margin: 0;
+  padding: var(--bkd-a2) var(--bkd-a3);
+  border: 0;
+  border-radius: var(--bkd-radius-knopf);
+  background: #f2bf72;
+  color: #171310 !important;
+  font-family: inherit;
+  font-size: var(--bkd-t-knopf);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+.bf-deal-seite button.bkd__kaufen:hover { background: #f6cc86; }
+.bf-deal-seite button.bkd__kaufen:focus-visible { outline: 2px solid var(--bkd-hell); outline-offset: 3px; }
+.bf-deal-seite button.bkd__kaufen:disabled { opacity: 0.6; cursor: default; }
+.bf-deal-seite .qb-kaufleiste button.bkd__kaufen--leiste { width: auto; min-height: 48px; padding: var(--bkd-a1) var(--bkd-a3); }

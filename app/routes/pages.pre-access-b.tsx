@@ -21,6 +21,7 @@ import {BfVertrauensblock} from '../components/black-friday-2026/BfVertrauensblo
 import preAccessBStyles from '../styles/pre-access-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
 import vertrauensblockStyles from '../styles/bf-vertrauensblock.css?url';
+import {bfPhase} from '../components/black-friday-2026/bf-deals-daten';
 
 const ENDPUNKT = 'https://anmelden.dienst.qiblanco.com';
 const BILD =
@@ -72,8 +73,9 @@ type Uhr = {
 
 const UHREN: Uhr[] = [
   {
+    // Titel, Ziel und Datum der Hauptuhr wechseln mit der Phase (Countdown, bfPhase); hier der Stand vor dem Start.
     ziel: '2026-11-12T23:00:00Z',
-    titel: 'Pre-Access startet in',
+    titel: 'Pre-Sale startet in',
     offen: 'Pre-Access läuft',
     datum: 'Freitag, 13. November 2026 · 00:00 Uhr',
     haupt: true,
@@ -130,6 +132,13 @@ function Countdown({
   jetzt: number | null;
   messfixtur: string | null;
 }) {
+  // Hauptuhr mit Phasen (Elina EL-20261112-5c71f6ff, bf-deals-daten.js (BF_PHASEN)): „Pre-Sale startet in“ bis 13.11. 00:00,
+  // „Pre-Sale endet in“ bis 26.11. 23:59, „Black Friday endet in“ bis Sale-Ende; Titel, Ziel und Datum folgen der Phase.
+  if (uhr.haupt) {
+    const phase = bfPhase(jetzt ?? Date.now());
+    if (!phase) return null;
+    uhr = {...uhr, ziel: phase.bis, titel: phase.titel, datum: phase.datum};
+  }
   const rest =
     jetzt === null ? null : Math.floor((Date.parse(uhr.ziel) - jetzt) / 1000);
   const offen = rest !== null && rest <= 0;
@@ -230,7 +239,7 @@ export default function PreAccessB() {
           </p>
           {UHREN.map((u) => (
             <Countdown
-              key={u.ziel}
+              key={u.haupt ? "haupt" : u.ziel}
               uhr={u}
               jetzt={jetzt}
               messfixtur={messfixtur}
