@@ -1,3 +1,5 @@
+@import './anna-kugel.css';
+
 /*
  * APPLE-SEITENBAUKASTEN — Token-CSS (Grossjob 20261029-GROSSJOB-alle-shop-
  * seiten-apple-niveau-ausser-seo-geo, s03). Scope: .as-seite (Wurzel mit
@@ -487,12 +489,9 @@
   align-items: flex-start;
 }
 .as-anna-zeichen {
-  flex: none;
-  width: var(--as-s-4);
-  height: var(--as-s-4);
+  /* Die lebendige Kugel (anna-kugel.css, Job 20261112-…-frag-anna):
+     Groesse und Bild kommen aus der Standard-Komponente, hier nur der Platz. */
   margin-top: var(--as-s-1);
-  border-radius: 50%;
-  background: var(--as-gold);
 }
 .as-anna-titel {
   margin: 0;
