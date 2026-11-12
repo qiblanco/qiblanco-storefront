@@ -1,5 +1,5 @@
 import {useId} from 'react';
-import {AnnaKugel, annaOeffnenProps} from '~/components/anna-kugel/AnnaKugel';
+import {AnnaKugel, annaChatProps} from '~/components/anna-kugel/AnnaKugel';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {GoogleBewertungsleiste} from '~/components/reusables/GoogleBewertungsleiste';
 import {Produkt360Video} from '~/components/reusables/Produkt360Video';
@@ -335,7 +335,7 @@ export function AppleAnna({
       <AnnaKugel groesse={40} className="as-anna-zeichen" />
       <div>
         <h3 className="as-anna-titel">
-          <button type="button" className="anna-oeffnen-text" {...annaOeffnenProps('titel')}>
+          <button type="button" className="anna-chat-text" {...annaChatProps('titel')}>
             {mitMarkeR(titel)}
           </button>
         </h3>

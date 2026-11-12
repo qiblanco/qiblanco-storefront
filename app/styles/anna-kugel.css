@@ -1,8 +1,8 @@
-/* ═══ DIE LEBENDIGE KUGEL — Standard fuer AI Anna ══════════════════════════════
+/* ═══ DIE LEBENDIGE KUGEL — Standard für AI Anna ══════════════════════════════
    Job 20261112-prio2-ai-anna-lebendige-kugel-standarddesign-frag-anna.
    Christian 12.11.2026: „dass es mehr so eine wirklich eine lebendige Kugel
    wird … ein Standarddesign … wie diese lebendige Kugel auszusehen hat. Dass es
-   im Prinzip ja auch unsere Planetenidee und unserer kuenstlichen Intelligenz
+   im Prinzip ja auch unsere Planetenidee und unserer künstlichen Intelligenz
    entspricht."
 
    BASIS: die plastische Kugel bei „Noch eine Frage?" (.taf-kugel, Z174):
@@ -10,12 +10,12 @@
 
    EIN ELEMENT, VIER FASSUNGEN (data-variante), EINE KOMPONENTE
    (app/components/anna-kugel/AnnaKugel.jsx):
-     atem       die Bestandskugel, atmet (Schein + 3 % Groesse, 6 s)
-     planet     Tag-/Nachtseite, kuehler Atmosphaerensaum, Licht wandert
+     atem       die Bestandskugel, atmet (Schein + 3 % Größe, 6 s)
+     planet     Tag-/Nachtseite, kühler Atmosphärensaum, Licht wandert
      lichtkern  Planet + ein Lichtkern, der in der Kugel wandert (Empfehlung)
      orbit      Kugel mit Umlaufbahn und einem kleinen Mond
    Welche Fassung Standard ist, entscheidet EIN Wert: STANDARD in
-   AnnaKugel.jsx. Diese Datei bleibt dabei unberuehrt.
+   AnnaKugel.jsx. Diese Datei bleibt dabei unberührt.
 
    LAST: nur CSS, keine Bilder, kein JS, kein Canvas. Animiert werden nur
    transform und opacity (Compositor, kein Layout, kein Repaint der Seite).
@@ -42,7 +42,7 @@
   vertical-align: middle;
 }
 
-/* Die Kugel als Knopf: Klick oeffnet Annas Chat (Christian 12.11.2026).
+/* Die Kugel als Knopf: Klick öffnet Annas Chat (Christian 12.11.2026).
    Kein Knopf-Aussehen, nur die Kugel; der Fokusring folgt ihrer Form. */
 .anna-kugel--knopf {
   margin: 0;
@@ -62,8 +62,8 @@
   outline-offset: 4px;
 }
 
-/* Die Ueberschrift neben der Kugel oeffnet den Chat ebenso. */
-.anna-oeffnen-text {
+/* Die Überschrift neben der Kugel öffnet den Chat ebenso. */
+.anna-chat-text {
   margin: 0;
   padding: 0;
   border: 0;
@@ -78,7 +78,7 @@
   touch-action: manipulation;
   appearance: none;
 }
-.anna-oeffnen-text:focus-visible {
+.anna-chat-text:focus-visible {
   outline: 2px solid var(--ak-gold-tief, #9a7646);
   outline-offset: 3px;
   border-radius: 4px;
@@ -94,7 +94,7 @@
   animation: ak-schein var(--ak-takt) ease-in-out infinite;
 }
 
-/* Der Koerper: die plastische Kugel (Basis .taf-kugel). */
+/* Der Körper: die plastische Kugel (Basis .taf-kugel). */
 .anna-kugel__koerper {
   position: absolute;
   inset: 0;

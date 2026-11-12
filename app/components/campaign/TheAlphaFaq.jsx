@@ -1,5 +1,5 @@
 import {useId, useState} from 'react';
-import {AnnaKugel, annaOeffnenProps} from '~/components/anna-kugel/AnnaKugel';
+import {AnnaKugel, annaChatProps} from '~/components/anna-kugel/AnnaKugel';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {
   THE_ALPHA_FAQ_ANNA,
@@ -105,7 +105,7 @@ export function TheAlphaFaq({ton = 'hell', vergeben}) {
         <div className="taf-anna" data-the-alpha-faq-anna="">
           <AnnaKugel groesse={56} className="taf-kugel" />
           <p className="taf-anna-titel">
-            <button type="button" className="anna-oeffnen-text" {...annaOeffnenProps('titel')}>
+            <button type="button" className="anna-chat-text" {...annaChatProps('titel')}>
               {mitMarkeR(THE_ALPHA_FAQ_ANNA.titel)}
             </button>
           </p>

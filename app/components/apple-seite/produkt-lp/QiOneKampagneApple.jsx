@@ -1,6 +1,5 @@
 import {AlphaVorlage} from '~/components/product-pages/AlphaVorlage';
 import * as ALPHA_DATEN from '~/components/product-pages/qione-2-pro-alpha-daten';
-import {AnnaKugel, annaOeffnenProps} from '~/components/anna-kugel/AnnaKugel';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import {ProduktVideoKachel} from '~/components/reusables/ProduktVideos';
 import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
@@ -147,17 +146,8 @@ function QiOneNutzen({daten}) {
             : null;
           return (
             <li key={s.etikett} className="avq-spalte">
-              {s.anna ? <AnnaKugel groesse={32} className="avq-anna-kugel" /> : null}
               <p className="avq-etikett">{s.etikett}</p>
-              <h3 className="avq-titel">
-                {s.anna ? (
-                  <button type="button" className="anna-oeffnen-text" {...annaOeffnenProps('titel')}>
-                    {mitMarkeR(s.titel)}
-                  </button>
-                ) : (
-                  mitMarkeR(s.titel)
-                )}
-              </h3>
+              <h3 className="avq-titel">{mitMarkeR(s.titel)}</h3>
               <p className="avq-text">{mitMarkeR(s.text)}</p>
               {link ? (
                 <a
