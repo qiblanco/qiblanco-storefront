@@ -12,7 +12,7 @@
 // führt auf die BF-Deal-Seite des Deals (dort geht es per Warenkorb-Link mit BF-Endpreis weiter), seit EL-20261111-cc43922e
 // ausnahmslos, auch Bild und Titel (siehe dealSeite); (3) die Seite beginnt ganz oben mit dem
 // großen roten Countdown (#B92200, weiß, sekundengenau); Phasen seit EL-20261112-5c71f6ff: „Pre-Sale startet in“ bis 13.11.
-// 00:00, „Pre-Sale endet in“ bis 26.11. 23:59, „Black Friday endet in“ bis Sale-Ende.
+// 18:00 (EL-20261112-6b5fe5df), „Pre-Sale endet in“ bis 26.11. 23:59, „Black Friday endet in“ bis Sale-Ende.
 // Rückbau: diese Datei und app/styles/bf-deals-b.css löschen.
 import {useEffect, useRef, useState} from 'react';
 import {useLoaderData} from 'react-router';
@@ -205,7 +205,7 @@ function useJetzt() {
 }
 
 function Countdown({jetzt}: {jetzt: number | null}) {
-  // Phasen (Elina EL-20261112-5c71f6ff) aus bf-deals-daten.js (BF_PHASEN): „Pre-Sale startet in“ bis 13.11. 00:00,
+  // Phasen (Elina EL-20261112-5c71f6ff) aus bf-deals-daten.js (BF_PHASEN): „Pre-Sale startet in“ bis 13.11. 18:00,
   // „Pre-Sale endet in“ bis 26.11. 23:59, „Black Friday endet in“ bis Sale-Ende; danach kein Countdown mehr.
   // Server-HTML: Titel der Phase, Zahlen 00; erst im Browser laufen die Zahlen.
   const phase = bfPhase(jetzt ?? Date.now());

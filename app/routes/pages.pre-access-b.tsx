@@ -4,7 +4,7 @@
 // qi-blanco.com/pages/pre-access-b. Nicht verlinkt, noindex. /pages/pre-access bleibt unveraendert die echte Pre-Access-Adresse,
 // bis Elina GO gibt.
 // Formular: Mail-Manager-Formular 27 UNVERAENDERT (KONFIG wie /pages/pre-access: Liste, Tags, Einwilligung, Erfolgsseite), der
-// Browser sendet direkt an den Endpunkt wie dort. Countdowns: Pre-Access Fr 13.11.2026 00:00 MEZ = 2026-11-12T23:00:00Z,
+// Browser sendet direkt an den Endpunkt wie dort. Countdowns: Pre-Sale-Start Fr 13.11.2026 18:00 MEZ = 2026-11-13T17:00:00Z (EL-20261112-6b5fe5df),
 // Black Friday Fr 27.11.2026 00:00 MEZ = 2026-11-26T23:00:00Z. Vorschau eines anderen Zeitpunkts: ?pab_jetzt=2026-11-14T12:00:00Z
 // Bewegung: Baukasten elina-design-regel (useElinaBewegung), erster Bildschirm ohne Animation.
 // Messfixtur (Gate 12, wie /pages/live und /pages/produktberatung): nur mit Kopf x-hbfmt-messfixtur: 1 UND Host localhost
@@ -74,10 +74,10 @@ type Uhr = {
 const UHREN: Uhr[] = [
   {
     // Titel, Ziel und Datum der Hauptuhr wechseln mit der Phase (Countdown, bfPhase); hier der Stand vor dem Start.
-    ziel: '2026-11-12T23:00:00Z',
+    ziel: '2026-11-13T17:00:00Z',
     titel: 'Pre-Sale startet in',
     offen: 'Pre-Access läuft',
-    datum: 'Freitag, 13. November 2026 · 00:00 Uhr',
+    datum: 'Freitag, 13. November 2026 · 18:00 Uhr',
     haupt: true,
   },
   {
@@ -132,7 +132,7 @@ function Countdown({
   jetzt: number | null;
   messfixtur: string | null;
 }) {
-  // Hauptuhr mit Phasen (Elina EL-20261112-5c71f6ff, bf-deals-daten.js (BF_PHASEN)): „Pre-Sale startet in“ bis 13.11. 00:00,
+  // Hauptuhr mit Phasen (Elina EL-20261112-5c71f6ff, bf-deals-daten.js (BF_PHASEN)): „Pre-Sale startet in“ bis 13.11. 18:00 (EL-20261112-6b5fe5df),
   // „Pre-Sale endet in“ bis 26.11. 23:59, „Black Friday endet in“ bis Sale-Ende; Titel, Ziel und Datum folgen der Phase.
   if (uhr.haupt) {
     const phase = bfPhase(jetzt ?? Date.now());

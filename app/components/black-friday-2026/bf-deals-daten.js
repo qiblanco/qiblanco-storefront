@@ -437,13 +437,14 @@ export function andereDeals(seite) {
 /*
  * COUNTDOWN-LOGIK DER BF-SEITEN DE (Elina EL-20261112-5c71f6ff, GO 12.11.2026), EINE Stelle für
  * rote Leiste der Deal-Seiten, großen Countdown auf bf-deals und Pre-Access (hier in bf-deals-daten.js):
- *   vor 13.11.2026 00:00 Berlin            „Pre-Sale startet in …“  (Ziel 13.11. 00:00)
- *   ab 13.11. 00:00 bis 26.11. 23:59 Berlin „Pre-Sale endet in …“    (Ziel 27.11. 00:00 = Ende 26.11. 23:59)
+ *   vor 13.11.2026 18:00 Berlin            „Pre-Sale startet in …“  (Ziel 13.11. 18:00, passend zur ersten Mail;
+ *                                           Korrektur Elina EL-20261112-6b5fe5df, vorher 00:00)
+ *   ab 13.11. 18:00 bis 26.11. 23:59 Berlin „Pre-Sale endet in …“    (Ziel 27.11. 00:00 = Ende 26.11. 23:59)
  *   ab 27.11.2026 00:00 Berlin              „Black Friday endet in …“ (Ziel Sale-Ende 30.11. 23:59)
  *   danach                                  kein Countdown
  * Testzeit auf allen Seiten: ?pab_jetzt=<ISO>.
  */
-export const BF_PRESALE_START = '2026-11-12T23:00:00Z';
+export const BF_PRESALE_START = '2026-11-13T17:00:00Z';
 export const BF_PRESALE_ENDE = '2026-11-26T23:00:00Z';
 export const BF_SALE_ENDE = '2026-11-30T22:59:00Z';
 
@@ -452,8 +453,8 @@ export const BF_PHASEN = [
     id: 'vorher',
     bis: BF_PRESALE_START,
     titel: 'Pre-Sale startet in',
-    datum: 'Freitag, 13. November 2026 · 00:00 Uhr',
-    satz: 'Pre-Sale startet am 13.11.2026 um 00:00 Uhr',
+    datum: 'Freitag, 13. November 2026 · 18:00 Uhr',
+    satz: 'Pre-Sale startet am 13.11.2026 um 18:00 Uhr',
   },
   {
     id: 'presale',
