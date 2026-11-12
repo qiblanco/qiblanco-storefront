@@ -145,7 +145,7 @@ export const BF_KAKAO_SETS = [
     basis: 'bundle-1x-awake-1x-create',
     bild: BF_GOLD_BILDER['kakao-awake-create'],
     bildAlt: 'Crystal Cacao Awake und Create, je eine Packung',
-    link: 'https://crystal-cacao.com/cart/54540698485004:1,44685294567692:1?discount=BF26-KAKAO-NKSKX',
+    link: 'https://crystal-cacao.com/cart/54540698485004:1,44685294567692:1',
   },
   {
     id: '2x-awake',
@@ -156,7 +156,7 @@ export const BF_KAKAO_SETS = [
     basis: 'bundle-2x-awake',
     bild: BF_GOLD_BILDER['kakao-2x-awake'],
     bildAlt: 'Zwei Packungen Crystal Cacao Awake',
-    link: 'https://crystal-cacao.com/cart/54540698485004:2?discount=BF26-KAKAO-NKSKX',
+    link: 'https://crystal-cacao.com/cart/54540698485004:2',
   },
   {
     id: '2x-create',
@@ -167,7 +167,7 @@ export const BF_KAKAO_SETS = [
     basis: 'mengenrabatt-2x',
     bild: BF_GOLD_BILDER['kakao-2x-create'],
     bildAlt: 'Zwei Packungen Crystal Cacao Create',
-    link: 'https://crystal-cacao.com/cart/44685294567692:2?discount=BF26-KAKAO-NKSKX',
+    link: 'https://crystal-cacao.com/cart/44685294567692:2',
   },
 ];
 
