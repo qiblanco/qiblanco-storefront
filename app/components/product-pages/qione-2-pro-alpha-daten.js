@@ -226,7 +226,7 @@ export const NUTZEN = {
     },
     {
       etikett: 'Service',
-      // anna: Lichtkern-Kugel davor, Kugel und Titel oeffnen Annas Chat (Christian 12.11.2026).
+      // anna: Lichtkern-Kugel davor, Kugel und Titel öffnen Annas Chat (Christian 12.11.2026).
       anna: true,
       titel: 'Eine Frage? Frag Anna.',
       text: 'Anna antwortet dir sofort im Chat. Per E-Mail antwortet dir unser Team persönlich, werktags.',
