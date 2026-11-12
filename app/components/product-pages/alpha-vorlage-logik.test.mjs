@@ -241,6 +241,30 @@ test('Kette im Set (s13-r3): alle Längen mit Lieferbarkeit, Vorwahl, Zeilenattr
   assert.equal('attributes' in L.warenkorbZeilen(EINS)[0], false);
 });
 
+test('BF-Deal (EL-20261112-5f5fab2e): nurLieferbar blendet ausverkaufte Längen aus, Nachschub bringt sie zurück', () => {
+  const v = (id, title, _opts, frei = true) => ({id, title, availableForSale: frei});
+  const kette = (m50, m75) => ({
+    variants: {
+      nodes: [
+        v('k40', 'XS - 40 cm', []),
+        v('k45', 'S - 45cm', []),
+        v('k50', 'M - 50 cm', [], m50),
+        v('k60', 'L - 60 cm', []),
+        v('k75', 'XL - 75 cm', [], m75),
+      ],
+    },
+  });
+  const heute = L.laengenKacheln(kette(false, false), [], {nurLieferbar: true});
+  assert.deepEqual(heute.map((x) => x.cm), [40, 45, 60]);
+  assert.ok(heute.every((x) => x.verfuegbar));
+  // Nachschub für M: die Länge ist ohne Codeänderung wieder da.
+  assert.deepEqual(L.laengenKacheln(kette(true, false), [], {nurLieferbar: true}).map((x) => x.cm), [40, 45, 50, 60]);
+  // ohne Schalter wie bisher: alle Längen, ausverkaufte sichtbar
+  assert.deepEqual(L.laengenKacheln(kette(false, false)).map((x) => x.cm), [40, 45, 50, 60, 75]);
+  // Vorwahl auf eine ausgeblendete Länge: die erste lieferbare
+  assert.equal(L.startLaenge(heute, 50), 40);
+});
+
 test('Kette im Set (s13-r3): ohne Kettendaten die Längen der Datenstelle, alle wählbar', () => {
   // Abfrage gescheitert oder Kette im Markt nicht veröffentlicht: das Set
   // darf nicht ohne Längenwahl in den Warenkorb.

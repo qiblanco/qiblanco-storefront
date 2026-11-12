@@ -197,8 +197,13 @@ export function AlphaVorlage({
   const [ketteWahl, setKetteWahl] = useState(null);
   const kette = kacheln.find((k) => k.schluessel === ketteWahl) ?? null;
 
+  // BF-Deal-Seite (Elina EL-20261112-5f5fab2e): ausverkaufte Kettenlängen
+  // nicht zeigen, automatisch aus der Lieferbarkeit der Kettenvarianten.
+  const bfDealKontext = useBfDealSeite();
   const laengen = KETTE_IM_SET
-    ? laengenKacheln(ketten?.stahl, Object.keys(KETTE_IM_SET.zeilen ?? {}))
+    ? laengenKacheln(ketten?.stahl, Object.keys(KETTE_IM_SET.zeilen ?? {}), {
+        nurLieferbar: Boolean(bfDealKontext),
+      })
     : [];
   const [laengeWahl, setLaengeWahl] = useState(() =>
     startLaenge(laengen, KETTE_IM_SET?.vorwahl ?? null),

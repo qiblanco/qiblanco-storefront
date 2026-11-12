@@ -1,12 +1,14 @@
-import {Await, Link, useLocation} from 'react-router';
+import {Await, Link, useLocation, useMatches} from 'react-router';
 import {Suspense, useId} from 'react';
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
 import {WissenVertrauenWeiter} from '~/components/reusables/WissenVertrauenWeiter';
 import {
+  BfFunnelKopf,
   Header,
   HeaderMenu,
   QiAlphaFunnelKopf,
+  istBfFunnelPfad,
   istQiAlphaFunnelPfad,
 } from '~/components/Header';
 import {CartMain} from '~/components/CartMain';
@@ -28,12 +30,20 @@ export function PageLayout({
   publicStoreDomain,
 }) {
   const {pathname} = useLocation();
+  const matches = useMatches();
+  // Black-Friday-Funnel (Elina EL-20261112-5f5fab2e): Pre-Access, bf-deals und
+  // jede BF-Deal-Seite wie Qi Alpha ohne Menü und Fuß. Deal-Seiten tragen
+  // bfDealSeite in den Loaderdaten (nur im Aktionszeitraum, nur Euro-Markt);
+  // danach und in anderen Märkten wieder das normale Layout.
+  const bfFunnel =
+    istBfFunnelPfad(pathname) ||
+    (matches || []).some((m) => Boolean(m?.data?.bfDealSeite));
   // Qi-Alpha-Kaufseite: eigene enge Funnel-Seite (Begründung bei
   // QiAlphaFunnelLayout unten). Aus useLocation, damit es auch bei
   // Client-Navigation stimmt.
-  if (istQiAlphaFunnelPfad(pathname)) {
+  if (istQiAlphaFunnelPfad(pathname) || bfFunnel) {
     return (
-      <QiAlphaFunnelLayout cart={cart} isLoggedIn={isLoggedIn}>
+      <QiAlphaFunnelLayout cart={cart} isLoggedIn={isLoggedIn} bf={bfFunnel}>
         {children}
       </QiAlphaFunnelLayout>
     );
@@ -80,13 +90,19 @@ export function PageLayout({
  * Hintergrund-Verläufe des Hauses. AI Anna bleibt (root.jsx, unabhängig vom
  * Layout), ebenso alle Tracking-Bausteine (root.jsx) und cart_viewed
  * (CartBadge im Kopf). Stil: app/styles/qi-alpha-funnel-kopf.css.
- * @param {Pick<PageLayoutProps, 'cart' | 'isLoggedIn' | 'children'>}
+ * @param {Pick<PageLayoutProps, 'cart' | 'isLoggedIn' | 'children'> & {bf?: boolean}}
  */
-function QiAlphaFunnelLayout({cart, children = null, isLoggedIn}) {
+function QiAlphaFunnelLayout({cart, children = null, isLoggedIn, bf = false}) {
+  // bf: Black-Friday-Funnel, derselbe Rahmen mit der Marke „Qi Blanco“ ohne Link
+  // (BfFunnelKopf, Elina EL-20261112-5f5fab2e).
   return (
     <Aside.Provider>
       <CartAside cart={cart} />
-      <QiAlphaFunnelKopf cart={cart} isLoggedIn={isLoggedIn} />
+      {bf ? (
+        <BfFunnelKopf cart={cart} isLoggedIn={isLoggedIn} />
+      ) : (
+        <QiAlphaFunnelKopf cart={cart} isLoggedIn={isLoggedIn} />
+      )}
       <main data-qa-funnel="">{children}</main>
     </Aside.Provider>
   );

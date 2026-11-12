@@ -595,6 +595,57 @@ export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
 }
 
 /**
+ * BLACK-FRIDAY-FUNNEL (Elina EL-20261112-5f5fab2e, GO 12.11.2026, Christians
+ * Feedback zu den BF-Seiten): Pre-Access, bf-deals und alle BF-Deal-Seiten
+ * sind geschlossene Funnel-Seiten wie Qi Alpha: kein Menü, kein Fuß, „kein
+ * Zurück“. Kopf 1:1 wie der Qi-Alpha-Kopf (QiAlphaFunnelKopf oben, gleiche
+ * Klassen .qfk), nur mit der Wortmarke „Qi Blanco“. Die Marke ist kein Link:
+ * sie führt nicht zur Startseite, ein Tipp scrollt nach oben. Konto und
+ * Warenkorb bleiben, die Kasse bleibt erreichbar.
+ * Die Deal-Seiten (/products/<kryptischer Handle>) erkennt PageLayout an den
+ * Loaderdaten (bfDealSeite, nur im Aktionszeitraum und Euro-Markt); hier
+ * stehen nur die festen Seitenpfade. Rückweg: Pfade hier und die Weiche in
+ * PageLayout.jsx entfernen, dann rendert wieder der Hauskopf.
+ */
+const BF_FUNNEL_SEITEN = ['pre-access', 'pre-access-b', 'bf-deals', 'bf-deals-b'];
+
+/** @param {string} pathname */
+export function istBfFunnelPfad(pathname) {
+  const m = /^\/pages\/([^/?#]+)\/?$/i.exec(String(pathname || ''));
+  return Boolean(m && BF_FUNNEL_SEITEN.includes(m[1].toLowerCase()));
+}
+
+/**
+ * @param {Pick<HeaderProps, 'cart' | 'isLoggedIn'>}
+ */
+export function BfFunnelKopf({isLoggedIn, cart}) {
+  useKopfHoeheVariable();
+  const nachOben = useCallback(() => {
+    // „Bewegung reduzieren“: ohne Gleiten, sofort oben (Elinas Design-Dauerregel D7).
+    const ruhig = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    window.scrollTo({top: 0, behavior: ruhig ? 'auto' : 'smooth'});
+  }, []);
+  return (
+    <header className="qfk qfk--bf" data-qa-funnel-kopf="bf">
+      <div className="qfk-innen">
+        <button
+          type="button"
+          className="qfk-marke qfk-marke--knopf"
+          onClick={nachOben}
+          aria-label="Qi Blanco, nach oben"
+        >
+          Qi Blanco
+        </button>
+        <nav className="qfk-ctas" aria-label="Konto und Warenkorb">
+          <AccountToggle isLoggedIn={isLoggedIn} />
+          <CartToggle cart={cart} />
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+/**
  * Updated HeaderMenu to support nested menu items
  */
 export function HeaderMenu({
