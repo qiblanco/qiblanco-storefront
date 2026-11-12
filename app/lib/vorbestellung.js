@@ -46,6 +46,7 @@ const QI_ALPHA_VORBESTELLUNG = {
   warenkorbTitel: 'Qi Alpha®',
   unterzeile: 'Vorbestellung · Versand Jan 2027',
   versandhinweis: 'Versandbereit für Dich: Jan 2027',
+  reif: '2027-01',
 };
 export const VORBESTELLUNGEN = {
   'qi-alpha': QI_ALPHA_VORBESTELLUNG,
@@ -56,10 +57,12 @@ export const VORBESTELLUNGEN = {
 // nennt Material, Länge und Termin, weil sie die Liste „Name: Wert“ ersetzt.
 // Kasse und Bestellbestätigung lesen das Zeilenattribut „Lieferbar“ (Daten der
 // Seite, necklace-2-alpha-daten.js).
+// `reif` ist der sortierbare Termin-Schlüssel (YYYY-MM, ein Quartal zählt mit
+// seinem letzten Monat): der Sammelhinweis vergleicht ihn, nie den Text.
 const NECKLACE_2_NAME = 'Necklace 2 für den Qi Alpha® und QiOne®';
-const NECKLACE_2_TERMIN = {
-  '750er ethisches Vollgold': 'ab Januar 2027',
-  Chirurgenstahl: 'ab 1. Quartal 2027',
+export const NECKLACE_2_TERMIN = {
+  '750er ethisches Vollgold': {text: 'ab Januar 2027', reif: '2027-01'},
+  Chirurgenstahl: {text: 'ab 1. Quartal 2027', reif: '2027-03'},
 };
 
 /** Eintrag der Necklace 2 zu einer Warenkorb-Zeile: Termin je Material. */
@@ -70,8 +73,9 @@ function necklace2Eintrag(line) {
   if (!termin) return null;
   return {
     warenkorbTitel: NECKLACE_2_NAME,
-    unterzeile: `${wert('Material')} · ${wert('Länge')} · Vorbestellung, lieferbar ${termin}`,
-    versandhinweis: `Lieferbar für Dich: ${termin}`,
+    unterzeile: `${wert('Material')} · ${wert('Länge')} · Vorbestellung, lieferbar ${termin.text}`,
+    versandhinweis: `Lieferbar für Dich: ${termin.text}`,
+    reif: termin.reif,
   };
 }
 
@@ -113,13 +117,22 @@ export function warenkorbUnterzeile(line) {
  * statt 'In 2 bis 3 Tagen bei dir'"). Liegt keine darin, bleibt der
  * Standardtext unverändert — der Hinweis ist produktbezogen, nicht global.
  *
- * Liegen mehrere Vorbestellungen darin, gewinnt die ERSTE gefundene. Heute gibt
- * es genau einen Eintrag; kommt ein zweiter mit anderem Datum dazu, gehört
- * hier eine Regel hin, die das spaetere Datum wählt.
+ * Liegen mehrere Vorbestellungen darin, gewinnt die SPAETESTE (Schlüssel
+ * `reif`, YYYY-MM): die Bestellung geht erst raus, wenn alles da ist. Seit
+ * Necklace 2 gibt es abweichende Termine (Gold Januar, Stahl 1. Quartal 2027);
+ * vorher gewann die erste Zeile, und Gold + Stahl versprachen Januar (Job
+ * 20261105-prio1-necklace-2-livegang-de-freigegeben-christian-s03). Bei
+ * gleichem Monat bleibt die erste. Ein Eintrag ohne `reif` zählt als
+ * spaetester, weil für ihn kein früherer Termin belegt ist.
  */
+const OHNE_REIF = '9999-12';
 export function versandhinweisFürLinien(lines) {
-  const treffer = (lines ?? [])
-    .map(vorbestellungFürLinie)
-    .find((eintrag) => eintrag?.versandhinweis);
+  let treffer = null;
+  for (const eintrag of (lines ?? []).map(vorbestellungFürLinie)) {
+    if (!eintrag?.versandhinweis) continue;
+    if (!treffer || (eintrag.reif || OHNE_REIF) > (treffer.reif || OHNE_REIF)) {
+      treffer = eintrag;
+    }
+  }
   return treffer?.versandhinweis || STANDARD_VERSANDHINWEIS;
 }
