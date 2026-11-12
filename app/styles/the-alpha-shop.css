@@ -44,21 +44,15 @@
    Diamantschild ist auch nicht umgebaut … Also das genauso umbauen wie die
    anderen roten Dinge.“): dasselbe Rot, dieselbe Lichtkante und derselbe
    Glanz im 6-s-Takt wie Kauf- und Kopfleisten-Knopf der Qi-Alpha-Seite
-   (the-alpha-premium.css, --tap-rot-knopf/--tap-knopf-*). Glanzstreifen
+   (Tokens --tas-rot-knopf/--tas-knopf-* in the-alpha-produkt.css). Glanzstreifen
    schmal (40-60 %) wie bei der kleinen Pille. Nur auf der Qi-Alpha-Seite
    ([data-the-alpha-shop]); die Alpha-Vorlage anderer Produkte bleibt. */
-[data-the-alpha-shop] {
-  --taw-etikett-rot: #a81f00;
-  --taw-etikett-kante: rgba(255, 255, 255, 0.38);
-  --taw-etikett-glanz: rgba(255, 255, 255, 0.16);
-}
-
 [data-the-alpha-shop] .taw-etikett {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  background: var(--taw-etikett-rot);
-  box-shadow: inset 0 1px 0 var(--taw-etikett-kante);
+  background: var(--tas-rot-knopf);
+  box-shadow: inset 0 1px 0 var(--tas-knopf-kante);
 }
 
 [data-the-alpha-shop] .taw-etikett::before {
@@ -66,7 +60,7 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(105deg, transparent 40%, var(--taw-etikett-glanz) 50%, transparent 60%);
+  background: linear-gradient(105deg, transparent 40%, var(--tas-knopf-glanz) 50%, transparent 60%);
   transform: translateX(-100%);
   animation: taw-etikett-glanz 6s ease-in-out infinite;
   pointer-events: none;
