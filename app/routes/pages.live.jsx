@@ -155,6 +155,49 @@ const ALLE_EINGEKLAPPT_AN = true;
 const SPEZIAL_AN = true;
 
 /**
+ * Beschreibung je Termin in Christians Wortlaut (12.11.2026 zum 15.11.: „Das
+ * ist jetzt die Beschreibung für Sonntag, Coming Home.“). Ersetzt auf der
+ * Termin-Karte den Teaser des Vorschau-Artikels, Titel bleibt. Dieselbe
+ * Fassung steht in coming-home/config/themen.json (Feld beschreibung, liest
+ * die Erinnerungs- und Link-Mail). Leeres Objekt = Stand vorher.
+ */
+const THEMA_JE_TERMIN = {
+  '2026-11-15':
+    'Angst, Sorge, Zweifel – die drei größten Feinde für unseren Erfolg, ' +
+    'beruflich wie privat',
+};
+
+/**
+ * Christians Wortlaut als JSX unter data-fremdtext: Stil-Tor und
+ * Seiten-Freigabe schneiden ihn aus der Messung und nennen die Wörter im
+ * Bericht (Weg aus PR #840). Nicht umformulieren.
+ */
+function Beschreibung20261115({klasse}) {
+  return (
+    <div data-ch-live="beschreibung" data-fremdtext="christian-wortlaut">
+      <p className={klasse}>
+        Deine größten Gegner sitzen nicht im Außen, sondern in deinem Kopf:
+        Angst, Sorgen, Zweifel. Die stillen Manipulatoren deines Erfolgs,
+        privat wie beruflich.
+      </p>
+      <p className={klasse}>
+        Diesen Sonntag bei Coming Home zeigen wir dir an echten Beispielen, wie
+        du sie auflöst, und zwar mit einer Technik, die du danach selbst
+        anwenden kannst.
+      </p>
+      <p className={klasse}>Sei dabei.</p>
+    </div>
+  );
+}
+
+const BESCHREIBUNG_JE_TERMIN = {'2026-11-15': Beschreibung20261115};
+
+function BeschreibungTermin({datum, klasse}) {
+  const Text = BESCHREIBUNG_JE_TERMIN[datum];
+  return Text ? <Text klasse={klasse} /> : null;
+}
+
+/**
  * Foto von Anna und Christian aus Adrians Shooting in Berlin (Christian
  * 12.11.2026: „das Bild von Anna und mir ist gar nicht gut ausgewählt. Dann
  * nehmen wir lieber das aus Berlin von Adrians Shooting und platzieren es
@@ -337,6 +380,23 @@ export async function loader({request, context}) {
   if (!SPEZIAL_AN) {
     seite.naechster = seite.naechster && {...seite.naechster, extern: null};
     seite.weitere = seite.weitere.map((w) => ({...w, extern: null}));
+  }
+  if (
+    seite.naechster &&
+    !seite.naechster.extern &&
+    BESCHREIBUNG_JE_TERMIN[seite.naechster.datum]
+  ) {
+    seite.naechster = {...seite.naechster, beschreibung: true};
+  }
+  // Thema aus coming-home/config/themen.json (PR-Chef frei 12.11. 08:22Z),
+  // solange der Vorschau-Artikel noch die Ersatzfassung „Thema folgt“ trägt
+  // (Shopify-Tagesdeckel G4a). Ein gesetzter Artikel-Titel gewinnt immer.
+  const thema = seite.naechster ? THEMA_JE_TERMIN[seite.naechster.datum] : null;
+  if (
+    thema &&
+    (!seite.naechster.titel || seite.naechster.titel === 'Thema folgt')
+  ) {
+    seite.naechster = {...seite.naechster, titel: thema};
   }
   const rueckblicke = seite.rueckblicke.map((r) => {
     const html = fremdHtmlMitBildAuszeichnung(
@@ -635,7 +695,10 @@ function TerminApple({naechster, weitere, messfixtur}) {
             <h3 className="lva-termin-thema">
               {naechster.titel || 'Thema folgt'}
             </h3>
-            {naechster.teaser ? (
+            {naechster.beschreibung &&
+            BESCHREIBUNG_JE_TERMIN[naechster.datum] ? (
+              <BeschreibungTermin datum={naechster.datum} klasse="lva-termin-teaser" />
+            ) : naechster.teaser ? (
               <p className="lva-termin-teaser">{naechster.teaser}</p>
             ) : null}
             <div className="as-knoepfe lva-termin-knopf">
@@ -929,7 +992,10 @@ function Termin({naechster, weitere, messfixtur}) {
               </time>
             </p>
             <h3 className="lv-h3">{naechster.titel || 'Thema folgt'}</h3>
-            {naechster.teaser ? (
+            {naechster.beschreibung &&
+            BESCHREIBUNG_JE_TERMIN[naechster.datum] ? (
+              <BeschreibungTermin datum={naechster.datum} klasse="lv-text" />
+            ) : naechster.teaser ? (
               <p className="lv-text">{naechster.teaser}</p>
             ) : null}
             <a className="btn--primary lv-knopf" href="#anmelden">
