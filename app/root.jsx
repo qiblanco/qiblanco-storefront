@@ -64,6 +64,7 @@ import overlayOrdnungStyles from '~/styles/overlay-ordnung.css?url';
 // kommen, die weiter unten benutzt werden.
 import qbTokensStyles from '~/styles/qb-tokens.css?url';
 import appStyles from '~/styles/app.css?url';
+import preisSchildStyles from '~/styles/preis-schild.css?url';
 import redesign3themenStyles from '~/styles/redesign-3themen.css?url';
 // Baukasten qb-swipetab: global eingebunden, weil er an mehreren Stellen
 // wiederverwendbar sein soll. Wirkt ausschließlich innerhalb von .qb-swipetab —
@@ -640,6 +641,7 @@ export function Layout({children}) {
         <link rel="stylesheet" href={overlayOrdnungStyles}></link>
         <link rel="stylesheet" href={qbTokensStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
+        <link rel="stylesheet" href={preisSchildStyles}></link>
         <link rel="stylesheet" href={redesign3themenStyles}></link>
         <link rel="stylesheet" href={qbSwipetabStyles}></link>
         <link rel="stylesheet" href={qbBalkendiagrammStyles}></link>

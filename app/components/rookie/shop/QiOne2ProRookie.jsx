@@ -1,4 +1,5 @@
 import {QiOneBuyBox, QiOneBenefitList} from '~/components/product-pages/QiOneBuyBox';
+import {PreisSchilder} from '~/components/reusables/PreisSchild';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
@@ -83,7 +84,17 @@ export function QiOne2ProRookie({product, vergleichsPreise}) {
             <b>Mehr als 14.000+ aktive Nutzer</b>
           </p>
         }
-        priceLabel={<div className="BestsellerLabel">Bestseller Angebot</div>}
+        priceLabel={
+          /* SCHILDCHEN VARIANTE B (Christian 12.11.2026): vorher ein Schild
+             "Bestseller Angebot" mit zwei Aussagen; jetzt Preisvorteil mit Zahl
+             (nur bei sichtbarem Vergleichspreis) und Auszeichnung getrennt. */
+          <PreisSchilder
+            preis={product?.selectedOrFirstAvailableVariant?.price?.amount}
+            vergleich={product?.selectedOrFirstAvailableVariant?.compareAtPrice?.amount}
+            waehrung={product?.selectedOrFirstAvailableVariant?.price?.currencyCode || 'EUR'}
+            auszeichnung="Bestseller"
+          />
+        }
         benefitList={
           <QiOneBenefitList
             vorPunkte={

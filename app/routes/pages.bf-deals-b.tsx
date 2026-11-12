@@ -17,6 +17,7 @@ import {useEffect, useRef, useState} from 'react';
 import {useLoaderData} from 'react-router';
 import {BF_GOLD_BILDER, BF_KAKAO_SEITE, bfDealSeite, bfKakaoPfad} from '../components/black-friday-2026/bf-deals-daten';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
+import {PreisSchilder} from '../components/reusables/PreisSchild';
 import {BfVertrauensblock} from '../components/black-friday-2026/BfVertrauensblock';
 import vertrauensblockStyles from '../styles/bf-vertrauensblock.css?url';
 import bfDealsBStyles from '../styles/bf-deals-b.css?url';
@@ -58,6 +59,7 @@ type Kachel = {
   zeile: string;
   name: string;
   rabatt: string;
+  auszeichnung?: string;
   bild: string;
   bildAlt: string;
   alt?: string;
@@ -84,7 +86,8 @@ const EINHEITEN = ['Tage', 'Std', 'Min', 'Sek'];
 const KACHELN: Kachel[] = [
   {
     breit: true,
-    zeile: 'Bestseller · Für zwei',
+    zeile: 'Für zwei',
+    auszeichnung: 'Bestseller',
     name: '2x QiOne® 2 Pro',
     rabatt: '−500 €',
     bild: '2x-qione-2-pro',
@@ -170,6 +173,13 @@ const KACHELN: Kachel[] = [
     ],
   },
 ];
+
+// "1.976 €" -> 1976 (Preis-Schildchen rechnet den Preisvorteil aus Preis und Streichpreis).
+function euro(t?: string): number | null {
+  if (!t) return null;
+  const n = Number(t.replace(/[^0-9,]/g, '').replace(',', '.'));
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
 
 function zwei(n: number) {
   return n < 10 ? '0' + n : String(n);
@@ -259,7 +269,8 @@ function Bild({k, bild}: {k: Kachel; bild?: string}) {
           decoding="async"
         />
       ) : null}
-      <span className="bfd__plakette">{k.rabatt}</span>
+      {/* Rabatt-Plakette auf dem Bild entfaellt: Schildchen-Standard B (Christian 12.11.2026),
+          der Preisvorteil steht am Preis, das Bild bleibt frei für das Produkt. */}
     </figure>
   );
 }
@@ -448,6 +459,7 @@ function SetKachel({k}: {k: Kachel}) {
           <p className="bfd__preis">
             <s className="bfd__alt">{s.alt}</s>
             <span className="bfd__neu">{s.neu}</span>
+            <PreisSchilder preis={euro(s.neu)} vergleich={euro(s.alt)} auszeichnung={k.auszeichnung} />
           </p>
           <Kaufen href={ziel} name={k.name} />
         </div>
@@ -475,6 +487,7 @@ function LinkKachel({k}: {k: Kachel}) {
           <p className="bfd__preis">
             <s className="bfd__alt">{k.alt}</s>
             <span className="bfd__neu">{k.neu}</span>
+            <PreisSchilder preis={euro(k.neu)} vergleich={euro(k.alt)} auszeichnung={k.auszeichnung} />
           </p>
           <Kaufen href={ziel} name={k.name} />
         </div>
