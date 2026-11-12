@@ -47,10 +47,13 @@ import {
   bfDealMarktPasst,
   bfDealPreiseSetzen,
   bfDealSeite,
+  bfKakaoSet,
+  bfKakaoUmleitung,
 } from '~/components/black-friday-2026/bf-deals-daten';
 import {ladeBfDealAlpha} from '~/components/black-friday-2026/bf-deal-seite.server';
 import {BfDealAlpha} from '~/components/black-friday-2026/BfDealSeite';
 import {BfDealRahmen, DealGalerie} from '~/components/black-friday-2026/DealGalerie';
+import {BfKakaoDeal} from '~/components/black-friday-2026/BfKakaoDeal';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
@@ -206,6 +209,16 @@ export async function loader(args) {
   // Produkt-Query, weil das Bundle-Produkt hinter dem Handle Entwurf bzw.
   // archiviert ist (404 -> Shopify-Weiterleitung auf eine falsche Seite).
   // Danach fällt der Handle wieder in den Weg darunter (404/Weiterleitung).
+  // ALTE KAKAO-ADRESSEN (Elina EL-20261111-fa47cfd9, bis 30.11.2026 23:59 Berlin):
+  // 302 auf die eine Kakao-Deal-Seite mit passender Set-Vorwahl, Parameter
+  // bleiben. Die reinen Deal-Adressen sofort; die normalen Set-Seiten
+  // (bundle-2x-awake, mengenrabatt-2x) erst nach der Produkt-Query, nur im
+  // Euro-Markt (unten).
+  const kakaoUmleitung = bfKakaoUmleitung(args.params.handle, args.request.url);
+  if (kakaoUmleitung && !kakaoUmleitung.nurEuro) {
+    throw redirect(kakaoUmleitung.pfad, 302);
+  }
+
   const dealSeite = bfDealSeite(args.params.handle);
   // Nur im Euro-Markt (Deutsch-Shop); sonst 404 wie vor dem Deal.
   if (dealSeite?.art?.startsWith('alpha')) {
@@ -213,6 +226,7 @@ export async function loader(args) {
     if (!deal) throw new Response(null, {status: 404});
     return deal;
   }
+  if (dealSeite?.art === 'kakao-sets') return ladeBfDealKakao(args, dealSeite);
   if (dealSeite) return ladeBfDealStandard(args, dealSeite);
 
   const campaignDeal = getTenYearsDealByHandle(args.params.handle);
@@ -254,6 +268,9 @@ export async function loader(args) {
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
+  if (kakaoUmleitung?.nurEuro && bfDealMarktPasst(criticalData.product)) {
+    throw redirect(kakaoUmleitung.pfad, 302);
+  }
 
   // Apple-Fassung nur für Produkte mit eigener Zeile in app/lib/apple-seiten.js.
   return {
@@ -349,12 +366,37 @@ async function ladeBfDealStandard(args, dealSeite) {
   };
 }
 
+/**
+ * Kakao-Deal-Seite mit Set-Wahl (Elina EL-20261111-fa47cfd9): ?set= wählt das
+ * Set serverseitig vor, damit Bild und Warenkorb-Link schon im HTML stimmen.
+ * Daten und Euro-Prüfung über das Basisprodukt wie die Standard-Fassung.
+ * @param {LoaderFunctionArgs} args
+ */
+async function ladeBfDealKakao(args, dealSeite) {
+  const set = bfKakaoSet(new URL(args.request.url).searchParams.get('set'));
+  return ladeBfDealStandard(args, {
+    ...dealSeite,
+    set: set.id,
+    link: set.link,
+    bild: set.bild,
+    bildAlt: set.bildAlt,
+  });
+}
+
 export default function Product() {
   /** @type {LoaderReturnData} */
   const {product, campaignDeal, appleSeite, bfDealSeite: dealSeite, ketten} = useLoaderData();
 
   if (dealSeite?.art?.startsWith('alpha')) {
     return <BfDealAlpha seite={dealSeite} product={product} ketten={ketten} />;
+  }
+  if (dealSeite?.art === 'kakao-sets') {
+    return (
+      <BfDealRahmen seite={dealSeite}>
+        <link rel="stylesheet" href={kaufleisteStyles} />
+        <BfKakaoDeal setId={dealSeite.set} />
+      </BfDealRahmen>
+    );
   }
   if (dealSeite) {
     return (

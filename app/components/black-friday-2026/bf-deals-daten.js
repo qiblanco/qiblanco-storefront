@@ -114,9 +114,99 @@ export const BF_DEALS = [
     uvp: 152,
     bild: BF_GOLD_BILDER['kakao-awake-create'],
     bildAlt: 'Crystal Cacao Awake und Create, zwei Kakao-Packungen im Set',
-    seite: 'awcr37shyj',
+    // EINE Kakao-Deal-Seite mit Set-Wahl (Elina EL-20261111-fa47cfd9, Dauerregel deal-seiten-regel).
+    seite: 'j7hcyb802kn',
   },
 ];
+
+/*
+ * KAKAO: EINE DEAL-SEITE MIT SET-WAHL (Elina EL-20261111-fa47cfd9, GO 11.11.2026).
+ * /products/j7hcyb802kn zeigt die drei Sets als Pillen; Bild, Preis und
+ * Warenkorb-Link folgen dem gewählten Set. ?set=<id> wählt beim Laden vor
+ * (serverseitig, Bild und Link stimmen schon im HTML). Ohne Parameter oder bei
+ * unbekanntem Wert: das erste Set. Preise wörtlich: je Set 76 € statt 152 €
+ * (kauf 2, zahl 1), Links aus Elinas gemessener Liste (Kasse = 76 €).
+ */
+export const BF_KAKAO_SEITE = 'j7hcyb802kn';
+export const BF_KAKAO_SETS = [
+  {
+    id: 'create-awake',
+    pille: '1x Awake + 1x Create',
+    name: 'Crystal Cacao 1x Awake + 1x Create',
+    basis: 'bundle-1x-awake-1x-create',
+    bild: BF_GOLD_BILDER['kakao-awake-create'],
+    bildAlt: 'Crystal Cacao Awake und Create, je eine Packung',
+    link: 'https://crystal-cacao.com/cart/54540698485004:1,44685294567692:1?discount=BF26-KAKAO-NKSKX',
+  },
+  {
+    id: '2x-awake',
+    pille: '2x Awake',
+    name: 'Crystal Cacao 2x Awake',
+    basis: 'bundle-2x-awake',
+    bild: BF_GOLD_BILDER['kakao-2x-awake'],
+    bildAlt: 'Zwei Packungen Crystal Cacao Awake',
+    link: 'https://crystal-cacao.com/cart/54540698485004:2?discount=BF26-KAKAO-NKSKX',
+  },
+  {
+    id: '2x-create',
+    pille: '2x Create',
+    name: 'Crystal Cacao 2x Create',
+    basis: 'mengenrabatt-2x',
+    bild: BF_GOLD_BILDER['kakao-2x-create'],
+    bildAlt: 'Zwei Packungen Crystal Cacao Create',
+    link: 'https://crystal-cacao.com/cart/44685294567692:2?discount=BF26-KAKAO-NKSKX',
+  },
+];
+
+/** Set zu einer id; unbekannt oder leer = das erste Set (1x Awake + 1x Create). */
+export function bfKakaoSet(id) {
+  return BF_KAKAO_SETS.find((s) => s.id === id) ?? BF_KAKAO_SETS[0];
+}
+
+/** Adresse der Kakao-Deal-Seite mit Set-Vorwahl (für bf-deals, Mails, Ads). */
+export function bfKakaoPfad(setId, el = null) {
+  const q = new URLSearchParams({set: bfKakaoSet(setId).id});
+  if (el) q.set('el', el);
+  return `/products/${BF_KAKAO_SEITE}?${q.toString()}`;
+}
+
+/*
+ * WEITERLEITUNGEN DER ALTEN KAKAO-ADRESSEN (Elina EL-20261111-fa47cfd9, Punkt 3),
+ * nur bis BF_DEAL_ENDE, 302 (vorübergehend), mit passender Set-Vorwahl. Alle
+ * Abfrageparameter (el, utm_*, fbclid, markt ...) kommen mit; `set` setzt die
+ * Tabelle. `nurEuro`: bundle-2x-awake und mengenrabatt-2x sind die normalen
+ * Kakao-Set-Seiten. Sie leiten nur im Euro-Markt weiter (dort gilt der Code);
+ * in jedem anderen Markt und nach dem 30.11. zeigen sie ihre normale Seite.
+ * Die übrigen Adressen sind reine Deal-Adressen ohne eigene Seite.
+ */
+export const BF_KAKAO_UMLEITUNGEN = {
+  awcr37shyj: {set: 'create-awake'},
+  aw783hfn: {set: '2x-awake'},
+  '37cr378n': {set: '2x-create'},
+  'crystal-cacao-angebot': {set: 'create-awake'},
+  'bundle-2x-awake': {set: '2x-awake', nurEuro: true},
+  'mengenrabatt-2x': {set: '2x-create', nurEuro: true},
+};
+
+/**
+ * Ziel der Weiterleitung einer alten Kakao-Adresse, nur im Zeitfenster.
+ * @returns {{pfad: string, nurEuro: boolean} | null}
+ */
+export function bfKakaoUmleitung(handle, requestUrl, jetzt = Date.now()) {
+  const u = BF_KAKAO_UMLEITUNGEN[handle];
+  if (!u || !bfDealZeitAktiv(jetzt)) return null;
+  const q = new URLSearchParams({set: u.set});
+  let alt;
+  try {
+    alt = new URL(requestUrl).searchParams;
+  } catch {
+    alt = new URLSearchParams();
+  }
+  alt.forEach((wert, schluessel) => {
+    if (schluessel !== 'set') q.append(schluessel, wert);
+  });
+  return {pfad: `/products/${BF_KAKAO_SEITE}?${q.toString()}`, nurEuro: Boolean(u.nurEuro)};
+}
 
 /**
  * Deal-Seiten: Handle unter /products/ -> Deal. `basis` ist das Produkt, dessen
@@ -135,32 +225,13 @@ export const BF_DEAL_SEITEN = {
   '734husd8hh': {deal: 'qione-2-pro-necklace', basis: 'pjdz538hgs0', art: 'alpha-angebot'},
   '687ghgf4ed': {deal: 'qibracelet', basis: 'qibracelet', art: 'alpha-qibracelet'},
   '56huz67dds': {deal: 'qihome-air', basis: 'qihome-air', art: 'alpha-qihome'},
-  awcr37shyj: {
+  // Kakao: EINE Seite mit Set-Wahl (Elina EL-20261111-fa47cfd9). Die früheren drei Kakao-Deal-Adressen
+  // awcr37shyj / aw783hfn / 37cr378n leiten bis BF_DEAL_ENDE auf sie weiter (BF_KAKAO_UMLEITUNGEN).
+  [BF_KAKAO_SEITE]: {
     deal: 'kakao',
     basis: 'bundle-1x-awake-1x-create',
-    art: 'standard',
-    name: 'Crystal Cacao 1x Create + 1x Awake',
-    bild: BF_GOLD_BILDER['kakao-awake-create'],
-    bildAlt: 'Crystal Cacao Awake und Create, je eine Packung',
-    link: 'https://crystal-cacao.com/cart/54540698485004:1,44685294567692:1?discount=BF26-KAKAO-NKSKX',
-  },
-  aw783hfn: {
-    deal: 'kakao',
-    basis: 'bundle-2x-awake',
-    art: 'standard',
-    name: 'Crystal Cacao 2x Awake',
-    bild: BF_GOLD_BILDER['kakao-2x-awake'],
-    bildAlt: 'Zwei Packungen Crystal Cacao Awake',
-    link: 'https://crystal-cacao.com/cart/54540698485004:2?discount=BF26-KAKAO-NKSKX',
-  },
-  '37cr378n': {
-    deal: 'kakao',
-    basis: 'mengenrabatt-2x',
-    art: 'standard',
-    name: 'Crystal Cacao 2x Create',
-    bild: BF_GOLD_BILDER['kakao-2x-create'],
-    bildAlt: 'Zwei Packungen Crystal Cacao Create',
-    link: 'https://crystal-cacao.com/cart/44685294567692:2?discount=BF26-KAKAO-NKSKX',
+    art: 'kakao-sets',
+    name: 'Crystal Cacao · Kauf 2, zahl 1',
   },
 };
 

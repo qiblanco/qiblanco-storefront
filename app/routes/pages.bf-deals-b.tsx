@@ -14,7 +14,7 @@
 // großen roten Countdown (#B92200, weiß, sekundengenau) bis Black-Friday-Start 27.11. 00:00, ab dann bis Sale-Ende.
 // Rückbau: diese Datei und app/styles/bf-deals-b.css löschen.
 import {useEffect, useRef, useState} from 'react';
-import {BF_GOLD_BILDER, bfDealSeite} from '../components/black-friday-2026/bf-deals-daten';
+import {BF_GOLD_BILDER, BF_KAKAO_SEITE, bfDealSeite, bfKakaoPfad} from '../components/black-friday-2026/bf-deals-daten';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
 import bfDealsBStyles from '../styles/bf-deals-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
@@ -272,14 +272,21 @@ const DEAL_HANDLE: Record<string, string[]> = {
   'QiOne® 2 Pro + Necklace': ['pjdz538hgs0', '734husd8hh'],
   'QiBracelet®': ['687ghgf4ed'],
   'QiHome® Air': ['56huz67dds'],
-  '1x Create + 1x Awake': ['awcr37shyj'],
-  '2x Awake': ['aw783hfn'],
-  '2x Create': ['37cr378n'],
+};
+// Kakao (Elina EL-20261111-fa47cfd9): EINE Deal-Seite j7hcyb802kn mit Set-Wahl; die Kachel öffnet sie mit dem
+// gewählten Set vorgewählt (?set=). Die früheren Adressen awcr37shyj / aw783hfn / 37cr378n leiten dorthin weiter.
+const KAKAO_SET: Record<string, string> = {
+  '1x Create + 1x Awake': 'create-awake',
+  '2x Awake': '2x-awake',
+  '2x Create': '2x-create',
 };
 // el-Kennung wie „Zum Deal“ in den Serien-Mails (mm_bf_serie.deal_seite: /products/<handle>?el=BF2025).
 const DEAL_EL = 'BF2025';
 
 function dealSeite(schluessel: string): string | null {
+  if (KAKAO_SET[schluessel]) {
+    return bfDealSeite(BF_KAKAO_SEITE) ? bfKakaoPfad(KAKAO_SET[schluessel], DEAL_EL) : null;
+  }
   // bfDealSeite: nur Handles, die die Storefront als Deal-Seite ausliefert, und nur bis Deal-Ende (30.11. 23:59 Berlin).
   const h = (DEAL_HANDLE[schluessel] ?? []).find((x) => bfDealSeite(x));
   return h ? `/products/${h}?el=${DEAL_EL}` : null;
