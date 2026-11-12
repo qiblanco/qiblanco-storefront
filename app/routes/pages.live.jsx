@@ -1,5 +1,11 @@
 import {useEffect, useId, useRef, useState} from 'react';
-import {Link, data, redirect, useFetcher, useLoaderData} from 'react-router';
+import {
+  Link,
+  data,
+  redirect,
+  useFetcher,
+  useLoaderData,
+} from 'react-router';
 import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {canonicalLink} from '~/lib/seo';
 import {seitenSignale} from '~/lib/seiten-seo';
@@ -194,7 +200,8 @@ const REIHE_ZUSATZ = 'Eine Reise zu dir selbst';
 const REIHE_TITEL = `${REIHE_NAME} – ${REIHE_ZUSATZ}`;
 const REIHE_VORZEILE = NEUER_TITEL_AN ? (
   <>
-    {REIHE_NAME} – <span style={{whiteSpace: 'nowrap'}}>{REIHE_ZUSATZ}</span>
+    {REIHE_NAME} –{' '}
+    <span style={{whiteSpace: 'nowrap'}}>{REIHE_ZUSATZ}</span>
   </>
 ) : (
   'Coming Home · jeden Sonntag live'
@@ -259,8 +266,7 @@ const AUFNAHME_TEXT =
   'Geschichten aus der Runde veröffentlichen wir nicht.';
 
 const WOCHEN_TITEL = 'Worüber wir gesprochen haben';
-const WOCHEN_LEER =
-  'Nach jedem Sonntag steht hier, worüber wir gesprochen haben.';
+const WOCHEN_LEER = 'Nach jedem Sonntag steht hier, worüber wir gesprochen haben.';
 const WOCHEN_LADEFEHLER =
   'Die Zusammenfassungen laden gerade nicht. Versuch es in ein paar Minuten ' +
   'noch einmal.';
@@ -320,8 +326,7 @@ export async function loader({request, context}) {
     schritt = 'ungueltig';
   }
 
-  if (BLOG_HANDLE !== BLOG_HANDLE_SERVER)
-    throw new Error('BLOG_HANDLE driftet');
+  if (BLOG_HANDLE !== BLOG_HANDLE_SERVER) throw new Error('BLOG_HANDLE driftet');
   // Messfixtur des Formate-Prüfers (nur lokale Bank, s. istMessfixtur):
   // feste Artikel, fester Zeitpunkt, kein Abruf. Sonst Blog und Uhr.
   const mess = istMessfixtur(request);
@@ -437,11 +442,7 @@ export default function Live() {
   return (
     <div className="lv">
       <Kopf />
-      <Termin
-        naechster={d.naechster}
-        weitere={d.weitere}
-        messfixtur={d.messfixtur}
-      />
+      <Termin naechster={d.naechster} weitere={d.weitere} messfixtur={d.messfixtur} />
       <section
         className="lv-abschnitt lv-dunkel"
         id="anmelden"
@@ -473,11 +474,7 @@ function LiveNeu({d}) {
   return (
     <div className="lv" data-ch-live-fassung="neu-20261020">
       <KopfNeu />
-      <Termin
-        naechster={d.naechster}
-        weitere={d.weitere}
-        messfixtur={d.messfixtur}
-      />
+      <Termin naechster={d.naechster} weitere={d.weitere} messfixtur={d.messfixtur} />
       <section
         className="lv-abschnitt lv-dunkel"
         id="anmelden"
@@ -723,7 +720,8 @@ function KopfNeu() {
       <div className="lv-innen">
         <p className="lv-vorzeile">Live auf Zoom</p>
         <h1 className="lv-h1">
-          {REIHE_NAME} – <span className="lv-h1-zusatz">{REIHE_ZUSATZ}</span>
+          {REIHE_NAME} –{' '}
+          <span className="lv-h1-zusatz">{REIHE_ZUSATZ}</span>
         </h1>
         {BILD_OBEN_AN ? <BildOben /> : null}
         <p className="lv-lede lv-lede-eng">{KOPF_LEDE}</p>
@@ -1060,9 +1058,7 @@ function AnmeldeKopf({spezial, children}) {
 /** Nach Anmeldung oder Bestätigung: was am Spezial-Sonntag gilt. */
 function SpezialHinweis({spezial}) {
   if (!spezial) return null;
-  const wer = spezial.gastgeber
-    ? `beim ${spezial.gastgeber}`
-    : 'beim Gastgeber';
+  const wer = spezial.gastgeber ? `beim ${spezial.gastgeber}` : 'beim Gastgeber';
   return (
     <p className="lv-hinweis" data-ch-live-spezial-hinweis="">
       Am {spezial.datumKurz} gilt nur die{' '}
@@ -1322,10 +1318,7 @@ function Schritt({schritt, spezial = null}) {
       </>
     );
   }
-  if (
-    zustand === 'bestaetigt' ||
-    (antwort?.intent === 'bestaetigen' && zustand === 'direkt')
-  ) {
+  if (zustand === 'bestaetigt' || (antwort?.intent === 'bestaetigen' && zustand === 'direkt')) {
     return (
       <>
         <h2 className="lv-h2">Du bist dabei</h2>
@@ -1371,11 +1364,7 @@ function Schritt({schritt, spezial = null}) {
             ? 'Ein Klick genügt. Danach bekommst du den Zoom-Link.'
             : 'Danach bekommst du keine Einladungen und Erinnerungen mehr.'}
         </p>
-        <button
-          className="btn--primary lv-knopf"
-          type="submit"
-          disabled={sendet}
-        >
+        <button className="btn--primary lv-knopf" type="submit" disabled={sendet}>
           {sendet
             ? 'Wird gesendet …'
             : bestaetigen
