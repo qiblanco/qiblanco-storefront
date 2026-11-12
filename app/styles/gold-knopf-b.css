@@ -1,0 +1,196 @@
+/* Gold-Knöpfe Variante B — Lichtkante + Glanz (Global Deutsch-Shop).
+ * Christian 12.11.2026: "Ja, also bei den Knöpfen können wir Variante B umsetzen, die ist top."
+ * Job 20261112-prio1-gold-knoepfe-variante-b-lichtkante-glanz-beide-shops-live.
+ * Werte = Vorlage Knopf-Strategie (gold-hell b / gold-dunkel b), Technik = roter Qi-Alpha-Knopf A+B.
+ * Selektoren = Live-Inventur aller goldenen Knöpfe (am gerenderten DOM gefunden, nicht am Klassennamen).
+ * Fläche, Größe und Text bleiben unverändert: hier steht keine Farbe, keine Größe, kein Abstand.
+ * Neuer goldener Knopf: Klasse `knopf-gold` (Standard, design-meister DESIGNSTANDARD knopf_primaer)
+ * oder seinen Selektor unten ergänzen. Rückweg: diese Datei aus dem Layout nehmen.
+ */
+:root {
+  --gkb-kante-hell: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 rgba(133, 104, 40, 0.35);
+  --gkb-heben-hell: 0 8px 24px rgba(133, 104, 40, 0.22);
+  --gkb-glanz-hell: rgba(255, 255, 255, 0.42);
+  --gkb-kante-dunkel: inset 0 1px 0 rgba(255, 255, 255, 0.75), inset 0 -2px 0 rgba(90, 62, 12, 0.35);
+  --gkb-heben-dunkel: 0 0 0 4px rgba(242, 191, 114, 0.18);
+  --gkb-glanz-dunkel: rgba(255, 255, 255, 0.45);
+}
+
+@keyframes gkb-glanz {
+  0% { transform: translateX(-100%); }
+  30%, 100% { transform: translateX(100%); }
+}
+
+@keyframes gkb-glanz-hover {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+
+/* ---- Gold auf hellem Grund ---- */
+
+.btn--primary:not(#gkb),
+.as-knopf:not(#gkb),
+.qb-st-btn:not(#gkb),
+.erf__weiter:not(#gkb),
+.kt-reel__start:not(#gkb),
+.avv-link:not(#gkb),
+.knopf-gold:not(#gkb) {
+  isolation: isolate;
+  overflow: hidden;
+  box-shadow: var(--gkb-kante-hell);
+}
+
+@media (hover: hover) {
+  .btn--primary:not(#gkb):hover,
+  .as-knopf:not(#gkb):hover,
+  .qb-st-btn:not(#gkb):hover,
+  .erf__weiter:not(#gkb):hover,
+  .kt-reel__start:not(#gkb):hover,
+  .avv-link:not(#gkb):hover,
+  .knopf-gold:not(#gkb):hover {
+    box-shadow: var(--gkb-kante-hell), var(--gkb-heben-hell);
+  }
+}
+
+.btn--primary:not(#gkb)::before,
+.as-knopf:not(#gkb)::before,
+.qb-st-btn:not(#gkb)::before,
+.erf__weiter:not(#gkb)::before,
+.kt-reel__start:not(#gkb)::before,
+.avv-link:not(#gkb)::before,
+.knopf-gold:not(#gkb)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 32%, var(--gkb-glanz-hell) 50%, transparent 68%);
+  transform: translateX(-100%);
+  animation: gkb-glanz 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .btn--primary:not(#gkb):hover::before,
+  .as-knopf:not(#gkb):hover::before,
+  .qb-st-btn:not(#gkb):hover::before,
+  .erf__weiter:not(#gkb):hover::before,
+  .kt-reel__start:not(#gkb):hover::before,
+  .avv-link:not(#gkb):hover::before,
+  .knopf-gold:not(#gkb):hover::before {
+    animation: gkb-glanz-hover 1.2s ease-in-out infinite;
+  }
+}
+
+/* ---- Gold auf dunklem Grund ---- */
+
+.bfd__kaufen:not(#gkb),
+.bfg__knopf:not(#gkb),
+.qb-anmelden__knopf:not(#gkb),
+#qi-newsletter ._submit:not(#gkb),
+.knopf-gold.knopf-gold--dunkel:not(#gkb) {
+  isolation: isolate;
+  overflow: hidden;
+  box-shadow: var(--gkb-kante-dunkel);
+}
+
+@media (hover: hover) {
+  .bfd__kaufen:not(#gkb):hover,
+  .bfg__knopf:not(#gkb):hover,
+  .qb-anmelden__knopf:not(#gkb):hover,
+  #qi-newsletter ._submit:not(#gkb):hover,
+  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover {
+    box-shadow: var(--gkb-kante-dunkel), var(--gkb-heben-dunkel);
+  }
+}
+
+.bfd__kaufen:not(#gkb)::before,
+.bfg__knopf:not(#gkb)::before,
+.qb-anmelden__knopf:not(#gkb)::before,
+#qi-newsletter ._submit:not(#gkb)::before,
+.knopf-gold.knopf-gold--dunkel:not(#gkb)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 32%, var(--gkb-glanz-dunkel) 50%, transparent 68%);
+  transform: translateX(-100%);
+  animation: gkb-glanz 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .bfd__kaufen:not(#gkb):hover::before,
+  .bfg__knopf:not(#gkb):hover::before,
+  .qb-anmelden__knopf:not(#gkb):hover::before,
+  #qi-newsletter ._submit:not(#gkb):hover::before,
+  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover::before {
+    animation: gkb-glanz-hover 1.2s ease-in-out infinite;
+  }
+}
+
+/* Bezugsrahmen fuer den Glanz, ohne Spezifitaet: eine eigene Lage der Seite (fixed, sticky, absolute) gewinnt. */
+
+:where(.btn--primary, .as-knopf, .qb-st-btn, .erf__weiter, .kt-reel__start, .avv-link, .knopf-gold, .bfd__kaufen, .bfg__knopf, .qb-anmelden__knopf, #qi-newsletter ._submit, .knopf-gold.knopf-gold--dunkel) {
+  position: relative;
+}
+
+/* Gesperrt: kein Glanz. */
+.btn--primary:not(#gkb):disabled::before,
+.btn--primary:not(#gkb)[aria-disabled='true']::before,
+.as-knopf:not(#gkb):disabled::before,
+.as-knopf:not(#gkb)[aria-disabled='true']::before,
+.qb-st-btn:not(#gkb):disabled::before,
+.qb-st-btn:not(#gkb)[aria-disabled='true']::before,
+.erf__weiter:not(#gkb):disabled::before,
+.erf__weiter:not(#gkb)[aria-disabled='true']::before,
+.kt-reel__start:not(#gkb):disabled::before,
+.kt-reel__start:not(#gkb)[aria-disabled='true']::before,
+.avv-link:not(#gkb):disabled::before,
+.avv-link:not(#gkb)[aria-disabled='true']::before,
+.knopf-gold:not(#gkb):disabled::before,
+.knopf-gold:not(#gkb)[aria-disabled='true']::before,
+.bfd__kaufen:not(#gkb):disabled::before,
+.bfd__kaufen:not(#gkb)[aria-disabled='true']::before,
+.bfg__knopf:not(#gkb):disabled::before,
+.bfg__knopf:not(#gkb)[aria-disabled='true']::before,
+.qb-anmelden__knopf:not(#gkb):disabled::before,
+.qb-anmelden__knopf:not(#gkb)[aria-disabled='true']::before,
+#qi-newsletter ._submit:not(#gkb):disabled::before,
+#qi-newsletter ._submit:not(#gkb)[aria-disabled='true']::before,
+.knopf-gold.knopf-gold--dunkel:not(#gkb):disabled::before,
+.knopf-gold.knopf-gold--dunkel:not(#gkb)[aria-disabled='true']::before {
+  animation: none;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn--primary:not(#gkb)::before,
+  .btn--primary:not(#gkb):hover::before,
+  .as-knopf:not(#gkb)::before,
+  .as-knopf:not(#gkb):hover::before,
+  .qb-st-btn:not(#gkb)::before,
+  .qb-st-btn:not(#gkb):hover::before,
+  .erf__weiter:not(#gkb)::before,
+  .erf__weiter:not(#gkb):hover::before,
+  .kt-reel__start:not(#gkb)::before,
+  .kt-reel__start:not(#gkb):hover::before,
+  .avv-link:not(#gkb)::before,
+  .avv-link:not(#gkb):hover::before,
+  .knopf-gold:not(#gkb)::before,
+  .knopf-gold:not(#gkb):hover::before,
+  .bfd__kaufen:not(#gkb)::before,
+  .bfd__kaufen:not(#gkb):hover::before,
+  .bfg__knopf:not(#gkb)::before,
+  .bfg__knopf:not(#gkb):hover::before,
+  .qb-anmelden__knopf:not(#gkb)::before,
+  .qb-anmelden__knopf:not(#gkb):hover::before,
+  #qi-newsletter ._submit:not(#gkb)::before,
+  #qi-newsletter ._submit:not(#gkb):hover::before,
+  .knopf-gold.knopf-gold--dunkel:not(#gkb)::before,
+  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover::before {
+    animation: none;
+  }
+}
