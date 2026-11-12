@@ -17,6 +17,7 @@ import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import {BfDealRahmen} from '~/components/black-friday-2026/DealGalerie';
+import {datenStudienNeutral} from '~/components/black-friday-2026/bf-kachel-neutral';
 
 /*
  * BF-DEAL-SEITE in der Alpha-Fassung (Elina EL-20261111-aff06215): dieselbe
@@ -25,8 +26,12 @@ import {BfDealRahmen} from '~/components/black-friday-2026/DealGalerie';
  * die Deal-Galerie unter die Zusammenfassung. Preise kommen schon gesetzt aus
  * dem Loader (bf-deal-seite.server.js).
  */
-const ANGEBOT = {'8kendiw34hd': DATEN_8K, pjdz538hgs0: DATEN_PJDZ};
-const PRODUKT_DATEN = {qibracelet: DATEN_QIBRACELET, 'qihome-air': DATEN_QIHOME};
+// Studien-Kacheln ohne Personen- und Institutsnamen, als unsere Studien (Elina EL-20261112-0a9978b4).
+const ANGEBOT = {'8kendiw34hd': datenStudienNeutral(DATEN_8K), pjdz538hgs0: datenStudienNeutral(DATEN_PJDZ)};
+const PRODUKT_DATEN = {
+  qibracelet: datenStudienNeutral(DATEN_QIBRACELET),
+  'qihome-air': datenStudienNeutral(DATEN_QIHOME),
+};
 
 export function BfDealAlpha({seite, product, ketten}) {
   return (
