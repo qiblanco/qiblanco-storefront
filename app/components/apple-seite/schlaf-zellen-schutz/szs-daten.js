@@ -129,7 +129,7 @@ export const LABOR = Object.freeze({
     {zahl: '84,7 %', titel: 'Mit QiOne® 2 Pro', satz: 'Dieselben Zellen, dieselbe Belastung.'},
     {zahl: '5', titel: 'Publikationen', satz: 'Alle in Fachjournalen veröffentlicht.'},
   ],
-  satz: 'Prof. Dr. Peter C. Dartsch, Institut für zellbiologische Testsysteme. Gemessen an menschlichen Zellkulturen.',
+  satz: 'Unsere Laborstudie, gemessen an menschlichen Zellkulturen.',
   link: {text: 'Alle Studien lesen', href: '/pages/studien'},
 });
 

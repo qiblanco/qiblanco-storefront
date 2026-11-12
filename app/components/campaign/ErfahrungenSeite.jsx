@@ -169,9 +169,8 @@ export function ErfahrungenSeite() {
         <div className="erf__schmal">
           <p>
             171 Erfahrungsberichte zu den Elektrosmog-Schutzprodukten QiOne® 2
-            Pro und QiBracelet® wertet eine{' '}
-            <Link to="/pages/studie-nutzererfahrung">Nutzerstudie</Link> von
-            Prof. Dr. Peter C. Dartsch aus.
+            Pro und QiBracelet® wertet unsere{' '}
+            <Link to="/pages/studie-nutzererfahrung">Nutzerstudie</Link> aus.
           </p>
         </div>
       </section>

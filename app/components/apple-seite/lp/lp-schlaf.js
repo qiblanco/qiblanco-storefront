@@ -43,7 +43,7 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
     etikett: 'An Zellen gemessen',
     titel: 'Was an Zellen gemessen wurde.',
     absaetze: [
-      'Prof. Dr. Peter C. Dartsch hat menschliche Immunzellen im Labor vier Stunden lang mit Handystrahlung belastet. Ohne Schutz fiel ihre Abwehrleistung auf 60,5 Prozent, mit dem QiOne® 2 Pro hielt sie 84,7 Prozent.',
+      'In unserer Laborstudie wurden menschliche Immunzellen vier Stunden lang Handystrahlung ausgesetzt. Ohne QiOne® 2 Pro behielten sie 60,5 % ihrer Abwehrleistung, mit ihm 84,7 %.',
       'Gemessen an Zellkulturen im Labor, veröffentlicht im Japan Journal of Medicine.',
     ],
     quellen: [`${STUDIEN[0].titel}. ${STUDIEN[0].quelle}.`],
