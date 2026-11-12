@@ -159,8 +159,13 @@ export function StudieSeite({studie}) {
             {e.geprueft ? (
               <Eckdatum label="Geprüftes Produkt">{e.geprueft}</Eckdatum>
             ) : null}
-            <Eckdatum label="Autor">{e.autor}</Eckdatum>
-            <Eckdatum label="Institut">{e.institut}</Eckdatum>
+            {/*
+              Autor und Institut stehen nicht im Text (Elina EL-20261112-0a9978b4:
+              keine Personen- oder Institutsnamen, neutral als unsere Studien).
+              e.autor / e.institut bleiben im Datensatz für Zitation und
+              Strukturdaten.
+            */}
+            <Eckdatum label="In Auftrag gegeben von">Qi Blanco</Eckdatum>
             {/*
               DOI: genannt IMMER, verlinkt nur wenn er auch aufloest.
               Setzt eine Studie `doiAufloesbar: false`, ist der DOI beim
