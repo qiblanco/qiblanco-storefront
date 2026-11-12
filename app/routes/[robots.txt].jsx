@@ -249,6 +249,17 @@ Crawl-delay: 1
  * indexierbar aussieht. Fallen beide im SELBEN Deploy, ist die Reihenfolge
  * gegenstandslos; getrennt deployt gilt sie strikt.
  *
+ * /pages/schlaf-zellen-schutz-v3-67a7 (LP-V3, Review-Artefakt) steht seit dem
+ * 2026-11-12 NICHT mehr hier: sie trug Disallow UND noindex (X-Robots-Tag und
+ * meta), die Shop-Hygiene meldete das als kritisches Doppelgate, und der
+ * AI-CEO hat entschieden, das Disallow zu streichen und das noindex stehen zu
+ * lassen (Posten 057, schaltstelle:task:45024e1d5d564a23, Job
+ * 20261112-aiceo-k2-jv-kundenflaechen-befunde). Die Seite bleibt aus dem
+ * Index, weil Google das noindex jetzt lesen kann. Die Qi-Alpha-Testarme sind
+ * davon getrennt (Christian 23.10.2026 Z8, ~/lib/vorschau-noindex.js).
+ * Rueckweg: die Zeile wieder unter `Disallow: /products/bundle-erholungs-
+ * residenz` eintragen.
+ *
  * ACHTUNG BEIM GEGENMESSEN: diese Funktion wird aus FÜNF User-agent-Gruppen
  * gerufen (`*`, KI-SUCHE, KI-MODELLE, AhrefsBot, AhrefsSiteAudit; bis zum
  * 2026-10-07 waren es vier, ohne KI-MODELLE). Eine Quellzeile hier ist fünf
@@ -279,7 +290,6 @@ Disallow: /account
 Disallow: /products/bundle-fundament
 Disallow: /products/bundle-unabhangig
 Disallow: /products/bundle-erholungs-residenz
-Disallow: /pages/schlaf-zellen-schutz-v3-67a7
 Disallow: /collections/*sort_by*
 Disallow: /*/collections/*sort_by*
 Disallow: /collections/*+*
