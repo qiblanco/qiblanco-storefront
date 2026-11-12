@@ -43,7 +43,7 @@ test('nur ein ausdrückliches ac zeigt das AC-Formular', () => {
 });
 
 test('/w meldet eigen -> Satz, Versatz und rueckfall_ac aus /w', () => {
-  const w = {formulare: {13: 'eigen'}, anzeige: {13: {...anzeige('13'), einwilligung: 'Neu.', einwilligung_id: 'abc'}}, versatz: 1234, rueckfall_ac: false};
+  const w = {formulare: {13: 'eigen'}, anzeige: {13: {...anzeige('13'), einwilligung: 'Neu.', einwilligung_id: '0123456789ab'}}, versatz: 1234, rueckfall_ac: false};
   const lage = weicheEntscheiden('13', w);
   assert.equal(lage.quelle, 'w');
   assert.equal(lage.anzeige.einwilligung, 'Neu.');
@@ -73,4 +73,21 @@ test('Quelltext: kein Fehlerweg der Weiche endet beim AC-Formular', () => {
   assert.doesNotMatch(weiche, /setLage\(\{weg: 'ac'\}\)/);
   assert.match(weiche, /weicheEntscheiden\(/);
   assert.match(weiche, /data-anmeldeweg="hinweis"/);
+});
+
+test('rueckfall_ac fehlt oder ist kein true -> kein AC-Rückfall nach dem Absenden (Gegenprüfung 12.11.)', () => {
+  for (const r of [undefined, 'false', 'true', 1, null]) {
+    const w = {formulare: {15: 'eigen'}, anzeige: {15: anzeige('15')}};
+    if (r !== undefined) w.rueckfall_ac = r;
+    assert.equal(weicheEntscheiden('15', w).rueckfallAc, false, `rueckfall_ac=${String(r)}`);
+  }
+  assert.equal(weicheEntscheiden('15', {formulare: {15: 'eigen'}, anzeige: {15: anzeige('15')}, rueckfall_ac: true}).rueckfallAc, true);
+});
+
+test('Kennung aus /w unbrauchbar (leer, Leerzeichen, Objekt) -> Satz aus dem Rückfallstand, nie Satz ohne Kennung', () => {
+  for (const k of ['', ' ', {}, 12, 'xyz']) {
+    const lage = weicheEntscheiden('13', {formulare: {13: 'eigen'}, anzeige: {13: {...anzeige('13'), einwilligung: 'Anders.', einwilligung_id: k}}});
+    assert.equal(lage.quelle, 'rueckfallstand', `kennung=${JSON.stringify(k)}`);
+    assert.equal(lage.anzeige.einwilligung_id, RUECKFALL_ANZEIGE['13'].einwilligung_id);
+  }
 });
