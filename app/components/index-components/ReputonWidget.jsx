@@ -64,6 +64,9 @@ function relativeVonDatum(iso) {
   return j === 1 ? 'vor 1 Jahr' : `vor ${j} Jahren`;
 }
 
+// Nachladen (startAnzahl): 600 px bevor die Kartenreihe den Bildschirm
+// erreicht, hängen die übrigen Karten an; bis sie gebraucht werden, sind sie da.
+const NACHLADE_RAND = '600px 0px';
 const AUTOSCROLL_MS = 4000; // Takt pro Karte (Christian: 3–4 s; ruhiger 4 s,
 // gibt Lesezeit — WCAG: >5 s bewegte Inhalte brauchen Pause, hier zusätzlich
 // Pause bei Hover/Drag)
@@ -203,8 +206,45 @@ export function ReviewsSlider({
   aiSummary,
   label = 'Google-Rezensionen von Qi Blanco',
   quelle = 'google',
+  startAnzahl = 0,
 }) {
   const trackRef = useRef(null);
+  /*
+   * NACHLADEN (Job 20261112-prio1-bewertungsleiste-neueste-50-google-
+   * bewertungen-laden, Christian: „Ladezeit schlank halten"). Mit startAnzahl
+   * rendert der Server nur die ersten Karten; die übrigen hängt der Browser
+   * an, sobald die Kartenreihe näher als NACHLADE_RAND an den Bildschirm
+   * kommt oder jemand sie bedient. Wer nie bis zur Leiste scrollt, lädt die
+   * restlichen Karten (und ihre Profilbilder) nie. Ohne startAnzahl: alle
+   * Karten wie bisher.
+   */
+  const erste =
+    startAnzahl > 0 ? Math.min(startAnzahl, reviews.length) : reviews.length;
+  const [alleDa, setAlleDa] = useState(erste >= reviews.length);
+  const sichtbareReviews = alleDa ? reviews : reviews.slice(0, erste);
+  useEffect(() => {
+    if (alleDa) return undefined;
+    const track = trackRef.current;
+    if (!track) return undefined;
+    const ladeRest = () => setAlleDa(true);
+    if (typeof IntersectionObserver === 'undefined') {
+      ladeRest();
+      return undefined;
+    }
+    const beobachter = new IntersectionObserver(
+      (eintraege) => {
+        if (eintraege.some((e) => e.isIntersecting)) ladeRest();
+      },
+      {rootMargin: NACHLADE_RAND},
+    );
+    beobachter.observe(track);
+    const gesten = ['pointerdown', 'touchstart', 'wheel', 'keydown', 'scroll'];
+    for (const typ of gesten) track.addEventListener(typ, ladeRest, {passive: true});
+    return () => {
+      beobachter.disconnect();
+      for (const typ of gesten) track.removeEventListener(typ, ladeRest);
+    };
+  }, [alleDa]);
   const hoverRef = useRef(false);
   const dragRef = useRef(false);
   const fortschrittRef = useRef(null);
@@ -504,7 +544,7 @@ export function ReviewsSlider({
         data-autolauf="bereit"
       >
         <AiSummaryKarte aiSummary={aiSummary} />
-        {reviews.map((review) => (
+        {sichtbareReviews.map((review) => (
           <ReviewKarte key={review.id || review.name} review={review} quelle={quelle} />
         ))}
       </div>

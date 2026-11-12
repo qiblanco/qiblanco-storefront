@@ -48,7 +48,17 @@ import {
  * pruefungen/probe_bewertungsleiste_standard.py).
  */
 
-export const BEWERTUNGSLEISTE_ANZAHL = 20;
+/*
+ * 50 KARTEN (Christian 12.11.2026: „das sind ja keine 20 Bewertungen, also
+ * ruhig mal die letzten 50 Bewertungen laden und anzeigen, dass da ein
+ * bisschen Futter rankommt"). Die Liste kommt aus dem Business-API-Export
+ * (googleRating.server.js). Schlank bleibt es über das Nachladen: der Server
+ * rendert die ersten BEWERTUNGSLEISTE_ERSTE Karten (wie bisher 20), die
+ * übrigen hängt der Slider an, sobald die Leiste in die Nähe des Bildschirms
+ * kommt (ReviewsSlider startAnzahl). Die Profilbilder laden lazy.
+ */
+export const BEWERTUNGSLEISTE_ANZAHL = 50;
+export const BEWERTUNGSLEISTE_ERSTE = 20;
 
 /**
  * Dieselben root-Daten wie useGoogleRating/useGoogleReviews, aber über den
@@ -125,7 +135,11 @@ export function GoogleBewertungsleiste({
           </a>
         </h2>
       )}
-      <ReviewsSlider reviews={leiste} label="Neueste Google-Rezensionen von Qi Blanco, nur 5 Sterne" />
+      <ReviewsSlider
+        reviews={leiste}
+        startAnzahl={BEWERTUNGSLEISTE_ERSTE}
+        label="Neueste Google-Rezensionen von Qi Blanco, nur 5 Sterne"
+      />
     </section>
   );
 }
