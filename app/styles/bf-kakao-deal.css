@@ -12,8 +12,9 @@
   --bkd-t-text: 16px;
   --bkd-t-knopf: 17px;
   --bkd-t-set: 20px;
-  --bkd-t-preis: 32px;
-  --bkd-t-titel: clamp(26px, calc(26px + (100vw - 320px) * 0.05), 40px);
+  /* H1 bleibt die größte Schrift (Shop-Tor D4): Titel 30-40 px, Preis 28 px, ab 960 px 32 px. */
+  --bkd-t-preis: 28px;
+  --bkd-t-titel: clamp(30px, calc(30px + (100vw - 320px) * 0.05), 40px);
   --bkd-a1: 8px;
   --bkd-a2: 16px;
   --bkd-a3: 24px;
@@ -37,7 +38,7 @@
   width: 100%;
   max-width: 1120px;
   margin: 0 auto;
-  padding: var(--bkd-a3) var(--bkd-a2) var(--bkd-a4);
+  padding: var(--bkd-a2) var(--bkd-a2) var(--bkd-a4);
   color: var(--bkd-hell);
   font-family: 'Open Sans Variable', 'Open Sans', system-ui, sans-serif;
   text-align: center;
@@ -212,6 +213,7 @@
 
 @media (min-width: 960px) {
   .bkd {
+    --bkd-t-preis: 32px;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
     align-items: center;
     gap: var(--bkd-a6);
