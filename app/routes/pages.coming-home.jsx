@@ -67,7 +67,12 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  * Empfang weist eine Kennung, die nicht zum aktuellen Satz passt, mit 409 ab;
  * die Seite holt dann den neuen Satz und bittet um einen zweiten Klick. Ein
  * veralteter Rückfallsatz wird also nie als Nachweis gespeichert. Kein Satz
- * ohne Kennung. Die Probe growth-manager/pruefungen/probe_coming_home_seite.py
+ * ohne Kennung. Steht beim Absenden noch der Rückfallsatz da, fragt die Seite
+ * /w vorher noch einmal (wie EigenesFormular, das ohne /w nie absendet): so
+ * trägt t den echten Uhrversatz, und ein abweichender Satz wird gezeigt, bevor
+ * etwas gespeichert wird. Ist /w auch dann nicht erreichbar, geht die
+ * Anmeldung mit dem Rückfallsatz; ist der veraltet (409) und /w weiter weg,
+ * sagt die Seite ehrlich „in ein paar Minuten noch einmal“. Die Probe growth-manager/pruefungen/probe_coming_home_seite.py
  * (Arm C) vergleicht den ausgelieferten Rückfallstand täglich mit /w.
  *
  * DER TEILNAHME-LINK kommt nach dem Absenden aus der Action dieser Route
@@ -102,7 +107,7 @@ import comingHomeStyles from '~/styles/coming-home.css?url';
  * (offen | sendet | gesendet | fehler), data-formular (33),
  * data-einwilligung (Kennung des gezeigten Satzes), data-coming-home-felder
  * (w | rueckfallstand = Quelle des Satzes; topf, nach dem Absenden),
- * data-coming-home-anmeldung (neu | gepuffert | topf),
+ * data-coming-home-anmeldung (neu | gepuffert | gesperrt | topf),
  * data-coming-home-link (Knopf),
  * data-coming-home-linktext (Link als Text), data-coming-home-kopieren.
  */
@@ -154,8 +159,8 @@ const FORMULAR_ID = '33';
 /**
  * Rückfallstand des Einwilligungssatzes (siehe Kopf), Werte 1:1 aus GET /w am
  * 2026-11-12. Wer den Satz in formulare.yaml ändert, zieht ihn hier nach; bis
- * dahin kostet ein veralteter Stand nur einen zweiten Klick (409), nie einen
- * falschen Nachweis.
+ * dahin kostet ein veralteter Stand einen zweiten Klick (409, solange /w
+ * erreichbar ist), nie einen falschen Nachweis.
  */
 const RUECKFALL_33 = {
   einwilligung:
@@ -215,6 +220,7 @@ const TEXT_GEPUFFERT =
   'Wir haben deine Anmeldung. Sie wird übertragen, sobald die Verbindung ' +
   'wieder steht. Lass die Seite dafür offen oder schau später noch einmal ' +
   'vorbei. Danach kommt die Mail zum Bestätigen.';
+const TEXT_WARTET = 'Wir haben deine Anmeldung. Sie wird gleich übertragen.';
 const TEXT_NEU =
   'Für unseren Newsletter haben wir dir außerdem eine E-Mail geschickt. ' +
   'Bestätige sie mit einem Klick, dann bekommst du jede Woche die Einladung. ' +
@@ -470,6 +476,7 @@ function Anmeldung() {
   const [zustand, setZustand] = useState('offen');
   const [satz, setSatz] = useState(() => satzAus(null));
   const [fehlerText, setFehlerText] = useState('');
+  const [wartet, setWartet] = useState(false);
   // neu = Empfang hat angenommen | gepuffert = liegt im Browser, geht später
   // raus | topf = Fangfeld gefüllt
   const [anmeldung, setAnmeldung] = useState('');
@@ -527,10 +534,26 @@ function Anmeldung() {
     if (!angezeigt.current || Date.now() - angezeigt.current > MAX_ANZEIGE_MS) {
       angezeigt.current = Date.now();
     }
-    // Anzeigezeit in Serverzeit (wie Anmeldeweiche.jsx).
-    const t = Math.round(angezeigt.current + satz.versatz);
     setZustand('sendet');
     setFehlerText('');
+    setWartet(false);
+    // Steht noch der Rückfallsatz da, /w ein letztes Mal fragen (siehe Kopf).
+    let gezeigt = satz;
+    if (gezeigt.quelle !== 'w') {
+      const wege = await holeAnmeldewege({frisch: true}).catch(() => null);
+      const neu = satzAus(wege);
+      if (neu.quelle === 'w') {
+        setSatz(neu);
+        if (neu.anzeige.einwilligung_id !== gezeigt.anzeige.einwilligung_id) {
+          setFehlerText(TEXT_NEUER_SATZ);
+          setZustand('fehler');
+          return;
+        }
+        gezeigt = neu;
+      }
+    }
+    // Anzeigezeit in Serverzeit (wie Anmeldeweiche.jsx).
+    const t = Math.round(angezeigt.current + gezeigt.versatz);
     const rest = MIN_ANZEIGE_MS - (Date.now() - angezeigt.current);
     if (rest > 0) await new Promise((weiter) => setTimeout(weiter, rest));
 
@@ -541,14 +564,18 @@ function Anmeldung() {
           vorname: String(werte.get('fullname') || '').trim(),
           email: String(werte.get('email') || '').trim(),
           website: topf,
-          einwilligung_id: String(anzeige.einwilligung_id),
+          einwilligung_id: String(gezeigt.anzeige.einwilligung_id),
           seite: window.location.pathname,
         },
         t,
-        versatz: satz.versatz,
+        versatz: gezeigt.versatz,
       },
-      {endpunkt: ANMELDE_ENDPUNKT},
+      {
+        endpunkt: ANMELDE_ENDPUNKT,
+        beiWarten: (gemerkt) => gemerkt && setWartet(true),
+      },
     );
+    setWartet(false);
 
     // Honigtopf: ein Mensch sieht das Feld nicht. Der Empfang bekommt es und
     // verwirft die Anmeldung. Den Link gibt es trotzdem: füllt ein
@@ -587,7 +614,7 @@ function Anmeldung() {
       const neu = satzAus(wege);
       if (
         neu.quelle === 'w' &&
-        neu.anzeige.einwilligung_id !== anzeige.einwilligung_id
+        neu.anzeige.einwilligung_id !== gezeigt.anzeige.einwilligung_id
       ) {
         setSatz(neu);
         setFehlerText(TEXT_NEUER_SATZ);
@@ -595,10 +622,18 @@ function Anmeldung() {
         return;
       }
     }
+    if (status === 403) {
+      // Gesperrte Adresse (z. B. nach einer Abmeldung): der Empfang trägt sie
+      // nicht ein und schickt keine Mail. Ins Meeting kommt der Mensch
+      // trotzdem, wie beim Honigtopf; der Satz des Empfangs steht darunter.
+      setAnmeldung('gesperrt');
+      setHinweis((antwort && antwort.text) || '');
+      linkHolen();
+      setZustand('gesendet');
+      return;
+    }
     if (status === 400) {
       setFehlerText(TEXT_FEHLER);
-    } else if (status === 403 && antwort && antwort.text) {
-      setFehlerText(antwort.text);
     } else {
       setFehlerText(TEXT_SPAETER);
     }
@@ -697,6 +732,11 @@ function Anmeldung() {
       >
         {sendet ? 'Wird gesendet …' : anzeige.knopf}
       </button>
+      {sendet && wartet ? (
+        <p className="ch-hinweis" role="status">
+          {TEXT_WARTET}
+        </p>
+      ) : null}
       {zustand === 'fehler' && fehlerText ? (
         <p className="ch-fehler" role="alert">
           {fehlerText}
