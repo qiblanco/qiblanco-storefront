@@ -7548,10 +7548,11 @@ select.b2b-netto__eingabe {
   display: inline-flex;
   line-height: 1;
 }
-/* Sterne in em der Überschrift: so hoch wie die Ziffern der Note, nie kleiner. */
+/* Sterne in em der Überschrift: der Stern füllt ~79 % seines Kastens, bei 0.95em steht er so hoch wie die
+   Ziffern der Note (Versalhöhe ~0.72em), nie kleiner. */
 .qb-gbl__sterne .star-rating__star svg {
-  width: 0.9em;
-  height: 0.9em;
+  width: 0.95em;
+  height: 0.95em;
 }
 .qb-gbl__google {
   display: inline-flex;
