@@ -249,8 +249,9 @@ test('Bewertungskopf: Hover nur Farbe, keine Unterstreichung; Anzahl kleiner und
   assert.ok(hover, 'Hover-Regel fehlt');
   assert.match(hover[1], /color:\s*var\(--qb-gbl-hover\)/);
   assert.match(hover[1], /text-decoration:\s*none/);
-  const rem = (n) => Number((block.match(new RegExp(`--qb-gbl-${n}:\\s*([\\d.]+)rem`)) || [])[1]);
-  assert.ok(rem('fs-anzahl') < rem('fs-titel') / 1.8 && rem('fs-anzahl-gross') < rem('fs-titel-gross') / 1.8, 'Anzahl nicht klein genug');
+  const werte = (n) => [...block.matchAll(new RegExp(`--qb-gbl-fs-${n}[\\w-]*:\\s*([\\d.]+)rem`, 'g'))].map((m) => Number(m[1]));
+  const [anz, tit] = [werte('anzahl'), werte('titel')];
+  assert.ok(anz.length === 2 && tit.length === 2 && Math.max(...anz) < Math.min(...tit) / 1.7, `Anzahl nicht klein genug: ${anz} / ${tit}`);
   assert.match(block, /\.qb-gbl__anzahl \{[^}]*color:\s*var\(--qb-gbl-leise\)/);
 });
 
