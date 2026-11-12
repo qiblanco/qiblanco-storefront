@@ -85,7 +85,8 @@
   --tap-rot: #b92200;
   --tap-rot-tief: #961c00;
   /* Kaufknopf A+B (Christian 12.11.2026: „A und B kombinieren“): Tiefrot,
-     oben 1 px Lichtkante, Glanz-Lauf alle 6 s und bei Hover. */
+     oben 1 px Lichtkante, Glanz-Lauf alle 6 s (1,8 s lang, ruhig und fuer
+     die WebKit-Probe sichtbar) und bei Hover. */
   --tap-rot-knopf: #a81f00;
   --tap-knopf-kante: rgba(255, 255, 255, 0.38);
   --tap-knopf-glanz: rgba(255, 255, 255, 0.16);
@@ -726,7 +727,7 @@ html:has(main[data-film-seite]) {
 
 @keyframes tap-knopf-glanz {
   0% { transform: translateX(-100%); }
-  20%, 100% { transform: translateX(100%); }
+  30%, 100% { transform: translateX(100%); }
 }
 
 @keyframes tap-knopf-glanz-hover {
