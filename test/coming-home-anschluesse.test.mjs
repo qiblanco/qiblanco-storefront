@@ -295,6 +295,7 @@ test('Loader: Kopf vor Blog und Uhr, Marker an termin und rueckblick', () => {
   // Keine zweite Uhr in der Route, die am Messkopf vorbeiliefe.
   assert.equal((quelle.match(/new Date\(\)/g) || []).length, 1);
   assert.doesNotMatch(quelle, /Date\.now\(/);
-  // Termin-Bereich und beide Rückblick-Fassungen tragen den Marker.
-  assert.equal((quelle.match(/data-messfixtur=\{messfixtur \|\| undefined\}/g) || []).length, 3);
+  // Termin-Bereich (LiveNeu und seit dem Rework 12.11.2026 auch TerminApple
+  // der Apple-Fassung) und beide Rückblick-Fassungen tragen den Marker.
+  assert.equal((quelle.match(/data-messfixtur=\{messfixtur \|\| undefined\}/g) || []).length, 4);
 });

@@ -155,19 +155,29 @@ const ALLE_EINGEKLAPPT_AN = true;
 const SPEZIAL_AN = true;
 
 /**
- * Foto von Christian und Anna (Christian 03.11.2026: „ein schoeneres foto von
- * uns zwein von google drive suchen lassen und ersetzen“). Quelle: Google
- * Drive, QB - Marketing & PR/QB - Bild und Video/Anna&Christian Bilder/
- * DSC05954.jpeg (5304 x 7952), auf 2:1 zugeschnitten, 2560 x 1280, sRGB.
- * Shopify Files (gid://shopify/MediaImage/77542954959116); das CDN liefert je
- * Breite WebP oder AVIF nach dem Accept-Kopf. Vorher: Zoom-Standbild
- * coming-home-live-anna-christian.jpg?v=1792652402 (MediaImage/77476314939660).
+ * Foto von Anna und Christian aus Adrians Shooting in Berlin (Christian
+ * 12.11.2026: „das Bild von Anna und mir ist gar nicht gut ausgewählt. Dann
+ * nehmen wir lieber das aus Berlin von Adrians Shooting und platzieren es
+ * gut."). Quelle: Google Drive, QB - Marketing & PR/QB - Bild und Video/
+ * QB - Produkte Content/Shooting_Berlin_Christian_Anna_Bauer-2022-ALU/
+ * 2022-07-26-qiblanco-berlin-1001117.jpg (8368 x 4707, Drive-ID
+ * 1RYhcXPPkS8OYwxR04-202SrqM4Pr39Oi). Zwei Zuschnitte in Shopify Files:
+ *   quer 2:1, 2560 x 1280 (gid://shopify/MediaImage/77598359257356), ab 750 px
+ *   hoch 4:5, 1600 x 2000 (gid://shopify/MediaImage/77598359453964), am Handy
+ * Das CDN liefert je Breite WebP oder AVIF nach dem Accept-Kopf.
+ * Vorher (03.11.): coming-home-live-anna-christian-2026-11.jpg?v=1793702644
+ * (MediaImage/77542954959116), davor das Zoom-Standbild (MediaImage/
+ * 77476314939660). Rückweg: BILD und BILD_HOCH auf die alte URL setzen.
  */
 const BILD =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/' +
-  'coming-home-live-anna-christian-2026-11.jpg?v=1793702644';
-const BILD_BREITEN = [480, 640, 960, 1280, 1600, 1920];
-const BILD_ALT = 'Christian und Anna Bauer – Coming Home';
+  'coming-home-live-berlin-quer.jpg?v=1794472724';
+const BILD_HOCH =
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/' +
+  'coming-home-live-berlin-hoch.jpg?v=1794472730';
+const BILD_BREITEN = [480, 640, 960, 1280, 1600, 1920, 2560];
+const BILD_HOCH_BREITEN = [400, 600, 800, 1200, 1600];
+const BILD_ALT = 'Anna und Christian Bauer auf dem Sofa in Berlin';
 
 /** Blog des Nahtvertrags N3; muss dem Server-Modul gleichen (Loader prueft). */
 const BLOG_HANDLE = 'coming-home';
@@ -510,7 +520,12 @@ function LiveApple({d}) {
       <AppleSeite seite="live">
         <div className="lv lva" data-ch-live-fassung="neu-20261020">
           <KopfApple />
-          <Termin naechster={d.naechster} weitere={d.weitere} messfixtur={d.messfixtur} />
+          <TerminApple
+            naechster={d.naechster}
+            weitere={d.weitere}
+            messfixtur={d.messfixtur}
+          />
+          <WorumApple />
           <section
             className="lv-abschnitt lv-dunkel"
             id="anmelden"
@@ -539,39 +554,132 @@ function LiveApple({d}) {
   );
 }
 
+/**
+ * REWORK 12.11.2026 (Job 20261112-prio1-rework-sonntags-termin-seite-live-
+ * bild-berlin-adrian-shooting, Christian: „die Seite braucht einen dringenden
+ * Rework“). Reihenfolge: Titel, das Foto aus Berlin groß, sofort der nächste
+ * Termin mit Thema und Knopf, die nächsten Sonntage, danach erst worum es geht
+ * und die Eckdaten, dann die Anmeldung. Vorher stand der Termin erst nach
+ * zwei Bildschirmhöhen Text. Texte unverändert aus dem geprüften Bestand,
+ * neu sind nur Überschrift „Worum es geht“ und die Zeile unter dem Datum.
+ * Rückweg: hb-deploy revert des Merge-Commits (Versions-Tag
+ * homepage/2026-11-12-0943 = Stand davor).
+ */
 function KopfApple() {
   return (
     <section className="as-hero lva-kopf" data-ch-live="kopf">
       <div className="as-hero-text">
-        <p className="as-overline">Live auf Zoom</p>
+        <p className="as-overline">Jeden Sonntag live auf Zoom</p>
         <h1 className="as-h1">
-          {REIHE_NAME} –{' '}
-          <span className="lva-h1-zusatz">{REIHE_ZUSATZ}</span>
+          {REIHE_NAME} – <span className="lva-h1-zusatz">{REIHE_ZUSATZ}</span>
         </h1>
         <p className="as-unter">{KOPF_LEDE}</p>
-        <div className="as-knoepfe">
-          <a
-            className="btn btn--primary as-knopf"
-            href="#anmelden"
-            data-as-cta="primary"
-          >
-            Kostenlos anmelden
-          </a>
-        </div>
       </div>
       <figure className="as-hero-bild lva-bild" data-ch-live="bild">
-        <img
-          className="as-bild"
-          src={bildQuelle(960)}
-          srcSet={BILD_BREITEN.map((b) => `${bildQuelle(b)} ${b}w`).join(', ')}
-          sizes="(min-width: 750px) 680px, calc(100vw - 32px)"
-          width="1280"
-          height="640"
-          alt={BILD_ALT}
-          fetchpriority="high"
-          decoding="async"
-        />
+        <picture>
+          <source
+            media="(min-width: 750px)"
+            srcSet={BILD_BREITEN.map((b) => `${bildQuelle(b)} ${b}w`).join(
+              ', ',
+            )}
+            sizes="(min-width: 1232px) 1200px, calc(100vw - 64px)"
+            width="2560"
+            height="1280"
+          />
+          <img
+            className="as-bild lva-foto"
+            src={bildHochQuelle(800)}
+            srcSet={BILD_HOCH_BREITEN.map(
+              (b) => `${bildHochQuelle(b)} ${b}w`,
+            ).join(', ')}
+            sizes="calc(100vw - 32px)"
+            width="1600"
+            height="2000"
+            alt={BILD_ALT}
+            fetchPriority="high"
+            decoding="async"
+          />
+        </picture>
       </figure>
+    </section>
+  );
+}
+
+/** Nächster Termin groß, darunter die nächsten Sonntage (Apple-Fassung). */
+function TerminApple({naechster, weitere, messfixtur}) {
+  return (
+    <section
+      className="lv-abschnitt lva-termin"
+      data-ch-live="termin"
+      data-messfixtur={messfixtur || undefined}
+    >
+      <div className="lv-innen lv-innen-schmal">
+        <h2 className="lv-h2">Der nächste Termin</h2>
+        {naechster?.extern ? (
+          <TerminExtern naechster={naechster} />
+        ) : naechster ? (
+          <article
+            className="lva-terminkarte"
+            data-ch-live-termin={naechster.datum}
+            data-ch-live-quelle={naechster.quelle}
+          >
+            <p className="lva-termin-datum">
+              <time dateTime={naechster.startUtc}>{naechster.datumLang}</time>
+            </p>
+            <p className="lva-termin-eck">
+              {naechster.uhrzeit
+                ? `${naechster.uhrzeit} (Berlin)`
+                : 'Uhrzeit folgt'}
+              {' · 90 Minuten · per Zoom · kostenlos'}
+            </p>
+            <h3 className="lva-termin-thema">
+              {naechster.titel || 'Thema folgt'}
+            </h3>
+            {naechster.teaser ? (
+              <p className="lva-termin-teaser">{naechster.teaser}</p>
+            ) : null}
+            <div className="as-knoepfe lva-termin-knopf">
+              <a
+                className="btn btn--primary as-knopf"
+                href="#anmelden"
+                data-as-cta="primary"
+              >
+                Kostenlos anmelden
+              </a>
+            </div>
+          </article>
+        ) : null}
+        {weitere.length ? (
+          <div className="lva-weitere" data-ch-live="weitere">
+            <h3 className="lva-weitere-titel">Die nächsten Sonntage</h3>
+            <ul className="lva-weitere-liste">
+              {weitere.map((w) => (
+                <li
+                  className="lva-weitere-punkt"
+                  key={w.datum}
+                  data-ch-live-weitere-eintrag={w.datum}
+                >
+                  <time className="lva-weitere-wann" dateTime={w.startUtc}>
+                    {w.datumKurz}
+                  </time>
+                  <span className="lva-weitere-thema">
+                    {w.titel || 'Thema folgt'}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+/** Worum es geht: der geprüfte Kopftext, die Eckdaten, Aufnahme, Sprechstunde. */
+function WorumApple() {
+  return (
+    <section className="as-sektion lva-worum">
+      <h2 className="as-h2">Worum es geht</h2>
       <div className="lva-kopftext">
         {KOPF_TEXT.map((absatz) => (
           <p className="as-absatz" key={absatz.slice(0, 24)}>
@@ -660,6 +768,10 @@ function KopfNeu() {
 
 function bildQuelle(breite) {
   return `${BILD}&width=${breite}`;
+}
+
+function bildHochQuelle(breite) {
+  return `${BILD_HOCH}&width=${breite}`;
 }
 
 /** Anna und Christian im Call: oben, direkt unter dem Titel (LCP-Bild). */
