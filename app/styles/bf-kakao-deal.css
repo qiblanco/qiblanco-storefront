@@ -1,0 +1,237 @@
+/* bf-kakao-deal.css: Kakao-Deal-Seite DE mit Set-Wahl (Elina EL-20261111-fa47cfd9).
+ * Geladen nur von BfKakaoDeal (Route products.$handle, Deal-Fassung kakao-sets) innerhalb von .bf-deal-seite.
+ * Farben und Formen 1:1 aus bf-deals-b.css (.bfd) und bf-deal-dunkel.css: Grund #0c0a08, Schrift #f5efe6,
+ * gedämpft rgba(245,239,230,.72), Rand rgba(245,239,230,.14), Gold #f2bf72 (Verlauf #f6cc86 -> #e7ad5c),
+ * Bildrand #090806, Rot #b92200, Knopfschrift #171310. Mobile first ab 320 px.
+ * Bewegung: nur die Überblendung des Bildes beim Set-Wechsel (opacity). Erster Bildschirm ohne Animation.
+ * Bei „Bewegung reduzieren“ wechselt das Bild sofort. */
+
+.bkd {
+  /* Typo-Skala (6 Stufen), 8-pt-Abstände, ein Bild-Radius, ein Knopf-Radius. */
+  --bkd-t-klein: 14px;
+  --bkd-t-text: 16px;
+  --bkd-t-knopf: 17px;
+  --bkd-t-set: 20px;
+  --bkd-t-preis: 32px;
+  --bkd-t-titel: clamp(26px, calc(26px + (100vw - 320px) * 0.05), 40px);
+  --bkd-a1: 8px;
+  --bkd-a2: 16px;
+  --bkd-a3: 24px;
+  --bkd-a4: 32px;
+  --bkd-a6: 48px;
+  --bkd-radius-bild: 18px;
+  --bkd-radius-knopf: 999px;
+  --bkd-gold: #f2bf72;
+  --bkd-gold-1: #f6cc86;
+  --bkd-gold-2: #e7ad5c;
+  --bkd-hell: #f5efe6;
+  --bkd-matt: rgba(245, 239, 230, 0.72);
+  --bkd-rand: rgba(245, 239, 230, 0.14);
+  --bkd-bildgrund: #090806;
+  --bkd-rot: #b92200;
+  --bkd-knopfschrift: #171310;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--bkd-a3);
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--bkd-a3) var(--bkd-a2) var(--bkd-a4);
+  color: var(--bkd-hell);
+  font-family: 'Open Sans Variable', 'Open Sans', system-ui, sans-serif;
+  text-align: center;
+}
+
+/* Bildfläche: festes Seitenverhältnis, drei Bilder übereinander, kein Layout-Sprung beim Wechsel. */
+.bkd__bild {
+  position: relative;
+  margin: 0;
+  /* Handy 4:3 wie die Kakao-Kachel auf bf-deals: Bild, Preis, Set-Wahl und Knopf passen bei 390 x 844 ins erste Bild. */
+  aspect-ratio: 4 / 3;
+  border-radius: var(--bkd-radius-bild);
+  overflow: hidden;
+  background: var(--bkd-bildgrund);
+}
+.bkd__bildlage {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--bkd-bildgrund);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+.bkd__bildlage[data-aktiv='ja'] {
+  opacity: 1;
+}
+.bkd__plakette {
+  position: absolute;
+  z-index: 1;
+  top: var(--bkd-a2);
+  left: var(--bkd-a2);
+  padding: var(--bkd-a1) var(--bkd-a2);
+  border-radius: var(--bkd-radius-knopf);
+  background: var(--bkd-rot);
+  color: #fff;
+  font-size: var(--bkd-t-set);
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.bkd__text {
+  display: grid;
+  justify-items: center;
+  gap: var(--bkd-a2);
+}
+.bkd .bkd__zeile {
+  margin: 0;
+  color: var(--bkd-gold);
+  font-size: var(--bkd-t-klein);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+.bf-deal-seite .bkd h1.bkd__titel {
+  margin: 0;
+  padding: 0;
+  color: var(--bkd-hell) !important;
+  font-family: inherit;
+  font-size: var(--bkd-t-titel);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+.bkd .bkd__preis {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--bkd-a1) var(--bkd-a2);
+  margin: 0;
+}
+.bkd__alt {
+  color: var(--bkd-matt);
+  font-size: var(--bkd-t-text);
+  font-weight: 400;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+.bkd__neu {
+  color: var(--bkd-gold);
+  font-size: var(--bkd-t-preis);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Set-Wahl: Pillen wie auf bf-deals (.bfd__pille), Tippziel >= 44 px. */
+.bkd__pillen {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--bkd-a1);
+}
+.bkd__pille {
+  min-height: 44px;
+  margin: 0;
+  padding: var(--bkd-a1) var(--bkd-a2);
+  border: 1px solid rgba(242, 191, 114, 0.45);
+  border-radius: var(--bkd-radius-knopf);
+  background: rgba(245, 239, 230, 0.04);
+  color: var(--bkd-hell);
+  font-family: inherit;
+  font-size: var(--bkd-t-klein);
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.bkd__pille[aria-pressed='true'] {
+  border-color: transparent;
+  background: linear-gradient(180deg, var(--bkd-gold-1), var(--bkd-gold-2));
+  color: var(--bkd-knopfschrift);
+}
+.bkd__pille:focus-visible {
+  outline: 2px solid var(--bkd-gold);
+  outline-offset: 3px;
+}
+
+/* Kaufknopf (Dauerregel D9): „Jetzt kaufen“, Kit-Gold #F2BF72, dunkle Schrift. */
+.bf-deal-seite a.bkd__kaufen {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 28rem;
+  min-height: 52px;
+  margin: 0;
+  padding: var(--bkd-a2) var(--bkd-a3);
+  border: 0;
+  border-radius: var(--bkd-radius-knopf);
+  background: #f2bf72;
+  color: #171310 !important;
+  font-size: var(--bkd-t-knopf);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none !important;
+}
+.bf-deal-seite a.bkd__kaufen:hover {
+  background: #f6cc86;
+}
+.bf-deal-seite a.bkd__kaufen:focus-visible {
+  outline: 2px solid var(--bkd-hell);
+  outline-offset: 3px;
+}
+
+/* Klebende Leiste (qb-kaufleiste.css): Knopf schmaler, Preis kompakt. */
+.bf-deal-seite .qb-kaufleiste a.bkd__kaufen--leiste {
+  width: auto;
+  min-height: 48px;
+  padding: var(--bkd-a1) var(--bkd-a3);
+}
+.bkd__leistenpreis {
+  display: flex;
+  align-items: baseline;
+  gap: var(--bkd-a1);
+  white-space: nowrap;
+}
+.bkd__leistenpreis .bkd__alt {
+  font-size: var(--bkd-t-klein);
+}
+.bkd__leistenpreis .bkd__neu {
+  font-size: var(--bkd-t-set);
+}
+
+@media (min-width: 960px) {
+  .bkd {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--bkd-a6);
+    padding: var(--bkd-a6) var(--bkd-a3);
+    text-align: left;
+  }
+  .bkd__bild {
+    aspect-ratio: 1 / 1;
+  }
+  .bkd__text {
+    justify-items: start;
+  }
+  .bkd .bkd__preis,
+  .bkd__pillen {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bkd__bildlage {
+    transition: none !important;
+  }
+}
