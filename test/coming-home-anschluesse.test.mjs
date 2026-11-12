@@ -61,13 +61,16 @@ test('/pages/coming-home nennt sonntags 12 Uhr (Berlin) und nirgends mehr 19 Uhr
   const code = route
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/^\s*\/\/.*$/gm, '')
-    .replace(/\{'\\u00a0'\}|&nbsp;|\u00a0/g, ' ');
+    .replace(/\{'(?:\\u00a0|\u00a0| )'\}|&nbsp;|\u00a0/g, ' ');
   assert.ok(!/\b19(?:[:.]00)?\s*Uhr/.test(code), 'im Seitentext steht noch 19 Uhr');
   assert.match(code, /Coming Home live: jeden Sonntag um 12 Uhr/, 'Titel ohne 12 Uhr');
   assert.match(code, /Jeden Sonntag um 12 Uhr \(Berliner Zeit\) per Zoom/, 'Beschreibung ohne 12 Uhr Berlin');
   assert.match(code, /wert: 'Jeden Sonntag, 12 Uhr \(Berlin\)'/, 'Eckdatum Wann ohne 12 Uhr (Berlin)');
   assert.match(code, /titel: 'Sonntag um 12 Uhr'/, 'Schritt drei ohne 12 Uhr');
   assert.match(code, /Jeden Sonntag um 12 Uhr: eine Stunde live/, 'H1 ohne 12 Uhr');
+  // Danke-Ansicht: bis 12.11.2026 stand dort „19{'<NBSP>'}Uhr" (geschütztes
+  // Leerzeichen als Zeichen im JSX-Ausdruck), das dieses Muster nicht sah.
+  assert.match(code, /Sonntag um 12 Uhr geht es los/, 'Danke-Ansicht ohne 12 Uhr');
 });
 
 test('Testdaten von /pages/live tragen 12 Uhr, nicht 19 Uhr', async () => {
