@@ -155,6 +155,25 @@ const ALLE_EINGEKLAPPT_AN = true;
 const SPEZIAL_AN = true;
 
 /**
+ * Beschreibung je Termin in Christians Wortlaut (12.11.2026 zum 15.11.: „Das
+ * ist jetzt die Beschreibung für Sonntag, Coming Home.“). Ersetzt auf der
+ * Termin-Karte den Teaser des Vorschau-Artikels, Titel bleibt. Dieselbe
+ * Fassung steht in coming-home/config/themen.json (Feld beschreibung, liest
+ * die Erinnerungs- und Link-Mail). Leeres Objekt = Stand vorher.
+ */
+const BESCHREIBUNG_JE_TERMIN = {
+  '2026-11-15': [
+    'Deine größten Gegner sitzen nicht im Außen, sondern in deinem Kopf: ' +
+      'Angst, Sorgen, Zweifel. Die stillen Manipulatoren deines Erfolgs, ' +
+      'privat wie beruflich.',
+    'Diesen Sonntag bei Coming Home zeigen wir dir an echten Beispielen, wie ' +
+      'du sie auflöst, und zwar mit einer Technik, die du danach selbst ' +
+      'anwenden kannst.',
+    'Sei dabei.',
+  ],
+};
+
+/**
  * Foto von Anna und Christian aus Adrians Shooting in Berlin (Christian
  * 12.11.2026: „das Bild von Anna und mir ist gar nicht gut ausgewählt. Dann
  * nehmen wir lieber das aus Berlin von Adrians Shooting und platzieren es
@@ -338,6 +357,11 @@ export async function loader({request, context}) {
     seite.naechster = seite.naechster && {...seite.naechster, extern: null};
     seite.weitere = seite.weitere.map((w) => ({...w, extern: null}));
   }
+  const beschreibung =
+    seite.naechster && !seite.naechster.extern
+      ? BESCHREIBUNG_JE_TERMIN[seite.naechster.datum]
+      : null;
+  if (beschreibung) seite.naechster = {...seite.naechster, beschreibung};
   const rueckblicke = seite.rueckblicke.map((r) => {
     const html = fremdHtmlMitBildAuszeichnung(
       artikelInhaltAufraeumen(r.html, r.titel),
@@ -635,7 +659,15 @@ function TerminApple({naechster, weitere, messfixtur}) {
             <h3 className="lva-termin-thema">
               {naechster.titel || 'Thema folgt'}
             </h3>
-            {naechster.teaser ? (
+            {naechster.beschreibung ? (
+              <div data-ch-live="beschreibung">
+                {naechster.beschreibung.map((absatz) => (
+                  <p className="lva-termin-teaser" key={absatz}>
+                    {absatz}
+                  </p>
+                ))}
+              </div>
+            ) : naechster.teaser ? (
               <p className="lva-termin-teaser">{naechster.teaser}</p>
             ) : null}
             <div className="as-knoepfe lva-termin-knopf">
@@ -929,7 +961,15 @@ function Termin({naechster, weitere, messfixtur}) {
               </time>
             </p>
             <h3 className="lv-h3">{naechster.titel || 'Thema folgt'}</h3>
-            {naechster.teaser ? (
+            {naechster.beschreibung ? (
+              <div data-ch-live="beschreibung">
+                {naechster.beschreibung.map((absatz) => (
+                  <p className="lv-text" key={absatz}>
+                    {absatz}
+                  </p>
+                ))}
+              </div>
+            ) : naechster.teaser ? (
               <p className="lv-text">{naechster.teaser}</p>
             ) : null}
             <a className="btn--primary lv-knopf" href="#anmelden">
