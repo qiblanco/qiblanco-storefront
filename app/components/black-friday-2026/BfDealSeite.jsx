@@ -24,6 +24,9 @@ import alphaAngebotStyles from '~/styles/alpha-angebot.css?url';
 import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
 import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
+// Instagram-Reihe im Stimmen-Slot (AlphaStimmen): ohne dieses Stylesheet stehen die Kacheln am Computer
+// untereinander in voller Breite (gemessen 12.11.2026: Slot 14 875 px statt 532 px wie auf /products/qione-2-pro).
+import igStyles from '~/styles/ig-testimonials.css?url';
 import {BfDealRahmen} from '~/components/black-friday-2026/DealGalerie';
 import {datenStudienNeutral} from '~/components/black-friday-2026/bf-kachel-neutral';
 import {
@@ -121,6 +124,8 @@ function ohnePreisFragen(fragen) {
 function DealStile({qione = false}) {
   return (
     <>
+      {/* wie auf der Originalseite zuerst geladen: spätere Deal-Stile gewinnen bei gleicher Spezifität */}
+      <link rel="stylesheet" href={igStyles} />
       <link rel="stylesheet" href={produktVorlageStyles} />
       <link rel="stylesheet" href={alphaVorlageStyles} />
       <link rel="stylesheet" href={wissenStyles} />
