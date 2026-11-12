@@ -29,7 +29,7 @@ import {
  *    aus dem Rückfallstand (anmelde-rueckfallstand.js). Fehlt dort der Satz
  *    oder seine Kennung, erscheint eine Hinweiszeile, und die Weiche fragt /w
  *    alle 30 s neu, bis ein Formular gezeigt werden kann.
- *  - die Anmeldung scheitert (5xx, 429, Netz) und /w meldet rueckfall_ac
+ *  - die Anmeldung scheitert (5xx, 429, Netz) und /w meldet rueckfall_ac: true (nur ein ausdrückliches true)
  *    -> das AC-Formular mit einem Satz darüber. Seit dem 10.11. meldet der
  *    Server rueckfall_ac: false; aus dem Rückfallstand heraus gibt es diesen
  *    Weg nie.

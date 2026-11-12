@@ -3,6 +3,9 @@
 // ausdrücklichem 'ac' aus /w; sonst das eigene Formular (Satz aus /w oder aus dem Rückfallstand) oder eine Hinweiszeile.
 import {RUECKFALL_ANZEIGE} from './anmelde-rueckfallstand.js';
 
+// Kennung wie ac-eingang einwilligung_id(): Hex aus sha256 (heute 12 Zeichen). Leer, Leerzeichen oder Objekt zählen nicht.
+const KENNUNG = /^[0-9a-f]{8,64}$/;
+
 export function anzeigeVollstaendig(anzeige) {
   return Boolean(
     anzeige &&
@@ -10,7 +13,8 @@ export function anzeigeVollstaendig(anzeige) {
       anzeige.einwilligung.trim() &&
       typeof anzeige.knopf === 'string' &&
       anzeige.knopf.trim() &&
-      anzeige.einwilligung_id,
+      typeof anzeige.einwilligung_id === 'string' &&
+      KENNUNG.test(anzeige.einwilligung_id),
   );
 }
 
@@ -42,7 +46,8 @@ export function weicheEntscheiden(formId, wege, vorschau = false) {
       weg: 'eigen',
       anzeige,
       versatz: wege.versatz || 0,
-      rueckfallAc: wege.rueckfall_ac !== false,
+      // Nur ein ausdrückliches true öffnet den AC-Rückfall nach gescheitertem Absenden; fehlt das Feld, bleibt er zu.
+      rueckfallAc: wege.rueckfall_ac === true,
       quelle: 'w',
     };
   }
