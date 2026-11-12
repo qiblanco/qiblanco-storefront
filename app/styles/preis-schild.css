@@ -18,8 +18,10 @@
 
    ALTBESTAND: die Schildchen-Klassen aus der Zeit vor dem Standard (BestsellerLabel,
    lp-*-product__badge, v2/v3-produkt__badge, rd3-trio__badge, lp-vp-product__bestseller,
-   ghx-pak__pill/__save) bekommen dieselbe Form ueber die Liste unten. crystal-cacao.com
-   (#ccsp, Spiegel aus crystal-cacao-node) bleibt aussen vor: eigene Quelle, eigener Auftrag. */
+   ghx-pak__pill/__save) bekommen dieselbe Form ueber die Liste unten. Das gilt auch fuer den
+   Kakao-Spiegel unter #ccsp (erzeugt aus crystal-cacao-node): seine Schild-TEXTE kommen aus
+   der crystal-Quelle und werden dort getrennt (Folgeauftrag), die FORM steht schon hier.
+   Bis dahin: --red ("Angebot") traegt die Preisvorteil-Farbe, --gold/--gradient die Auszeichnung. */
 
 :root {
   --schild-tinte: #2c2a26;
@@ -34,7 +36,7 @@
 
 /* --- Form, für beide Arten gleich --- */
 .qb-schild,
-:where(.Bestseller-Price) .BestsellerLabel:where(:not(#ccsp *)),
+:where(.Bestseller-Price) .BestsellerLabel,
 .lp-a-product__badge,
 .lp-b-product__badge,
 .lp-d-product__badge,
@@ -85,7 +87,7 @@
 
 /* --- Raute vor der Auszeichnung --- */
 .qb-schild:not(.qb-schild--vorteil)::before,
-:where(.Bestseller-Price) .BestsellerLabel:where(:not(#ccsp *)):not(.qb-schild--vorteil)::before,
+:where(.Bestseller-Price) .BestsellerLabel:not(.qb-schild--vorteil):not(.BestsellerLabel--red)::before,
 .lp-a-product__badge::before,
 .lp-b-product__badge::before,
 .lp-d-product__badge::before,
@@ -108,7 +110,8 @@
 
 /* --- Preisvorteil: Tiefrot, weisse Schrift, Lichtkante des roten A+B-Knopfs --- */
 .qb-schild--vorteil,
-:where(.Bestseller-Price) .BestsellerLabel.qb-schild--vorteil:where(:not(#ccsp *)),
+:where(.Bestseller-Price) .BestsellerLabel.qb-schild--vorteil,
+:where(.Bestseller-Price) .BestsellerLabel.BestsellerLabel--red,
 .ghx-pill.ghx-pak__save {
   background: var(--schild-rot) !important;
   color: #ffffff !important;
