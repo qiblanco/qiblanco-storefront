@@ -1,6 +1,6 @@
 // ERZEUGT von crystal-cacao-node/bin/spiegel-nachzug aus crystal-cacao-node/repo/app/lib/kachel-kasse.js
 // NICHT VON HAND AENDERN: die Quelle ist crystal-cacao.com, Herkunft in SPIEGEL.json.
-import {ladeStaffelKasse} from '~/crystal-spiegel/lib/cacao-pricing';
+import {ladeStaffelKasse} from '~/lib/cacao-pricing';
 
 /**
  * KACHEL-KASSE — derselbe Kassenbetrag für die Sortenkacheln, den die
