@@ -16,6 +16,8 @@
 import {useEffect, useRef, useState} from 'react';
 import {BF_GOLD_BILDER, BF_KAKAO_SEITE, bfDealSeite, bfKakaoPfad} from '../components/black-friday-2026/bf-deals-daten';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
+import {BfVertrauensblock} from '../components/black-friday-2026/BfVertrauensblock';
+import vertrauensblockStyles from '../styles/bf-vertrauensblock.css?url';
 import bfDealsBStyles from '../styles/bf-deals-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
 
@@ -28,6 +30,7 @@ export function links() {
   return [
     {rel: 'stylesheet', href: elinaBewegungStyles},
     {rel: 'stylesheet', href: bfDealsBStyles},
+    {rel: 'stylesheet', href: vertrauensblockStyles},
   ];
 }
 
@@ -434,6 +437,8 @@ export default function BfDealsB() {
             </p>
           </div>
         </header>
+        {/* Vertrauensblock über dem Deal-Raster (Elina EL-20261111-63e02e46): drei Zeilen, zentriert */}
+        <BfVertrauensblock />
         <ul className="bfd__liste" aria-label="Black-Friday-Angebote">
           {KACHELN.map((k) =>
             k.sets || k.varianten ? (
