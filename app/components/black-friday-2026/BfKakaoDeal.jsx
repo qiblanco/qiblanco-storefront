@@ -66,7 +66,7 @@ export function BfKakaoDeal({setId}) {
     setWahl(bfKakaoSet(setId).id);
   }, [setId]);
 
-  const leiste = useKaufleisteSicht(
+  const sichtbar = useKaufleisteSicht(
     () => {
       const box = kaufbox.current;
       if (!box) return null;
@@ -173,14 +173,14 @@ export function BfKakaoDeal({setId}) {
       </section>
       <DealGalerie />
       <div
-        className={`qb-kaufleiste${leiste ? ' qb-kaufleiste--sichtbar' : ''}`}
+        className={`qb-kaufleiste${sichtbar ? ' qb-kaufleiste--sichtbar' : ''}`}
         data-section="pdp-kaufleiste"
         data-kaufleiste-desktop={KAUFLEISTE_AN.desktop ? 'an' : 'aus'}
         data-kaufleiste-mobil={KAUFLEISTE_AN.mobil ? 'an' : 'aus'}
-        data-qb-chat-weicht={leiste ? '' : undefined}
-        aria-hidden={leiste ? undefined : 'true'}
+        data-qb-chat-weicht={sichtbar ? '' : undefined}
+        aria-hidden={sichtbar ? undefined : 'true'}
       >
-        {leiste && (
+        {sichtbar && (
           <>
             <div className="qb-kaufleiste__preis bkd__leistenpreis">
               <s className="bkd__alt">{uvp}</s>{' '}
