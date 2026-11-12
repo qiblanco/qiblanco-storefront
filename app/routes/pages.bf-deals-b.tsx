@@ -11,11 +11,19 @@
 // Umbau Elina EL-20261111-f72ec899: (1) Rabatt-Plakette Rot #B92200 mit weißer Schrift, deutlich größer; (2) „Jetzt kaufen“
 // führt auf die BF-Deal-Seite des Deals (dort geht es per Warenkorb-Link mit BF-Endpreis weiter), seit EL-20261111-cc43922e
 // ausnahmslos, auch Bild und Titel (siehe dealSeite); (3) die Seite beginnt ganz oben mit dem
-// großen roten Countdown (#B92200, weiß, sekundengenau) bis Black-Friday-Start 27.11. 00:00, ab dann bis Sale-Ende.
+// großen roten Countdown (#B92200, weiß, sekundengenau); Phasen seit EL-20261112-5c71f6ff: „Pre-Sale startet in“ bis 13.11.
+// 18:00 (EL-20261112-6b5fe5df), „Pre-Sale endet in“ bis 26.11. 23:59, „Black Friday endet in“ bis Sale-Ende.
 // Rückbau: diese Datei und app/styles/bf-deals-b.css löschen.
 import {useEffect, useRef, useState} from 'react';
 import {useLoaderData} from 'react-router';
-import {BF_GOLD_BILDER, BF_KAKAO_SEITE, bfDealSeite, bfKakaoPfad} from '../components/black-friday-2026/bf-deals-daten';
+import {
+  BF_GOLD_BILDER,
+  BF_KAKAO_SEITE,
+  bfDealSeite,
+  bfKakaoPfad,
+  bfPhase,
+  bfRestSekunden,
+} from '../components/black-friday-2026/bf-deals-daten';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
 import {PreisSchilder} from '../components/reusables/PreisSchild';
 import {BfVertrauensblock} from '../components/black-friday-2026/BfVertrauensblock';
@@ -71,17 +79,8 @@ type Kachel = {
   start?: number;
 };
 
-// Countdown (EL-20261111-f72ec899): bis Black-Friday-Start Fr 27.11.2026 00:00 Berlin, ab dann bis Sale-Ende; danach
-// verschwindet er. Sale-Ende 30.11.2026 23:59 Berlin ist vorläufig (Bestätigung Elina offen, gleicher Wert wie die rote
-// Leiste der Deal-Seiten EL-20261111-cfcd9c5d, bf_countdown.py SALE_ENDE['de']) - nur UHR.ende ändern.
-const UHR = {
-  ziel: '2026-11-26T23:00:00Z',
-  ende: '2026-11-30T22:59:00Z',
-  titel: 'Black Friday für alle in',
-  datum: 'Freitag, 27. November 2026 · 00:00 Uhr',
-  titelSale: 'Black Friday endet in',
-  datumSale: 'Montag, 30. November 2026 · 23:59 Uhr',
-};
+// Countdown (EL-20261111-f72ec899; Phasen seit Elina EL-20261112-5c71f6ff in bf-deals-daten.js (BF_PHASEN), eine Stelle mit
+// der roten Leiste der Deal-Seiten und Pre-Access).
 const EINHEITEN = ['Tage', 'Std', 'Min', 'Sek'];
 const KACHELN: Kachel[] = [
   {
@@ -94,7 +93,7 @@ const KACHELN: Kachel[] = [
     bildAlt: 'Zwei QiOne® 2 Pro Anhänger nebeneinander',
     alt: '2.476 €',
     neu: '1.976 €',
-    link: '/cart/39680087326790:2?discount=BF26-2XPRO-HDRSN',
+    link: '/cart/39680087326790:2',
   },
   {
     breit: false,
@@ -107,11 +106,11 @@ const KACHELN: Kachel[] = [
     neu: '1.082 €',
     start: 1,
     varianten: [
-      {pille: 'XS · 40 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,39285852176454:1?discount=BF26-PROKETTE-PMB52'},
-      {pille: 'S · 45 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,31887553396806:1?discount=BF26-PROKETTE-PMB52'},
-      {pille: 'M · 50 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,39285855223878:1?discount=BF26-PROKETTE-PMB52', aus: true},
-      {pille: 'L · 60 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,31887553429574:1?discount=BF26-PROKETTE-PMB52'},
-      {pille: 'XL · 75 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,39285858140230:1?discount=BF26-PROKETTE-PMB52', aus: true},
+      {pille: 'XS · 40 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,39285852176454:1'},
+      {pille: 'S · 45 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,31887553396806:1'},
+      {pille: 'M · 50 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,39285855223878:1', aus: true},
+      {pille: 'L · 60 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,31887553429574:1'},
+      {pille: 'XL · 75 cm', neu: '1.082 €', alt: '1.332 €', link: '/cart/39680087326790:1,39285858140230:1', aus: true},
     ],
   },
   {
@@ -125,9 +124,9 @@ const KACHELN: Kachel[] = [
     neu: '1.378 €',
     start: 1,
     varianten: [
-      {pille: 'S', neu: '1.378 €', alt: '1.578 €', link: '/cart/43666904056076:1?discount=BF26-BRACELET-GM5JJ'},
-      {pille: 'M', neu: '1.378 €', alt: '1.578 €', link: '/cart/43666904088844:1?discount=BF26-BRACELET-GM5JJ'},
-      {pille: 'L', neu: '1.378 €', alt: '1.578 €', link: '/cart/43673322160396:1?discount=BF26-BRACELET-GM5JJ'},
+      {pille: 'S', neu: '1.378 €', alt: '1.578 €', link: '/cart/43666904056076:1'},
+      {pille: 'M', neu: '1.378 €', alt: '1.578 €', link: '/cart/43666904088844:1'},
+      {pille: 'L', neu: '1.378 €', alt: '1.578 €', link: '/cart/43673322160396:1'},
     ],
   },
   {
@@ -139,7 +138,7 @@ const KACHELN: Kachel[] = [
     bildAlt: 'QiHome® Air',
     alt: '4.983 €',
     neu: '4.583 €',
-    link: '/cart/32238705967174:1?discount=BF26-QIHOME-2DP8H',
+    link: '/cart/32238705967174:1',
   },
   {
     breit: true,
@@ -154,21 +153,21 @@ const KACHELN: Kachel[] = [
         bild: 'kakao-awake-create',
         neu: '76 €',
         alt: '152 €',
-        link: 'https://crystal-cacao.com/cart/54540698485004:1,44685294567692:1?discount=BF26-KAKAO-NKSKX',
+        link: 'https://crystal-cacao.com/cart/54540698485004:1,44685294567692:1',
       },
       {
         pille: '2x Awake',
         bild: 'kakao-2x-awake',
         neu: '76 €',
         alt: '152 €',
-        link: 'https://crystal-cacao.com/cart/54540698485004:2?discount=BF26-KAKAO-NKSKX',
+        link: 'https://crystal-cacao.com/cart/54540698485004:2',
       },
       {
         pille: '2x Create',
         bild: 'kakao-2x-create',
         neu: '76 €',
         alt: '152 €',
-        link: 'https://crystal-cacao.com/cart/44685294567692:2?discount=BF26-KAKAO-NKSKX',
+        link: 'https://crystal-cacao.com/cart/44685294567692:2',
       },
     ],
   },
@@ -206,16 +205,14 @@ function useJetzt() {
 }
 
 function Countdown({jetzt}: {jetzt: number | null}) {
-  // Phase: vor dem Start zählt die Uhr bis UHR.ziel, ab dem Start bis UHR.ende; nach dem Ende kein Countdown mehr.
-  const sale = jetzt !== null && jetzt >= Date.parse(UHR.ziel);
-  if (jetzt !== null && jetzt >= Date.parse(UHR.ende)) return null;
-  const rest =
-    jetzt === null
-      ? null
-      : Math.floor((Date.parse(sale ? UHR.ende : UHR.ziel) - jetzt) / 1000);
-  const r = rest !== null && rest > 0 ? rest : 0;
+  // Phasen (Elina EL-20261112-5c71f6ff) aus bf-deals-daten.js (BF_PHASEN): „Pre-Sale startet in“ bis 13.11. 18:00,
+  // „Pre-Sale endet in“ bis 26.11. 23:59, „Black Friday endet in“ bis Sale-Ende; danach kein Countdown mehr.
+  // Server-HTML: Titel der Phase, Zahlen 00; erst im Browser laufen die Zahlen.
+  const phase = bfPhase(jetzt ?? Date.now());
+  if (!phase) return null;
+  const r = jetzt === null ? null : bfRestSekunden(phase, jetzt);
   const teile =
-    rest === null
+    r === null
       ? ['00', '00', '00', '00']
       : [
           String(Math.floor(r / 86400)),
@@ -224,9 +221,9 @@ function Countdown({jetzt}: {jetzt: number | null}) {
           zwei(r % 60),
         ];
   return (
-    <div className="bfd__uhr" role="timer" aria-live="off">
+    <div className="bfd__uhr" role="timer" aria-live="off" data-bfd-phase={jetzt === null ? undefined : phase.id}>
       <div className="bfd__uhr-innen">
-        <p className="bfd__uhrtitel">{sale ? UHR.titelSale : UHR.titel}</p>
+        <p className="bfd__uhrtitel">{phase.titel}</p>
         <div className="bfd__zellen">
           {EINHEITEN.map((e, i) => (
             <div className="bfd__zelle" key={e}>
@@ -235,7 +232,7 @@ function Countdown({jetzt}: {jetzt: number | null}) {
             </div>
           ))}
         </div>
-        <p className="bfd__datum">{sale ? UHR.datumSale : UHR.datum}</p>
+        <p className="bfd__datum">{phase.datum}</p>
       </div>
     </div>
   );
