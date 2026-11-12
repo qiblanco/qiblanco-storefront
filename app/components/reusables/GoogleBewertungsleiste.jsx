@@ -21,8 +21,9 @@ import {
  * 5 Sterne bei Google". Variante „Das sagen Menschen, die ihn tragen" nur
  * mit den Sternen darunter.
  *
- * WAS SIE IST: Überschrift (Google-Note + fünf goldene Sterne + „bei
- * Google", als Link aufs Google-Profil) und darunter der bewährte
+ * WAS SIE IST: Überschrift links (Google-Note, fünf goldene Sterne so groß
+ * wie die Note, G-Zeichen, Anzahl der Bewertungen; als Link aufs
+ * Google-Profil, Kopfzeile seit 12.11.2026) und darunter der bewährte
  * ReviewsSlider (ReputonWidget.jsx, Bestand seit 31.07.2026): echte
  * Google-Karten mit G-Zeichen, Name, Datum und goldenen Sternen,
  * wisch- und ziehbar, Pfeile, ruhiger Autolauf.
@@ -73,17 +74,31 @@ export function GoogleBewertungsleiste({
   const g = useGoogleDaten();
   const {reviews} = g;
   const leiste = reviews.filter((r) => Number(r.rating) === 5).slice(0, anzahl);
-  const sterne = (
-    <span className="qb-gbl__sterne" aria-hidden="true">
-      <StarRating value={5} size={titel ? 20 : 26} qb="" />
-    </span>
-  );
-  const linkLabel = `${g.komma} von 5 Sternen bei Google, alle ${g.total} Bewertungen ansehen`;
+  /*
+   * KOPFZEILE (Christian 12.11.2026, Job 20261112-prio1-bewertungsleiste-
+   * kopfzeile-links-4-8-sterne-google-logo-anzahl): „links ausgerichtet",
+   * „dass die Sterne kleiner sind als die 4,8" gefiel nicht, und „4,8 Sterne,
+   * dann das Google-Logo und dann … die Anzahl an Bewertungen … Das muss
+   * natürlich auch aktualisiert werden." Die Sterne messen deshalb in em der
+   * Überschrift (app.css .qb-gbl__sterne), das G-Zeichen ersetzt „bei Google",
+   * die Anzahl kommt aus demselben Loader wie die Note (Reputon-Feed des
+   * Google-Profils, 6 h Cache) und ist nie eine feste Zahl im Code. Die frühere
+   * Unterzeile „Die neuesten 5-Sterne-Bewertungen" ist gestrichen.
+   */
+  const anzahlText = `${Number(g.total).toLocaleString('de-DE')} Bewertungen`;
+  const linkLabel = `${g.komma} von 5 Sternen bei Google, ${anzahlText} ansehen`;
   const note = (
     <>
       <span className="qb-gbl__note">{g.komma}</span>
-      {sterne}
-      <span className="qb-gbl__bei">bei Google</span>
+      <span className="qb-gbl__sterne" aria-hidden="true">
+        <StarRating value={5} size={24} qb="" />
+      </span>
+      <span className="qb-gbl__google">
+        <GoogleIcon />
+        <span className="qb-gbl__anzahl" data-google-anzahl={g.total}>
+          {anzahlText}
+        </span>
+      </span>
     </>
   );
   return (
@@ -110,10 +125,6 @@ export function GoogleBewertungsleiste({
           </a>
         </h2>
       )}
-      <p className="qb-gbl__unter">
-        <GoogleIcon />
-        <span>Die neuesten 5-Sterne-Bewertungen</span>
-      </p>
       <ReviewsSlider reviews={leiste} label="Neueste Google-Rezensionen von Qi Blanco, nur 5 Sterne" />
     </section>
   );

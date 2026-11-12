@@ -219,8 +219,20 @@ test('Stimmen-Position rendert die Bewertungsleiste (Standard), keine eigenen Ka
   const html = await renderSeite({seite: 'start-b', sektionen: ALLE});
   assert.match(html, /data-bewertungsleiste="google"/);
   assert.match(html, /class="qb-gbl__note">4,8</);
-  assert.match(html, />bei Google</);
   assert.doesNotMatch(html, /class="as-stimme"|Endlich wieder durchschlafen/);
+});
+
+/* KOPFZEILE (Christian 12.11.2026, Job 20261112-prio1-bewertungsleiste-kopfzeile-links-4-8-sterne-google-logo-
+   anzahl): „4,8 Sterne, dann das Google-Logo und dann … 447 Bewertungen“, die Unterzeile „Die neuesten
+   5-Sterne-Bewertungen“ gelöscht. Die Anzahl ist die des Loaders (hier die Fallback-Zahl), nie eine feste Zahl. */
+test('Kopfzeile der Bewertungsleiste: Note, Sterne, G-Zeichen, Anzahl; keine Unterzeile', async () => {
+  const html = await renderSeite({seite: 'start-b', sektionen: ALLE});
+  const kopf = html.slice(html.indexOf('class="qb-gbl__titel"'), html.indexOf('</h2>', html.indexOf('class="qb-gbl__titel"')));
+  const reihe = ['qb-gbl__note', 'qb-gbl__sterne', 'qb-gbl__google', 'qb-gbl__anzahl'].map((k) => kopf.indexOf(k));
+  assert.ok(reihe.every((i, n) => i > 0 && (n === 0 || i > reihe[n - 1])), `Reihenfolge im Kopf: ${reihe}`);
+  assert.match(kopf, /fill="#4285F4"/);
+  assert.match(kopf, /class="qb-gbl__anzahl"[^>]*>\d[\d.]* Bewertungen</);
+  assert.doesNotMatch(html, /Die neuesten 5-Sterne-Bewertungen|qb-gbl__unter/);
 });
 
 test('SSR: Weiche aus = heutige Seite byte-gleich, kein Marker, kein CSS', async () => {
