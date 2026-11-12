@@ -159,15 +159,18 @@ function kaufknopfOben(von) {
 
 /**
  * „In den Warenkorb“ mit derselben Funktion wie der Kaufknopf oben: der Klick
- * löst genau diesen Knopf aus (gleicher Warenkorb-Link, dieselbe Größe,
- * Kettenlänge oder dasselbe Kakao-Set). Ist oben noch keine Wahl getroffen
- * (Knopf gesperrt), springt der Link zur Wahl oben (Sprungmarke, kein
- * Scroll-Skript). Ohne JavaScript: der feste Deal-Link, wo es einen gibt.
+ * löst genau diesen Knopf aus (dieselbe Größe, Kettenlänge oder dasselbe
+ * Kakao-Set). Seit Elina EL-20261112-5c71f6ff ist der Knopf oben ein
+ * Warenkorb-Formular (<button>, der Server setzt den Deal-Code); ein fester
+ * /cart/-Link trüge keinen Code mehr und kostete den vollen Preis. Ist oben
+ * noch keine Wahl getroffen (Knopf gesperrt) oder läuft kein JavaScript,
+ * springt der Link zur Wahl oben (Sprungmarke, kein Scroll-Skript).
  */
 function bannerKlick(ereignis) {
   const oben = kaufknopfOben(ereignis.currentTarget);
   if (!oben || oben === ereignis.currentTarget) return;
-  if (oben.tagName === 'A' && oben.getAttribute('href')) {
+  const knopf = oben.tagName === 'BUTTON' && !oben.disabled;
+  if (knopf || (oben.tagName === 'A' && oben.getAttribute('href'))) {
     ereignis.preventDefault();
     oben.click();
   }
@@ -182,7 +185,6 @@ export function BfSchlussBanner() {
   if (!deal) return null;
   const bild = bfDealBild(seite);
   const name = seite.name ?? deal.name;
-  const fest = seite.link ?? deal.link ?? null;
   const sprung = String(seite.art ?? '').startsWith('kakao') ? '#bkd-titel' : '#av-summe-titel';
   const ersparnis = deal.uvp - deal.preis;
   const prozent = Math.round((ersparnis / deal.uvp) * 100);
@@ -229,7 +231,7 @@ export function BfSchlussBanner() {
           )}
           <a
             className="bfsb__knopf"
-            href={fest ?? sprung}
+            href={sprung}
             onClick={bannerKlick}
             data-bfsb-knopf=""
             rel="nofollow"
