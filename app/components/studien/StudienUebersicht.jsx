@@ -338,8 +338,8 @@ export function StudienUebersicht({schutzfrage = false} = {}) {
                   unten trennt vier Zellstudien und eine Auswertung. */}
               {initialCap(anzahl)} Arbeiten zu{' '}
               <ProduktLinks produkte={produkte} />: {studienArten(STUDIEN)}.
-              Alle stammen vom Institut für zellbiologische Testsysteme von Prof.
-              Dr. Peter C. Dartsch und sind in Fachjournalen veröffentlicht. Jede
+              Alle haben wir bei einem Labor für zellbiologische Testsysteme in
+              Auftrag gegeben, alle sind in Fachjournalen veröffentlicht. Jede
               Studie finden Sie hier in verständlicher Zusammenfassung, im
               vollständigen deutschen Text und als englisches Original-PDF.
             </p>
@@ -648,10 +648,10 @@ export const EVIDENZSTUFE_ECKDATEN = [
       'Erfahrungsberichten.',
   },
   {
-    label: 'Autor, Labor und Jahr',
+    label: 'Labor und Jahr',
     text:
-      'Alle fünf Arbeiten stammen von Prof. Dr. Peter C. Dartsch am Dartsch ' +
-      'Scientific Institut. Erschienen 2021 bis 2026 im Japan Journal of ' +
+      'Alle fünf Arbeiten hat Qi Blanco bei einem Labor für zellbiologische ' +
+      'Testsysteme in Auftrag gegeben. Erschienen 2021 bis 2026 im Japan Journal of ' +
       'Medicine, in Applied Cell Biology, in Advances in Bioengineering & ' +
       'Biomedical Science Research und in Neurodegenerative Diseases: Current ' +
       'Research.',
@@ -704,9 +704,8 @@ export const EVIDENZSTUFE_FRAGEN = [
     // jüngeren Auftrag eines Menschen. Wache:
     // worker-pool/pruefungen/probe_studien_ohne_publikations_klammer__20260919.py
     antwort:
-      'Alle fünf Arbeiten hat Prof. Dr. Peter C. Dartsch am Dartsch ' +
-      'Scientific Institut durchgeführt, ein einzelnes Labor mit einem ' +
-      'einzelnen Autor. Qi Blanco hat die untersuchten Geräte gestellt und die ' +
+      'Alle fünf Arbeiten hat ein einzelnes Labor für zellbiologische ' +
+      'Testsysteme durchgeführt, mit einem einzelnen Autor. Qi Blanco hat die untersuchten Geräte gestellt und die ' +
       'Untersuchungen finanziert.',
   },
 ];
@@ -737,8 +736,8 @@ export const SCHUTZFRAGE_SLUG = 'gibt-es-studien-zu-elektrosmog-schutz';
  *
  * WAS SICH ÄNDERT: die Überschrift nimmt den Suchbegriff wörtlich auf, der
  * erste Satz beantwortet die Frage: was gemessen ist (Zellkulturen im
- * Mobilfunkfeld, mit und ohne Gerät), von wem (Prof. Dr. Peter C. Dartsch, in
- * unserem Auftrag) und wo die Grenze liegt (Labor, Auftrag; der zweite Satz:
+ * Mobilfunkfeld, mit und ohne Gerät), von wem (ein Labor in unserem
+ * Auftrag) und wo die Grenze liegt (Labor, Auftrag; der zweite Satz:
  * keine kontrollierte Studie am Menschen). Er steht ohne Rückverweis, damit ein
  * Antwortsystem ihn allein zitieren kann (GEO-Regel G03).
  *
@@ -762,8 +761,8 @@ export const SCHUTZFRAGE_SLUG = 'gibt-es-studien-zu-elektrosmog-schutz';
 export const STUDIEN_SCHUTZFRAGE = {
   frage: 'Gibt es unabhängige Studien zu Elektrosmog-Schutz?',
   antwort:
-    'Zwei Laborstudien von Prof. Dr. Peter C. Dartsch messen in unserem ' +
-    'Auftrag, wie Zellkulturen im Mobilfunkfeld mit und ohne QiOne® 2 Pro ' +
+    'Zwei Laborstudien messen in unserem Auftrag, wie Zellkulturen im ' +
+    'Mobilfunkfeld mit und ohne QiOne® 2 Pro ' +
     'reagieren. Eine kontrollierte Studie am Menschen gibt es nicht.',
 };
 
