@@ -49,7 +49,7 @@
    "Rund 17 % berichteten von mehr Energie und Vitalität sowie einem besseren allgemeinen Wohlbefinden.",
    "Die beobachteten Effekte traten unabhängig vom Geschlecht auf (rund zwei Drittel weiblich, ein Drittel männlich in der Spitzengruppe)."
   ],
-  "einordnung": "Dies ist die methodisch schwächste der vier Dartsch-Arbeiten: Es handelt sich um eine rein deskriptive Auswertung freiwilliger Social-Media-Beiträge ohne Kontrollgruppe, ohne Verblindung und ohne strukturierten Fragebogen. Die Ergebnisse zeigen lediglich, was Nutzer berichtet haben – kein Kausalnachweis ist möglich, und der Einfluss von Erwartungseffekten, Auswahl- oder Bestätigungsverzerrung kann nicht ausgeschlossen werden. Die Deutung des Autors, alle Beobachtungen auf eine Reduktion von oxidativem Stress zurückzuführen, ist eine Hypothese, kein Messergebnis dieser Arbeit."
+  "einordnung": "Dies ist eine der vier Arbeiten: Es handelt sich um eine rein deskriptive Auswertung freiwilliger Social-Media-Beiträge ohne Kontrollgruppe, ohne Verblindung und ohne strukturierten Fragebogen. Die Ergebnisse zeigen lediglich, was Nutzer berichtet haben – kein Kausalnachweis ist möglich, und der Einfluss von Erwartungseffekten, Auswahl- oder Bestätigungsverzerrung kann nicht ausgeschlossen werden. Die Deutung des Autors, alle Beobachtungen auf eine Reduktion von oxidativem Stress zurückzuführen, ist eine Hypothese, kein Messergebnis dieser Arbeit."
  },
  "abschnitte": [
   {
@@ -143,9 +143,9 @@
       "4. De Ninno, A., Castellano, A. C., & Del Giudice, E. (2013). The supramolecular structure of liquid water and quantum coherent processes in biology. In Journal of Physics: Conference Series (Vol. 442, No. 1, p. 012031). IOP Publishing.",
       "5. Messori, C., Prinzera, S. V., & di Bardone, F. B. (2019). The super-coherent state of biological water. Open Access Library Journal, 6(02), 1.",
       "6. Geesink, H. J., Jerman, I., & Meijer, D. K. (2020). Water, the cradle of life via its coherent quantum frequencies. Water, 11, 78–108.",
-      "7. Dartsch, P. C. (2021). QiOne® 2 Pro–Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation. Jpn J Med, 4, 484–488.",
-      "8. Dartsch, P. C. (2021). Protective effect of QiOne® 2 Pro on cultured intestinal epithelial cells after mobile phone radiation. Applied Cell Biology, 9, 69–74.",
-      "9. Dartsch, P. C. (2024). Protective Effect of the QiBracelet® against oxidative stress. Applied Cell Biology, 12, 1–6.",
+      "7. QiOne® 2 Pro–Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation. Jpn J Med, 4, 484–488 (2021).",
+      "8. Protective effect of QiOne® 2 Pro on cultured intestinal epithelial cells after mobile phone radiation. Applied Cell Biology, 9, 69–74 (2021).",
+      "9. Protective Effect of the QiBracelet® against oxidative stress. Applied Cell Biology, 12, 1–6 (2024).",
       "10. Foster, R. G. (2020). Sleep, circadian rhythms and health. Interface Focus, 10(3), 20190098.",
       "11. Ramar, K., Malhotra, R. K., Carden, K. A., Martin, J. L., Abbasi-Feinberg, F., Aurora, R. N., ... & Trotti, L. M. (2021). Sleep is essential to health: an American Academy of Sleep Medicine position statement. Journal of Clinical Sleep Medicine, 17(10), 2115–2119.",
       "12. Billings, M. E., Hale, L., & Johnson, D. A. (2020). Physical and social environment relationship with sleep health and disorders. Chest, 157(5), 1304–1312.",
@@ -184,7 +184,7 @@
   }
  ],
  "zitation": {
-  "text": "Dartsch PC. QTA Gitterchip Technology: Relationship Between Individual User Observations and Experimental Preclinical Data. Adv Bioeng Biomed Sci Res 2024; 7(3): 01-04.",
+  "text": "QTA Gitterchip Technology: Relationship Between Individual User Observations and Experimental Preclinical Data. Adv Bioeng Biomed Sci Res 2024; 7(3): 01-04.",
   "doiUrl": ""
  },
  "grenzen": [
@@ -213,7 +213,7 @@
   "e0003"
  ],
  "factGate": [
-  "HRV-Messung: Die auf der bisherigen Studienseite unter 'Nutzererfahrung' genannten HRV-Werte (biologisches HRV-Alter −14 Jahre / −23 %, ANS-Status +20 %) sind in dieser Publikation (ABBSR-24, Dartsch 2024) NICHT enthalten. Diese Arbeit enthält keinerlei HRV-Messung — sie wertet ausschließlich 171 freiwillige Social-Media-Berichte aus. Die genannten HRV-Zahlen dürfen dieser Studie nicht zugeschrieben werden; ihre tatsächliche Quelle konnte im vorliegenden PDF nicht verifiziert werden."
+  "HRV-Messung: Die auf der bisherigen Studienseite unter 'Nutzererfahrung' genannten HRV-Werte (biologisches HRV-Alter −14 Jahre / −23 %, ANS-Status +20 %) sind in dieser Publikation (ABBSR-24, 2024) NICHT enthalten. Diese Arbeit enthält keinerlei HRV-Messung — sie wertet ausschließlich 171 freiwillige Social-Media-Berichte aus. Die genannten HRV-Zahlen dürfen dieser Studie nicht zugeschrieben werden; ihre tatsächliche Quelle konnte im vorliegenden PDF nicht verifiziert werden."
  ],
  "kachel": {
   "zeile1": "Wissenschaftliche Publikation zu 171 Nutzerbeobachtungen",
