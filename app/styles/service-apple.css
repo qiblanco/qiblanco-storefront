@@ -260,6 +260,9 @@
   --lv-r1: var(--as-s-1);
   --lv-r2: var(--as-radius);
   --lv-breite: var(--as-breite);
+  /* Rework 12.11.2026: eine Textkante (680) fuer Termin, Worum, Anmeldung,
+     Zusammenfassungen; vorher 760 gegen 680 im Kopftext. */
+  --lv-breite-schmal: var(--as-text-breite);
   font-family: inherit;
   line-height: 1.5;
   background: transparent;
@@ -292,25 +295,126 @@ body:has([data-apple-seite='live']) {
 .lva-h1-zusatz {
   white-space: nowrap;
 }
-/* .as-seite voran: ohne sie gewann .as-hero-bild (apple-seite.css, gleiche
-   Spezifitaet, spaeter geladen) mit --as-breite, die Karte wurde 1200 px breit
-   und die 1280-px-Quelle hochskaliert (Gate 12 bild-aufloesung, s13). */
+/* REWORK 12.11.2026: das Foto aus Berlin steht groß im Kopf. Am Handy 4:5
+   (Quelle 1600 px), ab 750 px quer 2:1 bis --as-breite (Quelle 2560 px, also
+   auch bei 2x scharf). .as-seite voran, sonst gewinnt .as-hero-bild. */
 .as-seite .lva-bild {
+  max-width: var(--as-breite);
+}
+.lva-bild picture {
+  display: block;
+}
+.lva-foto {
+  width: 100%;
+  height: auto;
+}
+
+/* Der nächste Termin direkt unter dem Foto: eine weiße Karte auf der Fläche,
+   Datum groß, darunter Uhrzeit und Eckdaten in einer Zeile, das Thema, der
+   Knopf. EIN Radius, Gold nur auf dem Knopf. */
+[data-apple-seite='live'] .lv .lva-termin {
+  margin-top: var(--as-s-6);
+  background: var(--as-flaeche);
+}
+.lva-terminkarte {
+  margin-top: var(--as-s-3);
+  padding: var(--as-s-4) var(--as-s-3);
+  background: var(--as-weiss);
+  border-radius: var(--as-radius);
+}
+.lva-terminkarte .lva-termin-datum {
+  margin: 0;
+  font-size: var(--as-fs-6);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--as-tinte);
+}
+.lva-terminkarte .lva-termin-eck {
+  margin-top: var(--as-s-1);
+  color: var(--as-grau);
+}
+.lva-termin-thema,
+.lva-weitere-titel {
+  margin-top: var(--as-s-4);
+  font-size: var(--as-fs-5);
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.lva-terminkarte .lva-termin-teaser {
+  margin-top: var(--as-s-2);
+  color: var(--as-grau);
+}
+.lva-terminkarte .lva-termin-knopf {
+  margin-top: var(--as-s-4);
+  justify-content: flex-start;
+}
+.lva-weitere {
+  margin-top: var(--as-s-6);
+}
+.lva-weitere-liste {
+  list-style: none;
+  margin: var(--as-s-2) 0 0;
+  padding: 0;
+  border-top: var(--as-strich) solid var(--as-linie);
+}
+.lva-weitere-punkt {
+  display: grid;
+  gap: var(--as-s-1);
+  padding: var(--as-s-2) 0;
+  border-bottom: var(--as-strich) solid var(--as-linie);
+}
+.lva-weitere-wann {
+  font-weight: 600;
+}
+.lva-weitere-thema {
+  color: var(--as-grau);
+}
+@media (min-width: 750px) {
+  [data-apple-seite='live'] .lv .lva-termin {
+    margin-top: var(--as-s-8);
+  }
+  .lva-terminkarte {
+    padding: var(--as-s-6);
+  }
+  .lva-weitere-punkt {
+    grid-template-columns: var(--as-knopf-breite) minmax(0, 1fr);
+    gap: var(--as-s-3);
+  }
+}
+
+/* Worum es geht: Überschrift auf der Textkante, links wie jede H2. */
+.lva-worum .as-h2 {
   max-width: var(--as-text-breite);
+  margin-inline: auto;
+  text-align: left;
+}
+.lva-worum .as-h2 + .lva-kopftext {
+  margin-top: var(--as-s-3);
 }
 .lva-kopftext {
   max-width: var(--as-text-breite);
   margin: var(--as-s-6) auto 0;
   text-align: left;
 }
-.lva-eckdaten {
-  max-width: var(--as-breite);
-  margin: var(--as-s-6) auto 0;
+/* Eckdaten auf derselben Textkante wie Termin und Anmeldung (Rework
+   12.11.2026): am Handy eine knappe Spalte, ab 750 px 2 x 2. .as-seite voran,
+   sonst gewann .as-kacheln (apple-seite.css, später geladen) mit 3 Spalten
+   und die vierte Kachel stand allein in Zeile 2. */
+.as-seite .lva-eckdaten {
+  max-width: var(--as-text-breite);
+  margin: var(--as-s-4) auto 0;
   text-align: left;
 }
+.as-seite .lva-eckdaten .as-kachel {
+  padding: var(--as-s-2) var(--as-s-3);
+}
 @media (min-width: 750px) {
-  .lva-eckdaten {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .as-seite .lva-eckdaten {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .as-seite .lva-eckdaten .as-kachel {
+    padding: var(--as-s-3);
   }
 }
 .lva-fluss {
