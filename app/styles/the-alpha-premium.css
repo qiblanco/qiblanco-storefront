@@ -796,16 +796,48 @@ html:has(main[data-film-seite]) {
 }
 
 .tap-leiste-knopf {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: block;
   padding: var(--tap-s-1) var(--tap-s-2);
   border-radius: 999px;
-  background: var(--tap-rot);
+  background: var(--tap-rot-knopf);
+  box-shadow: inset 0 1px 0 var(--tap-knopf-kante);
   color: var(--tap-weiss);
   font-size: var(--tap-fs-leiste);
   font-weight: 600;
   line-height: 1.5;
   white-space: nowrap;
   text-decoration: none;
+  transition: background-color 300ms ease;
+}
+
+/* Kopfleisten-Knopf A+B wie der Kaufknopf (Christian 12.11.2026: „Warum
+   ist dann rechts oben der rote Knopf nicht erkannt worden?“): dieselbe
+   Lichtkante, derselbe Glanz im 6-s-Takt; der Glanzstreifen ist fuer die
+   kleine Pille schmaler (40-60 %), sonst deckt er sie ganz. */
+.tap-leiste-knopf::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 40%, var(--tap-knopf-glanz) 50%, transparent 60%);
+  transform: translateX(-100%);
+  animation: tap-knopf-glanz 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .tap-leiste-knopf:hover::before {
+    animation: tap-knopf-glanz-hover 1.2s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap-leiste-knopf::before {
+    animation: none;
+  }
 }
 
 .tap-leiste-knopf:hover {
