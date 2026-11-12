@@ -14,6 +14,7 @@
 // großen roten Countdown (#B92200, weiß, sekundengenau) bis Black-Friday-Start 27.11. 00:00, ab dann bis Sale-Ende.
 // Rückbau: diese Datei und app/styles/bf-deals-b.css löschen.
 import {useEffect, useRef, useState} from 'react';
+import {useLoaderData} from 'react-router';
 import {BF_GOLD_BILDER, BF_KAKAO_SEITE, bfDealSeite, bfKakaoPfad} from '../components/black-friday-2026/bf-deals-daten';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
 import {BfVertrauensblock} from '../components/black-friday-2026/BfVertrauensblock';
@@ -39,11 +40,18 @@ export const meta = () => [
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 
+// Geschlossene Funnel-Seite wie Qi Alpha: kein Menü, kein Fuß, Kopf nur mit Marke, Konto und Warenkorb
+// (Elina EL-20261112-5f5fab2e; Weiche in PageLayout.jsx, Merkmal-Leser black-friday-2026/bf-funnel.js). Der Spiegel
+// pages.bf-deals.tsx trägt sein eigenes handle. Rückweg: diese Zeile entfernen.
+export const handle = {bfFunnel: true};
+
 export function headers() {
   return {'X-Robots-Tag': 'noindex, nofollow'};
 }
 
-// aus: Größe ausverkauft (Bestand 0) - Pille bleibt sichtbar, ist aber nicht wählbar und führt in keinen Warenkorb.
+// aus: Größe ausverkauft (Bestand 0) zum Stand des Eintrags. Seit Elina EL-20261112-5f5fab2e entscheidet der LIVE-Bestand
+// (loader, lieferbar je Variante): eine Größe mit Bestand 0 wird gar nicht angezeigt, kommt Nachschub, ist sie wieder da.
+// `aus` gilt nur noch als Rückfall, wenn die Bestandsabfrage scheitert.
 type Set = {pille: string; neu: string; alt: string; link: string; aus?: boolean; bild?: string};
 type Kachel = {
   breit: boolean;
@@ -296,8 +304,80 @@ function dealSeite(schluessel: string): string | null {
 }
 
 // Der Spiegel pages.bf-deals.tsx reicht den loader durch; die Kachel-Ziele brauchen keine Daten mehr.
-export async function loader() {
-  return {};
+// BESTAND DER GRÖSSEN (Elina EL-20261112-5f5fab2e, Punkt 4): der loader liest je Größen-Pille, ob jede Variante ihres
+// Warenkorb-Links lieferbar ist (availableForSale; die Kette führt inventoryPolicy DENY, also heißt false Bestand 0).
+// Nur Größen-Pillen (varianten) des Deutsch-Shops; die Kakao-Sets liegen im Shop crystal-cacao.com.
+const VARIANTEN_IDS: string[] = Array.from(
+  new Set(
+    KACHELN.flatMap((k) => k.varianten ?? []).flatMap((x) => linkVarianten(x.link)),
+  ),
+);
+
+function linkVarianten(link: string): string[] {
+  const m = /^\/cart\/([^?]+)/.exec(link || '');
+  if (!m) return [];
+  return m[1]
+    .split(',')
+    .map((teil) => teil.split(':')[0])
+    .filter((id) => /^\d+$/.test(id));
+}
+
+const LIEFERBAR_QUERY = `#graphql
+  query BfDealsLieferbar($ids: [ID!]!) {
+    nodes(ids: $ids) {
+      ... on ProductVariant {
+        id
+        availableForSale
+      }
+    }
+  }
+`;
+
+type Lieferbar = Record<string, boolean> | null;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function loader({context}: {context?: any}) {
+  let lieferbar: Lieferbar = null;
+  try {
+    const daten = await context?.storefront?.query(LIEFERBAR_QUERY, {
+      variables: {ids: VARIANTEN_IDS.map((id) => `gid://shopify/ProductVariant/${id}`)},
+      cache: context.storefront.CacheShort?.(),
+    });
+    const knoten = (daten?.nodes ?? []).filter(Boolean);
+    if (knoten.length) {
+      lieferbar = {};
+      for (const n of knoten) {
+        const id = /(\d+)$/.exec(String(n?.id ?? ''))?.[1];
+        if (id) lieferbar[id] = Boolean(n.availableForSale);
+      }
+    }
+  } catch {
+    lieferbar = null; // Rückfall: die Einträge `aus` von oben
+  }
+  return {lieferbar};
+}
+
+// Eine Größe ist zu zeigen, wenn jede Variante ihres Links lieferbar ist. Unbekannte Variante (nicht in der Antwort)
+// oder gescheiterte Abfrage: Rückfall auf den Eintrag `aus`.
+function groesseLieferbar(x: Set, lieferbar: Lieferbar): boolean {
+  const ids = linkVarianten(x.link);
+  if (!lieferbar || !ids.length || ids.some((id) => !(id in lieferbar))) return !x.aus;
+  return ids.every((id) => lieferbar[id]);
+}
+
+function mitBestand(k: Kachel, lieferbar: Lieferbar): Kachel | null {
+  if (!k.varianten) return k;
+  const vorwahl = k.varianten[k.start ?? 0]?.pille;
+  const varianten = k.varianten.filter((x) => groesseLieferbar(x, lieferbar));
+  // Keine Größe lieferbar: die Kachel bleibt mit dem Ziel Deal-Seite, ohne Größenwahl (nie eine ausverkaufte Pille).
+  if (!varianten.length) {
+    const rest: Kachel = {...k};
+    delete rest.varianten;
+    delete rest.start;
+    return rest;
+  }
+  const start = Math.max(0, varianten.findIndex((x) => x.pille === vorwahl));
+  return {...k, varianten, start};
 }
 
 // Rückfall NUR nach dem Deal-Ende: die normale Produktseite (Kakao: die Set-Seite auf crystal-cacao.com). Nie die Kasse.
@@ -407,6 +487,9 @@ export default function BfDealsB() {
   const wurzel = useRef<HTMLDivElement>(null);
   useElinaBewegung(wurzel);
   const jetzt = useJetzt();
+  const d = useLoaderData<typeof loader>();
+  // Größen mit Bestand 0 nicht zeigen (Elina EL-20261112-5f5fab2e); Server und Browser rechnen aus denselben Daten.
+  const kacheln = KACHELN.map((k) => mitBestand(k, d?.lieferbar ?? null)).filter(Boolean) as Kachel[];
   return (
     <div className="bfd" id="bfd" lang="de" ref={wurzel}>
       <Countdown jetzt={jetzt} />
@@ -440,7 +523,7 @@ export default function BfDealsB() {
         {/* Vertrauensblock über dem Deal-Raster (Elina EL-20261111-63e02e46): drei Zeilen, zentriert */}
         <BfVertrauensblock />
         <ul className="bfd__liste" aria-label="Black-Friday-Angebote">
-          {KACHELN.map((k) =>
+          {kacheln.map((k) =>
             k.sets || k.varianten ? (
               <SetKachel key={k.name} k={k} />
             ) : (
