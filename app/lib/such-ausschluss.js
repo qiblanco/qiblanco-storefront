@@ -112,13 +112,14 @@ export function istDealSeite(node, jetzt = Date.now()) {
  * Fail-open: was kein erkennbares Produkt ist, bleibt drin — diese Funktion
  * darf nie zum stillen Löschfilter für die halbe Suche werden.
  * @param {{handle?: string, tags?: string[]}|null|undefined} node
+ * @param {number} [jetzt] Zeitpunkt für das Zeitfenster der Deal-Weiterleitungen (Weg 4)
  * @returns {boolean}
  */
-export function istSuchAusgeschlossen(node) {
+export function istSuchAusgeschlossen(node, jetzt = Date.now()) {
   if (!node) return false;
   if (node.handle && HANDLE_SET.has(node.handle)) return true;
   if (istZusammensetzungsSet(node.handle)) return true;
-  if (istDealSeite(node)) return true;
+  if (istDealSeite(node, jetzt)) return true;
   if (Array.isArray(node.tags)) {
     for (const tag of node.tags) {
       if (typeof tag === 'string' && tag.trim().toLowerCase() === SUCH_AUSSCHLUSS_TAG) {
@@ -135,7 +136,7 @@ export function istSuchAusgeschlossen(node) {
  * @param {T[]|null|undefined} nodes
  * @returns {T[]}
  */
-export function ohneAusgeschlossene(nodes) {
+export function ohneAusgeschlossene(nodes, jetzt = Date.now()) {
   if (!Array.isArray(nodes)) return [];
-  return nodes.filter((node) => !istSuchAusgeschlossen(node));
+  return nodes.filter((node) => !istSuchAusgeschlossen(node, jetzt));
 }
