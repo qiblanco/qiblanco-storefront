@@ -7490,11 +7490,11 @@ select.b2b-netto__eingabe {
    ReviewsSlider (ReputonWidget.jsx). ---------------------------------------- */
 .qb-gbl {
   --qb-gbl-tinte: #1d1d1f;
-  --qb-gbl-grau: #6e6e73;
   --qb-gbl-fs-titel: 1.75rem;
   --qb-gbl-fs-titel-gross: 2.5rem;
   --qb-gbl-fs-zeile: 1.25rem;
-  --qb-gbl-fs-unter: 0.9375rem;
+  --qb-gbl-fs-anzahl: 1rem;
+  --qb-gbl-fs-anzahl-gross: 1.25rem;
   --qb-gbl-s-1: 8px;
   --qb-gbl-s-2: 16px;
   --qb-gbl-s-3: 24px;
@@ -7507,67 +7507,75 @@ select.b2b-netto__eingabe {
   box-sizing: border-box;
   color: var(--qb-gbl-tinte);
 }
+/* Kopfzeile (Christian 12.11.2026): links wie die übrigen Überschriften der Seiten, „4,8", fünf Sterne so groß
+   wie die Note, G-Zeichen, Anzahl der Bewertungen. Keine Unterzeile mehr. */
 .qb-gbl__titel {
-  margin: 0;
+  margin: 0 0 var(--qb-gbl-s-3);
   font-size: var(--qb-gbl-fs-titel);
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.01em;
-  text-align: center;
-  text-wrap: balance;
+  text-align: left;
 }
 .qb-gbl__titel-link,
 .qb-gbl__zeile {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--qb-gbl-s-1) 12px;
   color: inherit;
   text-decoration: none;
 }
-.qb-gbl__titel-link:is(:hover, :focus-visible) .qb-gbl__bei,
-.qb-gbl__zeile:is(:hover, :focus-visible) .qb-gbl__bei {
+.qb-gbl__titel-link:is(:hover, :focus-visible) .qb-gbl__anzahl,
+.qb-gbl__zeile:is(:hover, :focus-visible) .qb-gbl__anzahl {
   text-decoration: underline;
   text-underline-offset: 0.18em;
 }
 .qb-gbl__zeile {
   display: flex;
-  margin-top: var(--qb-gbl-s-2);
+  margin: calc(-1 * var(--qb-gbl-s-1)) 0 var(--qb-gbl-s-3);
   font-size: var(--qb-gbl-fs-zeile);
   font-weight: 600;
+}
+.qb-gbl__titel + .qb-gbl__zeile {
+  margin-top: 0;
+}
+.qb-gbl__titel:has(+ .qb-gbl__zeile) {
+  margin-bottom: var(--qb-gbl-s-2);
 }
 .qb-gbl__sterne {
   display: inline-flex;
   line-height: 1;
 }
-.qb-gbl__unter {
-  display: flex;
+/* Sterne in em der Überschrift: so hoch wie die Ziffern der Note, nie kleiner. */
+.qb-gbl__sterne .star-rating__star svg {
+  width: 0.9em;
+  height: 0.9em;
+}
+.qb-gbl__google {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: var(--qb-gbl-s-1);
-  margin: var(--qb-gbl-s-2) 0 var(--qb-gbl-s-3);
-  font-size: var(--qb-gbl-fs-unter);
-  color: var(--qb-gbl-grau);
-  text-align: center;
+  white-space: nowrap;
+  font-size: var(--qb-gbl-fs-anzahl);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.qb-gbl__google svg {
+  width: 1.25em;
+  height: 1.25em;
 }
 @media (min-width: 750px) {
   .qb-gbl__titel {
     font-size: var(--qb-gbl-fs-titel-gross);
+  }
+  .qb-gbl__google {
+    font-size: var(--qb-gbl-fs-anzahl-gross);
   }
   .qb-gbl {
     padding-left: var(--qb-gbl-s-3);
     padding-right: var(--qb-gbl-s-3);
   }
 }
-/* Variante links (Christian 11.11.2026, Bewertungsleiste): auf Seiten, deren Ueberschriften links stehen
-   (Produktberatung, .as-h2 links), steht auch die Leiste links. Eine Regel je Sektionstyp (design-rubrik). */
-.qb-gbl--links .qb-gbl__titel,
-.qb-gbl--links .qb-gbl__unter {
-  text-align: left;
-}
-.qb-gbl--links .qb-gbl__titel-link,
-.qb-gbl--links .qb-gbl__zeile,
-.qb-gbl--links .qb-gbl__unter {
-  justify-content: flex-start;
-}
+/* Variante links (11.11.2026): seit 12.11.2026 steht jede Leiste links, die Klasse bleibt als Ankerpunkt. */
