@@ -3,6 +3,7 @@ import {useElinaBewegung} from '~/components/reusables/useElinaBewegung';
 import elinaBewegungStyles from '~/styles/elina-bewegung.css?url';
 import dealGalerieStyles from '~/styles/bf-deal-galerie.css?url';
 import dealDunkelStyles from '~/styles/bf-deal-dunkel.css?url';
+import dealAnhangStyles from '~/styles/bf-deal-anhang.css?url';
 import {BfCountdownLeiste} from '~/components/black-friday-2026/BfCountdownLeiste';
 import {BfVertrauensblock} from '~/components/black-friday-2026/BfVertrauensblock';
 import {andereDeals} from '~/components/black-friday-2026/bf-deals-daten';
@@ -33,6 +34,7 @@ export function BfDealStile() {
       <link rel="stylesheet" href={elinaBewegungStyles} />
       <link rel="stylesheet" href={dealGalerieStyles} />
       <link rel="stylesheet" href={dealDunkelStyles} />
+      <link rel="stylesheet" href={dealAnhangStyles} />
     </>
   );
 }

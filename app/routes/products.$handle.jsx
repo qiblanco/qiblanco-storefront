@@ -54,6 +54,7 @@ import {ladeBfDealAlpha} from '~/components/black-friday-2026/bf-deal-seite.serv
 import {BfDealAlpha} from '~/components/black-friday-2026/BfDealSeite';
 import {BfDealRahmen, DealGalerie} from '~/components/black-friday-2026/DealGalerie';
 import {BfKakaoDeal} from '~/components/black-friday-2026/BfKakaoDeal';
+import {BfKakaoAnhang} from '~/components/black-friday-2026/BfDealAnhang';
 
 export function links() {
   return [{rel: 'stylesheet', href: tenYearsDealStyles}];
@@ -401,6 +402,8 @@ export default function Product() {
       <BfDealRahmen seite={dealSeite}>
         <link rel="stylesheet" href={kaufleisteStyles} />
         <BfKakaoDeal setId={dealSeite.set} />
+        {/* Elina EL-20261112-452cdd56: Schluss-Banner und Fragen unter der Kaufbox (Gegenüberstellung: EL-20261112-cb3c35ca). */}
+        <BfKakaoAnhang />
       </BfDealRahmen>
     );
   }

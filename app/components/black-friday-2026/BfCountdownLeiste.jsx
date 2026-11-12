@@ -20,7 +20,12 @@ function zwei(n) {
   return n < 10 ? '0' + n : String(n);
 }
 
-export function BfCountdownLeiste() {
+/**
+ * Die Uhr der Leiste als Haken, damit der Schluss-Banner (BfSchlussBanner.jsx,
+ * Elina EL-20261112-452cdd56) dieselben Zeiten und Texte zeigt.
+ * @returns {{vorbei: boolean, sale: boolean, tickt: boolean, text: string, zeit: string}}
+ */
+export function useBfUhr() {
   const [jetzt, setJetzt] = useState(null);
   useEffect(() => {
     let versatz = 0;
@@ -36,7 +41,9 @@ export function BfCountdownLeiste() {
     return () => window.clearInterval(id);
   }, []);
 
-  if (jetzt !== null && jetzt >= Date.parse(SALE_ENDE)) return null;
+  if (jetzt !== null && jetzt >= Date.parse(SALE_ENDE)) {
+    return {vorbei: true, sale: true, tickt: true, text: '', zeit: ''};
+  }
   const sale = jetzt !== null && jetzt >= Date.parse(PRESALE_ENDE);
   let text = OHNE_UHR;
   let zeit = '';
@@ -47,11 +54,17 @@ export function BfCountdownLeiste() {
       Math.floor((r % 3600) / 60),
     )}:${zwei(r % 60)}`;
   }
+  return {vorbei: false, sale, tickt: jetzt !== null, text, zeit};
+}
+
+export function BfCountdownLeiste() {
+  const {vorbei, sale, tickt, text, zeit} = useBfUhr();
+  if (vorbei) return null;
   return (
     <div
       className="bfc"
       data-bfc=""
-      data-bfc-phase={jetzt === null ? undefined : sale ? 'sale' : 'presale'}
+      data-bfc-phase={tickt ? (sale ? 'sale' : 'presale') : undefined}
       role="timer"
       aria-live="off"
       aria-label="Countdown Black Friday"
