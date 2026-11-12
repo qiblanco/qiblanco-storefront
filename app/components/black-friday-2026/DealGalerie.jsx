@@ -4,6 +4,7 @@ import elinaBewegungStyles from '~/styles/elina-bewegung.css?url';
 import dealGalerieStyles from '~/styles/bf-deal-galerie.css?url';
 import dealDunkelStyles from '~/styles/bf-deal-dunkel.css?url';
 import {BfCountdownLeiste} from '~/components/black-friday-2026/BfCountdownLeiste';
+import {BfVertrauensblock} from '~/components/black-friday-2026/BfVertrauensblock';
 import {andereDeals} from '~/components/black-friday-2026/bf-deals-daten';
 import {betragText} from '~/lib/betrag-text';
 
@@ -41,14 +42,21 @@ export function BfDealStile() {
  * `.bf-deal-seite[data-bf-deal-seite=<handle>]`. Daran hängt der dunkle Look
  * (bf-deal-dunkel.css, Elina EL-20261111-a9af196f) für jede Fassung der
  * Deal-Seite, ohne die normalen Produktseiten zu berühren. Ganz oben steht die
- * rote Countdown-Leiste (EL-20261111-cfcd9c5d).
+ * rote Countdown-Leiste (EL-20261111-cfcd9c5d), direkt darunter der Vertrauensblock über dem Deal
+ * (EL-20261111-63e02e46; auf der Crystal-Cacao-Deal-Seite ohne die Zellstudien-Zeile, EL-20261111-1de56cd4).
  */
+/** Crystal-Cacao-Deal-Seite? Dort entfällt die Zellstudien-Zeile des Vertrauensblocks (Elina EL-20261111-1de56cd4). */
+export function istKakaoDeal(seite) {
+  return Boolean(seite) && (seite.deal === 'kakao' || String(seite.art || '').startsWith('kakao') || /kakao|cacao/i.test(String(seite.basis || '')));
+}
+
 export function BfDealRahmen({seite, children}) {
   return (
     <BfDealKontext.Provider value={seite}>
       <BfDealStile />
       <div className="bf-deal-seite bf-deal-seite--dunkel" data-bf-deal-seite={seite.handle}>
         <BfCountdownLeiste />
+        <BfVertrauensblock ohneZellstudien={istKakaoDeal(seite)} />
         {children}
       </div>
     </BfDealKontext.Provider>
