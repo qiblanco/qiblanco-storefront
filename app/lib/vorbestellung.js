@@ -117,13 +117,13 @@ export function warenkorbUnterzeile(line) {
  * statt 'In 2 bis 3 Tagen bei dir'"). Liegt keine darin, bleibt der
  * Standardtext unverändert — der Hinweis ist produktbezogen, nicht global.
  *
- * Liegen mehrere Vorbestellungen darin, gewinnt die SPAETESTE (Schlüssel
+ * Liegen mehrere Vorbestellungen darin, gewinnt die SPÄTESTE (Schlüssel
  * `reif`, YYYY-MM): die Bestellung geht erst raus, wenn alles da ist. Seit
  * Necklace 2 gibt es abweichende Termine (Gold Januar, Stahl 1. Quartal 2027);
  * vorher gewann die erste Zeile, und Gold + Stahl versprachen Januar (Job
  * 20261105-prio1-necklace-2-livegang-de-freigegeben-christian-s03). Bei
  * gleichem Monat bleibt die erste. Ein Eintrag ohne `reif` zählt als
- * spaetester, weil für ihn kein früherer Termin belegt ist.
+ * spätester, weil für ihn kein früherer Termin belegt ist.
  */
 const OHNE_REIF = '9999-12';
 export function versandhinweisFürLinien(lines) {

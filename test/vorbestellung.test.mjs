@@ -279,9 +279,9 @@ test('Necklace 2: Termin je Material in Zeile und Lieferhinweis, ohne Material k
 
 // Sammelhinweis bei mehreren Vorbestellungen (Job 20261105-prio1-necklace-2-
 // livegang-de-freigegeben-christian-s03): die Bestellung geht erst raus, wenn
-// alles da ist, also nennt der Hinweis den SPAETESTEN Termin. Verglichen wird
+// alles da ist, also nennt der Hinweis den SPÄTESTEN Termin. Verglichen wird
 // der Schlüssel `reif` (YYYY-MM, Quartal = letzter Monat), nie der Text.
-test('Sammelhinweis: mehrere Vorbestellungen nennen den spaetesten Termin', () => {
+test('Sammelhinweis: mehrere Vorbestellungen nennen den spätesten Termin', () => {
   const n2 = (material) => ({
     merchandise: {
       product: {handle: 'necklace-2', title: 'Necklace 2'},
@@ -310,7 +310,7 @@ test('Sammelhinweis: mehrere Vorbestellungen nennen den spaetesten Termin', () =
   assert.equal(versandhinweisFürLinien([anderes, stahl]), STAHL);
 });
 
-test('Jede Vorbestellung traegt einen sortierbaren Termin-Schlüssel reif (YYYY-MM)', () => {
+test('Jede Vorbestellung trägt einen sortierbaren Termin-Schlüssel reif (YYYY-MM)', () => {
   for (const [handle, eintrag] of Object.entries(VORBESTELLUNGEN)) {
     assert.match(eintrag.reif ?? '', /^\d{4}-(0[1-9]|1[0-2])$/, handle);
   }
