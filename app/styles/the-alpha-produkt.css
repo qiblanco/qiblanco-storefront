@@ -54,6 +54,12 @@
   /* Qi-Alpha-Rot (Christian, Figma; Film-Gerüst #b92200): die drei Zeichen
      des Produktkopfs und die Etiketten der Wissens-Strecke (the-alpha-shop.css). */
   --tas-rot: #b92200;
+  /* Rot mit Lichtkante + Glanz (A+B) fuer die Etiketten der Qi-Alpha-Seite,
+     dieselben Werte wie Kauf- und Kopfleisten-Knopf (the-alpha-premium.css
+     --tap-rot-knopf/--tap-knopf-*); Weiß am Glanz-Scheitel 5,49 : 1. */
+  --tas-rot-knopf: #a81f00;
+  --tas-knopf-kante: rgba(255, 255, 255, 0.38);
+  --tas-knopf-glanz: rgba(255, 255, 255, 0.16);
   /* Papierton der vier Wissens-Zeichnungen (wissen-animationen.js PAPIER):
      Fläche unter Poster und Leinwand, damit kein Viereck aufblitzt. */
   --tas-papier: #f5f1e5;

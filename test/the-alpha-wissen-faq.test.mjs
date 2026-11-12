@@ -100,3 +100,18 @@ test('Etiketten der Wissens-Strecke in Qi-Alpha-Rot, weiße Schrift (Nachtrag 9,
   assert.doesNotMatch(css, /#[0-9a-fA-F]{3,6}\b/);
   assert.match(lies('app/styles/the-alpha-produkt.css'), /--tas-rot: #b92200;/);
 });
+
+test('Etiketten der Qi-Alpha-Seite A+B wie der Kaufknopf: Lichtkante + Glanz (Christian 12.11.2026, Diamant-Etikett)', () => {
+  const css = lies('app/styles/the-alpha-shop.css');
+  const regel = css.match(/\[data-the-alpha-shop\] \.taw-etikett \{([^}]*)\}/);
+  assert.ok(regel, 'A+B-Regel [data-the-alpha-shop] .taw-etikett fehlt');
+  assert.match(regel[1], /background: var\(--tas-rot-knopf\);/);
+  assert.match(regel[1], /box-shadow: inset 0 1px 0 var\(--tas-knopf-kante\);/);
+  const glanz = css.match(/\[data-the-alpha-shop\] \.taw-etikett::before \{([^}]*)\}/);
+  assert.ok(glanz, 'Glanz ::before fehlt');
+  assert.match(glanz[1], /animation: taw-etikett-glanz 6s/);
+  assert.match(css, /prefers-reduced-motion: reduce\) \{\s*\[data-the-alpha-shop\] \.taw-etikett::before \{\s*animation: none;/);
+  const tok = lies('app/styles/the-alpha-produkt.css');
+  assert.match(tok, /--tas-rot-knopf: #a81f00;/);
+  assert.match(lies('app/styles/the-alpha-premium.css'), /--tap-rot-knopf: #a81f00;/);
+});
