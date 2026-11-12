@@ -235,6 +235,25 @@ test('Kopfzeile der Bewertungsleiste: Note, Sterne, G-Zeichen, Anzahl; keine Unt
   assert.doesNotMatch(html, /Die neuesten 5-Sterne-Bewertungen|qb-gbl__unter/);
 });
 
+/* HOVER OHNE UNTERSTREICHUNG (Christian 12.11.2026, Job 20261112-prio1-bewertungsleiste-kopf-ohne-unterstreichung-
+   anzahl-kleiner): „da sollte keine Unterstreichung sein, sondern da sollte sich die Schriftfarbe ändern“. Rot,
+   sobald im Block der Leiste wieder eine Unterstreichung steht, der Hover keine Farbe setzt oder die Anzahl nicht
+   kleiner und leiser als die Note ist. */
+test('Bewertungskopf: Hover nur Farbe, keine Unterstreichung; Anzahl kleiner und leiser', () => {
+  const css = readFileSync(process.env.APP_CSS || join(APP, 'styles/app.css'), 'utf8');
+  const a = css.indexOf('.qb-gbl {');
+  const block = css.slice(a, css.indexOf('/* Variante links', a));
+  assert.ok(a > 0 && block.length > 200, 'Block der Bewertungsleiste nicht gefunden');
+  assert.doesNotMatch(block, /text-decoration:\s*underline/);
+  const hover = block.match(/\.qb-gbl \.qb-gbl__titel-link:is\(:hover[^{]*\{([^}]*)\}/);
+  assert.ok(hover, 'Hover-Regel fehlt');
+  assert.match(hover[1], /color:\s*var\(--qb-gbl-hover\)/);
+  assert.match(hover[1], /text-decoration:\s*none/);
+  const rem = (n) => Number((block.match(new RegExp(`--qb-gbl-${n}:\\s*([\\d.]+)rem`)) || [])[1]);
+  assert.ok(rem('fs-anzahl') < rem('fs-titel') / 1.8 && rem('fs-anzahl-gross') < rem('fs-titel-gross') / 1.8, 'Anzahl nicht klein genug');
+  assert.match(block, /\.qb-gbl__anzahl \{[^}]*color:\s*var\(--qb-gbl-leise\)/);
+});
+
 test('SSR: Weiche aus = heutige Seite byte-gleich, kein Marker, kein CSS', async () => {
   const aus = await renderSeite({__weiche: true, an: false, seite: 'start-b', sektionen: ALLE, alt: null});
   assert.equal(aus, '');
