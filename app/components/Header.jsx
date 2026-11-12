@@ -602,17 +602,25 @@ export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
  * Klassen .qfk), nur mit der Wortmarke „Qi Blanco“. Die Marke ist kein Link:
  * sie führt nicht zur Startseite, ein Tipp scrollt nach oben. Konto und
  * Warenkorb bleiben, die Kasse bleibt erreichbar.
- * Die Deal-Seiten (/products/<kryptischer Handle>) erkennt PageLayout an den
- * Loaderdaten (bfDealSeite, nur im Aktionszeitraum und Euro-Markt); hier
- * stehen nur die festen Seitenpfade. Rückweg: Pfade hier und die Weiche in
- * PageLayout.jsx entfernen, dann rendert wieder der Hauskopf.
+ * WELCHE SEITE: die Route erklärt es selbst, wie `handle.filmSeite` in
+ * root.jsx. Entweder `export const handle = {bfFunnel: true}` (feste
+ * Funnel-Seiten wie Pre-Access und bf-deals) oder `bfFunnel: true` in den
+ * Loaderdaten (Deal-Seiten, nur im Aktionszeitraum und Euro-Markt). Kein Pfad
+ * hier: ohne das Merkmal rendert jede Seite unverändert mit Hauskopf und Fuß.
+ * Rückweg: das Merkmal in der Route entfernen (eine Seite) oder die Weiche in
+ * PageLayout.jsx entfernen (alle).
  */
-const BF_FUNNEL_SEITEN = ['pre-access', 'pre-access-b', 'bf-deals', 'bf-deals-b'];
 
-/** @param {string} pathname */
-export function istBfFunnelPfad(pathname) {
-  const m = /^\/pages\/([^/?#]+)\/?$/i.exec(String(pathname || ''));
-  return Boolean(m && BF_FUNNEL_SEITEN.includes(m[1].toLowerCase()));
+/**
+ * Trägt eine der aktuellen Routen das Funnel-Merkmal?
+ * @param {Array<{handle?: unknown, data?: unknown}> | undefined} matches
+ */
+export function istBfFunnelSeite(matches) {
+  return (matches || []).some(
+    (m) =>
+      /** @type {any} */ (m?.handle)?.bfFunnel === true ||
+      /** @type {any} */ (m?.data)?.bfFunnel === true,
+  );
 }
 
 /**

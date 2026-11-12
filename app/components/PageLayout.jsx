@@ -8,7 +8,7 @@ import {
   Header,
   HeaderMenu,
   QiAlphaFunnelKopf,
-  istBfFunnelPfad,
+  istBfFunnelSeite,
   istQiAlphaFunnelPfad,
 } from '~/components/Header';
 import {CartMain} from '~/components/CartMain';
@@ -31,13 +31,11 @@ export function PageLayout({
 }) {
   const {pathname} = useLocation();
   const matches = useMatches();
-  // Black-Friday-Funnel (Elina EL-20261112-5f5fab2e): Pre-Access, bf-deals und
-  // jede BF-Deal-Seite wie Qi Alpha ohne Menü und Fuß. Deal-Seiten tragen
-  // bfDealSeite in den Loaderdaten (nur im Aktionszeitraum, nur Euro-Markt);
-  // danach und in anderen Märkten wieder das normale Layout.
-  const bfFunnel =
-    istBfFunnelPfad(pathname) ||
-    (matches || []).some((m) => Boolean(m?.data?.bfDealSeite));
+  // Black-Friday-Funnel (Elina EL-20261112-5f5fab2e): eine Route, die das
+  // Merkmal bfFunnel trägt (handle oder Loaderdaten, istBfFunnelSeite in
+  // Header.jsx), rendert wie Qi Alpha ohne Menü und Fuß. Ohne Merkmal bleibt
+  // jede Seite unverändert.
+  const bfFunnel = istBfFunnelSeite(matches);
   // Qi-Alpha-Kaufseite: eigene enge Funnel-Seite (Begründung bei
   // QiAlphaFunnelLayout unten). Aus useLocation, damit es auch bei
   // Client-Navigation stimmt.
