@@ -38,6 +38,11 @@ export function links() {
   ];
 }
 
+// Geschlossene Funnel-Seite wie Qi Alpha: kein Menü, kein Fuß, Kopf nur mit Marke, Konto und Warenkorb
+// (Elina EL-20261112-5f5fab2e; Weiche in PageLayout.jsx, Merkmal-Leser black-friday-2026/bf-funnel.js).
+// Rückweg: diese Zeile entfernen.
+export const handle = {bfFunnel: true};
+
 export const meta = () => [
   {title: 'Black Friday Pre-Sale | Qi Blanco'},
   {name: 'robots', content: 'noindex,nofollow'},
