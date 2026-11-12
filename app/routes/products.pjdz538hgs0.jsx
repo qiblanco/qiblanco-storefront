@@ -73,7 +73,11 @@ export async function loader(args) {
       ...dealSeite,
       handle: 'pjdz538hgs0',
     });
-    if (deal) return deal;
+    // bfFunnel: geschlossene Funnel-Seite wie Qi Alpha, ohne Menü und Fuß, nur
+    // lieferbare Kettenlängen (Elina EL-20261112-5f5fab2e; Weiche in
+    // PageLayout.jsx, Leser black-friday-2026/bf-funnel.js). Nur im
+    // Aktionszeitraum und Euro-Markt, wie die Deal-Fassung selbst.
+    if (deal) return {...deal, bfFunnel: true};
   }
   if (konfiguratorAn(args.context.env, 'pjdz538hgs0')) {
     return ladeProduktSeite(args, {
