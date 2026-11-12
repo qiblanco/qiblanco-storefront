@@ -112,6 +112,11 @@ import einwilligungStyles from '~/styles/einwilligung.css?url';
 // überschreibt; die Datei setzt nur Licht (Schatten, Glanz), nie Farbe oder
 // Größe. Rückweg: diesen Import und den <link> unten entfernen.
 import goldKnopfBStyles from '~/styles/gold-knopf-b.css?url';
+// „Mehr erfahren“ = Pfeil-Link (Knopf-Strategie K5, Variante A), Christian
+// 12.11.2026, Job 20261112-prio1-mehr-erfahren-pfeil-link-variante-a-beide-shops-live.
+// Steht als letzte Datei HINTER <Links />, damit Seiten-CSS den Kasten nicht
+// zurueckholt. Neue Seiten: Klasse pfeil-link. Rueckweg: Import + <link> entfernen.
+import mehrErfahrenAStyles from '~/styles/mehr-erfahren-a.css?url';
 import {hreflangLinks} from '~/lib/hreflang';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
@@ -661,6 +666,7 @@ export function Layout({children}) {
           <link key={href} rel="stylesheet" href={href} />
         ))}
         <link rel="stylesheet" href={goldKnopfBStyles}></link>
+        <link rel="stylesheet" href={mehrErfahrenAStyles}></link>
       </head>
       <body>
         {einwilligungEigen && (

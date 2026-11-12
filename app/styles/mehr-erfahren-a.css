@@ -1,0 +1,195 @@
+/* „Mehr erfahren“ = Pfeil-Link, Knopf-Strategie K5 Variante A (Christian 12.11.2026:
+   „beim File machen wir A-File-Link-Empfehlung, so wie es Apple macht“).
+   Erzeugt von claude-jobs/20261112-prio1-mehr-erfahren-pfeil-link-variante-a-beide-shops-live/baue_css.py
+   aus bau/regeln-dach.json. Nicht von Hand aendern, dort aendern und neu erzeugen.
+   Neue Seiten: Klasse pfeil-link (auf dunklem Grund pfeil-link pfeil-link--dunkel) an den Verweis setzen.
+   Rueckweg: die eine Einbindung dieser Datei entfernen. */
+
+.as-hero .as-knoepfe > a.btn--secondary:not(#mea):not(#mea),
+.sa-modell-wege > a.as-link:not(#mea):not(#mea),
+.szs-modell-wege > a.as-link:not(#mea):not(#mea),
+a.lp-vp-btn--secondary.lp-d-product__cta:not(#mea):not(#mea),
+a.lp-vp-btn--secondary.lp-a-product__cta:not(#mea):not(#mea),
+a.lp-vp-btn--secondary.lp-b-product__cta:not(#mea):not(#mea),
+.lp-v3 a.v3-btn--still:not(#mea):not(#mea),
+.UpsellItem > a.UpsellLink:has(~ a.UpsellLink):not(#mea):not(#mea),
+a.rd3-akk-panel__link:not(#mea):not(#mea),
+a.rd3-trio__detail:not(#mea):not(#mea),
+.pfeil-link:not(#mea):not(#mea),
+a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea),
+.pfeil-link--dunkel:not(#mea):not(#mea),
+.as-dunkel .pfeil-link:not(#mea):not(#mea) { --mea: a; display: inline-block !important; box-sizing: border-box !important; width: auto !important; max-width: none !important; min-width: 0 !important; min-height: 44px !important; height: auto !important; padding: 11px 0 !important; border: 0 solid transparent !important; border-radius: 0 !important; background: none !important; box-shadow: none !important; color: #2c2a26 !important; -webkit-text-fill-color: currentColor !important; font-weight: 600 !important; line-height: 22px !important; letter-spacing: normal !important; text-transform: none !important; text-decoration-line: underline !important; text-decoration-style: solid !important; text-decoration-color: transparent !important; text-decoration-thickness: 1px !important; text-underline-offset: 6px !important; transform: none !important; filter: none !important; opacity: 1 !important; cursor: pointer !important; transition: text-decoration-color 300ms ease !important; }
+
+a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea),
+.pfeil-link--dunkel:not(#mea):not(#mea),
+.as-dunkel .pfeil-link:not(#mea):not(#mea) { color: #ffffff !important; }
+
+.as-hero .as-knoepfe > a.btn--secondary:not(#mea):not(#mea)::after,
+.sa-modell-wege > a.as-link:not(#mea):not(#mea)::after,
+.szs-modell-wege > a.as-link:not(#mea):not(#mea)::after,
+a.lp-vp-btn--secondary.lp-d-product__cta:not(#mea):not(#mea)::after,
+a.lp-vp-btn--secondary.lp-a-product__cta:not(#mea):not(#mea)::after,
+a.lp-vp-btn--secondary.lp-b-product__cta:not(#mea):not(#mea)::after,
+.lp-v3 a.v3-btn--still:not(#mea):not(#mea)::after,
+.UpsellItem > a.UpsellLink:has(~ a.UpsellLink):not(#mea):not(#mea)::after,
+a.rd3-akk-panel__link:not(#mea):not(#mea)::after,
+a.rd3-trio__detail:not(#mea):not(#mea)::after,
+.pfeil-link:not(#mea):not(#mea)::after,
+a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea)::after,
+.pfeil-link--dunkel:not(#mea):not(#mea)::after,
+.as-dunkel .pfeil-link:not(#mea):not(#mea)::after { content: "\2192" !important; display: inline-block !important; position: static !important; inset: auto !important; width: auto !important; height: auto !important; margin: 0 0 0 8px !important; padding: 0 !important; border: 0 !important; background: none !important; box-shadow: none !important; opacity: 1 !important; color: #856828 !important; -webkit-text-fill-color: #856828 !important; font-weight: 600 !important; text-decoration: none !important; animation: none !important; transform: none !important; transition: transform 300ms ease !important; }
+
+a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea)::after,
+.pfeil-link--dunkel:not(#mea):not(#mea)::after,
+.as-dunkel .pfeil-link:not(#mea):not(#mea)::after { color: #f2bf72 !important; -webkit-text-fill-color: #f2bf72 !important; }
+
+/* Eigener Chevron weicht dem einen Pfeil. */
+.UpsellItem > a.UpsellLink:has(~ a.UpsellLink):not(#mea):not(#mea) svg { display: none !important; }
+
+/* Upsell-Reihe der Produktseiten B: erster Link (vor einem zweiten UpsellLink; dazwischen stehen Prefetch-<link>, deshalb ~ statt +) „Mehr erfahren“ (der zweite, „Jetzt kaufen“, bleibt), eigener Chevron weicht dem Pfeil */
+.UpsellItem > a.UpsellLink:has(~ a.UpsellLink):not(#mea):not(#mea) { margin-right: 24px !important; }
+
+/* In einer Knopfzeile: senkrecht mittig neben dem Kaufknopf. */
+.as-hero .as-knoepfe > a.btn--secondary:not(#mea):not(#mea) { align-self: center !important; }
+
+.as-hero .as-knoepfe > a.btn--secondary:not(#mea):not(#mea):focus-visible,
+.sa-modell-wege > a.as-link:not(#mea):not(#mea):focus-visible,
+.szs-modell-wege > a.as-link:not(#mea):not(#mea):focus-visible,
+a.lp-vp-btn--secondary.lp-d-product__cta:not(#mea):not(#mea):focus-visible,
+a.lp-vp-btn--secondary.lp-a-product__cta:not(#mea):not(#mea):focus-visible,
+a.lp-vp-btn--secondary.lp-b-product__cta:not(#mea):not(#mea):focus-visible,
+.lp-v3 a.v3-btn--still:not(#mea):not(#mea):focus-visible,
+.UpsellItem > a.UpsellLink:has(~ a.UpsellLink):not(#mea):not(#mea):focus-visible,
+a.rd3-akk-panel__link:not(#mea):not(#mea):focus-visible,
+a.rd3-trio__detail:not(#mea):not(#mea):focus-visible,
+.pfeil-link:not(#mea):not(#mea):focus-visible,
+a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea):focus-visible,
+.pfeil-link--dunkel:not(#mea):not(#mea):focus-visible,
+.as-dunkel .pfeil-link:not(#mea):not(#mea):focus-visible { outline: 2px solid #856828 !important; outline-offset: 3px !important; }
+
+a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea):focus-visible,
+.pfeil-link--dunkel:not(#mea):not(#mea):focus-visible,
+.as-dunkel .pfeil-link:not(#mea):not(#mea):focus-visible { outline-color: #f2bf72 !important; }
+
+@media (hover: hover) and (pointer: fine) {
+
+  .as-hero .as-knoepfe > a.btn--secondary:not(#mea):not(#mea):hover,
+  .sa-modell-wege > a.as-link:not(#mea):not(#mea):hover,
+  .szs-modell-wege > a.as-link:not(#mea):not(#mea):hover,
+  a.lp-vp-btn--secondary.lp-d-product__cta:not(#mea):not(#mea):hover,
+  a.lp-vp-btn--secondary.lp-a-product__cta:not(#mea):not(#mea):hover,
+  a.lp-vp-btn--secondary.lp-b-product__cta:not(#mea):not(#mea):hover,
+  .lp-v3 a.v3-btn--still:not(#mea):not(#mea):hover,
+  .UpsellItem > a.UpsellLink:has(~ a.UpsellLink):not(#mea):not(#mea):hover,
+  a.rd3-akk-panel__link:not(#mea):not(#mea):hover,
+  a.rd3-trio__detail:not(#mea):not(#mea):hover,
+  .pfeil-link:not(#mea):not(#mea):hover,
+  a:hover > a.rd3-trio__detail:not(#mea):not(#mea),
+  a:hover > * > a.rd3-trio__detail:not(#mea):not(#mea),
+  a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea):hover,
+  .pfeil-link--dunkel:not(#mea):not(#mea):hover,
+  .as-dunkel .pfeil-link:not(#mea):not(#mea):hover { text-decoration-color: #856828 !important; background: none !important; box-shadow: none !important; border-color: transparent !important; transform: none !important; }
+
+  .as-hero .as-knoepfe > a.btn--secondary:not(#mea):not(#mea):hover,
+  .sa-modell-wege > a.as-link:not(#mea):not(#mea):hover,
+  .szs-modell-wege > a.as-link:not(#mea):not(#mea):hover,
+  a.lp-vp-btn--secondary.lp-d-product__cta:not(#mea):not(#mea):hover,
+  a.lp-vp-btn--secondary.lp-a-product__cta:not(#mea):not(#mea):hover,
+  a.lp-vp-btn--secondary.lp-b-product__cta:not(#mea):not(#mea):hover,
+  .lp-v3 a.v3-btn--still:not(#mea):not(#mea):hover,
+  .UpsellItem > a.UpsellLink:has(~ a.UpsellLink):not(#mea):not(#mea):hover,
+  a.rd3-akk-panel__link:not(#mea):not(#mea):hover,
+  a.rd3-trio__detail:not(#mea):not(#mea):hover,
+  .pfeil-link:not(#mea):not(#mea):hover,
+  a:hover > a.rd3-trio__detail:not(#mea):not(#mea),
+  a:hover > * > a.rd3-trio__detail:not(#mea):not(#mea) { color: #2c2a26 !important; }
+
+  a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea):hover,
+  .pfeil-link--dunkel:not(#mea):not(#mea):hover,
+  .as-dunkel .pfeil-link:not(#mea):not(#mea):hover { color: #ffffff !important; text-decoration-color: #f2bf72 !important; }
+
+  .as-hero .as-knoepfe > a.btn--secondary:not(#mea):not(#mea):hover::after,
+  .sa-modell-wege > a.as-link:not(#mea):not(#mea):hover::after,
+  .szs-modell-wege > a.as-link:not(#mea):not(#mea):hover::after,
+  a.lp-vp-btn--secondary.lp-d-product__cta:not(#mea):not(#mea):hover::after,
+  a.lp-vp-btn--secondary.lp-a-product__cta:not(#mea):not(#mea):hover::after,
+  a.lp-vp-btn--secondary.lp-b-product__cta:not(#mea):not(#mea):hover::after,
+  .lp-v3 a.v3-btn--still:not(#mea):not(#mea):hover::after,
+  .UpsellItem > a.UpsellLink:has(~ a.UpsellLink):not(#mea):not(#mea):hover::after,
+  a.rd3-akk-panel__link:not(#mea):not(#mea):hover::after,
+  a.rd3-trio__detail:not(#mea):not(#mea):hover::after,
+  .pfeil-link:not(#mea):not(#mea):hover::after,
+  a:hover > a.rd3-trio__detail:not(#mea):not(#mea)::after,
+  a:hover > * > a.rd3-trio__detail:not(#mea):not(#mea)::after,
+  a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea):hover::after,
+  .pfeil-link--dunkel:not(#mea):not(#mea):hover::after,
+  .as-dunkel .pfeil-link:not(#mea):not(#mea):hover::after { transform: translateX(4px) !important; }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .as-hero .as-knoepfe > a.btn--secondary:not(#mea):not(#mea),
+  .sa-modell-wege > a.as-link:not(#mea):not(#mea),
+  .szs-modell-wege > a.as-link:not(#mea):not(#mea),
+  a.lp-vp-btn--secondary.lp-d-product__cta:not(#mea):not(#mea),
+  a.lp-vp-btn--secondary.lp-a-product__cta:not(#mea):not(#mea),
+  a.lp-vp-btn--secondary.lp-b-product__cta:not(#mea):not(#mea),
+  .lp-v3 a.v3-btn--still:not(#mea):not(#mea),
+  .UpsellItem > a.UpsellLink:has(~ a.UpsellLink):not(#mea):not(#mea),
+  a.rd3-akk-panel__link:not(#mea):not(#mea),
+  a.rd3-trio__detail:not(#mea):not(#mea),
+  .pfeil-link:not(#mea):not(#mea),
+  a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea),
+  .pfeil-link--dunkel:not(#mea):not(#mea),
+  .as-dunkel .pfeil-link:not(#mea):not(#mea),
+  .as-hero .as-knoepfe > a.btn--secondary:not(#mea):not(#mea)::after,
+  .sa-modell-wege > a.as-link:not(#mea):not(#mea)::after,
+  .szs-modell-wege > a.as-link:not(#mea):not(#mea)::after,
+  a.lp-vp-btn--secondary.lp-d-product__cta:not(#mea):not(#mea)::after,
+  a.lp-vp-btn--secondary.lp-a-product__cta:not(#mea):not(#mea)::after,
+  a.lp-vp-btn--secondary.lp-b-product__cta:not(#mea):not(#mea)::after,
+  .lp-v3 a.v3-btn--still:not(#mea):not(#mea)::after,
+  .UpsellItem > a.UpsellLink:has(~ a.UpsellLink):not(#mea):not(#mea)::after,
+  a.rd3-akk-panel__link:not(#mea):not(#mea)::after,
+  a.rd3-trio__detail:not(#mea):not(#mea)::after,
+  .pfeil-link:not(#mea):not(#mea)::after,
+  a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea)::after,
+  .pfeil-link--dunkel:not(#mea):not(#mea)::after,
+  .as-dunkel .pfeil-link:not(#mea):not(#mea)::after { transition: none !important; }
+
+  .as-hero .as-knoepfe > a.btn--secondary:not(#mea):not(#mea):hover::after,
+  .sa-modell-wege > a.as-link:not(#mea):not(#mea):hover::after,
+  .szs-modell-wege > a.as-link:not(#mea):not(#mea):hover::after,
+  a.lp-vp-btn--secondary.lp-d-product__cta:not(#mea):not(#mea):hover::after,
+  a.lp-vp-btn--secondary.lp-a-product__cta:not(#mea):not(#mea):hover::after,
+  a.lp-vp-btn--secondary.lp-b-product__cta:not(#mea):not(#mea):hover::after,
+  .lp-v3 a.v3-btn--still:not(#mea):not(#mea):hover::after,
+  .UpsellItem > a.UpsellLink:has(~ a.UpsellLink):not(#mea):not(#mea):hover::after,
+  a.rd3-akk-panel__link:not(#mea):not(#mea):hover::after,
+  a.rd3-trio__detail:not(#mea):not(#mea):hover::after,
+  .pfeil-link:not(#mea):not(#mea):hover::after,
+  a:hover > a.rd3-trio__detail:not(#mea):not(#mea)::after,
+  a:hover > * > a.rd3-trio__detail:not(#mea):not(#mea)::after,
+  a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea):hover::after,
+  .pfeil-link--dunkel:not(#mea):not(#mea):hover::after,
+  .as-dunkel .pfeil-link:not(#mea):not(#mea):hover::after { transform: none !important; }
+
+}
+
+/* Karte wird beim Zeigen/Fokus hell: Schrift Tinte, Pfeil Gold-Tinte (wie auf hellem Grund). */
+.lp-vp-product:not(.lp-vp-product--featured):hover a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea),
+.lp-vp-product:not(.lp-vp-product--featured):focus-within a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea) { color: #2c2a26 !important; }
+
+.lp-vp-product:not(.lp-vp-product--featured):hover a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea)::after,
+.lp-vp-product:not(.lp-vp-product--featured):focus-within a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea)::after { color: #856828 !important; -webkit-text-fill-color: #856828 !important; }
+
+@media (hover: hover) and (pointer: fine) {
+  .lp-vp-product:not(.lp-vp-product--featured):hover a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea):hover,
+  .lp-vp-product:not(.lp-vp-product--featured):focus-within a.lp-vp-btn--ghost-dark.lp-vp-product__cta:not(#mea):not(#mea):hover { color: #2c2a26 !important; text-decoration-color: #856828 !important; }
+}
+
+/* Neben dem Kaufknopf: am Handy untereinander, der Kaufknopf oben (Knopf-Strategie „Zwei Knoepfe“). */
+@media (max-width: 749px) {
+  .as-hero .as-knoepfe:has(> a.btn--secondary) { flex-direction: column !important; flex-wrap: nowrap !important; align-items: center !important; }
+}
