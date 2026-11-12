@@ -70,6 +70,17 @@ html.qb-chat-docked .qfk {
   text-decoration: none;
 }
 
+/* Black-Friday-Funnel (Elina EL-20261112-5f5fab2e): die Marke „Qi Blanco“ ist
+   ein Knopf (nach oben), kein Link zur Startseite. Aussehen wie die Marke oben. */
+.qfk .qfk-marke--knopf {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
 .qfk .qfk-marke:hover {
   color: var(--qfk-weiss);
   text-decoration: none;
@@ -144,4 +155,13 @@ html.qb-chat-docked .qfk {
    (app.css main: Kopfhöhe 64 + 40). */
 main[data-qa-funnel] {
   padding-top: calc(52px + env(safe-area-inset-top, 0px));
+}
+
+/* Ruhige Fassung bei „Bewegung reduzieren“ (Elinas Design-Dauerregel D7,
+   EL-20261112-5f5fab2e): die runden Felder wechseln ohne Übergang. */
+@media (prefers-reduced-motion: reduce) {
+  .qfk .header-account,
+  .qfk .openCart {
+    transition: none;
+  }
 }

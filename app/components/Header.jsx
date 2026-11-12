@@ -595,6 +595,53 @@ export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
 }
 
 /**
+ * BLACK-FRIDAY-FUNNEL (Elina EL-20261112-5f5fab2e, GO 12.11.2026, Christians
+ * Feedback zu den BF-Seiten): Pre-Access, bf-deals und alle BF-Deal-Seiten
+ * sind geschlossene Funnel-Seiten wie Qi Alpha: kein Menü, kein Fuß, „kein
+ * Zurück“. Kopf 1:1 wie der Qi-Alpha-Kopf (QiAlphaFunnelKopf oben, gleiche
+ * Klassen .qfk), nur mit der Wortmarke „Qi Blanco“. Die Marke ist kein Link:
+ * sie führt nicht zur Startseite, ein Tipp scrollt nach oben. Konto und
+ * Warenkorb bleiben, die Kasse bleibt erreichbar.
+ * WELCHE SEITE: die Route erklärt es selbst (black-friday-2026/bf-funnel.js), wie
+ * `handle.filmSeite` in root.jsx. Entweder `export const handle = {bfFunnel: true}` (feste
+ * Funnel-Seiten wie Pre-Access und bf-deals) oder `bfFunnel: true` in den
+ * Loaderdaten (Deal-Seiten, nur im Aktionszeitraum und Euro-Markt). Kein Pfad
+ * hier: ohne das Merkmal rendert jede Seite unverändert mit Hauskopf und Fuß.
+ * Rückweg: das Merkmal in der Route entfernen (eine Seite) oder die Weiche in
+ * PageLayout.jsx entfernen (alle).
+ */
+
+/**
+ * @param {Pick<HeaderProps, 'cart' | 'isLoggedIn'>}
+ */
+export function BfFunnelKopf({isLoggedIn, cart}) {
+  useKopfHoeheVariable();
+  const nachOben = useCallback(() => {
+    // „Bewegung reduzieren“: ohne Gleiten, sofort oben (Elinas Design-Dauerregel D7).
+    const ruhig = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    window.scrollTo({top: 0, behavior: ruhig ? 'auto' : 'smooth'});
+  }, []);
+  return (
+    <header className="qfk qfk--bf" data-qa-funnel-kopf="bf">
+      <div className="qfk-innen">
+        <button
+          type="button"
+          className="qfk-marke qfk-marke--knopf"
+          onClick={nachOben}
+          aria-label="Qi Blanco, nach oben"
+        >
+          Qi Blanco
+        </button>
+        <nav className="qfk-ctas" aria-label="Konto und Warenkorb">
+          <AccountToggle isLoggedIn={isLoggedIn} />
+          <CartToggle cart={cart} />
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+/**
  * Updated HeaderMenu to support nested menu items
  */
 export function HeaderMenu({

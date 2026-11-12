@@ -297,8 +297,11 @@ export const KETTENLAENGE_ATTR = 'Kettenlänge';
  * Längen-Kacheln der beiliegenden Kette aus den Varianten des Kettenprodukts:
  * ALLE Längen, kurz nach lang, mit Lieferbarkeit (ausverkauft = sichtbar,
  * nicht wählbar). Keine Variante wird gekauft, nur die Länge gemerkt.
+ * nurLieferbar (BF-Deal-Seiten, Elina EL-20261112-5f5fab2e): ausverkaufte
+ * Längen gar nicht zeigen statt durchgestrichen; kommt Nachschub
+ * (availableForSale wieder true), ist die Länge von selbst wieder da.
  */
-export function laengenKacheln(produkt, ersatzCm = []) {
+export function laengenKacheln(produkt, ersatzCm = [], {nurLieferbar = false} = {}) {
   const live = (produkt?.variants?.nodes ?? [])
     .map((v) => ({
       cm: laengeCm(v?.title),
@@ -317,6 +320,7 @@ export function laengenKacheln(produkt, ersatzCm = []) {
     : ersatzCm.map((cm) => ({cm: Number(cm), verfuegbar: true, varianteId: null}));
   return basis
     .filter((x) => x.cm)
+    .filter((x) => !nurLieferbar || x.verfuegbar)
     .sort((a, b) => a.cm - b.cm)
     .map((x) => ({schluessel: `laenge-${x.cm}`, ...x}));
 }

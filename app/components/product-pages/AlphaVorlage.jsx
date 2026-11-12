@@ -1,4 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
+import {useMatches} from 'react-router';
+import {istBfFunnelSeite} from '~/components/black-friday-2026/bf-funnel';
 import {Analytics} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {DealGalerie, useBfDealSeite} from '~/components/black-friday-2026/DealGalerie';
@@ -197,8 +199,14 @@ export function AlphaVorlage({
   const [ketteWahl, setKetteWahl] = useState(null);
   const kette = kacheln.find((k) => k.schluessel === ketteWahl) ?? null;
 
+  // BF-Funnel-Seite (Elina EL-20261112-5f5fab2e): ausverkaufte Kettenlängen
+  // nicht zeigen, automatisch aus der Lieferbarkeit der Kettenvarianten. Gilt
+  // nur, wo die Route das Merkmal bfFunnel trägt (istBfFunnelSeite).
+  const bfFunnelSeite = istBfFunnelSeite(useMatches());
   const laengen = KETTE_IM_SET
-    ? laengenKacheln(ketten?.stahl, Object.keys(KETTE_IM_SET.zeilen ?? {}))
+    ? laengenKacheln(ketten?.stahl, Object.keys(KETTE_IM_SET.zeilen ?? {}), {
+        nurLieferbar: bfFunnelSeite,
+      })
     : [];
   const [laengeWahl, setLaengeWahl] = useState(() =>
     startLaenge(laengen, KETTE_IM_SET?.vorwahl ?? null),

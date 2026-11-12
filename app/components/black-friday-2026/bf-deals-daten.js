@@ -5,9 +5,10 @@
  * Preise wörtlich nach Elinas Preisliste EL-20261111-4f071c31: Preis = BF-Preis,
  * Streichpreis = UVP. Die Warenkorb-Links sind die in der echten Kasse
  * gemessenen Links (EL-20261111-4f071c31, BF2026-Preispruefung-Warenkorb.csv):
- * Einzelprodukte + BF-Code, Endpreis = BF-Preis. Kette M und XL sind
- * ausverkauft und tragen bewusst KEINEN Link (die Kette fiele aus dem
- * Warenkorb, die Kasse nähme 1.087 €).
+ * Einzelprodukte + BF-Code, Endpreis = BF-Preis. Ausverkaufte Kettenlängen
+ * zeigt keine Seite an (Elina EL-20261112-5f5fab2e, automatisch nach Bestand);
+ * ein Link auf eine ausverkaufte Kette ließe die Kette aus dem Warenkorb fallen
+ * (Kasse 1.087 €), darum wird er nie angeboten, solange der Bestand 0 ist.
  *
  * Die Bundle-Produkte hinter den Deal-Adressen bleiben Entwurf bzw. archiviert
  * (Elina EL-20261111-9065b985). Darum rendert die Deal-Adresse die Seite des
@@ -68,12 +69,18 @@ export const BF_DEALS = [
     bild: BF_GOLD_BILDER['qione-2-pro-necklace'],
     bildAlt: 'QiOne® 2 Pro Anhänger mit Kette',
     seite: 'pjdz538hgs0',
-    // Je Kettenlänge (cm) der Link mit der Kette dieser Größe. M (50) und XL (75)
-    // ausverkauft: kein Link, die Seite sperrt die Länge.
+    // Je Kettenlänge (cm) der Link mit der Kette dieser Größe, ALLE fünf Längen
+    // (Elina EL-20261112-5f5fab2e): welche Länge die Seite zeigt, entscheidet
+    // allein der Bestand der Kettenvariante (availableForSale, Kette mit
+    // inventoryPolicy DENY = Bestand > 0). Ausverkaufte Längen blendet die Seite
+    // aus; kommt Nachschub (z. B. M 50, XL 75), sind sie mit diesem Link wieder
+    // kaufbar. Der Code BF26-PROKETTE-PMB52 gilt für das ganze Produkt qione-kette.
     linkJeLaenge: {
       40: '/cart/39680087326790:1,39285852176454:1?discount=BF26-PROKETTE-PMB52',
       45: '/cart/39680087326790:1,31887553396806:1?discount=BF26-PROKETTE-PMB52',
+      50: '/cart/39680087326790:1,39285855223878:1?discount=BF26-PROKETTE-PMB52',
       60: '/cart/39680087326790:1,31887553429574:1?discount=BF26-PROKETTE-PMB52',
+      75: '/cart/39680087326790:1,39285858140230:1?discount=BF26-PROKETTE-PMB52',
     },
   },
   {
