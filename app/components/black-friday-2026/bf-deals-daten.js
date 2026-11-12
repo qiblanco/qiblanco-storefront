@@ -58,7 +58,7 @@ export const BF_DEALS = [
     bild: BF_GOLD_BILDER['2x-qione-2-pro'],
     bildAlt: 'Zwei QiOne® 2 Pro Anhänger nebeneinander',
     seite: '8kendiw34hd',
-    link: '/cart/39680087326790:2?discount=BF26-2XPRO-HDRSN',
+    link: '/cart/39680087326790:2',
   },
   {
     id: 'qione-2-pro-necklace',
@@ -76,11 +76,11 @@ export const BF_DEALS = [
     // aus; kommt Nachschub (z. B. M 50, XL 75), sind sie mit diesem Link wieder
     // kaufbar. Der Code BF26-PROKETTE-PMB52 gilt für das ganze Produkt qione-kette.
     linkJeLaenge: {
-      40: '/cart/39680087326790:1,39285852176454:1?discount=BF26-PROKETTE-PMB52',
-      45: '/cart/39680087326790:1,31887553396806:1?discount=BF26-PROKETTE-PMB52',
-      50: '/cart/39680087326790:1,39285855223878:1?discount=BF26-PROKETTE-PMB52',
-      60: '/cart/39680087326790:1,31887553429574:1?discount=BF26-PROKETTE-PMB52',
-      75: '/cart/39680087326790:1,39285858140230:1?discount=BF26-PROKETTE-PMB52',
+      40: '/cart/39680087326790:1,39285852176454:1',
+      45: '/cart/39680087326790:1,31887553396806:1',
+      50: '/cart/39680087326790:1,39285855223878:1',
+      60: '/cart/39680087326790:1,31887553429574:1',
+      75: '/cart/39680087326790:1,39285858140230:1',
     },
   },
   {
@@ -96,9 +96,9 @@ export const BF_DEALS = [
     seite: '687ghgf4ed',
     // Je Variante (Shopify-Varianten-Nummer von qibracelet S/M/L).
     linkJeVariante: {
-      43666904056076: '/cart/43666904056076:1?discount=BF26-BRACELET-GM5JJ',
-      43666904088844: '/cart/43666904088844:1?discount=BF26-BRACELET-GM5JJ',
-      43673322160396: '/cart/43673322160396:1?discount=BF26-BRACELET-GM5JJ',
+      43666904056076: '/cart/43666904056076:1',
+      43666904088844: '/cart/43666904088844:1',
+      43673322160396: '/cart/43673322160396:1',
     },
   },
   {
@@ -111,7 +111,7 @@ export const BF_DEALS = [
     altBild: 'QiHome1.webp',
     bildAlt: 'QiHome® Air',
     seite: '56huz67dds',
-    link: '/cart/32238705967174:1?discount=BF26-QIHOME-2DP8H',
+    link: '/cart/32238705967174:1',
   },
   {
     id: 'kakao',
@@ -138,30 +138,36 @@ export const BF_KAKAO_SEITE = 'j7hcyb802kn';
 export const BF_KAKAO_SETS = [
   {
     id: 'create-awake',
+    // Set-Variante im Qi-Blanco-Warenkorb (Elina EL-20261112-5c71f6ff): EIN Set-Produkt, 122 € -> 76 € mit dem Kakao-Code.
+    variante: '65979750809868',
     pille: '1x Awake + 1x Create',
     name: 'Crystal Cacao 1x Awake + 1x Create',
     basis: 'bundle-1x-awake-1x-create',
     bild: BF_GOLD_BILDER['kakao-awake-create'],
     bildAlt: 'Crystal Cacao Awake und Create, je eine Packung',
-    link: 'https://crystal-cacao.com/cart/54540698485004:1,44685294567692:1?discount=BF26-KAKAO-NKSKX',
+    link: 'https://crystal-cacao.com/cart/54540698485004:1,44685294567692:1',
   },
   {
     id: '2x-awake',
+    // Set-Variante im Qi-Blanco-Warenkorb (Elina EL-20261112-5c71f6ff): EIN Set-Produkt, 122 € -> 76 € mit dem Kakao-Code.
+    variante: '54596980277516',
     pille: '2x Awake',
     name: 'Crystal Cacao 2x Awake',
     basis: 'bundle-2x-awake',
     bild: BF_GOLD_BILDER['kakao-2x-awake'],
     bildAlt: 'Zwei Packungen Crystal Cacao Awake',
-    link: 'https://crystal-cacao.com/cart/54540698485004:2?discount=BF26-KAKAO-NKSKX',
+    link: 'https://crystal-cacao.com/cart/54540698485004:2',
   },
   {
     id: '2x-create',
+    // Set-Variante im Qi-Blanco-Warenkorb (Elina EL-20261112-5c71f6ff): EIN Set-Produkt, 122 € -> 76 € mit dem Kakao-Code.
+    variante: '54590829986060',
     pille: '2x Create',
     name: 'Crystal Cacao 2x Create',
     basis: 'mengenrabatt-2x',
     bild: BF_GOLD_BILDER['kakao-2x-create'],
     bildAlt: 'Zwei Packungen Crystal Cacao Create',
-    link: 'https://crystal-cacao.com/cart/44685294567692:2?discount=BF26-KAKAO-NKSKX',
+    link: 'https://crystal-cacao.com/cart/44685294567692:2',
   },
 ];
 
@@ -328,6 +334,54 @@ export function bfDealLink(seite, lines) {
   return deal.link ?? null;
 }
 
+/*
+ * WARENKORB STATT KASSE (Elina EL-20261112-5c71f6ff, GO 12.11.2026): der Kaufknopf
+ * der Deal-Seite legt den Deal in den Warenkorb. Deals sind kombinierbar; die
+ * BF-Codes setzt der Server (routes/cart.jsx, bf-deal-codes.server.js) beim
+ * Hinzufügen dazu, nie der Browser, und nur, wenn das Merkmal bfDeal mitkommt
+ * (Rabatt nur über den Deal-Weg). Jede Deal-Zeile trägt das Merkmal _bf_deal,
+ * damit Deals im Warenkorb getrennte Zeilen bleiben.
+ */
+export const BF_DEAL_MERKMAL = '_bf_deal';
+
+function zeilenAusLink(link, dealId) {
+  const m = /\/cart\/([0-9:,]+)/.exec(String(link ?? ''));
+  if (!m) return [];
+  return m[1]
+    .split(',')
+    .map((teil) => teil.split(':'))
+    .filter(([id]) => /^\d+$/.test(id))
+    .map(([id, menge]) => ({
+      merchandiseId: `gid://shopify/ProductVariant/${id}`,
+      quantity: Number.parseInt(menge ?? '1', 10) || 1,
+      attributes: [{key: BF_DEAL_MERKMAL, value: dealId}],
+    }));
+}
+
+/**
+ * Warenkorbzeilen des Deals zur Wahl des Kaufknopfs (gleiche Wahl wie
+ * bfDealLink). Leer = für diese Wahl kein Deal (z. B. ausverkaufte Länge).
+ */
+export function bfDealZeilen(seite, lines) {
+  const deal = seite ? bfDeal(seite.deal) : null;
+  if (!deal) return [];
+  return zeilenAusLink(bfDealLink(seite, lines), deal.id);
+}
+
+/** Warenkorbzeile eines Kakao-Sets (Set-Produkt, Menge 1). */
+export function bfKakaoZeilen(setId) {
+  const set = bfKakaoSet(setId);
+  return set.variante
+    ? [
+        {
+          merchandiseId: `gid://shopify/ProductVariant/${set.variante}`,
+          quantity: 1,
+          attributes: [{key: BF_DEAL_MERKMAL, value: 'kakao'}],
+        },
+      ]
+    : [];
+}
+
 /** BF-Gold-Bild einer Deal-Seite (Kakao: das Bild des Sets der Seite). */
 export function bfDealBild(seite) {
   const deal = seite ? bfDeal(seite.deal) : null;
@@ -378,4 +432,52 @@ export function bfDealBildSetzen(product, seite, filter = null) {
 /** Galerie-Kacheln ohne den aktuellen Deal. */
 export function andereDeals(seite) {
   return BF_DEALS.filter((d) => d.id !== seite?.deal);
+}
+
+/*
+ * COUNTDOWN-LOGIK DER BF-SEITEN DE (Elina EL-20261112-5c71f6ff, GO 12.11.2026), EINE Stelle für
+ * rote Leiste der Deal-Seiten, großen Countdown auf bf-deals und Pre-Access (hier in bf-deals-daten.js):
+ *   vor 13.11.2026 18:00 Berlin            „Pre-Sale startet in …“  (Ziel 13.11. 18:00, passend zur ersten Mail;
+ *                                           Korrektur Elina EL-20261112-6b5fe5df, vorher 00:00)
+ *   ab 13.11. 18:00 bis 26.11. 23:59 Berlin „Pre-Sale endet in …“    (Ziel 27.11. 00:00 = Ende 26.11. 23:59)
+ *   ab 27.11.2026 00:00 Berlin              „Black Friday endet in …“ (Ziel Sale-Ende 30.11. 23:59)
+ *   danach                                  kein Countdown
+ * Testzeit auf allen Seiten: ?pab_jetzt=<ISO>.
+ */
+export const BF_PRESALE_START = '2026-11-13T17:00:00Z';
+export const BF_PRESALE_ENDE = '2026-11-26T23:00:00Z';
+export const BF_SALE_ENDE = '2026-11-30T22:59:00Z';
+
+export const BF_PHASEN = [
+  {
+    id: 'vorher',
+    bis: BF_PRESALE_START,
+    titel: 'Pre-Sale startet in',
+    datum: 'Freitag, 13. November 2026 · 18:00 Uhr',
+    satz: 'Pre-Sale startet am 13.11.2026 um 18:00 Uhr',
+  },
+  {
+    id: 'presale',
+    bis: BF_PRESALE_ENDE,
+    titel: 'Pre-Sale endet in',
+    datum: 'Donnerstag, 26. November 2026 · 23:59 Uhr',
+    satz: 'Pre-Sale endet am 26.11.2026 um 23:59 Uhr',
+  },
+  {
+    id: 'sale',
+    bis: BF_SALE_ENDE,
+    titel: 'Black Friday endet in',
+    datum: 'Montag, 30. November 2026 · 23:59 Uhr',
+    satz: 'Black Friday endet am 30.11.2026 um 23:59 Uhr',
+  },
+];
+
+/** Phase zum Zeitpunkt (ms) oder null nach dem Sale-Ende. */
+export function bfPhase(jetzt) {
+  return BF_PHASEN.find((p) => jetzt < Date.parse(p.bis)) ?? null;
+}
+
+/** Restsekunden bis zum Ziel der Phase (nie negativ). */
+export function bfRestSekunden(phase, jetzt) {
+  return phase ? Math.max(0, Math.floor((Date.parse(phase.bis) - jetzt) / 1000)) : 0;
 }

@@ -6,7 +6,10 @@ import {
   BF_KAKAO_SETS,
   bfDeal,
   bfKakaoSet,
+  bfKakaoZeilen,
 } from '~/components/black-friday-2026/bf-deals-daten';
+import {CartForm} from '@shopify/hydrogen';
+import {useAside} from '~/components/Aside';
 import {KAUFLEISTE_AN} from '~/components/reusables/Kaufleiste';
 import {kaufleisteSichtbar} from '~/components/reusables/kaufleiste-lage';
 import {useKaufleisteSicht} from '~/lib/kaufleiste-sicht';
@@ -15,8 +18,9 @@ import {betragText} from '~/lib/betrag-text';
 /*
  * KAKAO-DEAL-SEITE DE MIT SET-WAHL (Elina EL-20261111-fa47cfd9, GO 11.11.2026).
  * /products/j7hcyb802kn: EINE Seite für die drei Kakao-Sets. Bild, Preis und
- * Kaufknopf folgen dem gewählten Set; „Jetzt kaufen“ ist der Warenkorb-Link
- * dieses Sets (Dauerregel D9, Kit-Gold), nie ein /cart/add des Basisprodukts.
+ * Kaufknopf folgen dem gewählten Set. „In den Warenkorb“ legt das Set-Produkt
+ * in den Qi-Blanco-Warenkorb (Elina EL-20261112-5c71f6ff: Warenkorb statt Kasse,
+ * kombinierbar mit den anderen Deals); den Kakao-Code setzt der Server dazu.
  *
  * Erster Bildschirm (Bild, Preis, Set-Wahl, Kaufknopf) ohne Animation und
  * schon im Server-HTML richtig: der Loader liest ?set= und reicht `setId`
@@ -160,16 +164,12 @@ export function BfKakaoDeal({setId}) {
               ))}
             </div>
           </div>
-          <a
+          <KakaoWarenkorbKnopf
+            setId={set.id}
             className="bkd__kaufen"
-            href={set.link}
-            data-bkd-kaufen=""
-            data-bf-deal-link={set.link}
-            data-qb-kaufknopf=""
-            aria-label={`Jetzt kaufen: ${set.name}, ${preis}`}
-          >
-            Jetzt kaufen
-          </a>
+            label={`In den Warenkorb: ${set.name}, ${preis}`}
+            daten={{'data-bkd-kaufen': ''}}
+          />
         </div>
       </section>
       <DealGalerie />
@@ -190,18 +190,42 @@ export function BfKakaoDeal({setId}) {
               <s className="bkd__alt">{uvp}</s>{' '}
               <span className="bkd__neu">{preis}</span>
             </div>
-            <a
+            <KakaoWarenkorbKnopf
+              setId={set.id}
               className="btn--primary bkd__kaufen bkd__kaufen--leiste"
-              href={set.link}
-              data-bf-deal-link={set.link}
-              data-qb-kaufknopf=""
-              aria-label={`Jetzt kaufen: ${set.name}, ${preis}`}
-            >
-              Jetzt kaufen
-            </a>
+              label={`In den Warenkorb: ${set.name}, ${preis}`}
+            />
           </>
         )}
       </div>
     </>
+  );
+}
+
+/**
+ * „In den Warenkorb“ für ein Kakao-Set (Elina EL-20261112-5c71f6ff): legt das
+ * Set-Produkt mit Merkmal _bf_deal in den Warenkorb und öffnet ihn; den Code
+ * setzt der Server (bfDeal = kakao), nie der Browser.
+ */
+function KakaoWarenkorbKnopf({setId, className, label, daten = {}}) {
+  const {open} = useAside();
+  const zeilen = bfKakaoZeilen(setId);
+  return (
+    <CartForm route="/cart" inputs={{lines: zeilen, bfDeal: 'kakao'}} action={CartForm.ACTIONS.LinesAdd}>
+      {(fetcher) => (
+        <button
+          type="submit"
+          className={className}
+          data-qb-kaufknopf=""
+          data-bf-deal-warenkorb="kakao"
+          aria-label={label}
+          disabled={!zeilen.length || fetcher.state !== 'idle'}
+          onClick={() => open('cart')}
+          {...daten}
+        >
+          In den Warenkorb
+        </button>
+      )}
+    </CartForm>
   );
 }

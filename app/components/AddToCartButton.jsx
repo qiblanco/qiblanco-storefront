@@ -1,6 +1,6 @@
 import {CartForm} from '@shopify/hydrogen';
 import {useBfDealSeite} from '~/components/black-friday-2026/DealGalerie';
-import {bfDealLink} from '~/components/black-friday-2026/bf-deals-daten';
+import {bfDealZeilen} from '~/components/black-friday-2026/bf-deals-daten';
 
 /**
  * @param {{
@@ -22,14 +22,15 @@ export function AddToCartButton({
   lines,
   onClick,
 }) {
-  // BF-DEAL-SEITE (Elina EL-20261111-aff06215): der Knopf ist der gemessene
-  // Warenkorb-Link (Einzelprodukte + BF-Code, Kasse = BF-Preis), nie das
-  // Basisprodukt in den Warenkorb. Ohne Link für die Wahl (ausverkaufte
+  // BF-DEAL-SEITE (Elina EL-20261111-aff06215; seit EL-20261112-5c71f6ff
+  // Warenkorb statt Kasse): der Knopf legt die Zeilen DES DEALS (Einzelprodukte,
+  // Merkmal _bf_deal) in den Warenkorb, nie das Basisprodukt; die BF-Codes setzt
+  // der Server dazu (bfDeal). Ohne Zeilen für die Wahl (ausverkaufte
   // Kettenlänge) bleibt er gesperrt. Ohne Kontext (jede andere Seite): wie bisher.
   const dealSeite = useBfDealSeite();
   if (dealSeite) {
-    const href = disabled ? null : bfDealLink(dealSeite, lines);
-    if (!href) {
+    const dealZeilen = disabled ? [] : bfDealZeilen(dealSeite, lines);
+    if (!dealZeilen.length) {
       return (
         <button className="btn--primary" data-qb-kaufknopf="" type="button" disabled>
           Ausverkauft
@@ -37,14 +38,24 @@ export function AddToCartButton({
       );
     }
     return (
-      <a
-        className="btn--primary bf-deal-kaufen"
-        data-qb-kaufknopf=""
-        data-bf-deal-link=""
-        href={href}
+      <CartForm
+        route="/cart"
+        inputs={{lines: dealZeilen, bfDeal: dealSeite.deal}}
+        action={CartForm.ACTIONS.LinesAdd}
       >
-        Jetzt kaufen
-      </a>
+        {(fetcher) => (
+          <button
+            className="btn--primary bf-deal-kaufen"
+            data-qb-kaufknopf=""
+            data-bf-deal-warenkorb={dealSeite.deal}
+            type="submit"
+            onClick={onClick}
+            disabled={fetcher.state !== 'idle'}
+          >
+            In den Warenkorb
+          </button>
+        )}
+      </CartForm>
     );
   }
 
