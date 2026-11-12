@@ -17,10 +17,8 @@ import {istMessfixtur} from '../lib/coming-home-live.server';
 import {MailManagerFormular} from '../components/MailManagerFormular';
 import {KONFIG} from '../components/formulare/PreAccessBlackFridayDENachbauF27PreAccesFormular';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
-import {BfVertrauensblock} from '../components/black-friday-2026/BfVertrauensblock';
 import preAccessBStyles from '../styles/pre-access-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
-import vertrauensblockStyles from '../styles/bf-vertrauensblock.css?url';
 
 const ENDPUNKT = 'https://anmelden.dienst.qiblanco.com';
 const BILD =
@@ -34,7 +32,6 @@ export function links() {
   return [
     {rel: 'stylesheet', href: elinaBewegungStyles},
     {rel: 'stylesheet', href: preAccessBStyles},
-    {rel: 'stylesheet', href: vertrauensblockStyles},
   ];
 }
 
@@ -231,8 +228,6 @@ export default function PreAccessB() {
               messfixtur={messfixtur}
             />
           ))}
-          {/* Vertrauensblock über dem Formular (Elina EL-20261111-63e02e46): drei Zeilen, zentriert */}
-          <BfVertrauensblock />
           <div data-eb="">
             <MailManagerFormular konfig={KONFIG} direkt={ENDPUNKT} />
           </div>
