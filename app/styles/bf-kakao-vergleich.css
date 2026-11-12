@@ -1,0 +1,204 @@
+/* bf-kakao-vergleich.css: Gegenüberstellung Awake vs. Create + Block „Für beide gilt“ auf der
+ * Kakao-Deal-Seite DE (Elina EL-20261112-cb3c35ca). Geladen nur von BfKakaoVergleich.
+ * Farben aus bf-kakao-deal.css (.bkd): Grund dunkel, Schrift #f5efe6, gedämpft rgba(245,239,230,.72),
+ * Rand rgba(245,239,230,.14), Gold #f2bf72. Mobile first: Grund-CSS ist die Handy-Fassung
+ * (Spalten untereinander), ab 640 px zwei Spalten nebeneinander.
+ * Bewegung nur über elina-bewegung.css (data-eb: einblenden + leicht hochgleiten, Bild-Zoom);
+ * hier selbst keine Übergänge. Ruhige Fassung bei „Bewegung reduzieren“ unten. */
+
+.bkv {
+  --bkv-hell: #f5efe6;
+  --bkv-matt: rgba(245, 239, 230, 0.72);
+  --bkv-rand: rgba(245, 239, 230, 0.14);
+  --bkv-flaeche: rgba(245, 239, 230, 0.04);
+  --bkv-gold: #f2bf72;
+  --bkv-bildgrund: #e9e6e1;
+  --bkv-radius: 18px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 16px 16px;
+  color: var(--bkv-hell);
+  font-family: 'Open Sans Variable', 'Open Sans', system-ui, sans-serif;
+  text-align: left;
+}
+.bkv *,
+.bkv *::before,
+.bkv *::after {
+  box-sizing: border-box;
+}
+
+/* Doppelte Klasse: Seiten-Stile der Deal-Seite (h2/h3) sollen den Block nicht verschieben. */
+.bkv .bkv__titel {
+  margin: 0 0 16px;
+  padding: 0;
+  color: var(--bkv-hell);
+  font-family: inherit;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: none;
+  text-wrap: balance;
+}
+
+.bkv__spalten {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+}
+.bkv__sorte {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--bkv-rand);
+  border-radius: var(--bkv-radius);
+  background: var(--bkv-flaeche);
+  overflow: hidden;
+}
+.bkv__bild {
+  margin: 0 0 8px;
+  aspect-ratio: 1 / 1;
+  max-height: 200px;
+  border-radius: 12px;
+  background: var(--bkv-bildgrund);
+  overflow: hidden;
+}
+.bkv__bild img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.bkv .bkv__name {
+  margin: 0;
+  color: var(--bkv-gold);
+  font-family: inherit;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: none;
+}
+.bkv .bkv__claim {
+  margin: 0;
+  color: var(--bkv-hell);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.bkv .bkv__wofuer {
+  margin: 0 0 4px;
+  color: var(--bkv-matt);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.bkv__punkte,
+.bkv__fakten {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bkv__punkte li,
+.bkv__fakten li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--bkv-hell);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.bkv__punkte li::before,
+.bkv__fakten li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.6em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bkv-gold);
+}
+.bkv__punkte b,
+.bkv__fakten b {
+  color: var(--bkv-gold);
+  font-weight: 700;
+}
+
+.bkv__beide {
+  margin: 32px 0 0;
+  padding: 24px 16px;
+  border: 1px solid var(--bkv-rand);
+  border-radius: var(--bkv-radius);
+  background: var(--bkv-flaeche);
+}
+.bkv .bkv__titel--beide {
+  font-size: 1.5rem;
+}
+.bkv__stimmen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  margin: 24px 0 0;
+}
+.bkv__stimme {
+  margin: 0;
+  padding: 16px;
+  border-left: 3px solid var(--bkv-gold);
+  border-radius: 0 12px 12px 0;
+  background: rgba(245, 239, 230, 0.05);
+}
+.bkv__sterne {
+  display: block;
+  color: var(--bkv-gold);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+}
+.bkv__stimme blockquote {
+  margin: 8px 0;
+  padding: 0;
+  border: 0;
+  color: var(--bkv-hell);
+  font-size: 0.9375rem;
+  font-style: normal;
+  line-height: 1.55;
+}
+.bkv__stimme figcaption {
+  color: var(--bkv-matt);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+@media (min-width: 640px) {
+  .bkv {
+    padding: 48px 24px 24px;
+  }
+  .bkv__spalten {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .bkv__sorte {
+    padding: 24px;
+  }
+  .bkv__bild {
+    max-height: 320px;
+  }
+  .bkv__beide {
+    padding: 32px;
+  }
+  .bkv__stimmen {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bkv [data-eb],
+  .bkv [data-eb] > * {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

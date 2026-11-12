@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import kakaoDealStyles from '~/styles/bf-kakao-deal.css?url';
 import {DealGalerie} from '~/components/black-friday-2026/DealGalerie';
+import {BfKakaoVergleich} from '~/components/black-friday-2026/BfKakaoVergleich';
 import {
   BF_KAKAO_SETS,
   bfDeal,
@@ -172,6 +173,9 @@ export function BfKakaoDeal({setId}) {
         </div>
       </section>
       <DealGalerie />
+      {/* Gegenüberstellung Awake vs. Create + „Für beide gilt“ statt der kompletten Crystal-Cacao-Sections
+          (Elina EL-20261112-cb3c35ca); Schluss-Banner und FAQ folgen danach. */}
+      <BfKakaoVergleich />
       <div
         className={`qb-kaufleiste${sichtbar ? ' qb-kaufleiste--sichtbar' : ''}`}
         data-section="pdp-kaufleiste"
