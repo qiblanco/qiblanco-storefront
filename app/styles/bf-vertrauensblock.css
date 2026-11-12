@@ -1,24 +1,29 @@
 /* bf-vertrauensblock.css: Vertrauensblock der Black-Friday-Seiten DE (Elina EL-20261111-63e02e46).
- * Drei Zeilen untereinander, zentriert. Mobile first; Tokens je Modus, keine freien Werte im Rumpf.
+ * Drei Zeilen untereinander, zentriert. Mobile first (Handy: Zeile 1 16 px, Zeilen 2-3 14 px, damit die
+ * Zellstudien-Zeile ab 360 px in eine Zeile passt; ab 600 px alle 16 px); Tokens je Modus, keine freien Werte im Rumpf.
  * Dunkel (Standard, alle BF-Seiten sind dunkel): Gold #F2BF72, Weiß, Grün #4ADE80 (auf #0c0a08 >= 4.5:1).
  * Hell (.qb-vb--hell): Gold #BF8E36, dunkler Text, Grün #146C34.
  * Rückbau: Datei löschen und BfVertrauensblock entfernen. */
-.qb-vb{--vb-gold:#f2bf72;--vb-text:#fff;--vb-gruen:#4ade80;--vb-schrift:16px;--vb-hoehe:1.5;--vb-abstand:.125rem;
+.qb-vb{--vb-gold:#f2bf72;--vb-text:#fff;--vb-gruen:#4ade80;--vb-schrift:14px;--vb-schrift-gross:16px;--vb-hoehe:1.5;--vb-abstand:.125rem;
   display:block;width:100%;margin:0 auto 2rem;padding:0;text-align:center;font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif}
 .qb-vb--hell{--vb-gold:#bf8e36;--vb-text:#171310;--vb-gruen:#146c34}
 .qb-vb *{box-sizing:border-box}
 .qb-vb__zeilen{display:grid;gap:var(--vb-abstand);justify-items:center;margin:0!important;padding:0!important;list-style:none}
 .qb-vb__zeile{margin:0;padding:0;list-style:none;font-size:var(--vb-schrift);line-height:var(--vb-hoehe);font-style:normal;text-wrap:balance}
 .qb-vb__zeile::before,.qb-vb__zeile::marker{content:none}
-.qb-vb__bewertung{color:var(--vb-gold);font-weight:700;white-space:nowrap}
+/* Farben mit zwei Klassen: die Deal-Seiten setzen li per .bf-deal-seite :where(li) auf hell (gleiche Spezifität) */
+.qb-vb .qb-vb__bewertung{color:var(--vb-gold)!important;font-size:var(--vb-schrift-gross);font-weight:700;white-space:nowrap}
 .qb-vb__zahl{font-variant-numeric:tabular-nums}
 .qb-vb__sterne{letter-spacing:.08em;font-family:system-ui,'Segoe UI Symbol','Apple Symbols',sans-serif}
-.qb-vb__anwender{color:var(--vb-text);font-weight:400}
-.qb-vb__zellstudien{color:var(--vb-gruen);font-weight:700}
+.qb-vb .qb-vb__anwender{color:var(--vb-text)!important;font-weight:400}
+.qb-vb .qb-vb__zellstudien{color:var(--vb-gruen)!important;font-weight:700}
 .qb-vb__haken{font-family:system-ui,'Segoe UI Symbol','Apple Symbols',sans-serif}
 /* Einbaustellen: Deal-Seiten (unter dem roten Countdown), Pre-Access (über dem Formular) */
 .bf-deal-seite>.qb-vb{margin:0 auto;padding:1.5rem 1rem 0}
 .pab .qb-vb{margin:0 0 1rem}
+@media (min-width:600px){
+.qb-vb{--vb-schrift:16px}
+}
 @media (min-width:960px){
 .bf-deal-seite>.qb-vb{padding-top:2rem}
 }
