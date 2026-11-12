@@ -88,7 +88,14 @@ export function BfKakaoDeal({setId}) {
     <>
       <link rel="stylesheet" href={kakaoDealStyles} />
       {BF_KAKAO_SETS.map((s) => (
-        <link key={s.id} rel="preload" as="image" href={`${s.bild}?width=900`} />
+        <link
+          key={s.id}
+          rel="preload"
+          as="image"
+          href={`${s.bild}?width=900`}
+          imageSrcSet={`${s.bild}?width=600 600w, ${s.bild}?width=900 900w, ${s.bild}?width=1200 1200w`}
+          imageSizes="(min-width: 960px) 34rem, 100vw"
+        />
       ))}
       <section
         className="bkd"
