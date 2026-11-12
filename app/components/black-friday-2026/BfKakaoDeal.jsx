@@ -40,7 +40,11 @@ function setInAdresse(id) {
   try {
     const u = new URL(window.location.href);
     u.searchParams.set('set', id);
-    window.history.replaceState(window.history.state, '', u.pathname + u.search + u.hash);
+    window.history.replaceState(
+      window.history.state,
+      '',
+      u.pathname + u.search + u.hash,
+    );
   } catch {
     // Adresse bleibt, wie sie ist; Bild, Preis und Knopf stimmen trotzdem.
   }
@@ -70,8 +74,11 @@ export function BfKakaoDeal({setId}) {
     },
     (lage) => {
       const medien =
-        typeof window.matchMedia === 'function' ? window.matchMedia(MOBIL_MEDIA) : null;
-      const geraetAn = medien && medien.matches ? KAUFLEISTE_AN.mobil : KAUFLEISTE_AN.desktop;
+        typeof window.matchMedia === 'function'
+          ? window.matchMedia(MOBIL_MEDIA)
+          : null;
+      const geraetAn =
+        medien && medien.matches ? KAUFLEISTE_AN.mobil : KAUFLEISTE_AN.desktop;
       return kaufleisteSichtbar({
         geraetAn,
         gemessen: lage.knopf.da,
@@ -129,23 +136,28 @@ export function BfKakaoDeal({setId}) {
           <h1 id="bkd-titel" className="bkd__titel">
             Crystal Cacao · Kauf 2, zahl 1
           </h1>
-          <p className="bkd__preis">
-            <s className="bkd__alt">{uvp}</s>{' '}
-            <span className="bkd__neu">{preis}</span>
-          </p>
-          <div className="bkd__pillen" role="group" aria-label="Set wählen">
-            {BF_KAKAO_SETS.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                className="bkd__pille"
-                aria-pressed={s.id === set.id}
-                data-bkd-set={s.id}
-                onClick={() => waehle(s.id)}
-              >
-                {s.pille}
-              </button>
-            ))}
+          {/* Preis und Set-Wahl als ein Block mit data-qb-preis: die Chat-Einladung weicht ihm aus wie dem
+              Kaufknopf (lib/kaufknopf-chat.js PREIS_SELEKTOR), sonst deckt sie am Handy die ersten Sekunden
+              zwei Pillen, und ein Tipp öffnet den Chat statt das Set zu wählen. */}
+          <div className="bkd__wahl" data-qb-preis="">
+            <p className="bkd__preis">
+              <s className="bkd__alt">{uvp}</s>{' '}
+              <span className="bkd__neu">{preis}</span>
+            </p>
+            <div className="bkd__pillen" role="group" aria-label="Set wählen">
+              {BF_KAKAO_SETS.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  className="bkd__pille"
+                  aria-pressed={s.id === set.id}
+                  data-bkd-set={s.id}
+                  onClick={() => waehle(s.id)}
+                >
+                  {s.pille}
+                </button>
+              ))}
+            </div>
           </div>
           <a
             className="bkd__kaufen"
@@ -171,7 +183,8 @@ export function BfKakaoDeal({setId}) {
         {leiste && (
           <>
             <div className="qb-kaufleiste__preis bkd__leistenpreis">
-              <s className="bkd__alt">{uvp}</s> <span className="bkd__neu">{preis}</span>
+              <s className="bkd__alt">{uvp}</s>{' '}
+              <span className="bkd__neu">{preis}</span>
             </div>
             <a
               className="btn--primary bkd__kaufen bkd__kaufen--leiste"

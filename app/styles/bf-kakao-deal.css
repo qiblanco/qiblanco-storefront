@@ -130,6 +130,13 @@
   line-height: 1.2;
 }
 
+/* Preis + Set-Wahl als ein Block (data-qb-preis, Hindernis für die Chat-Einladung). */
+.bkd__wahl {
+  display: grid;
+  justify-items: center;
+  gap: var(--bkd-a2);
+}
+
 /* Set-Wahl: Pillen wie auf bf-deals (.bfd__pille), Tippziel >= 44 px. */
 .bkd__pillen {
   display: flex;
@@ -223,7 +230,8 @@
   .bkd__bild {
     aspect-ratio: 1 / 1;
   }
-  .bkd__text {
+  .bkd__text,
+  .bkd__wahl {
     justify-items: start;
   }
   .bkd .bkd__preis,
