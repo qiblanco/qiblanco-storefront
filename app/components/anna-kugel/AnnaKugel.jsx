@@ -15,25 +15,52 @@
  * Stil: app/styles/anna-kugel.css (per @import in apple-seite.css und
  * the-alpha-faq.css, also ohne eigenen <link>). Nur CSS, kein JS-Takt.
  *
- * STANDARD: die Fassung, die Christian waehlt. Bis zu seiner Wahl steht hier
- * die Empfehlung 'lichtkern'; die Wahl ist genau diese eine Zeile.
+ * STANDARD: Christian hat am 12.11.2026 gewaehlt: „Und bei der Kugel passt es
+ * auch mit dem Lichtkern. Empfehlung 3." Also 'lichtkern' (Kugel = 3).
+ *
+ * KLICK OEFFNET DEN CHAT (Christian 12.11.2026: „Und wenn jemand draufklickt,
+ * dann eben auf diesen Kugel, dann geht der AI-Chat auf"). Die Kugel ist ein
+ * <button data-anna-oeffnen>. Den Klick nimmt der Anna-Loader (qi-salesbot,
+ * src/lib/anna-oeffnen.ts) selbst entgegen und oeffnet den Chat wie der
+ * Launcher. Die Seite braucht dafuer kein eigenes Skript. Mit knopf={false}
+ * bleibt sie ein reines Bild (aria-hidden).
+ * Job 20261112-prio1-ai-anna-kugel-3-lichtkern-klick-oeffnet-chat-beide-shops-live.
  */
 
 export const ANNA_KUGEL_VARIANTEN = Object.freeze(['atem', 'planet', 'lichtkern', 'orbit']);
 export const STANDARD = 'lichtkern';
 
+/** Das Attribut, auf das der Anna-Loader hoert (qi-salesbot src/lib/anna-oeffnen.ts). */
+export const ANNA_OEFFNEN_ATTR = 'data-anna-oeffnen';
+
+/** Props fuer jedes Element, das Annas Chat oeffnen soll (Kugel, Ueberschrift). */
+export function annaOeffnenProps(wo = 'titel') {
+  return {[ANNA_OEFFNEN_ATTR]: wo};
+}
+
 /**
- * @param {{groesse?: number, variante?: string, className?: string}} props
+ * @param {{groesse?: number, variante?: string, className?: string, knopf?: boolean, label?: string}} props
  *   groesse in px (Standard 56, wie die Bestandskugel bei „Noch eine Frage?").
+ *   knopf: true = <button>, Klick oeffnet Annas Chat (Standard).
  */
-export function AnnaKugel({groesse = 56, variante = STANDARD, className = ''}) {
+export function AnnaKugel({
+  groesse = 56,
+  variante = STANDARD,
+  className = '',
+  knopf = true,
+  label = 'Chat mit Anna öffnen',
+}) {
   const v = ANNA_KUGEL_VARIANTEN.includes(variante) ? variante : STANDARD;
+  const Huelle = knopf ? 'button' : 'span';
+  const knopfProps = knopf
+    ? {type: 'button', 'aria-label': label, ...annaOeffnenProps('kugel')}
+    : {'aria-hidden': 'true'};
   return (
-    <span
-      className={`anna-kugel${className ? ` ${className}` : ''}`}
+    <Huelle
+      className={`anna-kugel${knopf ? ' anna-kugel--knopf' : ''}${className ? ` ${className}` : ''}`}
       data-variante={v}
       data-anna-kugel=""
-      aria-hidden="true"
+      {...knopfProps}
       style={{'--ak-groesse': `${groesse}px`}}
     >
       <span className="anna-kugel__schein" />
@@ -50,7 +77,7 @@ export function AnnaKugel({groesse = 56, variante = STANDARD, className = ''}) {
           <span className="anna-kugel__mond" />
         </span>
       </span>
-    </span>
+    </Huelle>
   );
 }
 

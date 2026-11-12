@@ -1,3 +1,5 @@
+@import './anna-kugel.css';
+
 /*
  * QIONE® 2 PRO IM KONFIGURATOR (Grossjob 20261027-GROSSJOB-apple-konfigurator-
  * qione-qihome-qibracelet-ab, s06). Lädt nur die A-Route /products/qione-2-pro
@@ -64,6 +66,11 @@
   padding: var(--tas-s-4) var(--tas-s-3);
   border-radius: var(--tas-radius);
   background: var(--tas-flaeche);
+}
+/* Spalte „Service": die Lichtkern-Kugel steht ueber dem Etikett, Klick oeffnet
+   Annas Chat (Job 20261112-prio1-ai-anna-kugel-3-lichtkern-…, Christian 12.11.2026). */
+.av-seite .avq-anna-kugel {
+  margin: 0 0 var(--tas-s-2);
 }
 .av-seite .avq-etikett {
   margin: 0;
