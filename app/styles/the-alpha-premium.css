@@ -84,6 +84,11 @@
      festgelegt haben“. */
   --tap-rot: #b92200;
   --tap-rot-tief: #961c00;
+  /* Kaufknopf A+B (Christian 12.11.2026: „A und B kombinieren“): Tiefrot,
+     oben 1 px Lichtkante, Glanz-Lauf alle 6 s und bei Hover. */
+  --tap-rot-knopf: #a81f00;
+  --tap-knopf-kante: rgba(255, 255, 255, 0.38);
+  --tap-knopf-glanz: rgba(255, 255, 255, 0.16);
 
   --tap-radius: 8px;
   --tap-mass: 36rem;
@@ -684,16 +689,55 @@ html:has(main[data-film-seite]) {
 }
 
 .tap-seite .tap-kauf .ta-knopf {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: block;
   padding: var(--tap-s-4) var(--tap-s-3);
   border-radius: var(--tap-radius);
-  background: var(--tap-rot);
+  background: var(--tap-rot-knopf);
+  box-shadow: inset 0 1px 0 var(--tap-knopf-kante);
   color: var(--tap-weiss);
   font-size: var(--tap-fs-zeile);
   font-weight: 700;
   line-height: 1.3;
   text-decoration: none;
   transition: background-color 300ms ease;
+}
+
+/* Glanz-Lauf (Variante B) liegt unter der Schrift: z-index -1 im eigenen
+   Stapel (isolation), die Schrift bleibt reines Weiß. */
+.tap-seite .tap-kauf .ta-knopf::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 32%, var(--tap-knopf-glanz) 50%, transparent 68%);
+  transform: translateX(-100%);
+  animation: tap-knopf-glanz 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .tap-seite .tap-kauf .ta-knopf:hover::before {
+    animation: tap-knopf-glanz-hover 1.2s ease-in-out infinite;
+  }
+}
+
+@keyframes tap-knopf-glanz {
+  0% { transform: translateX(-100%); }
+  20%, 100% { transform: translateX(100%); }
+}
+
+@keyframes tap-knopf-glanz-hover {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap-seite .tap-kauf .ta-knopf::before {
+    animation: none;
+  }
 }
 
 .tap-seite .tap-kauf .ta-knopf:hover {
