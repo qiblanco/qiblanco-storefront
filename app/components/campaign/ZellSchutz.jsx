@@ -294,7 +294,7 @@ function ScienceSection() {
       <span className="eyebrow">Der Zellversuch</span>
       <h2>An lebenden Zellen gemessen.</h2>
       <p className="lp-vp-section__lede">
-        Mehrere peer-review-publizierte Zellstudien (Dartsch Scientific Institut)
+        Mehrere peer-review-publizierte Zellstudien in unserem Auftrag
         belegen die Wirkung der Qi-Blanco-Technologie experimentell. Alle Studien
         sind in vitro durchgeführt und zeigen messbare, reproduzierbare Effekte auf lebende
         Zellen. Ergänzt durch
@@ -353,7 +353,7 @@ function SkeptikerSection() {
     {
       frage: '„Wo ist der Beleg?"',
       antwort:
-        'In peer-review-kontrollierten Zellstudien (in vitro) an lebenden Zellkulturen, durchgeführt vom Dartsch Scientific Institut. Reproduzierbare Effekte, kein Erfahrungsbericht.',
+        'In peer-review-kontrollierten Zellstudien (in vitro) an lebenden Zellkulturen, in unserem Auftrag durchgeführt. Reproduzierbare Effekte, kein Erfahrungsbericht.',
     },
     {
       frage: '„Warum spüre ich nichts?"',

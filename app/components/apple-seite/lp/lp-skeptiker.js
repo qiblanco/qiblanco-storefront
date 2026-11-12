@@ -43,7 +43,7 @@ export const SKEPTIKER_SEKTIONEN = Object.freeze([
     etikett: 'Ebene 2 · Messung',
     titel: 'Was in Zellkulturen gemessen wurde.',
     absaetze: [
-      'Prof. Dr. Peter C. Dartsch hat menschliche Immunzellen im Labor vier Stunden lang mit Handystrahlung belastet. Ungeschützt fiel ihre Abwehrleistung auf 60,5 Prozent, mit dem QiOne® 2 Pro blieb sie bei 84,7 Prozent.',
+      'In unserer Laborstudie wurden menschliche Immunzellen vier Stunden lang Handystrahlung ausgesetzt. Ohne QiOne® 2 Pro behielten sie 60,5 % ihrer Abwehrleistung, mit ihm 84,7 %.',
       'Gemessen wurde an Zellkulturen im Labor.',
     ],
     quellen: STUDIEN.map((s) => `${s.titel}. ${s.quelle}.`),

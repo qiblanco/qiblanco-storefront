@@ -332,8 +332,8 @@ function BeweisSection() {
       <div className="v2-autoritaet">
         <h3>Geprüft von einem unabhängigen Labor</h3>
         <p className="v2-autoritaet__zitat">
-          Alle Zelluntersuchungen wurden von der Dartsch Scientific GmbH unter Leitung
-          von Prof. Dr. P. C. Dartsch durchgeführt, an kultivierten menschlichen und
+          Alle Zelluntersuchungen haben wir bei einem Labor für zellbiologische
+          Testsysteme in Auftrag gegeben, an kultivierten menschlichen und
           tierischen Zellen, mit Kontrollgruppen und mehrfach wiederholten Messreihen.
         </p>
         <p className="v2-autoritaet__quelle">
