@@ -27,11 +27,35 @@
  *      Listeneinträgen, damit künftige Sets ohne Deploy mitfallen. Die
  *      Begründung steht an der Funktion in ~/lib/seo.
  *
+ *  (4) istDealSeite — Black-Friday-/Saison-Deal-Seiten (Elina
+ *      EL-20261111-fa47cfd9, D2: „noindex, nicht in Sitemap/Suche/
+ *      Kollektionen, damit sie nur über Pre-Access, Mails und Ads auffindbar
+ *      sind“). Quelle ist die Datenstelle der Deals
+ *      (black-friday-2026/bf-deals-daten.js), keine zweite Liste:
+ *        - jeder Handle aus BF_DEAL_SEITEN, immer. Das sind Zufallsadressen,
+ *          die nur als Link-Ziel Sinn haben (8kendiw34hd, pjdz538hgs0 sind
+ *          Shopify-Produkte und standen bis 12.11.2026 in /collections/all
+ *          und in der Suche unter „Angebot“/„QiOne“);
+ *        - jede alte Kakao-Adresse aus BF_KAKAO_UMLEITUNGEN, aber nur
+ *          solange sie weiterleitet (Zeitfenster der BF-Codes; `nurEuro`
+ *          nur im Euro-Markt). Ihre Kachel führte sonst über die
+ *          Weiterleitung auf die Kakao-Deal-Seite; nach dem 30.11. sind
+ *          bundle-2x-awake und mengenrabatt-2x wieder normale Produkte.
+ *      Warum hier und nicht in Shopify: die Kollektion zeremonie-kakao trägt
+ *      den ermäßigten Steuersatz (siehe collections.$handle.jsx); ein Produkt
+ *      dort herauszunehmen verteuert die Kasse. Publikation entziehen tötet
+ *      die Deal-Seite. Probe: deal-seiten-regel live <url> (Kollektions-Arm).
+ *
  * Ein Produkt ist ausgeschlossen, wenn EINER der Wege zutrifft.
  * Wer einen Eintrag ergänzt, schreibt den Grund dazu — eine Liste ohne
  * Gründe ist in einem halben Jahr nicht mehr aufloesbar.
  */
 import {istZusammensetzungsSet} from './seo.js';
+import {
+  BF_DEAL_SEITEN,
+  BF_KAKAO_UMLEITUNGEN,
+  bfDealZeitAktiv,
+} from '../components/black-friday-2026/bf-deals-daten.js';
 
 /** Tag am Produkt (Admin: Produkt -> Tags), pflegbar ohne Deploy. */
 export const SUCH_AUSSCHLUSS_TAG = 'qb-nicht-suchbar';
@@ -53,17 +77,49 @@ export const SUCH_AUSSCHLUSS_HANDLES = [
 
 const HANDLE_SET = new Set(SUCH_AUSSCHLUSS_HANDLES.map((e) => e.handle));
 
+/** Währung eines Produktknotens, soweit die Abfrage sie mitbringt; sonst null. */
+function knotenWaehrung(node) {
+  return (
+    node?.priceRange?.minVariantPrice?.currencyCode ??
+    node?.selectedOrFirstAvailableVariant?.price?.currencyCode ??
+    node?.variants?.nodes?.[0]?.price?.currencyCode ??
+    null
+  );
+}
+
+/**
+ * Ist dieser Produktknoten eine Deal-Seite (Weg 4)?
+ * Unbekannte Währung bei einer `nurEuro`-Adresse zählt als Euro: der
+ * Deutsch-Shop verkauft fast nur in Euro, und der Preis des Irrtums ist eine
+ * normale Set-Kachel, die bis 30.11. in einem Fremdmarkt fehlt.
+ * @param {{handle?: string}|null|undefined} node
+ * @param {number} [jetzt]
+ * @returns {boolean}
+ */
+export function istDealSeite(node, jetzt = Date.now()) {
+  const handle = node?.handle;
+  if (!handle) return false;
+  if (Object.prototype.hasOwnProperty.call(BF_DEAL_SEITEN, handle)) return true;
+  const u = BF_KAKAO_UMLEITUNGEN[handle];
+  if (!u || !bfDealZeitAktiv(jetzt)) return false;
+  if (!u.nurEuro) return true;
+  const w = knotenWaehrung(node);
+  return w === null || w === 'EUR';
+}
+
 /**
  * Ist dieser Produkt-Knoten von der Suche ausgeschlossen?
  * Fail-open: was kein erkennbares Produkt ist, bleibt drin — diese Funktion
  * darf nie zum stillen Löschfilter für die halbe Suche werden.
  * @param {{handle?: string, tags?: string[]}|null|undefined} node
+ * @param {number} [jetzt] Zeitpunkt für das Zeitfenster der Deal-Weiterleitungen (Weg 4)
  * @returns {boolean}
  */
-export function istSuchAusgeschlossen(node) {
+export function istSuchAusgeschlossen(node, jetzt = Date.now()) {
   if (!node) return false;
   if (node.handle && HANDLE_SET.has(node.handle)) return true;
   if (istZusammensetzungsSet(node.handle)) return true;
+  if (istDealSeite(node, jetzt)) return true;
   if (Array.isArray(node.tags)) {
     for (const tag of node.tags) {
       if (typeof tag === 'string' && tag.trim().toLowerCase() === SUCH_AUSSCHLUSS_TAG) {
@@ -80,7 +136,7 @@ export function istSuchAusgeschlossen(node) {
  * @param {T[]|null|undefined} nodes
  * @returns {T[]}
  */
-export function ohneAusgeschlossene(nodes) {
+export function ohneAusgeschlossene(nodes, jetzt = Date.now()) {
   if (!Array.isArray(nodes)) return [];
-  return nodes.filter((node) => !istSuchAusgeschlossen(node));
+  return nodes.filter((node) => !istSuchAusgeschlossen(node, jetzt));
 }

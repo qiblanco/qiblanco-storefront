@@ -14,6 +14,7 @@ import {
   SUCH_AUSSCHLUSS_TAG,
   SUCH_AUSSCHLUSS_HANDLES,
   istSuchAusgeschlossen,
+  istDealSeite,
   ohneAusgeschlossene,
 } from '../app/lib/such-ausschluss.js';
 import {
@@ -48,13 +49,21 @@ test('AUSSCHLUSS über die Tag-Konvention, Schreibweise egal', () => {
 
 // --- GEGENRICHTUNG: der Filter darf nichts verschlucken -------------------
 
+// Nach dem BF-Fenster (Weg 4 leitet dann nicht mehr weiter). Im Fenster fällt
+// crystal-cacao-angebot unter Weg 4, siehe die Deal-Tests unten.
+const NACH_BF = Date.parse('2026-12-01T06:00:00Z');
+const IM_BF = Date.parse('2026-11-12T06:00:00Z');
+
 test('GEGENBEIN: die echten Kakao-Kaufseiten bleiben drin', () => {
   for (const handle of [
     'crystal-cacao-create',
     'crystal-cacao-awake',
     'crystal-cacao-angebot',
   ]) {
-    assert.equal(istSuchAusgeschlossen({handle}), false, handle);
+    assert.equal(istSuchAusgeschlossen({handle}, NACH_BF), false, handle);
+  }
+  for (const handle of ['crystal-cacao-create', 'crystal-cacao-awake']) {
+    assert.equal(istSuchAusgeschlossen({handle}, IM_BF), false, handle);
   }
 });
 
@@ -123,7 +132,7 @@ test('GEGENRICHTUNG: Sorten und Bestands-Sets bleiben in der Suche', () => {
     'bundle-4x-awake-geschenk',
     'bundle-04x-awake',
   ]) {
-    assert.equal(istSuchAusgeschlossen({handle}), false, handle);
+    assert.equal(istSuchAusgeschlossen({handle}, NACH_BF), false, handle);
   }
 });
 
@@ -163,4 +172,52 @@ test('GEGENRICHTUNG: Bestands-Sets und Sorten bleiben indexierbar', () => {
 test('die Liste wirkt weiter neben der Regel', () => {
   assert.equal(istNichtIndexierbaresProdukt('bundle-fundament'), true);
   assert.equal(istZusammensetzungsSet('bundle-fundament'), false);
+});
+
+// --- Weg 4: Deal-Seiten (Elina EL-20261111-fa47cfd9, D2: nicht in Suche und
+// Kollektionen). Quelle ist bf-deals-daten.js, keine zweite Liste.
+
+const eur = (handle) => ({handle, priceRange: {minVariantPrice: {currencyCode: 'EUR'}}});
+const chf = (handle) => ({handle, priceRange: {minVariantPrice: {currencyCode: 'CHF'}}});
+
+test('DEAL: die Shopify-Deal-Produkte sind immer ausgeschlossen', () => {
+  for (const h of ['8kendiw34hd', 'pjdz538hgs0']) {
+    assert.equal(istDealSeite(eur(h), IM_BF), true, h);
+    assert.equal(istDealSeite(eur(h), NACH_BF), true, h);
+    assert.equal(istSuchAusgeschlossen(eur(h), IM_BF), true, h);
+  }
+});
+
+test('DEAL: alte Kakao-Adressen nur, solange sie weiterleiten', () => {
+  for (const h of ['bundle-2x-awake', 'mengenrabatt-2x', 'crystal-cacao-angebot']) {
+    assert.equal(istSuchAusgeschlossen(eur(h), IM_BF), true, h);
+    assert.equal(istSuchAusgeschlossen(eur(h), NACH_BF), false, h);
+  }
+  // nurEuro: im Fremdmarkt leitet bundle-2x-awake nicht weiter, die Kachel bleibt
+  assert.equal(istDealSeite(chf('bundle-2x-awake'), IM_BF), false);
+  // unbekannte Währung zählt als Euro
+  assert.equal(istDealSeite({handle: 'mengenrabatt-2x'}, IM_BF), true);
+});
+
+test('DEAL GEGENBEIN: normale Produkte und Deal-Basisprodukte bleiben', () => {
+  for (const h of [
+    'qione-2-pro',
+    'qibracelet',
+    'qihome-air',
+    'bundle-3x-awake',
+    'mengenrabatt-3x-create',
+    'bundle-1x-awake-1x-create',
+  ]) {
+    assert.equal(istDealSeite(eur(h), IM_BF), false, h);
+  }
+  assert.equal(istDealSeite(null), false);
+  assert.equal(istDealSeite({}), false);
+});
+
+test('DEAL: ohneAusgeschlossene nimmt die Deal-Kacheln aus dem Raster', () => {
+  const raster = ['qione-1', 'qione-2-pro', 'pjdz538hgs0', '8kendiw34hd', 'broschure'].map(eur);
+  assert.deepEqual(
+    ohneAusgeschlossene(raster, IM_BF).map((n) => n.handle),
+    ['qione-1', 'qione-2-pro', 'broschure'],
+  );
 });
