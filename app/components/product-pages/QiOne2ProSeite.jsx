@@ -180,7 +180,7 @@ export function QiOne2ProSeite({
            Absatz "Mehr als 14.000+ aktive Nutzer" und das rote Verlaufs-Label
            am Preis; "Bestseller Angebot" steht jetzt im Banner des
            Preisankers (reusables/Preisanker.jsx). */
-        preisanker={{banner: 'Bestseller Angebot'}}
+        preisanker={{banner: 'Bestseller'}}
         /* DIE EINZIGE ABWEICHUNG ZWISCHEN DEN BEIDEN ROUTEN (Christian
            28.09.2026: "gleich bis auf den Beschreibungstext oben beim
            Produkt"). /products übergibt den Shopify-Beschreibungstext,

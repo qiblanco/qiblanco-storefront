@@ -1,4 +1,5 @@
 import {ProductPrice} from '~/components/ProductPrice';
+import {PreisSchilder} from '~/components/reusables/PreisSchild';
 import {
   GOOGLE_REVIEWS_URL,
   StarRating,
@@ -98,9 +99,16 @@ export function Preisanker({
           price={preis.price}
           compareAtPrice={preis.compareAtPrice}
         />
-        {banner ? (
-          <span className="qb-preisanker__banner">{banner}</span>
-        ) : null}
+        {/* SCHILDCHEN VARIANTE B (Christian 12.11.2026, "die B-Juwelier-Effekt"):
+           das Banner ist eine Auszeichnung (Tinte-Pille, Kauf-Gold, Raute), ein
+           Vergleichspreis bekommt davor seinen Preisvorteil mit Zahl (Tiefrot).
+           Stil: app/styles/preis-schild.css. */}
+        <PreisSchilder
+          preis={preis?.price?.amount}
+          vergleich={preis?.compareAtPrice?.amount}
+          waehrung={preis?.price?.currencyCode || 'EUR'}
+          auszeichnung={banner}
+        />
       </div>
     </div>
   );

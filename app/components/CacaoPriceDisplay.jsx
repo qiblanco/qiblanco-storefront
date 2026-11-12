@@ -1,5 +1,6 @@
 import {cacaoPricing} from './CacaoProductForm';
 import {useMarktLand} from '~/lib/markt-land';
+import {PreisSchilder} from '~/components/reusables/PreisSchild';
 
 /**
  * Preis-Anzeige der Kakao-Mengenstaffel — DYNAMISCH aus dem API-Preis der
@@ -39,9 +40,15 @@ export function CacaoPriceDisplay({quantity, selectedVariant, handle, staffelKas
           <span className="CacaoPriceCompare">{pricing.compareAtGesamt}</span>
         )}
       </div>
-      <div className={`BestsellerLabel BestsellerLabel--${pricing.badgeStyle}`}>
-        {pricing.badge}
-      </div>
+      {/* SCHILDCHEN VARIANTE B (Christian 12.11.2026): Preisvorteil mit Zahl
+          (Tiefrot), dann die Auszeichnung (Tinte, Kauf-Gold, Raute). Vorher
+          ein Schild je Stufe: 'Exklusiv' / 'Angebot' / 'Bestseller Angebot'. */}
+      <PreisSchilder
+        preis={pricing.gesamtNum}
+        vergleich={pricing.vorteil ? pricing.compareAtGesamtNum : null}
+        waehrung={pricing.waehrung}
+        auszeichnung={pricing.auszeichnung}
+      />
       <div className="CacaoPricePer100g">{nebenzeile}</div>
     </div>
   );
