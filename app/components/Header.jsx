@@ -602,7 +602,7 @@ export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
  * Klassen .qfk), nur mit der Wortmarke „Qi Blanco“. Die Marke ist kein Link:
  * sie führt nicht zur Startseite, ein Tipp scrollt nach oben. Konto und
  * Warenkorb bleiben, die Kasse bleibt erreichbar.
- * WELCHE SEITE: die Route erklärt es selbst (app/lib/bf-funnel.js), wie
+ * WELCHE SEITE: die Route erklärt es selbst (black-friday-2026/bf-funnel.js), wie
  * `handle.filmSeite` in root.jsx. Entweder `export const handle = {bfFunnel: true}` (feste
  * Funnel-Seiten wie Pre-Access und bf-deals) oder `bfFunnel: true` in den
  * Loaderdaten (Deal-Seiten, nur im Aktionszeitraum und Euro-Markt). Kein Pfad

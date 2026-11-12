@@ -11,7 +11,7 @@ import {
   istQiAlphaFunnelPfad,
 } from '~/components/Header';
 import {CartMain} from '~/components/CartMain';
-import {istBfFunnelSeite} from '~/lib/bf-funnel';
+import {istBfFunnelSeite} from '~/components/black-friday-2026/bf-funnel';
 import {
   SEARCH_ENDPOINT,
   SearchFormPredictive,
@@ -32,7 +32,7 @@ export function PageLayout({
   const {pathname} = useLocation();
   const matches = useMatches();
   // Black-Friday-Funnel (Elina EL-20261112-5f5fab2e): eine Route, die das
-  // Merkmal bfFunnel trägt (handle oder Loaderdaten, app/lib/bf-funnel.js),
+  // Merkmal bfFunnel trägt (handle oder Loaderdaten, black-friday-2026/bf-funnel.js),
   // rendert wie Qi Alpha ohne Menü und Fuß. Ohne Merkmal bleibt jede Seite
   // unverändert.
   const bfFunnel = istBfFunnelSeite(matches);
