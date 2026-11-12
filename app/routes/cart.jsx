@@ -113,8 +113,13 @@ export async function action({request, context}) {
       } else if (clearDiscountCodes && result?.cart?.totalQuantity > 0) {
         result = await cart.updateDiscountCodes([]);
       } else if (bfDealId && result?.cart?.totalQuantity > 0) {
+        // Die Antwort von addLines (CART_MUTATE_FRAGMENT) trägt KEINE
+        // discountCodes: die vorhandenen Codes der anderen Deals erst aus dem
+        // Warenkorb lesen, sonst ersetzt jeder neue Deal die vorigen
+        // (Vorschau-Klick 12.11.: nach Kakao fiel BF26-PRO weg).
+        const aktuell = await cart.get();
         const codes = bfDealCodesNachHinzufuegen(
-          (result.cart.discountCodes ?? []).map((c) => c.code),
+          (aktuell?.discountCodes ?? []).map((c) => c.code),
           bfDealId,
         );
         if (codes) result = await cart.updateDiscountCodes(codes);
