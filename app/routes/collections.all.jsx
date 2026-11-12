@@ -8,6 +8,7 @@ import {
   istNichtIndexierbaresProdukt,
 } from '~/lib/seo';
 import {istVorlageOhneIndexwert} from '~/lib/vorlagen-ohne-indexwert';
+import {ohneAusgeschlossene} from '~/lib/such-ausschluss';
 import {kollektionSignale, teilbild} from '~/lib/kollektion-seo';
 import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {AppleSeite} from '~/components/apple-seite/AppleSeite';
@@ -70,7 +71,10 @@ export const meta = ({data}) => {
       // Shopify-Verwaltungskollektionen ohne Kundennutzen, hier sind es echte
       // Angebots-Bundles, die ein Kunde über einen Direktlink kaufen können
       // soll. Sie aus dem Raster zu nehmen, wäre eine Produktentscheidung und
-      // nicht Sache dieses Baus. Eine ItemList darf eine TEILMENGE des
+      // nicht Sache dieses Baus. (Überholt 12.11.2026: Elinas Dauerregel
+      // EL-20261111-fa47cfd9 hat entschieden, der Loader filtert das Raster
+      // jetzt mit ohneAusgeschlossene. Dieser Filter bleibt für die übrigen
+      // noindex-Produkte, die im Raster stehen dürfen.) Eine ItemList darf eine TEILMENGE des
       // Sichtbaren nennen — sie darf nur nichts nennen, was es nicht gibt oder
       // was ausgeschlossen ist.
       eintraege: produkte
@@ -130,6 +134,15 @@ async function loadCriticalData({context, request}) {
     }),
     // Add other queries here, so that they are loaded in parallel
   ]);
+  // AUSSCHLUSS IM RASTER (Elina EL-20261111-fa47cfd9, 12.11.2026): dieselbe
+  // Liste wie in Suche und collections.$handle. Bis hierher stand der Satz
+  // oben am ItemList-Filter, die Angebots-Bundles aus dem Raster zu nehmen,
+  // wäre eine Produktentscheidung; Elinas Dauerregel hat sie getroffen:
+  // Deal-Seiten hängen in keiner Kollektion. Sie bleiben über ihre Adresse
+  // kaufbar. Preis des Nachfilterns: eine Seite zeigt dann 6 statt 8.
+  if (products && Array.isArray(products.nodes)) {
+    return {products: {...products, nodes: ohneAusgeschlossene(products.nodes)}};
+  }
   return {products};
 }
 
