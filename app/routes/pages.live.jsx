@@ -167,17 +167,35 @@ const THEMA_JE_TERMIN = {
     'beruflich wie privat',
 };
 
-const BESCHREIBUNG_JE_TERMIN = {
-  '2026-11-15': [
-    'Deine größten Gegner sitzen nicht im Außen, sondern in deinem Kopf: ' +
-      'Angst, Sorgen, Zweifel. Die stillen Manipulatoren deines Erfolgs, ' +
-      'privat wie beruflich.',
-    'Diesen Sonntag bei Coming Home zeigen wir dir an echten Beispielen, wie ' +
-      'du sie auflöst, und zwar mit einer Technik, die du danach selbst ' +
-      'anwenden kannst.',
-    'Sei dabei.',
-  ],
-};
+/**
+ * Christians Wortlaut als JSX unter data-fremdtext: Stil-Tor und
+ * Seiten-Freigabe schneiden ihn aus der Messung und nennen die Wörter im
+ * Bericht (Weg aus PR #840). Nicht umformulieren.
+ */
+function Beschreibung20261115({klasse}) {
+  return (
+    <div data-ch-live="beschreibung" data-fremdtext="christian-wortlaut">
+      <p className={klasse}>
+        Deine größten Gegner sitzen nicht im Außen, sondern in deinem Kopf:
+        Angst, Sorgen, Zweifel. Die stillen Manipulatoren deines Erfolgs,
+        privat wie beruflich.
+      </p>
+      <p className={klasse}>
+        Diesen Sonntag bei Coming Home zeigen wir dir an echten Beispielen, wie
+        du sie auflöst, und zwar mit einer Technik, die du danach selbst
+        anwenden kannst.
+      </p>
+      <p className={klasse}>Sei dabei.</p>
+    </div>
+  );
+}
+
+const BESCHREIBUNG_JE_TERMIN = {'2026-11-15': Beschreibung20261115};
+
+function BeschreibungTermin({datum, klasse}) {
+  const Text = BESCHREIBUNG_JE_TERMIN[datum];
+  return Text ? <Text klasse={klasse} /> : null;
+}
 
 /**
  * Foto von Anna und Christian aus Adrians Shooting in Berlin (Christian
@@ -363,11 +381,13 @@ export async function loader({request, context}) {
     seite.naechster = seite.naechster && {...seite.naechster, extern: null};
     seite.weitere = seite.weitere.map((w) => ({...w, extern: null}));
   }
-  const beschreibung =
-    seite.naechster && !seite.naechster.extern
-      ? BESCHREIBUNG_JE_TERMIN[seite.naechster.datum]
-      : null;
-  if (beschreibung) seite.naechster = {...seite.naechster, beschreibung};
+  if (
+    seite.naechster &&
+    !seite.naechster.extern &&
+    BESCHREIBUNG_JE_TERMIN[seite.naechster.datum]
+  ) {
+    seite.naechster = {...seite.naechster, beschreibung: true};
+  }
   // Thema aus coming-home/config/themen.json (PR-Chef frei 12.11. 08:22Z),
   // solange der Vorschau-Artikel noch die Ersatzfassung „Thema folgt“ trägt
   // (Shopify-Tagesdeckel G4a). Ein gesetzter Artikel-Titel gewinnt immer.
@@ -675,14 +695,9 @@ function TerminApple({naechster, weitere, messfixtur}) {
             <h3 className="lva-termin-thema">
               {naechster.titel || 'Thema folgt'}
             </h3>
-            {naechster.beschreibung ? (
-              <div data-ch-live="beschreibung">
-                {naechster.beschreibung.map((absatz) => (
-                  <p className="lva-termin-teaser" key={absatz}>
-                    {absatz}
-                  </p>
-                ))}
-              </div>
+            {naechster.beschreibung &&
+            BESCHREIBUNG_JE_TERMIN[naechster.datum] ? (
+              <BeschreibungTermin datum={naechster.datum} klasse="lva-termin-teaser" />
             ) : naechster.teaser ? (
               <p className="lva-termin-teaser">{naechster.teaser}</p>
             ) : null}
@@ -977,14 +992,9 @@ function Termin({naechster, weitere, messfixtur}) {
               </time>
             </p>
             <h3 className="lv-h3">{naechster.titel || 'Thema folgt'}</h3>
-            {naechster.beschreibung ? (
-              <div data-ch-live="beschreibung">
-                {naechster.beschreibung.map((absatz) => (
-                  <p className="lv-text" key={absatz}>
-                    {absatz}
-                  </p>
-                ))}
-              </div>
+            {naechster.beschreibung &&
+            BESCHREIBUNG_JE_TERMIN[naechster.datum] ? (
+              <BeschreibungTermin datum={naechster.datum} klasse="lv-text" />
             ) : naechster.teaser ? (
               <p className="lv-text">{naechster.teaser}</p>
             ) : null}
