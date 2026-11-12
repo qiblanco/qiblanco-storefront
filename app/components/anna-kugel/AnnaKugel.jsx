@@ -21,16 +21,16 @@
  * KLICK ÖFFNET DEN CHAT (Christian 12.11.2026: „Und wenn jemand draufklickt,
  * dann eben auf diesen Kugel, dann geht der AI-Chat auf"). Die Kugel ist ein
  * <button data-anna-chat>. Den Klick nimmt der Anna-Loader (qi-salesbot,
- * src/lib/anna-oeffnen.ts) selbst entgegen und öffnet den Chat wie der
+ * src/lib, „Anna auf Zuruf“) selbst entgegen und öffnet den Chat wie der
  * Launcher. Die Seite braucht dafür kein eigenes Skript. Mit knopf={false}
  * bleibt sie ein reines Bild (aria-hidden).
- * Job 20261112-prio1-ai-anna-kugel-3-lichtkern-klick-oeffnet-chat-beide-shops-live.
+ * Job 20261112-prio1-ai-anna-kugel-3-lichtkern (beide Shops live).
  */
 
 export const ANNA_KUGEL_VARIANTEN = Object.freeze(['atem', 'planet', 'lichtkern', 'orbit']);
 export const STANDARD = 'lichtkern';
 
-/** Das Attribut, auf das der Anna-Loader hört (qi-salesbot src/lib/anna-oeffnen.ts). */
+/** Das Attribut, auf das der Anna-Loader hört (qi-salesbot, „Anna auf Zuruf“). */
 export const ANNA_CHAT_ATTR = 'data-anna-chat';
 
 /** Props für jedes Element, das Annas Chat öffnen soll (Kugel, Überschrift). */
