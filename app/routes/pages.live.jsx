@@ -161,6 +161,12 @@ const SPEZIAL_AN = true;
  * Fassung steht in coming-home/config/themen.json (Feld beschreibung, liest
  * die Erinnerungs- und Link-Mail). Leeres Objekt = Stand vorher.
  */
+const THEMA_JE_TERMIN = {
+  '2026-11-15':
+    'Angst, Sorge, Zweifel – die drei größten Feinde für unseren Erfolg, ' +
+    'beruflich wie privat',
+};
+
 const BESCHREIBUNG_JE_TERMIN = {
   '2026-11-15': [
     'Deine größten Gegner sitzen nicht im Außen, sondern in deinem Kopf: ' +
@@ -362,6 +368,16 @@ export async function loader({request, context}) {
       ? BESCHREIBUNG_JE_TERMIN[seite.naechster.datum]
       : null;
   if (beschreibung) seite.naechster = {...seite.naechster, beschreibung};
+  // Thema aus coming-home/config/themen.json (PR-Chef frei 12.11. 08:22Z),
+  // solange der Vorschau-Artikel noch die Ersatzfassung „Thema folgt“ trägt
+  // (Shopify-Tagesdeckel G4a). Ein gesetzter Artikel-Titel gewinnt immer.
+  const thema = seite.naechster ? THEMA_JE_TERMIN[seite.naechster.datum] : null;
+  if (
+    thema &&
+    (!seite.naechster.titel || seite.naechster.titel === 'Thema folgt')
+  ) {
+    seite.naechster = {...seite.naechster, titel: thema};
+  }
   const rueckblicke = seite.rueckblicke.map((r) => {
     const html = fremdHtmlMitBildAuszeichnung(
       artikelInhaltAufraeumen(r.html, r.titel),
