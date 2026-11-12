@@ -224,10 +224,16 @@ export async function loader(args) {
   if (dealSeite?.art?.startsWith('alpha')) {
     const deal = await ladeBfDealAlpha(args, dealSeite);
     if (!deal) throw new Response(null, {status: 404});
-    return deal;
+    return {...deal, bfFunnel: true};
   }
-  if (dealSeite?.art === 'kakao-sets') return ladeBfDealKakao(args, dealSeite);
-  if (dealSeite) return ladeBfDealStandard(args, dealSeite);
+  // bfFunnel: jede BF-Deal-Seite ist eine geschlossene Funnel-Seite wie Qi
+  // Alpha, ohne Menü und Fuß (Elina EL-20261112-5f5fab2e; Weiche in
+  // PageLayout.jsx, Leser black-friday-2026/bf-funnel.js). Nur hier, also nur
+  // im Aktionszeitraum und Euro-Markt; jede andere Produktseite bleibt gleich.
+  if (dealSeite?.art === 'kakao-sets') {
+    return {...(await ladeBfDealKakao(args, dealSeite)), bfFunnel: true};
+  }
+  if (dealSeite) return {...(await ladeBfDealStandard(args, dealSeite)), bfFunnel: true};
 
   const campaignDeal = getTenYearsDealByHandle(args.params.handle);
 
