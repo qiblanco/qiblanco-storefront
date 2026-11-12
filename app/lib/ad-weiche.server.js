@@ -58,6 +58,11 @@ import {
 import {LP_V3_PFAD} from './lp-v3.server.js';
 import {MM_MARKER, mmZielPfad, produktLpZiel, stehtAufEigenemMmZiel} from './ad-weiche-ziele.js';
 import {STUFE_B_MARKER, STUFE_B_PFAD, stufeBZielPfad} from './ad-weiche-stufe-b.server.js';
+import {
+  BF_DEAL_SEITEN,
+  BF_KAKAO_UMLEITUNGEN,
+  bfDealZeitAktiv,
+} from '../components/black-friday-2026/bf-deals-daten.js';
 
 export const LP_A_PFAD = DEFAULT_ZUTEILUNG.default; // '/pages/schlaf-zellen-schutz'
 const FETCH_TIMEOUT_MS = 1500;
@@ -420,8 +425,36 @@ export const AUSSCHLUSS_SEGMENTE = [
 // Echte Prefix-Ausschluesse (Dateinamens-Familien ohne Segmentgrenze).
 export const AUSSCHLUSS_PREFIXE = ['/__qb', '/sitemap', '/robots', '/favicon', '/apple-'];
 
+// BLACK-FRIDAY-DEAL-SEITEN (Elina EL-20261111-fa47cfd9, Dauerregel 11.11.2026: die Deal-Seiten mit
+// kryptischer Adresse sollen „nur über Pre-Access, Mails und Ads auffindbar“ sein; im selben GO: „Ads-Ziel-URLs
+// auf die neue Adresse umstellen“). Gemessen live am 12.11. 06:02Z: /products/j7hcyb802kn?utm_source=meta&
+// utm_medium=paid&... gab 302 auf LP A mit lp_m=w, die Kakao-Anzeige DE erreichte den Kakao-Deal nie; ebenso
+// 8kendiw34hd und pjdz538hgs0. Ausgenommen sind die Deal-Seiten aus BF_DEAL_SEITEN und die reinen alten
+// Kakao-Deal-Adressen aus BF_KAKAO_UMLEITUNGEN (die leiten selbst auf die Kakao-Seite; die nurEuro-Einträge sind
+// normale Set-Seiten und bleiben in der Weiche). ABGELEITET, NICHT ABGETIPPT: eine neue Deal-Seite in
+// bf-deals-daten.js ist ohne Zeile hier mit ausgenommen. ZEITGEBUNDEN wie die Deal-Seiten selbst (bfDealZeitAktiv,
+// bis BF_DEAL_ENDE): danach zeigen 8kendiw34hd / pjdz538hgs0 wieder ihre normale Seite, und Christians Dekret
+// vom 24.07. („ALLE Ads auf LP A“) gilt dort wieder ohne Zutun. Originalseiten (/products/qione-2-pro …) bleiben
+// unberührt. Additiv, reversibel: diesen Block und seinen Aufruf in istAusgeschlossen löschen.
+const BF_DEAL_HANDLES_AD_OFFEN = new Set(
+  [
+    ...Object.keys(BF_DEAL_SEITEN),
+    ...Object.entries(BF_KAKAO_UMLEITUNGEN)
+      .filter(([, u]) => !u.nurEuro)
+      .map(([h]) => h),
+  ].map((h) => h.toLowerCase()),
+);
+
+/** true, wenn der Pfad eine BF-Deal-Seite unter /products/ ist und die Deal-Zeit läuft. */
+export function istBfDealPfad(pfad, jetzt = Date.now()) {
+  const m = /^\/products\/([^/]+)\/?$/i.exec(pfad);
+  if (!m || !BF_DEAL_HANDLES_AD_OFFEN.has(m[1].toLowerCase())) return false;
+  return bfDealZeitAktiv(jetzt);
+}
+
 /** true, wenn die Weiche auf diesem Pfad grundsaetzlich nie feuert. */
-export function istAusgeschlossen(pfad) {
+export function istAusgeschlossen(pfad, jetzt = Date.now()) {
+  if (istBfDealPfad(pfad, jetzt)) return true;
   // DIE SCHREIBWEISE ZÄHLT NICHT (seit 2026-10-26, s06 des The-Alpha-Grossjobs):
   // React Router löst Routen ohne Rücksicht auf die Schreibweise auf, und Seiten
   // wie /pages/The-Alpha leiten /pages/the-alpha per 301 auf ihre kanonische
@@ -463,12 +496,12 @@ export function klassifizierePaid(searchParams) {
  * {erkennung, ziel} wenn dieser Request umgeleitet werden soll, sonst null.
  * Ziel = LP A + kompletter Original-Query byte-identisch + lp_m=w.
  */
-export function entscheideAdWeiche(requestUrl) {
+export function entscheideAdWeiche(requestUrl, jetzt = Date.now()) {
   const url = new URL(requestUrl);
   const pfad = url.pathname;
   if (pfad.endsWith('.data')) return null;
   if (url.searchParams.has('_data')) return null;
-  if (istAusgeschlossen(pfad)) return null;
+  if (istAusgeschlossen(pfad, jetzt)) return null;
   const erkennung = klassifizierePaid(url.searchParams);
   if (!erkennung) return null;
   if (erkennung === 'google-paid' && (pfad === '/products' || pfad.startsWith('/products/'))) {
