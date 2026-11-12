@@ -23,6 +23,7 @@ import {
   VORBESTELLUNGEN,
   versandhinweisFürLinien,
   vorbestellungFürHandle,
+  vorbestellungFürLinie,
   warenkorbTitel,
   warenkorbUnterzeile,
 } from '../app/lib/vorbestellung.js';
@@ -274,4 +275,52 @@ test('Necklace 2: Termin je Material in Zeile und Lieferhinweis, ohne Material k
   assert.equal(versandhinweisFürLinien([gold]), 'Lieferbar für Dich: ab Januar 2027');
   assert.equal(versandhinweisFürLinien([stahl]), 'Lieferbar für Dich: ab 1. Quartal 2027');
   assert.equal(versandhinweisFürLinien([zeile('Silber')]), STANDARD_VERSANDHINWEIS);
+});
+
+// Sammelhinweis bei mehreren Vorbestellungen (Job 20261105-prio1-necklace-2-
+// livegang-de-freigegeben-christian-s03): die Bestellung geht erst raus, wenn
+// alles da ist, also nennt der Hinweis den SPÄTESTEN Termin. Verglichen wird
+// der Schlüssel `reif` (YYYY-MM, Quartal = letzter Monat), nie der Text.
+test('Sammelhinweis: mehrere Vorbestellungen nennen den spätesten Termin', () => {
+  const n2 = (material) => ({
+    merchandise: {
+      product: {handle: 'necklace-2', title: 'Necklace 2'},
+      selectedOptions: [
+        {name: 'Material', value: material},
+        {name: 'Länge', value: '60 cm'},
+      ],
+    },
+  });
+  const gold = n2('750er ethisches Vollgold');
+  const stahl = n2('Chirurgenstahl');
+  const STAHL = 'Lieferbar für Dich: ab 1. Quartal 2027';
+  // Gold + Stahl, in beiden Reihenfolgen
+  assert.equal(versandhinweisFürLinien([gold, stahl]), STAHL);
+  assert.equal(versandhinweisFürLinien([stahl, gold]), STAHL);
+  // Qi Alpha (Jan 2027) + Stahl, in beiden Reihenfolgen
+  assert.equal(versandhinweisFürLinien([QI_ALPHA, stahl]), STAHL);
+  assert.equal(versandhinweisFürLinien([stahl, QI_ALPHA]), STAHL);
+  // Stahl allein
+  assert.equal(versandhinweisFürLinien([stahl]), STAHL);
+  // gleicher Monat: unverändert der erste (Qi Alpha + Gold, beide 2027-01)
+  assert.equal(versandhinweisFürLinien([QI_ALPHA, gold]), 'Versandbereit für Dich: Jan 2027');
+  // ohne Vorbestellung: Standardtext
+  const anderes = linie('qione-2-pro', 'QiOne 2 Pro');
+  assert.equal(versandhinweisFürLinien([anderes]), STANDARD_VERSANDHINWEIS);
+  assert.equal(versandhinweisFürLinien([anderes, stahl]), STAHL);
+});
+
+test('Jede Vorbestellung trägt einen sortierbaren Termin-Schlüssel reif (YYYY-MM)', () => {
+  for (const [handle, eintrag] of Object.entries(VORBESTELLUNGEN)) {
+    assert.match(eintrag.reif ?? '', /^\d{4}-(0[1-9]|1[0-2])$/, handle);
+  }
+  for (const material of ['750er ethisches Vollgold', 'Chirurgenstahl']) {
+    const e = vorbestellungFürLinie({
+      merchandise: {
+        product: {handle: 'necklace-2'},
+        selectedOptions: [{name: 'Material', value: material}],
+      },
+    });
+    assert.match(e?.reif ?? '', /^\d{4}-(0[1-9]|1[0-2])$/, material);
+  }
 });
