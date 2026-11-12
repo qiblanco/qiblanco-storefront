@@ -1,0 +1,181 @@
+/*
+ * BF-Deal-Seiten: Überzeugungs-Teil (Elina EL-20261112-452cdd56, -cb3c35ca).
+ * Geladen nur über BfDealStile, also nur hinter der Weiche bfDealSeite(handle).
+ * Farben aus bf-deal-dunkel.css (--bfd-*), Mobile First: alles untereinander,
+ * ab 768 px Banner zweispaltig (Bild links, Text rechts), Kakao-Sorten
+ * nebeneinander. Bewegung nur über Elinas Baukasten (data-eb, elina-bewegung.css),
+ * der bei „Bewegung reduzieren“ ruhig bleibt; hier keine eigenen Übergänge.
+ */
+
+.bf-deal-seite {
+  --bfa-gruen: #7fd99a;
+  --bfa-a1: 0.5rem;
+  --bfa-a2: 1rem;
+  --bfa-a3: 1.5rem;
+  --bfa-a4: 2.5rem;
+}
+
+/* ---------- Links, die der Funnel zu Text macht ---------- */
+.bf-deal-seite a[data-bf-weglink-aus] {
+  color: inherit;
+  text-decoration: none;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ---------- Schluss-Banner ---------- */
+.bf-deal-seite .bfsb {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 72rem;
+  margin: var(--bfa-a4) auto;
+  padding: 0 var(--bfa-a2);
+}
+.bf-deal-seite .bfsb__kachel {
+  display: grid;
+  grid-template-columns: 1fr;
+  overflow: hidden;
+  border: 1px solid var(--bfd-rand);
+  border-radius: 1.25rem;
+  background: var(--bfd-flaeche);
+}
+.bf-deal-seite .bfsb__bild {
+  margin: 0;
+  background: #090806;
+  aspect-ratio: 1 / 1;
+}
+.bf-deal-seite .bfsb__bild img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.bf-deal-seite .bfsb__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bfa-a1);
+  padding: var(--bfa-a3) var(--bfa-a2) var(--bfa-a3);
+  color: var(--bfd-hell);
+}
+.bf-deal-seite .bfsb__zeile {
+  margin: 0;
+  color: var(--bfd-gold);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.bf-deal-seite .bfsb__titel {
+  margin: 0;
+  color: var(--bfd-hell);
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+  line-height: 1.15;
+  font-weight: 600;
+}
+.bf-deal-seite .bfsb__preise {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.75rem;
+  margin: var(--bfa-a1) 0 0;
+}
+.bf-deal-seite .bfsb__alt {
+  color: var(--bfd-matt);
+  font-size: 1.125rem;
+}
+.bf-deal-seite .bfsb__neu {
+  color: var(--bfd-gold);
+  font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+.bf-deal-seite .bfsb__rabatt {
+  margin: 0;
+  color: var(--bfa-gruen);
+  font-weight: 600;
+}
+.bf-deal-seite .bfsb__uhr {
+  margin: 0;
+  color: var(--bfd-matt);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+.bf-deal-seite .bfsb__zeit {
+  color: var(--bfd-hell);
+  font-weight: 600;
+}
+.bf-deal-seite a.bfsb__knopf {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 28rem;
+  min-height: 52px;
+  margin-top: var(--bfa-a2);
+  padding: 0.8rem 1.5rem;
+  border-radius: 999px;
+  background: #f2bf72;
+  color: #171310 !important;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none !important;
+}
+.bf-deal-seite a.bfsb__knopf:hover {
+  background: #f6cc86;
+}
+.bf-deal-seite a.bfsb__knopf:focus-visible {
+  outline: 2px solid var(--bfd-hell);
+  outline-offset: 3px;
+}
+@media (min-width: 768px) {
+  .bf-deal-seite .bfsb {
+    padding: 0 var(--bfa-a3);
+  }
+  .bf-deal-seite .bfsb__kachel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+  .bf-deal-seite .bfsb__text {
+    padding: var(--bfa-a4);
+  }
+}
+
+/* ---------- Kakao: Fragen (die Gegenüberstellung hat ihr eigenes Stylesheet) ---------- */
+.bf-deal-seite .bfka {
+  color: var(--bfd-hell);
+}
+.bf-deal-seite .bfkv {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 72rem;
+  margin: var(--bfa-a4) auto;
+  padding: 0 var(--bfa-a2);
+}
+.bf-deal-seite .bfkv__titel {
+  margin: 0 0 var(--bfa-a3);
+  color: var(--bfd-hell);
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+  line-height: 1.15;
+  font-weight: 600;
+}
+.bf-deal-seite .bfkv__fragen details {
+  border-bottom: 1px solid var(--bfd-rand);
+}
+.bf-deal-seite .bfkv__fragen summary {
+  padding: var(--bfa-a2) 0;
+  color: var(--bfd-hell);
+  font-weight: 600;
+  cursor: pointer;
+}
+.bf-deal-seite .bfkv__fragen p {
+  margin: 0 0 var(--bfa-a2);
+  color: var(--bfd-matt);
+  line-height: 1.55;
+}
+@media (min-width: 768px) {
+  .bf-deal-seite .bfkv {
+    padding: 0 var(--bfa-a3);
+  }
+}
