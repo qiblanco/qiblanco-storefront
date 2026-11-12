@@ -179,3 +179,16 @@
     padding: 0 var(--bfa-a3);
   }
 }
+
+/* ---------- Instagram-Reihe (AlphaStimmen, ig-testimonials.css) im dunklen BF-Look ----------
+ * Elina EL-20261112-600b5d42: die Reihe kommt mit dem Stylesheet der Originalseite (Kacheln nebeneinander),
+ * dessen Farbtoken sind hell (#faf9f5). Auf der Deal-Seite gelten die dunklen Töne aus bf-deal-dunkel.css;
+ * nur die Token werden umgestellt, Maße und Aufbau bleiben die des Originals. */
+.bf-deal-seite .qb-igt {
+  --igt-grund: var(--bfd-grund);
+  --igt-flaeche: var(--bfd-flaeche);
+  --igt-dunkel: var(--bfd-hell);
+  --igt-text: var(--bfd-hell);
+  --igt-muted: var(--bfd-matt);
+  --igt-linie: var(--bfd-rand);
+}
