@@ -5,7 +5,7 @@ import {
   staffelModellAnzeige,
 } from './markt-pricing.js';
 import {KAKAO_EINZEL, KAKAO_SETS} from './kakao-set-zeile.js';
-import {vorteilText} from './preis-schild.js';
+import {vorteilText} from '../components/reusables/preis-schild-regel.js';
 
 /**
  * KAKAO-MENGENSTAFFEL — die Rechnung hinter Kaufbox, Preisblock und
@@ -28,9 +28,9 @@ import {vorteilText} from './preis-schild.js';
 // SCHILDCHEN (Standard Variante B, Christian 12.11.2026): je Stufe hoechstens
 // EINE Auszeichnung und EIN Preisvorteil, nie ein Schild mit zwei Aussagen.
 // Der Preisvorteil ist keine Konstante: er wird aus Preis und Vergleichspreis
-// daneben gerechnet (lib/preis-schild.js, unter 100 Prozent, sonst Betrag).
+// daneben gerechnet (components/reusables/preis-schild-regel.js, unter 100 Prozent, sonst Betrag).
 // 'Exklusiv' an der Einzelpackung und 'Angebot' ohne Zahl entfallen.
-// badge/badgeStyle bleiben fuer Altleser bestehen (crystal-spiegel liest sie).
+// badge/badgeStyle bleiben für Altleser bestehen (crystal-spiegel liest sie).
 export const CACAO_STAFFEL = {
   '1': {rabattProzent: 0, badge: 'Exklusiv', badgeStyle: 'gold', auszeichnung: null},
   '2': {rabattProzent: 20, badge: 'Angebot', badgeStyle: 'red', auszeichnung: null},

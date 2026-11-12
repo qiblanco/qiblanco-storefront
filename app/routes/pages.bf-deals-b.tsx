@@ -270,7 +270,7 @@ function Bild({k, bild}: {k: Kachel; bild?: string}) {
         />
       ) : null}
       {/* Rabatt-Plakette auf dem Bild entfaellt: Schildchen-Standard B (Christian 12.11.2026),
-          der Preisvorteil steht am Preis, das Bild bleibt frei fuer das Produkt. */}
+          der Preisvorteil steht am Preis, das Bild bleibt frei für das Produkt. */}
     </figure>
   );
 }

@@ -1,4 +1,4 @@
-import {formatPreis} from './markt-pricing.js';
+import {formatPreis} from '../../lib/markt-pricing.js';
 
 /**
  * PREIS-SCHILDCHEN (Standard Variante B, Christian 12.11.2026) — die Regel ohne React,

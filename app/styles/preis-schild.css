@@ -32,7 +32,7 @@
   --schild-schrift: 12px;
 }
 
-/* --- Form, fuer beide Arten gleich --- */
+/* --- Form, für beide Arten gleich --- */
 .qb-schild,
 :where(.Bestseller-Price) .BestsellerLabel:where(:not(#ccsp *)),
 .lp-a-product__badge,

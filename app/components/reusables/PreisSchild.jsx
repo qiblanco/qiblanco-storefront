@@ -1,8 +1,8 @@
-import {vorteilText, vorteilVorlesen} from '~/lib/preis-schild';
+import {vorteilText, vorteilVorlesen} from '~/components/reusables/preis-schild-regel';
 
 /**
  * PREIS-SCHILDCHEN, Variante B "Juwelier-Etikett" (Christian 12.11.2026).
- * Stil: app/styles/preis-schild.css. Regel: app/lib/preis-schild.js.
+ * Stil: app/styles/preis-schild.css. Regel: app/components/reusables/preis-schild-regel.js.
  *
  *   <PreisSchild art="auszeichnung">Bestseller</PreisSchild>
  *   <PreisSchild art="vorteil">−200 €</PreisSchild>
