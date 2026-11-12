@@ -37,7 +37,7 @@ const SEO_DIESER_SEITE = {
     'und QiBracelet®. Ruhe und tieferer Schlaf in je rund 20 % genannt, ohne ' +
     'Kontrollgruppe.',
   einstieg:
-    'Die Nutzerstudie von Prof. Dr. Peter C. Dartsch (2024) wertet 171 ' +
+    'Unsere Nutzerstudie (2024) wertet 171 ' +
     'Erfahrungsberichte zu QiOne® 2 Pro und QiBracelet® aus: Am häufigsten ' +
     'nennen sie mehr Ruhe und tieferen Schlaf, jeweils in rund 20 % der ' +
     'Beobachtungen. Die Nutzer haben ihre Beobachtungen freiwillig und ' +
