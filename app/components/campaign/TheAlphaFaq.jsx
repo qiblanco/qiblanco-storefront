@@ -1,4 +1,5 @@
 import {useId, useState} from 'react';
+import {AnnaKugel} from '~/components/anna-kugel/AnnaKugel';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {
   THE_ALPHA_FAQ_ANNA,
@@ -102,7 +103,7 @@ export function TheAlphaFaq({ton = 'hell', vergeben}) {
           })}
         </ul>
         <div className="taf-anna" data-the-alpha-faq-anna="">
-          <span className="taf-kugel" aria-hidden="true" />
+          <AnnaKugel groesse={56} className="taf-kugel" />
           <p className="taf-anna-titel">{mitMarkeR(THE_ALPHA_FAQ_ANNA.titel)}</p>
           <p className="taf-anna-text">{mitMarkeR(THE_ALPHA_FAQ_ANNA.text)}</p>
         </div>
