@@ -287,9 +287,16 @@
   color: var(--v2-muted);
   letter-spacing: 0.02em;
 }
+/* Trennpunkt als gezeichneter Kreis wie die Referenz schlaf-zellen-schutz.css
+   (.lp-a-hero__trust): kein Zeichen vor dem Listenpunkt (shop-tor D1, Christian 27.10.2026). */
 .lp-v2 .v2-hero__trust li::before {
-  content: '·\00a0';
-  color: var(--v2-akzent-tief);
+  content: '';
+  display: inline-block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--v2-akzent-tief);
+  margin-right: var(--v2-s1);
+  vertical-align: 2px;
 }
 
 /* ─── 2 EBENEN (Accordion statt Ausleitung, R5) ──────────────────────────── */
