@@ -250,7 +250,9 @@ test('C9 — ausschlussTreffer (Google-ids) verlässt den Server nicht', async (
     );
   try {
     const wert = await ladeGoogleRating({env: {}});
-    assert.equal(wert.source, 'reputon');
+    // Die Attrappe beantwortet jede Adresse: seit 12.11.2026 trifft sie zuerst den
+    // Business-API-Export (gleiches Format, gleicher Normalisierer, gleicher Ausschluss).
+    assert.ok(['google-api', 'reputon'].includes(wert.source), wert.source);
     assert.ok(!('ausschlussTreffer' in wert), 'ausschlussTreffer im Loader-Wert');
     assert.ok(!JSON.stringify(wert).includes(eintrag.googleId), 'Google-id des Ausschlusses im Loader-Wert');
     globalThis.fetch = async () => {

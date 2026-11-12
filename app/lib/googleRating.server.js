@@ -39,6 +39,24 @@ export const REPUTON_FEED_URL =
   'https://grw.reputon.com/app/storefront/widget?shop=qi-blanco.myshopify.com';
 
 /**
+ * BUSINESS-API-EXPORT (Christian 12.11.2026, Job 20261112-prio1-
+ * bewertungsleiste-neueste-50-google-bewertungen-laden: „das sind ja keine
+ * 20 Bewertungen, also ruhig mal die letzten 50 Bewertungen laden").
+ * Der Reputon-Feed führt nur rund 40 Fünf-Sterne-Texte (gemessen 12.11.: 39),
+ * 50 gibt es nur über die Inhaber-API des Google-Profils. Die liest der
+ * Server alle 6 h (rezensionen shop-export, rt rezensionen-bewertungsleiste-
+ * export) und legt die neuesten 60 Fünf-Sterne-Texte als Datei IM FORMAT DES
+ * REPUTON-FEEDS ab — deshalb läuft sie durch denselben Normalisierer und
+ * dieselbe Ausschlussliste. Text = Original (ohne Googles Übersetzung).
+ * Fällt die Datei aus (Zeitgrenze, 4xx/5xx, kaputt), liest der Loader wie
+ * bisher Reputon, danach den Schnappschuss: die Leiste zeigt dann weniger
+ * Karten, nie keine.
+ */
+export const BEWERTUNGS_EXPORT_URL =
+  'https://bewertungen.dienst.qiblanco.com/google-bewertungen-de.json';
+const EXPORT_ZEITGRENZE_MS = 2500;
+
+/**
  * Der Notfall-Schnappschuss läuft DURCH DEN AUSSCHLUSS, bevor er irgendwo
  * ausgeliefert wird. Bis 2026-09-26 tat er das nicht: googleRating.js
  * reichte GOOGLE_REVIEWS_FALLBACK an vier Stellen ungefiltert durch. Ein aus
@@ -67,7 +85,10 @@ export const GOOGLE_RATING_FALLBACK_VOLL = {
 
 // v3 (2026-09-26): neues Payload-Format ohne `ausschlussTreffer`. Der
 // Key-Wechsel verwirft zugleich jeden v2-Eintrag, der das Feld noch trägt.
-const CACHE_KEY = 'https://qpx.internal/google-rating-v3/' + GOOGLE_PLACE_ID;
+// v4 (2026-11-12): Quelle ist zuerst der Business-API-Export (bis zu 50 Karten
+// statt der ~40 des Reputon-Feeds). Der Key-Wechsel verwirft die v3-Einträge,
+// damit nach dem Deploy nicht bis zu 6 h die alte, kürzere Liste steht.
+const CACHE_KEY = 'https://qpx.internal/google-rating-v4/' + GOOGLE_PLACE_ID;
 const CACHE_TTL_S = 21600; // 6 h — „periodischer Refresh", nie je Seitenaufruf
 const MAX_REVIEWS = 50; // Deckel: die NEUESTEN 50 Fünf-Sterne-Reviews
 // (Christian 2026-08-01). Hinweis: der Reputon-Storefront-Feed liefert
@@ -207,6 +228,22 @@ export function normalisiereReputonAntwort(data) {
   };
 }
 
+async function holeExport() {
+  const signal =
+    typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function'
+      ? AbortSignal.timeout(EXPORT_ZEITGRENZE_MS)
+      : undefined;
+  const res = await fetch(BEWERTUNGS_EXPORT_URL, {
+    headers: {accept: 'application/json'},
+    signal,
+  });
+  if (!res || !res.ok) return null;
+  const wert = normalisiereReputonAntwort(await res.json());
+  // Ohne eigene Karten ist der Export nichts wert: dann lieber Reputon.
+  if (!wert || wert.reviews === GOOGLE_REVIEWS_FALLBACK_GEFILTERT) return null;
+  return {...wert, source: 'google-api'};
+}
+
 async function holeReputon() {
   const res = await fetch(REPUTON_FEED_URL, {
     headers: {accept: 'application/json'},
@@ -255,9 +292,11 @@ export async function ladeGoogleRating(context) {
       }
     }
 
-    // Primär Reputon (echte Google-Daten inkl. Reviews, kein Key nötig),
+    // Danach Reputon (echte Google-Daten inkl. Reviews, kein Key nötig),
     // sekundär Places (falls der Key je gesetzt wird), sonst Fallback.
-    let wert = await holeReputon().catch(() => null);
+    // Seit 12.11.2026 zuerst der Business-API-Export (bis zu 50 Karten).
+    let wert = await holeExport().catch(() => null);
+    if (!istPlausibel(wert)) wert = await holeReputon().catch(() => null);
     if (!istPlausibel(wert) && key) {
       wert = await holePlaces(key).catch(() => null);
     }
