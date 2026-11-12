@@ -7493,8 +7493,10 @@ select.b2b-netto__eingabe {
   --qb-gbl-fs-titel: 1.75rem;
   --qb-gbl-fs-titel-gross: 2.5rem;
   --qb-gbl-fs-zeile: 1.25rem;
-  --qb-gbl-fs-anzahl: 1rem;
-  --qb-gbl-fs-anzahl-gross: 1.25rem;
+  --qb-gbl-fs-anzahl: 0.875rem;
+  --qb-gbl-fs-anzahl-gross: 1rem;
+  --qb-gbl-leise: var(--qb-text-gedaempft, #6b665d);
+  --qb-gbl-hover: var(--color-accent-ink, #856828);
   --qb-gbl-s-1: 8px;
   --qb-gbl-s-2: 16px;
   --qb-gbl-s-3: 24px;
@@ -7526,11 +7528,21 @@ select.b2b-netto__eingabe {
   gap: var(--qb-gbl-s-1) 12px;
   color: inherit;
   text-decoration: none;
+  transition: color 0.2s ease;
 }
-.qb-gbl__titel-link:is(:hover, :focus-visible) .qb-gbl__anzahl,
-.qb-gbl__zeile:is(:hover, :focus-visible) .qb-gbl__anzahl {
-  text-decoration: underline;
-  text-underline-offset: 0.18em;
+/* Hover ohne Unterstreichung (Christian 12.11.2026: „da sollte keine Unterstreichung sein, sondern da sollte
+   sich die Schriftfarbe ändern"). Note und Anzahl nehmen die Gold-Tinte des Textknopfs (--color-accent-ink,
+   kein dritter Goldton); Sterne und G-Zeichen behalten ihre Farbe. Kein Größen- oder Gewichtswechsel, also kein
+   Sprung. reset.css a:hover unterstreicht jeden Link, deshalb steht text-decoration hier ausdrücklich in allen
+   Zuständen. Der Fokusring für die Tastatur kommt unverändert aus :where(:focus-visible). */
+.qb-gbl .qb-gbl__titel-link:is(:hover, :focus-visible, :active),
+.qb-gbl .qb-gbl__zeile:is(:hover, :focus-visible, :active) {
+  color: var(--qb-gbl-hover);
+  text-decoration: none;
+}
+.qb-gbl .qb-gbl__titel-link:is(:hover, :focus-visible, :active) .qb-gbl__anzahl,
+.qb-gbl .qb-gbl__zeile:is(:hover, :focus-visible, :active) .qb-gbl__anzahl {
+  color: var(--qb-gbl-hover);
 }
 .qb-gbl__zeile {
   display: flex;
@@ -7563,9 +7575,15 @@ select.b2b-netto__eingabe {
   font-weight: 400;
   letter-spacing: 0;
 }
+/* „447 Bewertungen" ist die zweite Stimme neben der Note (Christian 12.11.2026: „ob die … Bewertungen … wirklich
+   ein klein dahinter stehen sollte"): kleiner und in der gedämpften Tinte, das G-Zeichen in derselben Größe. */
+.qb-gbl__anzahl {
+  color: var(--qb-gbl-leise);
+  transition: color 0.2s ease;
+}
 .qb-gbl__google svg {
-  width: 1.25em;
-  height: 1.25em;
+  width: 1.15em;
+  height: 1.15em;
 }
 @media (min-width: 750px) {
   .qb-gbl__titel {
