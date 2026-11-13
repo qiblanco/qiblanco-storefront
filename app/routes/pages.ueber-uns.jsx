@@ -121,12 +121,13 @@ const VERANTWORTLICH = {
   inhaltlich: 'Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV',
 };
 
-/** Aus app/data/studien/*.json, Feld eckdaten.autor / eckdaten.institut. */
-const PRUEFINSTITUT = {
-  autor: 'Prof. Dr. Peter C. Dartsch',
-  institut: 'Dartsch Scientific GmbH, Institute for Cell Biological Test Systems',
-  ort: 'Wagenfeld',
-};
+/**
+ * Herkunft der Studien im sichtbaren Text: ohne Personen- und Institutsnamen
+ * (Elina 12.11.2026, EL-20261112-0a9978b4: „neutral und sachlich als UNSERE
+ * Studien"). Autor und Institut bleiben Metadaten in app/data/studien/*.json
+ * (eckdaten.autor / eckdaten.institut).
+ */
+const STUDIENLABOR = 'ein Labor für zellbiologische Testsysteme';
 
 /**
  * Deeplink der Google-Quellenwahl („Preferred Sources"), Doku-Stand
@@ -341,11 +342,11 @@ function UeberUnsInhalt() {
                 „5 zellbiologische Fachpublikationen" war für eine davon falsch
                 (Vorschlag Schaltstelle 7028, vollzogen im Job
                 20260926-s07-folge-laden-widersprueche-us-und-studien). */}
-            {STUDIEN.length} Fachpublikationen zu unseren Produkten stammen von{' '}
-            {PRUEFINSTITUT.autor}, {PRUEFINSTITUT.institut} in{' '}
-            {PRUEFINSTITUT.ort}: {studienArten(STUDIEN)}. Wir veröffentlichen
-            sie vollständig: deutsche Fassung, Abbildungen, Original-PDF. So
-            kannst du selbst nachlesen.
+            {STUDIEN.length} Fachpublikationen zu unseren Produkten stammen aus
+            unseren eigenen Studien: {studienArten(STUDIEN)}. Durchgeführt hat
+            sie in unserem Auftrag {STUDIENLABOR}. Wir veröffentlichen sie
+            vollständig: deutsche Fassung, Abbildungen, Original-PDF. So kannst
+            du selbst nachlesen.
           </p>
           {/* Die Einträge sind die deutschen Titel der Publikationen
               (eckdaten.titelDeutsch), also fremde Rede: wortgleich, deshalb

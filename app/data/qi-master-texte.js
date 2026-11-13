@@ -299,8 +299,8 @@ export const QIMASTER_SECHS_G = {
     '[5] Yameng Liu, Jianhua Zhang, Yuxiang Zhang u. a.: A Novel Multi-Reference-Point Modeling Framework for Monostatic Background Channel – Toward 3GPP ISAC Standardization. 2025.',
     '[6] Elmehdi Illi, Marwa Qaraqe u. a.: Integrating Sensing and Communications in 6G? Not Until It Is Secure to Do So. 2025.',
     '[7] International Commission on Non-Ionizing Radiation Protection: Guidelines for Limiting Exposure to Electromagnetic Fields (100 kHz to 300 GHz). Health Physics 118(5), 2020, S. 483–524.',
-    '[8] Peter C. Dartsch: Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation. Applied Cell Biology 9(3), 2021, S. 69–74.',
-    '[9] Ders.: QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation. Japanese Journal of Medicine 4(1), 2021, S. 484–488.',
+    '[8] Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation. Applied Cell Biology 9(3), 2021, S. 69–74.',
+    '[9] QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation. Japanese Journal of Medicine 4(1), 2021, S. 484–488.',
   ],
 };
 

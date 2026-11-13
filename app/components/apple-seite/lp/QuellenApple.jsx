@@ -15,9 +15,33 @@ import {KursApple} from './KursApple';
  *   return appleSeite?.an ? <QuellenApple seite={appleSeite.seite} quellen={QUELLEN} /> : <C />;
  */
 
+/*
+ * Unsere eigenen Studien zeigen in der Angabe keinen Personen- und keinen
+ * Institutsnamen (Elina 12.11.2026, EL-20261112-0a9978b4: „neutral und
+ * sachlich als UNSERE Studien", Titel, Zeitschrift, Jahr und DOI bleiben).
+ * app/data/werk.js ist erzeugt (bin/werk-snapshot) und behält den Autor;
+ * gefiltert wird deshalb hier, an der Anzeige. Erkannt wird die Studie am
+ * Auftragslabor in Autor oder Fundstelle; der Teil der Fundstelle, der das
+ * Labor nennt, fällt weg, der Rest (Zeitschrift, Datum) bleibt.
+ */
+const AUFTRAGSLABOR = /dartsch/i;
+
+export function sichtbareQuelle(quelle) {
+  if (!AUFTRAGSLABOR.test(`${quelle.autoren || ''} ${quelle.fundstelle || ''}`)) {
+    return quelle;
+  }
+  const fundstelle = (quelle.fundstelle || '')
+    .split(',')
+    .map((t) => t.trim())
+    .filter((t) => t && !AUFTRAGSLABOR.test(t))
+    .join(', ');
+  return {...quelle, autoren: '', fundstelle};
+}
+
 /* Eine vollständige Angabe wie in C: wer, wo, wann, Hinweis. Fehlt ein Teil,
    fällt genau dieser Teil weg, nie ein Platzhalter. */
-export function angabeTeile(quelle) {
+export function angabeTeile(roh) {
+  const quelle = sichtbareQuelle(roh);
   const jahr = quelle.jahr && String(quelle.jahr);
   const jahrSchonDa =
     quelle.fundstelle?.includes(jahr) || quelle.autoren?.includes(`(${jahr})`);
