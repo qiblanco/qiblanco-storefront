@@ -50,7 +50,7 @@ export const INHALT = {
       {
         titel: 'Wirken',
         untertitel: 'QiOne® 2 Pro, QiBracelet®, Qi Alpha®',
-        text: 'Sie zeigen dir keine Zahlen. Sie arbeiten dort, wo Longevity entschieden wird: in deinen Zellen. In vier Zellstudien im Labor von Prof. Dr. Dartsch blieben Zellen unter Stress mit Qi Blanco messbar besser geschützt.',
+        text: 'Sie zeigen dir keine Zahlen. Sie arbeiten dort, wo Longevity entschieden wird: in deinen Zellen. In vier unserer Laborstudien blieben Zellen unter Stress mit Qi Blanco messbar besser geschützt.',
       },
     ],
   },
@@ -221,25 +221,25 @@ export const INHALT = {
       {
         titel: 'Immunzellen unter Handystrahlung',
         zahl: '84,7 % statt 60,5 %',
-        quelle: 'Dartsch, Japan Journal of Medicine 2021 · QiOne® 2 Pro',
+        quelle: 'Japan Journal of Medicine 2021 · QiOne® 2 Pro',
       },
       {
         titel: 'Darmbarriere unter Handystrahlung',
         zahl: '1.837 statt 152 Ω·cm²',
-        quelle: 'Dartsch, Applied Cell Biology 2021 · QiOne® 2 Pro',
+        quelle: 'Applied Cell Biology 2021 · QiOne® 2 Pro',
       },
       {
         titel: 'Leberzellen unter oxidativem Stress',
         zahl: '+47 % Schutz',
-        quelle: 'Dartsch, Applied Cell Biology 2024 · QiBracelet®',
+        quelle: 'Applied Cell Biology 2024 · QiBracelet®',
       },
       {
         titel: 'Regeneration von Nervenzellen',
         zahl: '+53 %',
-        quelle: 'Dartsch, Neurodegenerative Diseases 2026 · QiHome Air',
+        quelle: 'Neurodegenerative Diseases 2026 · QiHome Air',
       },
     ],
-    fusszeile: 'Vier Zellstudien aus dem Labor von Prof. Dr. P. C. Dartsch.',
+    fusszeile: 'Vier Zellstudien in unserem Auftrag.',
     link: {
       text: 'Alle Studien lesen',
       ziel: '/pages/studien',
@@ -304,7 +304,7 @@ export const INHALT = {
       {
         frage: 'Wie funktioniert der Gitterchip®?',
         antwort:
-          'Der Gitterchip® wirkt auf das Wasser in deinem Körper, das den größten Teil jeder Zelle ausmacht. Er regt einen geordneten, energiereichen Zustand dieses Wassers an, den die Forschung als kohärentes Wasser beschreibt (Del Giudice, Warnke). Was das für die Zelle bedeutet, messen die Zellstudien von Prof. Dr. Dartsch.',
+          'Der Gitterchip® wirkt auf das Wasser in deinem Körper, das den größten Teil jeder Zelle ausmacht. Er regt einen geordneten, energiereichen Zustand dieses Wassers an, den die Forschung als kohärentes Wasser beschreibt (Del Giudice, Warnke). Was das für die Zelle bedeutet, messen unsere Zellstudien.',
       },
       {
         frage: 'Kann ich Qi Blanco testen?',
@@ -322,10 +322,10 @@ export const INHALT = {
     },
   },
   quellen: [
-    'Dartsch PC et al., Japan Journal of Medicine, 30.04.2021 (QiOne 2 Pro, Immunzellen HL-60)',
-    'Dartsch PC et al., Applied Cell Biology 9(3), 2021 (QiOne 2 Pro, Darmepithel IPEC-J2)',
-    'Dartsch PC et al., Applied Cell Biology 12(1), 12.01.2024 (QiBracelet, oxidativer Stress, 5 Zelltypen)',
-    'Dartsch PC et al., Neurodegenerative Diseases – Current Research 6(1), 01.06.2026, DOI 10.53043/NDCR-6-001 (QiHome Air)',
+    'Japan Journal of Medicine, 30.04.2021 (QiOne 2 Pro, Immunzellen HL-60)',
+    'Applied Cell Biology 9(3), 2021 (QiOne 2 Pro, Darmepithel IPEC-J2)',
+    'Applied Cell Biology 12(1), 12.01.2024 (QiBracelet, oxidativer Stress, 5 Zelltypen)',
+    'Neurodegenerative Diseases – Current Research 6(1), 01.06.2026, DOI 10.53043/NDCR-6-001 (QiHome Air)',
     'Del Giudice E et al., Fields of the Cell, 2015, Kap. 5',
     'Warnke U, Warnke P, Bionisches Wasser, Arkana 2019, Kap. 2',
   ],

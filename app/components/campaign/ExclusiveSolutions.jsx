@@ -979,9 +979,9 @@ export function GeldheldenPakete({products, schild = true}) {
 /* ───────── 3. Authority / Wissenschaft (ersetzt ScienceSection) ───────── */
 function GeldheldenAuthority() {
   const stats = [
-    { value: "12×",   label: "Barrierefunktion der Zellen", cite: "TEER 1.837 vs. 152 Ω·cm² · Dartsch 2021" },
-    { value: "84,7%", label: "geschützte Immunzellen",      cite: "vs. 60,5% unter Mobilfunk · Dartsch 2021" },
-    { value: "50%",   label: "weniger oxidativer Stress",   cite: "5 Zelltypen · Dartsch 2024" },
+    { value: "12×",   label: "Barrierefunktion der Zellen", cite: "TEER 1.837 vs. 152 Ω·cm² · Laborstudie 2021" },
+    { value: "84,7%", label: "geschützte Immunzellen",      cite: "vs. 60,5% unter Mobilfunk · Laborstudie 2021" },
+    { value: "50%",   label: "weniger oxidativer Stress",   cite: "5 Zelltypen · Laborstudie 2024" },
   ];
   return (
     <section className="ghx-section ghx-section--bg-3" aria-labelledby="ghx-authority-title">
@@ -998,7 +998,7 @@ function GeldheldenAuthority() {
           ))}
         </div>
         <p className="ghx-authority__footnote">
-          4 Peer-Review-Studien (Dartsch Scientific, Deutschland) · Mechanismus „kohärentes Wasser" nach Prof. Dr. Gerald H. Pollack (USA) &amp; Dr. rer. nat. Ulrich Warnke (DE)
+          4 Peer-Review-Studien (in unserem Auftrag, Deutschland) · Mechanismus „kohärentes Wasser" nach Prof. Dr. Gerald H. Pollack (USA) &amp; Dr. rer. nat. Ulrich Warnke (DE)
         </p>
       </div>
     </section>

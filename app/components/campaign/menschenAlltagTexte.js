@@ -36,7 +36,7 @@ export const MENSCHEN_ALLTAG_TEXTE = Object.freeze({
     ueberschrift: "Wirkt das überhaupt?",
     absaetze: Object.freeze([
       "Tiefer Schlaf und innere Ruhe, das berichten viele von unseren Kunden. Wie stark du es spürst, ist bei jedem anders.",
-      "Christian Bauer hat Maschinenbau studiert und den QiOne 2 Pro entwickelt. Im Labor von Prof. Dr. Peter C. Dartsch wurde er an menschlichen Zellen unter Belastung getestet, mit einem Schutzeffekt. Das ist Grundlagenforschung im Labor, kein Heilversprechen.",
+      "Christian Bauer hat Maschinenbau studiert und den QiOne 2 Pro entwickelt. In unserer Laborstudie wurde er an menschlichen Zellen unter Belastung getestet, mit einem Schutzeffekt. Das ist Grundlagenforschung im Labor, kein Heilversprechen.",
       "Am Ende zählt, was du in deinem Alltag merkst, und das findest du am besten selbst heraus. Du kannst ihn 20 Tage nach Erhalt risikofrei testen, und überzeugt er dich nicht, bekommst du 100 % zurück.",
     ]),
     // Werkstatt tw-20261008-lp-2fdcfa (registriert 2026-10-08, Job 20261008-aiceo-k2-j4-lp-menschen-alltag-

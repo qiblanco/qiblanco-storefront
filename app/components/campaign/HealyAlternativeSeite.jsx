@@ -139,7 +139,7 @@ export const VERGLEICH = [
     id: 'belege',
     merkmal: 'Belege',
     healy: 'Healy nennt mehr als 20 abgeschlossene Studien zu Healy und MagHealy.',
-    qione: 'Fünf veröffentlichte Arbeiten des Dartsch Scientific Instituts, davon vier Zellstudien im Labor.',
+    qione: 'Fünf veröffentlichte Arbeiten aus unseren Studien, davon vier Zellstudien im Labor.',
     quellen: {healy: [7], qione: [11]},
   },
 ];
@@ -184,7 +184,7 @@ export const BELEG = {
   klasseErfahrung: 'Von Anwenderinnen und Anwendern berichtet',
   klasseErklaerung: 'Unsere Erklärung',
   studien:
-    'Das Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch hat unsere Produkte in unserem Auftrag in fünf Arbeiten untersucht. Vier davon sind Zellstudien im Labor, die fünfte wertet 171 Erfahrungsberichte aus, und alle fünf sind in Fachzeitschriften erschienen.',
+    'Ein Labor für zellbiologische Testsysteme hat unsere Produkte in unserem Auftrag in fünf Arbeiten untersucht. Vier davon sind Zellstudien im Labor, die fünfte wertet 171 Erfahrungsberichte aus, und alle fünf sind in Fachzeitschriften erschienen.',
   zahl:
     'In der ersten Arbeit von 2021 wurden menschliche Immunzellen vier Stunden lang Handystrahlung ausgesetzt. Ihre Fähigkeit, Abwehr-Radikale zu bilden, sank auf 60,5 ± 3,9 Prozent der unbestrahlten Kontrolle. Lag ein QiOne® 2 Pro daneben, blieben 84,7 ± 7,0 Prozent erhalten.',
   erfahrung:
@@ -240,7 +240,7 @@ export function fragen(preis) {
     {
       id: 'studien',
       q: 'Gibt es Studien zum QiOne® 2 Pro?',
-      a: 'Ja. Das Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch hat unsere Produkte in unserem Auftrag in fünf Arbeiten untersucht. Vier davon sind Zellstudien im Labor, die fünfte wertet 171 Erfahrungsberichte aus, und alle fünf sind in Fachzeitschriften erschienen.',
+      a: 'Ja. Ein Labor für zellbiologische Testsysteme hat unsere Produkte in unserem Auftrag in fünf Arbeiten untersucht. Vier davon sind Zellstudien im Labor, die fünfte wertet 171 Erfahrungsberichte aus, und alle fünf sind in Fachzeitschriften erschienen.',
     },
     {
       id: 'herstellung',
@@ -259,8 +259,8 @@ export const QUELLEN = [
   {titel: 'Healy Kasse: Kauf mit Empfehlungslink', von: 'Healy World', url: 'https://eu.healy.shop/de/checkout/'},
   {titel: 'Healy World Startseite: Angabe zu den Studien, Gerät kompakt und tragbar', von: 'Healy World', url: 'https://eu.healy.shop/de/'},
   {titel: 'QiOne® 2 Pro: Material, Tragen und Preis', von: 'Qi Blanco', to: '/products/qione-2-pro'},
-  {titel: 'Studie Immunzellen, Japan Journal of Medicine 2021, DOI 10.31488/JJM.165', von: 'Dartsch Scientific Institut', to: '/pages/studie-immunzellen'},
-  {titel: 'Studie Nutzererfahrung, Advances in Bioengineering & Biomedical Science Research 2024', von: 'Dartsch Scientific Institut', to: '/pages/studie-nutzererfahrung'},
+  {titel: 'Studie Immunzellen, Japan Journal of Medicine 2021, DOI 10.31488/JJM.165', von: 'Qi Blanco', to: '/pages/studie-immunzellen'},
+  {titel: 'Studie Nutzererfahrung, Advances in Bioengineering & Biomedical Science Research 2024', von: 'Qi Blanco', to: '/pages/studie-nutzererfahrung'},
   {titel: 'Alle fünf Arbeiten im Überblick', von: 'Qi Blanco', to: '/pages/studien'},
   {titel: 'Häufige Fragen: Rückgabe in 20 Tagen', von: 'Qi Blanco', to: '/pages/faq'},
 ];

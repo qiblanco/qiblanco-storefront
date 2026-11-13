@@ -252,8 +252,8 @@ function ScienceSection() {
       <span className="eyebrow">Wissenschaft</span>
       <h2>Nicht nur empfohlen. An Zellen gemessen.</h2>
       <p className="lp-vp-section__lede">
-        Vier peer-review-publizierte Zellstudien (Dartsch Scientific,
-        unabhängiges Labor) belegen die Wirkung der Qi-Blanco-Technologie
+        Vier peer-review-publizierte Zellstudien (unabhängiges Labor,
+        in unserem Auftrag) belegen die Wirkung der Qi-Blanco-Technologie
         experimentell. Alle Studien in vitro, mit messbaren und
         reproduzierbaren Effekten auf lebende Zellen. Du kannst jede Publikation selbst lesen.
       </p>

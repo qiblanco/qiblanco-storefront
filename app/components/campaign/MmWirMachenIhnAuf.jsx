@@ -215,7 +215,7 @@ export function MmWirMachenIhnAuf({products}) {
           {label: 'weniger Schmerz & Krankheit', wert: '< 10 %', prozent: '9%'},
           {label: 'weitere positive Beobachtungen', wert: '< 10 %', prozent: '9%'},
         ]}
-        note="Quelle: P. C. Dartsch, Advances in Bioengineering & Biomedical Science Research 2024 (N = 171 freiwillige Erfahrungsberichte). Die vier unteren Kategorien nennt die Studie gebündelt als „unter 10 %“. Deshalb der 20-Tage-Test: Statt uns zu glauben, prüfst du es an dir selbst."
+        note="Quelle: Unsere Nutzerstudie, Advances in Bioengineering & Biomedical Science Research 2024 (N = 171 freiwillige Erfahrungsberichte). Die vier unteren Kategorien nennt die Studie gebündelt als „unter 10 %“. Deshalb der 20-Tage-Test: Statt uns zu glauben, prüfst du es an dir selbst."
       />
 
       <MmProblem variante="flaeche" dataSection="mm-messbar-reviews-intro" title="Stimmen aus der Praxis" text={`Echte Google-Bewertungen unserer Kundinnen und Kunden, Gesamtschnitt ${g.komma} / 5 aus ${g.total} Bewertungen. Einzelerfahrungen, kein Wirknachweis.`} />

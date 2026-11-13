@@ -138,7 +138,7 @@ const STUDIEN = [
   {
     tag: 'In vitro · 2021',
     titel: 'Immunzellen unter Mobilfunkstrahlung',
-    meta: 'Dartsch PC, Japan Journal of Medicine, 30. April 2021 · humane Immunzellen (Zelllinie HL-60), drei unabhängige Experimente',
+    meta: 'Japan Journal of Medicine, 30. April 2021 · humane Immunzellen (Zelllinie HL-60), drei unabhängige Experimente',
     body: (
       <>
         Menschliche Immunzellen wurden vier Stunden lang Mobilfunkstrahlung
@@ -157,7 +157,7 @@ const STUDIEN = [
   {
     tag: 'In vitro · 2021',
     titel: 'Darmbarriere unter Mobilfunkstrahlung',
-    meta: 'Dartsch PC, Applied Cell Biology, 2021 · kultivierte Darmzellen (Zelllinie IPEC-J2, vom Schwein)',
+    meta: 'Applied Cell Biology, 2021 · kultivierte Darmzellen (Zelllinie IPEC-J2, vom Schwein)',
     body: (
       <>
         Kultivierte Darmzellen unter derselben Belastung. Der elektrische
@@ -176,7 +176,7 @@ const STUDIEN = [
   {
     tag: 'In vitro · 2024',
     titel: 'Oxidativer Stress in fünf Zelltypen',
-    meta: 'Dartsch PC, Applied Cell Biology, 12. Januar 2024 · fünf Zelltypen, Stressor Wasserstoffperoxid',
+    meta: 'Applied Cell Biology, 12. Januar 2024 · fünf Zelltypen, Stressor Wasserstoffperoxid',
     body: (
       <>
         Fünf Zelltypen wurden mit Wasserstoffperoxid gestresst, mit und ohne
@@ -194,7 +194,7 @@ const STUDIEN = [
   {
     tag: 'Auswertung · 2024',
     titel: 'Was 171 Anwender berichtet haben',
-    meta: 'Dartsch PC, Advances in Bioengineering & Biomedical Science Research, 10. Mai 2024 · deskriptive Auswertung von 171 freiwilligen öffentlichen Berichten',
+    meta: 'Advances in Bioengineering & Biomedical Science Research, 10. Mai 2024 · deskriptive Auswertung von 171 freiwilligen öffentlichen Berichten',
     body: (
       <>
         171 Menschen haben ihre Erfahrung von sich aus öffentlich geteilt. Am
@@ -259,7 +259,7 @@ const GRENZEN = [
   </>,
   <>
     <strong>2. Alle fünf Arbeiten stammen von demselben Labor.</strong> Sie
-    wurden von Prof. Dr. Peter C. Dartsch am Dartsch Scientific Institut
+    wurden in unserem Auftrag in einem Labor für zellbiologische Testsysteme
     durchgeführt. Ein einzelnes Labor, ein einzelner Autor.
   </>,
   <>
@@ -326,7 +326,7 @@ const ZWEIFEL = [
   {
     frage: 'Wer hat die Qi-Blanco-Studien gemacht, und wer hat sie bezahlt?',
     antwort:
-      'Prof. Dr. Peter C. Dartsch am Dartsch Scientific Institut hat alle fünf Arbeiten durchgeführt. Bezahlt hat sie Qi Blanco, und Qi Blanco hat die Geräte gestellt.',
+      'Ein Labor für zellbiologische Testsysteme hat alle fünf Arbeiten in unserem Auftrag durchgeführt. Bezahlt hat sie Qi Blanco, und Qi Blanco hat die Geräte gestellt.',
   },
   {
     frage: 'Gibt es eine unabhängige Wiederholung der Qi-Blanco-Studien?',

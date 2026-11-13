@@ -173,7 +173,7 @@ export const ZELL_SEKTIONEN_A = Object.freeze([
       'Neben den Zellstudien haben wir 171 öffentliche Erfahrungsberichte ausgewertet. Deskriptiv, ohne Kontrollgruppe, also kein Beweis, aber ein Stimmungsbild.',
       'Rund 20 % nennen Ruhe, Gelassenheit und besseren Schlaf, rund 17 % mehr Energie und Vitalität.',
     ],
-    quellen: ['P. C. Dartsch, Advances in Bioengineering & Biomedical Science Research 2024 (N = 171 freiwillige Erfahrungsberichte).'],
+    quellen: ['Unsere Nutzerstudie, Advances in Bioengineering & Biomedical Science Research 2024 (N = 171 freiwillige Erfahrungsberichte).'],
   },
   {art: 'stimmen', titel: 'Stimmen aus der Praxis', stimmen: STIMMEN},
   {
@@ -286,7 +286,7 @@ export function MmZellstudienEhrlich({products}) {
           {label: 'weniger Schmerz & Krankheit', wert: '< 10 %', prozent: '9%'},
           {label: 'weitere positive Beobachtungen', wert: '< 10 %', prozent: '9%'},
         ]}
-        note="Quelle: P. C. Dartsch, Advances in Bioengineering & Biomedical Science Research 2024 (N = 171 freiwillige Erfahrungsberichte). Die vier unteren Kategorien nennt die Studie gebündelt als „unter 10 %“. Deshalb der 20-Tage-Test: die belastbarste Evidenz für dich entsteht an dir selbst."
+        note="Quelle: Unsere Nutzerstudie, Advances in Bioengineering & Biomedical Science Research 2024 (N = 171 freiwillige Erfahrungsberichte). Die vier unteren Kategorien nennt die Studie gebündelt als „unter 10 %“. Deshalb der 20-Tage-Test: die belastbarste Evidenz für dich entsteht an dir selbst."
       />
 
       <MmProblem
