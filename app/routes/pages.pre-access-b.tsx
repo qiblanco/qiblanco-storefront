@@ -28,8 +28,9 @@ const BILD =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/productohoto_48a1ddae-fff5-4e7f-bc61-385f08a6ad26.png';
 // Rechner ab 960px: Hero-Banner mit allen Deal-Produkten auf dem Podest statt Bild "Frau mit Kette"; am Handy bleibt BILD
 // (Elina EL-20261111-67f3d4b4, freigegeben 11.11.; Bild 2:3 aus dem Hero EL-20261111-fa3a55e7 mit Euro-Zeichen 472298df).
+// v2 (Elina EL-20261113-859c2599): "Exklusiver" als roter Pill (#B92200) über "Black Friday Pre-Sale".
 const HERO_DESKTOP =
-  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/bf26-pre-access-hero-desktop-de.jpg?v=1794434438';
+  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/bf26-pre-access-hero-desktop-de-v2.jpg?v=1794580656';
 
 export function links() {
   return [
