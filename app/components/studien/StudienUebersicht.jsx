@@ -396,7 +396,8 @@ export function StudienUebersicht({schutzfrage = false} = {}) {
           <p className="qb-st-sektion-intro qb-st-weiterweg">
             Wie Kundinnen und Kunden die Produkte im Alltag erleben, lesen Sie
             in den <Link to="/pages/erfahrungen">Erfahrungen</Link> und in
-            allen <Link to="/pages/bewertungen">Bewertungen</Link>. Was die{' '}
+            den <Link to="/pages/bewertungen">Qi Blanco Bewertungen</Link>. Was
+            die{' '}
             {anzahl} Arbeiten belegen und wo die Forschung weitergeht, fasst{' '}
             <Link to="/pages/kritik">Belege und offene Fragen</Link> zusammen.
           </p>
