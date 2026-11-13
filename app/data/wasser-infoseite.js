@@ -3,6 +3,7 @@ import {AUTORENKASTEN} from '~/lib/autorenkasten';
 import {absoluteCanonical} from '~/lib/seo';
 import {isoMitZone} from '~/lib/datum';
 import {STUDIEN, anzahlNachArt, zahlwort} from '~/data/studien';
+import {KOERPER_SPERRE, istSchemaSicher} from '~/lib/koerpersperre';
 
 const versal = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -1149,65 +1150,16 @@ export function quellenNummer(id) {
 /* ======================================================================== */
 
 /**
- * GL-SPR-0008 als Sperre an der Stelle, an der Text maschinenlesbar wird.
- * ANDERS als app/lib/faq-schema.js: dort sperrt die Produkt-FAQ-Leitplanke
- * (Juli 2026) das Wort „kohärent" selbst und jede Nanometer-Angabe. Auf einer
- * Seite, deren Gegenstand kohärentes Wasser ist, bliebe damit nichts übrig,
- * und Christians Auftrag verlangt FAQPage und DefinedTerm ausdrücklich. Die
- * Sperre hier sitzt deshalb auf dem, was die Regel meint: Heil- und
- * Körperschutzzusagen. Trifft sie, fliegt der Eintrag aus dem Schema, und der
- * Test der Seite (test/wasser-infoseite.test.mjs) wird rot (nichts fällt still weg).
- *
- * LÜCKE GESCHLOSSEN 2026-11-13 (Auftrag 20261111-koerpersperre-istschemasicher-
- * luecke-entgiften): die acht Muster unten fingen nur feste Wendungen. Der Satz
- * „Trink hexagonales Wasser, damit deine Zellen besser entgiften." lief durch,
- * ebenso „reinigt deine Zellen", „regeneriert deinen Körper", „stärkt deine
- * Abwehrkräfte". Die Lücke war ungewollt: die Begründung oben nimmt nur
- * „kohärent" und die Nanometer-Angaben aus dem Produkt-FAQ-Netz heraus,
- * `/entgift/` und `/detox/` stehen dort längst. Neu sind deshalb (a) dieselben
- * Detox-Wörter und (b) ein Körperwort und ein Wirkverb im selben Satz, höchstens
- * 40 Zeichen auseinander, in beiden Reihenfolgen.
- *
- * WAS DIE SPERRE ABSICHTLICH NICHT FÄNGT (gemessen an allen 463 Textblättern von
- * wasser-infoseite.js, hexagonales-wasser-seite.js und lexikon.js, 0 Treffer):
- *  - „kohärent", „hexagonal", Nanometer: das ist der Gegenstand der Seiten.
- *  - Das Körperwort ohne Wirkverb: „Wasser im Körper", „an Zellen im Labor",
- *    „die Wärmestrahlung der Haut", „wie der Körper Energie umsetzt". Das sind
- *    Physik und Versuchsbeschreibung, keine Zusage.
- *  - „stärker", „am stärksten", „Feldstärke": das Verbmuster verlangt die
- *    Verbform (stärkt, stärken) am Wortanfang.
- * BEKANNTE GRENZE, kein Freibrief: eine Wirkzusage ganz ohne Körperwort („macht
- * dich wacher", „gibt dir Energie") fängt dieses Wortnetz nicht. Sie bleibt
- * Sache des Schreibenden und des Stil-Tors.
+ * GL-SPR-0008 als Sperre an der Stelle, an der Text maschinenlesbar wird: die
+ * Körpersperre (Heil- und Körperschutzzusagen fliegen aus FAQPage und
+ * DefinedTerm, und der Test der Seite, test/wasser-infoseite.test.mjs, wird
+ * rot). Muster, Begründung und Grenzen stehen seit 2026-11-13 in
+ * app/lib/koerpersperre.js, dem einen Vokabular für diese Seite, die
+ * Hexagonal-Seite und die Healy-Seite (Auftrag 20261113-koerpersperre-healy-
+ * zweite-kopie). Der Re-Export bleibt, weil hexagonales-wasser-seite.js und die
+ * Tests sie hier holen.
  */
-const KOERPER_WORT =
-  '(?:\\bZellen?\\b|\\bK(?:ö|oe)rpers?\\b|\\bOrganismus\\b|\\bImmunsystems?\\b|' +
-  'Abwehrkr(?:ä|ae)fte|Selbstheilung\\w*|\\bDarm\\w*|\\bLeber\\b|\\bNieren?\\b|' +
-  '\\bHaut\\b|\\bGehirns?\\b|\\bNerven\\w*|\\bStoffwechsels?\\b|\\bBlut\\b|' +
-  '\\bOrgane?\\b|\\bGewebe\\b)';
-const WIRK_VERB =
-  '(?:\\breinig\\w*|\\bregenerier\\w*|\\bverj(?:ü|ue)ng\\w*|\\brevitalisier\\w*|' +
-  '\\baktivier\\w*|\\bst(?:ä|ae)rk(?:t|en|e|st)\\b|\\bentschlack\\w*|' +
-  '\\bversorg\\w*|\\bbeleb\\w*|\\berneuer\\w*|\\bkr(?:ä|ae)ftig\\w*|' +
-  '\\bentlast\\w*|\\bsch(?:ü|ue)tz\\w*)';
-const NAH = '[^.!?]{0,40}?';
-
-export const KOERPER_SPERRE = [
-  /st(ä|ae)rk\w* (dein|das|ihr|unser) Immunsystem/i,
-  /sch(ü|ue)tz\w* (deine |die |unsere )?Zellen/i,
-  /vor Viren/i,
-  /\bheil(t|en|ung|end)\b/i,
-  /verhinder\w* Krankheit/i,
-  /sch(ü|ue)tz\w* (dich|deinen K(ö|oe)rper) vor/i,
-  /Therapie|therapeut/i,
-  /Krankheit|Erkrankung/i,
-  /entgift|\bdetox/i,
-  new RegExp(`${KOERPER_WORT}${NAH}${WIRK_VERB}|${WIRK_VERB}${NAH}${KOERPER_WORT}`, 'i'),
-];
-
-export function istSchemaSicher(text) {
-  return !KOERPER_SPERRE.some((rx) => rx.test(String(text)));
-}
+export {KOERPER_SPERRE, istSchemaSicher};
 
 function ohneMarken(text) {
   return String(text)
