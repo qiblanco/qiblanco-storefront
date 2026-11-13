@@ -614,7 +614,7 @@ export const FRAGEN = [
       "Im Fernfeld einer Antenne verteilt sich die Leistung über eine immer größere Kugelfläche. Bei doppeltem Abstand kommt noch ein Viertel der Leistungsdichte an, bei zehnfachem Abstand ein Hundertstel.",
       "In der Nähe von Haushaltsgeräten fällt das Magnetfeld noch steiler ab. Zwischen drei Zentimetern und einem Meter liegen bei vielen Geräten zwei bis drei Größenordnungen.",
       "Eine Abschirmung wirkt nur dort, wo ihr Material ist. Ein geschlossener Leiter hält das Feld draußen, und schon einen Zentimeter daneben ist seine Wirkung zu Ende, einen Radius von mehreren Metern kann eine Abschirmung deshalb nicht haben.",
-      "Das QiHome® Air ist keine Abschirmung. Seinen Einsatzbereich von bis zu 160 Metern Radius geben wir als Herstellerangabe an, und für die allermeisten Haushalte reicht ein einziges Gerät, auch über mehrere Stockwerke hinweg. Am besten stellst du es dorthin, wo du dich viel aufhältst, zum Beispiel ins Schlafzimmer oder in einen Raum, den ihr viel nutzt.",
+      "Das QiHome® Air ist keine Abschirmung. Sein Einsatzbereich umfasst bis zu 160 Meter Radius, und für die allermeisten Haushalte reicht ein einziges Gerät, auch über mehrere Stockwerke hinweg. Am besten stellst du es dorthin, wo du dich viel aufhältst, zum Beispiel ins Schlafzimmer oder in einen Raum, den ihr viel nutzt.",
       "Wer die Strahlung in den eigenen vier Wänden schon heute senken will, hat außerdem einen einfachen Hebel: Abstand zu den eigenen Geräten."
     ],
     "beleg": [
@@ -622,7 +622,7 @@ export const FRAGEN = [
       "Der empfohlene Referenzwert für das Magnetfeld liegt bei 100 Mikrotesla. In 30 Zentimetern Abstand bleiben die meisten Geräte deutlich darunter.",
       "Für hochfrequente Felder gelten die Grenzwerte der 26. Verordnung zum Bundes-Immissionsschutzgesetz, und sie hängen von der Frequenz ab. Bei GSM um 900 Megahertz sind es 41 Volt pro Meter, bei 1800 Megahertz 58 Volt pro Meter und bei 5G um 2000 und um 3600 Megahertz 61 Volt pro Meter.",
       "Dass die Leistungsdichte mit dem Quadrat des Abstands abnimmt, steht in jedem Lehrbuch der Elektrodynamik, weil sich die Leistung über eine Kugelfläche verteilt.",
-      "Die bis zu 160 Meter Radius für das QiHome® Air sind unsere Herstellerangabe. Wir geben die Reichweite immer als Radius an, und die Zahl von 300 Quadratmetern, die früher kursierte, gilt nicht mehr."
+      "Das QiHome® Air ist auf bis zu 160 Meter Radius ausgelegt. Wir geben die Reichweite immer als Radius an, und die Zahl von 300 Quadratmetern, die früher kursierte, gilt nicht mehr."
     ],
     "offen": [
       "Wie gut ein Aufstellungsort passt, hängt vom Umfeld ab. Halte rund einen halben Meter Abstand zu starken Elektrogeräten wie Mikrowelle, PC oder WLAN-Router.",
