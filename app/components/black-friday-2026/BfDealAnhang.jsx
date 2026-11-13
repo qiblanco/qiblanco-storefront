@@ -186,8 +186,14 @@ export function BfSchlussBanner() {
   const bild = bfDealBild(seite);
   const name = seite.name ?? deal.name;
   const sprung = String(seite.art ?? '').startsWith('kakao') ? '#bkd-titel' : '#av-summe-titel';
-  const ersparnis = deal.uvp - deal.preis;
-  const prozent = Math.round((ersparnis / deal.uvp) * 100);
+  // Außerhalb von DE der Warenkorb-Betrag des Landes (bf-deal-landespreis.server.js),
+  // sonst die Euro-Preise des Deals.
+  const lp = seite.landesPreis;
+  const preis = lp ? lp.preis : deal.preis;
+  const uvp = lp ? lp.uvp : deal.uvp;
+  const waehrung = lp ? lp.waehrung : 'EUR';
+  const ersparnis = Math.round((uvp - preis) * 100) / 100;
+  const prozent = Math.round((ersparnis / uvp) * 100);
   return (
     <section
       ref={wurzel}
@@ -218,11 +224,11 @@ export function BfSchlussBanner() {
             {name}
           </h2>
           <p className="bfsb__preise">
-            <s className="bfsb__alt">{betragText(deal.uvp, 'EUR')}</s>{' '}
-            <span className="bfsb__neu">{betragText(deal.preis, 'EUR')}</span>
+            <s className="bfsb__alt">{betragText(uvp, waehrung)}</s>{' '}
+            <span className="bfsb__neu">{betragText(preis, waehrung)}</span>
           </p>
           <p className="bfsb__rabatt" data-bfsb-rabatt="">
-            Du sparst {betragText(ersparnis, 'EUR')} ({prozent} %)
+            Du sparst {betragText(ersparnis, waehrung)} ({prozent} %)
           </p>
           {uhr.vorbei ? null : (
             <p className="bfsb__uhr" role="timer" aria-live="off">
