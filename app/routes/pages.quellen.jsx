@@ -88,7 +88,7 @@ export function loader({context}) {
  * schon nennt oder die Autorenangabe es als „(2012)“ trägt.
  */
 function Angabe({quelle}) {
-  // Dieselbe Angabe wie die Apple-Fassung, samt Filter fuer unsere eigenen
+  // Dieselbe Angabe wie die Apple-Fassung, samt Filter für unsere eigenen
   // Studien (ohne Personen- und Institutsnamen, Elina EL-20261112-0a9978b4).
   const teile = angabeTeile(quelle);
   return (
