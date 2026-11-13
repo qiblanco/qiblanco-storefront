@@ -2,6 +2,7 @@ import {createHydrogenContext} from '@shopify/hydrogen';
 import {AppSession} from '~/lib/session';
 import {CART_MUTATE_FRAGMENT, CART_QUERY_FRAGMENT} from '~/lib/fragments';
 import {resolveCountry} from '~/lib/markt-pricing';
+import {bfDealPfadImDeutschShop} from '~/components/black-friday-2026/bf-deals-daten';
 import {
   ladePreismodus,
   setzePreismodus,
@@ -35,7 +36,12 @@ export async function createAppLoadContext(request, env, executionContext) {
   // leer ist, liefert resolveCountry IMMER 'DE' (dunkel = Status quo).
   // Sprache bleibt DE (deutschsprachiger Storefront) — Storefront-API
   // akzeptiert language DE mit beliebigem country (belegt via @inContext).
-  const country = resolveCountry(request);
+  // BF-Deal-Adressen laufen im Aktionszeitraum in jedem Land im Markt DE
+  // (Elina EL-20261113-5ea5fb42): sonst 404 bzw. Weiterleitung außerhalb des
+  // Euro-Markts. Begründung bei bfDealPfadImDeutschShop.
+  const country = bfDealPfadImDeutschShop(request.url)
+    ? 'DE'
+    : resolveCountry(request);
 
   const hydrogenContext = createHydrogenContext({
     env,
