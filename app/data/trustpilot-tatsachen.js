@@ -181,8 +181,8 @@ export const STIMMEN = {
 export const SELBST = {
   titel: 'Selbst ausprobieren',
   text:
-    'Du musst weder Trustpilot noch uns glauben. Den QiOne® 2 Pro kannst du ' +
-    '20 Tage ab Erhalt tragen und zurückgeben, ohne einen Grund zu nennen. ' +
+    'Den QiOne® 2 Pro kannst du 20 Tage ab Erhalt tragen und zurückgeben, ' +
+    'ohne einen Grund zu nennen. ' +
     'Die Rücksendung ist für dich kostenlos.',
 };
 
