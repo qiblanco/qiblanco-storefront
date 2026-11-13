@@ -73,7 +73,7 @@ export const STRAENGE = [
   {
     "id": "nacht",
     "frage": "Was passiert nachts im Körper?",
-    "kurz": "Schlaf ist das Thema, zu dem uns am meisten geschrieben wird – hier steht, was dabei messbar ist.",
+    "kurz": "Tiefer Schlaf und innere Ruhe, das berichten viele von unseren Kunden.",
     "slugs": [
       {
         "slug": "qibracelet-groesse-wasser-sauna-zellstudie"

@@ -525,7 +525,9 @@ function StandardProduct({product, kaufleiste = false}) {
         Layout-Effekt. Erfasst beim HARD-LOAD (Ad-Traffic landet hart) analog
         zum bestehenden Tracker; SPA-navigierte PDPs bleiben ungemessen (Eigen-
         schaft des Trackers, s. RESULT). Job 20260723-commerce-microfunnel. */}
-    <div className="product" ref={kaufbox}>
+    {/* data-produkt: reiner Anker für seitengenaue Optik (app.css, Abschnitt
+        Broschüre), kein Layout-Effekt. */}
+    <div className="product" data-produkt={product.handle} ref={kaufbox}>
       <div className="ProductImages" data-section="pdp-gallery">
         <ProductImage image={selectedVariant?.image} />
         <ProductImageList images={product?.images} />
