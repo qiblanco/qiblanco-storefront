@@ -86,9 +86,17 @@ test('Ablage: zweiter Abruf im selben Land ohne neuen Warenkorb', async () => {
   _ablageLeeren();
   const sf = mockStorefront([chAntwort()]);
   await bfDealLandesPreis(sf, ZWEI_PRO, 'CH', {jetzt: JETZT});
-  const zwei = await bfDealLandesPreis(sf, ZWEI_PRO, 'CH', {jetzt: JETZT + 60_000});
+  const zwei = await bfDealLandesPreis(sf, ZWEI_PRO, 'CH', {jetzt: JETZT + 5_000});
   assert.equal(zwei.preis, 2079.08);
   assert.equal(sf.aufrufe.length, 1);
+});
+
+test('Ablage: nach 10 s neuer Warenkorb (Kurs wandert, Kasse rechnet aktuell)', async () => {
+  _ablageLeeren();
+  const sf = mockStorefront([chAntwort(), chAntwort()]);
+  await bfDealLandesPreis(sf, ZWEI_PRO, 'CH', {jetzt: JETZT});
+  await bfDealLandesPreis(sf, ZWEI_PRO, 'CH', {jetzt: JETZT + 11_000});
+  assert.equal(sf.aufrufe.length, 2);
 });
 
 test('fail-closed: Code nicht anwendbar -> null (Euro wie bisher)', async () => {
