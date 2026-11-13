@@ -83,13 +83,24 @@ function Person({foto, name, children}) {
   );
 }
 
+/*
+ * Studienlabor ohne Personen- und Institutsnamen (Elina 12.11.2026,
+ * EL-20261112-0a9978b4). Das Foto bleibt; Bildtext und Vermerk werden hier
+ * neutral gesetzt, weil FOTO aus NachtWebinarSeite.jsx (Kaufweg-Fläche) kommt.
+ */
+const FOTO_STUDIENLABOR = {
+  ...FOTO.dartsch,
+  alt: 'Laborarbeit am Mikroskop',
+  vermerk: 'Foto: Studienlabor',
+};
+
 function Pruefer() {
   return (
     <section className="as-sektion" data-section="as-vertrauen">
       <h2 className="as-h2">Wer für uns prüft</h2>
       <ul className="as-nw-personen">
-        <Person foto={FOTO.dartsch} name="Prof. Dr. Peter C. Dartsch">
-          Er leitet das Institut Dartsch Scientific und hat in unserem Auftrag vier Zellstudien zu unseren
+        <Person foto={FOTO_STUDIENLABOR} name="Unser Studienlabor">
+          Ein Labor für zellbiologische Testsysteme hat in unserem Auftrag vier Zellstudien zu unseren
           Produkten gemacht.
         </Person>
         <Person foto={FOTO.walach} name="Prof. Dr. Dr. Harald Walach">
