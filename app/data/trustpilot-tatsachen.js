@@ -166,7 +166,7 @@ export const STIMMEN = {
       'und dem QiBracelet® von sich aus in sozialen Medien geteilt. Eine 2024 ' +
       'veröffentlichte Arbeit hat diese Berichte gesammelt und beschreibend ' +
       'ausgewertet, ohne Kontrollgruppe.',
-    beleg: 'P. C. Dartsch, Advances in Bioengineering & Biomedical Science Research, 2024',
+    beleg: 'Unsere Nutzerstudie, Advances in Bioengineering & Biomedical Science Research, 2024',
     belegPfad: '/pages/studie-nutzererfahrung',
   },
   videos: {
@@ -181,8 +181,8 @@ export const STIMMEN = {
 export const SELBST = {
   titel: 'Selbst ausprobieren',
   text:
-    'Du musst weder Trustpilot noch uns glauben. Den QiOne® 2 Pro kannst du ' +
-    '20 Tage ab Erhalt tragen und zurückgeben, ohne einen Grund zu nennen. ' +
+    'Den QiOne® 2 Pro kannst du 20 Tage ab Erhalt tragen und zurückgeben, ' +
+    'ohne einen Grund zu nennen. ' +
     'Die Rücksendung ist für dich kostenlos.',
 };
 
