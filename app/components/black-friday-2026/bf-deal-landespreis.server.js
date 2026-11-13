@@ -43,8 +43,15 @@ import {
 } from './bf-deals-daten.js';
 import {bfDealCodes} from './bf-deal-codes.server.js';
 
-/** Wie lange ein gelesener Warenkorb-Betrag gilt (Wechselkurse wandern). */
-const ABLAGE_MS = 15 * 60 * 1000;
+/**
+ * Wie lange ein gelesener Warenkorb-Betrag gilt. Kurz wie CacheShort der
+ * übrigen Produktseiten (1 s + 9 s): Shopify verschiebt den Umrechnungskurs
+ * mehrmals am Tag, und die Kasse rechnet immer mit dem aktuellen. Gemessen
+ * 13.11.2026, 2x QiOne CH: 12:17Z 2.078,94 CHF, 13:01Z 2.102,98 CHF,
+ * 13:12Z 2.102,76 CHF. Mit 15 min Ablage nannte die Seite um 13:05Z noch den
+ * alten Betrag (Abnahme rot); mit 10 s ist das Fenster unter 1 %.
+ */
+const ABLAGE_MS = 10 * 1000;
 /** Längste Wartezeit des Seitenaufbaus auf den Warenkorb. */
 const FRIST_MS = 1500;
 /** Obergrenze der Ablage (5 Deals x wenige Länder). */
