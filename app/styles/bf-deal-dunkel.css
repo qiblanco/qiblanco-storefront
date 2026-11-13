@@ -268,3 +268,16 @@
     --bft-6: 40px;
   }
 }
+
+/* 10) Vertrauensblock auf der Deal-Seite in der BF-Skala: 14/17 statt 14/16 bzw. 16/16. Steht hier und nicht in
+ *     bf-vertrauensblock.css, damit Seiten ohne .bf-deal-seite (pre-access, pre-access-b) gar nicht an diesem Diff
+ *     hängen. Spezifität .bf-deal-seite .qb-vb (0,2,0) schlägt .qb-vb (0,1,0) unabhängig von der Ladereihenfolge. */
+.bf-deal-seite .qb-vb {
+  --vb-schrift: var(--bft-2, 14px);
+  --vb-schrift-gross: var(--bft-3, 17px);
+}
+@media (min-width: 600px) {
+  .bf-deal-seite .qb-vb {
+    --vb-schrift: var(--bft-3, 17px);
+  }
+}
