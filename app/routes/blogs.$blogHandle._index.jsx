@@ -33,9 +33,13 @@ const BESTANDS_DECKEL = 50;
 // coming-home: Wortlaut aus /pages/live (Absatz unter der H1 und Hinweis zur
 // Aufnahme), nur das Bezugswort „dafür" fällt weg — nichts dazuerfunden.
 const EINLEITUNGEN = {
-  wissen:
-    'Was zu Schlaf, Energie und Strahlung im Alltag wirklich gemessen ist — ' +
-    'und wo die Messung aufhört. Jeder Beitrag nennt seine Quellen.',
+  // wissen: Christians eigene Zeile über den Artikelkarten von /pages/studien
+  // („Weitere Fachartikel zum Thema Gesundheit“, PR #510), ohne „Weitere“.
+  // Vorher „… wirklich gemessen ist — und wo die Messung aufhört. Jeder
+  // Beitrag nennt seine Quellen.“: neue_seiten_pruefung meldete Selbst-
+  // abwertung, den Quellen-Satz hat Christian als KI-Klang verworfen
+  // (Folgejob 20261113-prio1-apple-look-reste-bf-typo-pr-texte).
+  wissen: 'Fachartikel zum Thema Gesundheit.',
   'coming-home':
     'Jeden Sonntag treffen wir uns auf Zoom, Anna und Christian und alle, ' +
     'die dabei sein möchten. Danach schreiben wir auf, worüber wir ' +

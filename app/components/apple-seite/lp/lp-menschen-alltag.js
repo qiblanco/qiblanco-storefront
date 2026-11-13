@@ -88,7 +88,10 @@ export const MENSCHEN_ALLTAG_SEKTIONEN = Object.freeze([
   {art: 'stimmen', titel: 'Das sagen Menschen, die ihn tragen.', stimmen: STIMMEN},
   {
     art: 'kapitel',
-    etikett: 'Die ehrliche Antwort',
+    // Christians Wortlaut („das am besten untersuchte Energieprodukt der Welt“,
+    // /pages/schlaf-zellen-schutz und Video-Ad Basic Facts). Vorher „Die ehrliche
+    // Antwort“ (neue_seiten_pruefung: Selbstabwertung), Folgejob 20261113.
+    etikett: 'Das am besten untersuchte Energieprodukt der Welt',
     titel: T.einwand.ueberschrift,
     absaetze: [einwand[0], saetze(einwand[1], 2), saetze(einwand[2], 1)],
     bild: BILD.studie,
