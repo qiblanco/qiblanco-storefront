@@ -222,21 +222,11 @@
 .tpt li.tpt__punkt {
   max-width: none;
   margin: 0;
-  padding-left: var(--tpt-s6);
   position: relative;
-  counter-increment: punkt;
 }
 
-.tpt li.tpt__punkt::before {
-  content: counter(punkt);
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-size: var(--tpt-fs-lg);
-  font-weight: 600;
-  color: var(--tpt-muted);
-  line-height: 1.35;
-}
+/* Keine Ziffer vor dem Punkt (Shop-Tor D1, Christian 27.10.2026: „keine gimgis vor den aufzählungspunkten“;
+   Folgejob 20261113-prio1-apple-look-reste-bf-typo-pr-texte). Das Gold am Titel (unten) führt den Blick. */
 
 
 /* ─── Selbst ausprobieren ─────────────────────────────────────────────────── */

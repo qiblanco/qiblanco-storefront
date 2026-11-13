@@ -3042,14 +3042,12 @@ footer.footer :focus-visible {
   padding-left: 1rem;
 }
 
+/* Fragenliste der Kurskapitel ohne nackten Aufzählungspunkt (Shop-Tor D1, Christian 27.10.2026: „keine gimgis vor den
+   aufzählungspunkten“; Folgejob 20261113-prio1-apple-look-reste-bf-typo-pr-texte). Die Fragen stehen als ruhige Zeilen. */
 .course-lesson-body .course-lesson-question-list {
-  list-style: disc;
-  margin: 0.35rem 0 1.4rem 1.35rem;
-  padding-left: 1rem;
-}
-
-.course-lesson-body .course-lesson-question-list li::marker {
-  color: currentColor;
+  list-style: none;
+  margin: 0.35rem 0 1.4rem 0;
+  padding-left: 0;
 }
 
 .course-lesson-body li {
