@@ -616,6 +616,20 @@ function ReviewKarte({review, quelle = 'google'}) {
   // — hier wird nur verhindert, dass der Kunde die Verrottung ausbaden muss.
   const [totesBild, setTotesBild] = useState({});
   const textRef = useRef(null);
+  // VOR DER HYDRATION GESCHEITERT (Job 20261113-prio1-apple-look-und-knopf-system-ueberall):
+  // ein Bild, das schon im Server-HTML fehlschlaegt, feuert sein error-Ereignis, bevor React den
+  // onError-Handler anhaengt. Gemessen live /pages/bewertungen 13.11.: 2 tote Kundenfotos sichtbar.
+  // Deshalb nach dem Einhaengen einmal nachsehen: complete und naturalWidth 0 = tot.
+  const bilderRef = useRef(null);
+  useEffect(() => {
+    const el = bilderRef.current;
+    if (!el) return;
+    const tote = {};
+    el.querySelectorAll('img[data-bild-url]').forEach((img) => {
+      if (img.complete && img.naturalWidth === 0) tote[img.dataset.bildUrl] = true;
+    });
+    if (Object.keys(tote).length) setTotesBild((v) => ({...v, ...tote}));
+  }, []);
   const text = review.text || '';
   // Defensiv: ältere/fremde Review-Quellen kennen `bilder` nicht — die Zeile
   // darf daran nicht scheitern (der Bestand liefert es überall mit).
@@ -749,7 +763,7 @@ function ReviewKarte({review, quelle = 'google'}) {
           Zieh-Geste fängt useDragSwipe (onClickCapture) ihn ab, es braucht
           also kein eigenes Popup und keinen eigenen Drag-Schutz. */}
       {sichtbareBilder.length ? (
-        <div className="flex items-center gap-2">
+        <div ref={bilderRef} className="flex items-center gap-2">
           {sichtbareBilder.map((bild) => (
             <a
               key={bild.url}
@@ -761,6 +775,7 @@ function ReviewKarte({review, quelle = 'google'}) {
               <img
                 src={bildThumbUrl(bild.thumb)}
                 alt={`Kundenfoto zur Rezension von ${review.name}`}
+                data-bild-url={bild.url}
                 width="56"
                 height="56"
                 loading="lazy"

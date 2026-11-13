@@ -44,7 +44,13 @@
 .hea__knopf:not(#gkb),
 .knopf-gold:not(#gkb),
 #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb),
-#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb) {
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb),
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-folie__knopf:not(#gkb),
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-eintrag__knopf:not(#gkb),
+.ghx-pak__cta--gold:not(#gkb),
+.v2-btn:not(.v2-btn--still):not(#gkb),
+.wn-knopf:not(#gkb),
+.search__knopf:not(#gkb) {
   isolation: isolate;
   overflow: hidden;
   box-shadow: var(--gkb-kante-hell);
@@ -66,7 +72,13 @@
   .hea__knopf:not(#gkb):hover,
   .knopf-gold:not(#gkb):hover,
   #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb):hover,
-  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb):hover {
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb):hover,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-folie__knopf:not(#gkb):hover,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-eintrag__knopf:not(#gkb):hover,
+  .ghx-pak__cta--gold:not(#gkb):hover,
+  .v2-btn:not(.v2-btn--still):not(#gkb):hover,
+  .wn-knopf:not(#gkb):hover,
+  .search__knopf:not(#gkb):hover {
     box-shadow: var(--gkb-kante-hell), var(--gkb-heben-hell);
   }
 }
@@ -86,7 +98,13 @@
 .hea__knopf:not(#gkb)::before,
 .knopf-gold:not(#gkb)::before,
 #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb)::before,
-#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb)::before {
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb)::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-folie__knopf:not(#gkb)::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-eintrag__knopf:not(#gkb)::before,
+.ghx-pak__cta--gold:not(#gkb)::before,
+.v2-btn:not(.v2-btn--still):not(#gkb)::before,
+.wn-knopf:not(#gkb)::before,
+.search__knopf:not(#gkb)::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -114,7 +132,13 @@
   .hea__knopf:not(#gkb):hover::before,
   .knopf-gold:not(#gkb):hover::before,
   #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb):hover::before,
-  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb):hover::before {
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb):hover::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-folie__knopf:not(#gkb):hover::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-eintrag__knopf:not(#gkb):hover::before,
+  .ghx-pak__cta--gold:not(#gkb):hover::before,
+  .v2-btn:not(.v2-btn--still):not(#gkb):hover::before,
+  .wn-knopf:not(#gkb):hover::before,
+  .search__knopf:not(#gkb):hover::before {
     animation: gkb-glanz-hover 1.2s ease-in-out infinite;
   }
 }
@@ -132,7 +156,9 @@
 .lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb),
 #_form_15_submit:not(#gkb),
 .mm-formular__knopf:not(#gkb),
-.knopf-gold.knopf-gold--dunkel:not(#gkb) {
+.knopf-gold.knopf-gold--dunkel:not(#gkb),
+.bfsb__knopf:not(#gkb),
+.qa-knopf:not(.qa-knopf--zweit):not(#gkb) {
   isolation: isolate;
   overflow: hidden;
   box-shadow: var(--gkb-kante-dunkel);
@@ -150,7 +176,9 @@
   .lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb):hover,
   #_form_15_submit:not(#gkb):hover,
   .mm-formular__knopf:not(#gkb):hover,
-  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover {
+  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover,
+  .bfsb__knopf:not(#gkb):hover,
+  .qa-knopf:not(.qa-knopf--zweit):not(#gkb):hover {
     box-shadow: var(--gkb-kante-dunkel), var(--gkb-heben-dunkel);
   }
 }
@@ -166,7 +194,9 @@
 .lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb)::before,
 #_form_15_submit:not(#gkb)::before,
 .mm-formular__knopf:not(#gkb)::before,
-.knopf-gold.knopf-gold--dunkel:not(#gkb)::before {
+.knopf-gold.knopf-gold--dunkel:not(#gkb)::before,
+.bfsb__knopf:not(#gkb)::before,
+.qa-knopf:not(.qa-knopf--zweit):not(#gkb)::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -190,7 +220,9 @@
   .lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit):not(#gkb):hover::before,
   #_form_15_submit:not(#gkb):hover::before,
   .mm-formular__knopf:not(#gkb):hover::before,
-  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover::before {
+  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover::before,
+  .bfsb__knopf:not(#gkb):hover::before,
+  .qa-knopf:not(.qa-knopf--zweit):not(#gkb):hover::before {
     animation: gkb-glanz-hover 1.2s ease-in-out infinite;
   }
 }
@@ -204,14 +236,22 @@
 
 /* Bezugsrahmen fuer den Glanz, ohne Spezifitaet: eine eigene Lage der Seite (fixed, sticky, absolute) gewinnt. */
 
-:where(.qb-anmelden__knopf, .btn--primary, .as-knopf:not(.btn--secondary), .lp-vp-btn--primary, .lp-vp-btn--lg, .avv-link, .erf__weiter, .bew__cta, .qb-st-btn:not(.qb-st-btn-flach), .sp__knopf, .lg27-btn:not(.lg27-btn--zweit), .uu-knopf, .hea__knopf, .knopf-gold, #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary, #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary, .qb-anmelden--dunkel .qb-anmelden__knopf, .as-dunkel .as-knopf:not(.btn--secondary), .as-dunkel .btn--primary, .bfg__knopf, .bfd__kaufen, .bkd__kaufen, .bf-deal-kaufen, .lp-vp-final-cta .lp-vp-btn--lg, .lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit), #_form_15_submit, .mm-formular__knopf, .knopf-gold.knopf-gold--dunkel) {
+:where(.qb-anmelden__knopf, .btn--primary, .as-knopf:not(.btn--secondary), .lp-vp-btn--primary, .lp-vp-btn--lg, .avv-link, .erf__weiter, .bew__cta, .qb-st-btn:not(.qb-st-btn-flach), .sp__knopf, .lg27-btn:not(.lg27-btn--zweit), .uu-knopf, .hea__knopf, .knopf-gold, #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary, #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary, #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-folie__knopf, #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-eintrag__knopf, .ghx-pak__cta--gold, .v2-btn:not(.v2-btn--still), .wn-knopf, .search__knopf, .qb-anmelden--dunkel .qb-anmelden__knopf, .as-dunkel .as-knopf:not(.btn--secondary), .as-dunkel .btn--primary, .bfg__knopf, .bfd__kaufen, .bkd__kaufen, .bf-deal-kaufen, .lp-vp-final-cta .lp-vp-btn--lg, .lg27-sek--dunkel .lg27-btn:not(.lg27-btn--zweit), #_form_15_submit, .mm-formular__knopf, .knopf-gold.knopf-gold--dunkel, .bfsb__knopf, .qa-knopf:not(.qa-knopf--zweit)) {
   position: relative;
 }
 
 /* Bezugsrahmen mit Vorrang: der Crystal-Spiegel setzt fremde Regeln per all:revert zurueck (#ccsp#ccsp *). */
 
 #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb),
-#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb) {
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb),
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-folie__knopf:not(#gkb),
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-eintrag__knopf:not(#gkb),
+.ghx-pak__cta--gold:not(#gkb),
+.v2-btn:not(.v2-btn--still):not(#gkb),
+.wn-knopf:not(#gkb),
+.search__knopf:not(#gkb),
+.bfsb__knopf:not(#gkb),
+.qa-knopf:not(.qa-knopf--zweit):not(#gkb) {
   position: relative;
 }
 
@@ -248,6 +288,18 @@
 #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb)[aria-disabled='true']::before,
 #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb):disabled::before,
 #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb)[aria-disabled='true']::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-folie__knopf:not(#gkb):disabled::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-folie__knopf:not(#gkb)[aria-disabled='true']::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-eintrag__knopf:not(#gkb):disabled::before,
+#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-eintrag__knopf:not(#gkb)[aria-disabled='true']::before,
+.ghx-pak__cta--gold:not(#gkb):disabled::before,
+.ghx-pak__cta--gold:not(#gkb)[aria-disabled='true']::before,
+.v2-btn:not(.v2-btn--still):not(#gkb):disabled::before,
+.v2-btn:not(.v2-btn--still):not(#gkb)[aria-disabled='true']::before,
+.wn-knopf:not(#gkb):disabled::before,
+.wn-knopf:not(#gkb)[aria-disabled='true']::before,
+.search__knopf:not(#gkb):disabled::before,
+.search__knopf:not(#gkb)[aria-disabled='true']::before,
 .qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb):disabled::before,
 .qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb)[aria-disabled='true']::before,
 .as-dunkel .as-knopf:not(.btn--secondary):not(#gkb):disabled::before,
@@ -271,7 +323,11 @@
 .mm-formular__knopf:not(#gkb):disabled::before,
 .mm-formular__knopf:not(#gkb)[aria-disabled='true']::before,
 .knopf-gold.knopf-gold--dunkel:not(#gkb):disabled::before,
-.knopf-gold.knopf-gold--dunkel:not(#gkb)[aria-disabled='true']::before {
+.knopf-gold.knopf-gold--dunkel:not(#gkb)[aria-disabled='true']::before,
+.bfsb__knopf:not(#gkb):disabled::before,
+.bfsb__knopf:not(#gkb)[aria-disabled='true']::before,
+.qa-knopf:not(.qa-knopf--zweit):not(#gkb):disabled::before,
+.qa-knopf:not(.qa-knopf--zweit):not(#gkb)[aria-disabled='true']::before {
   animation: none;
   opacity: 0;
 }
@@ -309,6 +365,18 @@
   #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .AddToCartButtonWrapper .btn--primary:not(#gkb):hover::before,
   #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb)::before,
   #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-kaufleiste .btn--primary:not(#gkb):hover::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-folie__knopf:not(#gkb)::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-folie__knopf:not(#gkb):hover::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-eintrag__knopf:not(#gkb)::before,
+  #ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp#ccsp .cc-eintrag__knopf:not(#gkb):hover::before,
+  .ghx-pak__cta--gold:not(#gkb)::before,
+  .ghx-pak__cta--gold:not(#gkb):hover::before,
+  .v2-btn:not(.v2-btn--still):not(#gkb)::before,
+  .v2-btn:not(.v2-btn--still):not(#gkb):hover::before,
+  .wn-knopf:not(#gkb)::before,
+  .wn-knopf:not(#gkb):hover::before,
+  .search__knopf:not(#gkb)::before,
+  .search__knopf:not(#gkb):hover::before,
   .qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb)::before,
   .qb-anmelden--dunkel .qb-anmelden__knopf:not(#gkb):hover::before,
   .as-dunkel .as-knopf:not(.btn--secondary):not(#gkb)::before,
@@ -332,7 +400,11 @@
   .mm-formular__knopf:not(#gkb)::before,
   .mm-formular__knopf:not(#gkb):hover::before,
   .knopf-gold.knopf-gold--dunkel:not(#gkb)::before,
-  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover::before {
+  .knopf-gold.knopf-gold--dunkel:not(#gkb):hover::before,
+  .bfsb__knopf:not(#gkb)::before,
+  .bfsb__knopf:not(#gkb):hover::before,
+  .qa-knopf:not(.qa-knopf--zweit):not(#gkb)::before,
+  .qa-knopf:not(.qa-knopf--zweit):not(#gkb):hover::before {
     animation: none;
   }
 }
