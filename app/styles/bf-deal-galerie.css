@@ -19,7 +19,7 @@
   color: var(--tas-tinte, #1d1d1f);
   text-shadow: none;
   /* Derselbe H2-Stil wie die Abschnitte der Alpha-Seite (.tas-box-titel): eine H2-Regel je Seite. */
-  font-size: var(--tas-fs-5, 1.75rem);
+  font-size: var(--bft-5, var(--tas-fs-5, 1.75rem));
   font-weight: 600;
   line-height: 1.2;
   /* Links wie jede andere H2 der Alpha-Seite (Bezahlart, What's in the Box, FAQ). */
@@ -93,7 +93,7 @@
 .bfg__name a { color: inherit; text-decoration: none; }
 .bfg__preise { margin: 0; display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
 .bfg__alt { color: var(--tas-grau, #6e6e73); font-size: var(--tas-fs-2, 0.875rem); text-decoration-thickness: 1px; }
-.bfg__neu { font-size: var(--tas-fs-4, 1.3125rem); font-weight: 700; color: var(--tas-tinte, #1d1d1f); }
+.bfg__neu { font-size: var(--bft-4, var(--tas-fs-4, 1.3125rem)); font-weight: 700; color: var(--tas-tinte, #1d1d1f); }
 .bfg__knopf {
   box-sizing: border-box;
   display: flex;
@@ -150,7 +150,7 @@
  * (2) „weiterlesen“ in den Karten ist Google-Blau #1565c0, eine zweite Farbwelt neben dem Gold; wie auf LP B
  * (qi-alpha-b.css) in Grau, die Unterstreichung hält den Schalter erkennbar. */
 .bf-deal-seite .qb-gbl .qb-gbl__titel {
-  font-size: var(--tas-fs-5, 1.75rem);
+  font-size: var(--bft-5, var(--tas-fs-5, 1.75rem));
   font-weight: 600;
   line-height: 1.2;
   text-align: left;

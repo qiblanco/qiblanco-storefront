@@ -20,9 +20,12 @@
 .qb-vb__haken{font-family:system-ui,'Segoe UI Symbol','Apple Symbols',sans-serif}
 /* Einbaustellen: Deal-Seiten (unter dem roten Countdown), Pre-Access (über dem Formular) */
 .bf-deal-seite>.qb-vb{margin:0 auto;padding:1.5rem 1rem 0}
+/* Deal-Seite: BF-Typo-Skala (bf-deal-dunkel.css Abschnitt 9), 14/17 statt 14/16 bzw. 16/16. */
+.bf-deal-seite .qb-vb{--vb-schrift:var(--bft-2,14px);--vb-schrift-gross:var(--bft-3,17px)}
 .pab .qb-vb{margin:0 0 1rem}
 @media (min-width:600px){
 .qb-vb{--vb-schrift:16px}
+.bf-deal-seite .qb-vb{--vb-schrift:var(--bft-3,17px)}
 }
 @media (min-width:960px){
 .bf-deal-seite>.qb-vb{padding-top:2rem}

@@ -60,7 +60,7 @@
 .bf-deal-seite .bfsb__zeile {
   margin: 0;
   color: var(--bfd-gold);
-  font-size: 0.8125rem;
+  font-size: var(--bft-2, 14px);
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -68,7 +68,7 @@
 .bf-deal-seite .bfsb__titel {
   margin: 0;
   color: var(--bfd-hell);
-  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+  font-size: var(--bft-5, 24px);
   line-height: 1.15;
   font-weight: 600;
 }
@@ -81,23 +81,24 @@
 }
 .bf-deal-seite .bfsb__alt {
   color: var(--bfd-matt);
-  font-size: 1.125rem;
+  font-size: var(--bft-3, 17px);
 }
 .bf-deal-seite .bfsb__neu {
   color: var(--bfd-gold);
-  font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+  font-size: var(--bft-6, 28px);
   font-weight: 700;
   line-height: 1.1;
 }
 .bf-deal-seite .bfsb__rabatt {
   margin: 0;
   color: var(--bfa-gruen);
+  font-size: var(--bft-3, 17px);
   font-weight: 600;
 }
 .bf-deal-seite .bfsb__uhr {
   margin: 0;
   color: var(--bfd-matt);
-  font-size: 0.875rem;
+  font-size: var(--bft-2, 14px);
   font-variant-numeric: tabular-nums;
 }
 .bf-deal-seite .bfsb__zeit {
@@ -117,7 +118,7 @@
   border-radius: 999px;
   background: #f2bf72;
   color: #171310 !important;
-  font-size: 1.0625rem;
+  font-size: var(--bft-3, 17px);
   font-weight: 700;
   text-align: center;
   text-decoration: none !important;
@@ -156,7 +157,7 @@
 .bf-deal-seite .bfkv__titel {
   margin: 0 0 var(--bfa-a3);
   color: var(--bfd-hell);
-  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+  font-size: var(--bft-5, 24px);
   line-height: 1.15;
   font-weight: 600;
 }
@@ -166,12 +167,14 @@
 .bf-deal-seite .bfkv__fragen summary {
   padding: var(--bfa-a2) 0;
   color: var(--bfd-hell);
+  font-size: var(--bft-3, 17px);
   font-weight: 600;
   cursor: pointer;
 }
 .bf-deal-seite .bfkv__fragen p {
   margin: 0 0 var(--bfa-a2);
   color: var(--bfd-matt);
+  font-size: var(--bft-3, 17px);
   line-height: 1.55;
 }
 @media (min-width: 768px) {
@@ -197,4 +200,14 @@
 .bf-deal-seite .qb-igt__abzeichen,
 .bf-deal-seite .qb-igt__kachel--yt .qb-igt__zeichen > span {
   color: var(--bfd-grund);
+}
+
+/* Instagram-Reihe: Handle, Aufruf und Wisch-Hinweis stehen im Original auf 13 px. Auf der Deal-Seite gilt die
+ * BF-Skala (bf-deal-dunkel.css Abschnitt 9): Kleinstufe 14 px. */
+.bf-deal-seite .qb-igt :is(.qb-igt__handle, .qb-igt__aufig, .qb-igt__wisch) {
+  font-size: var(--bft-2, 14px);
+}
+/* Kaufknopf „In den Warenkorb“ (.btn--primary.bf-deal-kaufen) steht global auf 18 px: auf der Deal-Seite Knopfstufe. */
+.bf-deal-seite .btn--primary.bf-deal-kaufen {
+  font-size: var(--bft-3, 17px);
 }
