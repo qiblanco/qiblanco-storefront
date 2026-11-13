@@ -66,6 +66,11 @@
   border-radius: 12px;
   background: var(--bkv-bildgrund);
   overflow: hidden;
+  /* Ecken-Dauerregel (Elina EL-20261111-9de914fc): Safari schneidet die
+     Bild-Ebene nicht an overflow + border-radius ab; clip-path haelt alle
+     vier Ecken rund */
+  isolation: isolate;
+  clip-path: inset(0 round 12px);
 }
 .bkv__bild img {
   display: block;
