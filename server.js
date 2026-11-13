@@ -12,6 +12,11 @@ import * as serverBuild from 'virtual:react-router/server-build';
 import {createRequestHandler, storefrontRedirect} from '@shopify/hydrogen';
 import {createAppLoadContext} from '~/lib/context';
 import {mitAbwehr} from '~/lib/abwehr/abwehr';
+import {
+  laenderWeiche,
+  sitzungMerken,
+  SITZUNGS_COOKIE_ZEILE,
+} from '~/lib/laender-weiche';
 
 /**
  * Export a fetch handler in module format.
@@ -32,6 +37,12 @@ export default {
      * diesen Handler zurück.
      */
     const next = async () => {
+      // LÄNDER-WEICHE DE -> US (Elina EL-20261113-73c7c1f9): Besuch aus einem
+      // Land außerhalb EU + CH/LI/NO/IS geht auf die US-Gegenseite. Vor dem
+      // App-Kontext, damit die Weiterleitung keine Storefront-Abfrage kostet.
+      // Wirft nie; Regeln und Ausnahmen in lib/laender-weiche.js.
+      const weiche = laenderWeiche(request);
+      if (weiche) return weiche;
       try {
         const appLoadContext = await createAppLoadContext(
           request,
@@ -77,6 +88,16 @@ export default {
             'Set-Cookie',
             await appLoadContext.session.commit(),
           );
+        }
+
+        // ?markt=DE (oder Klick vom US-Shop) merkt sich die Sitzung: die
+        // Länder-Weiche bleibt für diesen Browser aus. Wirft nie.
+        try {
+          if (sitzungMerken(request)) {
+            response.headers.append('Set-Cookie', SITZUNGS_COOKIE_ZEILE);
+          }
+        } catch {
+          // unveränderliche Kopfzeilen — Merken entfällt, Seite bleibt
         }
 
         if (response.status === 404) {
