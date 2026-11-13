@@ -335,7 +335,7 @@ function ScienceSection() {
       <span className="eyebrow">Im Labor gemessen</span>
       <h2>An lebenden Zellen unter EM-Last gemessen.</h2>
       <p className="lp-vp-section__lede">
-        Mehrere peer-review-publizierte Zellstudien (Dartsch Scientific Institut)
+        Mehrere peer-review-publizierte Zellstudien aus unserem Auftrag
         belegen die Wirkung der Qi-Blanco-Technologie experimentell. Alle Studien
         sind in vitro durchgeführt und zeigen messbare, reproduzierbare Effekte auf lebende
         Zellen, teils gezielt unter elektromagnetischer Belastung. Ergänzt durch über 14.000 Menschen, die den

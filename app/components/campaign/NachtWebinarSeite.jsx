@@ -35,7 +35,7 @@ const PERSON_SIZES = '(max-width: 767px) calc(100vw - 32px), (max-width: 1127px)
 export const FOTO = {
   christian: {src: `${CDN}Christian.jpg?v=1668985845`, b: 1200, h: 1535, alt: 'Christian, Gründer von Qi Blanco'},
   dartsch: {src: `${CDN}webinar-nacht-dartsch-portraet.jpg?v=1792770671`, b: 1132, h: 1400,
-    alt: 'Prof. Dr. Peter C. Dartsch am Mikroskop', vermerk: 'Foto: Dartsch Scientific'},
+    alt: 'Laborarbeit am Mikroskop', vermerk: 'Foto: Studienlabor'},
   walach: {src: `${CDN}webinar-nacht-walach-portraet.jpg?v=1792770676`, b: 1400, h: 933,
     alt: 'Prof. Dr. Dr. Harald Walach', vermerk: 'Foto: Anja Jahn'},
 };
@@ -419,9 +419,9 @@ export function NachtWebinarSeite({daten}) {
         <div className="wn-zwei">
           <div className="wn-person">
             <Bild foto={FOTO.dartsch} breiten={[480, 800, 1132]} sizes={PERSON_SIZES} className="wn-bild" />
-            <h3 className="wn-h3">Prof. Dr. Peter C. Dartsch</h3>
+            <h3 className="wn-h3">Unser Studienlabor</h3>
             <p className="wn-text">
-              Er leitet das Institut Dartsch Scientific und hat in unserem Auftrag vier Zellstudien zu unseren
+              Ein Labor für zellbiologische Testsysteme hat in unserem Auftrag vier Zellstudien zu unseren
               Produkten gemacht.
             </p>
           </div>

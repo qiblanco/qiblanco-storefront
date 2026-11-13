@@ -220,7 +220,7 @@ function Quellen() {
           const e = st.eckdaten;
           return (
             <li key={slug}>
-              {e.autor}: <Link to={studienPfad(slug)} prefetch="intent">{e.titelDeutsch}</Link>. {e.journal} {e.band}
+              <Link to={studienPfad(slug)} prefetch="intent">{e.titelDeutsch}</Link>. {e.journal} {e.band}
             </li>
           );
         })}
