@@ -186,8 +186,8 @@ export const FAQ_QIHOME = [
   {
     q: 'Wie weit reicht ein QiHome® Air, und reicht ein Gerät für meine Wohnung?',
     a:
-      'Das QiHome® Air ist auf einen Einsatzbereich von bis zu 160 m Radius ausgelegt, so die ' +
-      'Herstellerangabe. Das reicht für eine Wohnung, ein Einfamilienhaus und auch für ein Büro ' +
+      'Das QiHome® Air ist auf einen Einsatzbereich von bis zu 160 m Radius ausgelegt. ' +
+      'Das reicht für eine Wohnung, ein Einfamilienhaus und auch für ein Büro ' +
       'oder eine Praxis. In den allermeisten Haushalten genügt ein einziges Gerät, auch über ' +
       'mehrere Stockwerke und durch Wände hindurch. Wie stark es bei dir im Alltag ankommt, hängt ' +
       'allerdings vom Umfeld ab, und wo sehr viel Technik läuft, sind wir mit unserer Einschätzung ' +
@@ -197,7 +197,9 @@ export const FAQ_QIHOME = [
       'qi-salesbot/src/server/chat-skills.ts, Skill QiHome (Prio 940), Evidenz-Zeile wörtlich: ' +
       '„Ausgelegt auf einen Radius von bis zu 160 m (rund 8 Hektar, Herstellerangabe) […] Die alte ' +
       '300-m2-Angabe ist falsch und gesperrt." Formulierung folgt der dortigen Auflage: als ' +
-      'AUSLEGUNG und als RADIUS, nie in Quadratmetern, nie als sichere Eignungszusage.',
+      'AUSLEGUNG und als RADIUS, nie in Quadratmetern, nie als sichere Eignungszusage. Ohne ' +
+      'Distanzformel ("so die Herstellerangabe" entfernt 2026-11-13): wir sind der Hersteller, ' +
+      'Christian 16.09.2026, GL-SPR-0007.',
   },
   {
     q: 'Wo stelle ich das QiHome® Air am besten hin, und muss es in die Steckdose?',
