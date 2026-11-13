@@ -96,7 +96,7 @@ function MainFeatures() {
         <img
           width={350}
           src="https://cdn.shopify.com/s/files/1/0279/3095/1750/files/597208a9-7cd9-41d3-897b-42cf60daa7f2.png?v=1732617145"
-          alt="Siegel „Produkt zellbiologisch geprüft“ von dartsch scientific mit Unterschrift von Prof. Dr. Peter C. Dartsch, Diplom-Biochemiker"
+          alt="Siegel „Produkt zellbiologisch geprüft“"
         />
         <div className="MainFeaturesColumn">
           <h3>Noch mehr POWER. Noch mehr FOCUS. Und noch mehr KOHÄRENZ.</h3>

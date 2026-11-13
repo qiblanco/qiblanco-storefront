@@ -151,7 +151,7 @@ export const WISSEN = {
       etikett: 'Wissenschaft',
       titel: '84,7 statt 60,5 Prozent.',
       absaetze: [
-        'Prof. Dr. Peter C. Dartsch hat menschliche Immunzellen im Labor vier Stunden lang mit Handystrahlung belastet.',
+        'In unserer Laborstudie wurden menschliche Immunzellen vier Stunden lang Handystrahlung ausgesetzt.',
         'Ohne QiOne® 2 Pro behielten sie 60,5 Prozent ihrer Abwehrleistung, mit ihm 84,7 Prozent.',
       ],
       bild: 6,
