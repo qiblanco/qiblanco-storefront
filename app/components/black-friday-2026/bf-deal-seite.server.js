@@ -15,6 +15,11 @@ import * as DATEN_PJDZ from '~/components/product-pages/pjdz538hgs0-alpha-daten'
 import * as DATEN_QIBRACELET from '~/components/product-pages/qibracelet-alpha-daten';
 import * as DATEN_QIHOME from '~/components/product-pages/qihome-air-alpha-daten';
 import {bfDealBildSetzen, bfDealMarktPasst, bfDealPreiseSetzen} from '~/components/black-friday-2026/bf-deals-daten';
+import {
+  bfDealLandesPreis,
+  bfDealLandesPreiseSetzen,
+} from '~/components/black-friday-2026/bf-deal-landespreis.server';
+import {resolveCountry} from '~/lib/markt-pricing';
 
 /*
  * BILDER DER DEAL-SEITE: vorn steht das BF-Gold-Bild des Deals (bf-deals-daten.js
@@ -50,12 +55,24 @@ export async function ladeBfDealAlpha(args, seite) {
     konfigurator: true,
   });
   if (!bfDealMarktPasst(daten.product)) return null;
+  // Land des Besuchers (Geo bzw. ?markt), nicht der Markt DE, in dem die
+  // Deal-Adresse lädt (lib/context.js): dort rechnen Warenkorb und Kasse.
+  // Außerhalb von DE nennt die Seite den Warenkorb-Betrag des Landes
+  // (bf-deal-landespreis.server.js); null = Euro-Preis wie bisher.
+  const landesPreis = await bfDealLandesPreis(
+    args.context?.storefront,
+    seite,
+    resolveCountry(args.request),
+  );
   return {
     ...daten,
-    product: bfDealPreiseSetzen(
-      bfDealBildSetzen(daten.product, seite, seite.art === 'alpha-angebot' ? scharf : null),
-      seite,
+    product: bfDealLandesPreiseSetzen(
+      bfDealPreiseSetzen(
+        bfDealBildSetzen(daten.product, seite, seite.art === 'alpha-angebot' ? scharf : null),
+        seite,
+      ),
+      landesPreis,
     ),
-    bfDealSeite: seite,
+    bfDealSeite: landesPreis ? {...seite, landesPreis} : seite,
   };
 }
