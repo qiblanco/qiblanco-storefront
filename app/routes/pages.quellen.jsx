@@ -1,7 +1,7 @@
 import {Link, useLoaderData} from 'react-router';
 import {QUELLEN} from '~/data/werk';
 import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
-import {QuellenApple} from '~/components/apple-seite/lp/QuellenApple';
+import {QuellenApple, angabeTeile} from '~/components/apple-seite/lp/QuellenApple';
 import {canonicalLink, absoluteCanonical, CANONICAL_ORIGIN} from '~/lib/seo';
 import quellenStyles from '~/styles/werk-quellen.css?url';
 import {MARKE, teilbildTags} from '~/lib/seiten-seo';
@@ -88,16 +88,9 @@ export function loader({context}) {
  * schon nennt oder die Autorenangabe es als „(2012)“ trägt.
  */
 function Angabe({quelle}) {
-  const jahr = quelle.jahr && String(quelle.jahr);
-  const jahrSchonDa =
-    quelle.fundstelle?.includes(jahr) ||
-    quelle.autoren?.includes(`(${jahr})`);
-  const teile = [
-    quelle.autoren,
-    quelle.fundstelle,
-    jahr && !jahrSchonDa ? jahr : null,
-    quelle.hinweis,
-  ].filter(Boolean);
+  // Dieselbe Angabe wie die Apple-Fassung, samt Filter fuer unsere eigenen
+  // Studien (ohne Personen- und Institutsnamen, Elina EL-20261112-0a9978b4).
+  const teile = angabeTeile(quelle);
   return (
     <li className="qb-qu__eintrag">
       <span className="qb-qu__titel">{quelle.titel}</span>

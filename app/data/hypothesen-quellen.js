@@ -364,7 +364,7 @@ export const QUELLEN = [
   /* ------------------------------------------------- Unsere eigenen Messungen */
   {
     id: 'dartsch-2021a',
-    autor: 'Peter C. Dartsch (Dartsch Scientific GmbH)',
+    autor: 'Unsere Laborstudie',
     jahr: '2021',
     titel:
       'QiOne® 2 Pro – Investigations on its Potential for the Exclusion of Unwanted Cellular Effects of Mobile Phone Radiation',
@@ -385,7 +385,7 @@ export const QUELLEN = [
   },
   {
     id: 'dartsch-2021b',
-    autor: 'Peter C. Dartsch (Dartsch Scientific GmbH)',
+    autor: 'Unsere Laborstudie',
     jahr: '2021',
     titel:
       'Protective Effect of QiOne® 2 Pro on Cultured Intestinal Epithelial Cells after Mobile Phone Radiation',
@@ -403,7 +403,7 @@ export const QUELLEN = [
   },
   {
     id: 'dartsch-2024a',
-    autor: 'Peter C. Dartsch (Dartsch Scientific GmbH)',
+    autor: 'Unsere Laborstudie',
     jahr: '2024',
     titel: 'Protective Effect of the QiBracelet® Against Oxidative Stress',
     wo: 'Applied Cell Biology 12(1), S. 1–6',
@@ -420,7 +420,7 @@ export const QUELLEN = [
   },
   {
     id: 'dartsch-2024b',
-    autor: 'Peter C. Dartsch (Dartsch Scientific GmbH)',
+    autor: 'Unsere Auswertung',
     jahr: '2024',
     titel:
       'QTA Gitterchip Technology: Relationship Between Individual User Observations and Experimental Preclinical Data',
@@ -438,7 +438,7 @@ export const QUELLEN = [
   },
   {
     id: 'dartsch-2026',
-    autor: 'Peter C. Dartsch (Dartsch Scientific GmbH)',
+    autor: 'Unsere Laborstudie',
     jahr: '2026',
     titel:
       'Beneficial Effect of the QiHome® Air on Cultured Neuronal and Inflammation-Mediating Cells',

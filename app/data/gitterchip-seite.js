@@ -179,7 +179,7 @@ export const STUFEN = [
       'Aus diesen drei Forschungslinien leiten wir ab, wie der Gitterchip® wirkt. Sein statisches Feld regt Wassermoleküle an, in den geordneten Zustand zu wechseln, den Dr. Warnke beschreibt.',
       'Die Moleküle finden in den Gleichtakt der Domänen nach Prof. Del Giudice. Wo dieses Wasser auf eine Oberfläche trifft, wächst die stabile Schicht, die Prof. Dr. Pollack gemessen hat.',
       'Jede Zelle ist eine solche Oberfläche. Sie ist von Wasser umgeben und besteht selbst zum größten Teil daraus. So entsteht die Kette, die der QiOne® 2 Pro anstößt: Feld, geordnetes Wasser, Zelle.',
-      `Wie deutlich Zellen darauf reagieren, hat Prof. Dr. Peter C. Dartsch in ${ZELLSTUDIEN} Studien gemessen.`,
+      `Wie deutlich Zellen darauf reagieren, haben wir in ${ZELLSTUDIEN} Laborstudien messen lassen.`,
     ],
     grafik: {
       typ: 'kette',
@@ -218,8 +218,8 @@ export const STUFEN = [
     // gemessen (Prüferbefund, Job 20261015-m5f3-frageseiten-rest-studien-und-kundenwort).
     titel: `${ZELLSTUDIEN_GROSS} Studien, gemessen an Zellen im Labor`,
     absaetze: [
-      `Prof. Dr. Peter C. Dartsch hat die Gitterchip®-Technik an seinem Institut für zellbiologische Testsysteme untersucht. Fünf Studien sind international publiziert und Peer-Review-kontrolliert. ${ZELLSTUDIEN_GROSS} davon messen an Zellen, die fünfte wertet Berichte von Nutzern aus.`,
-      'Gemessen hat er an Immunzellen, Darmzellen, Leberzellen und Nervenzellen, unter Handystrahlung und unter oxidativem Stress.',
+      `Wir haben die Gitterchip®-Technik in einem Labor für zellbiologische Testsysteme untersuchen lassen. Fünf Studien sind international publiziert und Peer-Review-kontrolliert. ${ZELLSTUDIEN_GROSS} davon messen an Zellen, die fünfte wertet Berichte von Nutzern aus.`,
+      'Gemessen wurde an Immunzellen, Darmzellen, Leberzellen und Nervenzellen, unter Handystrahlung und unter oxidativem Stress.',
     ],
     diagramme: [
       {
