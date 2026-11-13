@@ -89,10 +89,10 @@
 .pab__bild>picture{clip-path:inset(0 round 24px)}
 @media (min-width:960px){.pab__bild>picture{clip-path:inset(0 round 32px)}}
 /* Handy wie Rechner (Elina EL-20261113-819e80c7): das Deal-Hero traegt seinen Text selbst, also ohne Bildzeile und
-   Abdunklung; unter 960px steht es ganz im Hochformat 2:3. */
+   Abdunklung; unter 960px steht es ganz im Hochformat 2:3, hoechstens 540px breit (Quelle 1100px, am Tablet sonst unscharf). */
 .pab__bild--hero{background:#0c0a08}
 .pab__bild--hero img{object-position:50% 50%}
 .pab__bild--hero::after,.pab__bild--hero .pab__bildzeile{display:none}
-@media (max-width:959.98px){.pab__bild--hero{aspect-ratio:2/3}}
+@media (max-width:959.98px){.pab__bild--hero{aspect-ratio:2/3;width:100%;max-width:540px;margin-inline:auto}}
 /* Ruhige Fassung (D7): bei "Bewegung reduzieren" steht alles still und ist sofort da (Einblenden regelt elina-bewegung.css). */
 @media (prefers-reduced-motion:reduce){.pab *,.pab *::before,.pab *::after{transition:none!important;animation:none!important}.pab [data-eb]{opacity:1!important;transform:none!important}}
