@@ -396,8 +396,10 @@ export const E6 = Object.freeze({
   anteil_prozent: 15,
 });
 
-/** Code-Schalter der letzten Runde; false = kein Besucher auf B über E6. */
-export const E6_AKTIV = true;
+/** Code-Schalter der letzten Runde; false = kein Besucher auf B über E6.
+ * Aus seit 13.11.2026: Runde nach 7 Tagen ausgewertet, kein belegter Unterschied, A bleibt
+ * (Job 20261113-letzte-runde-auswertung-b-uebernehmen-ja-nein). A/B-Pause, kein Nachfolger. */
+export const E6_AKTIV = false;
 
 /**
  * E6 läuft nur, wenn sein Code-Schalter steht, die Env ihn nicht abschaltet (NUR
