@@ -263,6 +263,40 @@ export function bfDealSeite(handle, jetzt = Date.now()) {
   return {handle, ...s};
 }
 
+/*
+ * DEAL-SEITEN IN JEDEM LAND (Elina EL-20261113-5ea5fb42, Notfall 13.11.2026):
+ * Die Deal-Seiten hingen am Euro-Markt. Wer aus CH, GB, US, Asien usw. kam
+ * (Shopify-Markt nach Standort), bekam auf 8kendiw34hd, pjdz538hgs0 und
+ * j7hcyb802kn ein 404 und auf 687ghgf4ed und 56huz67dds die Weiterleitung
+ * auf die normale Produktseite. Gemessen 13.11. mit ?markt=CH/GB/TH/US/ID.
+ * Deshalb laufen Deal-Adressen im Aktionszeitraum immer im Markt DE (EUR),
+ * egal woher der Besuch kommt, auch mit ?markt=… und für die .data-Abrufe
+ * der Seitennavigation. Die Kasse folgt weiter der Lieferadresse.
+ */
+const BF_DEAL_PFAD = /^\/products\/([^/.?#]+)(?:\.data)?\/?$/;
+
+/** true = Deal-Adresse im Aktionszeitraum, der Markt wird auf DE gesetzt. */
+export function bfDealPfadImDeutschShop(requestUrl, jetzt = Date.now()) {
+  let pfad;
+  try {
+    pfad = new URL(requestUrl).pathname;
+  } catch {
+    return false;
+  }
+  const m = BF_DEAL_PFAD.exec(pfad);
+  if (!m) return false;
+  let handle;
+  try {
+    handle = decodeURIComponent(m[1]).toLowerCase();
+  } catch {
+    return false;
+  }
+  // Nur echte Deal-Adressen. Die alten Kakao-Adressen leiten ohnehin weiter;
+  // bundle-2x-awake und mengenrabatt-2x bleiben außerhalb des Euro-Markts
+  // normale Set-Seiten (BF_KAKAO_UMLEITUNGEN, nurEuro).
+  return Boolean(bfDealSeite(handle, jetzt));
+}
+
 export function bfDeal(id) {
   return BF_DEALS.find((d) => d.id === id) ?? null;
 }
