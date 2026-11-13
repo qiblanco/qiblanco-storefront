@@ -265,19 +265,25 @@ export function auswerten(antwort, zeilen, codes) {
  * REGEL (gilt für die Alpha-Deals, nicht für Kakao):
  * - Euro-Land: Streichpreis = deal.uvp aus bf-deals-daten (2.476 / 1.332 €), wie DE.
  * - Schweiz (CHF): unverändert der Shopify-Streichpreis (Elina: „so lassen“).
- * - andere Währung: deal.uvp x Landes-Endpreis / deal.preis, auf die ganze
- *   Einheit gerundet. Das ist das BF-Verhältnis (2.476 : 1.976) auf den Betrag,
+ * - andere Währung, nur die neu bepreisten QiOne-2-Pro-Deals (BF_STAND_NEU_BEPREIST):
+ *   deal.uvp x Landes-Endpreis / deal.preis, auf die ganze Einheit gerundet.
+ *   Das ist das BF-Verhältnis (2.476 : 1.976, Du sparst 20 %) auf den Betrag,
  *   den die Kasse im Land nimmt. Es braucht keinen Basis-Streichpreis und
- *   keinen Kurs. Gemessen 13.11.: bei nicht neu bepreisten Deals trifft es den
- *   Shopify-Streichpreis genau (QiBracelet PL 7.095, SE 17.882; QiHome PL
- *   22.403, CZ 124.120).
+ *   keinen Kurs. Gegenprobe 13.11.: in PLN, SEK, CZK trifft diese Regel bei den
+ *   NICHT neu bepreisten Deals den Shopify-Streichpreis genau (QiBracelet PL
+ *   7.095, SE 17.882; QiHome PL 22.403, CZ 124.120). In NO (USD) nicht
+ *   (QiBracelet 1.911 statt 1.894 $), darum bleiben QiBracelet und QiHome in
+ *   Fremdwährung beim Shopify-Streichpreis: ihr Preis wurde nicht geändert.
  * Der Endpreis kommt immer aus dem Warenkorb; nie unter dem Endpreis.
  */
+const BF_STAND_NEU_BEPREIST = new Set(['2x-qione-2-pro', 'qione-2-pro-necklace']);
+
 export function bfStandStreichpreis(deal, gelesen) {
   if (!deal || deal.id === 'kakao' || !gelesen) return gelesen;
   const {preis, waehrung} = gelesen;
   if (waehrung === 'CHF') return gelesen;
   if (!(deal.uvp > 0) || !(deal.preis > 0)) return gelesen;
+  if (waehrung !== 'EUR' && !BF_STAND_NEU_BEPREIST.has(deal.id)) return gelesen;
   const uvp = waehrung === 'EUR' ? deal.uvp : Math.round((preis * deal.uvp) / deal.preis);
   return {...gelesen, uvp: Math.max(uvp, preis)};
 }

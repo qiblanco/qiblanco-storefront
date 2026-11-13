@@ -390,3 +390,22 @@ test('BF-Stand: Kakao behält den Streichpreis aus den Einzelpackungen (keine BF
   const lp = await bfDealLandesPreis(sf, {deal: 'kakao', set: 'create-awake'}, 'PL', {jetzt: JETZT});
   assert.deepEqual(lp, {preis: 342.1, uvp: 600, waehrung: 'PLN'});
 });
+
+test('BF-Stand NO (USD): QiBracelet und QiHome behalten den Shopify-Streichpreis (nicht neu bepreist)', async () => {
+  // gemessen 13.11. 14:27Z live: QiBracelet NO 1.894 $ / Du sparst 225,46 $, QiHome 5.987 $ / 450,91 $.
+  // Die USD-Listenpreise im Markt NO folgen nicht dem Kurs; die Verhältnis-Regel ergäbe 1.911 $ und 6.019 $.
+  for (const [seite, endpreis, streich] of [[QIBRACELET, '1668.54', 1894], [QIHOME, '5536.09', 5987]]) {
+    _ablageLeeren();
+    const sf = mockStorefront([korb('USD', [[endpreis, String(streich), String(streich), 1]], 'BF26-X')]);
+    const lp = await bfDealLandesPreis(sf, seite, 'NO', {jetzt: JETZT});
+    assert.equal(lp.uvp, streich, seite.deal);
+  }
+});
+
+test('BF-Stand NO (USD): 2x QiOne nach Neubepreisung -> BF-Verhältnis (20 %), nicht der neue Shopify-Streichpreis', async () => {
+  _ablageLeeren();
+  // gemessen 13.11. 14:27Z live: 3.432 $ / Du sparst 851,54 $ -> Endpreis 2.580,46 $
+  const sf = mockStorefront([korb('USD', [['2580.46', '1716.0', '1716.0', 2]])]);
+  const lp = await bfDealLandesPreis(sf, ZWEI_PRO, 'NO', {jetzt: JETZT});
+  assert.equal(lp.uvp, Math.round((2580.46 * 2476) / 1976));
+});
