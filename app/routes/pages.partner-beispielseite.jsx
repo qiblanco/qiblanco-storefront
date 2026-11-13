@@ -171,7 +171,7 @@ const BAUSTEINE = [
           'Eine Auswertung von 171 öffentlichen Beiträgen in sozialen Medien nennt am häufigsten mehr Ruhe und tieferen Schlaf, jeweils bei rund einem Fünftel (Advances in Bioengineering & Biomedical Science Research, 2024). Einen Fragebogen oder eine Vergleichsgruppe gab es nicht. [Was dir Menschen aus deinem Umfeld erzählen, ohne Namen und mit ihrem Einverständnis.]',
         ],
         quelle: {
-          text: 'Prof. Dr. Peter C. Dartsch, Advances in Bioengineering & Biomedical Science Research, 2024',
+          text: 'Unsere Nutzerstudie, Advances in Bioengineering & Biomedical Science Research, 2024',
           href: '/pages/studie-nutzererfahrung',
         },
       },
@@ -181,7 +181,7 @@ const BAUSTEINE = [
           'Im Labor behielten Immunzellen unter Handystrahlung mit dem QiOne® 2 Pro in der Nähe rund 85 statt 60 Prozent ihrer Abwehrleistung (Japan Journal of Medicine, 2021). Ob das im Körper genauso ist, ist nicht untersucht. Alle fünf Arbeiten stammen aus einem Labor und wurden von Qi Blanco finanziert; eine kontrollierte Studie am Menschen gibt es nicht.',
         ],
         quelle: {
-          text: 'Prof. Dr. Peter C. Dartsch, Japan Journal of Medicine, 2021, DOI 10.31488/JJM.165',
+          text: 'Unsere Laborstudie zu Immunzellen, Japan Journal of Medicine, 2021, DOI 10.31488/JJM.165',
           href: '/pages/studie-immunzellen',
         },
       },
