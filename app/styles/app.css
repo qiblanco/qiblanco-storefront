@@ -7598,3 +7598,22 @@ select.b2b-netto__eingabe {
   }
 }
 /* Variante links (11.11.2026): seit 12.11.2026 steht jede Leiste links, die Klasse bleibt als Ankerpunkt. */
+
+
+/* /products/broschure (Faltbroschuere, allgemeine Produktvorlage ohne Apple-Fassung): Kopf nach Shop-Tor D4
+   (Folgejob 20261113-prio1-apple-look-reste-bf-typo-pr-texte, Kopf vorher desktop 93 / mobil 83). Nur Optik, nur diese Seite:
+   - am Handy ist der Preis nicht groesser als die H1 (vorher 32 px Preis gegen 28 px H1), 24 px wie die Sterne-Zahl;
+   - drei Schriftstaerken statt vier: die Nutzerzeile ueber dem Preis steht in 600 wie Titel und Preis, nicht in 700;
+   - Luft zwischen Nutzerzeile und Preis (vorher 1 px).
+   Rueckweg: diesen Block und data-produkt in products.$handle.jsx zuruecknehmen. */
+.product[data-produkt='broschure'] .product-main > p.mt-2 {
+  margin-bottom: 16px;
+}
+.product[data-produkt='broschure'] .product-main > p.mt-2 b {
+  font-weight: 600;
+}
+@media (max-width: 749px) {
+  .product[data-produkt='broschure'] .product-price {
+    font-size: 1.5rem !important;
+  }
+}
