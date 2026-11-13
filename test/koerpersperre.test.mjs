@@ -24,10 +24,18 @@ function eigeneListe(quelle) {
   return /\bKOERPER_SPERRE\s*=\s*\[/.test(quelle);
 }
 
-/** Alle Quelltexte unter app/, rekursiv. */
+/**
+ * Alle Quelltexte unter app/, rekursiv, OHNE Punktdateien und -verzeichnisse.
+ * Grund (gemessen 2026-11-13 an Gate 22, das alle Testdateien parallel fährt):
+ * test/google-reviews-ausschluss.test.mjs legt kurz app/lib/.test-googleRating-
+ * server-<pid>.mjs an und löscht sie wieder. Liest dieser Lauf sie zwischen
+ * Auflisten und Lesen, endet er mit ENOENT statt mit einem Urteil. Punktdateien
+ * sind Test-Schatten und Werkzeug-Ablagen, kein ausgelieferter Quelltext.
+ */
 function quellen(dir = join(WURZEL, 'app')) {
   const aus = [];
   for (const e of readdirSync(dir, {withFileTypes: true})) {
+    if (e.name.startsWith('.')) continue;
     const p = join(dir, e.name);
     if (e.isDirectory()) aus.push(...quellen(p));
     else if (/\.(m?jsx?|tsx?)$/.test(e.name)) aus.push(p);
