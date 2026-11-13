@@ -264,7 +264,7 @@ export const STIMMEN = {
       'und dem QiBracelet® von sich aus in sozialen Medien geteilt. Eine 2024 ' +
       'veröffentlichte Arbeit hat diese Berichte gesammelt und beschreibend ' +
       'ausgewertet, ohne Kontrollgruppe.',
-    beleg: 'P. C. Dartsch, Advances in Bioengineering & Biomedical Science Research, 2024',
+    beleg: 'Unsere Nutzerstudie, Advances in Bioengineering & Biomedical Science Research, 2024',
     belegPfad: '/pages/studie-nutzererfahrung',
   },
   videos: {
