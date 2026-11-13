@@ -146,13 +146,13 @@ export function auswerten(antwort, zeilen, codes) {
   let waehrung = null;
   for (const n of cart.lines?.nodes ?? []) {
     const gesamt = n.cost?.totalAmount;
-    const stueck = n.cost?.compareAtAmountPerQuantity ?? n.cost?.amountPerQuantity;
+    const einzeln = n.cost?.compareAtAmountPerQuantity ?? n.cost?.amountPerQuantity;
     const a = Number.parseFloat(gesamt?.amount);
-    const v = Number.parseFloat(stueck?.amount);
+    const v = Number.parseFloat(einzeln?.amount);
     if (!Number.isFinite(a) || a <= 0 || !Number.isFinite(v)) {
       throw new Error('bf-landespreis: Zeile ohne Betrag');
     }
-    if (waehrung && (gesamt.currencyCode !== waehrung || stueck.currencyCode !== waehrung)) {
+    if (waehrung && (gesamt.currencyCode !== waehrung || einzeln.currencyCode !== waehrung)) {
       throw new Error('bf-landespreis: gemischte Währung');
     }
     waehrung = gesamt.currencyCode;
