@@ -88,7 +88,7 @@ export const MENSCHEN_ALLTAG_SEKTIONEN = Object.freeze([
   {art: 'stimmen', titel: 'Das sagen Menschen, die ihn tragen.', stimmen: STIMMEN},
   {
     art: 'kapitel',
-    etikett: 'Die ehrliche Antwort',
+    etikett: 'Was Studien zeigen',
     titel: T.einwand.ueberschrift,
     absaetze: [einwand[0], saetze(einwand[1], 2), saetze(einwand[2], 1)],
     bild: BILD.studie,

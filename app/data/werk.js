@@ -73,7 +73,7 @@ export const STRAENGE = [
   {
     "id": "nacht",
     "frage": "Was passiert nachts im Körper?",
-    "kurz": "Schlaf ist das Thema, zu dem uns am meisten geschrieben wird – hier steht, was dabei messbar ist.",
+    "kurz": "Zum Schlaf schreiben uns die meisten Menschen. Die Beiträge zeigen, was dazu gemessen ist.",
     "slugs": [
       {
         "slug": "qibracelet-groesse-wasser-sauna-zellstudie"

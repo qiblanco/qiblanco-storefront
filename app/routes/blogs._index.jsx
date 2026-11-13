@@ -126,8 +126,8 @@ export default function Blogs() {
       <div className="blogs">
         <h1>Wissen</h1>
         <p className="blog-einleitung">
-          Was zu Schlaf, Energie und Strahlung im Alltag wirklich gemessen ist —
-          und wo die Messung aufhört. Jeder Beitrag nennt seine Quellen.
+          Was Messungen zu deinem Schlaf und zur Strahlung im Alltag zeigen.
+          Jeder Beitrag nennt seine Quellen.
         </p>
         {/* Die Kacheln tragen dieselbe Klasse wie auf der Beitragsübersicht,
             damit ein Besucher zwischen den beiden Seiten keinen Wechsel des

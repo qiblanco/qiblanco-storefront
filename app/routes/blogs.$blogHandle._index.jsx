@@ -34,8 +34,8 @@ const BESTANDS_DECKEL = 50;
 // Aufnahme), nur das Bezugswort „dafür" fällt weg — nichts dazuerfunden.
 const EINLEITUNGEN = {
   wissen:
-    'Was zu Schlaf, Energie und Strahlung im Alltag wirklich gemessen ist — ' +
-    'und wo die Messung aufhört. Jeder Beitrag nennt seine Quellen.',
+    'Was Messungen zu deinem Schlaf und zur Strahlung im Alltag zeigen. ' +
+    'Jeder Beitrag nennt seine Quellen.',
   'coming-home':
     'Jeden Sonntag treffen wir uns auf Zoom, Anna und Christian und alle, ' +
     'die dabei sein möchten. Danach schreiben wir auf, worüber wir ' +
