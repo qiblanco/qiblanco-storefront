@@ -3,6 +3,7 @@ import {useLpPreis, waehrungVon} from '~/lib/lp-preis';
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
 import {absoluteCanonical} from '~/lib/seo';
 import {isoMitZone} from '~/lib/datum';
+import {KOERPER_SPERRE, istSchemaSicher} from '~/lib/koerper-sperre';
 
 /**
  * /pages/healy-alternative — „Was ist eine gute Alternative zu Healy?"
@@ -283,25 +284,25 @@ export function preisFuerSchema(products, land = 'DE', handle = 'qione-2-pro') {
 }
 
 /**
- * GL-SPR-0008 an der Stelle, an der Text maschinenlesbar wird (Muster wie
- * app/data/wasser-infoseite.js). app/lib/faq-schema.js passt hier nicht: sein
+ * GL-SPR-0008 an der Stelle, an der Text maschinenlesbar wird: dieselbe
+ * Körpersperre wie auf den Wasser-Seiten, aus app/lib/koerper-sperre.js (ein
+ * Vokabular, keine zweite Liste). app/lib/faq-schema.js passt hier nicht: sein
  * Deny-Netz sperrt /koh(ä|ae)rent/ und /energetisch/ und würde Fragen zu
  * Healys „bioenergetischem Feld" oder zum kohärenten Wasser still verschlucken.
- * Diese Sperre sitzt auf Heil- und Körperzusagen. Trifft sie, fehlt die Frage
- * im Schema, und die Probe des Segments meldet es (nichts fällt still weg).
+ * Trifft die Sperre, fehlt die Frage im Schema, und die Probe des Segments
+ * (S3: FAQPage trägt so viele Fragen wie die Seite zeigt) meldet es.
+ *
+ * NICHT SCHMALER, obwohl die Seite über ein fremdes Gerät spricht (geprüft
+ * 2026-11-13, Auftrag 20261113-koerpersperre-healy-zweite-kopie): die Quellen-
+ * regel oben schließt jede Aussage über Healys Wirkung und jede Indikation aus.
+ * Ein Satz wie „Healy-Programme helfen deinem Körper beim Entgiften" gehört
+ * deshalb so wenig ins Schema wie eine Zusage über den QiOne®. Die eigene
+ * Abschrift von 2026-10-07 hatte sechs der damals acht Wasser-Muster, ohne
+ * genannten Grund, und ließ den Entgiften-Satz durch. Gemessen an allen 153
+ * Textblättern dieser Datei trifft die gemeinsame Sperre keinen; die FAQPage
+ * trägt vorher wie nachher alle acht Fragen mit demselben JSON.
  */
-export const KOERPER_SPERRE = [
-  /st(ä|ae)rk\w* (dein|das|ihr|unser) Immunsystem/i,
-  /sch(ü|ue)tz\w* (deine |die |unsere )?Zellen/i,
-  /\bheil(t|en|ung|end)\b/i,
-  /verhinder\w* Krankheit/i,
-  /Therapie|therapeut/i,
-  /Krankheit|Erkrankung/i,
-];
-
-export function istSchemaSicher(text) {
-  return !KOERPER_SPERRE.some((rx) => rx.test(String(text)));
-}
+export {KOERPER_SPERRE, istSchemaSicher};
 
 export function strukturierteDaten(preis) {
   const url = absoluteCanonical(PFAD);
