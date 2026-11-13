@@ -56,6 +56,11 @@
 }
 .bf-deal-seite .tas-licht-raster {
   border: 1px solid var(--bfd-rand);
+  /* Band-Fläche neutral wie auf der Alpha-Seite (the-alpha-produkt.css --tas-band #1e1e1e), nicht warm #15110d:
+   * die 360-Drehung verschwindet per `lighten` nur auf einer Fläche, die in JEDEM Kanal heller ist als ihr
+   * Filmgrund. Der Grund ist leicht bläulich (gemessen bis ~25 im Blaukanal), #15110d hat Blau 13 -> auf der
+   * warmen Fläche stand das Video als Rechteck (Sicht-Tor F-744/F-745, medien_kante Abstand 11). */
+  background: #1e1e1e;
 }
 
 /* 3) Überschriften und Fließtext: hell auf dunkel. Haus-Resets setzen Überschriften dunkel (teils !important). */
