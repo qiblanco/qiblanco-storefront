@@ -500,6 +500,13 @@ function StandardProduct({product, kaufleiste = false}) {
   // Kaufbox-Ref für die Kaufleiste: sie misst, ob der Kaufknopf der Kaufbox
   // im Bild ist (reusables/Kaufleiste.jsx).
   const kaufbox = useRef(null);
+  // LAUNCH OHNE NUTZERZAHL (Shop-Tor S5, Christian 28.10.2026: „wir stellen das
+  // produkt erst vor es kann noch keine bewertung geben“): Qi-Alpha-Artikel, die
+  // über diese allgemeine Vorlage laufen (gemessen /products/qi-alpha-ratenanteil),
+  // tragen weder Sterne-Zeile noch Nutzerzeile. Dieselben Präfixe wie die
+  // Launch-Liste in design-meister/db/webdesign/shop-regeln.yaml (S5 launch).
+  // Folgejob 20261113-prio1-apple-look-reste-bf-typo-pr-texte, Minimal-Fix.
+  const launchOhneNutzerzahl = /^(qi-alpha|the-alpha)/i.test(product?.handle || '');
 
   return (
     <>
@@ -513,8 +520,8 @@ function StandardProduct({product, kaufleiste = false}) {
         Layout-Effekt. Erfasst beim HARD-LOAD (Ad-Traffic landet hart) analog
         zum bestehenden Tracker; SPA-navigierte PDPs bleiben ungemessen (Eigen-
         schaft des Trackers, s. RESULT). Job 20260723-commerce-microfunnel. */}
-    {/* data-produkt: reiner Anker fuer seitengenaue Optik (app.css, Abschnitt
-        Broschuere), kein Layout-Effekt. */}
+    {/* data-produkt: reiner Anker für seitengenaue Optik (app.css, Abschnitt
+        Broschüre), kein Layout-Effekt. */}
     <div className="product" data-produkt={product.handle} ref={kaufbox}>
       <div className="ProductImages" data-section="pdp-gallery">
         <ProductImage image={selectedVariant?.image} />
@@ -522,10 +529,12 @@ function StandardProduct({product, kaufleiste = false}) {
       </div>
       <div className="product-main">
         <h1>{title}</h1>
-        <SterneSprung className="product-rating mt-2"><span style={{color: 'var(--color-accent-ink)'}}>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
+        {launchOhneNutzerzahl ? null : (
+          <SterneSprung className="product-rating mt-2"><span style={{color: 'var(--color-accent-ink)'}}>4.8</span> <StarRating value={4.8} />{' '}<span>Über 14.000 Nutzer</span></SterneSprung>
+        )}
         <div className="ProductDescription" data-section="pdp-description" dangerouslySetInnerHTML={{__html: fremdHtmlMitBildAuszeichnung(descriptionHtml)}} />
 
-        <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>
+        {launchOhneNutzerzahl ? null : <p className='mt-2'><b>Mehr als 14.000+ aktive Nutzer</b></p>}
 
         <div data-section="pdp-buybox">
           <ProductPrice
