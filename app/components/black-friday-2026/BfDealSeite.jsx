@@ -64,6 +64,9 @@ const PRODUKT_DATEN = {
   'qihome-air': datenStudienNeutral(DATEN_QIHOME),
 };
 const IG_PRODUKT = {qibracelet: 'QiBracelet'};
+// Überschrift der Instagram-Reihe nur auf den Deal-Seiten (Elina EL-20261113-f005fbd5); die normalen
+// Produktseiten behalten „Auf Instagram.“ aus ihren Daten.
+const BF_IG_UEBERSCHRIFT = 'Echte Kundenstimmen auf Instagram';
 
 export function BfDealAlpha({seite, product, ketten}) {
   const wurzel = useRef(null);
@@ -153,6 +156,7 @@ function BfDealAngebot({product, ketten, daten}) {
   );
   const stimmen = {
     ...original.STIMMEN_GOOGLE,
+    instagram: BF_IG_UEBERSCHRIFT,
     stimmen: einmal(
       [...(deal.STIMMEN_GOOGLE?.stimmen ?? []), ...(original.STIMMEN_GOOGLE?.stimmen ?? [])],
       (s) => s.text,
@@ -222,7 +226,12 @@ function BfDealProdukt({product, ketten, basis, daten: roh}) {
               bilder={product?.images?.nodes ?? []}
             />
           ),
-          stimmen: <AlphaStimmen daten={daten.STIMMEN_GOOGLE} igProdukt={IG_PRODUKT[basis] ?? null} />,
+          stimmen: (
+            <AlphaStimmen
+              daten={{...daten.STIMMEN_GOOGLE, instagram: BF_IG_UEBERSCHRIFT}}
+              igProdukt={IG_PRODUKT[basis] ?? null}
+            />
+          ),
           faq: (
             <>
               <BfSchlussBanner />
