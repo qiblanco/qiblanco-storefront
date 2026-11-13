@@ -8,7 +8,10 @@ import {
   bfDealLandesPreis,
   bfDealLandesPreise,
   bfDealLandesPreiseSetzen,
+  bfKakaoLandesDaten,
+  bfKakaoSetPreise,
   dealWahlen,
+  kakaoEinzelZeilen,
 } from './bf-deal-landespreis.server.js';
 
 const JETZT = Date.parse('2026-11-20T12:00:00Z');
@@ -43,10 +46,51 @@ function chAntwort({applicable = true, menge = 2} = {}) {
   };
 }
 
-function mockStorefront(antworten) {
+/** Einzelpackungen des Landes (gemessen 13.11.2026 CH: Awake 78, Create 77 CHF). */
+const EINZEL_CH = {
+  nodes: [
+    {id: 'gid://shopify/ProductVariant/54540698485004', price: geld('78.0', 'CHF')},
+    {id: 'gid://shopify/ProductVariant/44685294567692', price: geld('77.0', 'CHF')},
+  ],
+};
+
+/** Antwort wie gemessen 13.11.2026, CH, Kakao-Set-Variante + BF26-KAKAO-NKSKX (80,54 CHF). */
+function kakaoChAntwort() {
+  return {
+    cartCreate: {
+      cart: {
+        totalQuantity: 1,
+        discountCodes: [{code: 'BF26-KAKAO-NKSKX', applicable: true}],
+        lines: {
+          nodes: [
+            {
+              quantity: 1,
+              cost: {
+                totalAmount: geld('80.54', 'CHF'),
+                amountPerQuantity: geld('124.0', 'CHF'),
+                compareAtAmountPerQuantity: null,
+              },
+            },
+          ],
+        },
+      },
+      userErrors: [],
+    },
+  };
+}
+
+function mockStorefront(antworten, einzel = EINZEL_CH) {
   const aufrufe = [];
+  const queries = [];
   return {
     aufrufe,
+    queries,
+    CacheShort: () => 'kurz',
+    query: async (q, opts) => {
+      queries.push({q, variables: opts.variables});
+      if (einzel instanceof Error) throw einzel;
+      return einzel;
+    },
     mutate: async (q, opts) => {
       aufrufe.push({q, variables: opts.variables});
       const a = antworten.shift();
@@ -156,12 +200,76 @@ test('Preise setzen: jede EUR-Variante bekommt Landespreis und -Streichpreis', (
   assert.equal(bfDealLandesPreiseSetzen(p, null), p);
 });
 
-test('Galerie: mehrere Deals parallel, Kakao ohne Warenkorb-Link fällt weg, DE leer', async () => {
+test('Galerie: mehrere Deals parallel, DE leer', async () => {
   _ablageLeeren();
   const sf = mockStorefront([chAntwort(), chAntwort({menge: 1})]);
-  const lp = await bfDealLandesPreise(sf, ['2x-qione-2-pro', 'kakao', 'qihome-air'], 'CH', {jetzt: JETZT});
+  const lp = await bfDealLandesPreise(sf, ['2x-qione-2-pro', 'qihome-air'], 'CH', {jetzt: JETZT});
   assert.deepEqual(Object.keys(lp), ['2x-qione-2-pro', 'qihome-air']);
   assert.equal(sf.aufrufe.length, 2);
   assert.deepEqual(sf.aufrufe[1].variables.codes, ['BF26-QIHOME-2DP8H']);
   assert.deepEqual(await bfDealLandesPreise(sf, ['2x-qione-2-pro'], 'DE', {jetzt: JETZT}), {});
+});
+
+test('Kakao CH: Set-Zeile mit _bf_deal + Kakao-Code, Streichpreis = Einzelpackungen (78 + 77)', async () => {
+  _ablageLeeren();
+  const sf = mockStorefront([kakaoChAntwort()]);
+  const lp = await bfDealLandesPreis(sf, {deal: 'kakao', set: 'create-awake'}, 'CH', {jetzt: JETZT});
+  assert.deepEqual(lp, {preis: 80.54, uvp: 155, waehrung: 'CHF'});
+  assert.deepEqual(sf.aufrufe[0].variables.codes, ['BF26-KAKAO-NKSKX']);
+  assert.deepEqual(sf.aufrufe[0].variables.lines, [
+    {
+      merchandiseId: 'gid://shopify/ProductVariant/65979750809868',
+      quantity: 1,
+      attributes: [{key: '_bf_deal', value: 'kakao'}],
+    },
+  ]);
+  assert.equal(sf.aufrufe[0].variables.land, 'CH');
+  assert.equal(sf.queries[0].variables.land, 'CH');
+  assert.deepEqual(sf.queries[0].variables.ids, [
+    'gid://shopify/ProductVariant/54540698485004',
+    'gid://shopify/ProductVariant/44685294567692',
+  ]);
+});
+
+test('Kakao: 2x Awake = zwei gleiche Einzelpackungen (Menge 2), je Set eigene Ablage', async () => {
+  assert.deepEqual(kakaoEinzelZeilen('2x-awake'), [
+    {id: 'gid://shopify/ProductVariant/54540698485004', menge: 2},
+  ]);
+  _ablageLeeren();
+  const sf = mockStorefront([kakaoChAntwort(), kakaoChAntwort(), kakaoChAntwort()]);
+  const je = await bfKakaoSetPreise(sf, 'CH', {jetzt: JETZT});
+  assert.deepEqual(Object.keys(je), ['create-awake', '2x-awake', '2x-create']);
+  assert.equal(je['2x-awake'].uvp, 156);
+  assert.equal(je['2x-create'].uvp, 154);
+  assert.equal(sf.aufrufe.length, 3);
+  await bfKakaoSetPreise(sf, 'CH', {jetzt: JETZT + 1000});
+  assert.equal(sf.aufrufe.length, 3);
+});
+
+test('Kakao DE: kein Abruf, null', async () => {
+  _ablageLeeren();
+  const sf = mockStorefront([]);
+  assert.deepEqual(await bfKakaoSetPreise(sf, 'DE', {jetzt: JETZT}), {});
+  assert.equal(await bfKakaoLandesDaten(sf, {deal: 'kakao', set: 'create-awake'}, 'DE'), null);
+  assert.equal(sf.aufrufe.length + sf.queries.length, 0);
+});
+
+test('Kakao fail-closed: Einzelpreis in anderer Währung oder Abfrage wirft -> null (Euro wie bisher)', async () => {
+  _ablageLeeren();
+  const falsch = {nodes: [{id: 'gid://shopify/ProductVariant/54540698485004', price: geld('78', 'EUR')}]};
+  const sf = mockStorefront([kakaoChAntwort(), kakaoChAntwort(), kakaoChAntwort()], falsch);
+  assert.equal(await bfDealLandesPreis(sf, {deal: 'kakao', set: 'create-awake'}, 'CH', {jetzt: JETZT}), null);
+  _ablageLeeren();
+  const sf2 = mockStorefront([kakaoChAntwort(), kakaoChAntwort(), kakaoChAntwort()], new Error('netz'));
+  assert.equal(await bfDealLandesPreis(sf2, {deal: 'kakao', set: '2x-awake'}, 'CH', {jetzt: JETZT}), null);
+});
+
+test('Kakao-Landesdaten: Seite bekommt Set-Preise, Preis des gewählten Sets und Galerie', async () => {
+  _ablageLeeren();
+  const antworten = [kakaoChAntwort(), kakaoChAntwort(), kakaoChAntwort(), chAntwort(), chAntwort({menge: 1}), chAntwort({menge: 1}), chAntwort({menge: 1})];
+  const sf = mockStorefront(antworten);
+  const d = await bfKakaoLandesDaten(sf, {deal: 'kakao', set: '2x-create'}, 'CH', {jetzt: JETZT});
+  assert.deepEqual(Object.keys(d.kakaoSetPreise), ['create-awake', '2x-awake', '2x-create']);
+  assert.equal(d.landesPreis.uvp, 154);
+  assert.equal(Object.keys(d.landesPreise).includes('kakao'), false);
 });

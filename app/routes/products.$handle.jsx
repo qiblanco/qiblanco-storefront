@@ -51,6 +51,8 @@ import {
   bfKakaoUmleitung,
 } from '~/components/black-friday-2026/bf-deals-daten';
 import {ladeBfDealAlpha} from '~/components/black-friday-2026/bf-deal-seite.server';
+import {bfKakaoLandesDaten} from '~/components/black-friday-2026/bf-deal-landespreis.server';
+import {resolveCountry} from '~/lib/markt-pricing';
 import {BfDealAlpha} from '~/components/black-friday-2026/BfDealSeite';
 import {BfDealRahmen, DealGalerie} from '~/components/black-friday-2026/DealGalerie';
 import {BfKakaoDeal} from '~/components/black-friday-2026/BfKakaoDeal';
@@ -381,13 +383,23 @@ async function ladeBfDealStandard(args, dealSeite) {
  */
 async function ladeBfDealKakao(args, dealSeite) {
   const set = bfKakaoSet(new URL(args.request.url).searchParams.get('set'));
-  return ladeBfDealStandard(args, {
+  const seite = {
     ...dealSeite,
     set: set.id,
     link: set.link,
     bild: set.bild,
     bildAlt: set.bildAlt,
-  });
+  };
+  // Außerhalb von DE: Warenkorb-Betrag des Besucher-Landes je Set (der Kaufknopf
+  // legt die Set-Zeile in den Qi-Blanco-Warenkorb), Galerie im selben Land
+  // (bf-deal-landespreis.server.js). null = Euro-Preise wie bisher; DE ruft nichts ab.
+  const [daten, landesDaten] = await Promise.all([
+    ladeBfDealStandard(args, seite),
+    bfKakaoLandesDaten(args.context?.storefront, seite, resolveCountry(args.request)),
+  ]);
+  return landesDaten
+    ? {...daten, bfDealSeite: {...daten.bfDealSeite, ...landesDaten}}
+    : daten;
 }
 
 export default function Product() {

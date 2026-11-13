@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import kakaoDealStyles from '~/styles/bf-kakao-deal.css?url';
-import {DealGalerie} from '~/components/black-friday-2026/DealGalerie';
+import {DealGalerie, useBfDealSeite} from '~/components/black-friday-2026/DealGalerie';
 import {BfKakaoVergleich} from '~/components/black-friday-2026/BfKakaoVergleich';
 import {
   BF_KAKAO_SETS,
@@ -93,8 +93,15 @@ export function BfKakaoDeal({setId}) {
     [],
   );
 
-  const preis = betragText(deal.preis, 'EUR');
-  const uvp = betragText(deal.uvp, 'EUR');
+  // Außerhalb von DE: Warenkorb-Betrag des Besucher-Landes für das gewählte Set
+  // (bf-deal-landespreis.server.js, der Kaufknopf legt dieselbe Zeile in den
+  // Warenkorb); ohne Ergebnis und in DE die Euro-Preise des Deals.
+  const lp = useBfDealSeite()?.kakaoSetPreise?.[set.id] ?? null;
+  const preis = lp ? betragText(lp.preis, lp.waehrung) : betragText(deal.preis, 'EUR');
+  const uvp = lp ? betragText(lp.uvp, lp.waehrung) : betragText(deal.uvp, 'EUR');
+  const rabatt = lp
+    ? `−${betragText(Math.round((lp.uvp - lp.preis) * 100) / 100, lp.waehrung)}`
+    : deal.rabatt;
 
   return (
     <>
@@ -134,7 +141,7 @@ export function BfKakaoDeal({setId}) {
               fetchPriority={s.id === set.id ? 'high' : 'low'}
             />
           ))}
-          <span className="bkd__plakette">{deal.rabatt}</span>
+          <span className="bkd__plakette">{rabatt}</span>
         </div>
         <div className="bkd__text">
           <p className="bkd__zeile">Black Friday 2026</p>
