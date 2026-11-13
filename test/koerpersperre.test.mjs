@@ -1,5 +1,5 @@
 /**
- * Die Körpersperre (app/lib/koerper-sperre.js): EIN Vokabular für alle Seiten,
+ * Die Körpersperre (app/lib/koerpersperre.js): EIN Vokabular für alle Seiten,
  * die kohärentes Wasser oder ein fremdes Gerät erklären.
  *
  * Anlass (Auftrag 20261113-koerpersperre-healy-zweite-kopie): die Healy-Seite
@@ -14,10 +14,10 @@ import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
 import {join, relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {KOERPER_SPERRE, istSchemaSicher} from '../app/lib/koerper-sperre.js';
+import {KOERPER_SPERRE, istSchemaSicher} from '../app/lib/koerpersperre.js';
 
 const WURZEL = fileURLToPath(new URL('..', import.meta.url));
-const HEIMAT = 'app/lib/koerper-sperre.js';
+const HEIMAT = 'app/lib/koerpersperre.js';
 
 /** Führt diese Quelle eine eigene Liste (KOERPER_SPERRE mit Array-Literal belegt)? */
 function eigeneListe(quelle) {
@@ -66,7 +66,7 @@ test('ein Vokabular: keine Datei unter app/ führt eine zweite Liste', () => {
   // Wasser-Fassung hätten ihn ausgelöst, ein Re-Export nicht.
   assert.equal(eigeneListe('export const KOERPER_SPERRE = [\n  /Therapie|therapeut/i,\n];'), true);
   assert.equal(eigeneListe("export {KOERPER_SPERRE, istSchemaSicher};"), false);
-  assert.equal(eigeneListe("import {KOERPER_SPERRE} from '~/lib/koerper-sperre';"), false);
+  assert.equal(eigeneListe("import {KOERPER_SPERRE} from '~/lib/koerpersperre';"), false);
 
   const mitListe = quellen()
     .filter((p) => eigeneListe(readFileSync(p, 'utf8')))
@@ -78,5 +78,5 @@ test('ein Vokabular: keine Datei unter app/ führt eine zweite Liste', () => {
 
 test('die Healy-Seite holt die Sperre aus der Heimat', () => {
   const quelle = readFileSync(join(WURZEL, 'app/components/campaign/HealyAlternativeSeite.jsx'), 'utf8');
-  assert.match(quelle, /from '~\/lib\/koerper-sperre'/);
+  assert.match(quelle, /from '~\/lib\/koerpersperre'/);
 });

@@ -3,7 +3,7 @@ import {AUTORENKASTEN} from '~/lib/autorenkasten';
 import {absoluteCanonical} from '~/lib/seo';
 import {isoMitZone} from '~/lib/datum';
 import {STUDIEN, anzahlNachArt, zahlwort} from '~/data/studien';
-import {KOERPER_SPERRE, istSchemaSicher} from '~/lib/koerper-sperre';
+import {KOERPER_SPERRE, istSchemaSicher} from '~/lib/koerpersperre';
 
 const versal = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -1154,7 +1154,7 @@ export function quellenNummer(id) {
  * Körpersperre (Heil- und Körperschutzzusagen fliegen aus FAQPage und
  * DefinedTerm, und der Test der Seite, test/wasser-infoseite.test.mjs, wird
  * rot). Muster, Begründung und Grenzen stehen seit 2026-11-13 in
- * app/lib/koerper-sperre.js, dem einen Vokabular für diese Seite, die
+ * app/lib/koerpersperre.js, dem einen Vokabular für diese Seite, die
  * Hexagonal-Seite und die Healy-Seite (Auftrag 20261113-koerpersperre-healy-
  * zweite-kopie). Der Re-Export bleibt, weil hexagonales-wasser-seite.js und die
  * Tests sie hier holen.

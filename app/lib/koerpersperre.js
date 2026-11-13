@@ -55,7 +55,7 @@
  * Sache des Schreibenden und des Stil-Tors.
  *
  * WER HIER EIN MUSTER ÄNDERT, misst vorher alle Nutzer: `git grep -n
- * koerper-sperre app` zeigt sie, und test/koerper-sperre.test.mjs hält fest,
+ * koerpersperre app` zeigt sie, und test/koerpersperre.test.mjs hält fest,
  * dass keine Datei unter app/ eine zweite Liste führt.
  */
 const KOERPER_WORT =

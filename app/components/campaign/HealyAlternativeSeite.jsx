@@ -3,7 +3,7 @@ import {useLpPreis, waehrungVon} from '~/lib/lp-preis';
 import {bruttoAnzeige, formatPreis} from '~/lib/markt-pricing';
 import {absoluteCanonical} from '~/lib/seo';
 import {isoMitZone} from '~/lib/datum';
-import {KOERPER_SPERRE, istSchemaSicher} from '~/lib/koerper-sperre';
+import {KOERPER_SPERRE, istSchemaSicher} from '~/lib/koerpersperre';
 
 /**
  * /pages/healy-alternative — „Was ist eine gute Alternative zu Healy?"
@@ -285,7 +285,7 @@ export function preisFuerSchema(products, land = 'DE', handle = 'qione-2-pro') {
 
 /**
  * GL-SPR-0008 an der Stelle, an der Text maschinenlesbar wird: dieselbe
- * Körpersperre wie auf den Wasser-Seiten, aus app/lib/koerper-sperre.js (ein
+ * Körpersperre wie auf den Wasser-Seiten, aus app/lib/koerpersperre.js (ein
  * Vokabular, keine zweite Liste). app/lib/faq-schema.js passt hier nicht: sein
  * Deny-Netz sperrt /koh(ä|ae)rent/ und /energetisch/ und würde Fragen zu
  * Healys „bioenergetischem Feld" oder zum kohärenten Wasser still verschlucken.
