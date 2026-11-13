@@ -94,6 +94,33 @@ function H_SICHER(text) {
   return W.istSchemaSicher(text);
 }
 
+test('Koerpersperre faengt Koerperzusagen auch ohne Heil-Wort, Physiksaetze bleiben frei', () => {
+  // Rot-Arm: der Entgiften-Satz lief bis 2026-11-13 durch die Sperre
+  // (Beleg im Jobordner seo-2026-w46-l22-…/positivkontrolle-koerpersperre.txt).
+  const gesperrt = [
+    'Trink hexagonales Wasser, damit deine Zellen besser entgiften.',
+    'Hexagonales Wasser entgiftet den Körper.',
+    'Strukturiertes Wasser reinigt deine Zellen von innen.',
+    'Dein Körper regeneriert sich schneller mit diesem Wasser.',
+    'Es stärkt deine Abwehrkräfte.',
+    'Das Wasser versorgt jede Zelle mit Energie.',
+    'Ein Detox für deinen Darm.',
+    'Hexagonales Wasser stärkt dein Immunsystem und heilt Entzündungen.',
+  ];
+  for (const s of gesperrt) assert.equal(H_SICHER(s), false, `nicht gesperrt: ${s}`);
+  // Gegenrichtung: Körperwort ohne Wirkverb und „stärker/Feldstärke" sind
+  // Physik oder Versuchsbeschreibung, keine Zusage.
+  const frei = [
+    'Was macht Wasser im Körper mit deiner Energie?',
+    'Fünf veröffentlichte Studien, vier davon an Zellen im Labor, mit Methode und Ergebnis.',
+    'Am stärksten wirkt Infrarot bei 3,1 Mikrometern.',
+    'Die Wärmestrahlung der Haut liegt im Infrarot bei etwa 3·10^13 Hz.',
+    'Energie trägt als Wort für beide Seiten so weit, wie der Körper wirklich Energie umsetzt.',
+    'Feldstärken sind messbar, und für sie gelten gesetzliche Grenzwerte.',
+  ];
+  for (const s of frei) assert.equal(H_SICHER(s), true, `falsch gesperrt: ${s}`);
+});
+
 test('die Abgrenzung führt die sechs Begriffe des Auftrags', () => {
   const namen = H.ABGRENZUNG.zeilen.map((z) => z.begriff.toLowerCase());
   for (const b of ['hexagonal', 'strukturiert', 'kohärent', 'ez', 'belebt', 'eis ih'])
