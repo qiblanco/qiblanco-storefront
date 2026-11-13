@@ -5,6 +5,10 @@ import {produktLink, BLOCK_PUBLIC} from '~/components/reusables/blockLinks';
 import {vergleichSpalten} from '~/components/reusables/amazonstil-daten';
 import {faqPageJsonLdString} from '~/lib/faq-schema';
 import {GoogleBewertungsleiste} from '~/components/reusables/GoogleBewertungsleiste';
+import {
+  GOOGLE_REZENSIONEN_ANKER_ID,
+  REVIEWS_SEKTION_ATTR,
+} from '~/components/reusables/GoogleRezensionenBereich';
 import {useMarktLand} from '~/lib/markt-land';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
@@ -242,8 +246,18 @@ export function AlphaStimmen({daten, igProdukt = null}) {
   // Bewertungsposition der Apple-Kaufseiten = DIE Bewertungsleiste
   // (GoogleBewertungsleiste, Christian 11.11.2026): an allen Positionen
   // gleich. Die drei festen Karten aus daten.stimmen sind abgelöst.
+  // Rezensionsziel (Vorgang #293, Job dauerbefund-kante-20261101-c96146f535-s02):
+  // der 4,8-Klick im Kopf (findeRezensionsZiel) und sein No-JS-href
+  // /products/qione-2-pro#google-rezensionen landen hier statt im Popup bzw.
+  // im Leeren. Gemessen 13.11.2026: keine Nutzerseite von AlphaStimmen trägt
+  // GoogleRezensionenBereich oder #kundenerfahrungen, die id bleibt einmalig.
   return (
-    <div className="avs" data-av-stimmen="">
+    <div
+      className="avs"
+      data-av-stimmen=""
+      id={GOOGLE_REZENSIONEN_ANKER_ID}
+      {...{[REVIEWS_SEKTION_ATTR]: ''}}
+    >
       <GoogleBewertungsleiste dataSection="av-bewertungsleiste" />
       {igProdukt ? (
         <div className="avs-ig">
