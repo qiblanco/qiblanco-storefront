@@ -210,7 +210,7 @@
   row-gap: 2px;
   margin: 0;
   color: #fff;
-  font-size: clamp(15px, 4.4vw, 17px);
+  font-size: var(--bft-2, 14px);
   line-height: 1.3;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -224,12 +224,17 @@
 .bf-deal-seite .bfc__zeit:empty {
   display: none;
 }
+@media (min-width: 375px) {
+  .bf-deal-seite .bfc .bfc__innen {
+    font-size: var(--bft-3, 17px);
+  }
+}
 @media (min-width: 600px) {
   .bf-deal-seite .bfc {
     padding: 11px 20px;
   }
   .bf-deal-seite .bfc .bfc__innen {
-    font-size: 18px;
+    font-size: var(--bft-3, 17px);
   }
 }
 @media (min-width: 960px) {
@@ -238,6 +243,41 @@
     padding: 12px 24px;
   }
   .bf-deal-seite .bfc .bfc__innen {
-    font-size: 19px;
+    font-size: var(--bft-3, 17px);
+  }
+}
+
+/* 9) EINE Typo-Skala für alle BF-Bausteine (Folgejob Apple-Look-Reste, 13.11.2026): höchstens 9 Schriftgrößen je
+ *    Deal-Seite. Gemessen vorher 10-11 Größen (13, 15, 16, 18, 19, 22, 29, 32, 36 px aus den Bausteinen bfg, bfsb,
+ *    bkd, bkv, bfkv, bfc, qb-vb, qb-igt). Die Stufen sind die der Alpha-Vorlage (--tas-fs-*): 12 · 14 · 17 · 20/21 ·
+ *    24/28 · 28/40. Überschriften folgen am Handy dem Haus-Reset (reset.css: h1 28, h2 24, h3 20, !important).
+ *    Jeder BF-Baustein nimmt seine Größe nur noch aus diesen Token. Rückweg: diesen Block und die var(--bft-*)
+ *    in den BF-Stylesheets zurücknehmen (Commit dieses Auftrags). */
+.bf-deal-seite {
+  --bft-1: 12px; /* Kleinst */
+  --bft-2: 14px; /* Zeile, Altpreis, Pille, Bildunterschrift, Countdown am schmalen Handy */
+  --bft-3: 17px; /* Text, Knopf, Frage, Antwort */
+  --bft-4: 20px; /* Name, Set, Plakette, Preis in der Kachel */
+  --bft-5: 24px; /* Abschnittstitel (h2), Preis im Kopf */
+  --bft-6: 28px; /* großer Preis im Schluss-Banner */
+}
+@media (min-width: 750px) {
+  .bf-deal-seite {
+    --bft-4: 21px;
+    --bft-5: 28px;
+    --bft-6: 40px;
+  }
+}
+
+/* 10) Vertrauensblock auf der Deal-Seite in der BF-Skala: 14/17 statt 14/16 bzw. 16/16. Steht hier und nicht in
+ *     bf-vertrauensblock.css, damit Seiten ohne .bf-deal-seite (pre-access, pre-access-b) gar nicht an diesem Diff
+ *     hängen. Spezifität .bf-deal-seite .qb-vb (0,2,0) schlägt .qb-vb (0,1,0) unabhängig von der Ladereihenfolge. */
+.bf-deal-seite .qb-vb {
+  --vb-schrift: var(--bft-2, 14px);
+  --vb-schrift-gross: var(--bft-3, 17px);
+}
+@media (min-width: 600px) {
+  .bf-deal-seite .qb-vb {
+    --vb-schrift: var(--bft-3, 17px);
   }
 }
