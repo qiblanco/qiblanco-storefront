@@ -29,8 +29,9 @@ const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
 
 /*
  * BF-GOLD-BILDER (Elina EL-20261111-a9af196f, Punkt 1): dunkler Grund mit
- * Goldlicht, 1200x1200, Shopify-Dateien DACH (Größe per ?width=). Bei 2x QiOne,
- * QiBracelet und QiHome Air die Fassung mit Dartsch-Siegel (EL-20261111-21205271).
+ * Goldlicht, 1200x1200, Shopify-Dateien DACH (Größe per ?width=). Bei 2x QiOne
+ * die Fassung mit Dartsch-Siegel (EL-20261111-21205271). QiBracelet und QiHome Air
+ * OHNE Siegel (Elina EL-20261113-fb8595c6: in der ganzen BF-Kampagne ohne Siegel).
  * Der Rand jedes Bildes ist #090806 (BF_GOLD_RAND): eine Bildfläche in anderem
  * Seitenverhältnis zeigt das Bild ganz (object-fit: contain) auf genau diesem
  * Ton, damit das Siegel unten rechts nie angeschnitten wird.
@@ -39,8 +40,8 @@ export const BF_GOLD_RAND = '#090806';
 export const BF_GOLD_BILDER = {
   '2x-qione-2-pro': CDN + 'mail-bf2026-2x-qione-2-pro-siegel.jpg',
   'qione-2-pro-necklace': CDN + 'mail-bf2026-qione-2-pro-necklace.jpg',
-  qibracelet: CDN + 'mail-bf2026-qibracelet-siegel.jpg',
-  'qihome-air': CDN + 'mail-bf2026-qihome-air-siegel.jpg',
+  qibracelet: CDN + 'mail-bf2026-qibracelet.jpg',
+  'qihome-air': CDN + 'mail-bf2026-qihome-air.jpg',
   'kakao-awake-create': CDN + 'mail-bf2026-kakao-1x-awake-1x-create.jpg',
   'kakao-2x-awake': CDN + 'mail-bf2026-kakao-2x-awake.jpg',
   'kakao-2x-create': CDN + 'mail-bf2026-kakao-2x-create.jpg',
