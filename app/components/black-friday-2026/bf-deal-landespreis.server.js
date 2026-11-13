@@ -252,6 +252,43 @@ export function auswerten(antwort, zeilen, codes) {
 }
 
 /**
+ * BF-STAND DES STREICHPREISES (Job 20261113-folge-bf-dealseite-auslandsansicht-
+ * streichpreis-halten-qione2pro-prio1; Christian CW-20261113-bb47c38d „Kein
+ * Einfluss auf BF“, Elina EL-20261113-a7edaf0e „Erst mal so belassen“).
+ *
+ * LAGE: Am 13.11. bekam QiOne 2 Pro einen neuen Grundpreis (1.214 €) und
+ * Streichpreis (1.349 €), die BF-Codes wurden um die Differenz erhöht. Der
+ * Endpreis blieb überall gleich. auswerten() liest den Streichpreis aber aus
+ * dem Shopify-Streichpreis der Warenkorbzeilen: in AT stand darum 2 x 1.349 =
+ * 2.698 € statt 2.476 € (Du sparst 722 € statt 500 €).
+ *
+ * REGEL (gilt für die Alpha-Deals, nicht für Kakao):
+ * - Euro-Land: Streichpreis = deal.uvp aus bf-deals-daten (2.476 / 1.332 €), wie DE.
+ * - Schweiz (CHF): unverändert der Shopify-Streichpreis (Elina: „so lassen“).
+ * - andere Währung, nur die neu bepreisten QiOne-2-Pro-Deals (BF_STAND_NEU_BEPREIST):
+ *   deal.uvp x Landes-Endpreis / deal.preis, auf die ganze Einheit gerundet.
+ *   Das ist das BF-Verhältnis (2.476 : 1.976, Du sparst 20 %) auf den Betrag,
+ *   den die Kasse im Land nimmt. Es braucht keinen Basis-Streichpreis und
+ *   keinen Kurs. Gegenprobe 13.11.: in PLN, SEK, CZK trifft diese Regel bei den
+ *   NICHT neu bepreisten Deals den Shopify-Streichpreis genau (QiBracelet PL
+ *   7.095, SE 17.882; QiHome PL 22.403, CZ 124.120). In NO (USD) nicht
+ *   (QiBracelet 1.911 statt 1.894 $), darum bleiben QiBracelet und QiHome in
+ *   Fremdwährung beim Shopify-Streichpreis: ihr Preis wurde nicht geändert.
+ * Der Endpreis kommt immer aus dem Warenkorb; nie unter dem Endpreis.
+ */
+const BF_STAND_NEU_BEPREIST = new Set(['2x-qione-2-pro', 'qione-2-pro-necklace']);
+
+export function bfStandStreichpreis(deal, gelesen) {
+  if (!deal || deal.id === 'kakao' || !gelesen) return gelesen;
+  const {preis, waehrung} = gelesen;
+  if (waehrung === 'CHF') return gelesen;
+  if (!(deal.uvp > 0) || !(deal.preis > 0)) return gelesen;
+  if (waehrung !== 'EUR' && !BF_STAND_NEU_BEPREIST.has(deal.id)) return gelesen;
+  const uvp = waehrung === 'EUR' ? deal.uvp : Math.round((preis * deal.uvp) / deal.preis);
+  return {...gelesen, uvp: Math.max(uvp, preis)};
+}
+
+/**
  * Deal-Preis im Land: {preis, uvp, waehrung} oder null (DE, kein Deal,
  * Fehler, Frist). Wirft nie.
  */
@@ -274,7 +311,7 @@ export async function bfDealLandesPreis(storefront, seite, land, optionen = {}) 
           }),
           optionen.fristMs ?? FRIST_MS,
         );
-        let gelesen = auswerten(antwort, zeilen, codes);
+        let gelesen = bfStandStreichpreis(deal, auswerten(antwort, zeilen, codes));
         if (deal.id === 'kakao') {
           // Streichpreis = Einzelpackungen im Land (Kauf 2, zahl 1), nicht der Set-Preis.
           const einzel = await mitFrist(

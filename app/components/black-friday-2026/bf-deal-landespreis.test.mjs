@@ -281,3 +281,131 @@ test('Kakao-Landesdaten: Seite bekommt Set-Preise, Preis des gewählten Sets und
   assert.equal(d.landesPreis.uvp, 154);
   assert.equal(Object.keys(d.landesPreise).includes('kakao'), false);
 });
+
+// ---------------------------------------------------------------------------
+// BF-STAND DES STREICHPREISES AUSSERHALB DE (Job 20261113-folge-bf-dealseite-
+// auslandsansicht-streichpreis-halten-qione2pro-prio1; Elina EL-20261113-a7edaf0e
+// „Erst mal so belassen“, Christian CW-20261113-bb47c38d „Kein Einfluss auf BF“).
+// Seit der QiOne-2-Pro-Neubepreisung (13.11., Streichpreis 1.349 €) lieferte
+// der Warenkorb in AT 2 x 1.349 = 2.698 € als Streichpreis (Du sparst 722 €).
+
+/** Warenkorb-Antwort mit einer Zeile je [gesamt, Stück, Streich|null, Menge]. */
+function korb(waehrung, zeilen, code = 'BF26-2XPRO-HDRSN') {
+  return {
+    cartCreate: {
+      cart: {
+        totalQuantity: zeilen.reduce((s, z) => s + z[3], 0),
+        discountCodes: [{code, applicable: true}],
+        lines: {
+          nodes: zeilen.map(([g, e, v, m]) => ({
+            quantity: m,
+            cost: {
+              totalAmount: geld(g, waehrung),
+              amountPerQuantity: geld(e, waehrung),
+              compareAtAmountPerQuantity: v === null ? null : geld(v, waehrung),
+            },
+          })),
+        },
+      },
+      userErrors: [],
+    },
+  };
+}
+const QIBRACELET = {deal: 'qibracelet'};
+const QIHOME = {deal: 'qihome-air'};
+
+test('BF-Stand AT: 2x QiOne nach Neubepreisung -> Streichpreis 2.476 € (nicht 2 x 1.349), Endpreis 1.976 €', async () => {
+  _ablageLeeren();
+  const sf = mockStorefront([korb('EUR', [['1976.0', '1214.0', '1349.0', 2]])]);
+  const lp = await bfDealLandesPreis(sf, ZWEI_PRO, 'AT', {jetzt: JETZT});
+  assert.deepEqual(lp, {preis: 1976, uvp: 2476, waehrung: 'EUR'});
+});
+
+test('BF-Stand FR: Pro + Necklace nach Neubepreisung -> Streichpreis 1.332 € (nicht 1.443), Endpreis 1.082 €', async () => {
+  _ablageLeeren();
+  const sf = mockStorefront([
+    korb('EUR', [['94.0', '94.0', null, 1], ['988.0', '1214.0', '1349.0', 1]], 'BF26-PROKETTE-PMB52'),
+  ]);
+  const lp = await bfDealLandesPreis(sf, PRO_KETTE, 'FR', {jetzt: JETZT});
+  assert.deepEqual(lp, {preis: 1082, uvp: 1332, waehrung: 'EUR'});
+});
+
+test('BF-Stand Euro-Land: QiBracelet und QiHome bleiben, wie sie sind (Streichpreis = BF-Liste)', async () => {
+  _ablageLeeren();
+  const sf = mockStorefront([
+    korb('EUR', [['1378.0', '1578.0', null, 1]], 'BF26-QIBRACELET-X'),
+    korb('EUR', [['4583.0', '4983.0', null, 1]], 'BF26-QIHOME-X'),
+  ]);
+  assert.deepEqual(await bfDealLandesPreis(sf, QIBRACELET, 'AT', {jetzt: JETZT}), {preis: 1378, uvp: 1578, waehrung: 'EUR'});
+  assert.deepEqual(await bfDealLandesPreis(sf, QIHOME, 'AT', {jetzt: JETZT}), {preis: 4583, uvp: 4983, waehrung: 'EUR'});
+});
+
+test('BF-Stand Fremdwährung PL: Streichpreis = BF-Verhältnis zum Landes-Endpreis, ganze Einheit (Du sparst 20 %)', async () => {
+  _ablageLeeren();
+  // gemessen 13.11. 14:30Z: 2x QiOne PL Endpreis 12.130 - 3.246,08 = 8.883,92 PLN, Streich 12.130 (= 2 x 6.065)
+  const sf = mockStorefront([korb('PLN', [['8883.92', '6065.0', '6065.0', 2]])]);
+  const lp = await bfDealLandesPreis(sf, ZWEI_PRO, 'PL', {jetzt: JETZT});
+  assert.equal(lp.preis, 8883.92);
+  assert.equal(lp.uvp, Math.round((8883.92 * 2476) / 1976)); // 11.132
+  assert.equal(lp.uvp, 11132);
+  assert.equal(Math.round(((lp.uvp - lp.preis) / lp.uvp) * 100), 20);
+});
+
+test('BF-Stand Fremdwährung: für nicht neu bepreiste Deals gleich dem Shopify-Streichpreis (gemessen 13.11.)', async () => {
+  // Die Regel ohne Basis-Streichpreis trifft dort, wo sich nichts geändert hat,
+  // den Shopify-Wert auf die ganze Einheit: QiBracelet PL 7.095, SE 17.882,
+  // QiHome PL 22.403, CZ 124.120 (Endpreis = Streich - „Du sparst“ der Live-Seite).
+  const faelle = [
+    [QIBRACELET, 'PLN', '6195.85', 7095],
+    [QIBRACELET, 'SEK', '15615.68', 17882],
+    [QIHOME, 'PLN', '20604.70', 22403],
+    [QIHOME, 'CZK', '114156.56', 124120],
+  ];
+  for (const [seite, w, endpreis, shopifyStreich] of faelle) {
+    _ablageLeeren();
+    const sf = mockStorefront([korb(w, [[endpreis, String(shopifyStreich), null, 1]], 'BF26-X')]);
+    const lp = await bfDealLandesPreis(sf, seite, 'PL', {jetzt: JETZT});
+    assert.equal(lp.uvp, shopifyStreich, `${seite.deal} ${w}`);
+  }
+});
+
+test('BF-Stand: Schweiz bleibt, wie sie rechnet (Elina: CH so lassen) -> Shopify-Streichpreis', async () => {
+  _ablageLeeren();
+  // gemessen 14:12Z: 8kendiw34hd ?markt=CH „2.812 CHF 2.103 CHF Du sparst 709 CHF“
+  const sf = mockStorefront([korb('CHF', [['2102.98', '1265.0', '1406.0', 2]])]);
+  const lp = await bfDealLandesPreis(sf, ZWEI_PRO, 'CH', {jetzt: JETZT});
+  assert.deepEqual(lp, {preis: 2102.98, uvp: 2812, waehrung: 'CHF'});
+});
+
+test('BF-Stand: Kakao behält den Streichpreis aus den Einzelpackungen (keine BF-Verhältnis-Regel)', async () => {
+  _ablageLeeren();
+  // PL, Einzelpackungen bewusst 300 + 300 PLN: die Verhältnis-Regel ergäbe 342,10 x 152/76 = 684.
+  const einzelPl = {
+    nodes: [
+      {id: 'gid://shopify/ProductVariant/54540698485004', price: geld('300.0', 'PLN')},
+      {id: 'gid://shopify/ProductVariant/44685294567692', price: geld('300.0', 'PLN')},
+    ],
+  };
+  const sf = mockStorefront([korb('PLN', [['342.10', '684.0', null, 1]], 'BF26-KAKAO-NKSKX')], einzelPl);
+  const lp = await bfDealLandesPreis(sf, {deal: 'kakao', set: 'create-awake'}, 'PL', {jetzt: JETZT});
+  assert.deepEqual(lp, {preis: 342.1, uvp: 600, waehrung: 'PLN'});
+});
+
+test('BF-Stand NO (USD): QiBracelet und QiHome behalten den Shopify-Streichpreis (nicht neu bepreist)', async () => {
+  // gemessen 13.11. 14:27Z live: QiBracelet NO 1.894 $ / Du sparst 225,46 $, QiHome 5.987 $ / 450,91 $.
+  // Die USD-Listenpreise im Markt NO folgen nicht dem Kurs; die Verhältnis-Regel ergäbe 1.911 $ und 6.019 $.
+  for (const [seite, endpreis, streich] of [[QIBRACELET, '1668.54', 1894], [QIHOME, '5536.09', 5987]]) {
+    _ablageLeeren();
+    const sf = mockStorefront([korb('USD', [[endpreis, String(streich), String(streich), 1]], 'BF26-X')]);
+    const lp = await bfDealLandesPreis(sf, seite, 'NO', {jetzt: JETZT});
+    assert.equal(lp.uvp, streich, seite.deal);
+  }
+});
+
+test('BF-Stand NO (USD): 2x QiOne nach Neubepreisung -> BF-Verhältnis (20 %), nicht der neue Shopify-Streichpreis', async () => {
+  _ablageLeeren();
+  // gemessen 13.11. 14:27Z live: 3.432 $ / Du sparst 851,54 $ -> Endpreis 2.580,46 $
+  const sf = mockStorefront([korb('USD', [['2580.46', '1716.0', '1716.0', 2]])]);
+  const lp = await bfDealLandesPreis(sf, ZWEI_PRO, 'NO', {jetzt: JETZT});
+  assert.equal(lp.uvp, Math.round((2580.46 * 2476) / 1976));
+});
