@@ -264,7 +264,7 @@ export default function QiAlphaLpB({bild = null, preise}) {
 
         <section className="qa-abschnitt qa-abschnitt--flaeche" data-section="qa-lp-beweis" aria-labelledby="qa-beweis">
           <div className="qa-abschnitt__inner">
-            <h2 id="qa-beweis">Fünf Publikationen aus dem Labor von Prof. Dartsch</h2>
+            <h2 id="qa-beweis">Fünf Publikationen aus unseren Studien</h2>
             <p>
               Vier Zellstudien zum Gitterchip<sup>®</sup> im QiOne® 2 Pro, im QiBracelet®
               und im QiHome® Air, durchgeführt in vitro an Zellen im Labor. Dazu
