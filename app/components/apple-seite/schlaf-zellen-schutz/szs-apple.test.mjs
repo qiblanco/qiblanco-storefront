@@ -125,7 +125,7 @@ test('E6: B zeigt alles wie A, nur die Stimmen stehen oben', () => {
   assert.ok(unten > quelle.indexOf('{t.weiter6 ?'), 'in A unverändert nach dem Labor');
 });
 
-test('E6: Schalter aus bis zum Start, kein Besucher und kein Pin kommt auf B', () => {
+test('E6: Schalter aus (vor dem Start und seit dem Ende 13.11.2026), kein Besucher und kein Pin kommt auf B', () => {
   assert.equal(E6_AKTIV, false);
   for (let i = 0; i < 2000; i += 1) {
     const e = entscheideLpExperiment(anfrage(i), {}, false, false, false, false);
