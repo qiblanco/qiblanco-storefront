@@ -14,9 +14,10 @@ import * as DATEN_8K from '~/components/product-pages/8kendiw34hd-alpha-daten';
 import * as DATEN_PJDZ from '~/components/product-pages/pjdz538hgs0-alpha-daten';
 import * as DATEN_QIBRACELET from '~/components/product-pages/qibracelet-alpha-daten';
 import * as DATEN_QIHOME from '~/components/product-pages/qihome-air-alpha-daten';
-import {bfDealBildSetzen, bfDealMarktPasst, bfDealPreiseSetzen} from '~/components/black-friday-2026/bf-deals-daten';
+import {andereDeals, bfDealBildSetzen, bfDealMarktPasst, bfDealPreiseSetzen} from '~/components/black-friday-2026/bf-deals-daten';
 import {
   bfDealLandesPreis,
+  bfDealLandesPreise,
   bfDealLandesPreiseSetzen,
 } from '~/components/black-friday-2026/bf-deal-landespreis.server';
 import {resolveCountry} from '~/lib/markt-pricing';
@@ -59,11 +60,16 @@ export async function ladeBfDealAlpha(args, seite) {
   // Deal-Adresse lädt (lib/context.js): dort rechnen Warenkorb und Kasse.
   // Außerhalb von DE nennt die Seite den Warenkorb-Betrag des Landes
   // (bf-deal-landespreis.server.js); null = Euro-Preis wie bisher.
-  const landesPreis = await bfDealLandesPreis(
-    args.context?.storefront,
-    seite,
-    resolveCountry(args.request),
-  );
+  // Die Galerie „andere Deals“ auf derselben Seite nennt ihre Preise im selben Land.
+  const land = resolveCountry(args.request);
+  const [landesPreis, landesPreise] = await Promise.all([
+    bfDealLandesPreis(args.context?.storefront, seite, land),
+    bfDealLandesPreise(
+      args.context?.storefront,
+      andereDeals(seite).map((d) => d.id),
+      land,
+    ),
+  ]);
   return {
     ...daten,
     product: bfDealLandesPreiseSetzen(
@@ -73,6 +79,9 @@ export async function ladeBfDealAlpha(args, seite) {
       ),
       landesPreis,
     ),
-    bfDealSeite: landesPreis ? {...seite, landesPreis} : seite,
+    bfDealSeite:
+      landesPreis || Object.keys(landesPreise).length
+        ? {...seite, landesPreis, landesPreise}
+        : seite,
   };
 }

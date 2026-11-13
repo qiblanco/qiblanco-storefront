@@ -208,6 +208,24 @@ export async function bfDealLandesPreis(storefront, seite, land, optionen = {}) 
 }
 
 /**
+ * Deal-Preise mehrerer Deals im Land, parallel (eigener Deal + Galerie
+ * „andere Deals“). -> {dealId: {preis, uvp, waehrung}} nur für Deals mit
+ * Ergebnis; fehlt ein Deal, nennt seine Kachel den Euro-Preis wie bisher.
+ */
+export async function bfDealLandesPreise(storefront, dealIds, land, optionen = {}) {
+  if (!land || land === 'DE') return {};
+  const ids = [...new Set(dealIds ?? [])];
+  const werte = await Promise.all(
+    ids.map((id) => bfDealLandesPreis(storefront, {deal: id}, land, optionen)),
+  );
+  const out = {};
+  ids.forEach((id, i) => {
+    if (werte[i]) out[id] = werte[i];
+  });
+  return out;
+}
+
+/**
  * Preis und Streichpreis des Landes in die Produktdaten schreiben (jede
  * Variante im Baum, wie bfDealPreiseSetzen). Erwartet die Euro-Deal-Preise.
  */

@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import {
   _ablageLeeren,
   bfDealLandesPreis,
+  bfDealLandesPreise,
   bfDealLandesPreiseSetzen,
   dealWahlen,
 } from './bf-deal-landespreis.server.js';
@@ -153,4 +154,14 @@ test('Preise setzen: jede EUR-Variante bekommt Landespreis und -Streichpreis', (
   assert.deepEqual(n.selectedOrFirstAvailableVariant.compareAtPrice, geld('2580', 'CHF'));
   assert.deepEqual(n.variants.nodes[0].price, geld('2079.08', 'CHF'));
   assert.equal(bfDealLandesPreiseSetzen(p, null), p);
+});
+
+test('Galerie: mehrere Deals parallel, Kakao ohne Warenkorb-Link fällt weg, DE leer', async () => {
+  _ablageLeeren();
+  const sf = mockStorefront([chAntwort(), chAntwort({menge: 1})]);
+  const lp = await bfDealLandesPreise(sf, ['2x-qione-2-pro', 'kakao', 'qihome-air'], 'CH', {jetzt: JETZT});
+  assert.deepEqual(Object.keys(lp), ['2x-qione-2-pro', 'qihome-air']);
+  assert.equal(sf.aufrufe.length, 2);
+  assert.deepEqual(sf.aufrufe[1].variables.codes, ['BF26-QIHOME-2DP8H']);
+  assert.deepEqual(await bfDealLandesPreise(sf, ['2x-qione-2-pro'], 'DE', {jetzt: JETZT}), {});
 });

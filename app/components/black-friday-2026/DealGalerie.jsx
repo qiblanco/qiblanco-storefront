@@ -71,6 +71,24 @@ export function BfDealRahmen({seite, children}) {
  * Mobile first: am Handy eine Bahn mit ~1,3 Kacheln im Bild, wischbar, ohne
  * Einrasten; ab 960 px passen alle vier nebeneinander.
  */
+/**
+ * Preise einer Kachel: außerhalb von DE der Warenkorb-Betrag des Landes
+ * (Loader, bf-deal-landespreis.server.js -> seite.landesPreise), sonst die
+ * Euro-Preise des Deals.
+ */
+function kachelPreis(seite, d) {
+  const lp = seite?.landesPreise?.[d.id];
+  if (!lp) {
+    return {rabatt: d.rabatt, uvp: betragText(d.uvp, 'EUR'), preis: betragText(d.preis, 'EUR')};
+  }
+  const ersparnis = Math.round((lp.uvp - lp.preis) * 100) / 100;
+  return {
+    rabatt: `−${betragText(ersparnis, lp.waehrung)}`,
+    uvp: betragText(lp.uvp, lp.waehrung),
+    preis: betragText(lp.preis, lp.waehrung),
+  };
+}
+
 export function DealGalerie({seite: seiteProp = null, titel = 'Sieh dir unsere anderen Deals an'}) {
   const ausKontext = useBfDealSeite();
   const seite = seiteProp ?? ausKontext;
@@ -106,7 +124,7 @@ export function DealGalerie({seite: seiteProp = null, titel = 'Sieh dir unsere a
                   loading="lazy"
                   decoding="async"
                 />
-                <span className="bfg__plakette">{d.rabatt}</span>
+                <span className="bfg__plakette">{kachelPreis(seite, d).rabatt}</span>
               </figure>
             </a>
             <div className="bfg__text">
@@ -114,8 +132,8 @@ export function DealGalerie({seite: seiteProp = null, titel = 'Sieh dir unsere a
                 <a href={`/products/${d.seite}`}>{d.name}</a>
               </h3>
               <p className="bfg__preise">
-                <s className="bfg__alt">{betragText(d.uvp, 'EUR')}</s>{' '}
-                <span className="bfg__neu">{betragText(d.preis, 'EUR')}</span>
+                <s className="bfg__alt">{kachelPreis(seite, d).uvp}</s>{' '}
+                <span className="bfg__neu">{kachelPreis(seite, d).preis}</span>
               </p>
               <a
                 className="bfg__knopf"
