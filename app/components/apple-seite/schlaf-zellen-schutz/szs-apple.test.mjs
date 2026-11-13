@@ -178,3 +178,43 @@ test('E6: Pin und Rückweg', () => {
   assert.equal(entscheideE6(anfrage(3, '?lp_exp=a')), null);
   assert.equal(entscheideE6(anfrage(3, '?lp_exp=b'), {LP_EXP_SZS_E6_MODE: 'off'}), null);
 });
+
+// Gerätegrenze des Urteils szs-e1-gs050 (experimente.yaml abgeschlossen[] geraetegrenze): mobil = grober Zeiger
+// wie im Pixel, nicht die Breite. Der Umbau in die Apple-Fassung (PR #1140) hatte sie auf 750 px gesetzt;
+// Auftrag 20261113-szs-apple-a-geraetegrenze-pointer-champion.
+function mediaBloecke(css) {
+  const out = [];
+  const re = /@media([^{]+)\{/g;
+  let m;
+  while ((m = re.exec(css))) {
+    let tiefe = 1;
+    let i = re.lastIndex;
+    while (tiefe > 0 && i < css.length) {
+      if (css[i] === '{') tiefe += 1;
+      else if (css[i] === '}') tiefe -= 1;
+      i += 1;
+    }
+    out.push({bedingung: m[1].trim(), rumpf: css.slice(re.lastIndex, i - 1)});
+  }
+  return out;
+}
+
+test('Champion mobil nach Zeiger: lp-a-weiter-1 und fester Knopf folgen pointer coarse, nicht der Breite', () => {
+  const css = readFileSync(new URL('../../../styles/szs-apple.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const bloecke = mediaBloecke(css);
+  const nurMobil = bloecke.filter((b) => /\.szs-nur-mobil\b/.test(b.rumpf));
+  assert.equal(nurMobil.length, 1, 'genau eine Regel für .szs-nur-mobil');
+  assert.match(nurMobil[0].bedingung, /^\(pointer:\s*fine\),\s*\(pointer:\s*none\)$/);
+  assert.match(nurMobil[0].rumpf, /display:\s*none/);
+  const fest = bloecke.filter((b) => /\.szs-fest\s*\{[^}]*position:\s*fixed/.test(b.rumpf));
+  assert.equal(fest.length, 1, 'genau eine Regel macht .szs-fest sichtbar');
+  assert.match(fest[0].bedingung, /max-width:\s*749px/);
+  assert.match(fest[0].bedingung, /\(pointer:\s*coarse\)/);
+  assert.match(fest[0].rumpf, /body:has\(\.as-seite > \.szs-fest\) footer/, 'Fuß-Polster nur, wo die Leiste steht');
+  // Arme: nur die Champion-Arme tragen die Klassen (B2 zeigt Weiter 1 immer und hat keinen festen Knopf).
+  for (const v of D.VARIANTEN) {
+    const t = D.teileFuer(v);
+    if (v === 'b2') assert.deepEqual([t.weiter1, t.sticky], ['immer', false]);
+    else assert.equal(t.sticky, true, v);
+  }
+});

@@ -161,7 +161,16 @@
 .szs-weiter .szs-kauf {
   margin-top: var(--as-s-2);
 }
-@media (min-width: 750px) {
+/* Gerätegrenze des Urteils szs-e1-gs050 (B gewinnt mobil, desktop bleibt A):
+   mobil heißt, was der Pixel mobil nennt, also grober Zeiger (pointer:
+   coarse, qiblanco-qpx.js device(); Tablets zählen zu mobil). Bei feinem
+   oder keinem Zeiger bleibt A wie vor dem Urteil, auch im schmalen Fenster.
+   Dieselbe Grenze trägt C (schlaf-zellen-schutz-seite.css, CHAMPION MOBIL).
+   Nicht die Breite: ein Tablet ab 750 px ist mobil, ein schmales
+   Desktop-Fenster nicht (Render-Probe 07.11., Auftrag 20261113-szs-apple-a-
+   geraetegrenze-pointer-champion). Nur Arme mit weiter1 'mobil' tragen die
+   Klasse (teileFuer); B2 zeigt seine Knöpfe immer. */
+@media (pointer: fine), (pointer: none) {
   .szs-nur-mobil {
     display: none;
   }
@@ -261,10 +270,13 @@
 }
 
 /* ---- Fester Kaufknopf mobil ----------------------------------------------- */
+/* Grober Zeiger UND bis 749 px (Gerätegrenze oben bei .szs-nur-mobil):
+   ein schmales Desktop-Fenster mit Maus bleibt A, ohne Leiste und ohne
+   Fuß-Polster; Tablets ab 750 px sehen nur lp-a-weiter-1. */
 .szs-fest {
   display: none;
 }
-@media screen and (max-width: 749px) {
+@media screen and (max-width: 749px) and (pointer: coarse) {
   .szs-fest {
     position: fixed;
     inset: auto 0 0 0;
