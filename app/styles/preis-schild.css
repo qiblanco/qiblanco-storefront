@@ -18,7 +18,7 @@
 
    ALTBESTAND: die Schildchen-Klassen aus der Zeit vor dem Standard (BestsellerLabel,
    lp-*-product__badge, v2/v3-produkt__badge, rd3-trio__badge, lp-vp-product__bestseller,
-   ghx-pak__pill/__save) bekommen dieselbe Form ueber die Liste unten. Das gilt auch fuer den
+   ghx-pak__pill/__save, bfg__plakette der BF-Galerie seit 13.11.) bekommen dieselbe Form ueber die Liste unten. Das gilt auch fuer den
    Kakao-Spiegel unter #ccsp (erzeugt aus crystal-cacao-node): seine Schild-TEXTE kommen aus
    der crystal-Quelle und werden dort getrennt (Folgeauftrag), die FORM steht schon hier.
    Bis dahin: --red ("Angebot") traegt die Preisvorteil-Farbe, --gold/--gradient die Auszeichnung. */
@@ -45,7 +45,8 @@
 .v3-produkt__badge,
 .rd3-trio__badge,
 .ghx-pill.ghx-pak__pill,
-.ghx-pill.ghx-pak__save {
+.ghx-pill.ghx-pak__save,
+.bfg__plakette {
   display: inline-flex !important;
   align-items: center !important;
   gap: 7px;
@@ -112,7 +113,8 @@
 .qb-schild--vorteil,
 :where(.Bestseller-Price) .BestsellerLabel.qb-schild--vorteil,
 :where(.Bestseller-Price) .BestsellerLabel.BestsellerLabel--red,
-.ghx-pill.ghx-pak__save {
+.ghx-pill.ghx-pak__save,
+.bfg__plakette {
   background: var(--schild-rot) !important;
   color: #ffffff !important;
   box-shadow: inset 0 1px 0 var(--schild-rot-licht) !important;
