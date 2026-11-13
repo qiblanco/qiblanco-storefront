@@ -29,7 +29,9 @@
 .bfd__kachel:focus-visible{outline:2px solid var(--g);outline-offset:3px}
 /* BF-Gold-Bilder (Elina EL-20261111-a9af196f): quadratisch, Rand #090806. Jede Bildflaeche zeigt das ganze Bild auf genau
    diesem Ton (contain), auch die 4:3-Flaechen: das Dartsch-Siegel unten rechts wird nie angeschnitten. */
-.bfd__bild{position:relative;margin:0;aspect-ratio:1/1;border-radius:18px;overflow:hidden;background:#090806}
+.bfd__bild{position:relative;margin:0;aspect-ratio:1/1;border-radius:18px;overflow:hidden;background:#090806;isolation:isolate;clip-path:inset(0 round 18px)}
+/* Ecken-Dauerregel (Elina EL-20261111-9de914fc): das Bild zoomt beim Scrollen (transform, eigene Ebene); Safari schneidet so eine
+   Ebene an overflow + border-radius nicht sicher ab. clip-path mit demselben Radius haelt alle vier Ecken rund (Rahmen ohne Schatten). */
 .bfd__bild img{display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit}
 /* Rabatt-Plakette (Elina EL-20261111-f72ec899): Rot #B92200, weisse Schrift, deutlich groesser (vorher 16 px Gold). */
 .bfd__plakette{position:absolute;z-index:1;top:.75rem;left:.75rem;padding:.4rem 1rem;border-radius:999px;background:#b92200;color:#fff;font-size:24px;font-weight:700;line-height:1.2;letter-spacing:.01em;font-variant-numeric:tabular-nums;box-shadow:0 8px 22px -8px rgba(0,0,0,.75)}
