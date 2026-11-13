@@ -24,11 +24,11 @@ import vertrauensblockStyles from '../styles/bf-vertrauensblock.css?url';
 import {bfPhase} from '../components/black-friday-2026/bf-deals-daten';
 
 const ENDPUNKT = 'https://anmelden.dienst.qiblanco.com';
-const BILD =
-  'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/productohoto_48a1ddae-fff5-4e7f-bc61-385f08a6ad26.png';
-// Rechner ab 960px: Hero-Banner mit allen Deal-Produkten auf dem Podest statt Bild "Frau mit Kette"; am Handy bleibt BILD
-// (Elina EL-20261111-67f3d4b4, freigegeben 11.11.; Bild 2:3 aus dem Hero EL-20261111-fa3a55e7 mit Euro-Zeichen 472298df).
+// Hero-Banner mit allen Deal-Produkten auf dem Podest statt Bild "Frau mit Kette" (Elina EL-20261111-67f3d4b4, Rechner;
+// Bild 2:3 aus dem Hero EL-20261111-fa3a55e7 mit Euro-Zeichen 472298df).
 // v2 (Elina EL-20261113-859c2599): "Exklusiver" als roter Pill (#B92200) über "Black Friday Pre-Sale".
+// Handy (Elina EL-20261113-819e80c7, GO 14.11.): auch unter 960px dasselbe Deal-Hero im Hochformat, das alte Bild
+// "Frau mit Kette" ist ausgetauscht.
 const HERO_DESKTOP =
   'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/bf26-pre-access-hero-desktop-de-v2.jpg?v=1794580656';
 
@@ -199,11 +199,11 @@ export default function PreAccessB() {
               height={1650}
             />
             <img
-              src={`${BILD}?width=1100`}
-              srcSet={`${BILD}?width=600 600w, ${BILD}?width=1100 1100w, ${BILD}?width=1600 1600w`}
+              src={`${HERO_DESKTOP}&width=1100`}
+              srcSet={`${HERO_DESKTOP}&width=600 600w, ${HERO_DESKTOP}&width=1100 1100w`}
               sizes="(min-width: 960px) 48vw, 100vw"
               width={1100}
-              height={1100}
+              height={1650}
               alt="Black Friday Pre-Sale bei Qi Blanco mit dem QiOne® 2 Pro"
               fetchPriority="high"
             />
