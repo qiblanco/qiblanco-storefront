@@ -24,10 +24,23 @@
  * Ablauf. Merkmal `_messung` unterscheidet ihn von einem Kundenwarenkorb.
  * Ablage je Land+Deal ABLAGE_MS im Speicher, Frist FRIST_MS.
  *
+ * KAKAO (Job 20261113-deal-landespreis-rest-bf-deals-kakao-no): der Kakao-Deal
+ * legt seit Elina EL-20261112-5c71f6ff die Set-Variante mit Merkmal _bf_deal
+ * in den Qi-Blanco-Warenkorb (nicht mehr crystal-cacao.com), den Code setzt der
+ * Server. Gemessen 13.11.2026 (Set + BF26-KAKAO-NKSKX): DE 76 €, CH 80,54 CHF,
+ * PL 342,10 PLN, US/NO 107,14 USD. Darum gilt derselbe Weg; Zeilen aus
+ * bfKakaoZeilen, je Set eine Ablage (seite.set).
+ *
  * FAIL-CLOSED AUF DEN STAND DAVOR: Fehler, Frist, Code nicht anwendbar,
  * fehlende Zeile -> null. Die Seite nennt dann wie bisher den Euro-Preis.
  */
-import {bfDeal, bfDealZeilen} from './bf-deals-daten.js';
+import {
+  BF_KAKAO_SETS,
+  andereDeals,
+  bfDeal,
+  bfDealZeilen,
+  bfKakaoZeilen,
+} from './bf-deals-daten.js';
 import {bfDealCodes} from './bf-deal-codes.server.js';
 
 /** Wie lange ein gelesener Warenkorb-Betrag gilt (Wechselkurse wandern). */
@@ -91,6 +104,23 @@ const DEAL_KASSE_MUTATION = `
   }
 `;
 
+// Einzelpackungs-Preise des Landes (Streichpreis des Kakao-Deals). Wie
+// DEAL_KASSE_MUTATION ohne #graphql-Kennung.
+const KAKAO_EINZEL_QUERY = `
+  query BfKakaoEinzel($ids: [ID!]!, $land: CountryCode!)
+  @inContext(country: $land) {
+    nodes(ids: $ids) {
+      ... on ProductVariant {
+        id
+        price {
+          amount
+          currencyCode
+        }
+      }
+    }
+  }
+`;
+
 function mitFrist(versprechen, ms) {
   let uhr;
   const frist = new Promise((_, ablehnen) => {
@@ -119,6 +149,56 @@ export function dealWahlen(seite) {
     ]);
   }
   return [];
+}
+
+/**
+ * Warenkorbzeilen je Kaufknopf-Wahl, in Seitenreihenfolge. Kakao: die Zeile des
+ * gewählten Sets (seite.set), ohne Wahl die Sets in Seitenreihenfolge.
+ */
+export function dealZeilenListe(seite) {
+  const deal = seite ? bfDeal(seite.deal) : null;
+  if (!deal) return [];
+  if (deal.id === 'kakao') {
+    const ids = seite.set ? [seite.set] : BF_KAKAO_SETS.map((s) => s.id);
+    return ids.map((id) => bfKakaoZeilen(id)).filter((z) => z.length);
+  }
+  return dealWahlen(seite)
+    .map((wahl) => bfDealZeilen(seite, wahl))
+    .filter((z) => z.length);
+}
+
+/**
+ * Streichpreis des Kakao-Deals im Land: Summe der Einzelpackungen, die das Set
+ * enthält (Kauf 2, zahl 1: DE 76 + 76 = 152 €, CH 78 + 77 = 155 CHF). Die
+ * Einzelpackungen stehen im Link des Sets (Variante:Menge).
+ */
+export function kakaoEinzelZeilen(setId) {
+  const set = BF_KAKAO_SETS.find((x) => x.id === setId) ?? BF_KAKAO_SETS[0];
+  return String(set.link ?? '')
+    .replace(/^.*\/cart\//, '')
+    .split(',')
+    .map((teil) => teil.split(':'))
+    .filter(([id]) => /^\d+$/.test(id))
+    .map(([id, menge]) => ({id: `gid://shopify/ProductVariant/${id}`, menge: Number.parseInt(menge ?? '1', 10) || 1}));
+}
+
+export function kakaoUvp(antwort, setId, waehrung) {
+  const preise = new Map();
+  for (const n of antwort?.nodes ?? []) {
+    if (n?.id) preise.set(n.id, n.price);
+  }
+  let summe = 0;
+  const zeilen = kakaoEinzelZeilen(setId);
+  if (!zeilen.length) throw new Error('bf-landespreis: Kakao-Set ohne Einzelpackungen');
+  for (const {id, menge} of zeilen) {
+    const p = preise.get(id);
+    const betrag = Number.parseFloat(p?.amount);
+    if (!Number.isFinite(betrag) || betrag <= 0 || p.currencyCode !== waehrung) {
+      throw new Error('bf-landespreis: Einzelpreis fehlt oder andere Währung');
+    }
+    summe += betrag * menge;
+  }
+  return Math.round(summe * 100) / 100;
 }
 
 /**
@@ -172,16 +252,14 @@ export async function bfDealLandesPreis(storefront, seite, land, optionen = {}) 
   const deal = seite ? bfDeal(seite.deal) : null;
   if (!deal || !land || land === 'DE' || !storefront?.mutate) return null;
   const jetzt = optionen.jetzt ?? Date.now();
-  const schluessel = `${land}|${deal.id}`;
+  const schluessel = `${land}|${deal.id}${seite.set ? `|${seite.set}` : ''}`;
   const alt = ablage.get(schluessel);
   if (alt && jetzt - alt.zeit < ABLAGE_MS) return alt.wert;
   const codes = bfDealCodes(deal.id, jetzt);
   try {
     let wert = null;
     let letzterFehler = null;
-    for (const wahl of dealWahlen(seite).slice(0, VERSUCHE_MAX)) {
-      const zeilen = bfDealZeilen(seite, wahl);
-      if (!zeilen.length) continue;
+    for (const zeilen of dealZeilenListe(seite).slice(0, VERSUCHE_MAX)) {
       try {
         const antwort = await mitFrist(
           storefront.mutate(DEAL_KASSE_MUTATION, {
@@ -189,7 +267,25 @@ export async function bfDealLandesPreis(storefront, seite, land, optionen = {}) 
           }),
           optionen.fristMs ?? FRIST_MS,
         );
-        wert = auswerten(antwort, zeilen, codes);
+        let gelesen = auswerten(antwort, zeilen, codes);
+        if (deal.id === 'kakao') {
+          // Streichpreis = Einzelpackungen im Land (Kauf 2, zahl 1), nicht der Set-Preis.
+          const einzel = await mitFrist(
+            storefront.query(KAKAO_EINZEL_QUERY, {
+              variables: {
+                ids: kakaoEinzelZeilen(seite.set).map((z) => z.id),
+                land,
+              },
+              cache: storefront.CacheShort?.(),
+            }),
+            optionen.fristMs ?? FRIST_MS,
+          );
+          gelesen = {
+            ...gelesen,
+            uvp: Math.max(kakaoUvp(einzel, seite.set, gelesen.waehrung), gelesen.preis),
+          };
+        }
+        wert = gelesen; // erst nach allen Prüfungen: ein Teilergebnis gilt nie
         break;
       } catch (e) {
         letzterFehler = e;
@@ -223,6 +319,53 @@ export async function bfDealLandesPreise(storefront, dealIds, land, optionen = {
     if (werte[i]) out[id] = werte[i];
   });
   return out;
+}
+
+/**
+ * Kakao-Preise je Set im Land, parallel -> {setId: {preis, uvp, waehrung}};
+ * fehlt ein Set, nennt es den Euro-Preis wie bisher. DE: {} ohne Abruf.
+ */
+export async function bfKakaoSetPreise(storefront, land, optionen = {}) {
+  if (!land || land === 'DE') return {};
+  const werte = await Promise.all(
+    BF_KAKAO_SETS.map((s) =>
+      bfDealLandesPreis(storefront, {deal: 'kakao', set: s.id}, land, optionen),
+    ),
+  );
+  const out = {};
+  BF_KAKAO_SETS.forEach((s, i) => {
+    if (werte[i]) out[s.id] = werte[i];
+  });
+  return out;
+}
+
+/**
+ * Landesdaten der Kakao-Deal-Seite (Loader products.$handle ladeBfDealKakao):
+ * Preis je Set (Kaufbox, Kaufleiste), Preis des vorgewählten Sets
+ * (Schluss-Banner) und Galerie „andere Deals“. null in DE oder ohne Ergebnis:
+ * die Seite bleibt wie bisher.
+ * @returns {Promise<{landesPreis: object|null, landesPreise: object,
+ *   kakaoSetPreise: object}|null>}
+ */
+export async function bfKakaoLandesDaten(storefront, seite, land, optionen = {}) {
+  if (!seite || !land || land === 'DE') return null;
+  const [kakaoSetPreise, landesPreise] = await Promise.all([
+    bfKakaoSetPreise(storefront, land, optionen),
+    bfDealLandesPreise(
+      storefront,
+      andereDeals(seite).map((d) => d.id),
+      land,
+      optionen,
+    ),
+  ]);
+  if (!Object.keys(kakaoSetPreise).length && !Object.keys(landesPreise).length) {
+    return null;
+  }
+  return {
+    landesPreis: kakaoSetPreise[seite.set] ?? null,
+    landesPreise,
+    kakaoSetPreise,
+  };
 }
 
 /**

@@ -24,6 +24,12 @@ import {
   bfPhase,
   bfRestSekunden,
 } from '../components/black-friday-2026/bf-deals-daten';
+import {
+  bfDealLandesPreise,
+  bfKakaoSetPreise,
+} from '../components/black-friday-2026/bf-deal-landespreis.server';
+import {betragText} from '../lib/betrag-text';
+import {resolveCountry} from '../lib/markt-pricing';
 import {useElinaBewegung} from '../components/reusables/useElinaBewegung';
 import {PreisSchilder} from '../components/reusables/PreisSchild';
 import {BfVertrauensblock} from '../components/black-friday-2026/BfVertrauensblock';
@@ -61,7 +67,7 @@ export function headers() {
 // aus: Größe ausverkauft (Bestand 0) zum Stand des Eintrags. Seit Elina EL-20261112-5f5fab2e entscheidet der LIVE-Bestand
 // (loader, lieferbar je Variante): eine Größe mit Bestand 0 wird gar nicht angezeigt, kommt Nachschub, ist sie wieder da.
 // `aus` gilt nur noch als Rückfall, wenn die Bestandsabfrage scheitert.
-type Set = {pille: string; neu: string; alt: string; link: string; aus?: boolean; bild?: string};
+type Set = {pille: string; neu: string; alt: string; link: string; aus?: boolean; bild?: string; lp?: LandesPreis};
 type Kachel = {
   breit: boolean;
   zeile: string;
@@ -72,6 +78,7 @@ type Kachel = {
   bildAlt: string;
   alt?: string;
   neu?: string;
+  lp?: LandesPreis;
   link?: string;
   sets?: Set[];
   // Größenwahl (EL-20261111-9065b985): gleiche Pillen wie die Kakao-Sets, ein Warenkorb-Link je Größe.
@@ -343,8 +350,44 @@ const LIEFERBAR_QUERY = `#graphql
 
 type Lieferbar = Record<string, boolean> | null;
 
+// PREISE IM LAND DES BESUCHERS (Job 20261113-deal-landespreis-rest-bf-deals-kakao-no, Christian-Auftrag aus
+// Grossjob 20261004 preisanzeige): die Kasse rechnet außerhalb von DE in Landeswährung (2x QiOne 2 Pro CH 2.079,08 CHF),
+// die fest getippten Euro-Strings unten stimmten dort nicht. Außerhalb von DE nennt die Kachel den Warenkorb-Betrag des
+// Besucher-Landes für genau die Zeilen und den Code, die der Deal-Kaufknopf setzt (bf-deal-landespreis.server.js,
+// Hausweg wie die Deal-Seiten). DE ruft nichts ab: Texte und Zahlen bleiben byte-gleich. Kein Ergebnis (Frist, Code im
+// Land nicht anwendbar): die Kachel nennt wie bisher den Euro-Preis.
+type LandesPreis = {preis: number; uvp: number; waehrung: string};
+type LandesPreise = Record<string, LandesPreis> | null;
+const DEAL_ID: Record<string, string> = {
+  '2x QiOne® 2 Pro': '2x-qione-2-pro',
+  'QiOne® 2 Pro + Necklace': 'qione-2-pro-necklace',
+  'QiBracelet®': 'qibracelet',
+  'QiHome® Air': 'qihome-air',
+};
+const ALPHA_DEALS = Object.values(DEAL_ID);
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function loader({context}: {context?: any}) {
+async function landesPreiseLaden(context: any, request: Request | undefined): Promise<LandesPreise> {
+  try {
+    const land = request ? resolveCountry(request) : 'DE';
+    if (land === 'DE') return null;
+    const [alpha, kakao] = await Promise.all([
+      bfDealLandesPreise(context?.storefront, ALPHA_DEALS, land),
+      bfKakaoSetPreise(context?.storefront, land),
+    ]);
+    const aus: Record<string, LandesPreis> = {...alpha};
+    for (const [setId, wert] of Object.entries(kakao as Record<string, LandesPreis>)) {
+      aus[`kakao:${setId}`] = wert;
+    }
+    return Object.keys(aus).length ? aus : null;
+  } catch {
+    return null; // Rückfall: die Euro-Preise von oben
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function loader({context, request}: {context?: any; request?: Request}) {
+  const landesPreise = landesPreiseLaden(context, request);
   let lieferbar: Lieferbar = null;
   try {
     const daten = await context?.storefront?.query(LIEFERBAR_QUERY, {
@@ -362,7 +405,7 @@ export async function loader({context}: {context?: any}) {
   } catch {
     lieferbar = null; // Rückfall: die Einträge `aus` von oben
   }
-  return {lieferbar};
+  return {lieferbar, landesPreise: await landesPreise};
 }
 
 // Eine Größe ist zu zeigen, wenn jede Variante ihres Links lieferbar ist. Unbekannte Variante (nicht in der Antwort)
@@ -386,6 +429,52 @@ function mitBestand(k: Kachel, lieferbar: Lieferbar): Kachel | null {
   }
   const start = Math.max(0, varianten.findIndex((x) => x.pille === vorwahl));
   return {...k, varianten, start};
+}
+
+// Landespreis der Kachel (außerhalb von DE): Preis und Streichpreis des Warenkorbs im Land des Besuchers statt der
+// Euro-Strings. Ohne Eintrag bleibt die Kachel, wie sie ist.
+function landesText(lp: LandesPreis) {
+  return {neu: betragText(lp.preis, lp.waehrung) as string, alt: betragText(lp.uvp, lp.waehrung) as string};
+}
+
+function mitLandesPreis(k: Kachel, lps: LandesPreise): Kachel {
+  if (!lps) return k;
+  if (k.sets) {
+    return {
+      ...k,
+      sets: k.sets.map((x) => {
+        const lp = lps[`kakao:${KAKAO_SET[x.pille]}`];
+        return lp ? {...x, ...landesText(lp), lp} : x;
+      }),
+    };
+  }
+  const lp = lps[DEAL_ID[k.name]];
+  if (!lp) return k;
+  const text = landesText(lp);
+  return {
+    ...k,
+    ...text,
+    lp,
+    varianten: k.varianten?.map((x) => ({...x, ...text, lp})),
+  };
+}
+
+// „Spare bis zu“ im Land: die größte Ersparnis der Kacheln mit Landespreis (alle in der Währung des Landes).
+function sparBetrag(kacheln: Kachel[], lps: LandesPreise): string | null {
+  if (!lps) return null;
+  let beste: LandesPreis | null = null;
+  let ersparnis = 0;
+  for (const k of kacheln) {
+    for (const lp of [k.lp, ...(k.sets ?? []).map((x) => x.lp), ...(k.varianten ?? []).map((x) => x.lp)]) {
+      if (!lp || (beste && lp.waehrung !== beste.waehrung)) continue;
+      const e = Math.round((lp.uvp - lp.preis) * 100) / 100;
+      if (e > ersparnis) {
+        ersparnis = e;
+        beste = lp;
+      }
+    }
+  }
+  return beste ? (betragText(ersparnis, beste.waehrung) as string) : null;
 }
 
 // Rückfall NUR nach dem Deal-Ende: die normale Produktseite (Kakao: die Set-Seite auf crystal-cacao.com). Nie die Kasse.
@@ -456,7 +545,12 @@ function SetKachel({k}: {k: Kachel}) {
           <p className="bfd__preis">
             <s className="bfd__alt">{s.alt}</s>
             <span className="bfd__neu">{s.neu}</span>
-            <PreisSchilder preis={euro(s.neu)} vergleich={euro(s.alt)} auszeichnung={k.auszeichnung} />
+            <PreisSchilder
+              preis={s.lp ? s.lp.preis : euro(s.neu)}
+              vergleich={s.lp ? s.lp.uvp : euro(s.alt)}
+              waehrung={s.lp?.waehrung ?? 'EUR'}
+              auszeichnung={k.auszeichnung}
+            />
           </p>
           <Kaufen href={ziel} name={k.name} />
         </div>
@@ -484,7 +578,12 @@ function LinkKachel({k}: {k: Kachel}) {
           <p className="bfd__preis">
             <s className="bfd__alt">{k.alt}</s>
             <span className="bfd__neu">{k.neu}</span>
-            <PreisSchilder preis={euro(k.neu)} vergleich={euro(k.alt)} auszeichnung={k.auszeichnung} />
+            <PreisSchilder
+              preis={k.lp ? k.lp.preis : euro(k.neu)}
+              vergleich={k.lp ? k.lp.uvp : euro(k.alt)}
+              waehrung={k.lp?.waehrung ?? 'EUR'}
+              auszeichnung={k.auszeichnung}
+            />
           </p>
           <Kaufen href={ziel} name={k.name} />
         </div>
@@ -499,7 +598,11 @@ export default function BfDealsB() {
   const jetzt = useJetzt();
   const d = useLoaderData<typeof loader>();
   // Größen mit Bestand 0 nicht zeigen (Elina EL-20261112-5f5fab2e); Server und Browser rechnen aus denselben Daten.
-  const kacheln = KACHELN.map((k) => mitBestand(k, d?.lieferbar ?? null)).filter(Boolean) as Kachel[];
+  const lps = (d?.landesPreise ?? null) as LandesPreise;
+  const kacheln = KACHELN.map((k) => mitBestand(k, d?.lieferbar ?? null))
+    .filter(Boolean)
+    .map((k) => mitLandesPreis(k as Kachel, lps)) as Kachel[];
+  const spar = sparBetrag(kacheln, lps);
   return (
     <div className="bfd" id="bfd" lang="de" ref={wurzel}>
       <Countdown jetzt={jetzt} />
@@ -526,7 +629,7 @@ export default function BfDealsB() {
               <span className="bfd__titel-unten">Black Friday Deals</span>
             </h1>
             <p className="bfd__spar">
-              Spare bis zu <span className="bfd__spar-betrag">500&nbsp;€</span>
+              Spare bis zu <span className="bfd__spar-betrag">{spar ? spar.replace(/\s/g, '\u00a0') : '500\u00a0€'}</span>
             </p>
           </div>
         </header>
