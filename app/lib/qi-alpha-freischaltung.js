@@ -184,14 +184,12 @@ export async function ladeLeistenWahl(storefront) {
  */
 export const NR_EINS_LEISTE = true;
 /**
- * ALLE SEITEN (Nachtrag Christian 14.11.2026) — vorerst AUS. Gebaut und
- * getestet, aber der globale, sichtbare Umbau (119 Seiten) braucht vor dem
- * Merge die Baseline-Freigabe aus Gate 12 (hb-pixelsoll sichtbar je Seite mit
- * Zweig-Beleg und Design-PASS). Das schafft der Folgejob
- * 20261114-de-nr1-leiste-alle-seiten-baseline-freigabe; er schaltet hier auf
- * true. Bis dahin: Startseite zweiteilig, alle anderen Seiten wie vorher.
+ * ALLE SEITEN (Nachtrag Christian 14.11.2026): AN seit Job
+ * 20261114-de-nr1-leiste-alle-seiten-baseline-freigabe (Baseline-Freigabe
+ * Gate 12, hb-pixelsoll sichtbar je Seite). Rueckweg: false setzen, dann
+ * zeigen alle Seiten ausser der Startseite wieder die 4,8-Sterne-Leiste.
  */
-export const NR_EINS_ALLE_SEITEN = false;
+export const NR_EINS_ALLE_SEITEN = true;
 export const NR_EINS_TEXT = 'Weltweit Nr. 1 bei Energieprodukten in Kundenzufriedenheit und Studien';
 export const STUDIEN_SEITE = '/pages/studien';
 export const STUDIEN_ANZAHL = 5;
