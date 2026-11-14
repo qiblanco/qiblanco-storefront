@@ -107,7 +107,7 @@ function Videos() {
 
 /*
  * DER KAKAO ZUM KURS (s11, 2026-11-14, Entscheidung E1 des Grossjobs): der Weg
- * zum Kakao fuehrt direkt auf die zwei Kaufseiten statt auf die Uebersicht
+ * zum Kakao führt direkt auf die zwei Kaufseiten statt auf die Übersicht
  * /pages/crystal-cacao. Er ersetzt den zweiten Knopf „Zu Crystal Cacao“ im
  * Schlussband. Linktext „… ansehen“, nicht „… kaufen“: ohne Preis daneben
  * sperrt das Sicht-Tor einen Kaufknopf (kaufknopf_kontext, s10 belegt).

@@ -106,10 +106,10 @@
 }
 
 /* ---- Kopfbild am Handy randlos (s11, 2026-11-14, Entscheidung E1) ----------
- * Das Mockup (1024 x 599) stand am Handy 358 x 209 px gross, Soll im ersten
- * Bildschirm >= 25 % der Hoehe (211 px bei 844). Randlos ueber die volle
+ * Das Mockup (1024 x 599) stand am Handy 358 x 209 px groß, Soll im ersten
+ * Bildschirm >= 25 % der Höhe (211 px bei 844). Randlos über die volle
  * Breite sind es 390 x 228. Kein Zuschnitt: links steht das Handy im Bild.
- * Ohne Radius, das Mockup steht auf Weiss. Ab 750 px unveraendert. */
+ * Ohne Radius, das Mockup steht auf Weiß. Ab 750 px unverändert. */
 @media (max-width: 749.98px) {
   [data-apple-seite='zeremonie-kakao-kurs'] .as-hero .as-hero-bild {
     width: auto;
@@ -119,7 +119,7 @@
     border-radius: 0;
   }
 }
-/* Der Kakao zum Kurs: Knoepfe wie im Schlussband, Text in der Lesebreite. */
+/* Der Kakao zum Kurs: Knöpfe wie im Schlussband, Text in der Lesebreite. */
 [data-apple-seite='zeremonie-kakao-kurs'] .as-kk-kakao .as-unter {
   max-width: 560px;
 }
