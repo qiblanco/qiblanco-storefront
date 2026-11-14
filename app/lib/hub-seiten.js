@@ -285,7 +285,8 @@ export const WV_GRUPPEN = [
         anker: 'Elektrosmog-Schutz als Schmuck: Armband, Anhänger, Kette',
         teaser:
           'Armband, Anhänger und Kette im Überblick, mit Preis, und worauf du beim Kauf eines Elektrosmog-Schutzes achtest.',
-        fuss: 'Elektrosmog-Schutz als Schmuck',
+        // OHNE `fuss`: die Fußspalte trägt höchstens fünf Seiten plus Übersicht
+        // (test/hub-seiten.test.mjs).
         weiter: ['/pages/technologie', '/pages/faq'],
       },
       {
