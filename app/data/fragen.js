@@ -695,7 +695,7 @@ export const FRAGEN = [
       },
       {
         "pfad": "/pages/lexikon",
-        "text": "Lexikon: unsere Begriffe in der Sprache der Physik"
+        "text": "Physikalische Begriffe einfach erklärt: das Lexikon"
       },
       {
         "pfad": "/pages/lexikon-frequenz",

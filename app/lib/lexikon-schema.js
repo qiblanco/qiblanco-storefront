@@ -214,7 +214,7 @@ export function hubSchema(eintraege, datum) {
         '@type': 'CollectionPage',
         '@id': `${url}#sammlung`,
         url,
-        name: 'Lexikon: unsere Begriffe in der Sprache der Physik',
+        name: 'Physikalische Begriffe einfach erklärt: das Lexikon',
         inLanguage: 'de',
         isPartOf: {'@type': 'WebSite', '@id': SITE_ID},
         publisher: {'@id': ORG_ID},
