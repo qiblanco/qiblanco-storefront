@@ -888,7 +888,8 @@ export const NUR_ROUTE_SEITEN = [
   {
     pfad: '/pages/lexikon',
     // 2026-11-10: Karte „hexagonales Wasser" (Job 20261019-ki-lernschleife-bau-dach-589a3d).
-    lastmod: '2026-11-10T03:00:00Z',
+    // 2026-11-14: Titel, h1 und Einleitung führen „physikalische Begriffe" (M-SP-20261102-lexikon).
+    lastmod: '2026-11-14T07:00:00Z',
     grund:
       'Der Hub des Lexikons (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +

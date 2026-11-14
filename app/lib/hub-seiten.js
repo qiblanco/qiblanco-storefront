@@ -249,7 +249,7 @@ export const WV_GRUPPEN = [
       },
       {
         pfad: '/pages/lexikon',
-        anker: 'Lexikon: unsere Begriffe in der Sprache der Physik',
+        anker: 'Physikalische Begriffe einfach erklärt: das Lexikon',
         teaser:
           'Hohe Frequenz, High Vibe, kohärentes Wasser: was Menschen damit meinen und welche messbare Größe dahinter liegt.',
         fuss: 'Lexikon',
