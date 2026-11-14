@@ -183,15 +183,30 @@ export async function ladeLeistenWahl(storefront) {
  * hb-deploy revert.
  */
 export const NR_EINS_LEISTE = true;
+/**
+ * ALLE SEITEN (Nachtrag Christian 14.11.2026) — vorerst AUS. Gebaut und
+ * getestet, aber der globale, sichtbare Umbau (119 Seiten) braucht vor dem
+ * Merge die Baseline-Freigabe aus Gate 12 (hb-pixelsoll sichtbar je Seite mit
+ * Zweig-Beleg und Design-PASS). Das schafft der Folgejob
+ * 20261114-de-nr1-leiste-alle-seiten-baseline-freigabe; er schaltet hier auf
+ * true. Bis dahin: Startseite zweiteilig, alle anderen Seiten wie vorher.
+ */
+export const NR_EINS_ALLE_SEITEN = false;
 export const NR_EINS_TEXT = 'Weltweit Nr. 1 bei Energieprodukten in Kundenzufriedenheit und Studien';
 export const STUDIEN_SEITE = '/pages/studien';
 export const STUDIEN_ANZAHL = 5;
 
-/** Nr.-1-Leiste zeigen? Jede Seite mit Leiste, außer der Kakao-Welt. */
-export function zeigeNrEinsLeiste({pathname, leiste, kakao = false, an = NR_EINS_LEISTE}) {
+/** Nr.-1-Leiste zeigen? Startseite immer; jede andere Seite mit Leiste (außer Kakao), sobald NR_EINS_ALLE_SEITEN an ist. */
+export function zeigeNrEinsLeiste({
+  pathname,
+  leiste,
+  kakao = false,
+  an = NR_EINS_LEISTE,
+  alleSeiten = NR_EINS_ALLE_SEITEN,
+}) {
   if (!an || leiste === 'keine') return false;
   if (istStartseite(pathname)) return true;
-  return !kakao;
+  return alleSeiten && !kakao;
 }
 
 /** Menüpunkt „Qi Alpha®“ unter „Shop“ (Desktop + Handy) ab der Freischaltung. */
