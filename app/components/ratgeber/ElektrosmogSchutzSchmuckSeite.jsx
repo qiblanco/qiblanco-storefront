@@ -228,11 +228,15 @@ export function ElektrosmogSchutzSchmuckSeite({products = [], land = 'DE'}) {
           <div className="ess__handlung" data-eb>
             <p>{BELEG.einladung}</p>
             <p className="ess__knoepfe">
+              {/* Wortlaut = linktext der Produktkarte: EIN Wortlaut je Ziel-URL
+                  (CTA-Einstimmigkeit) und wie die Schwester-Ratgeber ein Weg zur
+                  Kaufseite, kein Kaufknopf auf dieser Seite (echtgeraet_probe:
+                  Kaufknopf verlangt einen aktiven Knopf am Seitenende). */}
               <Link className="ess__knopf knopf-gold" data-qa="cta" to="/products/qione-2-pro">
-                Jetzt QiOne® 2 Pro kaufen
+                {PRODUKTE.find((p) => p.handle === 'qione-2-pro')?.linktext}
               </Link>
               <Link className="ess__weiter" to="/products/qibracelet">
-                Jetzt QiBracelet® kaufen
+                {PRODUKTE.find((p) => p.handle === 'qibracelet')?.linktext}
               </Link>
             </p>
           </div>
