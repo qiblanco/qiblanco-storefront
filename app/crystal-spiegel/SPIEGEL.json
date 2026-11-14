@@ -91,7 +91,7 @@
     "app/crystal-spiegel/styles/eu-gewaehrleistung.css": "b18e895bc6fda4c1aba234a148147d33d0b121633e488e773c2e713155fc0914",
     "app/crystal-spiegel/styles/ig-testimonials.css": "cb43987c48daa209a261228417fb43ebdbecef60b9dbb6cd1082597ba71244f1",
     "app/crystal-spiegel/styles/isolation.css": "a972cd73e077f6ef0da95b145b4b164bcb574487dffd0770b14d3bbacd819102",
-    "app/crystal-spiegel/styles/kakao-seiten.css": "b2b19d29ff55b7c3e7e459ecf3c4e1f6e9003fab6443607edd05efb986b8a6c3",
+    "app/crystal-spiegel/styles/kakao-seiten.css": "06375e1a8faff09e57de47dfb3ddaf5add9a6888f4319ec4d4932731824301aa",
     "app/crystal-spiegel/styles/kakao-tiefe.css": "40a4c62fd6d906135c06223b00a60f613731c12a668265574bc6044fdadaf9ea",
     "app/crystal-spiegel/styles/preis-schild.css": "f086535a81acb0d066ce0998f7379a83f59c37b812237933c4c65a9ce133c3a2",
     "app/crystal-spiegel/styles/qb-swipetab.css": "14bdb99db18c8c0f75af7e3302956975a01b416e985bcb5b256d61aece0a1d8e",
@@ -112,7 +112,7 @@
     "components",
     "utilities"
   ],
-  "quelle_commit": "8c2973de6ed6b547090392414536632bda16819f",
+  "quelle_commit": "c4d8af399fcd1ab33db2328b82c3ddb6ca5a3116",
   "quelle_repo": "crystal-cacao-node/repo",
   "seiten": {
     "awake": {
