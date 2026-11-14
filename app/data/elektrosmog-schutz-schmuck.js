@@ -50,8 +50,8 @@ export const SEITE = {
     'Elektrosmog-Schutz als Armband oder Anhänger: QiBracelet® und QiOne® 2 Pro im Überblick. Ohne Akku, für Dusche und Sauna, 20 Tage Rückgabe, Raten über Klarna.',
   antwort: [
     'Einen Elektrosmog-Schutz zum Tragen gibt es bei Qi Blanco als Anhänger und als Armband: den QiOne® 2 Pro und das QiBracelet®. Beide haben dieselbe Leistung, brauchen keinen Akku und begleiten dich Tag und Nacht, auch unter der Dusche.',
-    'Welcher passt, entscheidest du danach, wo du ihn tragen willst. Den Anhänger trägst du an einer Kette um den Hals, das Armband am Handgelenk.',
-    'Handy, WLAN und Router gehören zum Leben. Mit einem Schutz am Körper musst du auf nichts davon verzichten.',
+    'Welcher passt, hängt nur davon ab, wo du ihn tragen möchtest. Den QiOne® 2 Pro trägst du an einer Kette um den Hals, das QiBracelet® am Handgelenk.',
+    'Handy und WLAN-Router gehören heute zu unserem Leben. Mit einem Schutz am Körper musst du auf nichts davon verzichten.',
   ],
   veroeffentlicht: isoMitZone(VEROEFFENTLICHT),
   geaendert: isoMitZone(GEAENDERT),
@@ -117,7 +117,7 @@ export const ACHTEN = [
     link: {to: '/pages/armband-duschen-sauna', text: 'Duschen und Sauna mit dem Armband'},
   },
   {
-    id: 'erklaerung',
+    id: 'wirkweise',
     frage: 'Weißt du, wie der Schutz wirken soll?',
     text: 'Lass dir erklären, was am Körper passiert, wenn du deinen Schutz trägst. Wir zeigen es dir Schritt für Schritt.',
     link: {
@@ -157,7 +157,7 @@ export function fragen(preise = {}) {
   const {qione = null, bracelet = null} = preise || {};
   return [
     {
-      id: 'armband-oder-anhaenger',
+      id: 'welches-passt',
       q: 'Elektrosmog-Schutz als Armband oder als Anhänger: was ist besser?',
       a: 'Beide haben dieselbe Leistung. Der QiOne® 2 Pro hängt an einer Kette nah an deiner Körpermitte. Das QiBracelet® trägst du am Handgelenk, und es ist für den größeren Abstand rund 10 Prozent stärker gebaut. Nimm das, was du lieber jeden Tag trägst.',
     },
@@ -190,7 +190,7 @@ export function fragen(preise = {}) {
       a: 'Ja, über Klarna an der Kasse. Ab 25 € Warenwert geht das in 6 Monatsraten, ab 500 € in 12 und ab 1.000 € in bis zu 24. Ob die Ratenzahlung klappt, prüft Klarna selbst, und derzeit geht sie nur mit Wohnsitz in Deutschland.',
     },
     {
-      id: 'rueckgabe',
+      id: 'frist',
       q: 'Wie lange kann ich zurückgeben?',
       a: 'Du hast 20 Tage ab Ankunft der Lieferung. Passt dein Schutz nicht zu dir, bekommst du den vollen Kaufpreis zurück, ohne Angabe von Gründen.',
     },
