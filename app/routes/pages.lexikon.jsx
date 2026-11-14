@@ -41,11 +41,28 @@ const PFAD = '/pages/lexikon';
  * Datenmodul; Oxygen läuft am Edge und kann shared-state zur Laufzeit nicht
  * lesen.
  */
-const TITEL = 'Lexikon: unsere Begriffe in der Sprache der Physik | Qi Blanco';
+/*
+ * TITEL UND BESCHREIBUNG FÜHREN SEIT 2026-11-14 DEN SUCHBEGRIFF VORN
+ * (SEO-Maßnahme M-SP-20261102-lexikon, Pool-Job
+ * seo-2026-w46-l26-lexikon-1efa-…): die Seite stand für „physikalische
+ * begriffe" auf Platz 9 bis 20, ohne den Begriff im Titel zu tragen. Vorher:
+ * 'Lexikon: unsere Begriffe in der Sprache der Physik | Qi Blanco'. Gemessen
+ * wird die Wirkung im Wirkungskreislauf des SEO-Managers (gleiche id), nicht
+ * am Deploy.
+ *
+ * Der Titel weicht vom Wortlaut der Maßnahme ab, die h1 nicht: die Maßnahme
+ * nannte „Physikalische Begriffe einfach erklärt" vorn. Als Titel wären das
+ * mit Marke 63 Zeichen ohne Kundenwort; die GEO-Seitenregel R3 des
+ * SEO-Managers (seo-manager/geo/conf/seitenregeln.yaml) verlangt höchstens 60
+ * Zeichen und ein Kundenwort. Der Titel führt deshalb den Suchbegriff vorn
+ * und „Energie" als Kundenwort; „einfach erklärt" tragen h1 und description.
+ * Die Zahl in der description (1 Hertz) steht sichtbar auf der Seite (R4).
+ */
+const TITEL = 'Physikalische Begriffe: Energie, Frequenz, Feld | Qi Blanco';
 const BESCHREIBUNG =
-  'Hohe Frequenz, High Vibe, kohärentes Wasser, Elektrosmog: was Menschen ' +
-  'damit meinen, welche messbare Größe dahintersteht – und wo das Bild ' +
-  'aufhört zu tragen.';
+  'Physikalische Begriffe einfach erklärt: 1 Hertz ist eine Schwingung je ' +
+  'Sekunde. Dazu Feld, Kohärenz, Energie und Elektrosmog, je mit messbarer ' +
+  'Größe und Grenze.';
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR — siehe pages.kritik.jsx. Wer
@@ -53,7 +70,7 @@ const BESCHREIBUNG =
  * NUR_ROUTE_SEITEN im selben Commit nach.
  */
 const VEROEFFENTLICHT = '2026-09-15';
-const GEAENDERT = '2026-11-10';
+const GEAENDERT = '2026-11-14';
 
 export function links() {
   return [
