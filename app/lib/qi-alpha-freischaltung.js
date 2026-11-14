@@ -159,6 +159,56 @@ export async function ladeLeistenWahl(storefront) {
   return {...uebernehmeLeistenWahl(wert), ...uebernehmeAppleWahl(appleWert)};
 }
 
+/**
+ * NR.-1-LEISTE DER STARTSEITE (Christian 14.11.2026, Job 20261114-prio1-homepage-
+ * banner-weltweit-nr1-kundenzufriedenheit-studien-de-en): „ob man unter dem
+ * Banner G-Alpha Now Available und eben den anderen Banner mit den
+ * 4.8-Sterne-Kundenbewertungen, dass man da einen Banner baut. Das heißt,
+ * weltweit Nummer 1 bei Energieprodukten bezüglich Kundenzufriedenheit und
+ * Studienergebnisse. … den Banner austauschen.“
+ *
+ * Nachtrag Christian 14.11.2026: „auf der Frontseite der Banner zweiteilig ist,
+ * G-Alpha now available und dann unten drunter dieses Nummer 1. Und auf den
+ * anderen Seiten, das ist nur dieses Nummer 1 Banner.“
+ * Startseite (`/` und `/pages/start-b`): direkt unter der Qi-Alpha-Leiste (steht
+ * qb_kopfleiste.startseite auf 'bewertung', nur diese Leiste). Jede andere Seite,
+ * die eine Leiste trägt: die Nr.-1-Leiste ERSETZT die 4,8-Sterne-Leiste (sie
+ * trägt die Sterne). Ausnahmen: Seiten ohne Leiste ('keine', Apple-Kaufseiten)
+ * bleiben ohne, und die Kakao-Welt behält ihre eigene Kakao-Leiste (eigene
+ * Kennzahlen; „Energieprodukte“ und die 5 Studien gehören nicht zum Kakao).
+ * Belege in der Leiste: Google-Note und Anzahl aus dem root-Loader (nie eine
+ * feste Zahl), 5 Studien -> STUDIEN_SEITE. Ein Klick auf die Sterne springt zu
+ * den Google-Rezensionen der Seite, jeder andere Klick auf die Studienseite.
+ * RÜCKWEG: NR_EINS_LEISTE = false (Startseite wie vor dem 14.11.) oder
+ * hb-deploy revert.
+ */
+export const NR_EINS_LEISTE = true;
+/**
+ * ALLE SEITEN (Nachtrag Christian 14.11.2026) — vorerst AUS. Gebaut und
+ * getestet, aber der globale, sichtbare Umbau (119 Seiten) braucht vor dem
+ * Merge die Baseline-Freigabe aus Gate 12 (hb-pixelsoll sichtbar je Seite mit
+ * Zweig-Beleg und Design-PASS). Das schafft der Folgejob
+ * 20261114-de-nr1-leiste-alle-seiten-baseline-freigabe; er schaltet hier auf
+ * true. Bis dahin: Startseite zweiteilig, alle anderen Seiten wie vorher.
+ */
+export const NR_EINS_ALLE_SEITEN = false;
+export const NR_EINS_TEXT = 'Weltweit Nr. 1 bei Energieprodukten in Kundenzufriedenheit und Studien';
+export const STUDIEN_SEITE = '/pages/studien';
+export const STUDIEN_ANZAHL = 5;
+
+/** Nr.-1-Leiste zeigen? Startseite immer; jede andere Seite mit Leiste (außer Kakao), sobald NR_EINS_ALLE_SEITEN an ist. */
+export function zeigeNrEinsLeiste({
+  pathname,
+  leiste,
+  kakao = false,
+  an = NR_EINS_LEISTE,
+  alleSeiten = NR_EINS_ALLE_SEITEN,
+}) {
+  if (!an || leiste === 'keine') return false;
+  if (istStartseite(pathname)) return true;
+  return alleSeiten && !kakao;
+}
+
 /** Menüpunkt „Qi Alpha®“ unter „Shop“ (Desktop + Handy) ab der Freischaltung. */
 export const MENUE_QI_ALPHA = true;
 

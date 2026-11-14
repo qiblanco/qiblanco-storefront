@@ -28,9 +28,14 @@ import {MarkeR} from '~/components/reusables/MarkeR';
 import {
   QI_ALPHA_FREISCHALTUNG_MS,
   QI_ALPHA_LP,
+  NR_EINS_TEXT,
+  STUDIEN_ANZAHL,
+  STUDIEN_SEITE,
   bannerVariante,
   istFreigeschaltet,
+  istStartseite,
   menueMitQiAlpha,
+  zeigeNrEinsLeiste,
 } from '~/lib/qi-alpha-freischaltung';
 
 /**
@@ -369,6 +374,10 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   // /products/zeremonie-kakao wären beim nächsten Deploy auf die
   // Qi-Blanco-Leiste gekippt ("über 14.000" auf einer Kakaoseite).
   const isCacaoPage = istKakaoPfad(pathname);
+  // Nr.-1-Leiste (Christian 14.11.2026): Startseite unter der Qi-Alpha-Leiste,
+  // auf jeder anderen Seite mit Leiste statt der 4,8-Sterne-Leiste (trägt die
+  // Sterne). Kakao-Welt und Seiten ohne Leiste bleiben, wie sie sind.
+  const nrEins = zeigeNrEinsLeiste({pathname, leiste, kakao: isCacaoPage});
 
   // 4,8-Klick (Job 20260731-google-rezensionen): Klick auf die Sterne im
   // schwarzen Banner scrollt zum Google-Rezensionsbereich DIESER Seite;
@@ -407,7 +416,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
    */
   useSterneSprungDelegation(onRezensionenKlick);
   // Mit der Leiste ändert sich die Kopfhöhe auch beim Seitenwechsel ohne Scroll.
-  useKopfHoeheVariable(leiste);
+  useKopfHoeheVariable(`${leiste}|${nrEins ? 'nr1' : ''}`);
 
   return (
     <header
@@ -422,13 +431,16 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           announcement={
             <p>
               <span className="banner-line">
-                The <MarkeR text="Qi Alpha®" /> is now available
+                {/* Christian 14.11.2026: auf der deutschen Seite dieselbe englische
+                    Fassung wie in den USA, „get yours now“, mit Gedankenstrich
+                    (PR-Chef frei 02:06Z). Vorher: „The Qi Alpha® is now available“. */}
+                <MarkeR text="Qi Alpha®" /> – Get Yours Now
               </span>
             </p>
           }
           link={QI_ALPHA_LP}
         />
-      ) : (
+      ) : nrEins ? null : (
       <AnnouncementBanner
         attr={leistenAttr}
         announcement={
@@ -466,6 +478,13 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         onAnnouncementClick={isCacaoPage ? undefined : onRezensionenKlick}
       />
       )}
+      {nrEins ? (
+        <NrEinsBanner
+          onRezensionenKlick={onRezensionenKlick}
+          start={istStartseite(pathname)}
+          attr={leiste === 'qi-alpha' ? undefined : leistenAttr}
+        />
+      ) : null}
       <GoogleRezensionenPopup
         offen={rezensionenPopupOffen}
         onSchliessen={() => setRezensionenPopupOffen(false)}
@@ -1506,6 +1525,61 @@ function AnnouncementBanner({announcement, link, onAnnouncementClick, variante, 
     <div className={klasse} data-kopfleiste={variante || 'bewertung'} {...(attr || {})}>
       <Link prefetch="intent" to={link} onClick={onAnnouncementClick}>
         {announcement}
+      </Link>
+    </div>
+  );
+}
+
+/**
+ * Nr.-1-Leiste der Startseite (Christian 14.11.2026). EIN Link auf die
+ * Studienseite; ein Klick auf die Sterne (Marker data-qb-rating="s") springt
+ * wie überall zu den Google-Rezensionen der Seite (onRezensionenKlick ruft
+ * preventDefault, der Link navigiert dann nicht). Note und Anzahl kommen aus
+ * dem root-Loader (useGoogleRating), nie eine feste Zahl.
+ * Zwei Sinneinheiten wie die 4,8-Leiste: Aussage, dann Belege. Auf dem Handy
+ * stehen sie untereinander, die Aussage bricht ausgewogen um.
+ */
+function NrEinsBanner({onRezensionenKlick, attr, start = false}) {
+  const g = useGoogleRating();
+  const anzahl = Number(g.total).toLocaleString('de-DE');
+  const onClick = (e) => {
+    if (e.target?.closest?.('[data-qb-rating="s"]')) onRezensionenKlick(e);
+  };
+  /* Die Leiste macht den festen Kopf höher. Die Apple-Startseite hält ihren
+     Abstand zum Kopf selbst (app.css, Ausnahme 2 bei main::before); damit ihre
+     Überzeile nicht unter dem Kopf liegt, rückt sie um die GEMESSENE Höhe
+     dieser Leiste nach unten (--qb-nr1-hoehe, Rückfall je Breite in app.css). */
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof document === 'undefined') return undefined;
+    const html = document.documentElement;
+    const setze = () =>
+      html.style.setProperty('--qb-nr1-hoehe', `${Math.round(el.offsetHeight)}px`);
+    setze();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(setze) : null;
+    if (ro) ro.observe(el);
+    return () => {
+      if (ro) ro.disconnect();
+      html.style.removeProperty('--qb-nr1-hoehe');
+    };
+  }, []);
+  return (
+    <div
+      ref={ref}
+      className={`Header-AnnouncementBanner Header-AnnouncementBanner--nr1${start ? ' Header-AnnouncementBanner--nr1-start' : ''}`}
+      data-kopfleiste="nr1"
+      {...(attr || {})}
+    >
+      <Link prefetch="intent" to={STUDIEN_SEITE} onClick={onClick}>
+        <p>
+          <span className="banner-nr1-aussage">{NR_EINS_TEXT}</span>
+          <span className="banner-offer-sep"> · </span>
+          <span className="banner-line banner-nr1-belege">
+            <GoogleSterneBadge /> bei Google ({anzahl} Bewertungen) ·{' '}
+            {STUDIEN_ANZAHL} Studien
+          </span>
+        </p>
       </Link>
     </div>
   );

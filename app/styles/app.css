@@ -1315,6 +1315,33 @@ aside h3 {
 .Header-AnnouncementBanner--qi-alpha a p {
   color: var(--qb-kopfleiste-rot);
 }
+/* Nr.-1-Leiste der Startseite (Christian 14.11.2026), unter der Qi-Alpha-Leiste.
+   Gleiche Fläche wie die 4,8-Leiste, eine Haarlinie trennt sie von der schwarzen
+   Qi-Alpha-Leiste. Aussage weiß und fett, Belege ruhiger (weiß 80 %, Kontrast
+   auf #151515 > 10:1), Sterne golden wie in der 4,8-Leiste. */
+.Header-AnnouncementBanner--nr1 a {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+.Header-AnnouncementBanner--nr1 .banner-nr1-belege {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+}
+.Header-AnnouncementBanner--nr1 .banner-nr1-belege .ReviewCount {
+  font-weight: 600;
+}
+/* Die Apple-Startseite (.as-seite) hält ihren Abstand zum Kopf selbst; mit der
+   Nr.-1-Leiste unter der Qi-Alpha-Leiste ist der Kopf um deren Höhe höher (nur
+   Startseite: auf anderen Seiten nimmt sie den Platz der 4,8-Sterne-Leiste ein). --qb-nr1-hoehe misst Header.jsx
+   (NrEinsBanner); der Rückfall gilt bis zur Hydrierung (gemessen 14.11.2026:
+   1440 px eine Zeile 46 px, 390 px drei Zeilen 69 px). */
+body:has(.Header-AnnouncementBanner--nr1-start) > main > .as-seite {
+  margin-top: var(--qb-nr1-hoehe, 46px);
+}
+@media (max-width: 749px) {
+  body:has(.Header-AnnouncementBanner--nr1-start) > main > .as-seite {
+    margin-top: var(--qb-nr1-hoehe, 69px);
+  }
+}
 /* Two meaning units (line 1 proof, line 2 offer): each stays unbroken, so any
    wrap happens cleanly between them, never mid-phrase. */
 .Header-AnnouncementBanner .banner-line {
@@ -1336,6 +1363,11 @@ aside h3 {
   }
   .Header-AnnouncementBanner .banner-offer-sep {
     display: none;
+  }
+  /* Nr.-1-Leiste: Aussage über ganze Breite, ausgewogen umbrochen; Belege darunter. */
+  .Header-AnnouncementBanner--nr1 .banner-nr1-aussage {
+    flex-basis: 100%;
+    text-wrap: balance;
   }
   .Header-AnnouncementBanner a {
     padding: 0.5rem 0.75rem;
