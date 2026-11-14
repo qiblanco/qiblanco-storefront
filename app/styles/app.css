@@ -1329,6 +1329,18 @@ aside h3 {
 .Header-AnnouncementBanner--nr1 .banner-nr1-belege .ReviewCount {
   font-weight: 600;
 }
+/* Die Apple-Startseite (.as-seite) hält ihren Abstand zum Kopf selbst; mit der
+   Nr.-1-Leiste ist der Kopf um deren Höhe höher. --qb-nr1-hoehe misst Header.jsx
+   (NrEinsBanner); der Rückfall gilt bis zur Hydrierung (gemessen 14.11.2026:
+   1440 px eine Zeile 46 px, 390 px drei Zeilen 69 px). */
+body:has(.Header-AnnouncementBanner--nr1) > main > .as-seite {
+  margin-top: var(--qb-nr1-hoehe, 46px);
+}
+@media (max-width: 749px) {
+  body:has(.Header-AnnouncementBanner--nr1) > main > .as-seite {
+    margin-top: var(--qb-nr1-hoehe, 69px);
+  }
+}
 /* Two meaning units (line 1 proof, line 2 offer): each stays unbroken, so any
    wrap happens cleanly between them, never mid-phrase. */
 .Header-AnnouncementBanner .banner-line {

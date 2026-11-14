@@ -1539,8 +1539,28 @@ function NrEinsBanner({onRezensionenKlick, attr}) {
   const onClick = (e) => {
     if (e.target?.closest?.('[data-qb-rating="s"]')) onRezensionenKlick(e);
   };
+  /* Die Leiste macht den festen Kopf höher. Die Apple-Startseite hält ihren
+     Abstand zum Kopf selbst (app.css, Ausnahme 2 bei main::before); damit ihre
+     Überzeile nicht unter dem Kopf liegt, rückt sie um die GEMESSENE Höhe
+     dieser Leiste nach unten (--qb-nr1-hoehe, Rückfall je Breite in app.css). */
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof document === 'undefined') return undefined;
+    const html = document.documentElement;
+    const setze = () =>
+      html.style.setProperty('--qb-nr1-hoehe', `${Math.round(el.offsetHeight)}px`);
+    setze();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(setze) : null;
+    if (ro) ro.observe(el);
+    return () => {
+      if (ro) ro.disconnect();
+      html.style.removeProperty('--qb-nr1-hoehe');
+    };
+  }, []);
   return (
     <div
+      ref={ref}
       className="Header-AnnouncementBanner Header-AnnouncementBanner--nr1"
       data-kopfleiste="nr1"
       {...(attr || {})}
