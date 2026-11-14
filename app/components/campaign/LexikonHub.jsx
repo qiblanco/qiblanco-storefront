@@ -35,8 +35,32 @@ export function LexikonHub() {
       <section className="lex__kopf" data-section="lex-kopf">
         <div className="lex__inhalt">
           <p className="lex__vorspann">Lexikon</p>
-          <h1>Unsere Begriffe, in der Sprache der Physik</h1>
+          {/* 2026-11-14 (SEO-Maßnahme M-SP-20261102-lexikon): h1 und erster
+              Absatz tragen „physikalische Begriffe" vorn, der erste Absatz
+              beantwortet, was Frequenz, Feld und Kohärenz bedeuten. Frequenz
+              folgt dem Eintrag Frequenz, Feld den Feldgrößen im
+              Eintrag Elektrosmog (V/m, Tesla), Kohärenz dem ersten
+              Physik-Absatz des Eintrags „kohärentes Wasser" (feste
+              Phasenbeziehung, Kohärenzlänge und -zeit). Einen eigenen Eintrag
+              „Feld" oder „Kohärenz" gibt es nicht. Gegengelesen von einem
+              unabhängigen Prüfer (K3, P2), dessen drei Sachbefunde zur ersten
+              Fassung sind eingearbeitet. Vorher hieß
+              die h1 „Unsere Begriffe, in der Sprache der Physik". */}
+          <h1>Physikalische Begriffe einfach erklärt</h1>
           <p className="lex__lead">
+            Was bedeuten physikalische Begriffe wie Frequenz, Feld und
+            Kohärenz? Jeder von ihnen wird über messbare Größen mit festen
+            Einheiten beschrieben. Frequenz ist die
+            Zahl der Schwingungen je Sekunde, gemessen in Hertz. Ein Feld gibt
+            für jeden Ort im Raum an, wie stark und in welche Richtung es auf
+            eine Ladung wirkt. Die elektrische Feldstärke misst man in Volt je
+            Meter, die magnetische Flussdichte in Tesla. Kohärenz heißt, dass
+            Wellen in einer festen Phasenbeziehung schwingen. Ihre Berge und
+            Täler bleiben im gleichen Abstand zueinander. Wie weit und wie lange
+            eine Welle das hält, misst man als Kohärenzlänge in Metern und als
+            Kohärenzzeit in Sekunden.
+          </p>
+          <p>
             Viele Wörter, die im Gespräch über Energie und Schutz vorkommen,
             stammen aus der Physik und bedeuten dort etwas anderes. Hier steht
             zu jedem Wort beides: was Menschen damit meinen, und welche messbare
