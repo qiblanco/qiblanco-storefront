@@ -130,7 +130,7 @@ function ProduktKarte({produkt, api, preis}) {
       <p className="ess__karte-fuss">
         {preis ? <span className="ess__preis">{preis}</span> : null}
         <Link
-          className={produkt.haupt ? 'ess__knopf' : 'ess__weiter'}
+          className={produkt.haupt ? 'ess__knopf knopf-gold' : 'ess__weiter'}
           data-qa={produkt.haupt ? 'cta' : undefined}
           to={`/products/${produkt.handle}`}
         >
@@ -228,7 +228,7 @@ export function ElektrosmogSchutzSchmuckSeite({products = [], land = 'DE'}) {
           <div className="ess__handlung" data-eb>
             <p>{BELEG.einladung}</p>
             <p className="ess__knoepfe">
-              <Link className="ess__knopf" data-qa="cta" to="/products/qione-2-pro">
+              <Link className="ess__knopf knopf-gold" data-qa="cta" to="/products/qione-2-pro">
                 Jetzt QiOne® 2 Pro kaufen
               </Link>
               <Link className="ess__weiter" to="/products/qibracelet">
