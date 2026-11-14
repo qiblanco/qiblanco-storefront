@@ -165,8 +165,9 @@ test('Nr.-1-Leiste: Startseite (beide Arme) und jede andere Seite mit Leiste, au
   for (const p of ['/products/qione', '/collections/all', '/pages/studien', '/blogs/news/x', '/products/qione-2-pro-b']) {
     assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'bewertung', alleSeiten: true}), true, p);
     assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'bewertung', alleSeiten: true, kakao: true}), false, p);
-    // Vorgabe bis zur Baseline-Freigabe: andere Seiten wie vorher.
-    assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'bewertung'}), false, p);
+    // Vorgabe seit der Baseline-Freigabe: andere Seiten zeigen die Nr.-1-Leiste.
+    assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'bewertung'}), true, p);
+    assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'bewertung', alleSeiten: false}), false, p);
   }
 });
 
