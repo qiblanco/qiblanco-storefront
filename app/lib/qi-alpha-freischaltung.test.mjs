@@ -153,3 +153,26 @@ test('ladeLeistenWahl liest beide Felder aus einer Abfrage und wirft nie', async
   assert.equal(r.appleQuelle, 'vorgabe');
   leistenWahlZuruecksetzen();
 });
+
+// Nr.-1-Leiste der Startseite (Christian 14.11.2026, Job 20261114-prio1-homepage-banner-weltweit-nr1-...).
+import {NR_EINS_TEXT, STUDIEN_SEITE, zeigeNrEinsLeiste} from './qi-alpha-freischaltung.js';
+
+test('Nr.-1-Leiste nur auf der Startseite (beide Arme), nie auf anderen Seiten', () => {
+  for (const p of ['/', '/pages/start-b', '/pages/start-b/', '/?probe=1']) {
+    assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'qi-alpha'}), true, p);
+    assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'bewertung'}), true, p);
+  }
+  for (const p of ['/products/qione-2-pro-b', '/pages/studien', '/collections/all', '/pages/Qi-Alpha']) {
+    assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'bewertung'}), false, p);
+  }
+});
+
+test('Nr.-1-Leiste: Rueckweg-Schalter und Seiten ohne Leiste', () => {
+  assert.equal(zeigeNrEinsLeiste({pathname: '/', leiste: 'qi-alpha', an: false}), false);
+  assert.equal(zeigeNrEinsLeiste({pathname: '/', leiste: 'keine'}), false);
+});
+
+test('Nr.-1-Leiste: Christians Aussage und Ziel Studienseite', () => {
+  assert.match(NR_EINS_TEXT, /^Weltweit Nr\. 1 bei Energieprodukten/);
+  assert.equal(STUDIEN_SEITE, '/pages/studien');
+});

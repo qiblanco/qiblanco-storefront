@@ -1315,6 +1315,20 @@ aside h3 {
 .Header-AnnouncementBanner--qi-alpha a p {
   color: var(--qb-kopfleiste-rot);
 }
+/* Nr.-1-Leiste der Startseite (Christian 14.11.2026), unter der Qi-Alpha-Leiste.
+   Gleiche Fläche wie die 4,8-Leiste, eine Haarlinie trennt sie von der schwarzen
+   Qi-Alpha-Leiste. Aussage weiß und fett, Belege ruhiger (weiß 80 %, Kontrast
+   auf #151515 > 10:1), Sterne golden wie in der 4,8-Leiste. */
+.Header-AnnouncementBanner--nr1 a {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+.Header-AnnouncementBanner--nr1 .banner-nr1-belege {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+}
+.Header-AnnouncementBanner--nr1 .banner-nr1-belege .ReviewCount {
+  font-weight: 600;
+}
 /* Two meaning units (line 1 proof, line 2 offer): each stays unbroken, so any
    wrap happens cleanly between them, never mid-phrase. */
 .Header-AnnouncementBanner .banner-line {
@@ -1336,6 +1350,11 @@ aside h3 {
   }
   .Header-AnnouncementBanner .banner-offer-sep {
     display: none;
+  }
+  /* Nr.-1-Leiste: Aussage über ganze Breite, ausgewogen umbrochen; Belege darunter. */
+  .Header-AnnouncementBanner--nr1 .banner-nr1-aussage {
+    flex-basis: 100%;
+    text-wrap: balance;
   }
   .Header-AnnouncementBanner a {
     padding: 0.5rem 0.75rem;

@@ -159,6 +159,36 @@ export async function ladeLeistenWahl(storefront) {
   return {...uebernehmeLeistenWahl(wert), ...uebernehmeAppleWahl(appleWert)};
 }
 
+/**
+ * NR.-1-LEISTE DER STARTSEITE (Christian 14.11.2026, Job 20261114-prio1-homepage-
+ * banner-weltweit-nr1-kundenzufriedenheit-studien-de-en): „ob man unter dem
+ * Banner G-Alpha Now Available und eben den anderen Banner mit den
+ * 4.8-Sterne-Kundenbewertungen, dass man da einen Banner baut. Das heißt,
+ * weltweit Nummer 1 bei Energieprodukten bezüglich Kundenzufriedenheit und
+ * Studienergebnisse. … den Banner austauschen.“
+ *
+ * Die Leiste steht NUR auf der Startseite (`/` und `/pages/start-b`), direkt
+ * unter der Qi-Alpha-Leiste. Sie führt Sterne und Nr.-1-Aussage zusammen und
+ * ersetzt dort die 4,8-Sterne-Leiste: steht der Schalter qb_kopfleiste.startseite
+ * auf 'bewertung', zeigt die Startseite nur diese Leiste (sie trägt die Sterne
+ * schon). Alle anderen Seiten bleiben, wie sie sind.
+ * Belege in der Leiste: Google-Note und Anzahl aus dem root-Loader (nie eine
+ * feste Zahl), 5 Studien -> STUDIEN_SEITE. Ein Klick auf die Sterne springt zu
+ * den Google-Rezensionen der Seite, jeder andere Klick auf die Studienseite.
+ * RÜCKWEG: NR_EINS_LEISTE = false (Startseite wie vor dem 14.11.) oder
+ * hb-deploy revert.
+ */
+export const NR_EINS_LEISTE = true;
+export const NR_EINS_TEXT = 'Weltweit Nr. 1 bei Energieprodukten in Kundenzufriedenheit und Studien';
+export const STUDIEN_SEITE = '/pages/studien';
+export const STUDIEN_ANZAHL = 5;
+
+/** Nr.-1-Leiste zeigen? Nur Startseite, nie auf einer Seite ohne Leiste. */
+export function zeigeNrEinsLeiste({pathname, leiste, an = NR_EINS_LEISTE}) {
+  if (!an || leiste === 'keine') return false;
+  return istStartseite(pathname);
+}
+
 /** Menüpunkt „Qi Alpha®“ unter „Shop“ (Desktop + Handy) ab der Freischaltung. */
 export const MENUE_QI_ALPHA = true;
 

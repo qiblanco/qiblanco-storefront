@@ -28,9 +28,13 @@ import {MarkeR} from '~/components/reusables/MarkeR';
 import {
   QI_ALPHA_FREISCHALTUNG_MS,
   QI_ALPHA_LP,
+  NR_EINS_TEXT,
+  STUDIEN_ANZAHL,
+  STUDIEN_SEITE,
   bannerVariante,
   istFreigeschaltet,
   menueMitQiAlpha,
+  zeigeNrEinsLeiste,
 } from '~/lib/qi-alpha-freischaltung';
 
 /**
@@ -363,6 +367,9 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
     'data-kopfleiste-wahl': leistenWahl?.wahl,
     'data-kopfleiste-quelle': leistenWahl?.quelle,
   };
+  // Nr.-1-Leiste (14.11.2026): nur Startseite, unter der Qi-Alpha-Leiste; bei
+  // Wahl 'bewertung' ersetzt sie dort die 4,8-Sterne-Leiste (trägt die Sterne).
+  const nrEins = zeigeNrEinsLeiste({pathname, leiste});
   // Zonenzuordnung aus app/lib/kakao-zone.js — der einen Stelle, an der steht,
   // welche Fläche zu welcher Produktwelt gehört. Vorher stand die Liste hier
   // und kannte nur DREI der fünf Kakao-Pfade: /pages/kristall-kakao und
@@ -407,7 +414,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
    */
   useSterneSprungDelegation(onRezensionenKlick);
   // Mit der Leiste ändert sich die Kopfhöhe auch beim Seitenwechsel ohne Scroll.
-  useKopfHoeheVariable(leiste);
+  useKopfHoeheVariable(`${leiste}|${nrEins ? 'nr1' : ''}`);
 
   return (
     <header
@@ -428,7 +435,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           }
           link={QI_ALPHA_LP}
         />
-      ) : (
+      ) : nrEins ? null : (
       <AnnouncementBanner
         attr={leistenAttr}
         announcement={
@@ -466,6 +473,12 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         onAnnouncementClick={isCacaoPage ? undefined : onRezensionenKlick}
       />
       )}
+      {nrEins ? (
+        <NrEinsBanner
+          onRezensionenKlick={onRezensionenKlick}
+          attr={leiste === 'qi-alpha' ? undefined : leistenAttr}
+        />
+      ) : null}
       <GoogleRezensionenPopup
         offen={rezensionenPopupOffen}
         onSchliessen={() => setRezensionenPopupOffen(false)}
@@ -1506,6 +1519,41 @@ function AnnouncementBanner({announcement, link, onAnnouncementClick, variante, 
     <div className={klasse} data-kopfleiste={variante || 'bewertung'} {...(attr || {})}>
       <Link prefetch="intent" to={link} onClick={onAnnouncementClick}>
         {announcement}
+      </Link>
+    </div>
+  );
+}
+
+/**
+ * Nr.-1-Leiste der Startseite (Christian 14.11.2026). EIN Link auf die
+ * Studienseite; ein Klick auf die Sterne (Marker data-qb-rating="s") springt
+ * wie überall zu den Google-Rezensionen der Seite (onRezensionenKlick ruft
+ * preventDefault, der Link navigiert dann nicht). Note und Anzahl kommen aus
+ * dem root-Loader (useGoogleRating), nie eine feste Zahl.
+ * Zwei Sinneinheiten wie die 4,8-Leiste: Aussage, dann Belege. Auf dem Handy
+ * stehen sie untereinander, die Aussage bricht ausgewogen um.
+ */
+function NrEinsBanner({onRezensionenKlick, attr}) {
+  const g = useGoogleRating();
+  const anzahl = Number(g.total).toLocaleString('de-DE');
+  const onClick = (e) => {
+    if (e.target?.closest?.('[data-qb-rating="s"]')) onRezensionenKlick(e);
+  };
+  return (
+    <div
+      className="Header-AnnouncementBanner Header-AnnouncementBanner--nr1"
+      data-kopfleiste="nr1"
+      {...(attr || {})}
+    >
+      <Link prefetch="intent" to={STUDIEN_SEITE} onClick={onClick}>
+        <p>
+          <span className="banner-nr1-aussage">{NR_EINS_TEXT}</span>
+          <span className="banner-offer-sep"> · </span>
+          <span className="banner-line banner-nr1-belege">
+            <GoogleSterneBadge /> bei Google ({anzahl} Bewertungen) ·{' '}
+            {STUDIEN_ANZAHL} Studien
+          </span>
+        </p>
       </Link>
     </div>
   );
