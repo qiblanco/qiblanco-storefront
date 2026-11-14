@@ -1334,6 +1334,21 @@ export const NUR_ROUTE_SEITEN = [
       'probe_live_de.py prüft am ausgelieferten HTML Titel, Kernbotschaft, ' +
       'Tabelle, FAQ, JSON-LD und jeden internen Link.',
   },
+  {
+    pfad: '/pages/elektrosmog-schutz-schmuck',
+    lastmod: '2026-11-14T17:00:00Z',
+    grund:
+      'Ratgeber und Produktübersicht „Elektrosmog-Schutz zum Tragen: ' +
+      'Armband, Anhänger oder Kette?" für die Kaufbegriffe der Kategorie ' +
+      '(Grossjob 20261114-seo-kategorie-kaufbegriffe-suchabsicht-r2, s02; ' +
+      'Christian 14.11.2026). Sie besteht allein aus der Route ' +
+      'pages.elektrosmog-schutz-schmuck.jsx und hat KEIN Shopify-' +
+      'Seitenobjekt. Ohne diesen Eintrag liefert sie HTTP 200 und steht in ' +
+      'keiner Sitemap. Kein noindex, canonicalLink() in der Route. lastmod ' +
+      'ist die Obergrenze des Commit-Zeitpunkts der Route. WACHE: die ' +
+      'Erfüllungsprobe probe_r2_kategorie_suchintention.py misst Titel und ' +
+      'H1 am Rand, dazu der tägliche Design-Watch (design_gate_seiten.yaml).',
+  },
 ];
 
 /**
