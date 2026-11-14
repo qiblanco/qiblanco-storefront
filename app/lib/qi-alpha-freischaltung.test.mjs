@@ -157,13 +157,14 @@ test('ladeLeistenWahl liest beide Felder aus einer Abfrage und wirft nie', async
 // Nr.-1-Leiste der Startseite (Christian 14.11.2026, Job 20261114-prio1-homepage-banner-weltweit-nr1-...).
 import {NR_EINS_TEXT, STUDIEN_SEITE, zeigeNrEinsLeiste} from './qi-alpha-freischaltung.js';
 
-test('Nr.-1-Leiste nur auf der Startseite (beide Arme), nie auf anderen Seiten', () => {
-  for (const p of ['/', '/pages/start-b', '/pages/start-b/', '/?probe=1']) {
+test('Nr.-1-Leiste: Startseite (beide Arme) und jede andere Seite mit Leiste, ausser Kakao', () => {
+  for (const p of ['/', '/pages/start-b']) {
     assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'qi-alpha'}), true, p);
     assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'bewertung'}), true, p);
   }
-  for (const p of ['/products/qione-2-pro-b', '/pages/studien', '/collections/all', '/pages/Qi-Alpha']) {
-    assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'bewertung'}), false, p);
+  for (const p of ['/products/qione', '/collections/all', '/pages/studien', '/blogs/news/x', '/products/qione-2-pro-b']) {
+    assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'bewertung'}), true, p);
+    assert.equal(zeigeNrEinsLeiste({pathname: p, leiste: 'bewertung', kakao: true}), false, p);
   }
 });
 

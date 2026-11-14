@@ -33,6 +33,7 @@ import {
   STUDIEN_SEITE,
   bannerVariante,
   istFreigeschaltet,
+  istStartseite,
   menueMitQiAlpha,
   zeigeNrEinsLeiste,
 } from '~/lib/qi-alpha-freischaltung';
@@ -367,15 +368,16 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
     'data-kopfleiste-wahl': leistenWahl?.wahl,
     'data-kopfleiste-quelle': leistenWahl?.quelle,
   };
-  // Nr.-1-Leiste (14.11.2026): nur Startseite, unter der Qi-Alpha-Leiste; bei
-  // Wahl 'bewertung' ersetzt sie dort die 4,8-Sterne-Leiste (trägt die Sterne).
-  const nrEins = zeigeNrEinsLeiste({pathname, leiste});
   // Zonenzuordnung aus app/lib/kakao-zone.js — der einen Stelle, an der steht,
   // welche Fläche zu welcher Produktwelt gehört. Vorher stand die Liste hier
   // und kannte nur DREI der fünf Kakao-Pfade: /pages/kristall-kakao und
   // /products/zeremonie-kakao wären beim nächsten Deploy auf die
   // Qi-Blanco-Leiste gekippt ("über 14.000" auf einer Kakaoseite).
   const isCacaoPage = istKakaoPfad(pathname);
+  // Nr.-1-Leiste (Christian 14.11.2026): Startseite unter der Qi-Alpha-Leiste,
+  // auf jeder anderen Seite mit Leiste statt der 4,8-Sterne-Leiste (trägt die
+  // Sterne). Kakao-Welt und Seiten ohne Leiste bleiben, wie sie sind.
+  const nrEins = zeigeNrEinsLeiste({pathname, leiste, kakao: isCacaoPage});
 
   // 4,8-Klick (Job 20260731-google-rezensionen): Klick auf die Sterne im
   // schwarzen Banner scrollt zum Google-Rezensionsbereich DIESER Seite;
@@ -429,7 +431,10 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           announcement={
             <p>
               <span className="banner-line">
-                The <MarkeR text="Qi Alpha®" /> is now available
+                {/* Christian 14.11.2026: auf der deutschen Seite dieselbe englische
+                    Fassung wie in den USA, „get yours now“, mit Gedankenstrich
+                    (PR-Chef frei 02:06Z). Vorher: „The Qi Alpha® is now available“. */}
+                <MarkeR text="Qi Alpha®" /> – Get Yours Now
               </span>
             </p>
           }
@@ -476,6 +481,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
       {nrEins ? (
         <NrEinsBanner
           onRezensionenKlick={onRezensionenKlick}
+          start={istStartseite(pathname)}
           attr={leiste === 'qi-alpha' ? undefined : leistenAttr}
         />
       ) : null}
@@ -1533,7 +1539,7 @@ function AnnouncementBanner({announcement, link, onAnnouncementClick, variante, 
  * Zwei Sinneinheiten wie die 4,8-Leiste: Aussage, dann Belege. Auf dem Handy
  * stehen sie untereinander, die Aussage bricht ausgewogen um.
  */
-function NrEinsBanner({onRezensionenKlick, attr}) {
+function NrEinsBanner({onRezensionenKlick, attr, start = false}) {
   const g = useGoogleRating();
   const anzahl = Number(g.total).toLocaleString('de-DE');
   const onClick = (e) => {
@@ -1561,7 +1567,7 @@ function NrEinsBanner({onRezensionenKlick, attr}) {
   return (
     <div
       ref={ref}
-      className="Header-AnnouncementBanner Header-AnnouncementBanner--nr1"
+      className={`Header-AnnouncementBanner Header-AnnouncementBanner--nr1${start ? ' Header-AnnouncementBanner--nr1-start' : ''}`}
       data-kopfleiste="nr1"
       {...(attr || {})}
     >

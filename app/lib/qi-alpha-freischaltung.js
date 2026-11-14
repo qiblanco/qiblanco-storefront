@@ -167,11 +167,15 @@ export async function ladeLeistenWahl(storefront) {
  * weltweit Nummer 1 bei Energieprodukten bezüglich Kundenzufriedenheit und
  * Studienergebnisse. … den Banner austauschen.“
  *
- * Die Leiste steht NUR auf der Startseite (`/` und `/pages/start-b`), direkt
- * unter der Qi-Alpha-Leiste. Sie führt Sterne und Nr.-1-Aussage zusammen und
- * ersetzt dort die 4,8-Sterne-Leiste: steht der Schalter qb_kopfleiste.startseite
- * auf 'bewertung', zeigt die Startseite nur diese Leiste (sie trägt die Sterne
- * schon). Alle anderen Seiten bleiben, wie sie sind.
+ * Nachtrag Christian 14.11.2026: „auf der Frontseite der Banner zweiteilig ist,
+ * G-Alpha now available und dann unten drunter dieses Nummer 1. Und auf den
+ * anderen Seiten, das ist nur dieses Nummer 1 Banner.“
+ * Startseite (`/` und `/pages/start-b`): direkt unter der Qi-Alpha-Leiste (steht
+ * qb_kopfleiste.startseite auf 'bewertung', nur diese Leiste). Jede andere Seite,
+ * die eine Leiste trägt: die Nr.-1-Leiste ERSETZT die 4,8-Sterne-Leiste (sie
+ * trägt die Sterne). Ausnahmen: Seiten ohne Leiste ('keine', Apple-Kaufseiten)
+ * bleiben ohne, und die Kakao-Welt behält ihre eigene Kakao-Leiste (eigene
+ * Kennzahlen; „Energieprodukte“ und die 5 Studien gehören nicht zum Kakao).
  * Belege in der Leiste: Google-Note und Anzahl aus dem root-Loader (nie eine
  * feste Zahl), 5 Studien -> STUDIEN_SEITE. Ein Klick auf die Sterne springt zu
  * den Google-Rezensionen der Seite, jeder andere Klick auf die Studienseite.
@@ -183,10 +187,11 @@ export const NR_EINS_TEXT = 'Weltweit Nr. 1 bei Energieprodukten in Kundenzufrie
 export const STUDIEN_SEITE = '/pages/studien';
 export const STUDIEN_ANZAHL = 5;
 
-/** Nr.-1-Leiste zeigen? Nur Startseite, nie auf einer Seite ohne Leiste. */
-export function zeigeNrEinsLeiste({pathname, leiste, an = NR_EINS_LEISTE}) {
+/** Nr.-1-Leiste zeigen? Jede Seite mit Leiste, außer der Kakao-Welt. */
+export function zeigeNrEinsLeiste({pathname, leiste, kakao = false, an = NR_EINS_LEISTE}) {
   if (!an || leiste === 'keine') return false;
-  return istStartseite(pathname);
+  if (istStartseite(pathname)) return true;
+  return !kakao;
 }
 
 /** Menüpunkt „Qi Alpha®“ unter „Shop“ (Desktop + Handy) ab der Freischaltung. */

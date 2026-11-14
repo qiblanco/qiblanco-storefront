@@ -1330,14 +1330,15 @@ aside h3 {
   font-weight: 600;
 }
 /* Die Apple-Startseite (.as-seite) hält ihren Abstand zum Kopf selbst; mit der
-   Nr.-1-Leiste ist der Kopf um deren Höhe höher. --qb-nr1-hoehe misst Header.jsx
+   Nr.-1-Leiste unter der Qi-Alpha-Leiste ist der Kopf um deren Höhe höher (nur
+   Startseite: auf anderen Seiten nimmt sie den Platz der 4,8-Sterne-Leiste ein). --qb-nr1-hoehe misst Header.jsx
    (NrEinsBanner); der Rückfall gilt bis zur Hydrierung (gemessen 14.11.2026:
    1440 px eine Zeile 46 px, 390 px drei Zeilen 69 px). */
-body:has(.Header-AnnouncementBanner--nr1) > main > .as-seite {
+body:has(.Header-AnnouncementBanner--nr1-start) > main > .as-seite {
   margin-top: var(--qb-nr1-hoehe, 46px);
 }
 @media (max-width: 749px) {
-  body:has(.Header-AnnouncementBanner--nr1) > main > .as-seite {
+  body:has(.Header-AnnouncementBanner--nr1-start) > main > .as-seite {
     margin-top: var(--qb-nr1-hoehe, 69px);
   }
 }
