@@ -24,7 +24,7 @@
 .pab__uhr{border-radius:20px;margin:0 0 1rem;text-align:left}
 .pab__uhr--haupt{padding:1.25rem 1.25rem 1.1rem;border:1px solid rgba(242,191,114,.6);background:linear-gradient(180deg,rgba(242,191,114,.08),rgba(242,191,114,.02))}
 .pab__uhr--klein{padding:1rem 1.25rem;border:1px solid rgba(245,239,230,.14);background:rgba(245,239,230,.03);margin-bottom:2rem}
-.pab__uhrtitel{margin:0 0 .75rem;color:var(--g);font-size:18px;font-weight:700;line-height:1.3}
+.pab__uhrtitel{margin:0 0 .75rem;color:var(--g);font-size:16px;font-weight:700;line-height:1.3}
 .pab__uhr--klein .pab__uhrtitel{color:var(--hell);margin-bottom:.5rem}
 .pab__zellen{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:0}
 .pab__zelle{text-align:left}
@@ -94,5 +94,13 @@
 .pab__bild--hero img{object-position:50% 50%}
 .pab__bild--hero::after,.pab__bild--hero .pab__bildzeile{display:none}
 @media (max-width:959.98px){.pab__bild--hero{aspect-ratio:2/3;width:100%;max-width:540px;margin-inline:auto}}
+/* Kopf auf einer Kante und einer Skala (shop-tor D4, Job 20261114-de-preaccess-kopf-shoptor-91): ab 900px steht die Textspalte
+   linksbuendig. Die zwei Countdown-Kaesten ruecken um ihr Innenmass nach aussen (optischer Randausgleich): ihr Text steht
+   auf derselben Kante wie Dachzeile, Titel und Fliesstext, der Rahmen haengt ins Spaltenmass hinaus (Abstand zum Bild 3.5rem
+   bleibt groesser als die 1.25rem). Uhrtitel 16px statt 18px = Stil der Goldzeile im Vertrauensblock (16/700 gold).
+   Rueckweg: diesen Block entfernen und .pab__uhrtitel wieder 18px. */
+@media (min-width:900px){
+.pab__uhr{margin-inline:-1.25rem}
+}
 /* Ruhige Fassung (D7): bei "Bewegung reduzieren" steht alles still und ist sofort da (Einblenden regelt elina-bewegung.css). */
 @media (prefers-reduced-motion:reduce){.pab *,.pab *::before,.pab *::after{transition:none!important;animation:none!important}.pab [data-eb]{opacity:1!important;transform:none!important}}
