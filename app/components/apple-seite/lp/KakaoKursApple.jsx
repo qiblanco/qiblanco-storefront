@@ -105,6 +105,31 @@ function Videos() {
   );
 }
 
+/*
+ * DER KAKAO ZUM KURS (s11, 2026-11-14, Entscheidung E1 des Grossjobs): der Weg
+ * zum Kakao fuehrt direkt auf die zwei Kaufseiten statt auf die Uebersicht
+ * /pages/crystal-cacao. Er ersetzt den zweiten Knopf „Zu Crystal Cacao“ im
+ * Schlussband. Linktext „… ansehen“, nicht „… kaufen“: ohne Preis daneben
+ * sperrt das Sicht-Tor einen Kaufknopf (kaufknopf_kontext, s10 belegt).
+ */
+function KakaoZumKurs() {
+  return (
+    <section className="as-sektion as-kk-kakao" data-section="as-kakao">
+      <p className="as-etikett">Crystal Cacao</p>
+      <h2 className="as-h2">Der Kakao zum Kurs.</h2>
+      <p className="as-unter">Zwei Sorten aus Peru. Awake öffnet das Herz, Create schärft den Fokus.</p>
+      <div className="as-knoepfe">
+        <a className="btn btn--secondary as-knopf" href="/products/crystal-cacao-awake" data-as-cta="secondary">
+          Awake ansehen
+        </a>
+        <a className="btn btn--secondary as-knopf" href="/products/crystal-cacao-create" data-as-cta="secondary">
+          Create ansehen
+        </a>
+      </div>
+    </section>
+  );
+}
+
 export function KakaoKursApple({seite}) {
   return (
     <>
@@ -127,11 +152,11 @@ export function KakaoKursApple({seite}) {
           absaetze={VORSTELLUNG}
           bild={BILD_PAAR}
         />
+        <KakaoZumKurs />
         <AppleCtaBand
           titel="Los geht's!"
-          text="Melde dich jetzt für den kostenlosen Videokurs an. Den Kakao dazu findest du bei Crystal Cacao."
+          text="Melde dich jetzt für den kostenlosen Videokurs an."
           cta={{text: 'Kurs jetzt starten', href: ANKER}}
-          cta2={{text: 'Zu Crystal Cacao', href: '/pages/crystal-cacao'}}
           hell
         />
         <AppleAnna />
