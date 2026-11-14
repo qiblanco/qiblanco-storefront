@@ -117,7 +117,10 @@ function KakaoZumKurs() {
     <section className="as-sektion as-kk-kakao" data-section="as-kakao">
       <p className="as-etikett">Crystal Cacao</p>
       <h2 className="as-h2">Der Kakao zum Kurs.</h2>
-      <p className="as-unter">Zwei Sorten aus Peru. Awake öffnet das Herz, Create schärft den Fokus.</p>
+      <p className="as-unter">
+        Es gibt ihn in zwei Sorten. Nimm Awake, wenn du dein Herz öffnen willst, und Create, wenn du
+        fokussiert arbeiten willst.
+      </p>
       <div className="as-knoepfe">
         <a className="btn btn--secondary as-knopf" href="/products/crystal-cacao-awake" data-as-cta="secondary">
           Awake ansehen
