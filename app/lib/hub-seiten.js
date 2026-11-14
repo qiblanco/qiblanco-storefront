@@ -276,6 +276,20 @@ export const WV_GRUPPEN = [
         weiter: ['/pages/was-ist-elektrosmog', '/pages/hypothesen'],
       },
       {
+        // Seit 2026-11-14 (Grossjob 20261114-seo-kategorie-kaufbegriffe-
+        // suchabsicht-r2, s02): Ratgeber und Produktübersicht für die
+        // Kaufbegriffe „Elektrosmog Schutz Armband", „EMF Schutz Anhänger".
+        // Reine Route, Sitemap über NUR_ROUTE_SEITEN, kein noindex. Der
+        // Ankertext ist der Titelanfang der Seite (Gate 28 HUB-ANKER).
+        pfad: '/pages/elektrosmog-schutz-schmuck',
+        anker: 'Elektrosmog-Schutz als Schmuck: Armband, Anhänger, Kette',
+        teaser:
+          'Armband, Anhänger und Kette im Überblick, mit Preis, und worauf du beim Kauf eines Elektrosmog-Schutzes achtest.',
+        // OHNE `fuss`: die Fußspalte trägt höchstens fünf Seiten plus Übersicht
+        // (test/hub-seiten.test.mjs).
+        weiter: ['/pages/technologie', '/pages/faq'],
+      },
+      {
         pfad: '/pages/studien',
         anker: 'Qi Blanco Studien',
         teaser:

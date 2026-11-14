@@ -137,6 +137,16 @@ export const FAQ_ALLTAG = [
       '(Messanleitung + Größentabelle Loose Fit / Tight Fit), live am 2026-09-02 nachgelesen. ' +
       'Der Hinweis „Breite, nicht Umfang" ist der Befund aus den Kundenzitaten: gefragt wird ' +
       'in Umfang („mein Armumfang ist 16,5cm brauche ich S oder M"), geantwortet wird in Breite.',
+    // DER EINGEHENDE LINK DES RATGEBERS /pages/elektrosmog-schutz-schmuck (Grossjob
+    // 20261114-seo-kategorie-kaufbegriffe-suchabsicht-r2, s02): wer die Armbandgröße
+    // sucht, steht vor der Wahl Armband oder Anhänger. Erster Eintrag des Blocks, also
+    // offen und als Kontextlink gezählt. Linktext aus der Kaufabsicht; Frage, Antwort,
+    // Titel und h1 der FAQ bleiben unverändert (Gewinnerseite, Schnappschuss
+    // vor_aenderung 14.11.2026).
+    auch: {
+      pfad: '/pages/elektrosmog-schutz-schmuck',
+      text: 'Armband gegen Elektrosmog im Überblick: Armband, Anhänger oder Kette',
+    },
   },
   {
     q: 'Darf der QiOne® 2 Pro nass werden: Dusche, Meer, Sauna?',

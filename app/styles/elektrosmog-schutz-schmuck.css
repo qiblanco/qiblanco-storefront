@@ -1,0 +1,361 @@
+/* /pages/elektrosmog-schutz-schmuck (Grossjob 20261114-seo-kategorie-
+   kaufbegriffe-suchabsicht-r2, s02). Token-System wie healy-alternative.css
+   (Design-Rubrik 100): warmes Neutral, EIN Gold-Akzent nur auf Handlung,
+   8pt-Grid, Sektions-Takt 64/96, Zeilenlaenge <= 68ch. Farbe, Gold und Radius
+   aus qb-tokens.css. Ausserhalb von :root KEIN freier Wert. Scope .ess; der
+   Dateiname folgt dem Slug, weil Gate 12 CSS per Dateiname zuordnet.
+   MOBILE FIRST: Grund-CSS ist die Handy-Fassung ab 320 px, groessere
+   Bildschirme nur per min-width. Bewegung: elina-bewegung.css (Baukasten). */
+
+:root {
+  --ess-font: 'Open Sans Variable', 'Open Sans', sans-serif;
+
+  /* Typo: EINE Familie, Skala ~1.25, 7 Stufen (Deckel des Briefs: 9) */
+  --ess-fs-xs: 0.8125rem; /* 13px, Quellenzeilen und Etikett */
+  --ess-fs-base: 1rem; /* 16px */
+  --ess-fs-md: 1.125rem; /* 18px */
+  --ess-fs-lg: 1.25rem; /* 20px */
+  --ess-fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.75rem); /* EIN H2-Stil */
+  --ess-fs-h1: clamp(2rem, 1.4rem + 2.8vw, 3rem);
+
+  /* Spacing: 8pt-Grid */
+  --ess-s1: 8px;
+  --ess-s2: 16px;
+  --ess-s3: 24px;
+  --ess-s4: 32px;
+  --ess-s6: 48px;
+  --ess-s8: 64px;
+  --ess-s12: 96px;
+
+  /* Farbe: Grund, Flaeche und Tinte; der Akzent kommt aus der Token-Wurzel */
+  --ess-grund: #faf9f5;
+  --ess-flaeche: var(--qb-flaeche);
+  --ess-text: var(--qb-text);
+  --ess-muted: var(--qb-text-gedaempft);
+  --ess-akzent: var(--qb-akzent); /* NUR Handlung: Knoepfe zur Kaufseite */
+  --ess-linie: rgba(44, 42, 38, 0.12);
+  --ess-weiss: #ffffff;
+
+  /* Radien + Schatten: je ZWEI Werte */
+  --ess-r1: var(--qb-radius-klein); /* 8px */
+  --ess-r2: 16px;
+  --ess-shadow-sm: 0 1px 3px rgba(25, 23, 20, 0.07);
+  --ess-shadow-md: 0 12px 32px rgba(25, 23, 20, 0.11);
+
+  /* Layout: eine Lesespalte, die Uebersicht darf breiter laufen */
+  --ess-mass: 68ch;
+  --ess-breite-schmal: 760px;
+  --ess-breite-karten: 1040px;
+  --ess-knopf-hoehe: 56px;
+  --ess-tipp: 44px;
+  --ess-schiene: 2px;
+}
+
+/* ─── Grundfluss ──────────────────────────────────────────────────────────── */
+.ess {
+  font-family: var(--ess-font);
+  font-size: var(--ess-fs-base);
+  line-height: 1.65;
+  color: var(--ess-text);
+  background: var(--ess-grund);
+  --eb-linie-farbe: var(--ess-akzent);
+  --eb-linie-grund: var(--ess-linie);
+}
+
+/* Das Wort inhalt im Klassennamen: nur solche Container misst seiten_pruefliste.py. */
+.ess__inhalt {
+  width: 100%;
+  max-width: var(--ess-breite-schmal);
+  margin-inline: auto;
+  padding-inline: var(--ess-s2);
+}
+
+.ess__inhalt--breit { max-width: var(--ess-breite-karten); }
+
+.ess section { padding-block: var(--ess-s8); }
+
+.ess h1 {
+  font-size: var(--ess-fs-h1);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--ess-s3);
+  color: var(--ess-text);
+}
+
+/* EIN H2-Stil, EINE Ausrichtung: linksbuendig auf allen Sektionstypen. */
+.ess h2 {
+  font-size: var(--ess-fs-h2);
+  line-height: 1.25;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 var(--ess-s3);
+  color: var(--ess-text);
+}
+
+.ess h3 {
+  font-size: var(--ess-fs-lg);
+  line-height: 1.35;
+  font-weight: 600;
+  margin: 0 0 var(--ess-s1);
+  color: var(--ess-text);
+}
+
+.ess p,
+.ess li,
+.ess dd {
+  font-size: var(--ess-fs-base);
+  line-height: 1.65;
+  color: var(--ess-text);
+  max-width: var(--ess-mass);
+  margin: 0 0 var(--ess-s2);
+}
+
+.ess p:last-child,
+.ess dd:last-child { margin-bottom: 0; }
+
+.ess a {
+  color: var(--ess-text);
+  text-decoration: underline;
+  text-decoration-color: var(--qb-akzent-tinte);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.ess a:hover { text-decoration-thickness: 3px; }
+
+.ess ol,
+.ess ul,
+.ess dl {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ─── Kopf: Frage und Antwort (ohne Animation, sofort da) ─────────────────── */
+.ess__kopf,
+.ess__achten-teil,
+.ess__fragen-teil { background: var(--ess-flaeche); }
+
+.ess p.ess__vorspann {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ess-muted);
+}
+
+.ess p.ess__lead { font-size: var(--ess-fs-md); }
+
+.ess p.ess__sprung {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ess-s1) var(--ess-s3);
+  margin-top: var(--ess-s3);
+}
+
+.ess__sprung a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--ess-tipp);
+  font-weight: 600;
+}
+
+/* Die Quellenzeile: kleinste Schrift der Seite. */
+.ess p.ess__quelle {
+  font-size: var(--ess-fs-xs);
+  color: var(--ess-muted);
+  margin-top: var(--ess-s2);
+}
+
+.ess h3.ess__klasse { margin-top: var(--ess-s4); }
+
+/* ─── Produktuebersicht ───────────────────────────────────────────────────── */
+.ess__karten {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ess-s3);
+}
+
+.ess li.ess__karte {
+  display: flex;
+  flex-direction: column;
+  max-width: none;
+  margin: 0;
+  padding: var(--ess-s3);
+  background: var(--ess-weiss);
+  border-radius: var(--ess-r2);
+  box-shadow: var(--ess-shadow-sm);
+}
+
+.ess__bild {
+  margin: 0 0 var(--ess-s3);
+  overflow: hidden;
+  border-radius: var(--ess-r1);
+  background: var(--ess-flaeche);
+}
+
+.ess__bild img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ess p.ess__art {
+  font-size: var(--ess-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ess-muted);
+  margin-bottom: var(--ess-s1);
+}
+
+.ess p.ess__karte-fuss {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ess-s2);
+  margin-top: auto;
+  padding-top: var(--ess-s2);
+}
+
+.ess__preis {
+  font-size: var(--ess-fs-md);
+  font-weight: 600;
+}
+
+/* ─── Worauf achten: Schritte an einer Linie ──────────────────────────────── */
+.ess__schritte {
+  position: relative;
+  padding-left: var(--ess-s4);
+}
+
+.ess__schiene {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--ess-s1);
+  width: var(--ess-schiene);
+}
+
+.ess__punkte {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ess-s4);
+}
+
+.ess li.ess__punkt { margin: 0; }
+
+.ess p.ess__punkt-link { font-weight: 600; }
+
+/* ─── Beleg und Stimme ────────────────────────────────────────────────────── */
+.ess__stimme {
+  margin: 0 0 var(--ess-s3);
+  padding-left: var(--ess-s3);
+  border-left: 3px solid var(--ess-linie);
+}
+
+.ess__stimme p:first-child { font-size: var(--ess-fs-md); }
+
+/* ─── Der eine Akzent: Handlung ───────────────────────────────────────────── */
+.ess a.ess__knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--ess-knopf-hoehe);
+  padding: var(--ess-s2) var(--ess-s4);
+  font-size: var(--ess-fs-md);
+  font-weight: 600;
+  color: var(--qb-text-auf-akzent);
+  background: var(--ess-akzent);
+  border-radius: var(--ess-r1);
+  text-decoration: none;
+  box-shadow: var(--ess-shadow-sm);
+}
+
+.ess a.ess__knopf:hover { box-shadow: var(--ess-shadow-md); }
+
+.ess a.ess__weiter {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--ess-tipp);
+  font-weight: 600;
+}
+
+.ess__handlung {
+  margin-top: var(--ess-s6);
+  padding: var(--ess-s4) var(--ess-s3);
+  background: var(--ess-flaeche);
+  border-radius: var(--ess-r2);
+}
+
+.ess__handlung p {
+  font-size: var(--ess-fs-md);
+  margin-bottom: var(--ess-s3);
+}
+
+.ess p.ess__knoepfe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ess-s2) var(--ess-s3);
+  margin-bottom: 0;
+}
+
+/* ─── Häufige Fragen ──────────────────────────────────────────────────────── */
+.ess__fragen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ess-s4);
+}
+
+.ess__frage {
+  padding-top: var(--ess-s3);
+  border-top: 1px solid var(--ess-linie);
+}
+
+.ess__frage dt {
+  font-size: var(--ess-fs-lg);
+  font-weight: 600;
+  color: var(--ess-text);
+  margin: 0 0 var(--ess-s1);
+}
+
+.ess__frage dd { margin-inline: 0; }
+
+/* ─── Groessere Bildschirme (nur min-width) ───────────────────────────────── */
+@media (min-width: 768px) {
+  .ess section { padding-block: var(--ess-s12); }
+  .ess__karten { grid-template-columns: repeat(3, 1fr); }
+  .ess__handlung { padding: var(--ess-s4); }
+}
+
+/* ─── Route-Chrome (gilt NUR auf dieser Route) ────────────────────────────── */
+/* Wie healy-alternative.css: fremde Goldtoene erben den EINEN Akzent, ein
+   Bild-Radius fuer die Huelle, Newsletter-Knopf im Fuss ohne zweiten Ocker. */
+body:has(.ess) {
+  background: var(--ess-grund);
+  --color-accent-primary: var(--ess-akzent);
+  --rd3-gold: var(--ess-akzent);
+  --qb-sterne-gold: var(--ess-akzent);
+  --shop-switch-active: color-mix(in srgb, var(--qb-akzent) 18%, transparent);
+}
+
+body:has(.ess) img,
+body:has(.ess) picture,
+body:has(.ess) video {
+  border-radius: var(--ess-r1);
+}
+
+body:has(.ess) #_form_15_submit._submit,
+body:has(.ess) ._form_15 button,
+body:has(.ess) ._form_15 ._submit,
+body:has(.ess) ._form_15 input[type='submit'] {
+  background: var(--ess-akzent) !important;
+  color: var(--ess-text) !important;
+  border-radius: var(--ess-r1) !important;
+  font-family: var(--ess-font) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ess a.ess__knopf { transition: none; }
+}
