@@ -53,6 +53,11 @@
  * Gewinner-Analyse, Auftrag 20261016-seo-duenne-vorlagenseiten-zweiter-
  * schnitt-serioes-und-familie. Kein neuer Satz, nur die Frage über dem
  * vorhandenen Absatz.
+ * NACHTRAG 2026-11-15 (SEO-Maßnahme M-SP-20261017-ist-qi-blanco-serioes):
+ * Absätze ohne eigene Teilfrage, die auf eine Teilfrage folgen, stehen unter
+ * deren Überschrift und gehören im Schema zu ihrer Antwort
+ * (fragen-schema.js teilfragenPaare). So trägt „Woran erkennst du einen
+ * seriösen Elektrosmog-Schutz?" einen Antwortsatz und fünf Merkmale.
  *
  * @typedef {{slug: string, katalog_id: string|null, markt: string,
  *   klasse: string, frage: string, antwort: string,
@@ -536,12 +541,30 @@ export const FRAGEN = [
       "Das Dartsch Scientific Institut von Prof. Dr. Peter C. Dartsch hat unsere Produkte in fünf Arbeiten untersucht. Alle fünf sind in Fachzeitschriften erschienen, jede mit Jahr und Seitenzahl, und alle fünf kannst du bei uns im Original lesen. Die sieben Fragen, die du dir dazu vielleicht stellst, beantworten wir in „Zellversuche: was sie sagen und was nicht“.",
       "Viele unserer Kundinnen und Kunden erzählen uns, was sie mit ihrem QiOne® oder ihrem QiHome® Air erleben. Einige berichten darüber unter eigenem Namen auf ihren eigenen Konten, und diese Berichte haben wir bei den Erfahrungen gesammelt. In Deutschland sind inzwischen über 450 QiHome® Air im Einsatz.",
       "Jedes Stück kannst du 20 Tage ab Erhalt tragen und ohne Angabe von Gründen zurückgeben, du bekommst dann den Kaufpreis erstattet. Das ist mehr als das gesetzliche Widerrufsrecht von 14 Tagen, und beide Fristen gelten nebeneinander.",
-      "Unsere Bewertungen kommen aus unserem Google-Unternehmensprofil. Jede stammt von einem Google-Konto und ist dort öffentlich nachlesbar, und für eine Bewertung gibt es bei uns weder Gutschein noch Rabatt."
+      "Unsere Bewertungen kommen aus unserem Google-Unternehmensprofil. Jede stammt von einem Google-Konto und ist dort öffentlich nachlesbar, und für eine Bewertung gibt es bei uns weder Gutschein noch Rabatt.",
+      "An fünf Merkmalen, die du bei jedem Anbieter selbst prüfen kannst, bevor du kaufst.",
+      "Impressum und Firmensitz: Ein seriöser Anbieter nennt Firma, Anschrift und Handelsregister. Bei uns sind das die Qi Blanco UG (haftungsbeschränkt) in Maßbach und HRB 7306 beim Amtsgericht Schweinfurt.",
+      "Rückgabe: Ein seriöser Anbieter lässt dich in Ruhe testen und nimmt die Ware ohne Angabe von Gründen zurück. Bei uns sind das 20 Tage ab Erhalt.",
+      "Untersuchungen mit Quelle: Ein seriöser Anbieter zeigt dir, was untersucht wurde, und du kannst es im Original nachlesen. Unsere fünf Arbeiten sind in Fachzeitschriften erschienen, jede mit Jahr und Seitenzahl.",
+      "Keine Heilversprechen: Ein seriöser Anbieter verspricht keine Heilung, und daran halten wir uns.",
+      "Erreichbarer Kundendienst: Du erreichst den Anbieter vor und nach dem Kauf auf mehr als einem Weg. Uns schreibst du an info@qiblanco.com, über das Kontaktformular oder im Support-Chat."
     ],
     "begruendung_links": [
       {
         "pfad": "/pages/kritik",
         "text": "Zellversuche: was sie sagen und was nicht"
+      },
+      {
+        "pfad": "/pages/impressum",
+        "text": "Impressum"
+      },
+      {
+        "pfad": "/pages/studien",
+        "text": "fünf Arbeiten"
+      },
+      {
+        "pfad": "/pages/support",
+        "text": "Kontaktformular"
       }
     ],
     "teilfragen": [
@@ -551,7 +574,8 @@ export const FRAGEN = [
       "Wer hat die Produkte untersucht, und wo ist das veröffentlicht?",
       "Wo erzählen Kundinnen und Kunden von ihren Erfahrungen?",
       "Wie lange kann ich ein Stück testen und zurückgeben?",
-      "Woher kommen die Bewertungen auf qiblanco.com?"
+      "Woher kommen die Bewertungen auf qiblanco.com?",
+      "Woran erkennst du einen seriösen Elektrosmog-Schutz?"
     ],
     "beleg": [
       "Handelsregister: Amtsgericht Schweinfurt, HRB 7306. Umsatzsteuer-Identifikationsnummer DE306530406. Anschrift und Geschäftsführer stehen im Impressum.",
@@ -646,6 +670,10 @@ export const FRAGEN = [
         "text": "Häufige Fragen zum QiHome® Air: Reichweite und Aufstellung"
       },
       {
+        "pfad": "/pages/ist-qi-blanco-serioes",
+        "text": "Woran du seriösen Elektrosmog-Schutz erkennst"
+      },
+      {
         "pfad": "/pages/hypothesen",
         "text": "Unser Wirkmodell im Einzelnen"
       }
@@ -712,6 +740,10 @@ export const FRAGEN = [
       {
         "pfad": "/pages/studien#gibt-es-studien-zu-elektrosmog-schutz",
         "text": "Studien zu Elektrosmog-Schutz"
+      },
+      {
+        "pfad": "/pages/ist-qi-blanco-serioes",
+        "text": "Woran du seriösen Elektrosmog-Schutz erkennst"
       },
       {
         "pfad": "/pages/hypothesen",

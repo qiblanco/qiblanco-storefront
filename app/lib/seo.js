@@ -997,7 +997,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/wie-weit-reicht-elektrosmog-schutz',
-    lastmod: '2026-10-25T00:00:00Z',
+    lastmod: '2026-11-15T00:00:00Z',
     grund:
       'Frageseite „Wie groß ist der Wirkungsbereich eines ' +
       'Elektrosmog-Schutzes?“ (Grossjob ' +
@@ -1103,7 +1103,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/ist-qi-blanco-serioes',
-    lastmod: '2026-09-28T12:00:00Z',
+    lastmod: '2026-11-15T00:00:00Z',
     grund:
       'Frageseite „Ist Qi Blanco seriös?“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
@@ -1128,7 +1128,7 @@ export const NUR_ROUTE_SEITEN = [
   // und eine Sitemap-URL, die weiterleitet, sendet ein gegenlaeufiges Signal.
   {
     pfad: '/pages/was-ist-elektrosmog',
-    lastmod: '2026-10-07T04:30:00Z',
+    lastmod: '2026-11-15T00:00:00Z',
     grund:
       'Antwortseite zur Frage „Was ist Elektrosmog?“ (Großjob ' +
       '20260919-…-wer-spricht-über-uns-wenn-die-ki-gefragt-wird, ' +

@@ -137,9 +137,26 @@ export function antwortIstEinSatz(s) {
 export function teilfragenPaare(s) {
   const {"begruendung": absaetze = []} = s || {};
   const fragen = Array.isArray(s?.teilfragen) ? s.teilfragen : [];
-  return absaetze
-    .map((a, i) => ({q: fragen[i], a}))
-    .filter((p) => typeof p.q === 'string' && p.q.trim() && typeof p.a === 'string');
+  // NACHTRAG 2026-11-15 (Grossjob seo-2026-w43-l26-ist-qi-blanco-serioes-cc1e,
+  // s02): Absätze OHNE eigene Teilfrage, die auf eine Teilfrage folgen, stehen
+  // auf der Seite unter deren H2 und gehören darum zu ihrer Antwort (die neue
+  // Teilfrage „Woran erkennst du einen seriösen Elektrosmog-Schutz?" hat einen
+  // Antwortsatz und fünf Merkmale). Eine Seite, deren Teilfragen je genau
+  // einen Absatz tragen, bekommt dieselben Paare wie vorher.
+  const paare = [];
+  absaetze.forEach((a, i) => {
+    const q = fragen[i];
+    if (typeof a !== 'string') return;
+    if (typeof q === 'string' && q.trim()) {
+      paare.push({q, a});
+    } else if (paare.length && i > 0 && paare.at(-1).bis === i - 1) {
+      paare.at(-1).a = `${paare.at(-1).a} ${a}`;
+    } else {
+      return;
+    }
+    paare.at(-1).bis = i;
+  });
+  return paare.map(({q, a}) => ({q, a}));
 }
 
 /**

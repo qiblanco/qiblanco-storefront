@@ -494,3 +494,30 @@ test('/pages/was-sagen-die-quarks-science-cops leitet per 301 auf die Seriös-Se
   }
   assert.deepEqual(treffer, [], `Links auf die Weiterleitung: ${treffer.join(', ')}`);
 });
+
+// SEIT 2026-11-15 (Grossjob seo-2026-w43-l26-ist-qi-blanco-serioes-cc1e, s02):
+// Absätze ohne eigene Teilfrage, die auf eine Teilfrage folgen, stehen unter
+// deren H2 und gehören zu ihrer Antwort im Schema. Seiten mit je einem Absatz
+// je Teilfrage behalten genau ihre bisherigen Paare.
+test('Folgeabsätze ohne eigene Teilfrage gehören zur Antwort der Teilfrage davor', () => {
+  const attrappe = {
+    "begruendung": ['Vorlauf ohne Frage.', 'Erster Satz.', 'Punkt eins.', 'Punkt zwei.', 'Eigene Antwort.'],
+    teilfragen: [null, 'Erste Frage?', null, null, 'Zweite Frage?'],
+  };
+  assert.deepEqual(teilfragenPaare(attrappe), [
+    {q: 'Erste Frage?', a: 'Erster Satz. Punkt eins. Punkt zwei.'},
+    {q: 'Zweite Frage?', a: 'Eigene Antwort.'},
+  ]);
+  const serioes = seiteFuer('ist-qi-blanco-serioes');
+  const letzte = teilfragenPaare(serioes).at(-1);
+  assert.equal(letzte.q, 'Woran erkennst du einen seriösen Elektrosmog-Schutz?');
+  for (const merkmal of [
+    'Impressum und Firmensitz:',
+    'Rückgabe:',
+    'Untersuchungen mit Quelle:',
+    'Keine Heilversprechen:',
+    'Erreichbarer Kundendienst:',
+  ]) {
+    assert.ok(letzte.a.includes(merkmal), `Merkmal fehlt in der Schema-Antwort: ${merkmal}`);
+  }
+});
