@@ -1,6 +1,6 @@
 "use client"; // required for Hydrogen client components
 
-import {Suspense, useState, useEffect, useRef, useCallback} from 'react';
+import {Suspense, memo, useState, useEffect, useRef, useCallback} from 'react';
 import {CdnBild} from './reusables/CdnBild';
 import {createPortal} from 'react-dom';
 import {Await, NavLink, useAsyncValue, Link, useLocation, useRouteLoaderData} from 'react-router';
@@ -1308,9 +1308,30 @@ function SubMenuItem({item, close, ohneSymbol = false}) {
 }
 
 /**
+ * React #421: die zwei Suspense-Grenzen der Kopfzeile (Konto, Warenkorb) liegen
+ * hier, und `memo` hält sie aus den Zustandswechseln des Kopfs heraus.
+ *
+ * Header führt eigenen Zustand (scrolled, hidden, richtung, Bewertungs-Popup,
+ * Qi-Alpha-Leiste). Der Scroll-Effekt setzt ihn gleich nach dem Hydration-Commit
+ * und bei jedem Scrollen, außerhalb eines Transition-Lanes. Ohne `memo` baute
+ * jeder Wechsel HeaderCtas neu, beide Grenzen bekamen frische Props, und war eine
+ * davon noch nicht hydriert (Konto- oder Warenkorb-Promise noch unterwegs), warf
+ * React 18.3.1 #421 und rendert die Grenze im Client neu (`didReceiveUpdate`).
+ * Gemessen 2026-11-15 live auf /products/qione-2-pro, CPU-Drossel 6, Netz 300 ms:
+ * Scrollen während des Ladens 2 von 20 Läufen mit je genau zwei #421, ohne
+ * Scrollen 0 von 20. Die Kundenrand-Fehlerwache scrollt nach load und sah ihn
+ * seit 02.11. flüchtig auf allen Seiten des Global Deutsch-Shops.
+ *
+ * `isLoggedIn` und `cart` sind die Promises des Root-Loaders und bleiben über
+ * diese Zustandswechsel dieselben Objekte; neu rendert HeaderCtas nur, wenn
+ * neue Loader-Daten kommen. Gegenstück zu AnalytikNachHydration in root.jsx
+ * (PR #859, FEHLER-DB F-2628), das dieselbe Fehlerklasse für den
+ * Analytics-Provider schließt. Job 20261115-aiceo-k2-kr-react-421-storefront-
+ * regression. Rückweg: git revert dieses Commits.
+ *
  * @param {Pick<HeaderProps, 'isLoggedIn' | 'cart'>}
  */
-function HeaderCtas({isLoggedIn, cart}) {
+const HeaderCtas = memo(function HeaderCtas({isLoggedIn, cart}) {
   return (
     <nav className="header-ctas" role="navigation">
       <HeaderMenuMobileToggle />
@@ -1319,7 +1340,7 @@ function HeaderCtas({isLoggedIn, cart}) {
       <CartToggle cart={cart} />
     </nav>
   );
-}
+});
 
 /**
  * Kunden-Login sichtbar machen. Die Account-Schicht (app/routes/account*.jsx +
