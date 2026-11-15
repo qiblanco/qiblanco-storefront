@@ -97,3 +97,178 @@
   .konto .partner-liste__zeile { grid-template-columns: 1fr 1fr 1.4fr auto; }
   .konto .partner-produkt { align-items: start; grid-template-columns: 160px 1fr; }
 }
+
+/* ─── Sales-Kit Stufe 2: Kundenfragen, Einwände, Beispieltexte ─────────────
+   Job 20261007-sales-kit-stufe2-einbindung-partnerbereich. Dieselben Tokens
+   wie oben; die Fragen klappen wie .konto-aufklappen, die Produktwahl sieht
+   aus wie die Kontonavigation. Schriftgrösse steht an p und li selbst, sonst
+   greift die globale p/li-Regel (siehe oben). */
+
+/* Dasselbe Lesemass wie jedes li im Konto (--k-mass), sonst laufen die Trennlinien
+   der Liste breiter als ihre Eintraege. */
+.konto .partner-welt { max-width: var(--k-mass); }
+
+.konto .partner-welt + .partner-welt {
+  border-top: 1px solid var(--k-linie);
+  margin-top: var(--k-s4);
+  padding-top: var(--k-s4);
+}
+
+.konto .partner-welt > .konto-karte__titel {
+  margin-bottom: var(--k-s1);
+}
+
+.konto p.partner-label {
+  color: var(--k-text-2);
+  font-size: var(--k-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em; /* wie .konto-eyebrow, ohne deren Gold */
+  margin: var(--k-s3) 0 var(--k-s1);
+  text-transform: uppercase;
+}
+
+.konto .partner-fragen {
+  border-top: 1px solid var(--k-linie);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.konto .partner-fragen > li {
+  border-bottom: 1px solid var(--k-linie);
+  font-size: var(--k-fs-base);
+  margin: 0;
+}
+
+.konto .partner-frage > summary {
+  align-items: baseline;
+  border-radius: var(--k-r1);
+  cursor: pointer;
+  display: flex;
+  font-weight: 600;
+  gap: var(--k-s2);
+  justify-content: space-between;
+  list-style: none;
+  min-height: 44px;
+  padding: var(--k-s2) 0;
+}
+.konto .partner-frage > summary::-webkit-details-marker {
+  display: none;
+}
+.konto .partner-frage > summary::after {
+  color: var(--k-gold-tinte);
+  content: '+';
+  font-weight: 700;
+}
+.konto .partner-frage[open] > summary::after {
+  content: '–';
+}
+.konto .partner-frage > summary:focus-visible {
+  outline: 2px solid var(--k-gold-tief);
+  outline-offset: 2px;
+}
+
+.konto .partner-frage__antwort {
+  padding: 0 0 var(--k-s2);
+}
+
+.konto .partner-frage__antwort p {
+  font-size: var(--k-fs-base);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 68ch;
+}
+
+.konto .partner-frage__antwort p.partner-hinweis {
+  border-left: 2px solid var(--k-gold);
+  color: var(--k-text-2);
+  margin-top: var(--k-s2);
+  padding-left: var(--k-s2);
+}
+
+.konto .partner-wahl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s1);
+  margin-bottom: var(--k-s3);
+}
+
+.konto .partner-wahl__knopf {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--k-linie);
+  border-radius: var(--k-r-pill);
+  color: var(--k-text-2);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: var(--k-fs-base);
+  min-height: 44px;
+  padding: var(--k-s1) var(--k-s3);
+}
+.konto .partner-wahl__knopf:hover {
+  background: var(--k-flaeche);
+  color: var(--k-text);
+}
+.konto .partner-wahl__knopf[aria-pressed='true'],
+.konto .partner-wahl__knopf[aria-pressed='true']:hover {
+  background: var(--k-dunkel);
+  border-color: var(--k-dunkel);
+  color: var(--k-grund);
+  font-weight: 600;
+}
+.konto .partner-wahl__knopf:focus-visible {
+  outline: 2px solid var(--k-gold-tief);
+  outline-offset: 2px;
+}
+
+.konto .partner-texte {
+  display: grid;
+  gap: var(--k-s2);
+}
+
+.konto .partner-texte .konto-karte + .konto-karte {
+  margin-top: 0;
+}
+
+.konto .partner-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s2);
+}
+
+.konto .partner-betreff {
+  color: var(--k-text);
+  font-weight: 600;
+}
+
+.konto p.partner-text__inhalt {
+  background: var(--k-grund);
+  border: 1px solid var(--k-linie);
+  border-radius: var(--k-r1);
+  font-size: var(--k-fs-base);
+  line-height: 1.6;
+  margin: 0;
+  overflow-wrap: anywhere;
+  padding: var(--k-s2);
+  white-space: pre-line;
+}
+
+.konto .partner-text__link {
+  color: var(--k-gold-tinte);
+  font-weight: 600;
+}
+
+.konto .partner-text__fuss {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s1) var(--k-s2);
+  margin-top: auto;
+}
+
+@media (min-width: 720px) {
+  .konto .partner-texte {
+    grid-template-columns: 1fr 1fr;
+  }
+}

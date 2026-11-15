@@ -1,10 +1,6 @@
-import {data} from 'react-router';
+import {data, useLoaderData} from 'react-router';
 import {KontoNav, KontoRahmen} from '~/components/konto/KontoUI';
-import {
-  PartnerKit,
-  PartnerSeitencheck,
-  PartnerZahlen,
-} from '~/components/konto/PartnerUI';
+import {PartnerBereich} from '~/components/konto/PartnerUI';
 import kontoStyles from '~/styles/konto.css?url';
 import partnerStyles from '~/styles/konto-partner.css?url';
 
@@ -24,6 +20,19 @@ import partnerStyles from '~/styles/konto-partner.css?url';
  * (konto-vorschau-partner-fixture), genau wie konto-vorschau-fixture.
  *
  * DER RIEGEL: der Loader wirft in der Produktion 404.
+ *
+ * SALES-KIT STUFE 2 (Job 20261007-sales-kit-stufe2-einbindung-partnerbereich):
+ * - Die Vorschau rendert jetzt PartnerBereich, denselben Baustein wie die Route.
+ * - Ist app/vorschau-daten/partner-bereich.json da, zeigt sie GENAU die Antwort,
+ *   die der Datendienst dem Testzugang gibt (inkl. Kundenfragen, Einwände,
+ *   Beispieltexte). Die Datei erzeugt partnerbereich/pruefungen/vorschau_bereich.py
+ *   auf dem Server; sie ist gitignoriert, die Texte des Kits kommen so nie ins Repo.
+ *   Fehlt sie (jeder CI- und Oxygen-Bau), gilt das Beispiel unten ohne Sales-Kit.
+ * - Zweiter Riegel-Schlüssel: KONTO_VORSCHAU=an in der .env einer selbst
+ *   gehosteten Vorschau (Produktions-Bundle in MiniOxygen) öffnet die Route dort.
+ *   Die Oxygen-Umgebung kennt diese Variable nicht, live bleibt es 404.
+ * - ?offen=0 zeigt die Abschnitte zugeklappt wie beim ersten Aufruf; ohne
+ *   Parameter sind sie offen, damit die Design-Rubrik den Inhalt sieht.
  */
 export function links() {
   return [
@@ -37,8 +46,15 @@ export const meta = () => [
   {name: 'robots', content: 'noindex, nofollow'},
 ];
 
+// Erzeugt, nie committet (app/vorschau-daten/.gitignore). Ohne Datei: {}.
+const ERZEUGT = import.meta.glob('../vorschau-daten/partner-bereich.json', {
+  eager: true,
+  import: 'default',
+});
+
 const LINK = 'https://qiblanco.com/?sca_ref=1234567.Beispiel';
 const BEISPIEL = {
+  partner: true,
   stand_utc: '2026-10-06T14:55:02Z',
   veraltet: false,
   gemeinsam: {
@@ -81,15 +97,19 @@ const BEISPIEL = {
   },
 };
 
-export async function loader() {
-  if (process.env.NODE_ENV === 'production') {
+export async function loader({context, request}) {
+  const freigegeben = context.env?.KONTO_VORSCHAU === 'an';
+  if (process.env.NODE_ENV === 'production' && !freigegeben) {
     throw new Response('Not Found', {status: 404});
   }
-  return data(BEISPIEL);
+  const erzeugt = Object.values(ERZEUGT)[0];
+  const offen = new URL(request.url).searchParams.get('offen') !== '0';
+  const bereich = erzeugt?.partner ? erzeugt : {...BEISPIEL, konten: [BEISPIEL.konto]};
+  return data({bereich, offen});
 }
 
 export default function KontoVorschauPartner() {
-  const b = BEISPIEL;
+  const {bereich, offen} = useLoaderData();
   return (
     <KontoRahmen
       eyebrow="Dein Konto"
@@ -97,16 +117,7 @@ export default function KontoVorschauPartner() {
       lede="Hier findest du deine Bestellungen, deine Daten und deine Adressen."
     >
       <KontoNav aktiv="/account/partner" />
-      <div className="partner-bereich">
-        <PartnerZahlen
-          konto={b.konto}
-          stand={b.stand_utc}
-          veraltet={b.veraltet}
-          portal={b.gemeinsam.uppromote_portal}
-        />
-        <PartnerKit konto={b.konto} provisionProzent={b.gemeinsam.provision_prozent} />
-        <PartnerSeitencheck seitencheck={b.gemeinsam.seitencheck} />
-      </div>
+      <PartnerBereich bereich={bereich} offen={offen} />
     </KontoRahmen>
   );
 }
