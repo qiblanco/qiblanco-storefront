@@ -108,7 +108,11 @@ export const GALERIE = {
 export const NUMMER = {
   auszeichnung: 'Mach ihn individuell.',
   titel: 'Hole Dir jetzt Deine einzigartige Nummer.',
-  vorschlaege: [100, 1, 69],
+  // Schnapszahlen statt 100, 1, 69 (Christian 15.11.2026: „Oben ist 11 von
+  // 100, dann nochmal 66 von 11 und dann 77 von 11. Also dass wir die
+  // Schnapszahlen, die wir noch haben, dass wir die noch zeigen“). Eine
+  // vergebene Nummer blendet vorschlagFrei() von selbst aus.
+  vorschlaege: [11, 66, 77],
   ohneTitel: 'Ohne Wunschnummer',
   // Kurz, weil die Karte im ersten Fenster steht (Z2, 27.10.) und der Titel
   // „Ohne Wunschnummer“ den Rest schon sagt. Nicht aus der Figma-Spalte.
