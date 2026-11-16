@@ -76,7 +76,7 @@ export function ExclusiveSolutionsApple({seite, products = []}) {
           bildZuerst
           overline="Geldhelden-exklusiv"
           titel="Schütz dein Umfeld. Schärf deinen Fokus. Sichere deine Leistung."
-          unter="Drei Pakete für alle, die nicht einsteigen, sondern ankommen wollen."
+          unter="Drei Pakete für alle, die gleich ganz ankommen wollen."
           bild={BILD.paar}
           cta={{text: 'Paket wählen', href: ANKER}}
         />
