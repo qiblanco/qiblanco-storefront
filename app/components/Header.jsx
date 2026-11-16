@@ -1596,9 +1596,15 @@ function NrEinsBanner({onRezensionenKlick, attr, start = false}) {
         <p>
           <span className="banner-nr1-aussage">{NR_EINS_TEXT}</span>
           <span className="banner-offer-sep"> · </span>
+          {/* Belege in zwei ganzen Einheiten (Christian 16.11.2026: „5 publizierte
+              Peer-Review-Studien“): passen beide nicht in eine Zeile, bricht die
+              Leiste zwischen ihnen um, nie mitten im Wortlaut und nie abgeschnitten. */}
           <span className="banner-line banner-nr1-belege">
-            <GoogleSterneBadge /> bei Google ({anzahl} Bewertungen) ·{' '}
-            {STUDIEN_ANZAHL} Studien
+            <GoogleSterneBadge /> bei Google ({anzahl} Bewertungen)
+          </span>
+          <span className="banner-nr1-belege banner-nr1-trenner"> · </span>
+          <span className="banner-line banner-nr1-belege banner-nr1-studien">
+            {STUDIEN_ANZAHL} publizierte Peer-Review-Studien
           </span>
         </p>
       </Link>

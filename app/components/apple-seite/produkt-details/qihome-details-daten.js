@@ -81,7 +81,7 @@ export const QIHOME_DETAILS = Object.freeze([
   {
     art: 'kapitel',
     etikett: 'Zelle',
-    titel: 'Nervenzellen im Labor: 53,3 % mehr Regeneration.',
+    titel: 'Mit dem QiHome® Air regenerierten Nervenzellen im Labor um 53,3 % mehr.',
     absaetze: [
       'Prof. Dr. Peter C. Dartsch hat das QiHome® Air an menschlichen Nervenzellen getestet.',
       'Unter oxidativem Stress überlebten 34 % mehr Zellen.',

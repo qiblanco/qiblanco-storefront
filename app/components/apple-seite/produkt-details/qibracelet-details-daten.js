@@ -63,7 +63,7 @@ export const QIBRACELET_DETAILS = Object.freeze([
   {
     art: 'kapitel',
     etikett: 'Zelle',
-    titel: 'Fünf von fünf Zelltypen geschützt.',
+    titel: 'Das QiBracelet® schützte im Labor fünf von fünf Zelltypen.',
     absaetze: [
       'Prof. Dr. Peter C. Dartsch hat das QiBracelet® im Labor an fünf Typen menschlicher Zellen getestet. Er setzte sie oxidativem Stress aus.',
       'Bei Leberzellen lag der Schutz bei 47,3 %.',
@@ -76,19 +76,19 @@ export const QIBRACELET_DETAILS = Object.freeze([
   {
     art: 'band',
     etikett: 'Gitterchip®',
-    titel: 'Gleiche Leistung wie der QiOne® 2 Pro.',
+    titel: 'Am Handgelenk so stark wie der QiOne® 2 Pro am Hals.',
     text: [
       'Im Ende des Reifs sitzt der Gitterchip® aus 750er Gold.',
-      'Er ist rund 10 % stärker gebaut als im QiOne® 2 Pro, denn das Handgelenk liegt weiter von deiner Körpermitte entfernt.',
+      'Er ist rund 10 % stärker gebaut als im QiOne® 2 Pro, weil dein Handgelenk weiter von deiner Körpermitte entfernt ist. So kommt bei dir dieselbe Wirkung an.',
     ],
     bild: BILD.gravur,
   },
   {
     art: 'band',
     etikett: 'Alltag',
-    titel: 'Sauna, Meer, Pool. Es bleibt dran.',
+    titel: 'Sauna, Meer, Pool. Du legst es nie ab.',
     text: [
-      'Das QiBracelet® trägst du Tag und Nacht. Es ist immer an deiner Seite.',
+      'Das QiBracelet® trägst du Tag und Nacht. So wirkt es auch, während du schläfst.',
     ],
     bild: BILD.pool,
   },

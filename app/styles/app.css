@@ -1369,6 +1369,16 @@ body:has(.Header-AnnouncementBanner--nr1-start) > main > .as-seite {
     flex-basis: 100%;
     text-wrap: balance;
   }
+  /* Studien-Beleg (Christian 16.11.2026: „5 publizierte Peer-Review-Studien“)
+     auf eigener Zeile unter den Google-Sternen: beide zusammen passen am Handy
+     nicht in eine Zeile, so bleibt jeder Wortlaut ganz und ohne hängenden Punkt. */
+  .Header-AnnouncementBanner--nr1 .banner-nr1-trenner {
+    display: none;
+  }
+  .Header-AnnouncementBanner--nr1 .banner-nr1-studien {
+    flex-basis: 100%;
+    text-align: center;
+  }
   .Header-AnnouncementBanner a {
     padding: 0.5rem 0.75rem;
   }

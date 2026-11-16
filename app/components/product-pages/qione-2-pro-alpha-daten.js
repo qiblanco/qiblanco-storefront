@@ -65,8 +65,8 @@ export const VARIANTE = null;
 export const KETTE = {
   handle: 'qione-kette',
   auszeichnung: 'Kette.',
-  titel: 'Trag ihn an seiner eigenen Kette.',
-  zeile: 'Edelstahl, im selben Glanz wie sein Gehäuse. So trägst du ihn jeden Tag auf der Haut.',
+  titel: 'Die passende Kette für deinen QiOne® 2 Pro.',
+  zeile: 'Chirurgenstahl im selben Glanz wie sein Gehäuse. Damit liegt er jeden Tag direkt auf deiner Haut.',
   ohne: {
     titel: 'Ohne Kette',
     text: 'Das Baumwollband liegt bei.',
@@ -160,20 +160,20 @@ export const FAKTEN = {
     {
       icon: 'dauer',
       zahl: 'Jahrzehnte',
-      titel: 'Robust',
-      satz: 'Kein Akku, keine Elektronik. Nichts, das leer wird.',
+      titel: 'Hält ein Leben lang',
+      satz: 'Kein Akku, keine Elektronik. Dein QiOne® 2 Pro wird nie leer.',
     },
     {
       icon: 'wellen',
       zahl: 'Wasserfest',
-      titel: 'Überall mit dir',
-      satz: 'Sauna, Meer, Chlor, Schweiß, Sonne. Er bleibt dran.',
+      titel: 'Du legst ihn nie ab',
+      satz: 'Sauna, Meer, Chlor, Schweiß, Sonne: Dein QiOne® 2 Pro bleibt an dir.',
     },
     {
       icon: 'kraft',
       zahl: '8×',
-      titel: 'Der größere Gegenwert',
-      satz: 'Achtmal so viel Leistungsvolumen wie der QiOne® 1. Für jeden Euro bekommst du fast dreimal so viel.',
+      titel: 'Achtmal so viel Leistung wie der QiOne® 1',
+      satz: 'Der QiOne® 2 Pro hat achtmal so viel Leistungsvolumen wie der QiOne® 1. Er kostet knapp das Dreifache. Pro Euro bekommst du also fast dreimal so viel Leistung.',
     },
   ],
 };
@@ -208,19 +208,19 @@ export const NUTZEN = {
   spalten: [
     {
       etikett: 'Technologie',
-      titel: 'Er wirkt, solange du ihn trägst.',
-      text: 'Im Kern sitzt der Gitterchip® 2.0 aus einer eigenen 750er Goldlegierung. Seine Atome stehen in fester Ordnung. Diese Ordnung gibt er an das Wasser in deinem Körper weiter.',
+      titel: 'Er wirkt, immer.',
+      text: 'Im Kern sitzt der Gitterchip® 2.0 aus einer eigenen 750er Goldlegierung. Wassermoleküle in seiner Nähe gehen in den kohärenten Zustand über. Das hat starke Vorteile für dein Körperwasser.',
     },
     {
       etikett: 'Wissenschaft',
-      titel: 'Im Labor bleiben Immunzellen stark.',
+      titel: 'Im Labor bleiben Immunzellen mit dem QiOne® 2 Pro stark.',
       text: 'Prof. Dr. Peter C. Dartsch hat menschliche Immunzellen im Labor vier Stunden lang mit Handystrahlung belastet. Ungeschützt fiel ihre Abwehrleistung auf 60,5 Prozent. Mit dem QiOne® 2 Pro hielt sie 84,7 Prozent.',
       link: {text: 'Zur Studie', href: '/pages/studie-immunzellen'},
     },
     {
       etikett: 'Erfahrungen',
       titel: 'Endlich wieder durchschlafen.',
-      text: 'Das schreiben Nutzer über ihn. Sie erzählen auch von mehr Ruhe und mehr Energie.',
+      text: 'Das schreiben Menschen, die den QiOne® 2 Pro tragen. Viele erzählen auch von mehr Ruhe und mehr Energie.',
       // {sterne}: Google-Note live (useGoogleRating, wie der Preisanker).
       link: {text: '{sterne} ★ bei Google', href: 'google'},
     },

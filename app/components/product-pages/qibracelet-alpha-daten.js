@@ -123,7 +123,7 @@ export const FAKTEN = {
   ueberschrift: 'Einmal kaufen. Für ein Leben gebaut.',
   kacheln: [
     {icon: 'dauer', zahl: 'Jahrzehnte', satz: 'Lebensdauer. Aus Chirurgenstahl 316L.'},
-    {icon: 'wellen', zahl: 'Sauna · Meer · Pool', satz: 'Es bleibt dran.'},
+    {icon: 'wellen', zahl: 'Sauna · Meer · Pool', satz: 'Du legst es nie ab.'},
     {icon: 'material', zahl: '316L', satz: 'Implantatstahl aus der Orthopädie.'},
     {icon: 'handgelenk', zahl: 'Über 1.000', satz: 'QiBracelet® im Einsatz.'},
     {
@@ -161,7 +161,7 @@ export const WISSEN = {
   kapitel: [
     {
       etikett: 'Zelle',
-      titel: 'Fünf von fünf Zelltypen geschützt.',
+      titel: 'Das QiBracelet® schützte im Labor fünf von fünf Zelltypen.',
       absaetze: [
         'Prof. Dr. Peter C. Dartsch hat das QiBracelet® im Labor an fünf Typen menschlicher Zellen getestet. Er setzte sie oxidativem Stress aus.',
         'Bei Leberzellen lag der Schutz bei 47,3 %.',
@@ -173,10 +173,10 @@ export const WISSEN = {
     },
     {
       etikett: 'Gitterchip®',
-      titel: 'Gleiche Leistung wie der QiOne® 2 Pro.',
+      titel: 'Am Handgelenk so stark wie der QiOne® 2 Pro am Hals.',
       absaetze: [
         'Im Ende des Reifs sitzt der Gitterchip® aus 750er Gold.',
-        'Er ist rund 10 % stärker gebaut als im QiOne® 2 Pro, denn das Handgelenk liegt weiter von deiner Körpermitte entfernt.',
+        'Er ist rund 10 % stärker gebaut als im QiOne® 2 Pro, weil dein Handgelenk weiter von deiner Körpermitte entfernt ist. So kommt bei dir dieselbe Wirkung an.',
       ],
       bild: 2,
     },
@@ -187,13 +187,13 @@ export const WISSEN = {
       titel: 'Ruhig schlafen, egal wo du bist.',
       absaetze: [
         'Wasseradern, Erdstrahlen, Gitternetze: Geopathogene Strahlung hat viele Namen. Sie kommt zu Handy, WLAN und 5G hinzu.',
-        'Das QiBracelet® trägst du Tag und Nacht. Es ist immer an deiner Seite.',
+        'Das QiBracelet® trägst du Tag und Nacht. So wirkt es auch, während du schläfst.',
       ],
       bild: 5,
     },
   ],
   studien: {
-    ueberschrift: 'Fünf Veröffentlichungen.',
+    ueberschrift: 'Fünf publizierte Peer-Review-Studien.',
     link_text: 'Alle Studien ansehen',
     href: '/pages/studien',
   },
