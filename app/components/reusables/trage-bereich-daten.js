@@ -13,7 +13,7 @@ const WEITER = 'Nächstes Foto';
 
 const BEREICHE = {
   'qione-2-pro': {
-    titel: 'So trägst du den QiOne 2 Pro.',
+    titel: 'So trägst du den QiOne® 2 Pro.',
     bahnLabel: 'Fotos: so tragen andere den QiOne 2 Pro',
     fotos: [
       {url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--trage-qione-2-pro-1--1b72cda6acc3.jpg?v=1794801606', alt: 'Frau hält den QiOne 2 Pro an seiner Kette vor die Kamera', zeile: 'An der Kette, ganz nah bei dir.'},
@@ -24,7 +24,7 @@ const BEREICHE = {
     ],
   },
   'qibracelet': {
-    titel: 'So trägst du das QiBracelet.',
+    titel: 'So trägst du das QiBracelet®.',
     bahnLabel: 'Fotos: so tragen andere das QiBracelet',
     fotos: [
       {url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--trage-qibracelet-1--1e7fc7c91e76.jpg?v=1794801658', alt: 'Hand mit dem QiBracelet vor einem Bergtal', zeile: 'Am Handgelenk, auch in den Bergen.'},
@@ -35,7 +35,7 @@ const BEREICHE = {
     ],
   },
   'qihome-air': {
-    titel: 'So steht der QiHome Air bei dir.',
+    titel: 'So steht der QiHome® Air bei dir.',
     bahnLabel: 'Fotos: wo der QiHome Air steht',
     fotos: [
       {url: 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--trage-qihome-air-1--3a4a6be2b5dd.jpg?v=1794801709', alt: 'QiHome Air in einer Steckdose in schwarzem Rahmen', zeile: 'In der Steckdose.'},
