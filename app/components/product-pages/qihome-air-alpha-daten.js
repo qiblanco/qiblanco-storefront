@@ -161,7 +161,7 @@ export const WISSEN = {
     {
       etikett: 'Zelle',
       bild: 6,
-      titel: 'Mit dem QiHome® Air regenerierten Nervenzellen im Labor um 53,3 % mehr.',
+      titel: 'Im Labor regenerieren Nervenzellen mit dem QiHome® Air um 53,3 % stärker.',
       absaetze: [
         'Prof. Dr. Peter C. Dartsch hat das QiHome® Air an menschlichen Nervenzellen getestet.',
         'Unter oxidativem Stress überlebten 34 % mehr Zellen.',
