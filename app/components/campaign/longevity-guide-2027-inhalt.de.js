@@ -14,12 +14,13 @@
  */
 export const INHALT = {
   slug: 'best-wearables-for-longevity-2027',
-  seo_title: 'Die besten Wearables für Longevity (Guide 2027) | Qi Blanco',
+  seo_title:
+    'Die besten Wearables für Longevity und Langlebigkeit (Guide 2027) | Qi Blanco',
   meta_description:
-    'Smart Ring, Uhr, CGM oder Qi Blanco: welches Wearable für ein langes, gesundes Leben? Der Guide 2027 trennt Messen und Wirken und zeigt, was in deinen Zellen etwas verändert.',
+    'Welches Wearable ist das beste für Langlebigkeit? Smart Ring, Uhr, Glukosesensor oder Qi Blanco: worauf du bei der Auswahl achtest und was in deinen Zellen wirkt.',
   hero: {
     eyebrow: 'Longevity-Guide 2027',
-    h1: 'Die besten Wearables für Longevity (Guide 2027)',
+    h1: 'Die besten Wearables für Longevity und Langlebigkeit (Guide 2027)',
     lead: 'Messen ist nett. Echte Verbesserung entsteht, wenn du aktiv etwas in deinen Zellen veränderst.',
     sublead:
       'Ring, Uhr und Sensor zeigen dir, wo du stehst. Qi Blanco trägst du, damit sich dort etwas bewegt.',
@@ -35,7 +36,7 @@ export const INHALT = {
   kurz_gesagt: {
     h2: 'Kurz gesagt',
     text: [
-      'Für Longevity gibt es zwei Arten von Wearables. Messende Wearables wie Oura Ring, WHOOP, Apple Watch, Garmin und Glukosesensoren zeichnen Schlaf, Herzfrequenzvariabilität, Puls und Blutzucker auf. Wirkende Wearables wie der QiOne® 2 Pro und der QiBracelet® setzen an der Zelle an.',
+      'Für Longevity, auf Deutsch Langlebigkeit, gibt es zwei Arten von Wearables. Messende Wearables wie Oura Ring, WHOOP, Apple Watch, Garmin und Glukosesensoren zeichnen Schlaf, Herzfrequenzvariabilität, Puls und Blutzucker auf. Wirkende Wearables wie der QiOne® 2 Pro und der QiBracelet® setzen an der Zelle an.',
       'Ein Tracker allein verlängert kein Leben. Er liefert Daten, und die Verbesserung entsteht erst durch das, was du danach veränderst. Am stärksten ist die Kombination: messen, was ist, und tragen, was wirkt.',
     ],
   },
@@ -55,11 +56,11 @@ export const INHALT = {
     ],
   },
   kriterien: {
-    h2: 'Woran du ein Longevity-Wearable erkennst',
+    h2: 'Worauf du bei einem Wearable für Langlebigkeit achtest',
     punkte: [
       {
         titel: 'Es trifft die Marker, die zählen',
-        text: 'Schlaf, Herzfrequenzvariabilität, Ruhepuls, Fitness und Blutzucker hängen eng mit einem langen, gesunden Leben zusammen. Ein gutes Messgerät erfasst mindestens zwei davon zuverlässig.',
+        text: 'Schlaf, Herzfrequenzvariabilität, Ruhepuls, Fitness und Blutzucker hängen eng mit einem langen, gesunden Leben zusammen. Ein gutes Messgerät erfasst mindestens zwei davon zuverlässig. Ringe sind stark beim Schlaf, Uhren bei Herz und VO2max, Glukosesensoren beim Blutzucker.',
       },
       {
         titel: 'Es führt zu einer Veränderung',
@@ -67,7 +68,7 @@ export const INHALT = {
       },
       {
         titel: 'Du trägst es Tag und Nacht',
-        text: 'Longevity ist eine Sache von Jahren. Ein Wearable, das beim Duschen, in der Sauna und im Schlaf am Körper bleibt, wirkt und misst durchgehend.',
+        text: 'Longevity ist eine Sache von Jahren. Ein Wearable, das beim Duschen, in der Sauna und im Schlaf am Körper bleibt, wirkt und misst durchgehend. Ein Tracker braucht dafür einen Akku oder eine Batterie, der Gitterchip® arbeitet ohne Strom, ohne App und ohne Abo.',
       },
     ],
   },
@@ -273,6 +274,17 @@ export const INHALT = {
         frage: 'Welches Wearable ist das beste für Longevity?',
         antwort:
           'Das beste Longevity-Setup verbindet Messen und Wirken. Ein Smart Ring wie der Oura Ring oder eine Uhr zeigt dir Schlaf, Herzfrequenzvariabilität und Fitness. Ein Qi-Blanco-Wearable wie der QiOne® 2 Pro wirkt an der Zelle, wo die Verbesserung entsteht.',
+      },
+      {
+        frage:
+          'Worauf sollte ich achten, wenn ich ein Wearable für Langlebigkeit auswähle?',
+        antwort:
+          'Ein gutes Messgerät erfasst die Marker, die für ein langes, gesundes Leben zählen: Schlaf, Herzfrequenzvariabilität, Ruhepuls, Fitness und Blutzucker. Es verändert etwas in deinem Alltag, und du trägst es möglichst Tag und Nacht. Wähle es nach dem Wert, der dir am wichtigsten ist, und ergänze es um ein Wearable, das an der Zelle wirkt.',
+      },
+      {
+        frage: 'Welches Longevity-Armband passt zu mir?',
+        antwort:
+          'Zum Messen ist WHOOP das bekannteste Band ohne Display: Es zeigt dir Erholung, Belastung und Schlaf. Wer am Handgelenk mehr als Daten will, trägt den QiBracelet® aus Chirurgenstahl mit dem Gitterchip®. In der Zellkultur überlebten alle fünf getesteten Zelltypen mit ihm oxidativen Stress besser. Beide kannst du zusammen tragen.',
       },
       {
         frage: 'Verlängert ein Smart Ring mein Leben?',
