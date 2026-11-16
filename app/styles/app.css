@@ -1332,14 +1332,26 @@ aside h3 {
 /* Die Apple-Startseite (.as-seite) hält ihren Abstand zum Kopf selbst; mit der
    Nr.-1-Leiste unter der Qi-Alpha-Leiste ist der Kopf um deren Höhe höher (nur
    Startseite: auf anderen Seiten nimmt sie den Platz der 4,8-Sterne-Leiste ein). --qb-nr1-hoehe misst Header.jsx
-   (NrEinsBanner); der Rückfall gilt bis zur Hydrierung (gemessen 14.11.2026:
-   1440 px eine Zeile 46 px, 390 px drei Zeilen 69 px). */
+   (NrEinsBanner); der Rückfall gilt bis zur Hydrierung (gemessen 16.11.2026 mit
+   „5 publizierte Peer-Review-Studien“: 1440 px eine Zeile 46 px, 390 px vier
+   Zeilen 89 px; vorher 14.11.: 46 px / 69 px). */
 body:has(.Header-AnnouncementBanner--nr1-start) > main > .as-seite {
   margin-top: var(--qb-nr1-hoehe, 46px);
 }
 @media (max-width: 749px) {
   body:has(.Header-AnnouncementBanner--nr1-start) > main > .as-seite {
-    margin-top: var(--qb-nr1-hoehe, 69px);
+    margin-top: var(--qb-nr1-hoehe, 89px);
+  }
+}
+/* Nr.-1-Leiste mittelbreit (750-1279 px): Aussage und alle Belege passen erst
+   ab 1280 px in eine Zeile (gemessen 16.11.2026: 1160 px Text). Darunter steht
+   der Studien-Beleg auf eigener Zeile, statt dass ein Punkt am Zeilenende hängt. */
+@media (min-width: 750px) and (max-width: 1279px) {
+  .Header-AnnouncementBanner--nr1 .banner-nr1-trenner {
+    display: none;
+  }
+  .Header-AnnouncementBanner--nr1 .banner-nr1-studien {
+    display: block;
   }
 }
 /* Two meaning units (line 1 proof, line 2 offer): each stays unbroken, so any

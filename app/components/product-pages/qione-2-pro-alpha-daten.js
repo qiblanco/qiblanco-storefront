@@ -172,7 +172,8 @@ export const FAKTEN = {
     {
       icon: 'kraft',
       zahl: '8×',
-      titel: 'Achtmal so viel Leistung wie der QiOne® 1',
+      // \u00a0: „1“ bleibt am Namen, kein Waisen-Umbruch im Kacheltitel (gemessen 1440 px).
+      titel: 'Achtmal so viel Leistung wie der QiOne®\u00a01',
       satz: 'Der QiOne® 2 Pro hat achtmal so viel Leistungsvolumen wie der QiOne® 1. Er kostet knapp das Dreifache. Pro Euro bekommst du also fast dreimal so viel Leistung.',
     },
   ],
