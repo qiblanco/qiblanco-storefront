@@ -1,9 +1,15 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
+import {Link} from 'react-router';
 import {
   loaderJetztEinfuegen,
   loaderNachziehen,
   salesbotDienstPruefUrl,
   SALESBOT_DIENST_FRIST_MS,
+  SALESBOT_RUECKFALL_FRIST_MS,
+  SALESBOT_RUECKFALL_ID,
+  SALESBOT_RUECKFALL_ZIEL,
+  salesbotRueckfallTexte,
+  salesbotRueckfallZeigen,
 } from '~/lib/salesbot-widget';
 
 /** Die id, die der Loader seinem iframe gibt. */
@@ -67,8 +73,25 @@ const LOADER_DATEN = {
  * ihn; der Hinweis-Balken oben auf der Seite sagt bereits, dass hier ein
  * Assistent im Test läuft.
  */
-export function SalesbotWidget({origin, nonce}) {
+export function SalesbotWidget({origin, nonce, sprache}) {
+  // RÜCKFALL (lib/salesbot-widget.js, SALESBOT_RUECKFALL_FRIST_MS): false beim
+  // SSR und bis ein Signal kommt, also kein Knopf, der aufblitzt und wieder geht.
+  const [rueckfall, setRueckfall] = useState(false);
+
   useEffect(() => {
+    let skriptGescheitert = false;
+    let fristAbgelaufen = false;
+    let rueckfallUhr = null;
+    const rueckfallPruefen = () => {
+      setRueckfall(
+        salesbotRueckfallZeigen({
+          rahmenDa: Boolean(document.getElementById(RAHMEN_ID)),
+          skriptGescheitert,
+          fristAbgelaufen,
+        }),
+      );
+    };
+
     /**
      * ENTDOPPLER — hält die Invariante „GENAU EIN Rahmen" durch, statt sich auf
      * eine Ausführungs-Reihenfolge zu verlassen.
@@ -84,6 +107,8 @@ export function SalesbotWidget({origin, nonce}) {
     const entdoppeln = () => {
       const rahmen = document.querySelectorAll(`#${RAHMEN_ID}`);
       for (let i = 1; i < rahmen.length; i += 1) rahmen[i].remove();
+      // Kommt der Rahmen nach dem Rückfall doch noch, geht der Knopf.
+      if (rahmen.length > 0) setRueckfall(false);
     };
     entdoppeln();
     // Der Loader hängt sein iframe an document.body — dort genügt childList.
@@ -132,6 +157,17 @@ export function SalesbotWidget({origin, nonce}) {
         // ein vertrauenswürdiges Skript erzeugt; die nonce deckt zusätzlich
         // Browser ab, die 'strict-dynamic' nicht kennen.
         if (nonce) tag.nonce = nonce;
+        // Rückfall: Skript gescheitert (Netz, CSP, Sperre) -> sofort; sonst
+        // nach der Frist, falls kein Rahmen steht (Netz verwirft still).
+        tag.addEventListener('error', () => {
+          skriptGescheitert = true;
+          rueckfallPruefen();
+        });
+        if (rueckfallUhr) window.clearTimeout(rueckfallUhr);
+        rueckfallUhr = window.setTimeout(() => {
+          fristAbgelaufen = true;
+          rueckfallPruefen();
+        }, SALESBOT_RUECKFALL_FRIST_MS);
         document.body.appendChild(tag);
       }
     };
@@ -204,6 +240,7 @@ export function SalesbotWidget({origin, nonce}) {
       abgebaut = true;
       window.removeEventListener('load', einmal);
       if (uhr) window.clearTimeout(uhr);
+      if (rueckfallUhr) window.clearTimeout(rueckfallUhr);
       if (abbruch) abbruch.abort();
       waechter.disconnect();
       // ALLE Rahmen, nicht nur den ersten: sollte doch einmal ein Duplikat
@@ -223,18 +260,48 @@ export function SalesbotWidget({origin, nonce}) {
   // Auslieferungs-Wache (qi-salesbot/data/widget-auslieferungs-vertrag.json,
   // an_muster/traeger_muster) und die Pixelmaske genau dieses Tag lesen.
   // Geladen wird oben im Effekt: sofort, wenn der Dienst antwortet, sonst nach `load`.
+  const rueckfallTexte = salesbotRueckfallTexte(sprache);
   return (
-    <script
-      type="text/plain"
-      src={`${origin}/embed/qiblanco-widget.js`}
-      data-qiblanco-salesbot-loader=""
-      data-tenant-id="tenant_qiblanco"
-      data-project-id="project_qiblanco_sales"
-      data-z-index="200"
-      data-placement="right"
-      data-initial-open="false"
-      nonce={nonce}
-      suppressHydrationWarning
-    />
+    <>
+      <script
+        type="text/plain"
+        src={`${origin}/embed/qiblanco-widget.js`}
+        data-qiblanco-salesbot-loader=""
+        data-tenant-id="tenant_qiblanco"
+        data-project-id="project_qiblanco_sales"
+        data-z-index="200"
+        data-placement="right"
+        data-initial-open="false"
+        nonce={nonce}
+        suppressHydrationWarning
+      />
+      {rueckfall && (
+        <Link
+          id={SALESBOT_RUECKFALL_ID}
+          className="qb-kontakt-rueckfall"
+          to={SALESBOT_RUECKFALL_ZIEL}
+          prefetch="none"
+          aria-label={rueckfallTexte.name}
+        >
+          <svg
+            className="qb-kontakt-rueckfall__zeichen"
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              d="M4 6h16v12H4z M4 7l8 6 8-6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span>{rueckfallTexte.text}</span>
+        </Link>
+      )}
+    </>
   );
 }

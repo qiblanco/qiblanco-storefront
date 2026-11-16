@@ -195,3 +195,72 @@ export function salesbotDienstPruefUrl(origin) {
 export function loaderJetztEinfuegen({readyState, dienstAntwortet}) {
   return readyState === 'complete' || dienstAntwortet === true;
 }
+
+/**
+ * KONTAKTKNOPF ALS RÜCKFALL, WENN ANNA NICHT LÄDT (Auftrag vom 16.11.2026,
+ * Punkt 4 der Ausfallsicherheit: Kunden-Notbetrieb, wenn der ai-server weg ist).
+ *
+ * Gemessen am 16.11.2026: fiel der ai-server aus (02:00–02:30Z), lud das
+ * Loader-Skript nicht, und der Chat-Knopf fehlte ganz. Kasse und Bestellung
+ * liefen bei Shopify weiter, aber der Kunde hatte keinen Kontaktweg mehr.
+ *
+ * Der Rückfall zeigt an Annas Stelle einen schlichten Knopf zur Kontaktseite
+ * /pages/support. Sie läuft auf Oxygen, ihr Formular geht an Freshdesk, also
+ * an keinem Teil unseres Servers vorbei. Nichts Neues erfunden: das ist der
+ * bestehende Kontaktweg des Shops („Kontakt & Hilfe“, lib/hub-seiten.js).
+ *
+ * KEIN FLACKERN: der Knopf rendert nie beim SSR und nie, solange der Lader
+ * noch unterwegs ist. Er kommt erst, wenn das Skript scheitert (`error`) oder
+ * SALESBOT_RUECKFALL_FRIST_MS nach dem Einfügen des Laders kein Rahmen steht.
+ * Erscheint der Rahmen später doch, verschwindet der Knopf wieder.
+ *
+ * EINWILLIGUNG: Anna lädt heute OHNE Einwilligung (ihr Lader wartet nicht auf
+ * sie, die Zustimmung holt der Chat selbst im iframe; gemessen 16.11.2026 mit
+ * frischem Browser ohne Cookie: Rahmen steht). Der Rückfall folgt genau
+ * Annas Weiche: wo Anna laden soll und nicht lädt, kommt er.
+ */
+export const SALESBOT_RUECKFALL_FRIST_MS = 8000;
+
+/** id des Rückfall-Knopfs. KaufknopfChatSignal behandelt ihn wie Annas Rahmen. */
+export const SALESBOT_RUECKFALL_ID = 'qiblanco-kontakt-rueckfall';
+
+/** Ziel des Rückfalls: die bestehende Kontaktseite mit Formular. */
+export const SALESBOT_RUECKFALL_ZIEL = '/pages/support';
+
+const RUECKFALL_TEXTE = {
+  DE: {
+    text: 'Fragen? Schreib uns',
+    name: 'Fragen? Schreib uns über das Kontaktformular',
+  },
+  EN: {
+    text: 'Questions? Write to us',
+    name: 'Questions? Write to us via the contact form',
+  },
+};
+
+/**
+ * @param {string | null | undefined} sprache storefrontSprache ('DE', 'EN' ...)
+ * @returns {{text: string, name: string}} DE für alles außer EN
+ */
+export function salesbotRueckfallTexte(sprache) {
+  const s = (sprache || '').trim().toUpperCase();
+  return s === 'EN' ? RUECKFALL_TEXTE.EN : RUECKFALL_TEXTE.DE;
+}
+
+/**
+ * Soll der Rückfall-Knopf jetzt stehen?
+ *
+ * Nie, solange ein Rahmen steht. Sonst erst nach einem Signal: das Skript ist
+ * gescheitert, oder die Frist seit dem Einfügen des Laders ist abgelaufen.
+ *
+ * @param {{rahmenDa: boolean, skriptGescheitert: boolean, fristAbgelaufen: boolean}} lage
+ * @returns {boolean}
+ */
+export function salesbotRueckfallZeigen({
+  rahmenDa,
+  skriptGescheitert,
+  fristAbgelaufen,
+}) {
+  if (rahmenDa) return false;
+  return skriptGescheitert === true || fristAbgelaufen === true;
+}

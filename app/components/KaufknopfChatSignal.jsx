@@ -23,6 +23,7 @@ import {
   UEBERDECKUNG_ATTRIBUT,
   verschiebungKetteY,
 } from '~/lib/kaufknopf-chat';
+import {SALESBOT_RUECKFALL_ID} from '~/lib/salesbot-widget';
 
 /**
  * CHAT-WIDGET ÜBER DEM KAUFKNOPF — DERSELBE LEITSATZ, VIERTER FALL.
@@ -196,7 +197,12 @@ export function KaufknopfChatSignal() {
     const rahmenWaechter = new MutationObserver(() => sofort());
 
     const schreibe = () => {
-      const rahmen = document.getElementById(RAHMEN_ID);
+      // Ohne Annas Rahmen gilt dasselbe für den Kontaktknopf, der bei
+      // ausgefallenem Dienst an ihrer Stelle steht (SalesbotWidget.jsx,
+      // SALESBOT_RUECKFALL_ID): er weicht Kaufknopf und Leiste genauso aus.
+      const rahmen =
+        document.getElementById(RAHMEN_ID) ||
+        document.getElementById(SALESBOT_RUECKFALL_ID);
       if (rahmen !== beobachteterRahmen) {
         rahmenWaechter.disconnect();
         if (rahmen) {
@@ -204,7 +210,15 @@ export function KaufknopfChatSignal() {
         }
         beobachteterRahmen = rahmen;
       }
-      if (rahmen && document.activeElement === rahmen) chatBeruehrt = true;
+      // Nur Annas Rahmen zählt als „Chat berührt“; Fokus auf dem Kontaktknopf
+      // hebt das Ausweichen nicht auf.
+      if (
+        rahmen &&
+        rahmen.id === RAHMEN_ID &&
+        document.activeElement === rahmen
+      ) {
+        chatBeruehrt = true;
+      }
       const angedockt = wurzel.classList.contains(DOCK_KLASSE);
       const fensterHoehe = window.innerHeight;
       // Ruhelage = gemessenes Rechteck ohne die eigene Verschiebung (die
