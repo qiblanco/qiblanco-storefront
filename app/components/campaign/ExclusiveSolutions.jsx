@@ -179,7 +179,7 @@ export const PROBLEM_CARDS = [
   {
     icon: '👨‍👩‍👧‍👦',
     title: 'Deine Familie ist schutzlos',
-    body: 'Besonders Kinder und ältere Familienmitglieder reagieren empfindlicher auf elektromagnetische Felder. Abschalten ist keine Option, Schutz dagegen ist möglich.',
+    body: 'Besonders Kinder und ältere Familienmitglieder reagieren empfindlicher auf elektromagnetische Felder. Schutz ist möglich, ohne dass du etwas abschalten musst.',
   },
 ];
 
@@ -825,7 +825,7 @@ export function GeldheldenPakete({products, schild = true}) {
       pillCls: "ghx-pill--gold",
       title: "Fundament",
       discountCode: 'PAKET-FUNDAMENT',
-      lead: "Der Einstieg in die volle Lösung: Schutz für dich und dein Zuhause. Hausstation und Anhänger bieten ein perfektes Preis-Leistungsverhältnis.",
+      lead: "Der Einstieg in die volle Lösung schützt dich und dein Zuhause. Hausstation und Anhänger bieten ein perfektes Preis-Leistungsverhältnis.",
       items: [
         { label: "1 × QiHome® Air" },
         { label: "1 × QiOne® 2 Pro" },
@@ -851,7 +851,7 @@ export function GeldheldenPakete({products, schild = true}) {
       pillCls: "ghx-pill--gold",
       title: "Unabhängig",
       discountCode: 'PAKET-UNABHAENGIG',
-      lead: "Die vollständige Lösung: Hausstation, Anhänger und Armreif erzeugen ein neues, bereinigtes Lebensgefühl. Preis-Leistungs-Sieger.",
+      lead: "Als vollständige Lösung erzeugen Hausstation, Anhänger und Armreif ein neues, bereinigtes Lebensgefühl. Preis-Leistungs-Sieger.",
       items: [
         { label: "1 × QiHome® Air" },
         { label: "1 × QiBracelet®", kind: "bracelet", defaultSize: "M" },
