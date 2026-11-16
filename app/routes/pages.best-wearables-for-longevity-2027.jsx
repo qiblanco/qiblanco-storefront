@@ -31,6 +31,9 @@ import guideStyles from '~/styles/longevity-guide-2027.css?url';
 
 const PFAD = '/pages/best-wearables-for-longevity-2027';
 const VEROEFFENTLICHT = '2026-10-27';
+// SEO-Ausbau auf den Hauptbegriff „Wearable für Langlebigkeit“ (Job
+// seo-2026-w47-l22-best-wearables-for-lon-f89f, 16.11.2026).
+const GEAENDERT = '2026-11-16';
 
 export function links() {
   return [{rel: 'stylesheet', href: guideStyles}];
@@ -64,7 +67,7 @@ function artikelSchema(url) {
     description: INHALT.meta_description,
     inLanguage: 'de-DE',
     datePublished: VEROEFFENTLICHT,
-    dateModified: VEROEFFENTLICHT,
+    dateModified: GEAENDERT,
     author: {'@type': 'Organization', '@id': ORG_ID, name: MARKE},
     publisher: {'@id': ORG_ID},
     mainEntityOfPage: url,
@@ -79,7 +82,7 @@ function faqEintrag() {
       inLanguage: 'de-DE',
       author: MARKE,
       datePublished: VEROEFFENTLICHT,
-      dateModified: VEROEFFENTLICHT,
+      dateModified: GEAENDERT,
     },
   );
   return schema ? [{'script:ld+json': schema}] : [];
