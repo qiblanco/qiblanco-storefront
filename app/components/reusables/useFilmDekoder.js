@@ -23,7 +23,36 @@ import {filmAufLeinwand} from './film-dekoder';
  * play() bemerkt. `zeigt()` sagt dem Gesten-Weg, dass er nichts mehr tun
  * muss. Ohne WebCodecs (iOS < 16.4) und bei prefers-reduced-motion passiert
  * nichts; dann gilt der bisherige Weg (Start bei der ersten Berührung).
+ *
+ * GENAU EINE FASSUNG (Christian 15.11.2026, Z8: „beim kohärenten Wasser kommt
+ * dann doch irgendwann ein Video, aber das ist in so einem Ghost-Modus“). Auf
+ * den Produktseiten (Band der Alpha-Vorlage, QiBracelet/QiHome Air) trägt das
+ * Video `mix-blend-mode: lighten`, und das Canvas übernimmt es. Ein mischendes
+ * Canvas deckt nicht: darunter standen das Ersatzbild (Bild 0, Vorderansicht)
+ * und das stehende Video mit seinem Poster, und `lighten` legte die drehende
+ * Fassung über die stehende. Gemessen 15.11.2026 an qiblanco.com (WebKit,
+ * iPhone, Stromsparmodus): Leinwand `spielt`, Ersatzbild Deckkraft 1, auf
+ * QiOne 2 Pro, QiBracelet und QiHome Air; die Startseite mischt nicht
+ * (`normal`) und war darum heil. Darum treten Ersatzbild und Video zurück
+ * (visibility), solange ein mischendes Canvas zeigt; das Canvas mischt dann nur
+ * noch mit dem Grund der Bühne, wie das laufende Video. Startet das echte Video
+ * doch noch, gewinnt es immer: das Canvas tritt ab, Ersatzbild und Video kommen
+ * zurück. Job 20261115-prio5-storefront-ios-3d-alle-produktseiten-ghost-weg-
+ * ein-blase-anna-knopf-fest.
  */
+
+/* Was unter einem mischenden Canvas durchscheinen würde: Ersatzbild und das
+   stehende Video derselben Hülle. Gibt die Elemente mit ihrem alten Wert
+   zurück, damit stoppen() genau den Zustand davor wiederherstellt. */
+function untergrundVerbergen(leinwand) {
+  const huelle = leinwand.parentElement;
+  if (!huelle) return [];
+  return [...huelle.querySelectorAll('video, [data-qb-ersatzbild]')].map((el) => {
+    const vorher = el.style.visibility;
+    el.style.visibility = 'hidden';
+    return [el, vorher];
+  });
+}
 
 /* Lage des Canvas in der Hülle (die Hülle ist position: relative). */
 export const LEINWAND_STIL = Object.freeze({
@@ -53,13 +82,17 @@ function ruheGewollt() {
  */
 export function useFilmDekoder(videoRef, src, an = true) {
   const leinwandRef = useRef(null);
-  const lage = useRef({dek: null, zeigt: false});
+  const lage = useRef({dek: null, zeigt: false, verborgen: []});
 
   const stoppen = useCallback(() => {
     const z = lage.current;
     if (z.dek) z.dek.stopp();
     z.dek = null;
     z.zeigt = false;
+    z.verborgen.forEach(([el, vorher]) => {
+      el.style.visibility = vorher;
+    });
+    z.verborgen = [];
     const l = leinwandRef.current;
     if (l) {
       l.style.display = 'none';
@@ -85,6 +118,9 @@ export function useFilmDekoder(videoRef, src, an = true) {
         l.style.objectFit = s.objectFit;
         l.style.mixBlendMode = s.mixBlendMode;
         l.style.borderRadius = s.borderRadius;
+        if (s.mixBlendMode && s.mixBlendMode !== 'normal') {
+          z.verborgen = untergrundVerbergen(l);
+        }
         l.style.display = 'block';
         l.setAttribute('data-qb-dekoder', 'spielt');
         z.zeigt = true;
@@ -98,9 +134,10 @@ export function useFilmDekoder(videoRef, src, an = true) {
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return undefined;
-    // Ein früher Tipp startet den Film, bevor der Dekoder sein erstes Bild hat.
+    // Startet der echte Film (früher Tipp, Gesten-Weg, Sicht-Beobachter),
+    // gewinnt er, auch wenn das Canvas schon zeigt: nie zwei Fassungen.
     const beiFilm = () => {
-      if (lage.current.dek && !lage.current.zeigt) stoppen();
+      if (lage.current.dek) stoppen();
     };
     const ruhe =
       typeof window.matchMedia === 'function'

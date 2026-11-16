@@ -86,3 +86,20 @@ test('useFilmDekoder: nur nach Ablehnung, nur mit WebCodecs, nie bei reduzierter
   assert.match(c, /'playing', beiFilm/);
   assert.doesNotMatch(c, /<img|bildfolge/i);
 });
+
+// Ghost-Fassung (Christian 15.11.2026 Z8): ein mischendes Canvas (lighten im
+// Band der Produktseiten) liess Ersatzbild und stehendes Video durchscheinen.
+test('useFilmDekoder: genau eine Fassung, Untergrund tritt unter einem mischenden Canvas zurück', () => {
+  const c = lies('./useFilmDekoder.js');
+  const ab = c.slice(c.indexOf('const abgelehnt = useCallback'));
+  // nur bei mischendem Canvas, und vor dem Sichtbarwerden
+  assert.match(ab, /if \(s\.mixBlendMode && s\.mixBlendMode !== 'normal'\) \{\s*z\.verborgen = untergrundVerbergen\(l\);/);
+  assert.ok(ab.indexOf('untergrundVerbergen(l)') < ab.indexOf("l.style.display = 'block'"));
+  // Ersatzbild UND Video derselben Hülle
+  assert.match(c, /huelle\.querySelectorAll\('video, \[data-qb-ersatzbild\]'\)/);
+  // stoppen() stellt den alten Wert wieder her
+  const st = c.slice(c.indexOf('const stoppen = useCallback'), c.indexOf('const abgelehnt = useCallback'));
+  assert.match(st, /z\.verborgen\.forEach\(\(\[el, vorher\]\) => \{\s*el\.style\.visibility = vorher;/);
+  // der echte Film gewinnt immer, auch wenn das Canvas schon zeigt
+  assert.match(c, /const beiFilm = \(\) => \{\s*if \(lage\.current\.dek\) stoppen\(\);/);
+});
