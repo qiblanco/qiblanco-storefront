@@ -983,6 +983,68 @@ html[data-chat-offen] #qiblanco-salesbot-widget-traeger {
   }
 }
 
+/* KONTAKTKNOPF ALS RUECKFALL, WENN ANNA NICHT LAEDT (Job 20261116-prio7-
+ * storefront-anna-widget-laedt-nicht-kontaktknopf-rueckfall). Steht an Annas
+ * Ecke unten rechts, nur wenn ihr Skript scheitert oder nach der Frist kein
+ * Rahmen da ist (components/SalesbotWidget.jsx). Dieselben Regeln wie fuer
+ * Annas Rahmen: Ebene `schwebend`, weg bei offenem Dialog und auf flachen
+ * Sichtfeldern, Ausweichen ueber Kaufknopf und Kaufleiste (KaufknopfChatSignal
+ * misst ihn, wenn kein Rahmen steht). Nur Tokens, kein freier Farbwert.
+ * RUECKWEG: diesen Block und den Knopf in SalesbotWidget.jsx entfernen, oder
+ * `hb-deploy revert --sha <merge>`. */
+.qb-kontakt-rueckfall {
+  position: fixed;
+  right: calc(var(--qb-ref-raster) * 2 + env(safe-area-inset-right, 0px));
+  bottom: calc(var(--qb-ref-raster) * 2 + env(safe-area-inset-bottom, 0px));
+  z-index: var(--z-schwebend);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--qb-ref-raster);
+  min-height: calc(var(--qb-ref-raster) * 6);
+  padding: 0 calc(var(--qb-ref-raster) * 2.5);
+  border-radius: calc(var(--qb-ref-raster) * 3);
+  background: var(--qb-text);
+  color: var(--qb-flaeche);
+  font-size: var(--qb-ref-fs-3);
+  line-height: 1.5;
+  text-decoration: none;
+  box-shadow: 0 var(--qb-ref-raster) calc(var(--qb-ref-raster) * 3) var(--qb-ref-bahn-schatten);
+  transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.qb-kontakt-rueckfall:hover,
+.qb-kontakt-rueckfall:focus-visible {
+  color: var(--qb-flaeche);
+  text-decoration: underline;
+}
+.qb-kontakt-rueckfall:focus-visible {
+  outline: 2px solid var(--qb-akzent);
+  outline-offset: 2px;
+}
+.qb-kontakt-rueckfall__zeichen {
+  flex: none;
+}
+html[data-dialog-offen] #qiblanco-kontakt-rueckfall {
+  display: none !important;
+}
+html[data-chat-deckt-kaufknopf] #qiblanco-kontakt-rueckfall,
+html:not([data-chat-signal-bereit]) #qiblanco-kontakt-rueckfall {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+html[data-chat-rutscht] #qiblanco-kontakt-rueckfall {
+  transform: translate3d(0, calc(-1 * var(--qb-chat-hub, 0px)), 0);
+}
+@media (max-height: 500px) {
+  #qiblanco-kontakt-rueckfall {
+    display: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qb-kontakt-rueckfall {
+    transition: none;
+  }
+}
+
 .overlay {
   background: rgba(0, 0, 0, 0.2);
   bottom: 0;
