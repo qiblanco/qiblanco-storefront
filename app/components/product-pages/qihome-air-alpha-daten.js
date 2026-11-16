@@ -94,7 +94,7 @@ export const FAKTEN = {
   ueberschrift: 'Was das QiHome® Air für dich tut.',
   kacheln: [
     {icon: 'zelle', zahl: '53,3 %', satz: 'stärker regenerieren Nervenzellen im Labor mit dem QiHome® Air.'},
-    {icon: 'radius', zahl: '160 m', satz: 'Radius. Rund 8 Hektar. Dein ganzes Zuhause liegt darin.'},
+    {icon: 'radius', zahl: '160 m', satz: 'Radius. Rund 8 Hektar.'},
     {icon: 'kraft', zahl: '100×', satz: 'die Stärke eines QiOne® 2 Pro.'},
   ],
   vertrauen: {
