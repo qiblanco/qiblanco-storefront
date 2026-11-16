@@ -851,7 +851,7 @@ export function GeldheldenPakete({products, schild = true}) {
       pillCls: "ghx-pill--gold",
       title: "Unabhängig",
       discountCode: 'PAKET-UNABHAENGIG',
-      lead: "Als vollständige Lösung erzeugen Hausstation, Anhänger und Armreif ein neues, bereinigtes Lebensgefühl. Preis-Leistungs-Sieger.",
+      lead: "Als vollständige Lösung erzeugen QiHome® Air, QiOne® 2 Pro und QiBracelet® ein neues, bereinigtes Lebensgefühl. Preis-Leistungs-Sieger.",
       items: [
         { label: "1 × QiHome® Air" },
         { label: "1 × QiBracelet®", kind: "bracelet", defaultSize: "M" },
