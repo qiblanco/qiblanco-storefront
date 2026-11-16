@@ -200,7 +200,7 @@ test('High Vibe: die Karte trägt die Kundenfrage als Überschrift, der Begriff 
   assert.ok(e, 'Der Eintrag lexikon-high-vibe fehlt');
   assert.equal(e.begriff, 'High Vibe');
   assert.equal(e.ueberschrift, 'Was heißt High Vibe?');
-  assert.equal(e.anker, 'was-heisst-high-vibe');
+  assert.equal(e.anker, 'high-vibe-bedeutung');
   assert.equal(LEXIKON.filter((x) => /high vibe/i.test(x.ueberschrift || x.begriff)).length, 1,
     'High Vibe steht als zweite Karte daneben');
   const hub = fs

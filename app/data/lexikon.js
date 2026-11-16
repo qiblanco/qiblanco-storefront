@@ -333,7 +333,7 @@ export const LEXIKON = [
     "slug": "lexikon-high-vibe",
     "begriff": "High Vibe",
     "ueberschrift": "Was heißt High Vibe?",
-    "anker": "was-heisst-high-vibe",
+    "anker": "high-vibe-bedeutung",
     "definition": "«High Vibe» ist ein Kurzwort für einen guten inneren Zustand. Es kommt von vibration und bezeichnet keine messbare Schwingung.",
     "gebrauch": [
       "«High Vibe» beschreibt einen Menschen, einen Raum oder einen Tag als klar, offen und leicht. Menschen benutzen es für sich selbst, für Orte und für die Stimmung in einer Gruppe.",
