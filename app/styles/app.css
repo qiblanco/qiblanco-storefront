@@ -983,8 +983,8 @@ html[data-chat-offen] #qiblanco-salesbot-widget-traeger {
   }
 }
 
-/* KONTAKTKNOPF ALS RUECKFALL, WENN ANNA NICHT LAEDT (Job 20261116-prio7-
- * storefront-anna-widget-laedt-nicht-kontaktknopf-rueckfall). Steht an Annas
+/* KONTAKTKNOPF ALS RUECKFALL, WENN ANNA AUSFAELLT (Auftrag vom 16.11.2026,
+ * Kunden-Notbetrieb ohne ai-server). Steht an Annas
  * Ecke unten rechts, nur wenn ihr Skript scheitert oder nach der Frist kein
  * Rahmen da ist (components/SalesbotWidget.jsx). Dieselben Regeln wie fuer
  * Annas Rahmen: Ebene `schwebend`, weg bei offenem Dialog und auf flachen

@@ -197,9 +197,8 @@ export function loaderJetztEinfuegen({readyState, dienstAntwortet}) {
 }
 
 /**
- * KONTAKTKNOPF ALS RÜCKFALL, WENN ANNA NICHT LÄDT (Job 20261116-prio7-storefront-
- * anna-widget-laedt-nicht-kontaktknopf-rueckfall, Auftragspunkt 4 aus 20261116-
- * prio1-wurzel-ausfallsicherheit-ai-server-weg-direktzugang-reset-alle-knoten).
+ * KONTAKTKNOPF ALS RÜCKFALL, WENN ANNA NICHT LÄDT (Auftrag vom 16.11.2026,
+ * Punkt 4 der Ausfallsicherheit: Kunden-Notbetrieb, wenn der ai-server weg ist).
  *
  * Gemessen am 16.11.2026: fiel der ai-server aus (02:00–02:30Z), lud das
  * Loader-Skript nicht, und der Chat-Knopf fehlte ganz. Kasse und Bestellung
