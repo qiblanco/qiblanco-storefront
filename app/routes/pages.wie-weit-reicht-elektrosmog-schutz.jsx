@@ -80,7 +80,7 @@ const BESCHREIBUNG = "Wir haben unser QiHome® Air auf einen Einsatzbereich von 
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-16';
-const GEAENDERT = '2026-10-07';
+const GEAENDERT = '2026-11-15';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];
