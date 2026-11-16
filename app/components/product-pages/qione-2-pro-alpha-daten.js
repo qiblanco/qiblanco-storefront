@@ -187,7 +187,7 @@ export const FAKTEN = {
   vertrauen: {
     titel: 'Einmal kaufen. Für ein Leben gebaut.',
     zeilen: [
-      {icon: 'dauer', text: 'Hält ein Leben lang. Kein Akku, keine Elektronik: Dein QiOne® 2 Pro wird nie leer.'},
+      {icon: 'dauer', text: 'Hält ein Leben lang. Kein Akku, keine Elektronik. Dein QiOne® 2 Pro wird nie leer.'},
       {icon: 'material', text: 'Gehäuse aus Chirurgenstahl. Gitterchip® aus einer eigenen 750er Goldlegierung.'},
       {icon: 'bayern', text: 'Gefertigt in Bayern. Goldschmiede vollenden jedes Detail von Hand.'},
     ],
