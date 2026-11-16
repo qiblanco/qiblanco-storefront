@@ -269,7 +269,10 @@ test('Hochrutschen: Zielrechteck deckt den Knopf der Leiste nicht, die Ruhelage 
 // Die Knopf-Lage ist eine Rechenlage in dieser Zone, kein Messwert.
 const BLASE_START_B = {left: 85, top: 649, right: 383, bottom: 837};
 const HERO_KNOPF = {left: 16, top: 700, right: 374, bottom: 756};
-const ruhig = {leisten: [], pfeile: [], fensterHoehe: 844, angedockt: false};
+// Diese Tests beschreiben das Ausweichen von #80. Seit s06 (16.11.2026) gilt
+// es nur noch mit KNOPF_FEST_AN = false (Rückweg) oder ab Desktop-Breite; die
+// feste Lage auf Handy und Tablet prüfen die s06-Tests weiter unten.
+const ruhig = {leisten: [], pfeile: [], fensterHoehe: 844, angedockt: false, fest: false};
 
 test('ausweichStrecke: die Blase rutscht über den Hero-Knopf, statt zu verschwinden', async () => {
   const {ausweichStrecke, verschoben, ueberdecktKaufknopf} = await import('../app/lib/kaufknopf-chat.js');
@@ -340,8 +343,9 @@ test('ausweichStrecke: Rückfall nur, wenn keine Strecke frei ist; Schalter aus 
 
 test('ausweichStrecke: Desktop 1280 (Job 20260926), die Blase weicht dem Warenkorb-Knopf nach oben', async () => {
   const {ausweichStrecke, verschoben, ueberdecktKaufknopf} = await import('../app/lib/kaufknopf-chat.js');
-  const {hub, frei} = ausweichStrecke({leisten: [], pfeile: [], fensterHoehe: 800, angedockt: false,
-    ruhe: RAHMEN_1280, knoepfe: [KNOPF_1280]});
+  // Desktop-Breite: das Ausweichen gilt dort auch mit KNOPF_FEST_AN (s06).
+  const {hub, frei} = ausweichStrecke({leisten: [], pfeile: [], fensterHoehe: 800, fensterBreite: 1280,
+    angedockt: false, ruhe: RAHMEN_1280, knoepfe: [KNOPF_1280]});
   assert.equal(frei, true);
   assert.equal(ueberdecktKaufknopf(lage({rahmen: verschoben(RAHMEN_1280, hub)})), false);
 });
@@ -431,7 +435,7 @@ test('Träger: CSS-Hälfte nie ohne JS-Hälfte (sonst sinkt Anna auf die Leiste)
 const RAHMEN_768 = {left: 463, top: 787, right: 761, bottom: 1017};
 const KNOPF_768 = {left: 440, top: 807, right: 768, bottom: 877};
 const PREIS_768 = {left: 440, top: 685, right: 768, bottom: 787};
-const tablet = {leisten: [], pfeile: [], fensterHoehe: 1024, angedockt: false};
+const tablet = {leisten: [], pfeile: [], fensterHoehe: 1024, angedockt: false, fest: false};
 const deckt = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
 
 test('Preis: Stand vor dem Bau landet Anna auf dem Preis (Rot, qione-2-pro-b@768)', async () => {
@@ -483,4 +487,66 @@ test('Preis: das Merkmal sitzt an allen Preisblöcken der Kaufseiten', async () 
   assert.match(signal, /PREIS_SELEKTOR/);
   assert.match(signal, /selectNodeContents\(p\)/, 'Inhalt, nicht Kasten');
   assert.match(signal, /^\s+preise,\n/m);
+});
+
+// ─── s06 (Grossjob 20261115-...-anna-knopf-fest, 16.11.2026) ────────────────
+// Christian 15.11.: „das Gesicht [...] faehrt mit hoch. Vor allem, wenn die
+// Blase angezeigt wird [...] Auf dem iPhone.“ Gemessen live 15.11. (s02,
+// WebKit 402x800): Hub 10-179 px ohne Kaufleiste. Unter FEST_UNTER_BREITE_PX
+// hebt nur noch die sichtbare Kaufleiste den Knopf, und ausgeblendet wird nie.
+const handy = {leisten: [], pfeile: [], fensterHoehe: 844, fensterBreite: 390, angedockt: false};
+
+test('s06 Rot: Stand vor s06 (Schalter aus) hebt die Kugel am Inhalts-Knopf und die Blase am Hero-Knopf', async () => {
+  const {ausweichStrecke} = await import('../app/lib/kaufknopf-chat.js');
+  const knopf = {left: 16, top: 790, right: 374, bottom: 846};
+  assert.ok(ausweichStrecke({...handy, ruhe: KUGEL, knoepfe: [knopf], fest: false}).hub > 0);
+  assert.ok(ausweichStrecke({...handy, ruhe: BLASE_START_B, knoepfe: [HERO_KNOPF], fest: false}).hub > 0);
+});
+
+test('s06: auf dem Handy steht die Kugel fest über Kaufknopf, Preis und Pfeil, und sie bleibt sichtbar', async () => {
+  const {ausweichStrecke} = await import('../app/lib/kaufknopf-chat.js');
+  const knopf = {left: 16, top: 790, right: 374, bottom: 846};
+  const preis = {left: 200, top: 760, right: 380, bottom: 800};
+  const pfeil = {left: 330, top: 770, right: 370, bottom: 810};
+  assert.deepEqual(ausweichStrecke({...handy, ruhe: KUGEL, knoepfe: [knopf], preise: [preis], pfeile: [pfeil]}),
+    {hub: 0, frei: true});
+  // Die Blase ebenso (Christian: „vor allem, wenn die Blase angezeigt wird“)
+  assert.deepEqual(ausweichStrecke({...handy, ruhe: BLASE_START_B, knoepfe: [HERO_KNOPF]}), {hub: 0, frei: true});
+  // Kein Ausblenden mehr, auch nicht im Stapel bis an den Seitenkopf
+  const stapel = [];
+  for (let y = 0; y < 844; y += 60) stapel.push({left: 16, top: y, right: 374, bottom: y + 56});
+  assert.deepEqual(ausweichStrecke({...handy, ruhe: KUGEL, knoepfe: stapel}), {hub: 0, frei: true});
+});
+
+test('s06: die sichtbare Kaufleiste hebt den Knopf weiter, genau um den Hub der Leiste, Pfeile hin oder her', async () => {
+  const {ausweichStrecke, chatHub} = await import('../app/lib/kaufknopf-chat.js');
+  const basis = chatHub({ruhe: KUGEL, leisten: [LEISTE], fensterHoehe: 844, angedockt: false, an: true});
+  assert.ok(basis > 0);
+  const pfeil = {left: 334, top: KUGEL.top - basis + 10, right: 374, bottom: KUGEL.top - basis + 50};
+  assert.deepEqual(ausweichStrecke({...handy, ruhe: KUGEL, leisten: [LEISTE], knoepfe: [LEISTEN_KNOPF],
+    pfeile: [pfeil]}), {hub: basis, frei: true});
+  // mit Blase: derselbe Bezug (Unterkante), also dieselbe Strecke
+  const blase = {...BLASE_START_B, bottom: KUGEL.bottom};
+  assert.equal(ausweichStrecke({...handy, ruhe: blase, leisten: [LEISTE], knoepfe: [HERO_KNOPF]}).hub,
+    chatHub({ruhe: blase, leisten: [LEISTE], fensterHoehe: 844, angedockt: false, an: true}));
+});
+
+test('s06: Tablet 768 fest, Desktop ab 1024 weicht weiter aus; knopfStehtFest an der Grenze', async () => {
+  const {ausweichStrecke, knopfStehtFest, FEST_UNTER_BREITE_PX} = await import('../app/lib/kaufknopf-chat.js');
+  assert.equal(FEST_UNTER_BREITE_PX, 1024);
+  assert.equal(knopfStehtFest(1023), true);
+  assert.equal(knopfStehtFest(1024), false);
+  assert.equal(knopfStehtFest(undefined), true, 'ohne Breite gilt der Handy-Fall');
+  assert.equal(knopfStehtFest(390, false), false, 'Rückweg: Schalter aus');
+  const t = {leisten: [], pfeile: [], fensterHoehe: 1024, angedockt: false};
+  assert.deepEqual(ausweichStrecke({...t, fensterBreite: 768, ruhe: RAHMEN_768, knoepfe: [KNOPF_768],
+    preise: [PREIS_768]}), {hub: 0, frei: true});
+  assert.ok(ausweichStrecke({...t, fensterBreite: 1024, ruhe: RAHMEN_768, knoepfe: [KNOPF_768],
+    preise: [PREIS_768]}).hub > 0);
+});
+
+test('s06: die Komponente reicht die Fensterbreite durch (sonst gälte fest auch auf dem Desktop)', async () => {
+  const {readFile} = await import('node:fs/promises');
+  const quelle = await readFile(new URL('../app/components/KaufknopfChatSignal.jsx', import.meta.url), 'utf8');
+  assert.match(quelle, /fensterBreite:\s*window\.innerWidth/);
 });

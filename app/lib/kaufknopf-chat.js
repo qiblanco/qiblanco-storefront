@@ -445,6 +445,59 @@ export const AUSWEICHEN_AN = true;
 /** So nah darf der hochgerutschte Rahmen der Oberkante des Fensters kommen. */
 export const RAND_PX = 8;
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ * DAS GESICHT BLEIBT UNTEN STEHEN (Grossjob 20261115-prio5-storefront-ios-3d-
+ * alle-produktseiten-ghost-weg-ein-blase-anna-knopf-fest, s06; Christian
+ * 15.11.2026: „wenn man am Anfang scrollt, bleibt AI Anna bei Apple das
+ * Gesicht nicht unten, sondern das faehrt mit hoch. Vor allem, wenn die Blase
+ * angezeigt wird [...] Auf dem iPhone.“).
+ *
+ * Gemessen live 15.11.2026 (s02, WebKit iphone-chrome 402x690/800): das
+ * Ausweichen oben hob den Träger beim Scrollen an Inhalts-Kaufknöpfen, Preisen
+ * und Slider-Pfeilen um 10 bis 179 px (/products/qione-2-pro 10, 130, 140 px;
+ * / 179 px; qibracelet 99; qihome-air 64), ohne dass eine Kaufleiste stand.
+ * Mit Blase ist der Rahmen größer, er trifft mehr Hindernisse und fährt weiter.
+ *
+ * Christians Satz ist jünger als die Regel „das kleinere Element weicht aus“
+ * (design-meister overlay_ordnung, 31.10.) und gilt für Annas Knopf: auf Handy-
+ * und Tablet-Breiten (unter FEST_UNTER_BREITE_PX) weicht der geschlossene
+ * Rahmen, Kugel wie Blase, Inhalts-Knöpfen, Preisen und Pfeilen NICHT mehr
+ * aus und wird dafür auch NICHT ausgeblendet. Er hebt sich nur über eine
+ * wirklich sichtbare fixe Kaufleiste (chatHub, unverändert).
+ *
+ * Der Preis dafür, offen benannt: in der Ecke unten rechts (Kugel 74x74 px,
+ * 20 px über dem Rand) liegt die Kugel beim Durchscrollen kurz über dem
+ * rechten Rand eines Inhalts-Kaufknopfs; die proaktive Blase deckt für ihre
+ * Standzeit, was unter ihr liegt. Der Knopf bleibt links davon treffbar, und
+ * ein Weiterscrollen gibt ihn frei.
+ *
+ * Desktop (ab FEST_UNTER_BREITE_PX) behält das Ausweichen: dort wurde es für
+ * einen gemessenen Klickverlust gebaut (Job 20260926, 1280x800, 8 von 20
+ * Punkten des Warenkorb-Knopfs trafen den Chat), und dort fährt keine
+ * Adressleiste.
+ *
+ * RÜCKWEG: KNOPF_FEST_AN = false. Dann gilt auf allen Breiten wieder das
+ * Ausweichen von #80 (Stand vor s06).
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Code-Schalter: Annas Knopf steht fest, nur die Kaufleiste hebt ihn. */
+export const KNOPF_FEST_AN = true;
+
+/** Ab dieser Fensterbreite (px) gilt wieder das Ausweichen (Desktop). */
+export const FEST_UNTER_BREITE_PX = 1024;
+
+/**
+ * Steht der Knopf auf dieser Breite fest? Ohne gemessene Breite gilt fest
+ * (der Handy-Fall, um den es geht).
+ *
+ * @param {number|undefined} fensterBreite
+ * @param {boolean} [fest]
+ */
+export function knopfStehtFest(fensterBreite, fest = KNOPF_FEST_AN) {
+  if (!fest) return false;
+  return !(fensterBreite >= FEST_UNTER_BREITE_PX);
+}
+
 /** Überschneidet der Rahmen ein Hindernis (mit ABSTAND_PX Luft)? */
 function deckt(rahmen, k) {
   return (
@@ -467,13 +520,17 @@ function deckt(rahmen, k) {
  *   pfeile?: Array<{left:number, top:number, right:number, bottom:number}>,
  *   preise?: Array<{left:number, top:number, right:number, bottom:number}>,
  *   fensterHoehe: number,
+ *   fensterBreite?: number,
  *   angedockt: boolean,
  *   an?: boolean,
  *   ausweichen?: boolean,
  *   preisWeicht?: boolean,
+ *   fest?: boolean,
  * }} lage
  * @returns {{hub: number, frei: boolean}} hub = px nach oben (0 = Ruhelage);
  *   frei = false heißt: keine Strecke ist frei, der Rückfall blendet aus.
+ *   Steht der Knopf fest (knopfStehtFest), ist hub der Hub der Leiste und
+ *   frei immer true.
  */
 export function ausweichStrecke({
   ruhe,
@@ -482,12 +539,16 @@ export function ausweichStrecke({
   pfeile = [],
   preise = [],
   fensterHoehe,
+  fensterBreite,
   angedockt,
   an = HOCHRUTSCHEN_AN,
   ausweichen = AUSWEICHEN_AN,
   preisWeicht = PREIS_WEICHT_AN,
+  fest = KNOPF_FEST_AN,
 }) {
   const basis = chatHub({ruhe, leisten, fensterHoehe, angedockt, an});
+  // s06 (Christian 15.11.): das Gesicht fährt nur über die Kaufleiste hoch.
+  if (knopfStehtFest(fensterBreite, fest)) return {hub: basis, frei: true};
   // Der Preis zählt wie ein Kaufknopf (PREIS_SELEKTOR): in jeder Lage.
   const sperren = preisWeicht ? [...knoepfe, ...(preise || [])] : knoepfe;
   // Offen, angedockt oder ohne Rahmen: nichts zu entscheiden (ueberdecktKaufknopf
