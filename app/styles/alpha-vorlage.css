@@ -315,6 +315,42 @@
   margin-bottom: var(--tas-s-2);
 }
 
+/* Vertrauenszeile unter den Wirkungskarten: klein, grau, nachgeordnet. */
+.av-vertrauen {
+  margin-top: var(--tas-s-4);
+  padding-top: var(--tas-s-3);
+  border-top: 1px solid var(--tas-linie);
+}
+.av-vertrauen-titel {
+  margin: 0;
+  font-weight: 600;
+}
+.av-vertrauen-liste {
+  list-style: none;
+  margin: var(--tas-s-2) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--tas-s-2);
+}
+@media (min-width: 750px) {
+  .av-vertrauen-liste {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.av-vertrauen-zeile {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tas-s-2);
+  min-width: 0;
+  color: var(--tas-grau);
+}
+.av-vertrauen-zeile .av-fakt-zeichen {
+  flex: 0 0 auto;
+  width: var(--tas-s-3);
+  height: var(--tas-s-3);
+  margin-bottom: 0;
+}
+
 /* Slot-Überschrift mit Luft zum Inhalt (Box, Fakten, Stimmen). */
 .av-slot > .tas-box-titel {
   margin-bottom: var(--tas-s-3);

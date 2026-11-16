@@ -91,14 +91,20 @@ export const KETTE_GOLD = null;
 
 /* Faktenkacheln (s04 fakten): Zahl groß, ein Satz, Zeichen statt Listenpunkt. */
 export const FAKTEN = {
-  ueberschrift: 'Das QiHome® Air in Zahlen.',
+  ueberschrift: 'Was das QiHome® Air für dich tut.',
   kacheln: [
-    {icon: 'radius', zahl: '160 m', satz: 'Radius. Rund 8 Hektar.'},
+    {icon: 'zelle', zahl: '53,3 %', satz: 'stärker regenerieren Nervenzellen im Labor mit dem QiHome® Air.'},
+    {icon: 'radius', zahl: '160 m', satz: 'Radius. Rund 8 Hektar. Dein ganzes Zuhause liegt darin.'},
     {icon: 'kraft', zahl: '100×', satz: 'die Stärke eines QiOne® 2 Pro.'},
-    {icon: 'ohne-strom', zahl: '0 Watt', satz: 'Kein Strom. Keine Wartung.'},
-    {icon: 'haus', zahl: 'Über 400', satz: 'QiHome® Air im Einsatz.'},
-    {icon: 'bayern', zahl: '100 %', satz: 'in Bayern entwickelt und gefertigt. Deutsche Eiche.'},
   ],
+  vertrauen: {
+    titel: null,
+    zeilen: [
+      {icon: 'ohne-strom', text: '0 Watt: kein Strom, keine Wartung.'},
+      {icon: 'haus', text: 'Über 400 QiHome® Air im Einsatz.'},
+      {icon: 'bayern', text: '100 % in Bayern entwickelt und gefertigt. Deutsche Eiche.'},
+    ],
+  },
 };
 
 /* 20-Tage-Element (s04 risikofrei): eine Zeile mit Zeichen, Details aufklappbar. */

@@ -154,20 +154,27 @@ export const BOX = {
 };
 
 /* Faktenkacheln (s03 kacheln: groß, Titel, Satz). */
+/*
+ * Karten-Bereich WIRKUNG statt LEBENSDAUER (Christian 16.11.2026 17:20: „ich
+ * hätte gern, dass dieser Bereich für die Wirkung konzipiert wird, also was
+ * erhält der Kunde?“). Vorn die Wirkung; Lebensdauer, Material, Stückzahl und
+ * Herkunft bleiben als kleine Vertrauenszeile darunter (vertrauen), nicht
+ * gelöscht. Job 20261116-prio2-produktseiten-wirkung-statt-lebensdauer-….
+ */
 export const FAKTEN = {
   ueberschrift: null,
   kacheln: [
     {
-      icon: 'dauer',
-      zahl: 'Jahrzehnte',
-      titel: 'Hält ein Leben lang',
-      satz: 'Kein Akku, keine Elektronik. Dein QiOne® 2 Pro wird nie leer.',
+      icon: 'studie',
+      zahl: '5',
+      titel: 'Publizierte Peer-Review-Studien',
+      satz: 'Von Fachleuten geprüft, in Fachzeitschriften erschienen.',
     },
     {
       icon: 'wellen',
       zahl: 'Wasserfest',
       titel: 'Du legst ihn nie ab',
-      satz: 'Sauna, Meer, Chlor, Schweiß, Sonne: Dein QiOne® 2 Pro bleibt an dir.',
+      satz: 'Sauna, Meer, Chlor, Schweiß, Sonne: Dein QiOne® 2 Pro bleibt an dir. So wirkt er rund um die Uhr.',
     },
     {
       icon: 'kraft',
@@ -177,6 +184,14 @@ export const FAKTEN = {
       satz: 'Der QiOne® 2 Pro hat achtmal so viel Leistungsvolumen wie der QiOne® 1. Er kostet knapp das Dreifache. Pro Euro bekommst du also fast dreimal so viel Leistung.',
     },
   ],
+  vertrauen: {
+    titel: 'Einmal kaufen. Für ein Leben gebaut.',
+    zeilen: [
+      {icon: 'dauer', text: 'Hält ein Leben lang. Kein Akku, keine Elektronik: Dein QiOne® 2 Pro wird nie leer.'},
+      {icon: 'material', text: 'Gehäuse aus Chirurgenstahl. Gitterchip® aus einer eigenen 750er Goldlegierung.'},
+      {icon: 'bayern', text: 'Gefertigt in Bayern. Goldschmiede vollenden jedes Detail von Hand.'},
+    ],
+  },
 };
 
 /* 20-Tage-Element: eine Zeile mit Zeichen, Details aufklappbar (s03 vertrauen). */

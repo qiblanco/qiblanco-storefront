@@ -119,19 +119,34 @@ export const BOX = {
 export const KETTE = null;
 export const KETTE_GOLD = null;
 
+/*
+ * Karten-Bereich WIRKUNG statt LEBENSDAUER (Christian 16.11.2026 17:20: „ich
+ * hätte gern, dass dieser Bereich für die Wirkung konzipiert wird, also was
+ * erhält der Kunde?“). Vorn die Wirkung; Lebensdauer, Material, Stückzahl und
+ * Herkunft bleiben als kleine Vertrauenszeile darunter (vertrauen), nicht
+ * gelöscht. Job 20261116-prio2-produktseiten-wirkung-statt-lebensdauer-….
+ */
 export const FAKTEN = {
-  ueberschrift: 'Einmal kaufen. Für ein Leben gebaut.',
+  ueberschrift: 'Was das QiBracelet® für dich tut.',
   kacheln: [
-    {icon: 'dauer', zahl: 'Jahrzehnte', satz: 'Lebensdauer. Aus Chirurgenstahl 316L.'},
-    {icon: 'wellen', zahl: 'Sauna · Meer · Pool', satz: 'Du legst es nie ab.'},
-    {icon: 'material', zahl: '316L', satz: 'Implantatstahl aus der Orthopädie.'},
-    {icon: 'handgelenk', zahl: 'Über 1.000', satz: 'QiBracelet® im Einsatz.'},
+    {icon: 'zelle', zahl: '5 von 5', satz: 'Zelltypen schützte das QiBracelet® im Labor vor oxidativem Stress.'},
     {
-      icon: 'bayern',
-      zahl: '100 %',
-      satz: 'in Bayern entwickelt und gefertigt. Von Goldschmieden von Hand vollendet.',
+      icon: 'wasser',
+      zahl: 'Kohärentes Wasser',
+      satz: 'Wassermoleküle in der Nähe des Gitterchip® gehen in den kohärenten Zustand über. Das hat starke Vorteile für dein Körperwasser.',
     },
+    {icon: 'studie', zahl: '5', satz: 'publizierte Peer-Review-Studien. Von Fachleuten geprüft, in Fachzeitschriften erschienen.'},
   ],
+  vertrauen: {
+    titel: 'Einmal kaufen. Für ein Leben gebaut.',
+    zeilen: [
+      {icon: 'wellen', text: 'Sauna · Meer · Pool: Du legst es nie ab. Es wirkt, immer.'},
+      {icon: 'dauer', text: 'Jahrzehnte Lebensdauer. Ohne Akku und ohne Elektronik.'},
+      {icon: 'material', text: 'Chirurgenstahl 316L, Implantatstahl aus der Orthopädie.'},
+      {icon: 'menschen', text: 'Über 1.000 QiBracelet® im Einsatz.'},
+      {icon: 'bayern', text: '100 % in Bayern entwickelt und gefertigt. Von Goldschmieden von Hand vollendet.'},
+    ],
+  },
 };
 
 export const RISIKOFREI = {

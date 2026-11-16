@@ -894,6 +894,26 @@ function Slots({daten, slots}) {
               </li>
             ))}
           </ul>
+          {/* Vertrauenszeile (Christian 16.11.2026 17:20): Lebensdauer, Material,
+              Stückzahl und Herkunft stehen nachgeordnet und klein unter den
+              Wirkungskarten, statt selbst Karten zu sein. Optional je Seite. */}
+          {FAKTEN.vertrauen?.zeilen?.length ? (
+            <div className="av-vertrauen" data-av-vertrauen="">
+              {FAKTEN.vertrauen.titel ? (
+                <p className="av-vertrauen-titel">{mitMarkeR(FAKTEN.vertrauen.titel)}</p>
+              ) : null}
+              <ul className="av-vertrauen-liste">
+                {FAKTEN.vertrauen.zeilen.map((z) => (
+                  <li key={z.text} className="av-vertrauen-zeile">
+                    {z.icon ? <FaktZeichen art={z.icon} /> : null}
+                    <span>
+                      <MarkeR text={z.text} />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </SlotHuelle>
       ) : null}
       {RISIKOFREI?.zeile ? (
@@ -1148,6 +1168,13 @@ const FAKT_PFADE = {
   kraft: ['M18 3 7 18h8l-2 11 12-16h-8z'],
   'ohne-strom': ['M11 4v6', 'M21 4v6', 'M8 10h16v4a8 8 0 0 1-16 0z', 'M16 22v6', 'M5 27 27 5'],
   haus: ['M5 15.5 16 6l11 9.5', 'M8 13.5V26h16V13.5', 'M13.5 26v-6h5v6'],
+  // Wirkung statt Lebensdauer (Christian 16.11.2026 17:20): Menschen ersetzt
+  // das Handgelenk-Zeichen, das auf dem Handy wie „(-)“ aussah; Zelle, Wasser
+  // und Studie tragen die Wirkungskarten.
+  menschen: ['M12 14a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z', 'M4 26c0-4.4 3.6-8 8-8s8 3.6 8 8', 'M21 6.6a4 4 0 0 1 0 7.4', 'M23 18.4c2.9 1.1 5 3.9 5 7.6'],
+  zelle: ['M16 28c6.6 0 12-5.4 12-12S22.6 4 16 4 4 9.4 4 16s5.4 12 12 12Z', 'M17 19.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z', 'M9.5 11.5h.01', 'M10.5 21.5h.01', 'M22.5 22.5h.01'],
+  wasser: ['M16 4s-9 9.6-9 15.5a9 9 0 0 0 18 0C25 13.6 16 4 16 4Z', 'M11.5 20.5c1.5 1.3 3 1.3 4.5 0s3-1.3 4.5 0'],
+  studie: ['M9 4h10l6 6v18H9z', 'M19 4v6h6', 'M13 16h8', 'M13 20h8', 'M13 24h5'],
 };
 
 function FaktZeichen({art}) {
