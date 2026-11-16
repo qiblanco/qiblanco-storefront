@@ -889,8 +889,7 @@ export const NUR_ROUTE_SEITEN = [
     pfad: '/pages/lexikon',
     // 2026-11-10: Karte „hexagonales Wasser" (Job 20261019-ki-lernschleife-bau-dach-589a3d).
     // 2026-11-14: Titel, h1 und Einleitung führen „physikalische Begriffe" (M-SP-20261102-lexikon).
-    // 2026-11-16: Karte High Vibe trägt die Frage „Was heißt High Vibe?" (Job 20261116-ki-lernschleife-bau-dach-0d77f1).
-    lastmod: '2026-11-16T12:00:00Z',
+    lastmod: '2026-11-14T07:00:00Z',
     grund:
       'Der Hub des Lexikons (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +

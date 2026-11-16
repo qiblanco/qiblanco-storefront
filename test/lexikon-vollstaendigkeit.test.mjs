@@ -187,26 +187,37 @@ test('ANKER-ARM: optionale H3-Anker sind eindeutig, und der Hub rendert sie als 
     const hub = fs
       .readFileSync(path.join(WURZEL, 'app', 'components', 'campaign', 'LexikonHub.jsx'), 'utf8')
       .replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ');
-    assert.match(hub, /<h3 id=\{e\.anker \|\| undefined\}>/, 'der Hub rendert den Anker nicht an der H3');
+    assert.match(hub, /const hAnker = kf\?\.anker \|\| e\.anker;/, 'der Hub reicht e.anker nicht an die H3');
+    assert.match(hub, /<h3 id=\{hAnker \|\| undefined\}>/, 'der Hub rendert den Anker nicht an der H3');
   }
 });
 
 test('High Vibe: die Karte trägt die Kundenfrage als Überschrift, der Begriff bleibt (KI-Lernschleife)', () => {
   // ki_lernschleife.py ziel sucht „Was heißt High Vibe?" wörtlich als
   // Überschrift (lexikon-abschnitt:de-beg-lex-high-vibe). Umgetitelt wird die
-  // bestehende Karte, keine zweite daneben; Schema-Name und 301-Ziel
-  // (#lexikon-high-vibe am <li>) bleiben.
+  // bestehende Karte über KARTEN_FRAGE im Hub, keine zweite daneben;
+  // Begriff, Schema-Name und 301-Ziel (#lexikon-high-vibe am <li>) bleiben.
   const e = LEXIKON.find((x) => x.slug === 'lexikon-high-vibe');
   assert.ok(e, 'Der Eintrag lexikon-high-vibe fehlt');
   assert.equal(e.begriff, 'High Vibe');
-  assert.equal(e.ueberschrift, 'Was heißt High Vibe?');
-  assert.equal(e.anker, 'high-vibe-bedeutung');
-  assert.equal(LEXIKON.filter((x) => /high vibe/i.test(x.ueberschrift || x.begriff)).length, 1,
-    'High Vibe steht als zweite Karte daneben');
-  const hub = fs
-    .readFileSync(path.join(WURZEL, 'app', 'components', 'campaign', 'LexikonHub.jsx'), 'utf8')
-    .replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ');
-  assert.equal((hub.match(/\{?e\.ueberschrift \|\| e\.begriff\}?/g) || []).length, 2,
+  const hubQuelle = fs.readFileSync(
+    path.join(WURZEL, 'app', 'components', 'campaign', 'LexikonHub.jsx'), 'utf8');
+  const block = hubQuelle.match(/export const KARTEN_FRAGE = \{([\s\S]*?)\n\};/);
+  assert.ok(block, 'KARTEN_FRAGE fehlt im Hub');
+  assert.match(block[1], /'lexikon-high-vibe': \{\s*ueberschrift: 'Was heißt High Vibe\?',\s*anker: 'high-vibe-bedeutung',/);
+  // Jeder Schlüssel ist ein echter slug, jeder Anker eindeutig gegen slugs und e.anker.
+  const schluessel = [...block[1].matchAll(/'([a-z0-9-]+)': \{/g)].map((m) => m[1]);
+  const slugs = LEXIKON.map((x) => x.slug);
+  for (const k of schluessel) assert.ok(slugs.includes(k), `KARTEN_FRAGE kennt keinen Eintrag ${k}`);
+  const anker = [...block[1].matchAll(/anker: '([^']+)'/g)].map((m) => m[1]);
+  for (const a of anker) assert.match(a, /^[a-z0-9-]+$/);
+  const ids = [...anker, ...slugs, ...LEXIKON.filter((x) => x.anker).map((x) => x.anker)];
+  assert.equal(new Set(ids).size, ids.length, 'Ein Anker der Kartenfrage kollidiert');
+  // Der Hub rendert Titel und Anker in beiden Kartenformen.
+  const hub = hubQuelle.replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ');
+  assert.match(hub, /const titel = kf\?\.ueberschrift \|\| e\.begriff;/);
+  assert.match(hub, /<h3 id=\{hAnker \|\| undefined\}>/);
+  assert.equal((hub.match(/^\s*\{?titel\}?\s*$/gm) || []).length, 2,
     'der Hub rendert die Überschrift nicht in beiden Kartenformen');
 });
 
