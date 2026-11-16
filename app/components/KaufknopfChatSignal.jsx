@@ -129,6 +129,16 @@ import {SALESBOT_RUECKFALL_ID} from '~/lib/salesbot-widget';
  * Unterdrückung oben (data-chat-deckt-kaufknopf) bleibt nur der Rückfall, wenn
  * keine Strecke frei ist. Die Auflösung „nach unten“ in den Absätzen davor
  * beschreibt also den Stand bis 01.11.2026. Rückweg: AUSWEICHEN_AN = false.
+ *
+ * AUF HANDY UND TABLET STEHT DAS GESICHT SEIT 16.11.2026 FEST (s06 des
+ * Grossjobs 20261115-prio5-storefront-ios-3d-alle-produktseiten-ghost-weg-
+ * ein-blase-anna-knopf-fest; Christian 15.11.: „das Gesicht [...] faehrt mit
+ * hoch. Vor allem, wenn die Blase angezeigt wird [...] Auf dem iPhone.“).
+ * Unter FEST_UNTER_BREITE_PX weicht der geschlossene Rahmen Inhalts-Knöpfen,
+ * Preisen und Pfeilen weder aus noch wird er ausgeblendet; er hebt sich nur
+ * über eine sichtbare Kaufleiste. Desktop behält das Ausweichen von #80.
+ * Regel, Preis und Rückweg (KNOPF_FEST_AN = false): lib/kaufknopf-chat.js,
+ * knopfStehtFest.
  */
 
 // Modulweit statt je Effekt: der Rahmen überlebt Client-Navigationen (er hängt
@@ -278,6 +288,7 @@ export function KaufknopfChatSignal() {
         pfeile,
         preise,
         fensterHoehe,
+        fensterBreite: window.innerWidth,
         angedockt,
       });
       const unterdruecken = !frei && !chatBeruehrt;
