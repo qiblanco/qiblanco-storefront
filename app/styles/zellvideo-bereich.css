@@ -7,12 +7,24 @@
  */
 .zvb {
   display: grid;
+  grid-template-areas: 'kopf' 'film' 'text';
   gap: var(--tas-s-3);
   margin: 0 0 var(--tas-s-12);
-  align-items: center;
+}
+.zvb-kopf {
+  grid-area: kopf;
+}
+.zvb-film {
+  grid-area: film;
+}
+.zvb-text {
+  grid-area: text;
 }
 .zvb-film {
   margin: 0;
+}
+.zvb-text > .zvb-zahlen:first-child {
+  margin-top: 0;
 }
 .zvb-video {
   width: 100%;
@@ -100,10 +112,18 @@
 @media (min-width: 750px) {
   .zvb {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--tas-s-6);
+    grid-template-areas: 'film kopf' 'film text';
+    grid-template-rows: auto 1fr;
+    column-gap: var(--tas-s-6);
+    row-gap: var(--tas-s-2);
+  }
+  .zvb-kopf {
+    align-self: end;
   }
   .zvb--ohne-video {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'kopf' 'text';
+    grid-template-rows: auto;
     max-width: 760px;
   }
   .zvb-titel {
