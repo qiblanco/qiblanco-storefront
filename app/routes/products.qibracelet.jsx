@@ -12,6 +12,13 @@ import {konfiguratorAn, ladeProduktSeite} from '~/lib/produkt-seite-laden.server
 import {AlphaVorlage} from '~/components/product-pages/AlphaVorlage';
 import {ZellvideoBereich} from '~/components/reusables/ZellvideoBereich';
 import zellvideoStyles from '~/styles/zellvideo-bereich.css?url';
+import {
+  TrageBereich,
+  BewertungenHoch,
+  StimmenOhneBewertungen,
+} from '~/components/reusables/TrageBereich';
+import trageStyles from '~/styles/trage-bereich.css?url';
+import elinaBewegungStyles from '~/styles/elina-bewegung.css?url';
 import * as ALPHA_DATEN from '~/components/product-pages/qibracelet-alpha-daten';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
@@ -21,7 +28,6 @@ import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
 import {
   AlphaFaqMitRate,
-  AlphaStimmen,
   AlphaVergleich,
   AlphaWissen,
 } from '~/components/product-pages/AlphaVorlageSlots';
@@ -148,6 +154,8 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
       <link rel="stylesheet" href={faqStyles} />
       <link rel="stylesheet" href={alphaSlotStyles} />
       <link rel="stylesheet" href={zellvideoStyles} />
+      <link rel="stylesheet" href={elinaBewegungStyles} />
+      <link rel="stylesheet" href={trageStyles} />
       <AlphaVorlage
         product={product}
         daten={ALPHA_DATEN}
@@ -165,8 +173,11 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
           ),
           wissen: (
             <>
-              {/* Zellvideo-Bereich (Christian 16.11.2026): erstes Element des Slots. */}
+              {/* Reihenfolge (Christian 16.11.2026, 09:50/09:52): erst „So sieht es an dir aus“,
+                  dann die Zellvideos, dann die Google-Bewertungen (hochgezogen), dann der Rest. */}
+              <TrageBereich handle="qibracelet" />
               <ZellvideoBereich handle="qibracelet" />
+              <BewertungenHoch />
               <AlphaWissen
                 kapitel={ALPHA_DATEN.WISSEN.kapitel}
                 studien={ALPHA_DATEN.WISSEN.studien}
@@ -174,7 +185,7 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
               />
             </>
           ),
-          stimmen: <AlphaStimmen daten={ALPHA_DATEN.STIMMEN_GOOGLE} igProdukt="QiBracelet" />,
+          stimmen: <StimmenOhneBewertungen daten={ALPHA_DATEN.STIMMEN_GOOGLE} igProdukt="QiBracelet" />,
           faq: <AlphaFaqMitRate daten={ALPHA_DATEN.FAQ} product={product} />,
         }}
       />
