@@ -191,6 +191,25 @@ test('ANKER-ARM: optionale H3-Anker sind eindeutig, und der Hub rendert sie als 
   }
 });
 
+test('High Vibe: die Karte trägt die Kundenfrage als Überschrift, der Begriff bleibt (KI-Lernschleife)', () => {
+  // ki_lernschleife.py ziel sucht „Was heißt High Vibe?" wörtlich als
+  // Überschrift (lexikon-abschnitt:de-beg-lex-high-vibe). Umgetitelt wird die
+  // bestehende Karte, keine zweite daneben; Schema-Name und 301-Ziel
+  // (#lexikon-high-vibe am <li>) bleiben.
+  const e = LEXIKON.find((x) => x.slug === 'lexikon-high-vibe');
+  assert.ok(e, 'Der Eintrag lexikon-high-vibe fehlt');
+  assert.equal(e.begriff, 'High Vibe');
+  assert.equal(e.ueberschrift, 'Was heißt High Vibe?');
+  assert.equal(e.anker, 'was-heisst-high-vibe');
+  assert.equal(LEXIKON.filter((x) => /high vibe/i.test(x.ueberschrift || x.begriff)).length, 1,
+    'High Vibe steht als zweite Karte daneben');
+  const hub = fs
+    .readFileSync(path.join(WURZEL, 'app', 'components', 'campaign', 'LexikonHub.jsx'), 'utf8')
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ');
+  assert.equal((hub.match(/\{?e\.ueberschrift \|\| e\.begriff\}?/g) || []).length, 2,
+    'der Hub rendert die Überschrift nicht in beiden Kartenformen');
+});
+
 test('hexagonales Wasser: Karte auf die BESTEHENDE Seite, keine zweite Lexikon-Seite (KI-Lernschleife)', () => {
   // ki_lernschleife.py ziel sucht den Begriff wörtlich als Überschrift
   // (lexikon-eintrag:hexagonales-wasser). Die Karte zeigt auf die seit

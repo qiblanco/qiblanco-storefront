@@ -114,12 +114,15 @@ export function LexikonHub() {
                       Überschrift, Sprungziel /pages/lexikon#<anker>. Die id
                       des <li> bleibt der slug, auf ihr landen die 301 der
                       zusammengelegten Begriffsseiten. */}
+                  {/* `e.ueberschrift` (optional, seit 2026-11-16): die
+                      Kundenfrage als Kartenüberschrift, z. B. „Was heißt High
+                      Vibe?". Ohne sie steht der Begriff da. */}
                   <h3 id={e.anker || undefined}>
                     {hier ? (
-                      e.begriff
+                      e.ueberschrift || e.begriff
                     ) : (
                       <a className="lex__karte-link" href={adresse(e.pfad)}>
-                        {e.begriff}
+                        {e.ueberschrift || e.begriff}
                       </a>
                     )}
                   </h3>

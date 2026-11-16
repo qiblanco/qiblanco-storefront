@@ -28,10 +28,15 @@
  *   uebertragung_satz: string, uebertragung_begruendung: string[],
  *   grenze: string, grenze_begruendung: string[], quellen: string[],
  *   verlinkt_auf: string[], pfad: string, anker?: string,
- *   frage?: string}} LexikonEintrag
+ *   frage?: string, ueberschrift?: string}} LexikonEintrag
  *
  * `anker` (optional, seit 2026-11-10): id an der H3 der Hub-Karte. Fehlt er,
  * trägt nur das <li> eine id (den slug).
+ *
+ * `ueberschrift` (optional, seit 2026-11-16): Text der H3 der Hub-Karte, wenn
+ * die Kundenfrage statt des nackten Begriffs darüber stehen soll. Der Name des
+ * Begriffs (`begriff`, DefinedTerm.name im Schema) bleibt davon unberührt; die
+ * Definition direkt darunter ist die Antwort auf die Frage (GEO K1, Muster D1).
  */
 
 /**
@@ -318,8 +323,17 @@ export const LEXIKON = [
     "pfad": "/pages/lexikon-hohe-frequenz-schwingen"
   },
   {
+    // DIE KARTENÜBERSCHRIFT IST DIE KUNDENFRAGE (seit 2026-11-16, Job
+    // 20261116-ki-lernschleife-bau-dach-0d77f1, KI-Lernschleife
+    // lexikon-abschnitt:de-beg-lex-high-vibe). 17 von 17 KI-Antworten auf
+    // „Was heißt High Vibe?" nannten uns nicht; die Frage stand auf keiner
+    // indexierten Seite als Überschrift. Der Abschnitt wird umgetitelt statt
+    // verdoppelt: die Definition darunter ist die Antwort, der Begriff bleibt
+    // „High Vibe" (Schema, 301-Ziel #lexikon-high-vibe am <li>).
     "slug": "lexikon-high-vibe",
     "begriff": "High Vibe",
+    "ueberschrift": "Was heißt High Vibe?",
+    "anker": "was-heisst-high-vibe",
     "definition": "«High Vibe» ist ein Kurzwort für einen guten inneren Zustand. Es kommt von vibration und bezeichnet keine messbare Schwingung.",
     "gebrauch": [
       "«High Vibe» beschreibt einen Menschen, einen Raum oder einen Tag als klar, offen und leicht. Menschen benutzen es für sich selbst, für Orte und für die Stimmung in einer Gruppe.",

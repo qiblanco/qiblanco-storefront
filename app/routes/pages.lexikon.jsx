@@ -70,7 +70,7 @@ const BESCHREIBUNG =
  * NUR_ROUTE_SEITEN im selben Commit nach.
  */
 const VEROEFFENTLICHT = '2026-09-15';
-const GEAENDERT = '2026-11-14';
+const GEAENDERT = '2026-11-16';
 
 export function links() {
   return [
