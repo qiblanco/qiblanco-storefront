@@ -10,6 +10,8 @@ import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import {entscheideSeitenExperiment} from '~/lib/experiment-weiche.server';
 import {konfiguratorAn, ladeProduktSeite} from '~/lib/produkt-seite-laden.server';
 import {AlphaVorlage} from '~/components/product-pages/AlphaVorlage';
+import {ZellvideoBereich} from '~/components/reusables/ZellvideoBereich';
+import zellvideoStyles from '~/styles/zellvideo-bereich.css?url';
 import * as ALPHA_DATEN from '~/components/product-pages/qibracelet-alpha-daten';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
@@ -145,6 +147,7 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
       <link rel="stylesheet" href={wissenStyles} />
       <link rel="stylesheet" href={faqStyles} />
       <link rel="stylesheet" href={alphaSlotStyles} />
+      <link rel="stylesheet" href={zellvideoStyles} />
       <AlphaVorlage
         product={product}
         daten={ALPHA_DATEN}
@@ -161,11 +164,15 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
             />
           ),
           wissen: (
-            <AlphaWissen
-              kapitel={ALPHA_DATEN.WISSEN.kapitel}
-              studien={ALPHA_DATEN.WISSEN.studien}
-              bilder={product?.images?.nodes ?? []}
-            />
+            <>
+              {/* Zellvideo-Bereich (Christian 16.11.2026): erstes Element des Slots. */}
+              <ZellvideoBereich handle="qibracelet" />
+              <AlphaWissen
+                kapitel={ALPHA_DATEN.WISSEN.kapitel}
+                studien={ALPHA_DATEN.WISSEN.studien}
+                bilder={product?.images?.nodes ?? []}
+              />
+            </>
           ),
           stimmen: <AlphaStimmen daten={ALPHA_DATEN.STIMMEN_GOOGLE} igProdukt="QiBracelet" />,
           faq: <AlphaFaqMitRate daten={ALPHA_DATEN.FAQ} product={product} />,
