@@ -234,7 +234,7 @@ const WEITERFUEHREND = [
     // weil der Guide genau sie weiterführt.
     pfad: '/pages/best-wearables-for-longevity-2027',
     frage: 'Messen oder wirken?',
-    titel: 'Die besten Wearables für Longevity (Guide 2027)',
+    titel: 'Die besten Wearables für Longevity und Langlebigkeit (Guide 2027)',
     text: 'Smart Ring, Uhr und Glukosesensor neben Qi Blanco: was misst, was in der Zelle wirkt und wie beides zusammenpasst.',
   },
   {
