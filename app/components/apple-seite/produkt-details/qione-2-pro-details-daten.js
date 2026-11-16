@@ -240,8 +240,8 @@ export const QIONE_2_PRO_DETAILS = Object.freeze([
     art: 'fakten',
     titel: 'Gebaut für ein ganzes Leben.',
     kacheln: [
-      {zahl: 'Jahrzehnte', titel: 'Robust', satz: 'Kein Akku, keine Elektronik. Nichts, das leer wird.'},
-      {zahl: 'Wasserfest', titel: 'Überall mit dir', satz: 'Sauna, Meer, Chlor, Schweiß, Sonne. Er bleibt dran.'},
+      {zahl: 'Jahrzehnte', titel: 'Hält ein Leben lang', satz: 'Kein Akku, keine Elektronik. Dein QiOne® 2 Pro wird nie leer.'},
+      {zahl: 'Wasserfest', titel: 'Du legst ihn nie ab', satz: 'Sauna, Meer, Chlor, Schweiß, Sonne: Dein QiOne® 2 Pro bleibt an dir.'},
       {zahl: '8×', titel: 'Leistungsvolumen', satz: 'Achtmal so viel wie der QiOne® 1.'},
     ],
   },

@@ -119,19 +119,34 @@ export const BOX = {
 export const KETTE = null;
 export const KETTE_GOLD = null;
 
+/*
+ * Karten-Bereich WIRKUNG statt LEBENSDAUER (Christian 16.11.2026 17:20: „ich
+ * hätte gern, dass dieser Bereich für die Wirkung konzipiert wird, also was
+ * erhält der Kunde?“). Vorn die Wirkung; Lebensdauer, Material, Stückzahl und
+ * Herkunft bleiben als kleine Vertrauenszeile darunter (vertrauen), nicht
+ * gelöscht. Job 20261116-prio2-produktseiten-wirkung-statt-lebensdauer-….
+ */
 export const FAKTEN = {
-  ueberschrift: 'Einmal kaufen. Für ein Leben gebaut.',
+  ueberschrift: 'Was das QiBracelet® für dich tut.',
   kacheln: [
-    {icon: 'dauer', zahl: 'Jahrzehnte', satz: 'Lebensdauer. Aus Chirurgenstahl 316L.'},
-    {icon: 'wellen', zahl: 'Sauna · Meer · Pool', satz: 'Es bleibt dran.'},
-    {icon: 'material', zahl: '316L', satz: 'Implantatstahl aus der Orthopädie.'},
-    {icon: 'handgelenk', zahl: 'Über 1.000', satz: 'QiBracelet® im Einsatz.'},
+    {icon: 'zelle', zahl: '5 von 5', satz: 'Zelltypen schützte das QiBracelet® im Labor vor oxidativem Stress.'},
     {
-      icon: 'bayern',
-      zahl: '100 %',
-      satz: 'in Bayern entwickelt und gefertigt. Von Goldschmieden von Hand vollendet.',
+      icon: 'wasser',
+      zahl: 'Kohärentes Wasser',
+      satz: 'Wassermoleküle in der Nähe des Gitterchip® gehen in den kohärenten Zustand über. Das hat starke Vorteile für dein Körperwasser.',
     },
+    {icon: 'studie', zahl: '5', satz: 'publizierte Peer-Review-Studien. Von Fachleuten geprüft, in Fachzeitschriften erschienen.'},
   ],
+  vertrauen: {
+    titel: 'Einmal kaufen. Für ein Leben gebaut.',
+    zeilen: [
+      {icon: 'wellen', text: 'Sauna · Meer · Pool: Du legst es nie ab. Es wirkt, immer.'},
+      {icon: 'dauer', text: 'Jahrzehnte Lebensdauer. Ohne Akku und ohne Elektronik.'},
+      {icon: 'material', text: 'Chirurgenstahl 316L, Implantatstahl aus der Orthopädie.'},
+      {icon: 'menschen', text: 'Über 1.000 QiBracelet® im Einsatz.'},
+      {icon: 'bayern', text: '100 % in Bayern entwickelt und gefertigt. Von Goldschmieden von Hand vollendet.'},
+    ],
+  },
 };
 
 export const RISIKOFREI = {
@@ -161,7 +176,7 @@ export const WISSEN = {
   kapitel: [
     {
       etikett: 'Zelle',
-      titel: 'Fünf von fünf Zelltypen geschützt.',
+      titel: 'Das QiBracelet® schützte im Labor fünf von fünf Zelltypen.',
       absaetze: [
         'Prof. Dr. Peter C. Dartsch hat das QiBracelet® im Labor an fünf Typen menschlicher Zellen getestet. Er setzte sie oxidativem Stress aus.',
         'Bei Leberzellen lag der Schutz bei 47,3 %.',
@@ -173,10 +188,10 @@ export const WISSEN = {
     },
     {
       etikett: 'Gitterchip®',
-      titel: 'Gleiche Leistung wie der QiOne® 2 Pro.',
+      titel: 'Am Handgelenk so stark wie der QiOne® 2 Pro am Hals.',
       absaetze: [
         'Im Ende des Reifs sitzt der Gitterchip® aus 750er Gold.',
-        'Er ist rund 10 % stärker gebaut als im QiOne® 2 Pro, denn das Handgelenk liegt weiter von deiner Körpermitte entfernt.',
+        'Er ist rund 10 % stärker gebaut als im QiOne® 2 Pro, weil dein Handgelenk weiter von deiner Körpermitte entfernt ist. So kommt bei dir dieselbe Wirkung an.',
       ],
       bild: 2,
     },
@@ -187,13 +202,13 @@ export const WISSEN = {
       titel: 'Ruhig schlafen, egal wo du bist.',
       absaetze: [
         'Wasseradern, Erdstrahlen, Gitternetze: Geopathogene Strahlung hat viele Namen. Sie kommt zu Handy, WLAN und 5G hinzu.',
-        'Das QiBracelet® trägst du Tag und Nacht. Es ist immer an deiner Seite.',
+        'Das QiBracelet® trägst du Tag und Nacht. So wirkt es auch, während du schläfst.',
       ],
       bild: 5,
     },
   ],
   studien: {
-    ueberschrift: 'Fünf Veröffentlichungen.',
+    ueberschrift: 'Fünf publizierte Peer-Review-Studien.',
     link_text: 'Alle Studien ansehen',
     href: '/pages/studien',
   },

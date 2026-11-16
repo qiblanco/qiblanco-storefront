@@ -65,8 +65,8 @@ export const VARIANTE = null;
 export const KETTE = {
   handle: 'qione-kette',
   auszeichnung: 'Kette.',
-  titel: 'Trag ihn an seiner eigenen Kette.',
-  zeile: 'Edelstahl, im selben Glanz wie sein Gehäuse. So trägst du ihn jeden Tag auf der Haut.',
+  titel: 'Die passende Kette für deinen QiOne® 2 Pro.',
+  zeile: 'Chirurgenstahl im selben Glanz wie sein Gehäuse. Damit liegt er jeden Tag direkt auf deiner Haut.',
   ohne: {
     titel: 'Ohne Kette',
     text: 'Das Baumwollband liegt bei.',
@@ -154,28 +154,44 @@ export const BOX = {
 };
 
 /* Faktenkacheln (s03 kacheln: groß, Titel, Satz). */
+/*
+ * Karten-Bereich WIRKUNG statt LEBENSDAUER (Christian 16.11.2026 17:20: „ich
+ * hätte gern, dass dieser Bereich für die Wirkung konzipiert wird, also was
+ * erhält der Kunde?“). Vorn die Wirkung; Lebensdauer, Material, Stückzahl und
+ * Herkunft bleiben als kleine Vertrauenszeile darunter (vertrauen), nicht
+ * gelöscht. Job 20261116-prio2-produktseiten-wirkung-statt-lebensdauer-….
+ */
 export const FAKTEN = {
   ueberschrift: null,
   kacheln: [
     {
-      icon: 'dauer',
-      zahl: 'Jahrzehnte',
-      titel: 'Robust',
-      satz: 'Kein Akku, keine Elektronik. Nichts, das leer wird.',
+      icon: 'studie',
+      zahl: '5',
+      titel: 'Publizierte Peer-Review-Studien',
+      satz: 'Von Fachleuten geprüft, in Fachzeitschriften erschienen.',
     },
     {
       icon: 'wellen',
       zahl: 'Wasserfest',
-      titel: 'Überall mit dir',
-      satz: 'Sauna, Meer, Chlor, Schweiß, Sonne. Er bleibt dran.',
+      titel: 'Du legst ihn nie ab',
+      satz: 'Sauna, Meer, Chlor, Schweiß, Sonne: Dein QiOne® 2 Pro bleibt an dir. So wirkt er rund um die Uhr.',
     },
     {
       icon: 'kraft',
       zahl: '8×',
-      titel: 'Der größere Gegenwert',
-      satz: 'Achtmal so viel Leistungsvolumen wie der QiOne® 1. Für jeden Euro bekommst du fast dreimal so viel.',
+      // \u00a0: „1“ bleibt am Namen, kein Waisen-Umbruch im Kacheltitel (gemessen 1440 px).
+      titel: 'Achtmal so viel Leistung wie der QiOne®\u00a01',
+      satz: 'Der QiOne® 2 Pro hat achtmal so viel Leistungsvolumen wie der QiOne® 1. Er kostet knapp das Dreifache. Pro Euro bekommst du also fast dreimal so viel Leistung.',
     },
   ],
+  vertrauen: {
+    titel: 'Einmal kaufen. Für ein Leben gebaut.',
+    zeilen: [
+      {icon: 'dauer', text: 'Hält ein Leben lang. Kein Akku, keine Elektronik. Dein QiOne® 2 Pro wird nie leer.'},
+      {icon: 'material', text: 'Gehäuse aus Chirurgenstahl. Gitterchip® aus einer eigenen 750er Goldlegierung.'},
+      {icon: 'bayern', text: 'Gefertigt in Bayern. Goldschmiede vollenden jedes Detail von Hand.'},
+    ],
+  },
 };
 
 /* 20-Tage-Element: eine Zeile mit Zeichen, Details aufklappbar (s03 vertrauen). */
@@ -208,19 +224,19 @@ export const NUTZEN = {
   spalten: [
     {
       etikett: 'Technologie',
-      titel: 'Er wirkt, solange du ihn trägst.',
-      text: 'Im Kern sitzt der Gitterchip® 2.0 aus einer eigenen 750er Goldlegierung. Seine Atome stehen in fester Ordnung. Diese Ordnung gibt er an das Wasser in deinem Körper weiter.',
+      titel: 'Er wirkt, immer.',
+      text: 'Im Kern sitzt der Gitterchip® 2.0 aus einer eigenen 750er Goldlegierung. Wassermoleküle in seiner Nähe gehen in den kohärenten Zustand über. Das hat starke Vorteile für dein Körperwasser.',
     },
     {
       etikett: 'Wissenschaft',
-      titel: 'Im Labor bleiben Immunzellen stark.',
+      titel: 'Im Labor bleiben Immunzellen mit dem QiOne® 2 Pro stark.',
       text: 'Prof. Dr. Peter C. Dartsch hat menschliche Immunzellen im Labor vier Stunden lang mit Handystrahlung belastet. Ungeschützt fiel ihre Abwehrleistung auf 60,5 Prozent. Mit dem QiOne® 2 Pro hielt sie 84,7 Prozent.',
       link: {text: 'Zur Studie', href: '/pages/studie-immunzellen'},
     },
     {
       etikett: 'Erfahrungen',
       titel: 'Endlich wieder durchschlafen.',
-      text: 'Das schreiben Nutzer über ihn. Sie erzählen auch von mehr Ruhe und mehr Energie.',
+      text: 'Das schreiben Menschen, die den QiOne® 2 Pro tragen. Viele erzählen auch von mehr Ruhe und mehr Energie.',
       // {sterne}: Google-Note live (useGoogleRating, wie der Preisanker).
       link: {text: '{sterne} ★ bei Google', href: 'google'},
     },

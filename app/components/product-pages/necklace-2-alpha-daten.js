@@ -135,7 +135,8 @@ export const FAKTEN = {
       satz: 'Die feinen Striche laufen in Richtung der Kette.',
     },
     {
-      icon: 'wellen',
+      // Zeichen neu statt wellen (Zeichen-Pruefung 16.11.2026: Wellen stehen sonst fuer Wasserfest).
+      icon: 'neu',
       zahl: 'Neu',
       titel: 'Der Unterschied zum Necklace 1',
       satz: 'Necklace 2 hat Logo und 6-fache Laserung am Verschluss. Necklace 1 hat beides nicht.',

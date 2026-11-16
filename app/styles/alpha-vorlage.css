@@ -315,9 +315,57 @@
   margin-bottom: var(--tas-s-2);
 }
 
+/* Vertrauenszeile unter den Wirkungskarten: klein, grau, nachgeordnet. */
+.av-vertrauen {
+  margin-top: var(--tas-s-4);
+  padding-top: var(--tas-s-3);
+  border-top: 1px solid var(--tas-linie);
+}
+.av-vertrauen-titel {
+  margin: 0;
+  font-weight: 600;
+}
+.av-vertrauen-liste {
+  list-style: none;
+  margin: var(--tas-s-2) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--tas-s-2);
+}
+@media (min-width: 750px) {
+  .av-vertrauen-liste {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.av-vertrauen-zeile {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tas-s-2);
+  min-width: 0;
+  color: var(--tas-grau);
+}
+.av-vertrauen-zeile .av-fakt-zeichen {
+  flex: 0 0 auto;
+  width: var(--tas-s-3);
+  height: var(--tas-s-3);
+  margin-bottom: 0;
+}
+
 /* Slot-Überschrift mit Luft zum Inhalt (Box, Fakten, Stimmen). */
 .av-slot > .tas-box-titel {
   margin-bottom: var(--tas-s-3);
+}
+/*
+ * Überschrift -> erste Karte im Hausraster, auch wenn die Überschrift nicht
+ * direkt im Slot steht (Nutzen-Raster „Ruhe, die du immer bei dir trägst.“,
+ * Einsatz „Wohnung. Haus. Praxis.“). Ursache des fehlenden Abstands (Christian
+ * 16.11.2026, Foto 3): `.tas-seite ul { margin: 0 }` in the-alpha-produkt.css
+ * (Spezifität 0,1,1) schlug `.avq-nutzen-raster` und `.av-kacheln` (0,1,0);
+ * gemessen 0 px statt 24 px. Gleiche Luft wie unter jeder Slot-Überschrift.
+ */
+.av-seite .tas-box-titel + .av-kacheln,
+.av-seite .tas-box-titel + .avq-nutzen-raster {
+  margin-top: var(--tas-s-3);
 }
 /* Fünf Kacheln: drei oben, zwei breite unten, keine Lücke im Raster. */
 @media (min-width: 750px) {
