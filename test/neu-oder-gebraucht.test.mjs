@@ -647,16 +647,10 @@ function zitierteAbschnitte(beleg, abschnitte) {
 // Lesern unten steht, ist ein Befund.
 // JE ANGABE, nicht je Pfad (Runde 2): sonst konnte jede Angabe in diesen Pfad
 // ausweichen und war ungeprüft (Garantie-Beleg auf die Versandrichtlinie).
-const EXTERN = {
-  'IM_PREIS:versand': {
-    pfad: '/policies/shipping-policy',
-    grund: 'Shopify-Versandrichtlinie, gepflegt im Shopify-Admin, nicht im Repo',
-  },
-  'FRAGEN:f-preis': {
-    pfad: '/policies/shipping-policy',
-    grund: 'dieselbe Angabe wie IM_PREIS:versand (aus IM_PREIS gebaut)',
-  },
-};
+// Seit 2026-11-17 leer: IM_PREIS:versand und FRAGEN:f-preis zitieren die
+// FAQ-Versandantwort statt der Shopify-Versandrichtlinie (die trug weder
+// Franken noch Tageskurs, WORTTREUE unten) und sind damit im Repo prüfbar.
+const EXTERN = {};
 
 const ALTE_BELEGE = {
   ruecknahme: ['unsere eigene Zusage, auf jeder Seite in der Kopfleiste', null],
@@ -715,7 +709,7 @@ function quelleVon(a) {
     };
   }
   if (a.belegPfad === '/pages/faq') return {art: 'faq', abschnitte: ['FAQ'], text: FAQ_EINTRAEGE};
-  if (a.belegPfad === null && /2025\/1960/.test(a.beleg)) {
+  if (a.belegPfad === null && /2025\/1960|Gewährleistungshinweis/.test(a.beleg)) {
     return {art: 'eu', abschnitte: ['Gewährleistungshinweis'], text: EU_HINWEIS};
   }
   return null;
@@ -810,4 +804,152 @@ test('jede genannte Zahl steht in der zitierten Quelle', () => {
     }
   }
   assert.deepEqual(befunde, []);
+});
+
+// WORTTREUE: jedes Zusagewort einer Angabe steht auch an der Stelle, die ihre
+// Quellzeile zitiert. BELEGTREUE oben prüft nur Zahlen.
+//
+// ANLASS (Folgeauftrag 20261117-nog-quellzeilen-wortzusagen-original-
+// seriennummer-versand aus s03): der K3-Gegenprüfer fand Quellen, die das Wort
+// nicht tragen. „Seriennummer" stand nicht in den AGB, die die Gebrauchtfrage
+// zitierte; die Quelle „Produktseiten … QiHome Air" nannte eine Seite ohne
+// Seriennummer; „Franken zum Tageskurs" steht nicht in der Versandrichtlinie;
+// „Kaufnachweis" zitierte /pages/support, das ihn nur über den Fußhinweis
+// trägt. Live gemessen am 2026-11-17 (Sitemap: 112 Adressen, Startseite): die Wörter stehen
+// in der FAQ-Versandantwort, im Gewährleistungshinweis und als Gravur auf den
+// Produktfotos von QiOne® 2 Pro, QiBracelet® und Qi Alpha®.
+//
+// „Original(ware)" steht auf keiner Seite. Es ist in OFFEN namentlich geführt
+// und an Christian gemeldet; die Zusage bleibt, bis er entscheidet. Eine NEUE
+// Angabe mit einem Zusagewort ohne Quelle macht diesen Test rot.
+const ZUSAGEWORTE = [
+  ['seriennummer', /seriennummer/],
+  // „Originalverpackung" (AGB § 7) ist keine Echtheitszusage.
+  ['original', /(^|[^a-zäöüß])original(ware)?($|[^a-zäöüß])/],
+  ['versandkostenfrei', /versandkostenfrei/],
+  ['franken', /(^|[^a-zäöüß])franken/],
+  ['tageskurs', /tageskurs/],
+  ['zoll', /(^|[^a-zäöüß])zoll/],
+  ['kaufnachweis', /kaufnachweis/],
+  ['bestellnummer', /bestellnummer/],
+];
+const worteIn = (t) =>
+  ZUSAGEWORTE.filter(([, re]) => re.test(String(t).toLowerCase())).map(([w]) => w);
+
+// Produktfotos, deren Bildbeschreibung die Seriennummer nennt. Im Repo, wo der
+// Alt-Text im Repo steht; sonst mit Grund (wie EXTERN). Eine Quellzeile, die
+// ein Produkt ohne Eintrag nennt (QiHome Air), ist ein Befund.
+const PRODUKTFOTO = [
+  [/QiOne(®)?\s*2\s*Pro/, 'QiOne 2 Pro', {
+    extern: ['seriennummer'],
+    grund:
+      'Bildbeschreibung des Shopify-Produktbilds QiOne3.webp („Rückseite des QiOne® 2 Pro ' +
+      'mit Seriennummer und Gravur Made in Germany"), gepflegt im Shopify-Admin; das Foto ' +
+      'zeigt „S/N: A - 00001", live gemessen 2026-11-17',
+  }],
+  [/QiBracelet/, 'QiBracelet', {datei: '../app/components/apple-seite/produkt-details/qibracelet-details-daten.js'}],
+  [/Qi\s*Alpha/, 'Qi Alpha', {datei: '../app/components/campaign/the-alpha-shop-daten.js'}],
+  [/QiHome(®)?\s*Air/, 'QiHome Air', null],
+];
+const altTexte = (datei) =>
+  [...ohneProsa(lies(datei)).matchAll(/\balt[:=]\s*(['"])(.*?)\1/g)].map((m) => m[2]).join('\n');
+
+// Gemeldet, nicht belegt. Je Angabe die Wörter, die (noch) keine Quelle haben.
+const OFFEN = {
+  'VORTEILE:original': {
+    worte: ['original'],
+    grund: 'steht auf keiner Seite von qiblanco.com, an Christian gemeldet (Job 20261117-nog-quellzeilen-wortzusagen-…)',
+  },
+  'FRAGE_GEBRAUCHT:f-gebraucht': {
+    worte: ['original'],
+    grund: 'wie VORTEILE:original („im Original"), an Christian gemeldet',
+  },
+};
+
+/** Die Stücke, in denen die Wörter einer Angabe stehen dürfen: [{wo, text, worte?}]. */
+function wortQuellen(a) {
+  const stuecke = [];
+  const q = quelleVon(a);
+  if (q) {
+    const texte = Array.isArray(q.text) ? q.text.map((t) => t.text) : [q.text];
+    for (const t of texte) stuecke.push({wo: q.abschnitte.join(' + '), text: t});
+  }
+  const fehlt = [];
+  if (/Produktfoto/.test(a.beleg)) {
+    for (const [re, name, ort] of PRODUKTFOTO) {
+      if (!re.test(a.beleg)) continue;
+      if (!ort) fehlt.push(name);
+      else if (ort.extern) stuecke.push({wo: `Foto ${name} (extern)`, text: '', worte: ort.extern});
+      else stuecke.push({wo: `Foto ${name}`, text: altTexte(ort.datei)});
+    }
+  }
+  return {stuecke, fehlt};
+}
+
+function wortBefunde(liste) {
+  const befunde = [];
+  for (const a of liste) {
+    const worte = worteIn(a.behauptung);
+    const {stuecke, fehlt} = wortQuellen(a);
+    for (const name of fehlt) {
+      befunde.push(`${a.wo}:${a.id} — Quelle „${a.beleg}" nennt ein Produktfoto von ${name}, dessen Bild keine Seriennummer trägt`);
+    }
+    for (const w of worte) {
+      const belegt = stuecke.some((s) => (s.worte || worteIn(s.text)).includes(w));
+      if (belegt || OFFEN[`${a.wo}:${a.id}`]?.worte.includes(w)) continue;
+      befunde.push(
+        `${a.wo}:${a.id} sagt „${w}" zu, die Quelle „${a.beleg}" (${a.belegPfad}) trägt das Wort nicht` +
+          (stuecke.length ? ` (gelesen: ${stuecke.map((s) => s.wo).join(', ')})` : ' (im Repo nicht prüfbar)'),
+      );
+    }
+  }
+  return befunde;
+}
+
+test('WORTTREUE: die Leser finden die Zusagewörter (Positivkontrolle)', () => {
+  // Ohne diese Kontrolle wäre ein kaputter Leser still grün.
+  const versand = FAQ_EINTRAEGE.find((e) => /Was kostet der Versand/.test(e.frage));
+  assert.ok(versand, 'FAQ-Versandantwort gefunden');
+  assert.deepEqual(
+    ['versandkostenfrei', 'franken', 'tageskurs', 'zoll'].filter((w) => !worteIn(versand.text).includes(w)),
+    [],
+  );
+  assert.ok(worteIn(EU_HINWEIS).includes('kaufnachweis') && worteIn(EU_HINWEIS).includes('bestellnummer'));
+  for (const [, name, ort] of PRODUKTFOTO) {
+    if (ort?.datei) assert.ok(worteIn(altTexte(ort.datei)).includes('seriennummer'), `Foto ${name}`);
+  }
+  // Die Fehlgriffe, die der Gegenprüfer fand, sind keine Quellen:
+  assert.ok(!AGB.some((x) => worteIn(x.text).includes('seriennummer')), 'die AGB nennen keine Seriennummer');
+  assert.ok(!AGB.some((x) => worteIn(x.text).includes('original')), '„Originalverpackung" ist keine Echtheitszusage');
+  assert.deepEqual(worteIn('Originalverpackung, im Original, Zollgebühren'), ['original', 'zoll']);
+  // Die Prüfung hat Gegenstand: mindestens vier Angaben mit Zusagewort.
+  assert.ok(angaben().filter((a) => worteIn(a.behauptung).length).length >= 4);
+});
+
+test('WORTTREUE: jedes Zusagewort steht in der zitierten Quelle', () => {
+  assert.deepEqual(wortBefunde(angaben()), []);
+});
+
+test('WORTTREUE: die alten Quellzeilen wären rot (Rot vor Grün, im Test selbst)', () => {
+  // Die Quellzeilen, wie die Seite sie bis 2026-11-17 zeigte. Fällt einer
+  // dieser Befunde weg, ist die Prüfung blind geworden, nicht die Seite gut.
+  const alt = {
+    'IM_PREIS:versand': ['Versandrichtlinie', '/policies/shipping-policy'],
+    'VORTEILE:kaufnachweis': ['unser Kundenservice', '/pages/support'],
+    'VORTEILE:original': ['Produktseiten QiOne 2 Pro, QiBracelet, QiHome Air, Qi Alpha®', '/products/qione-2-pro'],
+    'FRAGE_GEBRAUCHT:f-gebraucht': ['AGB: 20-Tage-Zufriedenheitsgarantie und Gewährleistung', '/pages/agb'],
+  };
+  const liste = angaben().map((a) => {
+    const x = alt[`${a.wo}:${a.id}`];
+    return x ? {...a, beleg: x[0], belegPfad: x[1]} : a;
+  });
+  const befunde = wortBefunde(liste).join('\n');
+  assert.match(befunde, /IM_PREIS:versand sagt „franken" zu/);
+  assert.match(befunde, /IM_PREIS:versand sagt „tageskurs" zu/);
+  assert.match(befunde, /VORTEILE:kaufnachweis sagt „kaufnachweis" zu/);
+  assert.match(befunde, /VORTEILE:original sagt „seriennummer" zu/);
+  assert.match(befunde, /FRAGE_GEBRAUCHT:f-gebraucht sagt „seriennummer" zu/);
+  // Und die QiHome-Air-Falle mit „Produktfoto" im Namen:
+  const qihome = {...liste.find((a) => a.id === 'original'), beleg: 'Produktfotos von QiBracelet® und QiHome® Air'};
+  assert.match(wortBefunde([qihome]).join('\n'), /Produktfoto von QiHome Air/);
 });
