@@ -10,6 +10,11 @@ import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import {entscheideSeitenExperiment} from '~/lib/experiment-weiche.server';
 import {konfiguratorAn, ladeProduktSeite} from '~/lib/produkt-seite-laden.server';
 import {AlphaVorlage} from '~/components/product-pages/AlphaVorlage';
+import {ZellvideoBereich} from '~/components/reusables/ZellvideoBereich';
+import zellvideoStyles from '~/styles/zellvideo-bereich.css?url';
+import {TrageBereich, BewertungenHoch} from '~/components/reusables/TrageBereich';
+import trageStyles from '~/styles/trage-bereich.css?url';
+import elinaBewegungStyles from '~/styles/elina-bewegung.css?url';
 import * as ALPHA_DATEN from '~/components/product-pages/qihome-air-alpha-daten';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
 import produktVorlageStyles from '~/styles/the-alpha-produkt.css?url';
@@ -19,7 +24,6 @@ import wissenStyles from '~/styles/the-alpha-shop.css?url';
 import faqStyles from '~/styles/the-alpha-faq.css?url';
 import {
   AlphaFaqMitRate,
-  AlphaStimmen,
   AlphaVergleich,
   AlphaWissen,
 } from '~/components/product-pages/AlphaVorlageSlots';
@@ -29,6 +33,13 @@ import {mitMarkeR} from '~/components/reusables/MarkeR';
  * seit dem 28.09.2026 in QiHomeAirSeite.jsx, weil /pages/qihome-air dieselbe Seite
  * rendert und dieselben Dateien braucht.
  */
+/*
+ * Ohne feste Stimmen-Karten (Christian 16.11.2026): die Google-Bewertungen stehen
+ * hochgezogen im Slot „wissen“. Ohne Slot „stimmen“ fiele AlphaVorlage sonst auf
+ * die alten festen Karten aus STIMMEN zurück.
+ */
+const ALPHA_DATEN_OHNE_FESTE_STIMMEN = {...ALPHA_DATEN, STIMMEN: null};
+
 export function links() {
   // Die Kaufleiste (reusables/Kaufleiste.jsx) steht nur auf der Kaufseite,
   // nicht auf dem Landingpage-Spiegel; ihr Stylesheet lädt deshalb hier.
@@ -143,9 +154,12 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
       <link rel="stylesheet" href={wissenStyles} />
       <link rel="stylesheet" href={faqStyles} />
       <link rel="stylesheet" href={alphaSlotStyles} />
+      <link rel="stylesheet" href={zellvideoStyles} />
+      <link rel="stylesheet" href={elinaBewegungStyles} />
+      <link rel="stylesheet" href={trageStyles} />
       <AlphaVorlage
         product={product}
-        daten={ALPHA_DATEN}
+        daten={ALPHA_DATEN_OHNE_FESTE_STIMMEN}
         ketten={ketten}
         vertrauen={<EuGewaehrleistungsHinweis />}
         slots={{
@@ -166,13 +180,21 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
             </>
           ),
           wissen: (
-            <AlphaWissen
-              kapitel={ALPHA_DATEN.WISSEN.kapitel}
-              studien={ALPHA_DATEN.WISSEN.studien}
-              bilder={product?.images?.nodes ?? []}
-            />
+            <>
+              {/* Reihenfolge (Christian 16.11.2026, 09:50/09:52): erst „So sieht es an dir aus“,
+                  dann die Zellvideos, dann die Google-Bewertungen (hochgezogen), dann der Rest. */}
+              <TrageBereich handle="qihome-air" />
+              <ZellvideoBereich handle="qihome-air" />
+              <BewertungenHoch />
+              <AlphaWissen
+                kapitel={ALPHA_DATEN.WISSEN.kapitel}
+                studien={ALPHA_DATEN.WISSEN.studien}
+                bilder={product?.images?.nodes ?? []}
+              />
+            </>
           ),
-          stimmen: <AlphaStimmen daten={ALPHA_DATEN.STIMMEN_GOOGLE} />,
+          // Google-Bewertungen stehen hochgezogen im Slot „wissen“ (BewertungenHoch);
+          // ohne Instagram-Reihe bleibt der Slot „stimmen“ hier leer.
           faq: <AlphaFaqMitRate daten={ALPHA_DATEN.FAQ} product={product} />,
         }}
       />

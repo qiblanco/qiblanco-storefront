@@ -1,0 +1,135 @@
+/*
+ * zellvideo-bereich.css — Bereich „Zellvideos“ auf den Kaufseiten der Alpha-Vorlage
+ * (Job 20261116-prio2-produktseiten-zellvideo-bereich-je-studie-bracelet-home-
+ * qione2pro-de-us). Nur tas-Tokens und das eine Hausgold (--av-gold), kein
+ * freier Farbwert. Mobil zuerst, ab 750 px zwei Spalten (Video | Text).
+ * Abstand zum folgenden Nutzen-Raster („Ruhe, die du …“): --tas-s-12 unten.
+ */
+.zvb {
+  display: grid;
+  grid-template-areas: 'kopf' 'film' 'text';
+  gap: var(--tas-s-3);
+  margin: 0 0 var(--tas-s-12);
+}
+.zvb-kopf {
+  grid-area: kopf;
+}
+.zvb-film {
+  grid-area: film;
+}
+.zvb-text {
+  grid-area: text;
+}
+.zvb-film {
+  margin: 0;
+}
+.zvb-text > .zvb-zahlen:first-child {
+  margin-top: 0;
+}
+.zvb-video {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--tas-radius);
+  overflow: hidden;
+  background: var(--tas-tinte);
+}
+.zvb-video video,
+.zvb-video img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.zvb-bildzeile {
+  margin: var(--tas-s-1) 0 0;
+  font-size: var(--tas-fs-2);
+  line-height: 1.45;
+  color: var(--tas-grau);
+}
+.zvb-etikett {
+  margin: 0 0 var(--tas-s-1);
+  font-size: var(--tas-fs-2);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--av-gold-tinte, var(--tas-grau));
+}
+.zvb-titel {
+  margin: 0;
+  font-size: var(--tas-fs-h2-handy);
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--tas-tinte);
+}
+.zvb-zahlen {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tas-s-2);
+  margin: var(--tas-s-3) 0;
+}
+.zvb-zahl {
+  margin: 0;
+  padding: var(--tas-s-2);
+  border-radius: var(--tas-radius);
+  background: var(--tas-flaeche);
+}
+.zvb-zahl dt {
+  font-size: var(--tas-fs-5);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--tas-tinte);
+  font-variant-numeric: tabular-nums;
+}
+.zvb-zahl--gold dt {
+  color: var(--av-gold-tinte, var(--tas-tinte));
+}
+.zvb-zahl dd {
+  margin: var(--tas-s-1) 0 0;
+  font-size: var(--tas-fs-2);
+  line-height: 1.4;
+  color: var(--tas-grau);
+}
+.zvb-absatz {
+  margin: 0;
+  font-size: var(--tas-fs-3);
+  line-height: 1.5;
+  color: var(--tas-tinte);
+}
+.zvb-quelle {
+  margin: var(--tas-s-2) 0 0;
+  font-size: var(--tas-fs-2);
+  color: var(--tas-grau);
+}
+.zvb-link {
+  display: inline-block;
+  min-height: 44px;
+  line-height: 44px;
+  font-weight: 600;
+  color: var(--tas-tinte);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (min-width: 750px) {
+  .zvb {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: 'film kopf' 'film text';
+    grid-template-rows: auto 1fr;
+    column-gap: var(--tas-s-6);
+    row-gap: var(--tas-s-2);
+  }
+  .zvb-kopf {
+    align-self: end;
+  }
+  .zvb--ohne-video {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'kopf' 'text';
+    grid-template-rows: auto;
+    max-width: 760px;
+  }
+  .zvb-titel {
+    font-size: var(--tas-fs-5);
+  }
+  .zvb-zahl dt {
+    font-size: var(--tas-fs-6);
+  }
+}
