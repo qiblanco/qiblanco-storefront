@@ -18,6 +18,7 @@ import {ohneProsa} from './_quelltext.mjs';
 
 import {
   BERICHTE_STUDIE,
+  ECHT,
   FRAGEN,
   FREMD,
   KOPF,
@@ -129,6 +130,14 @@ const SICHTBAR = [
   PROFIL_ABSCHNITT.einleitung,
   ...PROFIL_ABSCHNITT.punkte.flatMap((p) => [p.titel, p.text]),
   ...FRAGEN.flatMap((f) => [f.q, f.a]),
+  // Abschnitt „Woran du echte Trustpilot-Bewertungen erkennst" (2026-11-17)
+  ECHT.titel,
+  ECHT.einleitung,
+  ...ECHT.punkte.flatMap((p) => [
+    p.titel,
+    p.pruefen,
+    p.beiUns ? `${p.beiUns.vor}${p.beiUns.link?.text || ''}${p.beiUns.nach || ''}` : '',
+  ]),
 ];
 const ZAHLWORT = '(?:eine[rn]?|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf)';
 const ANZAHL = [
@@ -263,4 +272,39 @@ test('der Scope ist .tpt und fremde Scopes fehlen', () => {
   assert.ok(!/\.rdt\b/.test(CSS));
   assert.ok(!/\.nog\b/.test(CSS));
   assert.match(KOMPONENTE, /className="tpt"/);
+});
+
+// ---------------------------------------------------------------------------
+// Abschnitt „Woran du echte Trustpilot-Bewertungen erkennst" (SEO-Massnahme
+// L26-qi-blanco-auf-trustpil-8b09, 2026-11-17).
+// ---------------------------------------------------------------------------
+const ECHT_KOMPONENTE = ohneProsa(
+  lies('../app/components/reusables/TrustpilotEchtPruefen.jsx'),
+);
+
+test('der Echt-Abschnitt sagt nie „Fake" und nennt keine Fremdnote', () => {
+  const alles = JSON.stringify(ECHT);
+  assert.ok(!/fake/i.test(alles), '„Fake" im sichtbaren Text');
+  assert.ok(!/\d,\d/.test(alles), 'eine Note im Echt-Abschnitt');
+  assert.equal(ECHT.punkte.length, 4);
+});
+
+test('die Sätze „bei uns" hängen an den Profil-Daten', () => {
+  const p = Object.fromEntries(ECHT.punkte.map((x) => [x.id, x]));
+  assert.equal(PROFIL.einladungen === 0, Boolean(p['echt-vermerk'].beiUns));
+  assert.equal(PROFIL.beansprucht === false, Boolean(p['echt-profil'].beiUns));
+  assert.equal(p['echt-name'].beiUns.link.pfad, PROFIL.url);
+});
+
+test('der vierte Punkt verlinkt /pages/bewertungen mit genau diesem Linktext', () => {
+  const l = ECHT.punkte[3].beiUns.link;
+  assert.equal(l.pfad, '/pages/bewertungen');
+  assert.equal(l.text, 'Bewertungen von Elektrosmog-Schutz');
+});
+
+test('Route rendert den Abschnitt, Komponente liegt nicht unter campaign/', () => {
+  assert.match(ROUTE, /<TrustpilotEchtPruefen \/>/);
+  assert.match(ROUTE, /~\/components\/reusables\/TrustpilotEchtPruefen/);
+  assert.match(ECHT_KOMPONENTE, /className="tpt tpt--echt"/);
+  assert.match(ECHT_KOMPONENTE, /rel="noopener noreferrer nofollow"/);
 });
