@@ -910,7 +910,11 @@ export function Layout({children}) {
           Go-live nicht prüfen.
         */}
         {salesbotAktiv && (
-          <SalesbotWidget origin={data.salesbotWidgetOrigin} nonce={nonce} />
+          <SalesbotWidget
+            origin={data.salesbotWidgetOrigin}
+            nonce={nonce}
+            sprache={data?.storefrontSprache}
+          />
         )}
         {metaRumpf}
         {/* Setzt `data-dialog-offen` am <html>, solange eine modale Flaeche

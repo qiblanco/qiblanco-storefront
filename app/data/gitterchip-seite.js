@@ -179,7 +179,7 @@ export const STUFEN = [
       'Aus diesen drei Forschungslinien leiten wir ab, wie der Gitterchip® wirkt. Sein statisches Feld regt Wassermoleküle an, in den geordneten Zustand zu wechseln, den Dr. Warnke beschreibt.',
       'Die Moleküle finden in den Gleichtakt der Domänen nach Prof. Del Giudice. Wo dieses Wasser auf eine Oberfläche trifft, wächst die stabile Schicht, die Prof. Dr. Pollack gemessen hat.',
       'Jede Zelle ist eine solche Oberfläche. Sie ist von Wasser umgeben und besteht selbst zum größten Teil daraus. So entsteht die Kette, die der QiOne® 2 Pro anstößt: Feld, geordnetes Wasser, Zelle.',
-      `Wie deutlich Zellen darauf reagieren, haben wir in ${ZELLSTUDIEN} Laborstudien messen lassen.`,
+      `${ZELLSTUDIEN_GROSS} Laborstudien zeigen, wie deutlich Zellen darauf reagieren: Immunzellen, Darmzellen, Leberzellen und Nervenzellen.`,
     ],
     grafik: {
       typ: 'kette',

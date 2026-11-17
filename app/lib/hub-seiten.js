@@ -300,7 +300,7 @@ export const WV_GRUPPEN = [
         // longevity-2027-messen-vs-zelle, s02): reine Route, in der Sitemap
         // über NUR_ROUTE_SEITEN, kein noindex.
         pfad: '/pages/best-wearables-for-longevity-2027',
-        anker: 'Die besten Wearables für Longevity (Guide 2027)',
+        anker: 'Die besten Wearables für Longevity und Langlebigkeit (Guide 2027)',
         teaser:
           'Smart Ring, Uhr, Glukosesensor und Qi Blanco im Vergleich: was misst, was in der Zelle wirkt und wie beides zusammenpasst.',
         weiter: ['/pages/studien', '/pages/technologie'],

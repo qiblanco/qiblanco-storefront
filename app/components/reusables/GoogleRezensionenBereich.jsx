@@ -112,12 +112,14 @@ export function findeRezensionsZiel() {
  * oben scrollt, fährt den Kopf weiter aus, und die Überschrift wäre wieder
  * verdeckt. Die Reserve trägt gegen BEIDE Zustände; die Totzone gegen einen.
  */
+/** Die Elemente, aus denen messeKopfHoehe die Kopfunterkante bildet. Dieselbe
+ *  Liste beobachtet useKopfHoeheVariable auf Größenänderung. */
+const KOPF_KANDIDATEN = 'header, .header-wrapper, .announcement-bar';
+
 export function messeKopfHoehe() {
   if (typeof document === 'undefined') return 0;
   let unten = 0;
-  for (const el of document.querySelectorAll(
-    'header, .header-wrapper, .announcement-bar',
-  )) {
+  for (const el of document.querySelectorAll(KOPF_KANDIDATEN)) {
     const stil = window.getComputedStyle(el);
     if (stil.position !== 'fixed' && stil.position !== 'sticky') continue;
     const kasten = el.getBoundingClientRect();
@@ -258,6 +260,16 @@ export function scrolleZuRezensionen(ziel) {
  *
  * `anlass`: ändert sich dieser Wert, wird sofort neu gemessen (der Kopf setzt
  * hier seine Leisten-Variante ein, siehe bannerVariante).
+ *
+ * SEIT 2026-11-16 AUCH OHNE SCROLL NACHGEFÜHRT (ResizeObserver auf den Kopf,
+ * dazu document.fonts.ready). Gemessen auf 360 px: beim Scrollen ist der feste
+ * Kopf 150,94 px hoch, oben 140,94 px (`.header` margin-top mit Übergang).
+ * Beim Zurück nach oben las der Scroll-Listener im ersten Frame noch 151 px;
+ * danach schrumpfte der Kopf ohne jedes Ereignis. Die Variable blieb bis zum
+ * nächsten Scroll 10 px zu hoch, der Leerblock unter dem Kopf (app.css
+ * `body > main::before`) wuchs um dieselben 10 px, bündige Heros sprangen
+ * (Gate 12 meldete je Lauf ein anderes Format als pixel-regression).
+ * Job 20261116-storefront-kopfhoehe-stale-leerblock-hero-flattert.
  */
 export function useKopfHoeheVariable(anlass) {
   useEffect(() => {
@@ -280,7 +292,22 @@ export function useKopfHoeheVariable(anlass) {
     window.addEventListener('scroll', anfordern, {passive: true});
     window.addEventListener('resize', anfordern);
     window.addEventListener('orientationchange', anfordern);
+    // Größe des Kopfes selbst: Übergänge, Umbruch der Leiste, später geladene
+    // Schrift. Feuert einmal beim Anmelden und dann nur bei echter Änderung.
+    const beobachter =
+      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(anfordern);
+    if (beobachter) {
+      for (const el of document.querySelectorAll(KOPF_KANDIDATEN)) {
+        beobachter.observe(el);
+      }
+    }
+    let aktiv = true;
+    document.fonts?.ready?.then(() => {
+      if (aktiv) anfordern();
+    });
     return () => {
+      aktiv = false;
+      beobachter?.disconnect();
       window.removeEventListener('scroll', anfordern);
       window.removeEventListener('resize', anfordern);
       window.removeEventListener('orientationchange', anfordern);

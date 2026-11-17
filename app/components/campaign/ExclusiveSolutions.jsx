@@ -77,7 +77,7 @@ function GeldheldenHero() {
             Sichere deine Leistung.
           </h1>
           <p className="ghx-lead">
-            Drei Pakete für alle, die nicht einsteigen, sondern ankommen wollen.
+            Drei Pakete für alle, die gleich ganz ankommen wollen.
           </p>
           <p className="ghx-lead">
             Die gesamte proprietäre Gitterchip<sup>®</sup>-Technologie als komplettes Set
@@ -169,7 +169,7 @@ export const PROBLEM_CARDS = [
   {
     icon: '📡',
     title: 'Dein Zuhause strahlt 24/7',
-    body: 'WLAN-Router, Smartphones, Smart-TVs, Bluetooth-Geräte — ein durchschnittlicher Haushalt hat heute 15–25 strahlende Geräte. Und es werden jedes Jahr mehr.',
+    body: 'Ein durchschnittlicher Haushalt hat heute 15–25 strahlende Geräte: WLAN-Router, Smartphones, Smart-TVs, Bluetooth-Geräte. Und es werden jedes Jahr mehr.',
   },
   {
     icon: '😴',
@@ -179,7 +179,7 @@ export const PROBLEM_CARDS = [
   {
     icon: '👨‍👩‍👧‍👦',
     title: 'Deine Familie ist schutzlos',
-    body: 'Besonders Kinder und ältere Familienmitglieder reagieren empfindlicher auf elektromagnetische Felder. Abschalten ist keine Option — aber Schutz ist möglich.',
+    body: 'Besonders Kinder und ältere Familienmitglieder reagieren empfindlicher auf elektromagnetische Felder. Schutz ist möglich, ohne dass du etwas abschalten musst.',
   },
 ];
 
@@ -825,7 +825,7 @@ export function GeldheldenPakete({products, schild = true}) {
       pillCls: "ghx-pill--gold",
       title: "Fundament",
       discountCode: 'PAKET-FUNDAMENT',
-      lead: "Der Einstieg in die volle Lösung — Schutz für dich und dein Zuhause. Hausstation und Anhänger bieten ein perfektes Preis-Leistungsverhältnis.",
+      lead: "Der Einstieg in die volle Lösung schützt dich und dein Zuhause. Hausstation und Anhänger bieten ein perfektes Preis-Leistungsverhältnis.",
       items: [
         { label: "1 × QiHome® Air" },
         { label: "1 × QiOne® 2 Pro" },
@@ -851,7 +851,7 @@ export function GeldheldenPakete({products, schild = true}) {
       pillCls: "ghx-pill--gold",
       title: "Unabhängig",
       discountCode: 'PAKET-UNABHAENGIG',
-      lead: "Die vollständige Lösung — Hausstation, Anhänger und Armreif erzeugen ein neues, bereinigtes Lebensgefühl. Preis-Leistungs-Sieger.",
+      lead: "Als vollständige Lösung erzeugen QiHome® Air, QiOne® 2 Pro und QiBracelet® ein neues, bereinigtes Lebensgefühl. Preis-Leistungs-Sieger.",
       items: [
         { label: "1 × QiHome® Air" },
         { label: "1 × QiBracelet®", kind: "bracelet", defaultSize: "M" },
@@ -881,7 +881,7 @@ export function GeldheldenPakete({products, schild = true}) {
       pillCls: "ghx-pill--gold",
       title: "Erholungs-Residenz",
       discountCode: 'PAKET-RESIDENZ',
-      lead: "Maximaler Schutz — 3 leistungsstarke QiHome® Air erzeugen ein gigantisches kohärentes Feld für dein Zuhause und Büro. Begleitet mit dem portablen QiOne® 2 Pro und dem edlen QiBracelet® entsteht ein absolutes Luxusgefühl.",
+      lead: "Maximaler Schutz: 3 leistungsstarke QiHome® Air erzeugen ein gigantisches kohärentes Feld für dein Zuhause und Büro. Begleitet mit dem portablen QiOne® 2 Pro und dem edlen QiBracelet® entsteht ein absolutes Luxusgefühl.",
       items: [
         { label: "1 × QiHome® Air" },
         { label: "1 × QiHome® Air" },
@@ -932,7 +932,7 @@ export function GeldheldenPakete({products, schild = true}) {
         <div className="ghx-pakete__head">
           <span className="ghx-pill ghx-pill--white">DIE DREI PAKETE</span>
           <h2 className="ghx-h2" id="ghx-pakete-title">Für diejenigen, die die volle Lösung wollen.</h2>
-          <p className="ghx-sub">Diese Pakete gehen weiter — ein Bündel, das spürbar mehr spart und alles auf einmal liefert.</p>
+          <p className="ghx-sub">Diese Pakete gehen weiter: ein Bündel, das spürbar mehr spart und alles auf einmal liefert.</p>
         </div>
         <div className="ghx-pakete__grid">
           {pakete.map((p) => (

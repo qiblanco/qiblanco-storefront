@@ -23,6 +23,7 @@ import {
   UEBERDECKUNG_ATTRIBUT,
   verschiebungKetteY,
 } from '~/lib/kaufknopf-chat';
+import {SALESBOT_RUECKFALL_ID} from '~/lib/salesbot-widget';
 
 /**
  * CHAT-WIDGET ÜBER DEM KAUFKNOPF — DERSELBE LEITSATZ, VIERTER FALL.
@@ -128,6 +129,16 @@ import {
  * Unterdrückung oben (data-chat-deckt-kaufknopf) bleibt nur der Rückfall, wenn
  * keine Strecke frei ist. Die Auflösung „nach unten“ in den Absätzen davor
  * beschreibt also den Stand bis 01.11.2026. Rückweg: AUSWEICHEN_AN = false.
+ *
+ * AUF HANDY UND TABLET STEHT DAS GESICHT SEIT 16.11.2026 FEST (s06 des
+ * Grossjobs 20261115-prio5-storefront-ios-3d-alle-produktseiten-ghost-weg-
+ * ein-blase-anna-knopf-fest; Christian 15.11.: „das Gesicht [...] faehrt mit
+ * hoch. Vor allem, wenn die Blase angezeigt wird [...] Auf dem iPhone.“).
+ * Unter FEST_UNTER_BREITE_PX weicht der geschlossene Rahmen Inhalts-Knöpfen,
+ * Preisen und Pfeilen weder aus noch wird er ausgeblendet; er hebt sich nur
+ * über eine sichtbare Kaufleiste. Desktop behält das Ausweichen von #80.
+ * Regel, Preis und Rückweg (KNOPF_FEST_AN = false): lib/kaufknopf-chat.js,
+ * knopfStehtFest.
  */
 
 // Modulweit statt je Effekt: der Rahmen überlebt Client-Navigationen (er hängt
@@ -196,7 +207,12 @@ export function KaufknopfChatSignal() {
     const rahmenWaechter = new MutationObserver(() => sofort());
 
     const schreibe = () => {
-      const rahmen = document.getElementById(RAHMEN_ID);
+      // Ohne Annas Rahmen gilt dasselbe für den Kontaktknopf, der bei
+      // ausgefallenem Dienst an ihrer Stelle steht (SalesbotWidget.jsx,
+      // SALESBOT_RUECKFALL_ID): er weicht Kaufknopf und Leiste genauso aus.
+      const rahmen =
+        document.getElementById(RAHMEN_ID) ||
+        document.getElementById(SALESBOT_RUECKFALL_ID);
       if (rahmen !== beobachteterRahmen) {
         rahmenWaechter.disconnect();
         if (rahmen) {
@@ -204,7 +220,15 @@ export function KaufknopfChatSignal() {
         }
         beobachteterRahmen = rahmen;
       }
-      if (rahmen && document.activeElement === rahmen) chatBeruehrt = true;
+      // Nur Annas Rahmen zählt als „Chat berührt“; Fokus auf dem Kontaktknopf
+      // hebt das Ausweichen nicht auf.
+      if (
+        rahmen &&
+        rahmen.id === RAHMEN_ID &&
+        document.activeElement === rahmen
+      ) {
+        chatBeruehrt = true;
+      }
       const angedockt = wurzel.classList.contains(DOCK_KLASSE);
       const fensterHoehe = window.innerHeight;
       // Ruhelage = gemessenes Rechteck ohne die eigene Verschiebung (die
@@ -264,6 +288,7 @@ export function KaufknopfChatSignal() {
         pfeile,
         preise,
         fensterHoehe,
+        fensterBreite: window.innerWidth,
         angedockt,
       });
       const unterdruecken = !frei && !chatBeruehrt;

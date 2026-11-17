@@ -399,6 +399,25 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
       setRezensionenPopupOffen(true);
     }
   }, []);
+  /*
+   * KAKAO-LEISTE (Job 20261117-sterne-nach-apple-und-kakao-umbau-in-deckung):
+   * Seit dem 1:1-Spiegel trägt /pages/crystal-cacao einen eigenen
+   * Bewertungsbereich (#kundenstimmen, data-qb-reviews-section). Der Klick auf
+   * „4,9/5,0 ⭐⭐⭐⭐⭐" lud bis hierher dieselbe Seite neu, und der Besucher blieb
+   * oben stehen (gemessen 13.11.: 5.523 bis 7.613 px über den Stimmen).
+   * Jetzt springt er dorthin, wie auf crystal-cacao.com (crystal D-070).
+   * Trägt die Kakao-Seite keinen Bereich, bleibt es beim Link auf die
+   * Kakao-Startseite: KEIN Popup, denn das zeigt die Qi-Blanco-Rezensionen,
+   * und die gehören nicht in die Kakao-Welt (kakao-zone.js).
+   * Ohne preventDefault navigiert Link wie bisher und setzt dabei selbst
+   * defaultPrevented; die Sterne-Delegation feuert deshalb kein Popup.
+   */
+  const onKakaoLeisteKlick = useCallback((e) => {
+    const ziel = findeRezensionsZiel();
+    if (!ziel) return;
+    e.preventDefault();
+    scrolleZuRezensionen(ziel);
+  }, []);
 
   /*
    * DASSELBE VERHALTEN FÜR JEDE Klasse-S-Sterne-Ansicht DER SEITE, nicht nur
@@ -447,7 +466,12 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           isCacaoPage ? (
             <p>
               <span className="banner-line">
-                {KAKAO_KENNZAHLEN.bewertungSkala} ⭐⭐⭐⭐⭐ - Über{' '}
+                {/* Marker "s" (StarRating.jsx, Sterne-Vertrag): Sprung zum
+                    Bewertungsbereich der Seite, siehe onKakaoLeisteKlick. */}
+                <span data-qb-rating="s">
+                  {KAKAO_KENNZAHLEN.bewertungSkala} ⭐⭐⭐⭐⭐
+                </span>{' '}
+                - Über{' '}
                 {KAKAO_KENNZAHLEN.nutzer} aktive Nutzer
               </span>
               <span className="banner-offer-sep"> - </span>
@@ -475,7 +499,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
             ? '/pages/crystal-cacao'
             : `/products/qione-2-pro#${GOOGLE_REZENSIONEN_ANKER_ID}`
         }
-        onAnnouncementClick={isCacaoPage ? undefined : onRezensionenKlick}
+        onAnnouncementClick={isCacaoPage ? onKakaoLeisteKlick : onRezensionenKlick}
       />
       )}
       {nrEins ? (

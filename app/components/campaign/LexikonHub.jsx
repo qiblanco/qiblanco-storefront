@@ -29,6 +29,29 @@ import {adresse, zusammenlegungFuer} from '~/lib/zusammenlegungen';
  * KEIN KAUFWEG, KEIN PREIS, KEIN KNOPF. Diese Flaeche verkauft nichts; sie
  * erzeugt hoechstens den nächsten Klick.
  */
+/**
+ * KUNDENFRAGEN ALS KARTENÜBERSCHRIFT (seit 2026-11-16, Job
+ * 20261116-ki-lernschleife-bau-dach-0d77f1, KI-Lernschleife
+ * lexikon-abschnitt:de-beg-lex-high-vibe). Steht ein Begriff hier, trägt
+ * seine Karte statt des nackten Begriffs die Frage als H3, mit eigener id.
+ * Die Definition direkt darunter ist die Antwort (GEO K1, Muster D1).
+ * Umgetitelt wird die BESTEHENDE Karte, keine zweite daneben. Begriff,
+ * DefinedTerm.name im Schema und das 301-Ziel (#<slug> am <li>) bleiben.
+ *
+ * WARUM HIER UND NICHT IN app/data/lexikon.js: diese Datei erreicht nur
+ * /pages/lexikon; lexikon.js tragen vier Seiten. Die Frage ist eine Angabe
+ * der Hub-Karte, nicht des Begriffs. Anlass: 17 von 17 ausgewerteten
+ * KI-Antworten auf „Was heißt High Vibe?" nannten uns nicht, und die Frage
+ * stand auf keiner indexierten Seite als Überschrift.
+ * @type {Record<string, {ueberschrift: string, anker: string}>}
+ */
+export const KARTEN_FRAGE = {
+  'lexikon-high-vibe': {
+    ueberschrift: 'Was heißt High Vibe?',
+    anker: 'high-vibe-bedeutung',
+  },
+};
+
 export function LexikonHub() {
   return (
     <div className="lex">
@@ -108,18 +131,23 @@ export function LexikonHub() {
             {LEXIKON.map((e) => {
               const hier =
                 zusammenlegungFuer(e.pfad)?.ziel === '/pages/lexikon';
+              const kf = KARTEN_FRAGE[e.slug];
+              const titel = kf?.ueberschrift || e.begriff;
+              const hAnker = kf?.anker || e.anker;
               return (
                 <li key={e.slug} id={e.slug} className="lex__karte">
                   {/* `e.anker` (optional, seit 2026-11-10): eigene id an der
                       Überschrift, Sprungziel /pages/lexikon#<anker>. Die id
                       des <li> bleibt der slug, auf ihr landen die 301 der
                       zusammengelegten Begriffsseiten. */}
-                  <h3 id={e.anker || undefined}>
+                  {/* `titel`/`hAnker`: die Kundenfrage aus KARTEN_FRAGE
+                      (seit 2026-11-16), sonst Begriff und `e.anker`. */}
+                  <h3 id={hAnker || undefined}>
                     {hier ? (
-                      e.begriff
+                      titel
                     ) : (
                       <a className="lex__karte-link" href={adresse(e.pfad)}>
-                        {e.begriff}
+                        {titel}
                       </a>
                     )}
                   </h3>

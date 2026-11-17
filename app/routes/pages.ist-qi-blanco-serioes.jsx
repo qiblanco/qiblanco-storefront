@@ -62,8 +62,8 @@ if (!SEITE) {
   );
 }
 
-const TITEL = "Ist Qi Blanco seriös? | Qi Blanco";
-const BESCHREIBUNG = "Ja, und du kannst es selbst prüfen: Qi Blanco ist ein eingetragenes Unternehmen aus Maßbach, mit fünf veröffentlichten Laborarbeiten, echten Google-Bewertungen und 20 Tagen zum Testen.";
+const TITEL = "Ist Qi Blanco seriös? Fünf Merkmale für Elektrosmog-Schutz";
+const BESCHREIBUNG = "Ja, prüf es selbst: eingetragenes Unternehmen, 20 Tage Rückgabe, fünf veröffentlichte Arbeiten. So erkennst du einen seriösen Anbieter für Elektrosmog-Schutz.";
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -72,7 +72,7 @@ const BESCHREIBUNG = "Ja, und du kannst es selbst prüfen: Qi Blanco ist ein ein
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-16';
-const GEAENDERT = '2026-10-17';
+const GEAENDERT = '2026-11-15';
 
 export function links() {
   // Nach fragen.css: die Seitendatei bringt den Trustpilot-Kopf in die
