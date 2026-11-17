@@ -97,8 +97,8 @@ export function TrageBereich({handle}) {
       <div className="trb-knoepfe">
         <button
           type="button"
-          className="trb-knopf trb-knopf--zurueck"
-          aria-label={b.zurueck}
+          className="trb-knopf trb-knopf--vorher"
+          aria-label={b.vorher}
           disabled={rand.anfang}
           onClick={() => blaettern(-1)}
         >
@@ -119,8 +119,8 @@ export function TrageBereich({handle}) {
 }
 
 /*
- * Google-Bewertungen hochgezogen (Christian 16.11.2026, 09:52: „danach muesste
- * aus meiner Sicht diese Google-Bewertungs-Slider kommen. Der muesste
+ * Google-Bewertungen hochgezogen (Christian 16.11.2026, 09:52: „danach müsste
+ * aus meiner Sicht diese Google-Bewertungs-Slider kommen. Der müsste
  * hochgezogen werden, der ist zu tief.“): dieselbe Leiste wie in AlphaStimmen,
  * jetzt direkt nach Trage- und Zellvideo-Bereich. Damit sie nicht doppelt
  * steht, nutzen die drei Kaufseiten im Slot „stimmen“ StimmenOhneBewertungen

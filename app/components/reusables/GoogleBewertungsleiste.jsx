@@ -140,7 +140,7 @@ export function GoogleBewertungsleiste({
         </h2>
       )}
       {/* Nutzerzeile (Christian 17.11.2026 ~08:50 Bangkok): „Hier haette ich gerne
-          unter 4.8 ergaenzt: + 14.000 aktive Nutzer. Und das als Standard fuer
+          unter 4.8 ergänzt: + 14.000 aktive Nutzer. Und das als Standard für
           diesen Baustein." Steht deshalb HIER, in der einen Komponente, und
           erscheint auf jeder Seite, die die Leiste rendert. Zahl aus derselben
           Quelle wie überall (QIBLANCO_KENNZAHLEN), nie fest getippt.

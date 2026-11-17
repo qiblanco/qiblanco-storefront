@@ -6,13 +6,13 @@
  * Zuschnitt 1080×1350 (4:5), selbst gehostet per medien-hosting/bin/cdn-publish (Bereich produkt-trage-bereich).
  * Alt-Texte beschreiben nur, was zu sehen ist (kein Wirkversprechen).
  * r2 17.11.2026 (Christian 16.11. 17:30/17:40): immer die ganze Person, Style wie QiOne, verschiedene Models;
- * QiHome Air erst EIN Solo-Foto mit Steckdose, dann Personen, keine Terrasse. Auswahl: gross/<r2-job>/galerie/auswahl.json.
+ * QiHome Air erst EIN Solo-Foto mit Steckdose, dann Personen, keine Terrasse. Auswahl: galerie/auswahl.json im jobdaten-Ordner des r2-Jobs.
  * 17.11.2026 (Christian, Freigabe-Umbau 1): KEINE Fotos von Christian und Anna als QiHome-Produktshots. Ersatz: Arbeits-Szene
  * am Schreibtisch mit dem QiHome Air auf dem Tisch (Drive: Shooting QiOne 2 Pro QiBracelet 2025, canggu-1054936/1054907).
  */
 
 const ETIKETT = 'Aus unseren Shootings';
-const ZURUECK = 'Vorheriges Foto';
+const VORHER = 'Vorheriges Foto';
 const WEITER = 'Nächstes Foto';
 
 const BEREICHE = {
@@ -53,5 +53,5 @@ const BEREICHE = {
 export function trageBereich(handle) {
   const b = BEREICHE[handle];
   if (!b) return null;
-  return {etikett: ETIKETT, zurueck: ZURUECK, weiter: WEITER, ...b};
+  return {etikett: ETIKETT, vorher: VORHER, weiter: WEITER, ...b};
 }

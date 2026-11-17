@@ -135,7 +135,7 @@ export const FAKTEN = {
       satz: 'Die feinen Striche laufen in Richtung der Kette.',
     },
     {
-      // Zeichen neu statt wellen (Zeichen-Pruefung 16.11.2026: Wellen stehen sonst fuer Wasserfest).
+      // Zeichen neu statt wellen (Zeichen-Prüfung 16.11.2026: Wellen stehen sonst für Wasserfest).
       icon: 'neu',
       zahl: 'Neu',
       titel: 'Der Unterschied zum Necklace 1',

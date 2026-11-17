@@ -9,14 +9,14 @@ import {GoogleIcon} from '~/components/index-components/ReputonWidget';
  * Google-Zeichen und dann von mir aus den Pfeil. Also dass wir das mal
  * einheitlich machen."
  *
- * FORMAT (Standard, beide Shops): Note · fuenf Sterne · G-Zeichen [· Pfeil].
+ * FORMAT (Standard, beide Shops): Note · fünf Sterne · G-Zeichen [· Pfeil].
  * Nie das Wort „bei Google", nie nur ein einzelner Stern. Der Pfeil kommt vom
  * umgebenden Link (z. B. .avq-link::after), nicht von hier.
  * US-Gegenstueck: snippets/qb-google-zitat.liquid im Theme des Global
  * Englisch-Shops.
  *
  * Daten-Texte der Form „{sterne} ★ bei Google" (auch in fremden Datendateien,
- * z. B. BF26) rendern ueber istGoogleZitatText() automatisch in diesem Format,
+ * z. B. BF26) rendern über istGoogleZitatText() automatisch in diesem Format,
  * ohne dass jemand die Datendatei anfassen muss.
  */
 export const GOOGLE_ZITAT_MUSTER = /^\s*\{(sterne|bewertung)\}\s*★?\s*bei Google\s*›?\s*$/;
