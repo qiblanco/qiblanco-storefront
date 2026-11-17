@@ -386,9 +386,14 @@ footer *{
   cursor: pointer;
   transition: 0.2s all linear;
 }
+/* Hover in der Tinte, nicht im Kauf-Gold: --color-accent-primary rgb(242,191,114)
+ * hielt auf hellem Grund nur 1,55 bis 1,68:1 (gemessen 17.11.2026 an allen
+ * Nutzern: Forschung, Gitterchip, Gerätevergleich, Link per E-Mail). Die Tinte
+ * ist die Rolle für Gold als Schrift auf hellem Grund (>= 4,8:1). Alle Nutzer
+ * stehen auf hellem Grund; der crystal-spiegel führt seine eigene Regel. */
 .btn--text:hover {
   text-decoration: none;
-  color: var(--color-accent-primary);
+  color: var(--color-accent-ink);
 }
 
 /* DER GESPERRTE ZUSTAND — auch er ist eine Spielart, und auch sein Fehlen hat
