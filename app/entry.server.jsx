@@ -373,7 +373,6 @@ export default async function handleRequest(
       'https://cdn.shopify.com',
       'https://cdn.grw.reputon.com',
       'https://qiblanco-only-rating-serpapi.vercel.app',
-      'https://qiblanco.activehosted.com',
       'blob:',
       'https://www.googletagmanager.com',
       'https://www.google-analytics.com',
@@ -398,7 +397,6 @@ export default async function handleRequest(
       "'unsafe-inline'",
       'https://cdn.shopify.com',
       'https://*.reputon.com',
-      'https://qiblanco.activehosted.com',
       'https://fonts.googleapis.com',
       /*
        * fonts.bunny.net STEHT HIER BEWUSST NICHT, und das ist seit dem
@@ -473,7 +471,9 @@ export default async function handleRequest(
       // 20.10.2026 gekündigt und aus dem Video-Baustein ausgebaut (Elina
       // EL-20261014-aea9424f, Punkt 4); jedes Video kommt von cdn.shopify.com
       // (app/data/video-quellen.js).
-      'https://qiblanco.activehosted.com',
+      // qiblanco.activehosted.com (ActiveCampaign-Formulare) stand hier und in
+      // script-src/style-src bis zum 17.11.2026. ActiveCampaign ist abgeschaltet,
+      // alle Formulare laufen über den Mail Manager (Elina EL-20261117-190e62ed).
       // Eigener Anmelde-Endpunkt (ac-eingang, Stufe E1 der AC-Ablösung, s11):
       // GET /w (Weiche je Formular) und POST /f/<id>. STELLE 2 VON 2 — die
       // erste ist ANMELDE_ENDPUNKT in app/components/reusables/Anmeldeweiche.jsx.

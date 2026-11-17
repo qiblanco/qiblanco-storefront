@@ -1,5 +1,5 @@
 // Anmeldeweiche ohne ActiveCampaign-Rückfall (Elina EL-20261110-5a9e5746, Punkt 3: "Künftig Formulare/Neueinsteiger
-// nie mehr an den AC-Stopp koppeln"). Hermetisch, ohne Browser.
+// nie mehr an den AC-Stopp koppeln"; seit 17.11.2026 ganz ohne AC-Weg, Elina EL-20261117-190e62ed). Hermetisch, ohne Browser.
 // Ausführen:  node --test app/components/reusables/anmelde-weiche-entscheidung.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -36,9 +36,16 @@ for (const id of BEKANNT) {
   });
 }
 
-test('nur ein ausdrückliches ac zeigt das AC-Formular', () => {
-  assert.deepEqual(weicheEntscheiden('15', {formulare: {15: 'ac'}, anzeige: {15: anzeige('15')}}), {weg: 'ac'});
-  // Vorschau schlägt ac (wie bisher)
+test('auch ein ausdrückliches ac zeigt das eigene Formular, nie AC (EL-20261117-190e62ed)', () => {
+  for (const id of BEKANNT) {
+    const mit = weicheEntscheiden(id, {formulare: {[id]: 'ac'}, anzeige: {[id]: anzeige(id)}});
+    assert.equal(mit.weg, 'eigen', `Formular ${id}`);
+    assert.equal(mit.quelle, 'w');
+    assert.equal(mit.rueckfallAc, false);
+    const ohne = weicheEntscheiden(id, {formulare: {[id]: 'ac'}, anzeige: {}});
+    assert.equal(ohne.weg, 'eigen', `Formular ${id} ohne Satz`);
+    assert.equal(ohne.quelle, 'rueckfallstand');
+  }
   assert.equal(weicheEntscheiden('15', {formulare: {15: 'ac'}, anzeige: {15: anzeige('15')}}, true).weg, 'eigen');
 });
 
@@ -81,7 +88,17 @@ test('rueckfall_ac fehlt oder ist kein true -> kein AC-Rückfall nach dem Absend
     if (r !== undefined) w.rueckfall_ac = r;
     assert.equal(weicheEntscheiden('15', w).rueckfallAc, false, `rueckfall_ac=${String(r)}`);
   }
-  assert.equal(weicheEntscheiden('15', {formulare: {15: 'eigen'}, anzeige: {15: anzeige('15')}, rueckfall_ac: true}).rueckfallAc, true);
+  // Seit 17.11.2026 öffnet auch ein ausdrückliches true keinen AC-Rückfall mehr.
+  assert.equal(weicheEntscheiden('15', {formulare: {15: 'eigen'}, anzeige: {15: anzeige('15')}, rueckfall_ac: true}).rueckfallAc, false);
+});
+
+test('Quelltext: kein AC-Embed mehr in Weiche, Formular-Hülle und Fußzeile (EL-20261117-190e62ed)', () => {
+  for (const datei of ['Anmeldeweiche.jsx', 'ActiveCampaignForm.jsx', join('..', 'Footer.jsx')]) {
+    const q = readFileSync(join(hier, datei), 'utf8');
+    assert.doesNotMatch(q, /activehosted\.com/, datei);
+    assert.doesNotMatch(q, /weg === 'ac'/, datei);
+    assert.doesNotMatch(q, /\bac=\{/, datei);
+  }
 });
 
 test('Kennung aus /w unbrauchbar (leer, Leerzeichen, Objekt) -> Satz aus dem Rückfallstand, nie Satz ohne Kennung', () => {
