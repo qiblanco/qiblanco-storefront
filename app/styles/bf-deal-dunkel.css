@@ -281,3 +281,13 @@
     --vb-schrift: var(--bft-3, 17px);
   }
 }
+
+/* Textknopf (.btn--text, z. B. „Später weitermachen? Link per E-Mail schicken“ im Instagram- und
+ * Facebook-Browser): der Bausatz färbt ihn in --color-dark #4a4741, auf dem Grund #15110d nur 2,03:1
+ * (gemessen 17.11.2026, 1440 und 390). Hier hell wie die übrige Schrift, im Hover Gold. */
+.bf-deal-seite .btn--text {
+  color: var(--bfd-hell);
+}
+.bf-deal-seite .btn--text:hover {
+  color: var(--bfd-gold);
+}
