@@ -7640,21 +7640,27 @@ select.b2b-netto__eingabe {
 /* „+ 14.000 aktive Nutzer" direkt unter der 4,8-Zeile (Christian 17.11.2026, Standard dieses Bausteins):
    dieselbe Typo und Tinte wie „448 Bewertungen" (zweite Stimme), dezent, kein eigener Akzent. Rückt an die
    Kopfzeile heran (s-1 Abstand) und hält zur Bahn denselben Abstand wie vorher die Kopfzeile. */
+/* Freigabe-Umbau 2 (Christian 17.11.2026 ~15:20 Bangkok): „+ 14.000 aktive Nutzer" in DERSELBEN Schrift wie die
+   „4,8" (Groesse, Gewicht, Tinte, Zeilenhoehe der Kopfzeile), damit der Baustein keine zweite Schriftform traegt.
+   US (snippets/qb-google-leiste.liquid) traegt dieselben Werte. Rueckweg: vorige Fassung (Anzahl-Typo, leise). */
 .qb-gbl__nutzer {
   margin: calc(-1 * (var(--qb-gbl-s-3) - var(--qb-gbl-s-1))) 0 var(--qb-gbl-s-3);
-  font-size: var(--qb-gbl-fs-anzahl);
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--qb-gbl-leise);
+  font-size: var(--qb-gbl-fs-titel);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--qb-gbl-tinte);
   text-align: left;
 }
 @media (min-width: 750px) {
   .qb-gbl__titel {
     font-size: var(--qb-gbl-fs-titel-gross);
   }
-  .qb-gbl__google,
-  .qb-gbl__nutzer {
+  .qb-gbl__google {
     font-size: var(--qb-gbl-fs-anzahl-gross);
+  }
+  .qb-gbl__nutzer {
+    font-size: var(--qb-gbl-fs-titel-gross);
   }
   .qb-gbl {
     padding-left: var(--qb-gbl-s-3);

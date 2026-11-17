@@ -7,6 +7,8 @@
  * Alt-Texte beschreiben nur, was zu sehen ist (kein Wirkversprechen).
  * r2 17.11.2026 (Christian 16.11. 17:30/17:40): immer die ganze Person, Style wie QiOne, verschiedene Models;
  * QiHome Air erst EIN Solo-Foto mit Steckdose, dann Personen, keine Terrasse. Auswahl: gross/<r2-job>/galerie/auswahl.json.
+ * 17.11.2026 (Christian, Freigabe-Umbau 1): KEINE Fotos von Christian und Anna als QiHome-Produktshots. Ersatz: Arbeits-Szene
+ * am Schreibtisch mit dem QiHome Air auf dem Tisch (Drive: Shooting QiOne 2 Pro QiBracelet 2025, canggu-1054936/1054907).
  */
 
 const ETIKETT = 'Aus unseren Shootings';
@@ -41,8 +43,8 @@ const BEREICHE = {
     bahnLabel: 'Fotos: wo der QiHome Air steht',
     fotos: [
       {url: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--r2-qihome-air-n1--b103a3eec555.jpg?v=1794875837", alt: "QiHome Air in einer weißen Steckdose an einer Betonwand", zeile: "Einfach in die Steckdose."},
-      {url: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--r2-qihome-air-n2--98f952641550.jpg?v=1794875852", alt: "Paar auf dem Sofa im Wohnzimmer, er hält den QiHome Air in der Hand", zeile: "Klein genug für eine Hand."},
-      {url: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--r2-qihome-air-n3--3b2920dd213b.jpg?v=1794875865", alt: "Lachendes Paar auf einem grauen Sofa, er hält den QiHome Air in der Hand", zeile: "Zu Hause auf dem Sofa."},
+      {url: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--qihome-air-cafe-n2--2dffff4350cd_48e55a03-ba99-4734-b8e2-3c073effc7fe.jpg?v=1794896935", alt: "Mann am Holzschreibtisch mit Tablet, daneben steht der QiHome Air", zeile: "Auch am Schreibtisch dabei."},
+      {url: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--qihome-air-cafe-n3--e08aa28c86af_11dd8c52-14fc-4bc7-89c4-2026482c4ef1.jpg?v=1794896942", alt: "Mann arbeitet am Schreibtisch, vorn steht der QiHome Air", zeile: "Steht einfach neben dir."},
     ],
   },
 };
