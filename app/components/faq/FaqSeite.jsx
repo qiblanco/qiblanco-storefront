@@ -229,6 +229,15 @@ function FaqEinzelfragen() {
             steht, was gut zu wissen ist. Begriffe wie Frequenz oder Elektrosmog
             erklärt das{' '}
             <a href="/pages/lexikon">Lexikon in der Sprache der Physik</a>.
+            {/* Querverweis mit dem Suchbegriff als Linktext (SEO-Maßnahme
+                M-SP-20261025-kann-elektrosmog-den-schlaf-stoeren, 2026-11-17).
+                Er steht im Hub-Inhalt, nicht in der Frageliste: die Liste
+                gehört den Daten und trägt die Frage als Text. */}{' '}
+            Was Schlafstudien zum Funkfeld zeigen, steht unter{' '}
+            <a href="/pages/kann-elektrosmog-den-schlaf-stoeren">
+              Elektrosmog und Schlaf
+            </a>
+            .
           </p>
         </div>
       </section>

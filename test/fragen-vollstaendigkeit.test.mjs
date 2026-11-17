@@ -521,3 +521,62 @@ test('Folgeabsätze ohne eigene Teilfrage gehören zur Antwort der Teilfrage dav
     assert.ok(letzte.a.includes(merkmal), `Merkmal fehlt in der Schema-Antwort: ${merkmal}`);
   }
 });
+
+// SEIT 2026-11-17 (SEO-Maßnahme M-SP-20261025-kann-elektrosmog-den-schlaf-
+// stoeren, Teil A): ein Inhalts-Link (`begruendung_links`, `offen_links`)
+// wird von FrageSeite nur gesetzt, wenn sein Linktext WÖRTLICH in einem
+// Absatz seines Feldes steht (mitTextLink). Fehlt die Wortgruppe, bleibt der
+// Absatz still unverlinkt, und die Seite sieht trotzdem vollständig aus.
+// Die geprüfte Menge kommt aus den Daten, nie als Zahl.
+function inhaltsLinkLuecken(s) {
+  const luecken = [];
+  const {"begruendung": absaetze = [], "begruendung_links": absatzLinks = []} = s;
+  const paare = [
+    ['im Absatz', absaetze, absatzLinks],
+    ['in „gut zu wissen“', s.offen || [], s.offen_links || []],
+  ];
+  for (const [feld, absaetzeDesFelds, links] of paare) {
+    for (const l of links) {
+      if (!l.pfad?.startsWith('/') || !l.text?.trim()) {
+        luecken.push(`${s.slug}: Link ${feld} ohne Pfad oder Linktext`);
+      } else if (!absaetzeDesFelds.some((a) => a.includes(l.text))) {
+        luecken.push(`${s.slug}: Link ${feld} „${l.text}" steht nicht im Text`);
+      }
+    }
+  }
+  return luecken;
+}
+
+test('jeder Inhalts-Link steht mit seinem Linktext wörtlich in einem Absatz', () => {
+  const luecken = FRAGEN.flatMap(inhaltsLinkLuecken);
+  assert.deepEqual(luecken, []);
+});
+
+test('ROT-ARM: ein Inhalts-Link ohne seine Wortgruppe im Absatz wird laut', () => {
+  const attrappe = {
+    slug: 'attrappe',
+    "begruendung": ['Ein Absatz ohne die Wortgruppe.'],
+    "begruendung_links": [{pfad: '/pages/x', text: 'Elektrosmog und Schlaf'}],
+  };
+  assert.equal(inhaltsLinkLuecken(attrappe).length, 1);
+});
+
+test('die Schlaf-Frageseite wird mit „Elektrosmog und Schlaf“ verlinkt und beantwortet die Frage mit „Elektrosmog“', () => {
+  const ZIEL = '/pages/kann-elektrosmog-den-schlaf-stoeren';
+  const schlaf = seiteFuer('kann-elektrosmog-den-schlaf-stoeren');
+  assert.match(schlaf.antwort, /Elektrosmog/, 'Antwortsatz ohne den Suchbegriff');
+  const was = seiteFuer('was-ist-elektrosmog');
+  assert.ok(
+    (was["begruendung_links"] || []).some((l) => l.pfad === ZIEL && l.text === 'Elektrosmog und Schlaf'),
+    'was-ist-elektrosmog verlinkt die Schlafseite nicht mit dem Suchbegriff',
+  );
+  const faq = lies('app', 'components', 'faq', 'FaqSeite.jsx');
+  assert.match(
+    faq,
+    new RegExp(`href="${ZIEL}">\\s*Elektrosmog und Schlaf\\s*</a>`),
+    'FAQ verlinkt die Schlafseite nicht mit dem Suchbegriff',
+  );
+  for (const q of ['bfs_haushalt', 'bfs_vorsorge_hff']) {
+    assert.ok((schlaf.quellen || []).includes(q), `Quelle ${q} fehlt an der Schlafseite`);
+  }
+});

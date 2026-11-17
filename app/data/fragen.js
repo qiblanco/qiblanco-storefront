@@ -109,6 +109,13 @@ export const QUELLEN = {
     "pruefung": "https://www.bfs.de/DE/themen/emf/nff/anwendung/haushalt-elektro/haushalt-elektro.html",
     "identitaet": "Haushaltsgeräte und Elektroinstallationen"
   },
+  "bfs_vorsorge_hff": {
+    "art": "behoerde",
+    "zitat": "Bundesamt für Strahlenschutz: Vorsorge bei hochfrequenten Feldern",
+    "url": "https://www.bfs.de/DE/themen/emf/hff/schutz/vorsorge/vorsorge_node.html",
+    "pruefung": "https://www.bfs.de/DE/themen/emf/hff/schutz/vorsorge/vorsorge_node.html",
+    "identitaet": "Vorsorge bei hochfrequenten Feldern"
+  },
   "bfs_hff": {
     "art": "behoerde",
     "zitat": "Bundesamt für Strahlenschutz: Hochfrequente elektromagnetische Felder, Einführung",
@@ -315,7 +322,7 @@ export const FRAGEN = [
     "markt": "dach",
     "klasse": "neugier",
     "frage": "Kann Elektrosmog den Schlaf stören?",
-    "antwort": "Den Schlaf stört vor allem das Handy selbst, mit seinem Licht und seinen Nachrichten am Abend, während Schlafstudien beim Funkfeld allein keinen Einfluss gefunden haben.",
+    "antwort": "Für den Elektrosmog von Handy, Router und Sendemast haben Schlafstudien keinen Einfluss auf den Schlaf gefunden, das Handy am Bett stört ihn dagegen mit Licht und Nachrichten am Abend.",
     "begruendung": [
       "Forscher haben den Elektrosmog, also das Funkfeld einer Mobilfunkanlage oder eines Routers, getrennt von dem untersucht, was sonst mit dem Handy ins Schlafzimmer kommt. Dazu gehören das Licht am Abend, die ständige Erreichbarkeit und der letzte Blick aufs Display kurz vor dem Einschlafen.",
       "Beim Funkfeld allein fanden die Studien keinen Einfluss auf den Schlaf, beim Handy selbst dagegen einen deutlichen.",
@@ -379,6 +386,8 @@ export const FRAGEN = [
       "bfs_diskutiert",
       "rubin2005",
       "bfs_hff",
+      "bfs_haushalt",
+      "bfs_vorsorge_hff",
       "who_emf",
       "qb_erfahrungen",
       "qb_kritik"
@@ -703,7 +712,13 @@ export const FRAGEN = [
       "Hochfrequente Felder entstehen überall, wo Technik funkt. Mobilfunk, WLAN und Rundfunk arbeiten mit Frequenzen von einigen hundert Megahertz bis in den Gigahertz-Bereich. Gemessen werden sie als elektrische Feldstärke in Volt pro Meter oder als Leistungsdichte in Watt pro Quadratmeter.",
       "Der Unterschied ist wichtig, weil beide Bereiche anders auf den Körper wirken. Niederfrequente Felder können Nerven und Muskeln reizen, hochfrequente können Gewebe erwärmen, und die Grenzwerte schützen genau vor diesen beiden Wirkungen.",
       "Ein Messgerät zeigt deshalb nie eine Zahl für „Elektrosmog“ an, weil das Wort mehrere Größen mit verschiedenen Einheiten zusammenfasst. Wer eine Belastung beziffern will, sagt dazu, welches Feld er meint, in welcher Einheit und in welchem Abstand.",
-      "Ob eine Studie zu Elektrosmog wissenschaftlich belastbar ist, erkennst du an ein paar Kriterien. Wurde verblindet, und gab es zum Vergleich eine Scheinbestrahlung? Stand der Auswertungsplan vorher fest, und haben genug Menschen teilgenommen, um den gesuchten Effekt überhaupt sehen zu können?"
+      "Ob eine Studie zu Elektrosmog wissenschaftlich belastbar ist, erkennst du an ein paar Kriterien. Wurde verblindet, und gab es zum Vergleich eine Scheinbestrahlung? Stand der Auswertungsplan vorher fest, und haben genug Menschen teilgenommen, um den gesuchten Effekt überhaupt sehen zu können? So gebaut sind etwa die Schlafexperimente zu Elektrosmog und Schlaf: Die Teilnehmer wussten nicht, in welchen Nächten die Anlage sendete."
+    ],
+    "begruendung_links": [
+      {
+        "pfad": "/pages/kann-elektrosmog-den-schlaf-stoeren",
+        "text": "Elektrosmog und Schlaf"
+      }
     ],
     "beleg": [
       "Für ortsfeste Funkanlagen legt die 26. Verordnung zum Bundes-Immissionsschutzgesetz Grenzwerte fest, die von der Frequenz abhängen. Um 900 Megahertz sind es 41 Volt pro Meter, um 1800 Megahertz 58 Volt pro Meter und um 2000 und um 3600 Megahertz je 61 Volt pro Meter.",
