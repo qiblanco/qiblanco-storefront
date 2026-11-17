@@ -34,8 +34,18 @@ export const FRISTEN = [
       'Kaufpreis erstattet. Einen Grund brauchst du nicht. Tragen und ' +
       'benutzen darfst du es in dieser Zeit, dafür ist die Frist da. Die ' +
       'Rücksendung ist für dich kostenlos.',
-    beleg: 'unsere eigene Zusage, auf jeder Seite in der Kopfleiste',
-    belegPfad: null,
+    // QUELLE = der AGB-Abschnitt, in dem die 20 Tage, der volle Kaufpreis
+    // und die kostenlose Rücksendung wörtlich stehen (s03 des Grossjobs
+    // seo-2026-w43-l26-neu-oder-gebraucht-26c6, 2026-11-17). Bis dahin stand
+    // hier „unsere eigene Zusage, auf jeder Seite in der Kopfleiste" (#414);
+    // die Kopfleiste zeigt seit Langem „Weltweit Nr. 1 … Bewertungen ·
+    // Studien" und nennt weder 20 Tage noch Geld zurück (live gerendert
+    // gemessen 2026-11-17). Die Zeile „100 % Geld-zurück-Garantie" in
+    // VORTEILE erbt diesen Beleg; im Abschnitt steht „volle
+    // Geld-zurück-Garantie". test/kauf-tatsachen-belegtreue.test.mjs prüft je
+    // Eintrag, dass die genannte Zahl im zitierten Abschnitt steht.
+    beleg: 'AGB: 20-Tage-Zufriedenheitsgarantie',
+    belegPfad: '/pages/agb',
   },
   {
     id: 'widerruf',
@@ -45,7 +55,11 @@ export const FRISTEN = [
     text:
       '14 Tage Widerruf verlangt das Gesetz für jeden Onlinekauf, bei Qi ' +
       'Blanco sind es 20 Tage.',
-    beleg: 'AGB, § 7 Widerrufsrecht',
+    // ZWEI ZAHLEN, ZWEI ABSCHNITTE: die 14 Tage stehen in § 7
+    // Widerrufsbelehrung („vierzehn Tage"), die 20 Tage im Abschnitt
+    // „Freiwillige 20-Tage-Zufriedenheitsgarantie". Bis 2026-11-17 nannte die
+    // Quelle nur „AGB, § 7 Widerrufsrecht", und dort stehen die 20 nicht.
+    beleg: 'AGB: § 7 Widerrufsbelehrung und 20-Tage-Zufriedenheitsgarantie',
     belegPfad: '/pages/agb',
   },
   {
@@ -117,7 +131,8 @@ const preis = (id) => IM_PREIS.find((p) => p.id === id);
 export const VORTEILE = [
   {
     // Die GEO-Tatsache: die einzige Zeile mit Satz, weil sie die Zahl der
-    // KI-Antwort (14) neben unsere (20) stellt; Quelle AGB § 7.
+    // KI-Antwort (14) neben unsere (20) stellt; Quelle AGB § 7 (14) und
+    // Zufriedenheitsgarantie (20).
     id: 'ruecknahme',
     titel: '20 Tage zu Hause testen',
     text: frist('widerruf').text,
@@ -215,8 +230,11 @@ export const FRAGEN = [
   {
     id: 'f-frist',
     q: 'Wie lange kann ich bei Qi Blanco zurückgeben?',
-    beleg: frist('widerruf').beleg,
-    belegPfad: frist('widerruf').belegPfad,
+    // Die Antwort nennt 20 Tage und die Geld-zurück-Garantie, beides steht
+    // in der Zufriedenheitsgarantie: Beleg der Rücknahme, nicht des
+    // Widerrufs (bis 2026-11-17 „AGB, § 7 Widerrufsrecht" = 14 Tage).
+    beleg: frist('ruecknahme').beleg,
+    belegPfad: frist('ruecknahme').belegPfad,
     a:
       '20 Tage nach Erhalt risikofrei testen, mit 100 % ' +
       'Geld-zurück-Garantie.',
