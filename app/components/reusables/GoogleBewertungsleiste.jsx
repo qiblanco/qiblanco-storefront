@@ -115,6 +115,11 @@ export function GoogleBewertungsleiste({
       </span>
     </>
   );
+  const nutzerZeile = (
+    <span className="qb-gbl__nutzer" data-gbl-nutzer="">
+      + {QIBLANCO_KENNZAHLEN.nutzer} aktive Nutzer
+    </span>
+  );
   return (
     <section
       className={`qb-gbl ${klasse}`.trim()}
@@ -123,10 +128,21 @@ export function GoogleBewertungsleiste({
       data-bewertungsleiste="google"
       data-bewertungen={leiste.length}
     >
+      {/* Nutzerzeile (Christian 17.11.2026 ~08:50 Bangkok): „Hier haette ich gerne
+          unter 4.8 ergänzt: + 14.000 aktive Nutzer. Und das als Standard für
+          diesen Baustein." Steht deshalb HIER, in der einen Komponente, und
+          erscheint auf jeder Seite, die die Leiste rendert. Zahl aus derselben
+          Quelle wie überall (QIBLANCO_KENNZAHLEN), nie fest getippt.
+          Seit 17.11.2026 abends die zweite Zeile IN der Überschrift: so erbt sie
+          Größe, Gewicht und Tinte der 4,8 auf jeder Seite. Als eigener Absatz
+          daneben griff die Absatzregel der Seite (.as-seite :where(p, li)) und
+          setzte sie auf / und den Apple-Seiten auf 17 px, die 4,8 stand bei 24 px.
+          Rückweg: die Zeile wieder als <p> unter die Überschrift. */}
       {titel ? (
         <>
           <h2 id={id} className="qb-gbl__titel">
             {titel}
+            {nutzerZeile}
           </h2>
           <a className="qb-gbl__zeile" href={g.url} aria-label={linkLabel} target="_blank" rel="noopener noreferrer">
             {note}
@@ -137,17 +153,9 @@ export function GoogleBewertungsleiste({
           <a className="qb-gbl__titel-link" href={g.url} aria-label={linkLabel} target="_blank" rel="noopener noreferrer">
             {note}
           </a>
+          {nutzerZeile}
         </h2>
       )}
-      {/* Nutzerzeile (Christian 17.11.2026 ~08:50 Bangkok): „Hier haette ich gerne
-          unter 4.8 ergänzt: + 14.000 aktive Nutzer. Und das als Standard für
-          diesen Baustein." Steht deshalb HIER, in der einen Komponente, und
-          erscheint auf jeder Seite, die die Leiste rendert. Zahl aus derselben
-          Quelle wie überall (QIBLANCO_KENNZAHLEN), nie fest getippt.
-          Rückweg: diesen Absatz entfernen. */}
-      <p className="qb-gbl__nutzer" data-gbl-nutzer="">
-        + {QIBLANCO_KENNZAHLEN.nutzer} aktive Nutzer
-      </p>
       <ReviewsSlider
         reviews={leiste}
         startAnzahl={BEWERTUNGSLEISTE_ERSTE}
