@@ -100,8 +100,11 @@ export function GoogleBewertungsleiste({
   const note = (
     <>
       <span className="qb-gbl__note">{g.komma}</span>
+      {/* Marker "g" (Sterne-Vertrag, StarRating.jsx): die Sterne stehen im Link
+          auf das Google-Profil. Ohne Marker zählten die Wachen sie als
+          Vertragslücke (sterne-farbe-wache: 30 unmarkierte Sterne, 17.11.2026). */}
       <span className="qb-gbl__sterne" aria-hidden="true">
-        <StarRating value={5} size={24} qb="" />
+        <StarRating value={5} size={24} qb="g" />
       </span>
       <span className="qb-gbl__google">
         <GoogleIcon />
