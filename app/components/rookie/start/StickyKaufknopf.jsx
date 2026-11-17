@@ -1,3 +1,4 @@
+import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {useKaufleisteSicht} from '~/lib/kaufleiste-sicht';
 import {stickySichtbar} from './sticky-lage';
 
@@ -6,7 +7,7 @@ import {stickySichtbar} from './sticky-lage';
  *
  * Ziel und Wortlaut wie der Kopf-Knopf von A (HerobannerFeatured: „Jetzt
  * kaufen“ auf /products/qione-2-pro), daneben der Produktname aus derselben
- * Stelle. Kein Preis, keine neue Aussage. Bauform wie der Sticky von LP B
+ * Stelle. Keine neue Aussage; der Preis seit 17.11.2026 (unten). Bauform wie der Sticky von LP B
  * (SchlafZellenSchutz.jsx, StickyKaufknopf): Name links, Knopf rechts.
  *
  * Ein Link, kein Warenkorb-Knopf: die Startseite führt auf die Kaufseite, wie
@@ -29,10 +30,21 @@ import {stickySichtbar} from './sticky-lage';
  * auf dem iPhone mit den Browserleisten wandert („der rote Balken unten hüpft
  * noch“). Am Seitenende bleibt der Knopf stehen; rookie-start.css hält dem
  * Fuß darunter Platz frei.
+ *
+ * GESTALT WIE DIE KAUFLEISTE DER PRODUKTSEITEN (17.11.2026, Christian zur
+ * Startseite: „unten bei dem Buy Now, da ist auch das QiOne 2 Pro noch komisch
+ * formatiert“). Vorher brach „QiOne® / 2 Pro“ mobil zweizeilig um, das ® stand
+ * in voller Größe, kein Preis. Jetzt wie DetailKaufleiste.jsx: Name in einer
+ * Zeile mit kleinem hochgestelltem ® (mitMarkeR), der Preis klein darunter,
+ * der Knopf rechts. Den Preis reicht die Seite herein (StartseiteApple aus
+ * startseite-preise.js, derselbe Wert wie unter den anderen Kaufknöpfen der
+ * Startseite); ohne Preis steht nur der Name. Lage und Abstände setzt das
+ * Stylesheet der Seite (start-b-apple.css bzw. rookie-start.css).
  */
 const ZIEL = '/products/qione-2-pro';
+const NAME = 'QiOne® 2 Pro';
 
-export function StickyKaufknopf({kopfSelektor, kaufknopfSelektor}) {
+export function StickyKaufknopf({kopfSelektor, kaufknopfSelektor, preis = null}) {
   const sichtbar = useKaufleisteSicht(
     () => {
       const kopf = document.querySelector(kopfSelektor);
@@ -60,7 +72,10 @@ export function StickyKaufknopf({kopfSelektor, kaufknopfSelektor}) {
     >
       {sichtbar && (
         <>
-          <span className="qb-rs-sticky__name">QiOne® 2 Pro</span>
+          <span className="qb-rs-sticky__auswahl">
+            <span className="qb-rs-sticky__name">{mitMarkeR(NAME)}</span>
+            {preis ? <span className="qb-rs-sticky__preis">{preis}</span> : null}
+          </span>
           <a className="btn--primary" href={ZIEL}>
             Jetzt kaufen
           </a>
