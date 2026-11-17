@@ -426,6 +426,16 @@ test('der Messcontainer heißt so, dass die Pruefliste ihn findet', () => {
 //    Geld-zurück-Garantie)" allein trägt nicht, wenn davor „halben" stünde.
 //  - Gleiche Dauer, andere Einheit gilt gleich: 2 Wochen = 14 Tage,
 //    2 Jahre = 24 Monate (sonst wurde eine WAHRE Umformulierung rot).
+//
+// RUNDE 4 (vierter Gegenprüfer, 13 grüne Falschaussagen): zusammengesetzte
+// Zahlwörter (fünfzehn, sechzig, vierundzwanzig); Stunden, Kalenderwochen und
+// „Prozent" als Einheit; eine Zahl ohne bekannte Einheit passt nur zu einer
+// Zahl ohne Einheit; die Namensregel gilt nur in der Quelle; „vollen
+// Kaufpreis" trägt 100 % nicht neben einem anderen Anteil; der EU-Hinweis
+// zählt nur mit seinen Zeichenketten, nicht mit Code-Konstanten.
+// GRENZE (benannt, nicht regelbar ohne Sprachverständnis): Verneinung („nicht
+// in bis zu 24"), richtig zitierte Zahl in falschem Zusammenhang („bis zu
+// zwei Jahre länger"), Kernbegriff jenseits eines Kommas.
 const ZAHLWORT = [
   ['vierzehn', '14'],
   ['dreißig', '30'],
@@ -455,6 +465,17 @@ function normiere(t) {
     .replace(/€/g, ' euro')
     .replace(/&nbsp;| /g, ' ')
     .toLowerCase();
+  // Runde 4: zusammengesetzte Zahlwörter zuerst („vierundzwanzig", „fünfzehn",
+  // „sechzig"), sonst blieb „vierundzwanzig" eine 4 und „fünfzehn" gar keine Zahl.
+  const EINER = {ein: 1, zwei: 2, drei: 3, vier: 4, fünf: 5, sechs: 6, sieben: 7, acht: 8, neun: 9};
+  const ZEHNER = {zwanzig: 20, dreißig: 30, vierzig: 40, fünfzig: 50, sechzig: 60, siebzig: 70, achtzig: 80, neunzig: 90};
+  const e = Object.keys(EINER).join('|');
+  const z = Object.keys(ZEHNER).join('|');
+  s = s
+    .replace(new RegExp(`(^|[^a-zäöüß])(${e})und(${z})`, 'g'), (_, a, x, y) => `${a} ${EINER[x] + ZEHNER[y]} `)
+    .replace(/(^|[^a-zäöüß])(drei|vier|fünf|sech|sieb|acht|neun)zehn/g, (_, a, x) =>
+      `${a} ${10 + {drei: 3, vier: 4, fünf: 5, sech: 6, sieb: 7, acht: 8, neun: 9}[x]} `)
+    .replace(new RegExp(`(^|[^a-zäöüß])(${z})`, 'g'), (_, a, y) => `${a} ${ZEHNER[y]} `);
   for (const [wort, ziffer] of ZAHLWORT) {
     // Als Wortanfang: „vierzehntägiges", „zweijährige", „zwei Jahre".
     s = s.replace(new RegExp(`(^|[^a-zäöüß])${wort}`, 'g'), `$1 ${ziffer} `);
@@ -469,11 +490,19 @@ function normiere(t) {
   s = s
     .replace(new RegExp(`(^|[^a-zäöüß])ein(e|en|em|er|es)?\\s+(?=${ZEIT})`, 'g'), '$1 1 ')
     .replace(/(^|[^a-zäöüß])ein(?=tägig|jährig|wöchig|monatig)/g, '$1 1 ');
+  // Bruchteile eines Jahres als Monate: „1/2 Jahr", „ein halbes Jahr" = 6 Monate (Runde 4).
+  s = s
+    .replace(/(^|[^a-zäöüß])(ein\s+)?halbes\s+(?=jahr)/g, '$1 1/2 ')
+    .replace(/(?<![\d/])(\d+)\s*\/\s*(\d+)\s+jahr/g, (m, n, d) =>
+      (12 * n) % d === 0 ? ` ${(12 * n) / d} monat` : m,
+    );
   return s.replace(/(\d)\.(\d{3})\b/g, '$1$2');
 }
 
 const EINHEIT = [
   [/^werktag/, 'werktag'],
+  [/^stunde/, 'stunde'],
+  [/^kalenderwoche/, 'woche'],
   [/^(kalendertag|tag|tägig)/, 'tag'],
   [/^(woche|wöchig)/, 'woche'],
   [/^(jahr|jährig)/, 'jahr'],
@@ -497,7 +526,7 @@ function zahlen(t, schonNormiert = false) {
   const s = schonNormiert ? t : ohneMarker(normiere(t));
   const out = new Set();
   for (const m of s.matchAll(/(?<![\d/])(\d+)(?![\d/])\s*-?\s*(%|[a-zäöüß]+)?/g)) {
-    if (m[2] === '%') {
+    if (m[2] === '%' || /^prozent/.test(m[2] || '')) {
       out.add(`${m[1]} %`);
       continue;
     }
@@ -523,9 +552,11 @@ const KERN = [
 ];
 
 /** Satzglieder (Komma, Semikolon, Doppelpunkt, Satzende, „und"), normiert. */
-function satzglieder(t) {
-  return ohneMarker(normiere(t))
-    .replace(/\d+\s*-\s*[a-zäöüß]+-[a-zäöüß-]+/g, ' ') // „20-tage-zufriedenheitsgarantie" ist ein Name
+function satzglieder(t, quelle = false) {
+  const n = ohneMarker(normiere(t));
+  // „20-tage-zufriedenheitsgarantie" ist in der QUELLE ein Name, keine Frist.
+  // In der Angabe zählt „30-Tage-Rückgabe" dagegen als Zahl (Runde 4).
+  return (quelle ? n.replace(/\d+\s*-\s*[a-zäöüß]+-[a-zäöüß-]+/g, ' ') : n)
     .split(/[,;:!?]|\.(?!\d)|\s(?:und|sowie|oder)\s/)
     .map((g) => g.trim())
     .filter(Boolean)
@@ -570,9 +601,18 @@ function kanon(z) {
 
 /** Passt eine Zahl der Angabe zu den Zahlen eines Satzglieds der Quelle? */
 function passt(zahl, glied) {
-  if (zahl === '100 %' && /(^|[^a-zäöüß])vollen\s+kaufpreis/.test(glied)) return true;
+  // „vollen Kaufpreis" trägt 100 % nur, wenn im Glied kein anderer Anteil
+  // steht („50 % vom vollen Kaufpreis", Runde 4).
+  if (
+    zahl === '100 %' &&
+    /(^|[^a-zäöüß])vollen\s+kaufpreis/.test(glied) &&
+    !zahlen(glied, true).some((x) => x.endsWith(' %') && x !== '100 %')
+  )
+    return true;
   const da = zahlen(glied, true);
-  if (!zahl.includes(' ')) return da.some((x) => x.split(' ')[0] === zahl);
+  // Eine Zahl ohne bekannte Einheit passt nur zu einer Zahl ohne Einheit
+  // (Runde 4: „20 Stunden" war nackt und passte zu „20 Tagen").
+  if (!zahl.includes(' ')) return da.includes(zahl);
   return da.map(kanon).includes(kanon(zahl));
 }
 
@@ -586,7 +626,7 @@ function passt(zahl, glied) {
 function gruppeSteht(gruppe, quelle) {
   const teile = Array.isArray(quelle) ? quelle : [{frage: '', text: quelle}];
   return teile.some(({frage, text}) =>
-    satzglieder(text).some(
+    satzglieder(text, true).some(
       (glied) =>
         gruppe.zahlen.every((z) => passt(z, glied)) &&
         gruppe.kerne.every(
@@ -598,7 +638,7 @@ function gruppeSteht(gruppe, quelle) {
 
 /** Steht die Zahl (allein) in der Quelle? Für die Positivkontrolle. */
 function stehtIn(zahl, quelle) {
-  return satzglieder(quelle).some((g) => passt(zahl, g));
+  return satzglieder(quelle, true).some((g) => passt(zahl, g));
 }
 
 /**
@@ -696,7 +736,13 @@ const AGB = agbAbschnitte(lies('../app/routes/pages.agb.jsx'));
 const FAQ_TEXT = FAQ_ALLE.map((f) => `${f.q} ${f.a}`).join('\n');
 const FAQ_EINTRAEGE = FAQ_ALLE.map((f) => ({frage: f.q, text: `${f.q}. ${f.a}`}));
 // Ohne Kommentare: gezählt wird der ausgelieferte Wortlaut, nicht die Begründung daneben.
-const EU_HINWEIS = ohneProsa(lies('../app/lib/eu-gewaehrleistungslabel.js'));
+// Nur die Zeichenketten der Datei (der ausgelieferte Wortlaut), nicht ihr Code:
+// sonst belegten Konstanten wie `qr_mindestkante_mm = 20` „20 Stunden" (Runde 4).
+const EU_HINWEIS = [
+  ...ohneProsa(lies('../app/lib/eu-gewaehrleistungslabel.js')).matchAll(/'((?:[^'\\\n]|\\.)*)'/g),
+]
+  .map((m) => m[1])
+  .join('');
 
 /** Der Quelltext, den eine Quellzeile zitiert, oder null (nicht prüfbar). */
 function quelleVon(a) {
@@ -766,6 +812,14 @@ test('die Leser finden ihre Quellen (Positivkontrolle der Zerlegung)', () => {
   assert.ok(!gruppeSteht({zahlen: ['500 euro', '24'], kerne: []}, FAQ_EINTRAEGE));
   assert.ok(!stehtIn('100 %', 'den halben Kaufpreis zurück (volle Geld-zurück-Garantie)'));
   assert.ok(stehtIn('2 woche', ohneVerweise(p7.text, '7')) && stehtIn('24 monat', EU_HINWEIS), 'gleiche Dauer, andere Einheit');
+  // Runde 4 (vierter Gegenprüfer):
+  assert.deepEqual(zahlen('vierundzwanzig, fünfzehn Tage, sechzig Tage, einundzwanzig Tage'), ['24', '15 tag', '60 tag', '21 tag']);
+  assert.deepEqual(zahlen('20 Stunden, 20 Kalenderwochen, 3 Prozent'), ['20 stunde', '20 woche', '3 %']);
+  assert.ok(!stehtIn('20 stunde', gar.text) && !stehtIn('20', gar.text), 'nackte oder fremde Einheit passt nicht zu 20 Tagen');
+  assert.deepEqual(zahlen(satzglieder('Mit der 30-Tage-Rückgabe testen')[0], true), ['30 tag']);
+  assert.ok(!stehtIn('100 %', 'erhalten 50 % vom vollen Kaufpreis zurück'));
+  assert.deepEqual(zahlen('Mindestens 1/2 Jahr, ein halbes Jahr'), ['6 monat']);
+  assert.ok(!/qr_mindestkante|25\.4/.test(EU_HINWEIS) && /mindestens zwei Jahren/.test(EU_HINWEIS));
   // Die Prüfung hat Gegenstand: mindestens die drei AGB-Angaben der Fristen.
   assert.ok(angaben().filter((a) => a.belegPfad === '/pages/agb').length >= 4);
 });
