@@ -25,12 +25,12 @@ import {
   GOOGLE_REZENSIONEN_ANKER_ID,
 } from '~/components/reusables/GoogleRezensionenBereich';
 import {MarkeR} from '~/components/reusables/MarkeR';
+import {GoogleZitat} from '~/components/reusables/GoogleZitat';
 import {
   QI_ALPHA_FREISCHALTUNG_MS,
   QI_ALPHA_LP,
   NR_EINS_TEXT,
   STUDIEN_ANZAHL,
-  STUDIEN_SEITE,
   bannerVariante,
   istFreigeschaltet,
   istStartseite,
@@ -1587,9 +1587,13 @@ function AnnouncementBanner({announcement, link, onAnnouncementClick, variante, 
 function NrEinsBanner({onRezensionenKlick, attr, start = false}) {
   const g = useGoogleRating();
   const anzahl = Number(g.total).toLocaleString('de-DE');
-  const onClick = (e) => {
-    if (e.target?.closest?.('[data-qb-rating="s"]')) onRezensionenKlick(e);
-  };
+  /* Klick auf den GANZEN Banner = sanfter Scroll zum Google-Bewertungsbereich
+     dieser Seite (Christian 17.11.2026 ~08:55 Bangkok: „wenn man auf diesen
+     Banner draufklickt, dann kommt ein Scroll-Down zu dieser Bewertungsseite,
+     Bewertungsbereich"). Kein Seitenwechsel; hat die Seite keinen Bereich,
+     öffnet onRezensionenKlick das bestehende Rezensions-Fenster. Vorher führte
+     der Banner zur Studienseite, nur die Sterne sprangen. */
+  const onClick = (e) => onRezensionenKlick(e);
   /* Die Leiste macht den festen Kopf höher. Die Apple-Startseite hält ihren
      Abstand zum Kopf selbst (app.css, Ausnahme 2 bei main::before); damit ihre
      Überzeile nicht unter dem Kopf liegt, rückt sie um die GEMESSENE Höhe
@@ -1616,16 +1620,29 @@ function NrEinsBanner({onRezensionenKlick, attr, start = false}) {
       data-kopfleiste="nr1"
       {...(attr || {})}
     >
-      <Link prefetch="intent" to={STUDIEN_SEITE} onClick={onClick}>
+      <a href={`#${GOOGLE_REZENSIONEN_ANKER_ID}`} onClick={onClick}>
         <p>
           <span className="banner-nr1-aussage">{NR_EINS_TEXT}</span>
           <span className="banner-offer-sep"> · </span>
+          {/* Belege in zwei ganzen Einheiten (Christian 16.11.2026: „5 publizierte
+              Peer-Review-Studien“): passen beide nicht in eine Zeile, bricht die
+              Leiste zwischen ihnen um, nie mitten im Wortlaut und nie abgeschnitten. */}
+          {/* Zweite Zeile (Christian 17.11.2026): „4,8 Sterne … und dann nicht bei
+              Google, sondern das Google-Zeichen … Und dann eben auch ohne Klammer
+              448 Bewertungen" und „5 peer-reviewed Studien". Google-Zitat im
+              einheitlichen Format (GoogleZitat: Note, fünf Sterne, G-Zeichen). */}
           <span className="banner-line banner-nr1-belege">
-            <GoogleSterneBadge /> bei Google ({anzahl} Bewertungen) ·{' '}
-            {STUDIEN_ANZAHL} Studien
+            <span className="ReviewCount" data-qb-rating="s">
+              <GoogleZitat komma={g.komma} klasse="banner-nr1-zitat" />
+            </span>{' '}
+            {anzahl} Bewertungen
+          </span>
+          <span className="banner-nr1-belege banner-nr1-trenner"> · </span>
+          <span className="banner-line banner-nr1-belege banner-nr1-studien">
+            {STUDIEN_ANZAHL} peer-reviewed Studien
           </span>
         </p>
-      </Link>
+      </a>
     </div>
   );
 }

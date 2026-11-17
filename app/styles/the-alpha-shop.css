@@ -283,7 +283,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: var(--z-schwebend);
+  /* Kaufleiste UEBER Annas Rahmen (Christian 17.11.2026, Produktseiten-Freigabe: die Kugel darf den Kauf-Button
+     NIE ueberdecken). Gleiche Stufe hiess: Anna (spaeter im DOM) lag beim Erscheinen der Leiste 50-150 ms ueber deren
+     Knopf, bis das Hochgleiten lief (gemessen 390x844, elementFromPoint = iframe). Eine Stelle ueber der Stufe:
+     Anna gleitet hinter der Leiste hervor. Leiter-Form (b) aus overlay_ordnung. Rueckweg: var(--z-schwebend). */
+  z-index: calc(var(--z-schwebend) + 1);
   align-items: center;
   gap: var(--tas-s-2);
   padding: var(--tas-s-1) var(--tas-s-2) max(var(--tas-s-1), env(safe-area-inset-bottom));

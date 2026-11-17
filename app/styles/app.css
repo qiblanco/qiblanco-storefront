@@ -1394,14 +1394,26 @@ aside h3 {
 /* Die Apple-Startseite (.as-seite) hält ihren Abstand zum Kopf selbst; mit der
    Nr.-1-Leiste unter der Qi-Alpha-Leiste ist der Kopf um deren Höhe höher (nur
    Startseite: auf anderen Seiten nimmt sie den Platz der 4,8-Sterne-Leiste ein). --qb-nr1-hoehe misst Header.jsx
-   (NrEinsBanner); der Rückfall gilt bis zur Hydrierung (gemessen 14.11.2026:
-   1440 px eine Zeile 46 px, 390 px drei Zeilen 69 px). */
+   (NrEinsBanner); der Rückfall gilt bis zur Hydrierung (gemessen 16.11.2026 mit
+   „5 publizierte Peer-Review-Studien“: 1440 px eine Zeile 46 px, 390 px vier
+   Zeilen 89 px; vorher 14.11.: 46 px / 69 px). */
 body:has(.Header-AnnouncementBanner--nr1-start) > main > .as-seite {
   margin-top: var(--qb-nr1-hoehe, 46px);
 }
 @media (max-width: 749px) {
   body:has(.Header-AnnouncementBanner--nr1-start) > main > .as-seite {
-    margin-top: var(--qb-nr1-hoehe, 69px);
+    margin-top: var(--qb-nr1-hoehe, 89px);
+  }
+}
+/* Nr.-1-Leiste mittelbreit (750-1279 px): Aussage und alle Belege passen erst
+   ab 1280 px in eine Zeile (gemessen 16.11.2026: 1160 px Text). Darunter steht
+   der Studien-Beleg auf eigener Zeile, statt dass ein Punkt am Zeilenende hängt. */
+@media (min-width: 750px) and (max-width: 1279px) {
+  .Header-AnnouncementBanner--nr1 .banner-nr1-trenner {
+    display: none;
+  }
+  .Header-AnnouncementBanner--nr1 .banner-nr1-studien {
+    display: block;
   }
 }
 /* Two meaning units (line 1 proof, line 2 offer): each stays unbroken, so any
@@ -1430,6 +1442,16 @@ body:has(.Header-AnnouncementBanner--nr1-start) > main > .as-seite {
   .Header-AnnouncementBanner--nr1 .banner-nr1-aussage {
     flex-basis: 100%;
     text-wrap: balance;
+  }
+  /* Studien-Beleg (Christian 16.11.2026: „5 publizierte Peer-Review-Studien“)
+     auf eigener Zeile unter den Google-Sternen: beide zusammen passen am Handy
+     nicht in eine Zeile, so bleibt jeder Wortlaut ganz und ohne hängenden Punkt. */
+  .Header-AnnouncementBanner--nr1 .banner-nr1-trenner {
+    display: none;
+  }
+  .Header-AnnouncementBanner--nr1 .banner-nr1-studien {
+    flex-basis: 100%;
+    text-align: center;
   }
   .Header-AnnouncementBanner a {
     padding: 0.5rem 0.75rem;
@@ -7685,12 +7707,30 @@ select.b2b-netto__eingabe {
   width: 1.15em;
   height: 1.15em;
 }
+/* „+ 14.000 aktive Nutzer" direkt unter der 4,8-Zeile (Christian 17.11.2026, Standard dieses Bausteins):
+   dieselbe Typo und Tinte wie „448 Bewertungen" (zweite Stimme), dezent, kein eigener Akzent. Rückt an die
+   Kopfzeile heran (s-1 Abstand) und hält zur Bahn denselben Abstand wie vorher die Kopfzeile. */
+/* Freigabe-Umbau 2 (Christian 17.11.2026 ~15:20 Bangkok): „+ 14.000 aktive Nutzer" in DERSELBEN Schrift wie die
+   „4,8" (Groesse, Gewicht, Tinte, Zeilenhoehe der Kopfzeile), damit der Baustein keine zweite Schriftform traegt.
+   US (snippets/qb-google-leiste.liquid) traegt dieselben Werte. Rueckweg: vorige Fassung (Anzahl-Typo, leise). */
+.qb-gbl__nutzer {
+  margin: calc(-1 * (var(--qb-gbl-s-3) - var(--qb-gbl-s-1))) 0 var(--qb-gbl-s-3);
+  font-size: var(--qb-gbl-fs-titel);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--qb-gbl-tinte);
+  text-align: left;
+}
 @media (min-width: 750px) {
   .qb-gbl__titel {
     font-size: var(--qb-gbl-fs-titel-gross);
   }
   .qb-gbl__google {
     font-size: var(--qb-gbl-fs-anzahl-gross);
+  }
+  .qb-gbl__nutzer {
+    font-size: var(--qb-gbl-fs-titel-gross);
   }
   .qb-gbl {
     padding-left: var(--qb-gbl-s-3);
@@ -7716,4 +7756,35 @@ select.b2b-netto__eingabe {
   .product:is([data-produkt='broschure'], [data-produkt='crystal-cacao-adfiefiale']) .product-price {
     font-size: 1.5rem !important;
   }
+}
+
+/* GoogleZitat (Christian 17.11.2026): „4,8 ★★★★★ G" ueberall gleich. Sterne im Gold der Bewertungsleiste
+   (--qb-sterne-gold), G-Zeichen in Schrifthoehe, Abstaende in em, damit das Zitat in jeder Schriftgroesse
+   (Link, Leiste, Ueberschrift) gleich aussieht. Rueckweg: GoogleZitat-Aufrufe entfernen. */
+.qb-gzitat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+.qb-gzitat__sterne {
+  color: var(--qb-sterne-gold, #f5b301);
+  letter-spacing: 0.04em;
+}
+.qb-gzitat__g {
+  display: inline-flex;
+  line-height: 1;
+}
+.qb-gzitat__g svg {
+  width: 1em;
+  height: 1em;
+}
+/* Nr.-1-Leiste: Google-Zitat (Note gold wie bisher, fünf Sterne, G-Zeichen in Schrifthöhe) im dunklen Banner. */
+.Header-AnnouncementBanner--nr1 .banner-nr1-zitat .qb-gzitat__note {
+  color: var(--color-accent-primary);
+}
+.Header-AnnouncementBanner--nr1 .banner-nr1-zitat .qb-gzitat__g svg {
+  width: 1.05em;
+  height: 1.05em;
 }

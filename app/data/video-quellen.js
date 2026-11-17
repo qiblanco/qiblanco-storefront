@@ -48,6 +48,13 @@ export const SHOPIFY_VIDEOS = {
     hls: 'https://cdn.shopify.com/videos/c/vp/f3fa39424a71456aa42e42300c2ab064/f3fa39424a71456aa42e42300c2ab064.m3u8',
     mp4: 'https://cdn.shopify.com/videos/c/vp/f3fa39424a71456aa42e42300c2ab064/f3fa39424a71456aa42e42300c2ab064.HD-720p-2.1Mbps-96335464.mp4',
   },
+  // gid://shopify/Video/77609982525708, hochgeladen 2026-11-17 (Job 20261117-prio2-produktseiten-feedback-r2-
+  // alle-nachtraege-seit-16-11-umsetzen): Enis' Farbvideo „QiHome Mikroskop Regeneration" (Drive 10uoX6f8…),
+  // 1:1 zugeschnitten, ohne Ton, ohne Untertitel.
+  'QiHome_Study_1x1_DE.mp4': {
+    hls: 'https://cdn.shopify.com/videos/c/vp/ea7a7117f7f74946aeeec64734be4b7d/ea7a7117f7f74946aeeec64734be4b7d.m3u8',
+    mp4: 'https://cdn.shopify.com/videos/c/vp/ea7a7117f7f74946aeeec64734be4b7d/ea7a7117f7f74946aeeec64734be4b7d.HD-720p-4.5Mbps-101626443.mp4',
+  },
   // gid://shopify/Video/77330520375564, hochgeladen 2026-10-03
   '240417_QIHome_Wohlfuehloase_16x9_EN.mov': {
     hls: 'https://cdn.shopify.com/videos/c/vp/4e3a19262aac4fd0b9e0c2804d85ae70/4e3a19262aac4fd0b9e0c2804d85ae70.m3u8',

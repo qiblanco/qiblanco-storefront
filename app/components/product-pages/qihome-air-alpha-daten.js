@@ -91,14 +91,20 @@ export const KETTE_GOLD = null;
 
 /* Faktenkacheln (s04 fakten): Zahl groß, ein Satz, Zeichen statt Listenpunkt. */
 export const FAKTEN = {
-  ueberschrift: 'Das QiHome® Air in Zahlen.',
+  ueberschrift: 'Was das QiHome® Air für dich tut.',
   kacheln: [
+    {icon: 'zelle', zahl: '53,3 %', satz: 'stärker regenerieren Nervenzellen im Labor mit dem QiHome® Air.'},
     {icon: 'radius', zahl: '160 m', satz: 'Radius. Rund 8 Hektar.'},
     {icon: 'kraft', zahl: '100×', satz: 'die Stärke eines QiOne® 2 Pro.'},
-    {icon: 'ohne-strom', zahl: '0 Watt', satz: 'Kein Strom. Keine Wartung.'},
-    {icon: 'haus', zahl: 'Über 400', satz: 'QiHome® Air im Einsatz.'},
-    {icon: 'bayern', zahl: '100 %', satz: 'in Bayern entwickelt und gefertigt. Deutsche Eiche.'},
   ],
+  vertrauen: {
+    titel: null,
+    zeilen: [
+      {icon: 'ohne-strom', text: '0 Watt: kein Strom, keine Wartung.'},
+      {icon: 'haus', text: 'Über 400 QiHome® Air im Einsatz.'},
+      {icon: 'bayern', text: '100 % in Bayern entwickelt und gefertigt. Deutsche Eiche.'},
+    ],
+  },
 };
 
 /* 20-Tage-Element (s04 risikofrei): eine Zeile mit Zeichen, Details aufklappbar. */
@@ -107,7 +113,6 @@ export const RISIKOFREI = {
     '20 Tage zu Hause testen. Überzeugt es dich nicht, bekommst du den vollen Kaufpreis zurück.',
   details: [
     'Die 20 Tage zählen ab Ankunft.',
-    'Einen Grund brauchst du nicht.',
     'Die Rücksendung ist für dich kostenlos.',
   ],
   link: null,
@@ -119,10 +124,10 @@ export const RISIKOFREI = {
  * den Slot `vergleich`.
  */
 export const EINSATZ = {
-  ueberschrift: 'Wohnung. Haus. Praxis. Ein Gerät reicht.',
+  ueberschrift: 'Wohnung, Haus oder Praxis: Ein QiHome® Air reicht für alle Räume.',
   zeilen: [
     {titel: 'Wohnung', zeile: 'Jedes Zimmer, auf jeder Etage.'},
-    {titel: 'Haus', zeile: 'Alle Stockwerke. Alle, die darin leben.'},
+    {titel: 'Haus', zeile: 'Über alle Stockwerke, für alle, die bei dir wohnen.'},
     {titel: 'Büro und Praxis', zeile: 'Eine Atmosphäre für dein ganzes Team.'},
   ],
 };
@@ -137,7 +142,7 @@ export const VERGLEICH = {
   zeilen: {
     'qione-2-pro': 'Am Hals. Dein Schutz, wohin du gehst.',
     qibracelet: 'Am Handgelenk. Dieselbe Wirkung wie der QiOne® 2 Pro.',
-    'qihome-air': 'Im Raum. Für alle unter deinem Dach.',
+    'qihome-air': 'Im Raum, für die ganze Familie.',
   },
 };
 
@@ -151,7 +156,7 @@ export const WISSEN = {
     {
       etikett: 'Raum',
       bild: 3,
-      titel: 'Hinstellen. Fertig.',
+      titel: 'Einmal hinstellen, und es wirkt im ganzen Raum.',
       absaetze: [
         'Stell das QiHome® Air in den Raum, in dem du am meisten Zeit verbringst.',
         'Kein Strom, kein Kabel, keine Wartung.',
@@ -161,7 +166,7 @@ export const WISSEN = {
     {
       etikett: 'Zelle',
       bild: 6,
-      titel: 'Nervenzellen im Labor: 53,3 % mehr Regeneration.',
+      titel: 'Im Labor regenerieren Nervenzellen mit dem QiHome® Air um 53,3 % stärker.',
       absaetze: [
         'Prof. Dr. Peter C. Dartsch hat das QiHome® Air an menschlichen Nervenzellen getestet.',
         'Unter oxidativem Stress überlebten 34 % mehr Zellen.',
@@ -177,14 +182,14 @@ export const WISSEN = {
       // Drohfrage, der Satz über das Spüren im Schlaf ist gestrichen.
       titel: 'Ruhig schlafen, egal was unter dem Haus liegt.',
       absaetze: [
-        'Erdstrahlen, Gitternetze, Gesteinsbrüche: Geopathogene Strahlung hat viele Namen.',
-        'Sie kommt zu Handy, WLAN und 5G hinzu.',
-        'Deshalb gehört das QiHome® Air ins Schlafzimmer.',
+        // r2 17.11.2026 (Christian: AI-Sprache komplett raus; KI-Richter-Stellen ersetzt, Job 20261117-prio2-produktseiten-feedback-r2-alle-nachtraege-seit-16-11-umsetzen).
+        'Zu Handy, WLAN und 5G kommt im Schlafzimmer oft Erdstrahlung aus Wasseradern und Gitternetzen dazu.',
+        'Darum gehört das QiHome® Air ins Schlafzimmer. Es ist auf einen Radius von bis zu 160 m ausgelegt und wirkt, während du schläfst.',
       ],
     },
   ],
   studien: {
-    ueberschrift: 'Fünf Veröffentlichungen.',
+    ueberschrift: 'Fünf publizierte Peer-Review-Studien.',
     link_text: 'Alle Studien ansehen',
     href: '/pages/studien',
   },

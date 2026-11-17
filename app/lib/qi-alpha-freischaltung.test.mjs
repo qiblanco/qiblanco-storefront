@@ -180,3 +180,17 @@ test('Nr.-1-Leiste: Christians Aussage und Ziel Studienseite', () => {
   assert.match(NR_EINS_TEXT, /^Weltweit Nr\. 1 bei Energieprodukten/);
   assert.equal(STUDIEN_SEITE, '/pages/studien');
 });
+
+// r2 17.11.2026 (Christian ~09:15 Bangkok): Nr.-1-Leiste auch auf den drei Apple-Kaufseiten,
+// obwohl dort die alte 4,8/14.000-Leiste 'keine' bleibt (#1318).
+test('Nr.-1-Leiste steht auf den Apple-Kaufseiten trotz Leiste keine', async () => {
+  const {zeigeNrEinsLeiste, bannerVariante} = await import('./qi-alpha-freischaltung.js');
+  for (const pathname of ['/products/qione-2-pro', '/products/qibracelet', '/products/qihome-air/']) {
+    const leiste = bannerVariante({pathname, freigeschaltet: true, wahl: 'qi-alpha', appleSeiten: 'keine'});
+    assert.equal(leiste, 'keine', pathname);
+    assert.equal(zeigeNrEinsLeiste({pathname, leiste}), true, pathname);
+  }
+  // Andere Seiten mit 'keine' bleiben ohne Leiste, Kakao ebenso.
+  assert.equal(zeigeNrEinsLeiste({pathname: '/pages/irgendwas', leiste: 'keine'}), false);
+  assert.equal(zeigeNrEinsLeiste({pathname: '/products/qibracelet', leiste: 'keine', kakao: true}), false);
+});

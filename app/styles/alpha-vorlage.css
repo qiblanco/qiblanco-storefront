@@ -315,9 +315,78 @@
   margin-bottom: var(--tas-s-2);
 }
 
+/* Vertrauenszeile unter den Wirkungskarten: klein, grau, nachgeordnet. */
+.av-vertrauen {
+  margin-top: var(--tas-s-4);
+  padding-top: var(--tas-s-3);
+  border-top: 1px solid var(--tas-linie);
+}
+.av-vertrauen-titel {
+  margin: 0;
+  font-weight: 600;
+}
+.av-vertrauen-liste {
+  list-style: none;
+  margin: var(--tas-s-2) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--tas-s-2);
+}
+@media (min-width: 750px) {
+  .av-vertrauen-liste {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.av-vertrauen-zeile {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tas-s-2);
+  min-width: 0;
+  color: var(--tas-grau);
+}
+.av-vertrauen-zeile .av-fakt-zeichen {
+  flex: 0 0 auto;
+  width: var(--tas-s-3);
+  height: var(--tas-s-3);
+  margin-bottom: 0;
+}
+
 /* Slot-Überschrift mit Luft zum Inhalt (Box, Fakten, Stimmen). */
 .av-slot > .tas-box-titel {
   margin-bottom: var(--tas-s-3);
+}
+/*
+ * Überschrift -> erste Karte im Hausraster, auch wenn die Überschrift nicht
+ * direkt im Slot steht (Nutzen-Raster „Ruhe, die du immer bei dir trägst.“,
+ * Einsatz „Wohnung. Haus. Praxis.“). Ursache des fehlenden Abstands (Christian
+ * 16.11.2026, Foto 3): `.tas-seite ul { margin: 0 }` in the-alpha-produkt.css
+ * (Spezifität 0,1,1) schlug `.avq-nutzen-raster` und `.av-kacheln` (0,1,0);
+ * gemessen 0 px statt 24 px. Gleiche Luft wie unter jeder Slot-Überschrift.
+ */
+.av-seite .tas-box-titel + .av-kacheln,
+.av-seite .tas-box-titel + .avq-nutzen-raster {
+  margin-top: var(--tas-s-3);
+}
+/*
+ * r2 17.11.2026 (Designmeister-Nachtrag „generell zu wenig Abstand zwischen
+ * Headline und Folgendem“): dieselbe Ursache an drei weiteren Stellen,
+ * `.tas-seite p` / `.tas-seite ul { margin: 0 }` (0,1,1) schlug die eigenen
+ * Abstände; gemessen 0 px unter „Kette./Größe.“, „Kette oder Armband?“ /
+ * „QiOne® oder QiHome® Air?“ und „So trägst du …“ (390 und 1440 px).
+ */
+.av-seite .av-anleitung {
+  margin-top: var(--tas-s-1);
+}
+.av-seite .avv-intro {
+  margin-top: var(--tas-s-1);
+}
+.av-seite .trb-bahn {
+  margin-top: var(--tas-s-3);
+}
+@media (min-width: 750px) {
+  .av-seite .trb-bahn {
+    margin-top: var(--tas-s-4);
+  }
 }
 /* Fünf Kacheln: drei oben, zwei breite unten, keine Lücke im Raster. */
 @media (min-width: 750px) {
@@ -334,4 +403,51 @@
 /* Wissenskapitel ohne Bild: Text an der Überschriftenkante, nicht eingerückt. */
 .av-seite .taw-abschnitt--text .taw-text {
   margin-left: 0;
+}
+
+/*
+ * r2 17.11.2026 (Design-Gate QiHome Air 89, harmonisch 75): die
+ * „weiterlesen“-Schalter der Google-Rezensionskarten tragen Google-Blau
+ * #1565c0 und bildeten neben dem Gold eine zweite gesättigte Farbwelt.
+ * Auf das Neutral-Grau der Seite gezogen + Unterstreichung, wie
+ * qihome-air.css / startseite.css es für ihre Routen schon tun.
+ */
+.av-seite button[class*='text-[#1565c0]'] {
+  color: var(--tas-grau) !important;
+  text-decoration: underline;
+}
+
+/*
+ * r2 17.11.2026: Die Kopfzeile der Google-Bewertungsleiste („4,8 ★★★★★ G
+ * 448 Bewertungen“) ist eine H2. `.tas-seite :where(h2) { font-size:
+ * inherit }` (gleiche Spezifität, später geladen) schlug `.qb-gbl__titel`,
+ * gemessen 17 px statt H2-Größe auf /products/qihome-air (zweiter H2-Stil,
+ * Design-Gate stimmig 79). Hier dieselben Tokens wie jede andere H2 der Seite.
+ */
+.av-seite .qb-gbl .qb-gbl__titel,
+.av-seite .qb-gbl .qb-gbl__nutzer {
+  font-size: var(--tas-fs-h2-handy);
+}
+@media (min-width: 750px) {
+  .av-seite .qb-gbl .qb-gbl__titel,
+  .av-seite .qb-gbl .qb-gbl__nutzer {
+    font-size: var(--tas-fs-5);
+  }
+}
+/* Freigabe-Umbau 2 (17.11.2026): die Nutzerzeile in der Schrift der 4,8 (siehe app.css .qb-gbl__nutzer). */
+.av-seite .qb-gbl .qb-gbl__nutzer {
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--qb-gbl-tinte);
+}
+
+/* ERSTE KARTE UNTER DEM KOPF MIT NR.-1-BANNER (Produktseiten-Freigabe Christian 17.11.2026, Umbau 5a: "der
+   schwarze Nr.1-Banner beisst sich mit dem qi-blanco-Logo"). Gemessen 390x844 in der Vorschau: der feste Kopf
+   traegt seit dem 17.11. auch auf den Produktseiten die Nr.-1-Leiste und endet bei 174 px (--qb-kopf-hoehe 174),
+   <main> haelt nur calc(var(--header-height) + 40px) = 104 px frei, die schwarze Licht-Karte begann bei 136 px:
+   die Logo-Unterzeile "FREQUENCY TECHNOLOGY" stand auf Schwarz. Desktop 1440: 8 px Luft.
+   Ausgleich wie qb-360-rand.css / SpiegelRahmen: gemessene Kopf-Ruhelage minus dem Platz, den <main> schon frei
+   haelt, zusaetzlich zum bisherigen Abstand. Rueckweg: diesen Block loeschen. */
+.av-seite > .av-licht:first-child {
+  margin-top: calc(var(--tas-s-4) + max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px)));
 }

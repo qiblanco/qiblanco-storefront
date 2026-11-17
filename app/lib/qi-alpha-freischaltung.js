@@ -190,6 +190,8 @@ export const NR_EINS_LEISTE = true;
  * zeigen alle Seiten ausser der Startseite wieder die 4,8-Sterne-Leiste.
  */
 export const NR_EINS_ALLE_SEITEN = true;
+/** Rückweg nur für die Kaufseiten: false = dort wieder ohne Nr.-1-Leiste. */
+export const NR_EINS_APPLE_KAUFSEITEN = true;
 export const NR_EINS_TEXT = 'Weltweit Nr. 1 bei Energieprodukten in Kundenzufriedenheit und Studien';
 export const STUDIEN_SEITE = '/pages/studien';
 export const STUDIEN_ANZAHL = 5;
@@ -202,7 +204,15 @@ export function zeigeNrEinsLeiste({
   an = NR_EINS_LEISTE,
   alleSeiten = NR_EINS_ALLE_SEITEN,
 }) {
-  if (!an || leiste === 'keine') return false;
+  if (!an) return false;
+  /* Apple-Kaufseiten (qione-2-pro, qibracelet, qihome-air) tragen seit #1318
+     keine 4,8/14.000-Leiste (Christian 29.10.: Preisanker weg). Die Nr.-1-Leiste
+     ist eine andere Leiste ohne diesen Anker, und Christian will sie dort
+     (17.11.2026 ~09:15 Bangkok: „bei den drei Standardprodukten … fehlt mir
+     auch dieser Banner … Das haette ich aber gerne trotzdem, wenn die Seite
+     geladen hat"). Ursache des Fehlens: 'keine' sperrte bis hierher BEIDE
+     Leisten. Jetzt sperrt 'keine' nur noch die alte Leiste. */
+  if (leiste === 'keine' && !(NR_EINS_APPLE_KAUFSEITEN && istAppleKaufseite(pathname))) return false;
   if (istStartseite(pathname)) return true;
   return alleSeiten && !kakao;
 }

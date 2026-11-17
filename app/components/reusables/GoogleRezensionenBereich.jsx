@@ -69,7 +69,11 @@ export function findeRezensionsZiel() {
   return (
     document.getElementById(GOOGLE_KUNDENERFAHRUNGEN_ANKER_ID) ||
     document.getElementById(GOOGLE_REZENSIONEN_ANKER_ID) ||
-    document.querySelector(`[${REVIEWS_SEKTION_ATTR}]`)
+    document.querySelector(`[${REVIEWS_SEKTION_ATTR}]`) ||
+    // Die Standard-Bewertungsleiste (GoogleBewertungsleiste) der Kaufseiten
+    // trägt keinen der Anker oben; ohne diesen Rückfall öffnete der Banner-Klick
+    // dort das Fenster statt zu scrollen (Christian 17.11.2026: Scroll-Down).
+    document.querySelector('[data-bewertungsleiste="google"]')
   );
 }
 

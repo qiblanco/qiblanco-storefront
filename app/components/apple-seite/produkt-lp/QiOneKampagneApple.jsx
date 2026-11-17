@@ -18,6 +18,7 @@ import {
 import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {useGoogleRating} from '~/lib/googleRating';
+import {GoogleZitat, istGoogleZitatText} from '~/components/reusables/GoogleZitat';
 import {useMarktLand} from '~/lib/markt-land';
 import {bruttoAnzeige} from '~/lib/markt-pricing';
 import {betragText} from '~/lib/betrag-text';
@@ -140,7 +141,10 @@ function QiOneNutzen({daten}) {
         {daten.spalten.map((s) => {
           const link = s.link
             ? {
-                text: s.link.text.replace('{sterne}', google.komma),
+                // Google-Zitat einheitlich „4,8 ★★★★★ G“ (Christian 17.11.2026, GoogleZitat.jsx).
+                text: istGoogleZitatText(s.link.text)
+                  ? <GoogleZitat komma={google.komma} />
+                  : s.link.text.replace('{sterne}', google.komma),
                 href: s.link.href === 'google' ? google.url : s.link.href,
                 fremd: s.link.href === 'google',
               }

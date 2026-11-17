@@ -32,7 +32,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: var(--z-schwebend);
+  /* Kaufleiste UEBER Annas Rahmen (Christian 17.11.2026: die Kugel darf den Kauf-Button NIE ueberdecken), wie
+     .tas-schlussleiste--sichtbar in the-alpha-shop.css. Rueckweg: var(--z-schwebend). */
+  z-index: calc(var(--z-schwebend) + 1);
   align-items: center;
   gap: var(--qb-abstand-2);
   padding: var(--qb-abstand-1) var(--qb-rand)
