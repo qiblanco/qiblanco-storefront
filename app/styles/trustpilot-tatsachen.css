@@ -219,8 +219,8 @@
 }
 
 /* KEINE Ziffer vor dem Punkt (2026-11-17): shop-tor D1 „Listen ohne nackte
-   Punkte" stoppte an der ::before-Zaehlung (Gimmick vor dem Punkt). Der
-   Punkt traegt sich ueber seinen Titel mit der Gold-Linie; die Reihenfolge
+   Punkte" stoppte an der ::before-Zählung (Gimmick vor dem Punkt). Der
+   Punkt trägt sich über seinen Titel mit der Gold-Linie; die Reihenfolge
    bleibt semantisch im <ol>. */
 .tpt li.tpt__punkt {
   max-width: none;
