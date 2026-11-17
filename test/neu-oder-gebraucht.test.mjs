@@ -767,7 +767,7 @@ test('jede genannte Zahl steht in der zitierten Quelle', () => {
 // zitierte; die Quelle „Produktseiten … QiHome Air" nannte eine Seite ohne
 // Seriennummer; „Franken zum Tageskurs" steht nicht in der Versandrichtlinie;
 // „Kaufnachweis" zitierte /pages/support, das ihn nur über den Fußhinweis
-// trägt. Live gemessen am 2026-11-17 (Sitemap, 76 Seiten): die Wörter stehen
+// trägt. Live gemessen am 2026-11-17 (Sitemap: 112 Adressen, Startseite): die Wörter stehen
 // in der FAQ-Versandantwort, im Gewährleistungshinweis und als Gravur auf den
 // Produktfotos von QiOne® 2 Pro, QiBracelet® und Qi Alpha®.
 //

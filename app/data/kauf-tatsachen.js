@@ -172,7 +172,7 @@ export const VORTEILE = [
     // QiOne® 2 Pro, QiBracelet® und Qi Alpha® als Gravur („S/N"). Auf der
     // QiHome-Air-Seite steht sie weder im Text noch im Bild; die Quelle nannte
     // sie bis dahin trotzdem. „Original(ware)" steht auf keiner Seite von
-    // qiblanco.com (Sitemap, 76 Seiten): offen, an Christian gemeldet.
+    // qiblanco.com (Sitemap: 112 Adressen und Startseite): offen, an Christian gemeldet.
     beleg: 'Seriennummer als Gravur auf den Produktfotos von QiOne® 2 Pro, QiBracelet® und Qi Alpha®',
     belegPfad: '/products/qione-2-pro',
   },
