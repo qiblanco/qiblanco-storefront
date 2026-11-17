@@ -37,10 +37,15 @@ export const ZELLVIDEO_BEREICH = {
     etikett: 'Im Labor gefilmt',
     titel: 'Mit dem QiOne® 2 Pro erholen sich Zellen trotz Handystrahlung.',
     vergleich: [
-      {wert: '−60 %', zeile: 'Zellregeneration ohne Schutz'},
-      {wert: '−15 %', zeile: 'mit dem QiOne® 2 Pro, fast wie ohne Strahlung', gold: true},
+      // Zahlen positiv (Christian 16.11. 17:30/17:35): was erhalten BLEIBT, nicht
+      // was verloren geht. Aus e0002 laienSummary: Regeneration ohne Schutz um
+      // etwa 60 % gesenkt (= etwa 40 % bleiben), mit QiOne® 2 Pro um etwa 15 %
+      // (= etwa 85 % bleiben); Tabelle tab1 bestaetigt (offene Flaeche 43,7 %
+      // gegen 14,5 %, Kontrolle 13,8 %).
+      {wert: '40 %', zeile: 'der Zellregeneration bleiben ohne Schutz'},
+      {wert: '85 %', zeile: 'bleiben mit dem QiOne® 2 Pro, fast wie ganz ohne Strahlung', gold: true},
     ],
-    text: 'Prof. Dr. Peter C. Dartsch hat Darmzellen im Labor vier Stunden mit Handystrahlung belastet. Ohne Schutz sank ihre Regeneration um etwa 60 Prozent. Mit dem QiOne® 2 Pro waren es nur etwa 15 Prozent, so wenig wie bei Zellen ganz ohne Strahlung.',
+    text: 'Prof. Dr. Peter C. Dartsch hat Darmzellen im Labor vier Stunden mit Handystrahlung belastet. Ohne Schutz blieben nur etwa 40 Prozent ihrer Regeneration übrig. Mit dem QiOne® 2 Pro waren es etwa 85 Prozent, fast so viel wie bei Zellen ganz ohne Strahlung.',
     video: {
       pfad: '230413_cellstudy_comparison_1x1_DE.mp4',
       ersatzbild:
@@ -72,11 +77,15 @@ export const ZELLVIDEO_BEREICH = {
     aktiv: true,
     etikett: 'Zellstudie im Labor',
     titel: 'Neben dem QiHome® Air regenerieren Nervenzellen schneller.',
+    // Kernaussage QiHome (Christian 16.11. 17:42, verbindlich): „+53,3 % bessere
+    // Regeneration“ vorn. Zweite Zahl nach dem QiBracelet-Muster (zwei Plus-Zahlen),
+    // aus e0005 laienSummary: 34 % mehr Zellen ueberstanden kuenstlichen Zellstress.
+    // Die Wund-Restflaechen 25,2 %/11,8 % stehen nur noch im Erklaertext.
     vergleich: [
-      {wert: '25,2 %', zeile: 'offene Wunde im Zellrasen nach zehn Stunden, ohne Gerät'},
-      {wert: '11,8 %', zeile: 'neben dem QiHome® Air: 53,3 Prozent bessere Regeneration', gold: true},
+      {wert: '+53,3 %', zeile: 'bessere Regeneration neben dem QiHome® Air', gold: true},
+      {wert: '+34 %', zeile: 'mehr Zellen überstehen künstlichen Zellstress'},
     ],
-    text: 'Prof. Dr. Peter C. Dartsch hat im Labor eine Wunde in einen Rasen aus Nervenzellen gesetzt. Neben dem QiHome® Air wuchs sie deutlich schneller zu als bei Zellen ohne Gerät.',
+    text: 'Prof. Dr. Peter C. Dartsch hat im Labor eine Wunde in einen Rasen aus Nervenzellen gesetzt. Neben dem QiHome® Air wuchs sie deutlich schneller zu. Nach zehn Stunden waren dort nur noch 11,8 Prozent offen, ohne Gerät 25,2 Prozent.',
     // Eigenes Zellvideo der QiHome®-Air-Studie: im Bestand nicht gefunden
     // (Suche 16.11.2026, siehe RESULT des Jobs). Ohne Video zeigt der Bereich
     // Aussage, Zahlen und Studienlink; das Video kommt mit dem Folgejob dazu.

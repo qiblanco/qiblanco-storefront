@@ -2,6 +2,7 @@ import {AnnaKugel, annaChatProps} from '~/components/anna-kugel/AnnaKugel';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
 import {YoutubeIframe} from '~/components/reusables/YoutubeIframe';
 import {useGoogleRating} from '~/lib/googleRating';
+import {GoogleZitat, istGoogleZitatText} from '~/components/reusables/GoogleZitat';
 
 /*
  * Bausteine der Kaufseiten QiOne® 2 Pro und QiHome® Air für die BF-Deal-Seiten
@@ -25,7 +26,10 @@ export function QiOneNutzen({daten}) {
         {daten.spalten.map((s) => {
           const link = s.link
             ? {
-                text: s.link.text.replace('{sterne}', google.komma),
+                // Google-Zitat einheitlich „4,8 ★★★★★ G“ (Christian 17.11.2026, GoogleZitat.jsx).
+                text: istGoogleZitatText(s.link.text)
+                  ? <GoogleZitat komma={google.komma} />
+                  : s.link.text.replace('{sterne}', google.komma),
                 href: s.link.href === 'google' ? google.url : s.link.href,
                 fremd: s.link.href === 'google',
               }

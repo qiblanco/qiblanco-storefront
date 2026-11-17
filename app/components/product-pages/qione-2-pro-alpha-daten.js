@@ -238,6 +238,7 @@ export const NUTZEN = {
       titel: 'Endlich wieder durchschlafen.',
       text: 'Das schreiben Menschen, die den QiOne® 2 Pro tragen. Viele erzählen auch von mehr Ruhe und mehr Energie.',
       // {sterne}: Google-Note live (useGoogleRating, wie der Preisanker).
+      // Rendert als GoogleZitat „4,8 ★★★★★ G“ (Standard 17.11.2026).
       link: {text: '{sterne} ★ bei Google', href: 'google'},
     },
     {

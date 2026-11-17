@@ -7637,11 +7637,23 @@ select.b2b-netto__eingabe {
   width: 1.15em;
   height: 1.15em;
 }
+/* „+ 14.000 aktive Nutzer" direkt unter der 4,8-Zeile (Christian 17.11.2026, Standard dieses Bausteins):
+   dieselbe Typo und Tinte wie „448 Bewertungen" (zweite Stimme), dezent, kein eigener Akzent. Rückt an die
+   Kopfzeile heran (s-1 Abstand) und hält zur Bahn denselben Abstand wie vorher die Kopfzeile. */
+.qb-gbl__nutzer {
+  margin: calc(-1 * (var(--qb-gbl-s-3) - var(--qb-gbl-s-1))) 0 var(--qb-gbl-s-3);
+  font-size: var(--qb-gbl-fs-anzahl);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--qb-gbl-leise);
+  text-align: left;
+}
 @media (min-width: 750px) {
   .qb-gbl__titel {
     font-size: var(--qb-gbl-fs-titel-gross);
   }
-  .qb-gbl__google {
+  .qb-gbl__google,
+  .qb-gbl__nutzer {
     font-size: var(--qb-gbl-fs-anzahl-gross);
   }
   .qb-gbl {
@@ -7668,4 +7680,35 @@ select.b2b-netto__eingabe {
   .product:is([data-produkt='broschure'], [data-produkt='crystal-cacao-adfiefiale']) .product-price {
     font-size: 1.5rem !important;
   }
+}
+
+/* GoogleZitat (Christian 17.11.2026): „4,8 ★★★★★ G" ueberall gleich. Sterne im Gold der Bewertungsleiste
+   (--qb-sterne-gold), G-Zeichen in Schrifthoehe, Abstaende in em, damit das Zitat in jeder Schriftgroesse
+   (Link, Leiste, Ueberschrift) gleich aussieht. Rueckweg: GoogleZitat-Aufrufe entfernen. */
+.qb-gzitat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+.qb-gzitat__sterne {
+  color: var(--qb-sterne-gold, #f5b301);
+  letter-spacing: 0.04em;
+}
+.qb-gzitat__g {
+  display: inline-flex;
+  line-height: 1;
+}
+.qb-gzitat__g svg {
+  width: 1em;
+  height: 1em;
+}
+/* Nr.-1-Leiste: Google-Zitat (Note gold wie bisher, fünf Sterne, G-Zeichen in Schrifthöhe) im dunklen Banner. */
+.Header-AnnouncementBanner--nr1 .banner-nr1-zitat .qb-gzitat__note {
+  color: var(--color-accent-primary);
+}
+.Header-AnnouncementBanner--nr1 .banner-nr1-zitat .qb-gzitat__g svg {
+  width: 1.05em;
+  height: 1.05em;
 }

@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
+import {GoogleZitat} from '~/components/reusables/GoogleZitat';
 import {
   Form,
   Link,
@@ -461,10 +462,8 @@ function Kopf({mitWeg, naechster}) {
         rel="noopener noreferrer"
         className="pb__sterne-link"
       >
-        <span className="pb__sterne" aria-hidden="true">
-          ★★★★★
-        </span>{' '}
-        {g.komma} von 5 bei Google
+        {/* Google-Zitat einheitlich „4,8 ★★★★★ G“ (Christian 17.11.2026). */}
+        <GoogleZitat komma={g.komma} />
       </a>
     </p>
   );
