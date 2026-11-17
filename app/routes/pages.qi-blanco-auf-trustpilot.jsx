@@ -61,7 +61,7 @@ export function links() {
 
 // KEINE ANZAHL in Titel und Beschreibung (Christian 2026-10-06, „nicht die
 // Gesamtanzahl anzeigen"); der TrustScore kommt aus dem Datenmodul.
-// 2026-11-17 (SEO-Massnahme L26-qi-blanco-auf-trustpil-8b09, Begriff „sind
+// 2026-11-17 (SEO-Maßnahme L26-qi-blanco-auf-trustpil-8b09, Begriff „sind
 // trustpilot bewertungen echt"): Marke bleibt VORN (Markenbegriff „qi blanco
 // trustpilot", Gewinnerstand), danach der neue Begriff. Vorher:
 //   TITEL `Qi Blanco auf Trustpilot: TrustScore ${PROFIL.trustscore}, nachgelesen | Qi Blanco`

@@ -546,7 +546,7 @@ export const FAQ_KAUF = [
       },
       {
         pfad: '/pages/qi-blanco-auf-trustpilot',
-        // 2026-11-17 (SEO-Massnahme L26-qi-blanco-auf-trustpil-8b09): Linktext
+        // 2026-11-17 (SEO-Maßnahme L26-qi-blanco-auf-trustpil-8b09): Linktext
         // mit dem Begriff. Vorher: 'Was auf Trustpilot über Qi Blanco steht, mit Quelle und Stand'
         text: 'Qi Blanco auf Trustpilot: woran du echte Bewertungen erkennst',
       },

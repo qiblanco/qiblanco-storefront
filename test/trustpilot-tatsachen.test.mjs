@@ -135,7 +135,7 @@ const SICHTBAR = [
   ECHT.einleitung,
   ...ECHT.punkte.flatMap((p) => [
     p.titel,
-    p.pruefen,
+    p.regel,
     p.beiUns ? `${p.beiUns.vor}${p.beiUns.link?.text || ''}${p.beiUns.nach || ''}` : '',
   ]),
 ];
@@ -275,7 +275,7 @@ test('der Scope ist .tpt und fremde Scopes fehlen', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Abschnitt „Woran du echte Trustpilot-Bewertungen erkennst" (SEO-Massnahme
+// Abschnitt „Woran du echte Trustpilot-Bewertungen erkennst" (SEO-Maßnahme
 // L26-qi-blanco-auf-trustpil-8b09, 2026-11-17).
 // ---------------------------------------------------------------------------
 const ECHT_KOMPONENTE = ohneProsa(

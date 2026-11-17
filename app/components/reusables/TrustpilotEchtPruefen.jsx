@@ -2,12 +2,12 @@ import {ECHT} from '~/data/trustpilot-tatsachen';
 
 /**
  * „Woran du echte Trustpilot-Bewertungen erkennst" — Abschnitt am Ende von
- * /pages/qi-blanco-auf-trustpilot (SEO-Massnahme L26-qi-blanco-auf-trustpil-
+ * /pages/qi-blanco-auf-trustpilot (SEO-Maßnahme L26-qi-blanco-auf-trustpil-
  * 8b09, Begriff „sind trustpilot bewertungen echt").
  *
- * EIGENE reusables-Komponente statt Eingriff in campaign/ (harte Flaeche
+ * EIGENE reusables-Komponente statt Eingriff in campaign/ (harte Fläche
  * Kaufweg): die Route rendert sie direkt nach <TrustpilotTatsachenSeite />.
- * Eigene Huelle `.tpt`, damit die Seiten-Tokens (trustpilot-tatsachen.css)
+ * Eigene Hülle `.tpt`, damit die Seiten-Tokens (trustpilot-tatsachen.css)
  * greifen; gleiche Bauteile wie die Profil-Punkte (nummerierte Liste, EIN
  * Gold-Akzent als Linie am Punkt-Titel).
  *
@@ -52,7 +52,7 @@ export function TrustpilotEchtPruefen() {
             {ECHT.punkte.map((p) => (
               <li className="tpt__punkt" key={p.id} id={p.id}>
                 <h3>{p.titel}</h3>
-                <p>{p.pruefen}</p>
+                <p>{p.regel}</p>
                 <BeiUns b={p.beiUns} />
               </li>
             ))}

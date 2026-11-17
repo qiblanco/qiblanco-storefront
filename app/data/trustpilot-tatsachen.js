@@ -251,19 +251,19 @@ export const FRAGEN = [
 
 /**
  * WORAN DU ECHTE TRUSTPILOT-BEWERTUNGEN ERKENNST — der Abschnitt zum Begriff
- * „sind trustpilot bewertungen echt" (SEO-Massnahme L26-qi-blanco-auf-
- * trustpil-8b09, Grossjob seo-2026-w47-…, KONZEPT.md, Kundentext woertlich,
+ * „sind trustpilot bewertungen echt" (SEO-Maßnahme L26-qi-blanco-auf-
+ * trustpil-8b09, Großjob seo-2026-w47-…, KONZEPT.md, Kundentext wörtlich,
  * stil-pruefe rc 0 am 2026-11-17). Vier Angaben, die man an JEDEM Profil
  * nachlesen kann, je mit dem Stand bei Qi Blanco.
  *
  * GRENZEN wie im Rest des Moduls: keine Anzahl, keine Note eines anderen
  * Unternehmens, kein Wort „Fake" im sichtbaren Text. Zahlen und Namen nur aus
- * PROFIL und FREMDE_PROFILE. Die Saetze „Bei uns" haengen an den Daten:
- * aendert sich `einladungen` oder `beansprucht`, faellt der Satz weg statt
+ * PROFIL und FREMDE_PROFILE. Die Sätze „Bei uns" hängen an den Daten:
+ * ändert sich `einladungen` oder `beansprucht`, fällt der Satz weg statt
  * still falsch zu werden.
  *
- * Der vierte Punkt traegt den Link „Bewertungen von Elektrosmog-Schutz" auf
- * /pages/bewertungen (erste, nie gebaute Massnahme M-SP-20261017). Diese
+ * Der vierte Punkt trägt den Link „Bewertungen von Elektrosmog-Schutz" auf
+ * /pages/bewertungen (erste, nie gebaute Maßnahme M-SP-20261017). Diese
  * Datei wird nur von Lese-/Hubrouten importiert (qi-blanco-auf-trustpilot,
  * bewertungen); die WEGLINK-SPERRE (hb-deploy Gate 23) misst das.
  */
@@ -277,7 +277,7 @@ export const ECHT = {
     {
       id: 'echt-vermerk',
       titel: 'Der Vermerk an jeder Bewertung',
-      pruefen:
+      regel:
         'Trustpilot vermerkt an jeder Bewertung, ob das Unternehmen dazu ' +
         'eingeladen hat oder ob jemand von sich aus schreibt.',
       beiUns:
@@ -292,7 +292,7 @@ export const ECHT = {
     {
       id: 'echt-profil',
       titel: 'Wer das Profil führt',
-      pruefen:
+      regel:
         'Ein beanspruchtes Profil verwaltet das Unternehmen selbst. Es kann ' +
         'Kundschaft einladen und auf Bewertungen antworten.',
       beiUns:
@@ -307,7 +307,7 @@ export const ECHT = {
     {
       id: 'echt-name',
       titel: 'Ob der Name stimmt',
-      pruefen:
+      regel:
         'Ähnliche Namen führen leicht zum falschen Profil. Prüf deshalb die ' +
         'Adresse oben im Profil.',
       beiUns: {
@@ -321,7 +321,7 @@ export const ECHT = {
     {
       id: 'echt-zweite-quelle',
       titel: 'Ob eine zweite Quelle dasselbe zeigt',
-      pruefen:
+      regel:
         'Eine Note wird belastbar, wenn eine unabhängige Plattform ein ' +
         'ähnliches Bild zeigt.',
       beiUns: {
