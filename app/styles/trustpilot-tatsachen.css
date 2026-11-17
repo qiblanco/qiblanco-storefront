@@ -216,26 +216,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--tpt-s4);
-  counter-reset: punkt;
 }
 
+/* KEINE Ziffer vor dem Punkt (2026-11-17): shop-tor D1 „Listen ohne nackte
+   Punkte" stoppte an der ::before-Zaehlung (Gimmick vor dem Punkt). Der
+   Punkt traegt sich ueber seinen Titel mit der Gold-Linie; die Reihenfolge
+   bleibt semantisch im <ol>. */
 .tpt li.tpt__punkt {
   max-width: none;
   margin: 0;
-  padding-left: var(--tpt-s6);
-  position: relative;
-  counter-increment: punkt;
-}
-
-.tpt li.tpt__punkt::before {
-  content: counter(punkt);
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-size: var(--tpt-fs-lg);
-  font-weight: 600;
-  color: var(--tpt-muted);
-  line-height: 1.35;
 }
 
 
