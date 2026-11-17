@@ -395,18 +395,27 @@ test('der Messcontainer heißt so, dass die Pruefliste ihn findet', () => {
 // in EXTERN; eine NEUE nicht prüfbare Quelle mit Zahl macht diesen Test rot,
 // statt still durchzugehen.
 //
-// Zahlwörter („vierzehn", „zwei") gelten wie Ziffern. Eine Zahl zählt nur MIT
-// ihrer Einheit (Tage, Jahre, Monat, Euro): der unabhängige Gegenprüfer von s03
-// fand, dass sonst „§ 14 BGB" die 14 Tage, „20. Juli 2025" die 20 und der
-// Absatz „(2)" die zwei Jahre belegte. Gliederungsmarker (§ N, Abs., Nr., (N),
-// Datum) zählen nie. „100 %" gilt nur als „volle Geld-zurück…" oder „vollen
-// Kaufpreis" (die AGB-Formulierung), nie als beliebiges Wort auf „voll…".
+// Zahlwörter („vierzehn", „zwei", „ein Jahr") gelten wie Ziffern. Eine Zahl
+// zählt nur MIT ihrer Einheit (Tage, Werktage, Wochen, Monate, Jahre, Euro):
+// der unabhängige Gegenprüfer von s03 fand, dass sonst „§ 14 BGB" die 14 Tage,
+// „20. Juli 2025" die 20 und der Absatz „(2)" die zwei Jahre belegte.
+// Gliederungsmarker (§ N, Abs., Nr., (N), Datum) zählen nie. „100 %" gilt nur
+// als „volle Geld-zurück…" oder „vollen Kaufpreis" (die AGB-Formulierung).
 //
-// Ausführen: node --test test/neu-oder-gebraucht.test.mjs (Abschnitt BELEGTREUE)
-// Rot-vor-Grün: BELEGTREUE_MUTANTE=alt-beleg setzt die alten Quellzeilen ein
-// und muss rot werden (gemessen beim Bau, Beleg im RESULT des Jobs).
+// RUNDE 2 (zweiter Gegenprüfer, 13 grüne Falschaussagen von 32 Mutanten):
+//  - VERWEIS ZÄHLT NICHT: ein Satz, der auf einen ANDEREN AGB-Paragrafen
+//    verweist („vierzehntägiges Widerrufsrecht nach § 7"), belegt in diesem
+//    Abschnitt nichts; sonst trug der Garantieabschnitt „14 Tage Rücknahme".
+//    Ebenso zählt ein Name wie „20-Tage-Zufriedenheitsgarantie" nicht als Frist.
+//  - ZUSAMMEN, WAS ZUSAMMEN STEHT: Zahlen, die in der Angabe in EINEM
+//    Satzglied stehen („ab 500 Euro 12"), müssen auch in der Quelle in einem
+//    Satzglied zusammen stehen; nennt das Satzglied einen Kernbegriff
+//    (Gewährleistung, Widerruf, Garantie, Raten), steht er dort mit. Sonst
+//    belegte die Rügefrist „7 Tagen … anzuzeigen" (§ 9) „7 Tage Gewährleistung"
+//    und jede Zahl irgendwo in der FAQ jede Ratenstufe.
 const ZAHLWORT = [
   ['vierzehn', '14'],
+  ['dreißig', '30'],
   ['zwanzig', '20'],
   ['zwölf', '12'],
   ['zehn', '10'],
@@ -416,6 +425,14 @@ const ZAHLWORT = [
   ['sechs', '6'],
   ['sieben', '7'],
 ];
+// Kurze Zahlwörter nur als ganzes Wort oder vor -tägig/-jährig („acht" ≠ „achten").
+const ZAHLWORT_GANZ = [
+  ['fünf', '5'],
+  ['acht', '8'],
+  ['neun', '9'],
+  ['elf', '11'],
+];
+const ZEIT = 'jahr|monat|woche|werktag|kalendertag|tag';
 
 /** Text ohne Auszeichnung, Zahlwörter als Ziffern, Tausenderpunkt weg. */
 function normiere(t) {
@@ -423,17 +440,29 @@ function normiere(t) {
     .replace(/<[^>]+>/g, ' ')
     .replace(/\{' '\}/g, ' ')
     .replace(/€/g, ' euro')
-    .replace(/&nbsp;| /g, ' ')
+    .replace(/&nbsp;| /g, ' ')
     .toLowerCase();
   for (const [wort, ziffer] of ZAHLWORT) {
     // Als Wortanfang: „vierzehntägiges", „zweijährige", „zwei Jahre".
     s = s.replace(new RegExp(`(^|[^a-zäöüß])${wort}`, 'g'), `$1 ${ziffer} `);
   }
+  for (const [wort, ziffer] of ZAHLWORT_GANZ) {
+    s = s.replace(
+      new RegExp(`(^|[^a-zäöüß])${wort}(?=$|[^a-zäöüß]|tägig|jährig|wöchig|monatig)`, 'g'),
+      `$1 ${ziffer} `,
+    );
+  }
+  // „ein Jahr", „einen Monat", „einjährig": nur vor einer Zeiteinheit eine Zahl.
+  s = s
+    .replace(new RegExp(`(^|[^a-zäöüß])ein(e|en|em|er|es)?\\s+(?=${ZEIT})`, 'g'), '$1 1 ')
+    .replace(/(^|[^a-zäöüß])ein(?=tägig|jährig|wöchig|monatig)/g, '$1 1 ');
   return s.replace(/(\d)\.(\d{3})\b/g, '$1$2');
 }
 
 const EINHEIT = [
-  [/^(tag|tägig)/, 'tag'],
+  [/^werktag/, 'werktag'],
+  [/^(kalendertag|tag|tägig)/, 'tag'],
+  [/^(woche|wöchig)/, 'woche'],
   [/^(jahr|jährig)/, 'jahr'],
   [/^monat/, 'monat'],
   [/^euro/, 'euro'],
@@ -451,8 +480,8 @@ function ohneMarker(s) {
 }
 
 /** Die Zahlen einer Angabe als „Zahl Einheit" („20 tag", „100 %", „25 euro"), sonst nackt. */
-function zahlen(t) {
-  const s = ohneMarker(normiere(t));
+function zahlen(t, schonNormiert = false) {
+  const s = schonNormiert ? t : ohneMarker(normiere(t));
   const out = new Set();
   for (const m of s.matchAll(/(?<![\d/])(\d+)(?![\d/])\s*-?\s*(%|[a-zäöüß]+)?/g)) {
     if (m[2] === '%') {
@@ -465,13 +494,88 @@ function zahlen(t) {
   return [...out];
 }
 
-/** Steht die Zahl MIT ihrer Einheit im Quelltext? Eine nackte Zahl passt zu jeder Einheit. */
-function stehtIn(zahl, quelle) {
-  const s = ohneMarker(normiere(quelle));
-  if (zahl === '100 %' && /(^|[^a-zäöüß])voll(e|en)\s+(geld-zurück|kaufpreis)/.test(s)) return true;
-  const da = zahlen(s);
+// Kernbegriffe: steht einer im Satzglied der Angabe, muss er im Satzglied der
+// Quelle mitstehen. „verjährungsfrist" ist in § 9 das Wort für die Frist der
+// Gewährleistung, „kaufpreis" das der Garantie.
+const KERN = [
+  ['gewährleistung', /gewährleist/, /gewährleist|verjährungsfrist/],
+  ['widerruf', /widerruf/, /widerruf/],
+  ['garantie', /garantie/, /garantie|kaufpreis/],
+  ['raten', /(^|[^a-zäöüß])(monats)?raten|ratenzahlung/, /(^|[^a-zäöüß])(monats)?raten|ratenzahlung/],
+];
+
+/** Satzglieder (Komma, Semikolon, Doppelpunkt, Satzende, „und"), normiert. */
+function satzglieder(t) {
+  return ohneMarker(normiere(t))
+    .replace(/\d+\s*-\s*[a-zäöüß]+-[a-zäöüß-]+/g, ' ') // „20-tage-zufriedenheitsgarantie" ist ein Name
+    .split(/[,;:!?]|\.(?!\d)|\s(?:und|sowie|oder)\s/)
+    .map((g) => g.trim())
+    .filter(Boolean);
+}
+
+const kerneIn = (t) => KERN.filter(([, re]) => re.test(normiere(t))).map(([k]) => k);
+
+/**
+ * Je Satzglied der Angabe: seine Zahlen und Kernbegriffe. `frage` (bei FAQ-
+ * Einträgen): ihr Kernbegriff gilt für jedes Glied der Antwort („Wie lange habe
+ * ich Gewährleistung?" – „Ein Jahr ab Lieferung" ist eine Gewährleistungsfrist).
+ */
+function zahlgruppen(t, frage = '') {
+  const ausFrage = kerneIn(frage);
+  return satzglieder(t)
+    .map((g) => ({
+      glied: g,
+      zahlen: zahlen(g, true),
+      kerne: [...new Set([...kerneIn(g), ...ausFrage])],
+    }))
+    .filter((g) => g.zahlen.length);
+}
+
+/** Passt eine Zahl der Angabe zu den Zahlen eines Satzglieds der Quelle? */
+function passt(zahl, glied) {
+  if (zahl === '100 %' && /(^|[^a-zäöüß])voll(e|en)\s+(geld-zurück|kaufpreis)/.test(glied)) return true;
+  const da = zahlen(glied, true);
   if (!zahl.includes(' ')) return da.some((x) => x.split(' ')[0] === zahl);
   return da.includes(zahl);
+}
+
+/**
+ * Steht diese Zahlgruppe (alle Zahlen + Kernbegriffe) in EINEM Satzglied der
+ * Quelle? `quelle` ist Text oder eine Liste {frage, text} (FAQ: die Frage gibt
+ * ihren Kernbegriff an die Antwort weiter, wie bei der Angabe). AGB-Überschriften
+ * geben NICHTS weiter: sonst wäre die Rügefrist in „§ 9 Gewährleistung" wieder
+ * eine Gewährleistungsfrist.
+ */
+function gruppeSteht(gruppe, quelle) {
+  const teile = Array.isArray(quelle) ? quelle : [{frage: '', text: quelle}];
+  return teile.some(({frage, text}) =>
+    satzglieder(text).some(
+      (glied) =>
+        gruppe.zahlen.every((z) => passt(z, glied)) &&
+        gruppe.kerne.every(
+          (k) => KERN.find(([n]) => n === k)[2].test(glied) || kerneIn(frage).includes(k),
+        ),
+    ),
+  );
+}
+
+/** Steht die Zahl (allein) in der Quelle? Für die Positivkontrolle. */
+function stehtIn(zahl, quelle) {
+  return satzglieder(quelle).some((g) => passt(zahl, g));
+}
+
+/**
+ * Sätze, die auf einen ANDEREN AGB-Paragrafen verweisen („nach § 7",
+ * „(siehe § 7)"), fallen aus dem Abschnitt; Gesetzesverweise („§ 13 BGB",
+ * „§ 438 Abs. 1 Nr. 3 BGB", „§§ 433 ff.") bleiben, sie sind kein AGB-Verweis.
+ */
+function ohneVerweise(text, eigenerParagraf) {
+  const fremd = /§\s*(\d+)(?![\d])(?!\s*(?:abs|ff|bgb|egbgb|hgb|ustg|ao|pangv|ttdsg|dsgvo|odr))/gi;
+  return text
+    .replace(/<[^>]+>/g, ' ')
+    .split(/(?<=[.!?])\s+|(?=\(\d+\))/)
+    .filter((satz) => ![...satz.matchAll(fremd)].some((m) => m[1] !== eigenerParagraf))
+    .join(' ');
 }
 
 /** pages.agb.jsx in Abschnitte je <h2>. */
@@ -501,9 +605,17 @@ function zitierteAbschnitte(beleg, abschnitte) {
 
 // Nicht im Repo, mit Grund. Eine Quelle MIT Zahl, die weder hier noch in den
 // Lesern unten steht, ist ein Befund.
+// JE ANGABE, nicht je Pfad (Runde 2): sonst konnte jede Angabe in diesen Pfad
+// ausweichen und war ungeprüft (Garantie-Beleg auf die Versandrichtlinie).
 const EXTERN = {
-  '/policies/shipping-policy':
-    'Shopify-Versandrichtlinie, gepflegt im Shopify-Admin, nicht im Repo',
+  'IM_PREIS:versand': {
+    pfad: '/policies/shipping-policy',
+    grund: 'Shopify-Versandrichtlinie, gepflegt im Shopify-Admin, nicht im Repo',
+  },
+  'FRAGEN:f-preis': {
+    pfad: '/policies/shipping-policy',
+    grund: 'dieselbe Angabe wie IM_PREIS:versand (aus IM_PREIS gebaut)',
+  },
 };
 
 const ALTE_BELEGE = {
@@ -532,10 +644,11 @@ function angaben() {
   const liste = [];
   const nimm = (wo, e) => {
     if (!e.beleg) return;
-    const behauptung = [e.titel, e.text, e.q, e.a].filter(Boolean).join(' ');
+    // Mit Punkt verbunden: Titel, Text, Frage und Antwort sind je eigene Sätze.
+    const behauptung = [e.titel, e.text, e.q, e.a].filter(Boolean).join('. ');
     let {beleg, belegPfad} = e;
     if (mutante && erbe[`${wo}:${e.id}`]) ({beleg, belegPfad} = fristBeleg(erbe[`${wo}:${e.id}`]));
-    liste.push({wo, id: e.id, behauptung, beleg, belegPfad});
+    liste.push({wo, id: e.id, behauptung, frage: e.q || '', beleg, belegPfad});
   };
   for (const f of FRISTEN) nimm('FRISTEN', f);
   for (const v of VORTEILE) nimm('VORTEILE', v);
@@ -547,6 +660,7 @@ function angaben() {
 
 const AGB = agbAbschnitte(lies('../app/routes/pages.agb.jsx'));
 const FAQ_TEXT = FAQ_ALLE.map((f) => `${f.q} ${f.a}`).join('\n');
+const FAQ_EINTRAEGE = FAQ_ALLE.map((f) => ({frage: f.q, text: `${f.q}. ${f.a}`}));
 // Ohne Kommentare: gezählt wird der ausgelieferte Wortlaut, nicht die Begründung daneben.
 const EU_HINWEIS = ohneProsa(lies('../app/lib/eu-gewaehrleistungslabel.js'));
 
@@ -554,9 +668,13 @@ const EU_HINWEIS = ohneProsa(lies('../app/lib/eu-gewaehrleistungslabel.js'));
 function quelleVon(a) {
   if (a.belegPfad === '/pages/agb') {
     const z = zitierteAbschnitte(a.beleg, AGB);
-    return {art: 'agb', abschnitte: z.map((x) => x.titel), text: z.map((x) => x.text).join('\n')};
+    return {
+      art: 'agb',
+      abschnitte: z.map((x) => x.titel),
+      text: z.map((x) => ohneVerweise(x.text, x.paragraf)).join('\n'),
+    };
   }
-  if (a.belegPfad === '/pages/faq') return {art: 'faq', abschnitte: ['FAQ'], text: FAQ_TEXT};
+  if (a.belegPfad === '/pages/faq') return {art: 'faq', abschnitte: ['FAQ'], text: FAQ_EINTRAEGE};
   if (a.belegPfad === null && /2025\/1960/.test(a.beleg)) {
     return {art: 'eu', abschnitte: ['Gewährleistungshinweis'], text: EU_HINWEIS};
   }
@@ -585,6 +703,27 @@ test('die Leser finden ihre Quellen (Positivkontrolle der Zerlegung)', () => {
   assert.deepEqual(zahlen('100 % Geld-zurück-Garantie, 20 Tage, 20-tägige'), ['100 %', '20 tag']);
   assert.deepEqual(zahlen('(2) nach § 14 BGB, Abs. 1, am 20. Juli'), []);
   assert.ok(FAQ_TEXT.length > 1000 && EU_HINWEIS.length > 1000);
+  // Runde 2 (zweiter Gegenprüfer):
+  assert.deepEqual(zahlen('Ein Jahr ab Lieferung, einen Monat, einjährig'), ['1 jahr', '1 monat']);
+  assert.deepEqual(zahlen('20 Werktage, drei Wochen, fünf Tage, achten'), ['20 werktag', '3 woche', '5 tag']);
+  const garOhne = ohneVerweise(gar.text, gar.paragraf);
+  assert.ok(!stehtIn('14 tag', garOhne), 'der Verweis „vierzehntägiges Widerrufsrecht nach § 7" belegt keine 14 Tage');
+  assert.ok(stehtIn('20 tag', garOhne) && stehtIn('100 %', garOhne), 'die Garantie selbst bleibt belegt');
+  assert.ok(
+    !gruppeSteht({zahlen: ['7 tag'], kerne: ['gewährleistung']}, ohneVerweise(p9.text, '9')),
+    'die Rügefrist „7 Tagen … anzuzeigen" ist keine Gewährleistungsfrist',
+  );
+  assert.ok(gruppeSteht({zahlen: ['2 jahr'], kerne: ['gewährleistung']}, ohneVerweise(p9.text, '9')));
+  assert.ok(gruppeSteht({zahlen: ['500 euro', '12'], kerne: ['raten']}, FAQ_EINTRAEGE));
+  assert.ok(!gruppeSteht({zahlen: ['500 euro', '24'], kerne: []}, FAQ_EINTRAEGE), 'Ratenstufen gehören paarweise zusammen');
+  assert.ok(
+    !gruppeSteht({zahlen: ['1 jahr'], kerne: ['gewährleistung']}, EU_HINWEIS),
+    '„nicht weniger als ein Jahr" (Gebrauchtware) ist nicht unsere Gewährleistung',
+  );
+  assert.deepEqual(
+    zahlgruppen('Ein Jahr ab Lieferung.', 'Wie lange habe ich Gewährleistung?').map((g) => g.kerne),
+    [['gewährleistung']],
+  );
   // Die Prüfung hat Gegenstand: mindestens die drei AGB-Angaben der Fristen.
   assert.ok(angaben().filter((a) => a.belegPfad === '/pages/agb').length >= 4);
 });
@@ -606,17 +745,18 @@ test('jede genannte Zahl steht in der zitierten Quelle', () => {
     if (!zz.length) continue;
     const q = quelleVon(a);
     if (!q) {
-      if (!(a.belegPfad in EXTERN)) {
+      if (EXTERN[`${a.wo}:${a.id}`]?.pfad !== a.belegPfad) {
         befunde.push(
           `${a.wo}:${a.id} nennt ${zz.join(', ')}, Quelle „${a.beleg}" (${a.belegPfad}) ist im Repo nicht prüfbar und nicht in EXTERN`,
         );
       }
       continue;
     }
-    for (const z of zz) {
-      if (!stehtIn(z, q.text)) {
+    for (const g of zahlgruppen(a.behauptung, a.frage)) {
+      if (!gruppeSteht(g, q.text)) {
+        const was = [...g.zahlen, ...g.kerne].join(' + ');
         befunde.push(
-          `${a.wo}:${a.id} nennt „${z}", die Quelle „${a.beleg}" (${q.abschnitte.join(' + ')}) nennt es nicht`,
+          `${a.wo}:${a.id} nennt „${was}" („${g.glied}"), die Quelle „${a.beleg}" (${q.abschnitte.join(' + ')}) nennt es nicht zusammen`,
         );
       }
     }
