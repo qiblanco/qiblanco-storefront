@@ -433,6 +433,11 @@ test('der Messcontainer heißt so, dass die Pruefliste ihn findet', () => {
 // Zahl ohne Einheit; die Namensregel gilt nur in der Quelle; „vollen
 // Kaufpreis" trägt 100 % nicht neben einem anderen Anteil; der EU-Hinweis
 // zählt nur mit seinen Zeichenketten, nicht mit Code-Konstanten.
+// RUNDE 5 (fünfter Gegenprüfer): hundert/tausend; Rücknahme auch als
+// zurückzugeben/zurückschicken/nehmen … zurück/Retoure; die FAQ-Frage gibt
+// ihren Kern auf der Quellseite nur an Glieder ohne eigenen Kern; jeder Absatz,
+// der Unternehmer nennt, fällt; „§ 7 Abs. 1" und „Ziffer 7" sind AGB-Verweise;
+// „vgl."/„s." beenden keinen Satz; „1.000,00".
 // GRENZE (benannt, nicht regelbar ohne Sprachverständnis): Verneinung („nicht
 // in bis zu 24"), richtig zitierte Zahl in falschem Zusammenhang („bis zu
 // zwei Jahre länger"), Kernbegriff jenseits eines Kommas.
@@ -471,6 +476,10 @@ function normiere(t) {
   const ZEHNER = {zwanzig: 20, dreißig: 30, vierzig: 40, fünfzig: 50, sechzig: 60, siebzig: 70, achtzig: 80, neunzig: 90};
   const e = Object.keys(EINER).join('|');
   const z = Object.keys(ZEHNER).join('|');
+  // Runde 5: „hundert", „achthundert", „fünftausend" (vorher keine Zahl, also ungeprüft).
+  s = s.replace(new RegExp(`(^|[^a-zäöüß])(${e})?(hundert|tausend)`, 'g'), (_, a, x, y) =>
+    `${a} ${(x ? EINER[x] : 1) * (y === 'hundert' ? 100 : 1000)} `,
+  );
   s = s
     .replace(new RegExp(`(^|[^a-zäöüß])(${e})und(${z})`, 'g'), (_, a, x, y) => `${a} ${EINER[x] + ZEHNER[y]} `)
     .replace(/(^|[^a-zäöüß])(drei|vier|fünf|sech|sieb|acht|neun)zehn/g, (_, a, x) =>
@@ -496,7 +505,7 @@ function normiere(t) {
     .replace(/(?<![\d/])(\d+)\s*\/\s*(\d+)\s+jahr/g, (m, n, d) =>
       (12 * n) % d === 0 ? ` ${(12 * n) / d} monat` : m,
     );
-  return s.replace(/(\d)\.(\d{3})\b/g, '$1$2');
+  return s.replace(/(\d)\.(\d{3})\b/g, '$1$2').replace(/(\d),00\b/g, '$1'); // „1.000,00 Euro"
 }
 
 const EINHEIT = [
@@ -546,8 +555,8 @@ const KERN = [
   ['raten', /(^|[^a-zäöüß])(monats)?raten|ratenzahlung/, /(^|[^a-zäöüß])(monats)?raten|ratenzahlung/],
   [
     'rücknahme',
-    /rücknahme|rückgabe|zurückgeb|zurücksend|(^|[^a-zäöüß])testen/,
-    /rücknahme|rückgabe|zurückgeb|zurücksend|(^|[^a-zäöüß])testen|kaufpreis\s+zurück/,
+    /rücknahme|rückgabe|zurück(zu)?(geb|send|schick|nehm)|rücksend|retour|nehm\S*\s.*zurück|(^|[^a-zäöüß])testen/,
+    /rücknahme|rückgabe|zurück(zu)?(geb|send|schick|nehm)|rücksend|retour|nehm\S*\s.*zurück|(^|[^a-zäöüß])testen|kaufpreis\s+zurück/,
   ],
 ];
 
@@ -630,7 +639,11 @@ function gruppeSteht(gruppe, quelle) {
       (glied) =>
         gruppe.zahlen.every((z) => passt(z, glied)) &&
         gruppe.kerne.every(
-          (k) => KERN.find(([n]) => n === k)[2].test(glied) || kerneIn(frage).includes(k),
+          (k) =>
+            KERN.find(([n]) => n === k)[2].test(glied) ||
+            // Die Frage gibt ihren Kern nur an Glieder OHNE eigenen Kern weiter
+            // („… zum gesetzlichen Widerrufsrecht von 14 Tagen" bleibt Widerruf, Runde 5).
+            (kerneIn(frage).includes(k) && !KERN.some(([, , re]) => re.test(glied))),
         ),
     ),
   );
@@ -647,11 +660,16 @@ function stehtIn(zahl, quelle) {
  * „§ 438 Abs. 1 Nr. 3 BGB", „§§ 433 ff.") bleiben, sie sind kein AGB-Verweis.
  */
 function ohneVerweise(text, eigenerParagraf) {
-  const fremd = /§\s*(\d+)(?![\d])(?!\s*(?:abs|ff|bgb|egbgb|hgb|ustg|ao|pangv|ttdsg|dsgvo|odr))/gi;
+  // Gesetz = „§ N [Abs. N] [Nr. N] BGB|ff|…"; „§ 7 Abs. 1" ohne Gesetz ist ein AGB-Verweis,
+  // ebenso „Ziffer 7" (Runde 5).
+  const gesetz = '(?:\\s*abs\\.?\\s*\\d+)?(?:\\s*(?:s|satz)\\.?\\s*\\d+)?(?:\\s*nr\\.?\\s*\\d+)?\\s*(?:ff|bgb|egbgb|hgb|ustg|ao|pangv|ttdsg|dsgvo|odr)';
+  const fremd = new RegExp(`(?:§|ziffer|ziff\\.)\\s*(\\d+)(?![\\d])(?!${gesetz})`, 'gi');
   return text
     .replace(/<[^>]+>/g, ' ')
+    // Abkürzungen beenden keinen Satz: „vgl. § 7", „s. § 7", „i. S. d.".
+    .replace(/(^|[^a-zäöüß])(vgl|ziff|bzw|ggf|ca|abs|nr|s|d|i)\.(?=\s)/gi, '$1$2')
     .split(/(?=\(\d+\))/)
-    .filter((absatz) => !/unternehmer\s+im\s+sinne/i.test(absatz)) // Absatz nur für Unternehmer
+    .filter((absatz) => !/unternehmer/i.test(absatz)) // Absatz für Unternehmer (jede Fassung, Runde 5)
     .join(' ')
     .split(/(?<=[.!?])\s+|(?=\(\d+\))/)
     .filter((satz) => ![...satz.matchAll(fremd)].some((m) => m[1] !== eigenerParagraf))
@@ -819,6 +837,12 @@ test('die Leser finden ihre Quellen (Positivkontrolle der Zerlegung)', () => {
   assert.deepEqual(zahlen(satzglieder('Mit der 30-Tage-Rückgabe testen')[0], true), ['30 tag']);
   assert.ok(!stehtIn('100 %', 'erhalten 50 % vom vollen Kaufpreis zurück'));
   assert.deepEqual(zahlen('Mindestens 1/2 Jahr, ein halbes Jahr'), ['6 monat']);
+  // Runde 5 (fünfter Gegenprüfer):
+  assert.deepEqual(zahlen('Hundert Tage, ab achthundert Euro, ab fünftausend Euro, ab 1.000,00 Euro'), ['100 tag', '800 euro', '5000 euro', '1000 euro']);
+  assert.deepEqual(zahlgruppen('Wir nehmen es 14 Tage lang zurück.').map((g) => g.kerne), [['rücknahme']]);
+  assert.ok(!gruppeSteht({zahlen: ['14 tag'], kerne: ['rücknahme']}, ohneVerweise(p7.text, '7')), '§ 7 ist Widerruf, keine Rücknahme');
+  assert.ok(!stehtIn('14 tag', ohneVerweise('(1) Zusätzlich (vgl. § 7 Abs. 1) gilt: 14 Tage Widerruf. (2) Sind Sie Unternehmer, gilt ein Jahr.', null)));
+  assert.ok(!stehtIn('1 jahr', ohneVerweise('(1) Gut. (2) Gegenüber Unternehmern beträgt die Frist ein Jahr.', '9')));
   assert.ok(!/qr_mindestkante|25\.4/.test(EU_HINWEIS) && /mindestens zwei Jahren/.test(EU_HINWEIS));
   // Die Prüfung hat Gegenstand: mindestens die drei AGB-Angaben der Fristen.
   assert.ok(angaben().filter((a) => a.belegPfad === '/pages/agb').length >= 4);
