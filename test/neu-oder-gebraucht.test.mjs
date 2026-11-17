@@ -413,6 +413,19 @@ test('der Messcontainer heißt so, dass die Pruefliste ihn findet', () => {
 //    (Gewährleistung, Widerruf, Garantie, Raten), steht er dort mit. Sonst
 //    belegte die Rügefrist „7 Tagen … anzuzeigen" (§ 9) „7 Tage Gewährleistung"
 //    und jede Zahl irgendwo in der FAQ jede Ratenstufe.
+//
+// RUNDE 3 (dritter Gegenprüfer, 8 grüne Falschaussagen):
+//  - Absätze für UNTERNEHMER („Wenn Sie Unternehmer im Sinne des § 14 BGB
+//    sind …") belegen nichts auf einer Seite für Verbraucher; sonst trug
+//    „Gewährleistungsfrist beträgt ein Jahr" (§ 9 (4)) „ein Jahr Gewährleistung".
+//  - Ein Glied, das nur eine Euro-Schwelle nennt („ab 500 Euro und mehr …"),
+//    gehört zum folgenden Glied: Schwelle und Ratenzahl bleiben ein Paar.
+//  - Kernbegriff RÜCKNAHME (zurückgeben, testen, Rücknahme): „2 Jahre Rücknahme"
+//    wird nicht mehr von der Gewährleistungsfrist getragen.
+//  - „100 %" nur noch als „vollen Kaufpreis": die Klammer „(volle
+//    Geld-zurück-Garantie)" allein trägt nicht, wenn davor „halben" stünde.
+//  - Gleiche Dauer, andere Einheit gilt gleich: 2 Wochen = 14 Tage,
+//    2 Jahre = 24 Monate (sonst wurde eine WAHRE Umformulierung rot).
 const ZAHLWORT = [
   ['vierzehn', '14'],
   ['dreißig', '30'],
@@ -502,6 +515,11 @@ const KERN = [
   ['widerruf', /widerruf/, /widerruf/],
   ['garantie', /garantie/, /garantie|kaufpreis/],
   ['raten', /(^|[^a-zäöüß])(monats)?raten|ratenzahlung/, /(^|[^a-zäöüß])(monats)?raten|ratenzahlung/],
+  [
+    'rücknahme',
+    /rücknahme|rückgabe|zurückgeb|zurücksend|(^|[^a-zäöüß])testen/,
+    /rücknahme|rückgabe|zurückgeb|zurücksend|(^|[^a-zäöüß])testen|kaufpreis\s+zurück/,
+  ],
 ];
 
 /** Satzglieder (Komma, Semikolon, Doppelpunkt, Satzende, „und"), normiert. */
@@ -510,7 +528,18 @@ function satzglieder(t) {
     .replace(/\d+\s*-\s*[a-zäöüß]+-[a-zäöüß-]+/g, ' ') // „20-tage-zufriedenheitsgarantie" ist ein Name
     .split(/[,;:!?]|\.(?!\d)|\s(?:und|sowie|oder)\s/)
     .map((g) => g.trim())
-    .filter(Boolean);
+    .filter(Boolean)
+    .reduce((acc, g) => {
+      // Ein Glied, dessen Zahlen nur Euro-Schwellen sind, gehört zum nächsten.
+      const vorher = acc[acc.length - 1];
+      if (vorher && vorher.offen) {
+        acc[acc.length - 1] = {text: `${vorher.text} ${g}`, offen: false};
+      } else acc.push({text: g, offen: false});
+      const z = zahlen(acc[acc.length - 1].text, true);
+      acc[acc.length - 1].offen = z.length > 0 && z.every((x) => x.endsWith(' euro'));
+      return acc;
+    }, [])
+    .map((g) => g.text);
 }
 
 const kerneIn = (t) => KERN.filter(([, re]) => re.test(normiere(t))).map(([k]) => k);
@@ -531,12 +560,20 @@ function zahlgruppen(t, frage = '') {
     .filter((g) => g.zahlen.length);
 }
 
+/** Gleiche Dauer in einer Einheit: Wochen als Tage, Jahre als Monate. */
+function kanon(z) {
+  const [n, e] = z.split(' ');
+  if (e === 'woche') return `${Number(n) * 7} tag`;
+  if (e === 'jahr') return `${Number(n) * 12} monat`;
+  return z;
+}
+
 /** Passt eine Zahl der Angabe zu den Zahlen eines Satzglieds der Quelle? */
 function passt(zahl, glied) {
-  if (zahl === '100 %' && /(^|[^a-zäöüß])voll(e|en)\s+(geld-zurück|kaufpreis)/.test(glied)) return true;
+  if (zahl === '100 %' && /(^|[^a-zäöüß])vollen\s+kaufpreis/.test(glied)) return true;
   const da = zahlen(glied, true);
   if (!zahl.includes(' ')) return da.some((x) => x.split(' ')[0] === zahl);
-  return da.includes(zahl);
+  return da.map(kanon).includes(kanon(zahl));
 }
 
 /**
@@ -573,6 +610,9 @@ function ohneVerweise(text, eigenerParagraf) {
   const fremd = /§\s*(\d+)(?![\d])(?!\s*(?:abs|ff|bgb|egbgb|hgb|ustg|ao|pangv|ttdsg|dsgvo|odr))/gi;
   return text
     .replace(/<[^>]+>/g, ' ')
+    .split(/(?=\(\d+\))/)
+    .filter((absatz) => !/unternehmer\s+im\s+sinne/i.test(absatz)) // Absatz nur für Unternehmer
+    .join(' ')
     .split(/(?<=[.!?])\s+|(?=\(\d+\))/)
     .filter((satz) => ![...satz.matchAll(fremd)].some((m) => m[1] !== eigenerParagraf))
     .join(' ');
@@ -724,6 +764,14 @@ test('die Leser finden ihre Quellen (Positivkontrolle der Zerlegung)', () => {
     zahlgruppen('Ein Jahr ab Lieferung.', 'Wie lange habe ich Gewährleistung?').map((g) => g.kerne),
     [['gewährleistung']],
   );
+  // Runde 3 (dritter Gegenprüfer):
+  const p9ohne = ohneVerweise(p9.text, '9');
+  assert.ok(!gruppeSteht({zahlen: ['1 jahr'], kerne: ['gewährleistung']}, p9ohne), 'Unternehmerfrist (§ 9 (4)) gilt nicht');
+  assert.ok(!gruppeSteht({zahlen: ['2 jahr'], kerne: ['rücknahme']}, p9ohne), 'Gewährleistung ist keine Rücknahme');
+  assert.deepEqual(satzglieder('ab 500 Euro und mehr sogar bis zu 24'), ['ab 500 euro mehr sogar bis zu 24']);
+  assert.ok(!gruppeSteht({zahlen: ['500 euro', '24'], kerne: []}, FAQ_EINTRAEGE));
+  assert.ok(!stehtIn('100 %', 'den halben Kaufpreis zurück (volle Geld-zurück-Garantie)'));
+  assert.ok(stehtIn('2 woche', ohneVerweise(p7.text, '7')) && stehtIn('24 monat', EU_HINWEIS), 'gleiche Dauer, andere Einheit');
   // Die Prüfung hat Gegenstand: mindestens die drei AGB-Angaben der Fristen.
   assert.ok(angaben().filter((a) => a.belegPfad === '/pages/agb').length >= 4);
 });
