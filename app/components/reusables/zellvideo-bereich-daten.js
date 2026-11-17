@@ -86,10 +86,15 @@ export const ZELLVIDEO_BEREICH = {
       {wert: '+34 %', zeile: 'mehr Zellen überstehen künstlichen Zellstress'},
     ],
     text: 'Prof. Dr. Peter C. Dartsch hat im Labor eine Wunde in einen Rasen aus Nervenzellen gesetzt. Neben dem QiHome® Air wuchs sie deutlich schneller zu. Nach zehn Stunden waren dort nur noch 11,8 Prozent offen, ohne Gerät 25,2 Prozent.',
-    // Eigenes Zellvideo der QiHome®-Air-Studie: im Bestand nicht gefunden
-    // (Suche 16.11.2026, siehe RESULT des Jobs). Ohne Video zeigt der Bereich
-    // Aussage, Zahlen und Studienlink; das Video kommt mit dem Folgejob dazu.
-    video: null,
+    // Zellvideo der QiHome®-Air-Studie (Christian 16.11. ~19:15: „hat ENES erstellt, in
+    // Farbe"): gefunden 17.11.2026 im Drive-Ordner „KI Ad's (Enis)/260818_Mikroskopaufnahme_QiHome",
+    // Datei „QiHome Mikroskop Regeneration" (Wundheilung neuronaler Zellen), 1:1 zugeschnitten.
+    video: {
+      pfad: 'QiHome_Study_1x1_DE.mp4',
+      ersatzbild:
+        'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produktseite-stimmen--qihome-study-poster-de--ff5ab637c21d.jpg?v=1794875839',
+      bildzeile: 'Echtzeit-Aufnahme aus der Studie. Oben ohne Schutz: die Lücke bleibt offen. Unten neben dem QiHome® Air: die Nervenzellen wachsen wieder zusammen.',
+    },
     quelle: 'Veröffentlicht in Neurodegenerative Diseases: Current Research, 2026',
     link: {text: 'Zur Studie', href: '/pages/studie-qihome-air'},
   },

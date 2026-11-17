@@ -68,12 +68,12 @@ export const VARIANTE = {
   auszeichnung: 'Größe.',
   titel: 'Miss die Breite, nicht den Umfang.',
   anleitung:
-    'Leg ein Lineal an die breiteste Stelle deines Handgelenks, dort, wo du an beiden Seiten die Knöchel spürst. Schließ ein Auge und lies ab, auf den halben Zentimeter gerundet.',
+    'Leg ein Lineal an die breiteste Stelle deines Handgelenks, dort, wo du an beiden Seiten die Knöchel spürst. Lies auf den halben Zentimeter genau ab.',
   namen: proWert((g) => g),
   zeilen: proWert((g) => BREITEN[g]),
   grenzregel: '5,5 oder 6,5 cm? Nimm die kleinere Größe. Sie liegt an.',
   anpassen:
-    'Der Reif ist dafür gebaut, dass du ihn anpasst: Mit beiden Händen drückst du ihn enger oder dehnst ihn weiter. Das darfst du.',
+    'Der Reif ist dafür gebaut, dass du ihn anpasst: Mit beiden Händen drückst du ihn enger oder weiter, bis er gut sitzt.',
 };
 
 /*
@@ -153,7 +153,6 @@ export const RISIKOFREI = {
   zeile: '20 Tage tragen. Passt es nicht, bekommst du den vollen Kaufpreis zurück.',
   details: [
     'Die 20 Tage zählen ab Ankunft.',
-    'Einen Grund brauchst du nicht.',
     'Die Rücksendung ist für dich kostenlos.',
   ],
   // Kein Link auf /pages/neu-oder-gebraucht (Christian 28.09.2026, kein
@@ -167,7 +166,7 @@ export const VERGLEICH = {
   zeilen: {
     'qione-2-pro': 'Am Hals. Unter oder über der Kleidung.',
     qibracelet: 'Am Handgelenk. Den ganzen Tag.',
-    'qihome-air': 'Im Raum. Für alle unter deinem Dach.',
+    'qihome-air': 'Im Raum, für die ganze Familie.',
   },
 };
 
@@ -201,7 +200,8 @@ export const WISSEN = {
       // Satz und ohne "wirkt dem entgegen" (Abwehr-Rahmen).
       titel: 'Ruhig schlafen, egal wo du bist.',
       absaetze: [
-        'Wasseradern, Erdstrahlen, Gitternetze: Geopathogene Strahlung hat viele Namen. Sie kommt zu Handy, WLAN und 5G hinzu.',
+        // r2 17.11.2026 (Christian: AI-Sprache komplett raus; KI-Richter-Stellen ersetzt, Job 20261117-prio2-produktseiten-feedback-r2-alle-nachtraege-seit-16-11-umsetzen).
+        'Zu Handy, WLAN und 5G kommt Erdstrahlung aus Wasseradern und Gitternetzen dazu.',
         'Das QiBracelet® trägst du Tag und Nacht. So wirkt es auch, während du schläfst.',
       ],
       bild: 5,
@@ -261,7 +261,7 @@ export const FAQ = {
     },
     {
       f: 'Darf das QiBracelet® in die Sauna und ins Wasser?',
-      a: 'Ja. Wasser, Chlor, Salzwasser, Schweiß und Sonne machen ihm nichts. Auch in die Sauna darf es mit. Dort wird der Stahl so warm wie die Luft.',
+      a: 'Ja. Wasser, Chlor, Salzwasser, Schweiß und Sonne machen ihm nichts. Auch in die Sauna darf es mit.',
     },
     {
       f: 'Ist das QiBracelet® für Allergiker geeignet?',

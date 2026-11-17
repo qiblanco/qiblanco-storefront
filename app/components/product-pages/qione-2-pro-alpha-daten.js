@@ -181,7 +181,8 @@ export const FAKTEN = {
       zahl: '8×',
       // \u00a0: „1“ bleibt am Namen, kein Waisen-Umbruch im Kacheltitel (gemessen 1440 px).
       titel: 'Achtmal so viel Leistung wie der QiOne®\u00a01',
-      satz: 'Der QiOne® 2 Pro hat achtmal so viel Leistungsvolumen wie der QiOne® 1. Er kostet knapp das Dreifache. Pro Euro bekommst du also fast dreimal so viel Leistung.',
+      // r2 17.11.2026 (Christian: AI-Sprache komplett raus; KI-Richter-Stellen ersetzt, Job 20261117-prio2-produktseiten-feedback-r2-alle-nachtraege-seit-16-11-umsetzen).
+      satz: 'Für knapp den dreifachen Preis bekommst du achtmal so viel Leistungsvolumen wie beim QiOne® 1.',
     },
   ],
   vertrauen: {
@@ -197,7 +198,7 @@ export const FAKTEN = {
 /* 20-Tage-Element: eine Zeile mit Zeichen, Details aufklappbar (s03 vertrauen). */
 export const RISIKOFREI = {
   zeile: '20 Tage zu Hause testen. Passt er nicht, bekommst du den vollen Kaufpreis zurück.',
-  details: ['Die 20 Tage beginnen, wenn er bei dir ankommt.', 'Die Rücksendung kostet dich nichts.'],
+  details: ['Die 20 Tage beginnen, wenn er bei dir ankommt.', 'Die Rücksendung zahlen wir.'],
   // Kein Link auf /pages/neu-oder-gebraucht (Christian 28.09.2026, kein
   // Weglink von Kaufseiten; Grossjob 20260928-…-licht s14, weglink-sperre Gate 23).
 };
@@ -214,7 +215,7 @@ export const VERGLEICH = {
   zeilen: {
     'qione-2-pro': 'Am Hals. Unter oder über der Kleidung.',
     qibracelet: 'Am Handgelenk. Den ganzen Tag.',
-    'qihome-air': 'Im Raum. Für alle unter deinem Dach.',
+    'qihome-air': 'Im Raum, für die ganze Familie.',
   },
 };
 
@@ -260,9 +261,9 @@ export const WISSEN = {
       absaetze: [
         // s09-r2 (Christian Zy 29.10.2026, s09-r2: keine Angst-Sprache, kein Zurueckschrecken): der Satz über flachen Schlaf
         // und schweren Morgen ist gestrichen, der Block nennt nur noch den Zustand.
-        'Wasseradern, Gesteinsbrüche, Gitternetze: Erdstrahlung hat viele Namen.',
-        'Auch Erdstrahlung ist elektromagnetische Strahlung. Sie kommt zu Handy und WLAN dazu.',
-        'Der QiOne® 2 Pro hält das Wasser in deinem Körper in Ordnung, Tag und Nacht. Egal, wo dein Bett steht.',
+        // r2 17.11.2026 (Christian: AI-Sprache komplett raus; KI-Richter-Stellen ersetzt, Job 20261117-prio2-produktseiten-feedback-r2-alle-nachtraege-seit-16-11-umsetzen).
+        'Zu Handy und WLAN kommt Erdstrahlung aus Wasseradern, Gesteinsbrüchen und Gitternetzen dazu.',
+        'Der QiOne® 2 Pro bringt das Wasser in deinem Körper in den kohärenten Zustand, Tag und Nacht, egal wo dein Bett steht.',
       ],
       bild: 1,
     },

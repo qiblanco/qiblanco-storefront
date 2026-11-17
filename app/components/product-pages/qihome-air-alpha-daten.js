@@ -113,7 +113,6 @@ export const RISIKOFREI = {
     '20 Tage zu Hause testen. Überzeugt es dich nicht, bekommst du den vollen Kaufpreis zurück.',
   details: [
     'Die 20 Tage zählen ab Ankunft.',
-    'Einen Grund brauchst du nicht.',
     'Die Rücksendung ist für dich kostenlos.',
   ],
   link: null,
@@ -143,7 +142,7 @@ export const VERGLEICH = {
   zeilen: {
     'qione-2-pro': 'Am Hals. Dein Schutz, wohin du gehst.',
     qibracelet: 'Am Handgelenk. Dieselbe Wirkung wie der QiOne® 2 Pro.',
-    'qihome-air': 'Im Raum. Für alle unter deinem Dach.',
+    'qihome-air': 'Im Raum, für die ganze Familie.',
   },
 };
 
@@ -183,9 +182,9 @@ export const WISSEN = {
       // Drohfrage, der Satz über das Spüren im Schlaf ist gestrichen.
       titel: 'Ruhig schlafen, egal was unter dem Haus liegt.',
       absaetze: [
-        'Erdstrahlen, Gitternetze, Gesteinsbrüche: Geopathogene Strahlung hat viele Namen.',
-        'Sie kommt zu Handy, WLAN und 5G hinzu.',
-        'Deshalb gehört das QiHome® Air ins Schlafzimmer.',
+        // r2 17.11.2026 (Christian: AI-Sprache komplett raus; KI-Richter-Stellen ersetzt, Job 20261117-prio2-produktseiten-feedback-r2-alle-nachtraege-seit-16-11-umsetzen).
+        'Zu Handy, WLAN und 5G kommt im Schlafzimmer oft Erdstrahlung aus Wasseradern und Gitternetzen dazu.',
+        'Darum gehört das QiHome® Air ins Schlafzimmer. Es ist auf einen Radius von bis zu 160 m ausgelegt und wirkt, während du schläfst.',
       ],
     },
   ],
