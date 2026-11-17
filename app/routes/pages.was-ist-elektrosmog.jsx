@@ -75,7 +75,7 @@ const BESCHREIBUNG =
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-19';
-const GEAENDERT = '2026-11-15';
+const GEAENDERT = '2026-11-17';
 
 export function links() {
   return [{rel: 'stylesheet', href: fragenStyles}];

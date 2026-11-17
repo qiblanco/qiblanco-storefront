@@ -59,6 +59,16 @@
  * (fragen-schema.js teilfragenPaare). So trägt „Woran erkennst du einen
  * seriösen Elektrosmog-Schutz?" einen Antwortsatz und fünf Merkmale.
  *
+ * DAS FELD `abschnitt` (optional, seit 2026-11-17) ist ein Praxis-Abschnitt
+ * mit eigener Überschrift und Anker: je Punkt eine Quelle als
+ * Zwischenüberschrift und ein Handgriff als Absatz. Gerendert wird er von
+ * der Route der Seite über den Prop `anhang` von FrageSeite, nicht von
+ * FrageSeite selbst. Er steht nicht im FAQPage-Schema, weil seine
+ * Überschrift keine Frage ist. Anlass: SEO-Maßnahme
+ * M-SP-20261025-kann-elektrosmog-den-schlaf-stoeren (Pool-Job
+ * seo-2026-w47-l26-kann-elektrosmog-den-s-2dd8-…). Seiten ohne das Feld
+ * bleiben unverändert.
+ *
  * @typedef {{slug: string, katalog_id: string|null, markt: string,
  *   klasse: string, frage: string, antwort: string,
  *   "begruendung": string[], teilfragen?: Array<string|null>,
@@ -66,6 +76,8 @@
  *   beleg: string[], fundstellen?: string[], offen: string[],
  *   offen_links?: Array<{pfad: string, text: string}>,
  *   "begruendung_links"?: Array<{pfad: string, text: string}>,
+ *   abschnitt?: {id: string, titel: string, einleitung?: string,
+ *     punkte: Array<{titel: string, text: string}>},
  *   weiter: Array<{pfad: string, text: string}>, quellen: string[],
  *   pfad: string}} FrageSeite
  */
@@ -108,6 +120,13 @@ export const QUELLEN = {
     "url": "https://www.bfs.de/DE/themen/emf/nff/anwendung/haushalt-elektro/haushalt-elektro.html",
     "pruefung": "https://www.bfs.de/DE/themen/emf/nff/anwendung/haushalt-elektro/haushalt-elektro.html",
     "identitaet": "Haushaltsgeräte und Elektroinstallationen"
+  },
+  "bfs_vorsorge_hff": {
+    "art": "behoerde",
+    "zitat": "Bundesamt für Strahlenschutz: Vorsorge bei hochfrequenten Feldern",
+    "url": "https://www.bfs.de/DE/themen/emf/hff/schutz/vorsorge/vorsorge_node.html",
+    "pruefung": "https://www.bfs.de/DE/themen/emf/hff/schutz/vorsorge/vorsorge_node.html",
+    "identitaet": "Vorsorge bei hochfrequenten Feldern"
   },
   "bfs_hff": {
     "art": "behoerde",
@@ -315,13 +334,32 @@ export const FRAGEN = [
     "markt": "dach",
     "klasse": "neugier",
     "frage": "Kann Elektrosmog den Schlaf stören?",
-    "antwort": "Den Schlaf stört vor allem das Handy selbst, mit seinem Licht und seinen Nachrichten am Abend, während Schlafstudien beim Funkfeld allein keinen Einfluss gefunden haben.",
+    "antwort": "Für den Elektrosmog von Handy, Router und Sendemast haben Schlafstudien keinen Einfluss auf den Schlaf gefunden, das Handy am Bett stört ihn dagegen mit Licht und Nachrichten am Abend.",
     "begruendung": [
       "Forscher haben den Elektrosmog, also das Funkfeld einer Mobilfunkanlage oder eines Routers, getrennt von dem untersucht, was sonst mit dem Handy ins Schlafzimmer kommt. Dazu gehören das Licht am Abend, die ständige Erreichbarkeit und der letzte Blick aufs Display kurz vor dem Einschlafen.",
       "Beim Funkfeld allein fanden die Studien keinen Einfluss auf den Schlaf, beim Handy selbst dagegen einen deutlichen.",
       "Spannend ist ein dritter Punkt, über den kaum jemand spricht: die Sorge selbst. In einer Feldstudie schliefen Anwohner, die sich wegen einer Sendeanlage Sorgen machten, schlechter als die anderen, und zwar auch in den Nächten, in denen die Anlage gar nicht sendete. Das heißt nicht, dass ihre Beschwerden eingebildet waren. Wer schlecht geschlafen hat, hat schlecht geschlafen, egal was ihn wach gehalten hat.",
       "Für deinen eigenen Schlaf heißt das: Mehr Abstand zum Handy, der Flugmodus in der Nacht und ein dunkles Schlafzimmer helfen sofort und kosten nichts."
     ],
+    "abschnitt": {
+      "id": "elektrosmog-im-schlafzimmer",
+      "titel": "Elektrosmog im Schlafzimmer: drei Quellen, drei Handgriffe",
+      "einleitung": "Wer am Bett weniger Feld möchte, kommt mit drei Handgriffen aus. Sie kosten nichts, und beim Handy bleiben Licht und Nachrichten gleich mit draußen.",
+      "punkte": [
+        {
+          "titel": "Das Handy auf dem Nachttisch",
+          "text": "Es bleibt die ganze Nacht mit dem Netz verbunden und meldet sich bei jeder Nachricht. Lade es außerhalb des Schlafzimmers, dann bleiben Funk, Licht und Nachrichten draußen. Bleibt es am Bett, schaltet der Flugmodus den Sender aus. In einer Studie brauchten Menschen, die abends an einem leuchtenden Lesegerät lasen, länger zum Einschlafen als mit einem gedruckten Buch."
+        },
+        {
+          "titel": "Der WLAN-Router",
+          "text": "Viele Router lassen sich so einstellen, dass das WLAN in der Nacht ruht. Diesen Handgriff nennt auch das Bundesamt für Strahlenschutz. Steht der Router im Schlafzimmer, stell ihn in einen anderen Raum. Bei doppeltem Abstand sinkt die Leistungsdichte im freien Raum auf ein Viertel."
+        },
+        {
+          "titel": "Radiowecker, Ladegerät und Kabel am Kopfende",
+          "text": "Elektrische Geräte bilden im Betrieb ein Magnetfeld, und das nimmt mit jedem Zentimeter Abstand stark ab. Schon bei 30 Zentimetern bleiben die meisten Haushaltsgeräte deutlich unter dem empfohlenen Referenzwert. Wer am Kopfkissen möglichst wenig Feld möchte, stellt Radiowecker und Netzteil eine Armlänge entfernt."
+        }
+      ]
+    },
     "beleg": [
       "397 Anwohnerinnen und Anwohner zwischen 18 und 81 Jahren schliefen zwölf Nächte lang an zehn Orten in Deutschland, an denen es sonst keinen Mobilfunk gab. Eine Versuchs-Basisstation sendete in fünf dieser Nächte echte GSM-Signale bei 900 und 1800 Megahertz und in fünf Nächten gar nichts. Weder die aufgezeichneten Schlafdaten noch die eigene Einschätzung der Teilnehmer unterschieden sich zwischen beiden Bedingungen. Wer sich um die Anlage sorgte, schlief in den Nächten ohne Feld messbar schlechter als die Unbesorgten.",
       "Eine Übersichtsarbeit im Auftrag der Weltgesundheitsorganisation hat 2024 insgesamt 41 Experimente mit 2874 Teilnehmern zusammengefasst. Für Schlafstörungen lag der gemeinsame Effekt bei Feldern am Kopf bei minus 0,01, mit einem Vertrauensbereich von minus 0,22 bis 0,20. Bei Feldern am ganzen Körper waren es 0,00, mit minus 0,15 bis 0,15. Ob das Feld an oder aus war, konnten die Teilnehmer nicht erkennen.",
@@ -379,6 +417,8 @@ export const FRAGEN = [
       "bfs_diskutiert",
       "rubin2005",
       "bfs_hff",
+      "bfs_haushalt",
+      "bfs_vorsorge_hff",
       "who_emf",
       "qb_erfahrungen",
       "qb_kritik"
@@ -703,7 +743,13 @@ export const FRAGEN = [
       "Hochfrequente Felder entstehen überall, wo Technik funkt. Mobilfunk, WLAN und Rundfunk arbeiten mit Frequenzen von einigen hundert Megahertz bis in den Gigahertz-Bereich. Gemessen werden sie als elektrische Feldstärke in Volt pro Meter oder als Leistungsdichte in Watt pro Quadratmeter.",
       "Der Unterschied ist wichtig, weil beide Bereiche anders auf den Körper wirken. Niederfrequente Felder können Nerven und Muskeln reizen, hochfrequente können Gewebe erwärmen, und die Grenzwerte schützen genau vor diesen beiden Wirkungen.",
       "Ein Messgerät zeigt deshalb nie eine Zahl für „Elektrosmog“ an, weil das Wort mehrere Größen mit verschiedenen Einheiten zusammenfasst. Wer eine Belastung beziffern will, sagt dazu, welches Feld er meint, in welcher Einheit und in welchem Abstand.",
-      "Ob eine Studie zu Elektrosmog wissenschaftlich belastbar ist, erkennst du an ein paar Kriterien. Wurde verblindet, und gab es zum Vergleich eine Scheinbestrahlung? Stand der Auswertungsplan vorher fest, und haben genug Menschen teilgenommen, um den gesuchten Effekt überhaupt sehen zu können?"
+      "Ob eine Studie zu Elektrosmog wissenschaftlich belastbar ist, erkennst du an ein paar Kriterien. Wurde verblindet, und gab es zum Vergleich eine Scheinbestrahlung? Stand der Auswertungsplan vorher fest, und haben genug Menschen teilgenommen, um den gesuchten Effekt überhaupt sehen zu können? So gebaut sind etwa die Schlafexperimente zu Elektrosmog und Schlaf: Die Teilnehmer wussten nicht, in welchen Nächten die Anlage sendete."
+    ],
+    "begruendung_links": [
+      {
+        "pfad": "/pages/kann-elektrosmog-den-schlaf-stoeren",
+        "text": "Elektrosmog und Schlaf"
+      }
     ],
     "beleg": [
       "Für ortsfeste Funkanlagen legt die 26. Verordnung zum Bundes-Immissionsschutzgesetz Grenzwerte fest, die von der Frequenz abhängen. Um 900 Megahertz sind es 41 Volt pro Meter, um 1800 Megahertz 58 Volt pro Meter und um 2000 und um 3600 Megahertz je 61 Volt pro Meter.",

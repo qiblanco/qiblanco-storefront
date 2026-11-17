@@ -206,10 +206,50 @@ test('keine Frageseite trägt einen Kaufweg', () => {
   const KAUF = [/\bjetzt kaufen\b/i, /\bin den warenkorb\b/i, /\/cart\b/i, /\d[\d.,]*\s?(€|EUR)\b/];
   for (const s of FRAGEN) {
     const {"begruendung": absaetze} = s;
-    const text = [s.frage, s.antwort, ...absaetze, ...s.beleg, ...s.offen].join('\n');
+    const praxis = (s.abschnitt?.punkte || []).flatMap((p) => [p.titel, p.text]);
+    const text = [
+      s.frage,
+      s.antwort,
+      ...absaetze,
+      s.abschnitt?.einleitung || '',
+      ...praxis,
+      ...s.beleg,
+      ...s.offen,
+    ].join('\n');
     for (const re of KAUF) {
       assert.ok(!re.test(text), `${s.slug}: Kaufweg im Text (${re})`);
     }
+  }
+});
+
+// SEIT 2026-11-17 (SEO-Maßnahme M-SP-20261025-kann-elektrosmog-den-schlaf-
+// stoeren): das optionale Feld `abschnitt` ist ein Praxis-Abschnitt mit Anker.
+// Seine Route rendert ihn über den Prop `anhang` von FrageSeite. Fehlt dieser
+// Aufruf, stünde der Text nur in den Daten und nie auf der Seite. Die Menge
+// der geprüften Seiten kommt aus den Daten, nie als Zahl.
+test('ein Praxis-Abschnitt trägt Anker, Überschrift und Punkte und seine Route rendert ihn', (t) => {
+  const mit = FRAGEN.filter((s) => s.abschnitt);
+  if (mit.length === 0) {
+    t.skip('KEINE AUSSAGE: keine Seite trägt heute einen Praxis-Abschnitt.');
+    return;
+  }
+  const ids = new Set();
+  for (const s of mit) {
+    const a = s.abschnitt;
+    assert.match(a.id || '', /^[a-z0-9-]+$/, `${s.slug}: Anker fehlt oder ist kein Slug`);
+    assert.ok(!ids.has(a.id), `${s.slug}: Anker ${a.id} doppelt`);
+    ids.add(a.id);
+    assert.ok(a.titel?.trim(), `${s.slug}: Praxis-Abschnitt ohne Überschrift`);
+    assert.ok(a.punkte?.length > 0, `${s.slug}: Praxis-Abschnitt ohne Punkte`);
+    for (const p of a.punkte) {
+      assert.ok(p.titel?.trim() && p.text?.trim(), `${s.slug}: Punkt ohne Titel oder Text`);
+    }
+    // Der Titel ist der React-Schlüssel der Karte, also eindeutig je Abschnitt.
+    const titel = a.punkte.map((p) => p.titel);
+    assert.equal(new Set(titel).size, titel.length, `${s.slug}: Punkt-Titel doppelt`);
+    const route = lies('app', 'routes', `pages.${s.slug}.jsx`);
+    assert.match(route, /SEITE\.abschnitt/, `${s.slug}: die Route liest das Feld abschnitt nicht`);
+    assert.match(route, /anhang=\{/, `${s.slug}: die Route gibt den Abschnitt nicht an FrageSeite weiter`);
   }
 });
 
