@@ -7513,6 +7513,14 @@ html.qb-chat-docked .GoogleRezensionenPopup {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+/* Hover ohne Gold: .btn--text:hover faerbt in --color-accent-primary
+   rgb(242,191,114), auf dem Schubladengrund rgb(245,253,255) nur 1,63:1
+   (Sicht-Tor 17.11.2026, Schublade offen 1440). Die Tinte haelt 13,9:1, die
+   dickere Unterstreichung ist das Hover-Zeichen. Nur dieser Link. */
+.b2b-netto .b2b-netto__auf:hover {
+  color: var(--qb-text);
+  text-decoration-thickness: 2px;
+}
 .b2b-netto__titel,
 .b2b-netto__satz,
 .b2b-netto__fehler {
