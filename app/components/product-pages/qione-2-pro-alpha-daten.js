@@ -66,7 +66,7 @@ export const KETTE = {
   handle: 'qione-kette',
   auszeichnung: 'Kette.',
   titel: 'Die passende Kette für deinen QiOne® 2 Pro.',
-  zeile: 'Chirurgenstahl im selben Glanz wie sein Gehäuse. Damit liegt er jeden Tag direkt auf deiner Haut.',
+  zeile: 'Aus Chirurgenstahl, im selben Glanz wie das Gehäuse des QiOne® 2 Pro.',
   ohne: {
     titel: 'Ohne Kette',
     text: 'Das Baumwollband liegt bei.',

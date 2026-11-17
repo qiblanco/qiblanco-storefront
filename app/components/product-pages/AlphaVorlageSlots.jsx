@@ -43,7 +43,7 @@ export function AlphaVergleich({handle, daten, preise = null, eigenerPreis = nul
   const spalten = vergleichSpalten(handle, {preise: preise || {}, eigenerPreis, land});
   if (!daten || spalten.length < 2) return null;
   const m = {
-    einsatz: 'Wo du es trägst',
+    einsatz: 'Einsatz',
     material: 'Material',
     wasser: 'Wasser und Sauna',
     studie: 'Zellstudie',

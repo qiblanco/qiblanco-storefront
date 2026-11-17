@@ -124,10 +124,10 @@ export const RISIKOFREI = {
  * den Slot `vergleich`.
  */
 export const EINSATZ = {
-  ueberschrift: 'Wohnung. Haus. Praxis. Ein Gerät reicht.',
+  ueberschrift: 'Wohnung, Haus oder Praxis: Ein QiHome® Air reicht für alle Räume.',
   zeilen: [
     {titel: 'Wohnung', zeile: 'Jedes Zimmer, auf jeder Etage.'},
-    {titel: 'Haus', zeile: 'Alle Stockwerke. Alle, die darin leben.'},
+    {titel: 'Haus', zeile: 'Über alle Stockwerke, für alle, die bei dir wohnen.'},
     {titel: 'Büro und Praxis', zeile: 'Eine Atmosphäre für dein ganzes Team.'},
   ],
 };
@@ -156,7 +156,7 @@ export const WISSEN = {
     {
       etikett: 'Raum',
       bild: 3,
-      titel: 'Hinstellen. Fertig.',
+      titel: 'Einmal hinstellen, und es wirkt im ganzen Raum.',
       absaetze: [
         'Stell das QiHome® Air in den Raum, in dem du am meisten Zeit verbringst.',
         'Kein Strom, kein Kabel, keine Wartung.',

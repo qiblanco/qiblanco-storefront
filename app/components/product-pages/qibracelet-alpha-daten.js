@@ -71,7 +71,7 @@ export const VARIANTE = {
     'Leg ein Lineal an die breiteste Stelle deines Handgelenks, dort, wo du an beiden Seiten die Knöchel spürst. Lies auf den halben Zentimeter genau ab.',
   namen: proWert((g) => g),
   zeilen: proWert((g) => BREITEN[g]),
-  grenzregel: '5,5 oder 6,5 cm? Nimm die kleinere Größe. Sie liegt an.',
+  grenzregel: 'Liegst du bei 5,5 oder 6,5 cm, nimm die kleinere Größe. So sitzt der Reif eng am Handgelenk.',
   anpassen:
     'Der Reif ist dafür gebaut, dass du ihn anpasst: Mit beiden Händen drückst du ihn enger oder weiter, bis er gut sitzt.',
 };
@@ -253,7 +253,7 @@ export const FAQ = {
     },
     {
       f: 'Welche Größe brauche ich?',
-      a: 'Miss die Breite deines Handgelenks an der breitesten Stelle, nicht den Umfang. 4,5 bis 5 cm: S. 6 cm: M. 7 bis 7,5 cm: L. Liegst du bei 5,5 oder 6,5 cm, nimm die kleinere Größe. Mit beiden Händen drückst du den Reif enger oder dehnst ihn weiter. Das darfst du.',
+      a: 'Miss die Breite deines Handgelenks an der breitesten Stelle, nicht den Umfang. 4,5 bis 5 cm: S. 6 cm: M. 7 bis 7,5 cm: L. Liegst du bei 5,5 oder 6,5 cm, nimm die kleinere Größe. Mit beiden Händen drückst du den Reif enger oder weiter, bis er gut sitzt.',
     },
     {
       f: 'Was bekomme ich für den Preis?',
