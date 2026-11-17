@@ -85,8 +85,12 @@ export const IM_PREIS = [
       'QiBracelet®, QiHome® Air und Qi Alpha® versandkostenfrei. In die ' +
       'Schweiz kostet der Versand 21 €, an der Kasse in Franken zum ' +
       'Tageskurs. Zoll und Einfuhrabgaben sind dort im Preis enthalten.',
-    beleg: 'Versandrichtlinie',
-    belegPfad: '/policies/shipping-policy',
+    // Quelle = die FAQ-Antwort „Was kostet der Versand …" (app/data/faq-seite.js),
+    // seit 2026-11-17: sie trägt jedes Wort dieser Zeile. Die Shopify-
+    // Versandrichtlinie (/policies/shipping-policy, bis dahin hier zitiert)
+    // nennt weder Franken noch Tageskurs, und für Österreich nennt sie 6,90 €.
+    beleg: 'FAQ: Was kostet der Versand und wie lange dauert er?',
+    belegPfad: '/pages/faq',
   },
   {
     id: 'folgekosten',
@@ -154,13 +158,22 @@ export const VORTEILE = [
   {
     id: 'kaufnachweis',
     titel: 'Bestellnummer als Kaufnachweis',
-    beleg: 'unser Kundenservice',
-    belegPfad: '/pages/support',
+    // Der Satz „leg deinen Kaufnachweis dazu. Deine Bestellnummer genügt"
+    // steht im Gewährleistungshinweis (app/lib/eu-gewaehrleistungslabel.js),
+    // verlinkt im Fuß jeder Seite. /pages/support (bis 2026-11-17 zitiert)
+    // trägt ihn nur über genau diesen Fußhinweis.
+    beleg: 'unser Gewährleistungshinweis im Fuß jeder Seite',
+    belegPfad: null,
   },
   {
     id: 'original',
     titel: 'Originalware mit eigener Seriennummer',
-    beleg: 'Produktseiten QiOne 2 Pro, QiBracelet, QiHome Air, Qi Alpha®',
+    // Live gemessen 2026-11-17: die Seriennummer zeigen die Produktfotos von
+    // QiOne® 2 Pro, QiBracelet® und Qi Alpha® als Gravur („S/N"). Auf der
+    // QiHome-Air-Seite steht sie weder im Text noch im Bild; die Quelle nannte
+    // sie bis dahin trotzdem. „Original(ware)" steht auf keiner Seite von
+    // qiblanco.com (Sitemap, 76 Seiten): offen, an Christian gemeldet.
+    beleg: 'Seriennummer als Gravur auf den Produktfotos von QiOne® 2 Pro, QiBracelet® und Qi Alpha®',
     belegPfad: '/products/qione-2-pro',
   },
 ];
@@ -207,9 +220,13 @@ export const FRAGE_GEBRAUCHT = {
   // Beleg = AGB (seit 2026-11-10, Gegenprüfung K3): dort stehen die
   // freiwillige 20-Tage-Zufriedenheitsgarantie mit vollem Kaufpreis zurück und
   // die Gewährleistung (§ 9). Die Produktseite /products/qibracelet nennt die
-  // Geld-zurück-Garantie nicht; die Seriennummer steht auf dieser Seite unter
-  // „Originalware mit eigener Seriennummer“ (VORTEILE).
-  beleg: 'AGB: 20-Tage-Zufriedenheitsgarantie und Gewährleistung',
+  // Geld-zurück-Garantie nicht. Die Seriennummer steht NICHT in den AGB
+  // (Gegenprüfer s03, 2026-11-17), sie zeigt das Produktfoto des QiBracelet®
+  // als Gravur; die Quellzeile nennt das seitdem mit. „Im Original" hat keine
+  // Quelle, an Christian gemeldet (wie VORTEILE `original`).
+  beleg:
+    'AGB: 20-Tage-Zufriedenheitsgarantie und Gewährleistung; Seriennummer: ' +
+    'Produktfoto des QiBracelet®',
   belegPfad: '/pages/agb',
 };
 
