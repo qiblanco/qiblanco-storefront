@@ -5,6 +5,7 @@
 // der Endpunkt (Bestaetigungsmail mit Knopf). Erfolg: Danke-Text oder Weiterleitung auf die Erfolgsseite.
 // Erzeugt vom Mail Manager (Reiter Formulare). Texte und Einwilligung kommen aus der Formular-Konfiguration.
 import {useEffect, useRef, useState} from 'react';
+import {mailcheckAnbinden} from './reusables/mm-mailcheck-anbinden';
 
 export type MmFeld = {name: string; typ: 'text' | 'email'; label: string; pflicht: boolean};
 export type MmFormularKonfig = {
@@ -95,6 +96,8 @@ async function routeSenden(aktion: string, f: HTMLFormElement): Promise<Antwort>
   }
 }
 
+const MAILCHECK_ENDPUNKT = 'https://anmelden.dienst.qiblanco.com';
+
 export function MailManagerFormular({
   konfig, className, klassen = {}, aktion = '/api/mm-formular', direkt = '', style,
 }: {konfig: MmFormularKonfig; className?: string; klassen?: MmKlassen; aktion?: string; direkt?: string;
@@ -108,6 +111,10 @@ export function MailManagerFormular({
   const start = useRef<number>(0);
   const [meldung, setMeldung] = useState('');
   useEffect(() => { start.current = performance.now(); }, []);
+  // Tippfehler-Pruefung der Adresse (Elina EL-20261117-d53e6265): dezent "Meintest du ...?", Absenden bleibt moeglich.
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => { mailcheckAnbinden(formRef.current, {sprache: konfig.sprache, endpunkt: direkt || MAILCHECK_ENDPUNKT}); },
+    [konfig.sprache, direkt]);
 
   useEffect(() => {
     if (!a) return;
@@ -128,7 +135,7 @@ export function MailManagerFormular({
     );
   }
   return (
-    <form method="post" action={aktion} className={className ?? klassen.form ?? 'mm-formular'} style={style}
+    <form ref={formRef} method="post" action={aktion} className={className ?? klassen.form ?? 'mm-formular'} style={style}
       noValidate onSubmit={(e) => {
         const f = e.currentTarget;
         const fehlt = konfig.felder.some((x) => x.pflicht && !String((f.elements.namedItem(x.name) as HTMLInputElement)?.value || '').trim());

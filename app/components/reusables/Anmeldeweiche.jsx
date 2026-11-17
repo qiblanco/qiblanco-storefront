@@ -2,6 +2,7 @@ import {useEffect, useId, useRef, useState} from 'react';
 import anmeldeStyles from './anmeldeformular.css?url';
 import {beobachten, starteNachschicken, zustellen} from './anmelde-puffer';
 import {RUECKFALL_ANZEIGE} from './anmelde-rueckfallstand';
+import {mailcheckAnbinden} from './mm-mailcheck-anbinden';
 import {
   anzeigeVollstaendig,
   rueckfallAnzeige,
@@ -277,6 +278,13 @@ function EigenesFormular({
     angezeigt.current = Date.now();
   }, []);
 
+  // Tippfehler-Pruefung der Adresse (Elina EL-20261117-d53e6265): dezent "Meintest du ...?", Ein-Klick-Korrektur,
+  // Absenden bleibt moeglich. Mailserver-Frage nur mit der Domain an den eigenen Endpunkt (GET /w?d=).
+  const formRef = useRef(null);
+  useEffect(() => {
+    mailcheckAnbinden(formRef.current, {sprache: deutsch ? 'de' : 'en', endpunkt: ANMELDE_ENDPUNKT});
+  }, [deutsch, stand]);
+
   // Geht die gepufferte Anmeldung später durch (Takt, Netz zurück), zeigt das Formular den Danke-Satz.
   useEffect(() => {
     if (stand !== 'gepuffert') return undefined;
@@ -434,6 +442,7 @@ function EigenesFormular({
 
   return (
     <form
+      ref={formRef}
       className={klasse}
       onSubmit={absenden}
       data-anmeldeweg="eigen"
