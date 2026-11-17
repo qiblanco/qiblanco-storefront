@@ -28,8 +28,8 @@ import {THE_ALPHA_ARM_COOKIE} from '~/lib/checkout-tracking';
  *     Ohne sie wartet merkeArm auf die Wahl (CookiebotOnConsentReady/OnAccept
  *     am window, qb:einwilligung am document; DACH lädt nach der ersten Wahl
  *     nicht neu) und schreibt dann. Fehlt das Cookie, entsteht kein
- *     Bestellattribut, kein Ersatzwert. Lehnt der Besucher Statistik ab, wird
- *     ein Cookie aus der Zeit vor dieser Regel entfernt.
+ *     Bestellattribut, kein Ersatzwert. Ohne Einwilligung wird ein Cookie aus
+ *     der Zeit vor dieser Regel entfernt.
  *     Gemessen 17.11.2026 (Grossjob einwilligung-scanner-20261117T015551Z, s01):
  *     vorher stand das Cookie vor jeder Wahl auf /pages/Qi-Alpha, -B und -C.
  *
@@ -60,21 +60,15 @@ const WAHL_EREIGNISSE_WINDOW = ['CookiebotOnConsentReady', 'CookiebotOnAccept', 
 const WAHL_EREIGNISSE_DOKUMENT = ['qb:einwilligung'];
 const OHNE_ABMELDEN = () => {};
 
-/** Statistik erlaubt? Nur ein ausdrückliches true des Motors zählt. */
+/**
+ * Statistik erlaubt? Nur ein true aus einer Wahl zählt. Ein vom Motor angenommenes true
+ * (method 'implied': Opt-out-Region mit GPC, /qb-einwilligung.js ohne Wahl) zählt nicht,
+ * dort wartet das Cookie wie überall auf die Wahl.
+ */
 export function statistikErlaubt(w) {
   try {
-    const cb = w && w.Cookiebot;
-    return Boolean(cb && cb.consent && cb.consent.statistics === true);
-  } catch {
-    return false;
-  }
-}
-
-/** Hat der Besucher gewählt und Statistik abgelehnt? */
-function statistikAbgelehnt(w) {
-  try {
-    const cb = w && w.Cookiebot;
-    return Boolean(cb && cb.hasResponse === true && cb.consent && cb.consent.statistics !== true);
+    const c = w && w.Cookiebot && w.Cookiebot.consent;
+    return Boolean(c && c.statistics === true && c.method !== 'implied');
   } catch {
     return false;
   }
@@ -110,7 +104,7 @@ export function merkeArm(arm, w) {
     schreibeCookie(arm, w);
     return OHNE_ABMELDEN;
   }
-  if (statistikAbgelehnt(w)) entferneCookie(w);
+  entferneCookie(w);
   let aktiv = true;
   const abmelden = () => {
     if (!aktiv) return;
@@ -127,7 +121,7 @@ export function merkeArm(arm, w) {
     if (statistikErlaubt(w)) {
       schreibeCookie(arm, w);
       abmelden();
-    } else if (statistikAbgelehnt(w)) {
+    } else {
       entferneCookie(w);
     }
   }
