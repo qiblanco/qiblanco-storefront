@@ -42,7 +42,7 @@ export const FRISTEN = [
     // Studien" und nennt weder 20 Tage noch Geld zurück (live gerendert
     // gemessen 2026-11-17). Die Zeile „100 % Geld-zurück-Garantie" in
     // VORTEILE erbt diesen Beleg; im Abschnitt steht „volle
-    // Geld-zurück-Garantie". test/kauf-tatsachen-belegtreue.test.mjs prüft je
+    // Geld-zurück-Garantie". test/neu-oder-gebraucht.test.mjs (BELEGTREUE) prüft je
     // Eintrag, dass die genannte Zahl im zitierten Abschnitt steht.
     beleg: 'AGB: 20-Tage-Zufriedenheitsgarantie',
     belegPfad: '/pages/agb',
