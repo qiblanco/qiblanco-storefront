@@ -7711,19 +7711,16 @@ select.b2b-netto__eingabe {
    dieselbe Typo und Tinte wie „448 Bewertungen" (zweite Stimme), dezent, kein eigener Akzent. Rückt an die
    Kopfzeile heran (s-1 Abstand) und hält zur Bahn denselben Abstand wie vorher die Kopfzeile. */
 /* Freigabe-Umbau 2 (Christian 17.11.2026 ~15:20 Bangkok): „+ 14.000 aktive Nutzer" in DERSELBEN Schrift wie die
-   „4,8". Seit 17.11.2026 abends steht die Zeile IN der Überschrift (GoogleBewertungsleiste.jsx) und erbt Größe,
-   Gewicht, Zeilenhöhe und Tinte der 4,8 von der H2, auf jeder Seite und bei jeder Breite. Als eigener Absatz mit
-   eigenen Werten verlor sie gegen die Absatzregel der Seite (.as-seite :where(p, li): 17 px neben 24 px), und mobil
-   setzt reset.css jede H2 per !important auf 1.5rem, was eine eigene Größe nie trifft. Abstand zur Kopfzeile s-1
-   wie vorher, zur Bahn hält die H2 ihren Abstand. US (snippets/qb-gbl-nutzer.liquid) baut dieselbe Form.
-   Rückweg: vorige Fassung (eigener Absatz mit --qb-gbl-fs-titel). */
-.qb-gbl .qb-gbl__nutzer {
-  display: block;
-  margin: var(--qb-gbl-s-1) 0 0;
-  font: inherit;
-  letter-spacing: inherit;
-  color: inherit;
-  text-align: inherit;
+   „4,8" (Groesse, Gewicht, Tinte, Zeilenhoehe der Kopfzeile), damit der Baustein keine zweite Schriftform traegt.
+   US (snippets/qb-google-leiste.liquid) traegt dieselben Werte. Rueckweg: vorige Fassung (Anzahl-Typo, leise). */
+.qb-gbl__nutzer {
+  margin: calc(-1 * (var(--qb-gbl-s-3) - var(--qb-gbl-s-1))) 0 var(--qb-gbl-s-3);
+  font-size: var(--qb-gbl-fs-titel);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--qb-gbl-tinte);
+  text-align: left;
 }
 @media (min-width: 750px) {
   .qb-gbl__titel {
@@ -7731,6 +7728,9 @@ select.b2b-netto__eingabe {
   }
   .qb-gbl__google {
     font-size: var(--qb-gbl-fs-anzahl-gross);
+  }
+  .qb-gbl__nutzer {
+    font-size: var(--qb-gbl-fs-titel-gross);
   }
   .qb-gbl {
     padding-left: var(--qb-gbl-s-3);
