@@ -161,7 +161,7 @@
          vorschau: 'Preview: nothing is sent from here.', knopf_titel: 'Use this address'}
   };
 
-  var STIL = '.mm-mailcheck{margin:6px 0 0;font-size:.875em;line-height:1.4;opacity:.92;text-align:left}' +
+  var STIL = '.mm-mailcheck{margin:6px 0 8px;font-size:.875em;line-height:1.4;opacity:.92;text-align:left}' +
     '.mm-mailcheck[hidden]{display:none}' +
     '.mm-mailcheck__vorschlag{all:unset;cursor:pointer;font-weight:600;text-decoration:underline;text-underline-offset:2px;' +
     'color:inherit;word-break:break-all;padding:6px 0;margin:-6px 0;display:inline}' +
