@@ -395,8 +395,12 @@ test('der Messcontainer heißt so, dass die Pruefliste ihn findet', () => {
 // in EXTERN; eine NEUE nicht prüfbare Quelle mit Zahl macht diesen Test rot,
 // statt still durchzugehen.
 //
-// Zahlwörter („vierzehn", „zwei") gelten wie Ziffern, „100 %" wie „voll"
-// (die AGB sagen „volle Geld-zurück-Garantie").
+// Zahlwörter („vierzehn", „zwei") gelten wie Ziffern. Eine Zahl zählt nur MIT
+// ihrer Einheit (Tage, Jahre, Monat, Euro): der unabhängige Gegenprüfer von s03
+// fand, dass sonst „§ 14 BGB" die 14 Tage, „20. Juli 2025" die 20 und der
+// Absatz „(2)" die zwei Jahre belegte. Gliederungsmarker (§ N, Abs., Nr., (N),
+// Datum) zählen nie. „100 %" gilt nur als „volle Geld-zurück…" oder „vollen
+// Kaufpreis" (die AGB-Formulierung), nie als beliebiges Wort auf „voll…".
 //
 // Ausführen: node --test test/neu-oder-gebraucht.test.mjs (Abschnitt BELEGTREUE)
 // Rot-vor-Grün: BELEGTREUE_MUTANTE=alt-beleg setzt die alten Quellzeilen ein
@@ -418,6 +422,7 @@ function normiere(t) {
   let s = String(t)
     .replace(/<[^>]+>/g, ' ')
     .replace(/\{' '\}/g, ' ')
+    .replace(/€/g, ' euro')
     .replace(/&nbsp;| /g, ' ')
     .toLowerCase();
   for (const [wort, ziffer] of ZAHLWORT) {
@@ -427,22 +432,46 @@ function normiere(t) {
   return s.replace(/(\d)\.(\d{3})\b/g, '$1$2');
 }
 
-/** Die Zahlen einer Angabe; „100 %" als eigenes Merkmal. */
+const EINHEIT = [
+  [/^(tag|tägig)/, 'tag'],
+  [/^(jahr|jährig)/, 'jahr'],
+  [/^monat/, 'monat'],
+  [/^euro/, 'euro'],
+];
+const MONATE =
+  'januar|februar|märz|april|mai|juni|juli|august|september|oktober|november|dezember';
+
+/** Gliederungsmarker und Daten tragen keine Frist: § 14, Abs. 1, Nr. 3, (2), 20. Juli. */
+function ohneMarker(s) {
+  return s
+    .replace(/§§?\s*\d+[a-z]?/g, ' ')
+    .replace(/(^|[^a-zäöüß])(abs|nr|art)\.\s*\d+/g, '$1 ')
+    .replace(/\(\d+\)/g, ' ')
+    .replace(new RegExp(`\\d+\\.\\s*(${MONATE})`, 'g'), ' ');
+}
+
+/** Die Zahlen einer Angabe als „Zahl Einheit" („20 tag", „100 %", „25 euro"), sonst nackt. */
 function zahlen(t) {
-  const s = normiere(t);
+  const s = ohneMarker(normiere(t));
   const out = new Set();
-  for (const m of s.matchAll(/(?<![\d/])(\d+)(?![\d/])(\s*%)?/g)) {
-    out.add(m[2] ? `${m[1]} %` : m[1]);
+  for (const m of s.matchAll(/(?<![\d/])(\d+)(?![\d/])\s*-?\s*(%|[a-zäöüß]+)?/g)) {
+    if (m[2] === '%') {
+      out.add(`${m[1]} %`);
+      continue;
+    }
+    const e = m[2] && EINHEIT.find(([re]) => re.test(m[2]));
+    out.add(e ? `${m[1]} ${e[1]}` : m[1]);
   }
   return [...out];
 }
 
-/** Steht die Zahl im Quelltext? Ganze Zahl, nie als Teil von 2025. */
+/** Steht die Zahl MIT ihrer Einheit im Quelltext? Eine nackte Zahl passt zu jeder Einheit. */
 function stehtIn(zahl, quelle) {
-  const s = normiere(quelle);
-  if (zahl === '100 %') return /100\s*%/.test(s) || /(^|[^a-zäöüß])voll/.test(s);
-  const roh = zahl.replace(' %', '');
-  return new RegExp(`(?<![\\d/])${roh}(?![\\d/])`).test(s);
+  const s = ohneMarker(normiere(quelle));
+  if (zahl === '100 %' && /(^|[^a-zäöüß])voll(e|en)\s+(geld-zurück|kaufpreis)/.test(s)) return true;
+  const da = zahlen(s);
+  if (!zahl.includes(' ')) return da.some((x) => x.split(' ')[0] === zahl);
+  return da.includes(zahl);
 }
 
 /** pages.agb.jsx in Abschnitte je <h2>. */
@@ -518,7 +547,8 @@ function angaben() {
 
 const AGB = agbAbschnitte(lies('../app/routes/pages.agb.jsx'));
 const FAQ_TEXT = FAQ_ALLE.map((f) => `${f.q} ${f.a}`).join('\n');
-const EU_HINWEIS = lies('../app/lib/eu-gewaehrleistungslabel.js');
+// Ohne Kommentare: gezählt wird der ausgelieferte Wortlaut, nicht die Begründung daneben.
+const EU_HINWEIS = ohneProsa(lies('../app/lib/eu-gewaehrleistungslabel.js'));
 
 /** Der Quelltext, den eine Quellzeile zitiert, oder null (nicht prüfbar). */
 function quelleVon(a) {
@@ -542,11 +572,18 @@ test('die Leser finden ihre Quellen (Positivkontrolle der Zerlegung)', () => {
   assert.ok(titel.some((t) => /20-Tage-Zufriedenheitsgarantie/.test(t)), titel.join(' | '));
   const p7 = AGB.find((a) => a.paragraf === '7');
   const gar = AGB.find((a) => /Zufriedenheitsgarantie/.test(a.titel));
-  assert.ok(stehtIn('14', p7.text), '§ 7 nennt vierzehn Tage');
-  assert.ok(!stehtIn('20', p7.text), '§ 7 nennt die 20 Tage NICHT');
-  assert.ok(stehtIn('20', gar.text) && stehtIn('100 %', gar.text));
-  assert.deepEqual(zahlen('ab 1.000 Euro bis zu 24, Richtlinie (EU) 2025/1960'), ['1000', '24']);
-  assert.deepEqual(zahlen('100 % Geld-zurück-Garantie, 20 Tage'), ['100 %', '20']);
+  assert.ok(stehtIn('14 tag', p7.text), '§ 7 nennt vierzehn Tage');
+  assert.ok(!stehtIn('20 tag', p7.text), '§ 7 nennt die 20 Tage NICHT');
+  assert.ok(stehtIn('20 tag', gar.text) && stehtIn('100 %', gar.text));
+  // Die Fehlgriffe des Gegenprüfers (s03) sind keine Belege mehr:
+  const p9 = AGB.find((a) => a.paragraf === '9');
+  assert.ok(!stehtIn('14 tag', p9.text), '„§ 14 BGB" belegt keine 14 Tage');
+  assert.ok(!stehtIn('100 %', AGB.find((a) => a.paragraf === '1').text), '„vollendet" ist keine Garantie');
+  assert.ok(!stehtIn('100 %', AGB.find((a) => a.paragraf === '4').text), '„vollständig" ist keine Garantie');
+  assert.ok(!stehtIn('2 jahr', gar.text), 'Absatz „(2)" belegt keine zwei Jahre');
+  assert.deepEqual(zahlen('ab 1.000 Euro bis zu 24, Richtlinie (EU) 2025/1960'), ['1000 euro', '24']);
+  assert.deepEqual(zahlen('100 % Geld-zurück-Garantie, 20 Tage, 20-tägige'), ['100 %', '20 tag']);
+  assert.deepEqual(zahlen('(2) nach § 14 BGB, Abs. 1, am 20. Juli'), []);
   assert.ok(FAQ_TEXT.length > 1000 && EU_HINWEIS.length > 1000);
   // Die Prüfung hat Gegenstand: mindestens die drei AGB-Angaben der Fristen.
   assert.ok(angaben().filter((a) => a.belegPfad === '/pages/agb').length >= 4);
