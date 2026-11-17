@@ -440,3 +440,14 @@
   line-height: 1.2;
   color: var(--qb-gbl-tinte);
 }
+
+/* ERSTE KARTE UNTER DEM KOPF MIT NR.-1-BANNER (Produktseiten-Freigabe Christian 17.11.2026, Umbau 5a: "der
+   schwarze Nr.1-Banner beisst sich mit dem qi-blanco-Logo"). Gemessen 390x844 in der Vorschau: der feste Kopf
+   traegt seit dem 17.11. auch auf den Produktseiten die Nr.-1-Leiste und endet bei 174 px (--qb-kopf-hoehe 174),
+   <main> haelt nur calc(var(--header-height) + 40px) = 104 px frei, die schwarze Licht-Karte begann bei 136 px:
+   die Logo-Unterzeile "FREQUENCY TECHNOLOGY" stand auf Schwarz. Desktop 1440: 8 px Luft.
+   Ausgleich wie qb-360-rand.css / SpiegelRahmen: gemessene Kopf-Ruhelage minus dem Platz, den <main> schon frei
+   haelt, zusaetzlich zum bisherigen Abstand. Rueckweg: diesen Block loeschen. */
+.av-seite > .av-licht:first-child {
+  margin-top: calc(var(--tas-s-4) + max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px)));
+}
