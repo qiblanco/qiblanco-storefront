@@ -74,8 +74,8 @@ const TITEL = "Kann Elektrosmog den Schlaf stören? | Qi Blanco";
 // Praxis-Abschnitt ist genannt. Die Feldstudie bleibt mit ihrem Gegenstand
 // (Funkfeld einer Versuchsanlage) drin, nicht verallgemeinert.
 const BESCHREIBUNG =
-  'Elektrosmog und Schlaf: Bei 397 Anwohnern machte das Funkfeld einer ' +
-  'Versuchsanlage keinen Unterschied, am Abend stört vor allem das Handy. Drei Handgriffe.';
+  'Elektrosmog und Schlaf: Bei 397 Anwohnern änderte das Funkfeld einer ' +
+  'Versuchsanlage nichts. Was abends wirklich stört und was du am Bett tun kannst.';
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -132,7 +132,7 @@ export const meta = () => {
 const ABSCHNITT = {
   "id": "elektrosmog-im-schlafzimmer",
   "titel": "Elektrosmog im Schlafzimmer: drei Quellen, drei Handgriffe",
-  "einleitung": "Wer am Bett weniger Feld möchte, kommt mit drei Handgriffen aus. Sie kosten nichts, und beim Handy bleiben Licht und Nachrichten gleich mit draußen.",
+  "einleitung": "In fast jedem Schlafzimmer liegen das Handy und Geräte am Kopfende, oft steht dort auch der WLAN-Router. Für jedes davon reicht ein einfacher Handgriff, und keiner kostet etwas.",
   "punkte": [
     {
       "titel": "Das Handy auf dem Nachttisch",
