@@ -69,9 +69,13 @@ const TITEL = "Kann Elektrosmog den Schlaf stören? | Qi Blanco";
 // 41 Experimente der WHO-Übersicht stehen bewusst NICHT drin: sie zählen
 // Beschwerden aller Art, Schlaf ist dort nur ein Teilergebnis. Der Titel
 // bleibt.
+// Seit 2026-11-17 (SEO-Maßnahme M-SP-20261025-kann-elektrosmog-den-schlaf-
+// stoeren) steht der Suchbegriff „Elektrosmog und Schlaf" vorn, und der
+// Praxis-Abschnitt ist genannt. Die Feldstudie bleibt mit ihrem Gegenstand
+// (Funkfeld einer Versuchsanlage) drin, nicht verallgemeinert.
 const BESCHREIBUNG =
-  'Am Abend stört vor allem das Handy den Schlaf. Bei 397 Anwohnern in zwölf ' +
-  'Nächten machte das Funkfeld einer Versuchsanlage keinen Unterschied im Schlaf.';
+  'Elektrosmog und Schlaf: Bei 397 Anwohnern machte das Funkfeld einer ' +
+  'Versuchsanlage keinen Unterschied, am Abend stört vor allem das Handy. Drei Handgriffe.';
 
 /**
  * DATUM ALS KONSTANTE, NICHT ALS LAUFZEIT-UHR: ein `dateModified`, das sich bei
@@ -114,8 +118,68 @@ export const meta = () => {
   ];
 };
 
+/**
+ * PRAXIS-ABSCHNITT „Elektrosmog im Schlafzimmer: drei Quellen, drei
+ * Handgriffe" (seit 2026-11-17, SEO-Maßnahme
+ * M-SP-20261025-kann-elektrosmog-den-schlaf-stoeren). Der Text steht HIER in
+ * der Route und nicht in app/data/fragen.js: das Datenmodul erreicht 13
+ * Seiten, die Route nur diese eine, und der Abschnitt gehört nur hierher
+ * (Gate 12 misst genau diese Reichweite). Die Route setzt ihn über den
+ * vorhandenen Prop `anhang` ein: nach „Gut zu wissen", vor den Begriffen. FrageSeite.jsx bleibt dafür unverändert. Die Karten nutzen die
+ * vorhandenen Klassen der Frageseiten (frg__inhalt, frg__liste, frg__karte),
+ * es gibt keine neue Stilregel. Ohne das Feld rendert die Seite wie vorher.
+ */
+const ABSCHNITT = {
+  "id": "elektrosmog-im-schlafzimmer",
+  "titel": "Elektrosmog im Schlafzimmer: drei Quellen, drei Handgriffe",
+  "einleitung": "Wer am Bett weniger Feld möchte, kommt mit drei Handgriffen aus. Sie kosten nichts, und beim Handy bleiben Licht und Nachrichten gleich mit draußen.",
+  "punkte": [
+    {
+      "titel": "Das Handy auf dem Nachttisch",
+      "text": "Es bleibt die ganze Nacht mit dem Netz verbunden und meldet sich bei jeder Nachricht. Lade es außerhalb des Schlafzimmers, dann bleiben Funk, Licht und Nachrichten draußen. Bleibt es am Bett, schaltet der Flugmodus den Sender aus. In einer Studie brauchten Menschen, die abends an einem leuchtenden Lesegerät lasen, länger zum Einschlafen als mit einem gedruckten Buch."
+    },
+    {
+      "titel": "Der WLAN-Router",
+      "text": "Viele Router lassen sich so einstellen, dass das WLAN in der Nacht ruht. Diesen Handgriff nennt auch das Bundesamt für Strahlenschutz. Steht der Router im Schlafzimmer, stell ihn in einen anderen Raum. Bei doppeltem Abstand sinkt die Leistungsdichte im freien Raum auf ein Viertel."
+    },
+    {
+      "titel": "Radiowecker, Ladegerät und Kabel am Kopfende",
+      "text": "Elektrische Geräte bilden im Betrieb ein Magnetfeld, und das nimmt mit jedem Zentimeter Abstand stark ab. Schon bei 30 Zentimetern bleiben die meisten Haushaltsgeräte deutlich unter dem empfohlenen Referenzwert. Wer am Kopfkissen möglichst wenig Feld möchte, stellt Radiowecker und Netzteil eine Armlänge entfernt."
+    }
+  ]
+};
+
+function PraxisAbschnitt({abschnitt}) {
+  if (!abschnitt) return null;
+  return (
+    <section
+      id={abschnitt.id}
+      data-geo="abschnitt"
+      data-section="frg-abschnitt"
+    >
+      <div className="frg__inhalt">
+        <h2>{abschnitt.titel}</h2>
+        {abschnitt.einleitung ? <p>{abschnitt.einleitung}</p> : null}
+        <ol className="frg__liste">
+          {abschnitt.punkte.map((punkt) => (
+            <li key={punkt.titel} className="frg__karte">
+              <h3>{punkt.titel}</h3>
+              <p>{punkt.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
 export default function FrageRoute() {
-  return <FrageSeite seite={SEITE} />;
+  return (
+    <FrageSeite
+      seite={SEITE}
+      anhang={<PraxisAbschnitt abschnitt={ABSCHNITT} />}
+    />
+  );
 }
 
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */
