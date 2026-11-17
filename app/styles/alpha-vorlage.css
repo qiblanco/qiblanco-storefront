@@ -367,6 +367,27 @@
 .av-seite .tas-box-titel + .avq-nutzen-raster {
   margin-top: var(--tas-s-3);
 }
+/*
+ * r2 17.11.2026 (Designmeister-Nachtrag „generell zu wenig Abstand zwischen
+ * Headline und Folgendem“): dieselbe Ursache an drei weiteren Stellen,
+ * `.tas-seite p` / `.tas-seite ul { margin: 0 }` (0,1,1) schlug die eigenen
+ * Abstände; gemessen 0 px unter „Kette./Größe.“, „Kette oder Armband?“ /
+ * „QiOne® oder QiHome® Air?“ und „So trägst du …“ (390 und 1440 px).
+ */
+.av-seite .av-anleitung {
+  margin-top: var(--tas-s-1);
+}
+.av-seite .avv-intro {
+  margin-top: var(--tas-s-1);
+}
+.av-seite .trb-bahn {
+  margin-top: var(--tas-s-3);
+}
+@media (min-width: 750px) {
+  .av-seite .trb-bahn {
+    margin-top: var(--tas-s-4);
+  }
+}
 /* Fünf Kacheln: drei oben, zwei breite unten, keine Lücke im Raster. */
 @media (min-width: 750px) {
   .av-kacheln:has(> :nth-child(5):last-child) {
