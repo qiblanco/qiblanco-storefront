@@ -1,4 +1,5 @@
 import {TrustpilotTatsachenSeite} from '~/components/campaign/TrustpilotTatsachenSeite';
+import {TrustpilotEchtPruefen} from '~/components/reusables/TrustpilotEchtPruefen';
 import tptStyles from '~/styles/trustpilot-tatsachen.css?url';
 import {canonicalLink, absoluteCanonical} from '~/lib/seo';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
@@ -60,18 +61,25 @@ export function links() {
 
 // KEINE ANZAHL in Titel und Beschreibung (Christian 2026-10-06, „nicht die
 // Gesamtanzahl anzeigen"); der TrustScore kommt aus dem Datenmodul.
-const TITEL = `Qi Blanco auf Trustpilot: TrustScore ${PROFIL.trustscore}, nachgelesen | Qi Blanco`;
+// 2026-11-17 (SEO-Maßnahme L26-qi-blanco-auf-trustpil-8b09, Begriff „sind
+// trustpilot bewertungen echt"): Marke bleibt VORN (Markenbegriff „qi blanco
+// trustpilot", Gewinnerstand), danach der neue Begriff. Vorher:
+//   TITEL `Qi Blanco auf Trustpilot: TrustScore ${PROFIL.trustscore}, nachgelesen | Qi Blanco`
+//   BESCHREIBUNG `Was auf Trustpilot über Qi Blanco steht: TrustScore … von 5,
+//   ${UNTER_VIER_KURZ}, alle ohne Einladung geschrieben. Mit Quelle und Stand,
+//   und wo du mehr Stimmen liest.`
+const TITEL = `Qi Blanco auf Trustpilot: TrustScore ${PROFIL.trustscore} und echte Bewertungen erkennen`;
 const BESCHREIBUNG =
-  `Was auf Trustpilot über Qi Blanco steht: TrustScore ${PROFIL.trustscore} ` +
-  `von 5, ${UNTER_VIER_KURZ}, alle ohne Einladung geschrieben. ` +
-  'Mit Quelle und Stand, und wo du mehr Stimmen liest.';
+  `Qi Blanco auf Trustpilot: TrustScore ${PROFIL.trustscore} von 5, ` +
+  `${UNTER_VIER_KURZ}, alle ohne Einladung. ` +
+  'Woran du erkennst, ob Trustpilot-Bewertungen echt sind.';
 
 /**
  * SCHEMA-DATEN als Konstanten, keine Laufzeit-Uhr. WER DEN INHALT ÄNDERT,
  * ZIEHT `TPT_GEAENDERT` UND `STAND` IM DATENMODUL IM SELBEN COMMIT NACH.
  */
 const TPT_VEROEFFENTLICHT = '2026-10-01';
-const TPT_GEAENDERT = '2026-10-06';
+const TPT_GEAENDERT = '2026-11-17';
 
 /**
  * DAS FAQPage-SCHEMA WIRD AUS DEM SICHTBAREN TEXT GEBAUT: `FRAGEN` ist
@@ -102,7 +110,12 @@ export const meta = () => {
 };
 
 export default function TrustpilotTatsachenRoute() {
-  return <TrustpilotTatsachenSeite />;
+  return (
+    <>
+      <TrustpilotTatsachenSeite />
+      <TrustpilotEchtPruefen />
+    </>
+  );
 }
 
 /** @template T @typedef {import('react-router').MetaFunction<T>} MetaFunction */

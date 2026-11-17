@@ -216,26 +216,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--tpt-s4);
-  counter-reset: punkt;
 }
 
+/* KEINE Ziffer vor dem Punkt (2026-11-17): shop-tor D1 „Listen ohne nackte
+   Punkte" stoppte an der ::before-Zählung (Gimmick vor dem Punkt). Der
+   Punkt trägt sich über seinen Titel mit der Gold-Linie; die Reihenfolge
+   bleibt semantisch im <ol>. */
 .tpt li.tpt__punkt {
   max-width: none;
   margin: 0;
-  padding-left: var(--tpt-s6);
-  position: relative;
-  counter-increment: punkt;
-}
-
-.tpt li.tpt__punkt::before {
-  content: counter(punkt);
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-size: var(--tpt-fs-lg);
-  font-weight: 600;
-  color: var(--tpt-muted);
-  line-height: 1.35;
 }
 
 
@@ -326,4 +315,37 @@ body:has(.tpt) ._form_15 input[type='submit'] {
   color: var(--tpt-text) !important;
   border-radius: var(--tpt-r1) !important;
   font-family: var(--tpt-font) !important;
+}
+
+/* ─── Trustpilot-Scroller in Seiten-Tokens (2026-11-17, SEO-Maßnahme
+   L26-qi-blanco-auf-trustpil-8b09, s02) ─────────────────────────────────────
+   design-rubrik 91 (Beleg 24.10., Iteration 13.11.): „2 gesättigte
+   Akzent-Farbwelten" = das Google-Blau von „weiterlesen" im ReviewsSlider,
+   „H2-Ausrichtung gemischt" = die zentrierte h2 des Scrollers (Tailwind
+   `text-center!`). Dieselbe Lösung wie bewertungen.css (10.11., Rubrik 98):
+   „weiterlesen" erbt die Gold-Tinte, Überschrift und Begleitzeilen folgen der
+   EINEN Regel dieser Seite (linksbündig, Textspalte, EIN H2-Stil). */
+.tpt .TrustpilotStimmen button[aria-expanded] {
+  color: var(--qb-akzent-tinte);
+}
+/* In @layer base: Tailwind v4 legt `text-center!` in @layer utilities ab; bei
+   `!important` gewinnt die FRÜHERE Layer (gemessen 10.11. an bewertungen). */
+@layer base {
+  .tpt .TrustpilotStimmen h2,
+  .tpt .TrustpilotStimmen > p {
+    text-align: left !important;
+    max-width: calc(var(--tpt-breite-schmal) - 2 * var(--tpt-s2)) !important;
+    margin-inline: auto !important;
+  }
+  .tpt .TrustpilotStimmen h2 {
+    font-size: var(--tpt-fs-h2) !important;
+    line-height: 1.25 !important;
+  }
+}
+
+/* ─── Woran du echte Trustpilot-Bewertungen erkennst ──────────────────────── */
+/* Der Satz „bei uns" unter jeder Prüfregel: gleiche Schrift, durch den
+   Abstand als zweite Zeile desselben Punkts lesbar. */
+.tpt p.tpt__beiuns {
+  margin-top: var(--tpt-s1);
 }
