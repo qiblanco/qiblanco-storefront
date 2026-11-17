@@ -1,7 +1,9 @@
 /* bf-deals-b.css: Black-Friday-Deal-Übersicht DACH, B-Fassung (Elina EL-20261109-79b117c7, gehört zu EL-20261109-bda7a985).
  * 1:1 aus der Master-Vorlage bfd.css (gleicher Aufbau wie qi-blanco.com/pages/bf-deals-b), nur Text/Preise/Links je Markt.
- * Rückbau: diese Datei und app/routes/pages.bf-deals-b.tsx löschen. */
-.bfd{--g:#f2bf72;--g1:#f6cc86;--g2:#e7ad5c;--grund:#0c0a08;--hell:#f5efe6;--matt:rgba(245,239,230,.72);--rand:rgba(245,239,230,.14);--satz:clamp(19px,calc(19px + (100vw - 320px) * .075),22px);--titel:clamp(29px,calc(29px + (100vw - 320px) * .125),34px);--betrag:clamp(29px,calc(29px + (100vw - 320px) * .125),34px);--name:clamp(20px,calc(20px + (100vw - 320px) * .05),22px);--zahl:var(--titel);position:relative;width:var(--bfd-breite,100vw);margin-left:calc(50% - var(--bfd-breite,100vw)/2);margin-top:-1px;background:var(--grund);color:var(--hell);font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif;overflow:hidden;overflow:clip;text-align:center}
+ * Rückbau: diese Datei und app/routes/pages.bf-deals-b.tsx löschen.
+ * Breite 100% statt 100vw (Sicht-Tor 17.11.2026): 100vw zählt die Scrollleiste mit, die Seite ließ sich 8 px seitlich
+ * scrollen. Das Elternteil (main) ist im Deutsch-Shop in jeder Breite voll breit; --bfd-breite bleibt als Hebel. */
+.bfd{--g:#f2bf72;--g1:#f6cc86;--g2:#e7ad5c;--grund:#0c0a08;--hell:#f5efe6;--matt:rgba(245,239,230,.72);--rand:rgba(245,239,230,.14);--satz:clamp(19px,calc(19px + (100vw - 320px) * .075),22px);--titel:clamp(29px,calc(29px + (100vw - 320px) * .125),34px);--betrag:clamp(29px,calc(29px + (100vw - 320px) * .125),34px);--name:clamp(20px,calc(20px + (100vw - 320px) * .05),22px);--zahl:var(--titel);position:relative;width:var(--bfd-breite,100%);margin-left:calc(50% - var(--bfd-breite,100%)/2);margin-top:-1px;background:var(--grund);color:var(--hell);font-family:'Open Sans Variable','Open Sans',system-ui,sans-serif;overflow:hidden;overflow:clip;text-align:center}
 .bfd *{box-sizing:border-box}
 .bfd__innen{max-width:72rem;margin:0 auto;padding:2rem 1.125rem 3.5rem}
 .bfd__kopf{display:grid;gap:1.5rem;justify-items:center;margin:0 0 2.25rem}
@@ -77,6 +79,10 @@
 .bfd--breit .bfd__text{padding:0 1.5rem}
 .bfd--breit .bfd__name{font-size:30px}
 .bfd--breit .bfd__neu{font-size:28px}
+/* Kacheln einer Reihe: Preis und Jetzt-kaufen stehen unten auf gleicher Hoehe, auch wenn eine Kachel Groessen-Pillen traegt
+ * (Sicht-Tor 17.11.2026 kaufknopf_doppelt bei 768: zwei Knoepfe 26 px versetzt). */
+.bfd--klein .bfd__kachel{grid-template-rows:auto 1fr}
+.bfd--klein .bfd__preis{margin-top:auto;padding-top:.2rem}
 }
 @media (min-width:960px){
 .bfd{--titel:56px;--betrag:56px}
