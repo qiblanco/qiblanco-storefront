@@ -144,8 +144,12 @@
     font-size: var(--as-fs-2);
     color: var(--as-grau);
   }
+  /* Das Haus setzt .btn--primary auf width 100 %: ohne width auto nähme der Knopf
+     die ganze Leiste und läge über Name und Preis (Vorschau 390 px, 17.11.2026). */
   .as-seite .qb-rs-sticky .btn--primary {
     flex: 0 0 auto;
+    width: auto;
+    min-width: 0;
     margin: 0;
     padding: calc(var(--as-s-1) * 1.5) var(--as-s-4);
     min-height: var(--as-tippziel);
