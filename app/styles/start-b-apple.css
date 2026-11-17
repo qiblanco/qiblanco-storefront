@@ -125,12 +125,29 @@
     background: var(--as-weiss);
     border-top: var(--as-strich) solid var(--as-linie);
   }
+  /* Name und Preis wie die Kaufleiste der Produktseiten (produkt-details-apple.css
+     .pd-kaufleiste-*, 17.11.2026): Name 600 in EINER Zeile mit kleinem ® (mitMarkeR),
+     Preis klein und grau darunter, der Knopf behält seine Breite. Vorher brach
+     „QiOne® 2 Pro“ bei 390 px zweizeilig um (77 × 51 px). */
+  .as-seite .qb-rs-sticky__auswahl {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
   .as-seite .qb-rs-sticky__name {
     font-size: var(--as-fs-3);
+    font-weight: 600;
     color: var(--as-tinte);
+    white-space: nowrap;
+  }
+  .as-seite .qb-rs-sticky__preis {
+    font-size: var(--as-fs-2);
+    color: var(--as-grau);
   }
   .as-seite .qb-rs-sticky .btn--primary {
-    padding: var(--as-s-1) var(--as-s-2);
+    flex: 0 0 auto;
+    margin: 0;
+    padding: calc(var(--as-s-1) * 1.5) var(--as-s-4);
     min-height: var(--as-tippziel);
     font-size: var(--as-fs-3) !important;
   }

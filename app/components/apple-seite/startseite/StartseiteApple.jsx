@@ -85,6 +85,7 @@ export function StartseiteApple({seite, produkte = []}) {
         )}
         {arm === 'b' ? (
           <StickyKaufknopf
+            preis={preise['/products/qione-2-pro'] || null}
             kopfSelektor="[data-apple-seite='start-b'] [data-section='as-hero']"
             kaufknopfSelektor="[data-apple-seite='start-b'] [data-section='as-band'] [data-as-cta='primary']"
           />
@@ -94,6 +95,7 @@ export function StartseiteApple({seite, produkte = []}) {
           // Kaufknopf im Bild, der Fuß ist mobil gut 3000 px hoch. Er weicht
           // dem Abschlussband, dessen Knopf dann selbst im Bild steht.
           <StickyKaufknopf
+            preis={preise['/products/qione-2-pro'] || null}
             kopfSelektor="[data-apple-seite='startseite'] [data-section='as-hero']"
             kaufknopfSelektor="[data-apple-seite='startseite'] [data-section='as-cta'] [data-as-cta='primary']"
           />
