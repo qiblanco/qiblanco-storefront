@@ -69,9 +69,9 @@ export const SEITE = {
   marke: 'Deep Dive',
   h1: 'Was ist hexagonales Wasser?',
   unterzeile:
-    'Wo Wasser sechseckig ist, was davon gemessen ist und wie sich hexagonal, Eis Ih, EZ, kohärent, strukturiert und belebt unterscheiden.',
+    'Hexagonales Wasser ist Wasser, dessen Moleküle sich zu Sechsecken ordnen.',
   kurzTitel: 'Kurz gesagt',
-  kurz: 'Hexagonales Wasser ist Wasser, dessen Moleküle sich zu Sechsecken ordnen. Im Eis ist diese Ordnung gemessen {q:kuhs1981}, und jede Schneeflocke zeigt sie: Sie wächst als sechseckiges Prisma {q:libbrecht2005}. Im flüssigen Wasser bilden sich eisähnlich geordnete Bereiche von rund einem Nanometer, die sich ständig umbauen {q:huang2009}. An Oberflächen ordnet sich Wasser zu eisähnlichen Schichten, auf Glimmer auch bei Raumtemperatur {q:miranda1998}.',
+  kurz: 'Im Eis ist diese Ordnung gemessen {q:kuhs1981}, und jede Schneeflocke zeigt sie: Sie wächst als sechseckiges Prisma {q:libbrecht2005}. Im flüssigen Wasser bilden sich eisähnlich geordnete Bereiche von rund einem Nanometer, die sich ständig umbauen {q:huang2009}. An Oberflächen ordnet sich Wasser zu eisähnlichen Schichten, auf Glimmer auch bei Raumtemperatur {q:miranda1998}.',
   autorName: AUTORENKASTEN.name,
   autorRolle: AUTORENKASTEN.rolle,
   autorZeile: `Von ${AUTORENKASTEN.name}`,
