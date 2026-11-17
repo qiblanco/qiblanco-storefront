@@ -404,3 +404,15 @@
 .av-seite .taw-abschnitt--text .taw-text {
   margin-left: 0;
 }
+
+/*
+ * r2 17.11.2026 (Design-Gate QiHome Air 89, harmonisch 75): die
+ * „weiterlesen“-Schalter der Google-Rezensionskarten tragen Google-Blau
+ * #1565c0 und bildeten neben dem Gold eine zweite gesättigte Farbwelt.
+ * Auf das Neutral-Grau der Seite gezogen + Unterstreichung, wie
+ * qihome-air.css / startseite.css es für ihre Routen schon tun.
+ */
+.av-seite button[class*='text-[#1565c0]'] {
+  color: var(--tas-grau) !important;
+  text-decoration: underline;
+}
