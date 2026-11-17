@@ -21,6 +21,17 @@ import {THE_ALPHA_ARM_COOKIE} from '~/lib/checkout-tracking';
  *     schreibt das Warenkorb-Attribut _the_alpha_variante; der Unterstrich
  *     hält es in der Kasse unsichtbar, die Bestellung trägt es als
  *     note_attribute. Es überquert keine Domaingrenze (cart.updateAttributes).
+ *     Das Cookie dient der Auswertung, das Register führt es als Statistik
+ *     (einwilligung-scanner/register/cookies.yaml). Es entsteht deshalb nur mit
+ *     Statistik-Einwilligung: window.Cookiebot.consent.statistics === true
+ *     (Attrappe des eigenen Motors /qb-einwilligung.js oder Cookiebot selbst).
+ *     Ohne sie wartet merkeArm auf die Wahl (CookiebotOnConsentReady/OnAccept
+ *     am window, qb:einwilligung am document; DACH lädt nach der ersten Wahl
+ *     nicht neu) und schreibt dann. Fehlt das Cookie, entsteht kein
+ *     Bestellattribut, kein Ersatzwert. Ohne Einwilligung wird ein Cookie aus
+ *     der Zeit vor dieser Regel entfernt.
+ *     Gemessen 17.11.2026 (Grossjob einwilligung-scanner-20261117T015551Z, s01):
+ *     vorher stand das Cookie vor jeder Wahl auf /pages/Qi-Alpha, -B und -C.
  *
  * MESSUNG BLEIBT ERKENNBAR (Brain nachgestellter-kundenweg-muss-unterscheidbar-
  * sein): ein Pin-Besuch (?shop_exp=…) oder ein Automat (navigator.webdriver)
@@ -35,26 +46,102 @@ const PUFFER_MAX = 50;
 export function TheAlphaArm({arm}) {
   const gestempelt = useRef(false);
   useEffect(() => {
-    if (gestempelt.current) return;
-    gestempelt.current = true;
-    meldeArm(arm, window);
+    const abmelden = merkeArm(arm, window);
+    if (!gestempelt.current) {
+      gestempelt.current = true;
+      stempleArm(arm, window);
+    }
+    return abmelden;
   }, [arm]);
   return null;
 }
 
+const WAHL_EREIGNISSE_WINDOW = ['CookiebotOnConsentReady', 'CookiebotOnAccept', 'CookiebotOnDecline'];
+const WAHL_EREIGNISSE_DOKUMENT = ['qb:einwilligung'];
+const OHNE_ABMELDEN = () => {};
+
 /**
- * Setzt das Cookie und stempelt einmal. Wirft nie: der Test darf die Seite
- * nicht stören.
- * @param {'a' | 'b' | 'c'} arm
- * @param {Window} w
+ * Statistik erlaubt? Nur ein true aus einer Wahl zählt. Ein vom Motor angenommenes true
+ * (method 'implied': Opt-out-Region mit GPC, /qb-einwilligung.js ohne Wahl) zählt nicht,
+ * dort wartet das Cookie wie überall auf die Wahl.
  */
-export function meldeArm(arm, w) {
-  if (!['a', 'b', 'c'].includes(arm)) return;
+export function statistikErlaubt(w) {
+  try {
+    const c = w && w.Cookiebot && w.Cookiebot.consent;
+    return Boolean(c && c.statistics === true && c.method !== 'implied');
+  } catch {
+    return false;
+  }
+}
+
+function schreibeCookie(arm, w) {
   try {
     w.document.cookie = `${THE_ALPHA_ARM_COOKIE}=${arm}; max-age=${COOKIE_TAGE * 86400}; path=/; SameSite=Lax`;
   } catch {
-    // ohne Cookie fehlt nur das Bestellattribut; der Stempel geht trotzdem
+    // ohne Cookie fehlt nur das Bestellattribut
   }
+}
+
+function entferneCookie(w) {
+  try {
+    if (!String(w.document.cookie || '').includes(`${THE_ALPHA_ARM_COOKIE}=`)) return;
+    w.document.cookie = `${THE_ALPHA_ARM_COOKIE}=; max-age=0; path=/; SameSite=Lax`;
+  } catch {
+    // nichts zu tun
+  }
+}
+
+/**
+ * Merkt den Arm im Cookie, sobald Statistik erlaubt ist. Mit Einwilligung sofort,
+ * sonst nach der Wahl. Gibt eine Abmeldung zurück (React-Aufräumen). Wirft nie.
+ * @param {'a' | 'b' | 'c'} arm
+ * @param {Window} w
+ * @returns {() => void}
+ */
+export function merkeArm(arm, w) {
+  if (!['a', 'b', 'c'].includes(arm)) return OHNE_ABMELDEN;
+  if (statistikErlaubt(w)) {
+    schreibeCookie(arm, w);
+    return OHNE_ABMELDEN;
+  }
+  entferneCookie(w);
+  let aktiv = true;
+  const abmelden = () => {
+    if (!aktiv) return;
+    aktiv = false;
+    try {
+      WAHL_EREIGNISSE_WINDOW.forEach((n) => w.removeEventListener(n, pruefe));
+      WAHL_EREIGNISSE_DOKUMENT.forEach((n) => w.document.removeEventListener(n, pruefe));
+    } catch {
+      // nichts zu tun
+    }
+  };
+  function pruefe() {
+    if (!aktiv) return;
+    if (statistikErlaubt(w)) {
+      schreibeCookie(arm, w);
+      abmelden();
+    } else {
+      entferneCookie(w);
+    }
+  }
+  try {
+    WAHL_EREIGNISSE_WINDOW.forEach((n) => w.addEventListener(n, pruefe));
+    WAHL_EREIGNISSE_DOKUMENT.forEach((n) => w.document.addEventListener(n, pruefe));
+  } catch {
+    return OHNE_ABMELDEN;
+  }
+  return abmelden;
+}
+
+/**
+ * Stempelt einmal über qpx (Puffer bis zur Einwilligung, siehe Kopf). Wirft nie:
+ * der Test darf die Seite nicht stören.
+ * @param {'a' | 'b' | 'c'} arm
+ * @param {Window} w
+ */
+export function stempleArm(arm, w) {
+  if (!['a', 'b', 'c'].includes(arm)) return;
   try {
     const such = new URLSearchParams(w.location?.search || '');
     const erzwungen = such.has('shop_exp') || w.navigator?.webdriver === true ? 1 : 0;
@@ -70,6 +157,18 @@ export function meldeArm(arm, w) {
   } catch {
     // Stempel ist Messung, kein Kaufweg
   }
+}
+
+/**
+ * Cookie (mit Einwilligung) und Stempel in einem Aufruf.
+ * @param {'a' | 'b' | 'c'} arm
+ * @param {Window} w
+ * @returns {() => void} Abmeldung des Wartens auf die Wahl
+ */
+export function meldeArm(arm, w) {
+  const abmelden = merkeArm(arm, w);
+  stempleArm(arm, w);
+  return abmelden;
 }
 
 export default TheAlphaArm;

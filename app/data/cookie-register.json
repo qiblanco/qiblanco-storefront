@@ -1,9 +1,9 @@
 {
   "fassung": "2.0",
-  "stand": "2026-11-03",
+  "stand": "2026-11-17",
   "flaeche": "dach",
   "erzeugt_von": "einwilligung-scanner/bin/einwilligung-register-export",
-  "register_stand": "07dba7dbef43",
+  "register_stand": "ff9d282ad537",
   "kategorien": [
     {
       "id": "necessary",
@@ -27,6 +27,12 @@
           "anbieter": "Qi Blanco",
           "zweck": "Merkt sich bei einem Vorschau-Link, welcher Cookie-Hinweis angezeigt wird.",
           "laufzeit": "Sitzung"
+        },
+        {
+          "name": "_shopify_cmp",
+          "anbieter": "Shopify",
+          "zweck": "Speichert deine Cookie-Wahl für den Shop mit einer Belegnummer der Wahl (Shopify-Kundendatenschutz).",
+          "laufzeit": "12 Monate"
         },
         {
           "name": "_shopify_essential",
@@ -94,6 +100,12 @@
           "anbieter": "Microsoft Clarity",
           "zweck": "Gleicht die Kennung zwischen Clarity-Domains ab.",
           "laufzeit": "Sitzung"
+        },
+        {
+          "name": "qb_ab_the_alpha_abc",
+          "anbieter": "Qi Blanco",
+          "zweck": "Merkt die Testfassung (a, b oder c) der Qi-Alpha-Seite, damit eine Bestellung ihrer Fassung zugeordnet wird.",
+          "laufzeit": "30 Tage"
         },
         {
           "name": "_shopify_analytics",
