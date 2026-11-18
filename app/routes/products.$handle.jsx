@@ -205,8 +205,8 @@ export async function loader(args) {
   // trägt heute kein Produkt.
   // Pfad in der Form des Routenmusters (`/products/${params.handle}`): so liest
   // der Schalterzeilen-Leser von hb-deploy (format_reichweite._pfad_schluessel)
-  // die Apple-Zeile unten als Anfragepfad dieser Route und urteilt ueber eine
-  // Schalterzeile lokal statt global (Grossjob 20261118-de-shop-apple-rest-z3-z20 s04).
+  // die Apple-Zeile unten als Anfragepfad dieser Route, und eine umgelegte
+  // Schalterzeile gilt als lokal statt global (Grossjob 20261118-de-shop-apple-rest-z3-z20 s04).
   const {params} = args;
   const alterPfad = `/products/${params.handle}`;
   if (zusammenlegungFuer(alterPfad)) leiteUm(args.request, alterPfad);
