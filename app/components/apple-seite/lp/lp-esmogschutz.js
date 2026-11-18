@@ -8,10 +8,11 @@ import {ANNA, BILD, STUDIEN, ZIEL} from './lp-gemeinsam.js';
  * (components/campaign/ESmogSchutz.jsx, Christians Seitentext). Neu ist nur
  * Auswahl, Reihenfolge und Gestaltung. Die erste Fassung (s07-r4) hatte 21 von
  * 38 Sätzen umformuliert und fiel durch die KI-Klang-Prüfung; deshalb hier kein
- * eigener Satz. Wer einen Satz ändert, prüft ihn mit
- * menschlichkeit/bin/pruefen --ki-klang --richter. Auswahl nach Richter-Urteil 18.11.:
- * die FAQ-Saetze, die er bei C als gedrechselt verwarf (Eso-Frage, Spueren-Frage,
- * „nicht abschliessend geklaert“), sind durch C-Saetze aus Garantie und Zahlung ersetzt.
+ * eigener Satz. Wer einen Satz ändert, lässt ihn vorher durch die KI-Klang-Prüfung
+ * mit Richter laufen (Werkzeug im Modul menschlichkeit). Auswahl nach dem
+ * Richter-Urteil vom 18.11.: die Fragen, die er bei C als gedrechselt verwarf
+ * (Eso, Spüren, „nicht abschließend geklärt“), sind durch C-Sätze aus Garantie
+ * und Zahlung ersetzt.
  * Aussortiert gegenüber C: Trust-Leiste, Zell-Schema, Scroll-Videos,
  * Video-Stimmen, Drei-Produkte-Preistabelle, Zahlungs-Logos. Die Stimmen kommen
  * aus der Google-Bewertungsleiste des Baukastens.
