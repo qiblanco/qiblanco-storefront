@@ -146,15 +146,43 @@ export function messeKopfHoehe() {
 }
 
 const SCROLL_LUFT_PX = 12; // kleine Luft, damit die Überschrift nicht klebt
+/*
+ * BANNER-KLICK LANDET AUF DER 4,8-ZEILE (Job 20261118-prio2-banner-klick-scrollziel-
+ * sauber-auf-bewertungsblock-de-us, Christian 18.11.2026 mit Zielbild
+ * qi-blanco.com/products/qihome: „dann 4,8 Sterne plus 14.000 aktive Nutzer und
+ * dann darunter die Bewertung - so soll das präsentiert sein“).
+ * Ist oder enthält das Ziel eine Bewertungsleiste ([data-bewertungsleiste],
+ * GoogleBewertungsleiste), zielt der Sprung auf ihre Titelzeile statt auf die
+ * Sektionsoberkante: vorher stand über der 4,8-Zeile der ganze Innenabstand der
+ * Sektion (gemessen 412 px: Titel 203 px unter dem Bildrand, Kopf eingefahren).
+ * LANDE_LUFT_PX = Abstand Kopf-Unterkante bis Titelzeile, aus dem Zielbild.
+ * Gleiche Regel im Englisch-Shop (assets/qb-reviews.js, landepunkt).
+ */
+const LANDE_LUFT_PX = 36;
+
+/** Landepunkt eines Sprungziels: Titelzeile der Bewertungsleiste, sonst das Ziel. */
+export function landepunkt(ziel) {
+  if (!ziel) return {el: ziel, luft: SCROLL_LUFT_PX};
+  const leiste =
+    (ziel.closest && ziel.closest('[data-bewertungsleiste]')) ||
+    (ziel.querySelector && ziel.querySelector('[data-bewertungsleiste]'));
+  const titel = leiste ? leiste.querySelector('.qb-gbl__titel') : null;
+  return titel ? {el: titel, luft: LANDE_LUFT_PX} : {el: ziel, luft: SCROLL_LUFT_PX};
+}
+
+/** Nach der Landung den Kopf zeigen (Zielbild: Leiste und Kopfzeile oben, darunter
+ *  Luft, dann die 4,8-Zeile). Header.jsx hört auf dieses Ereignis; die nächste
+ *  echte Scrollbewegung steuert den Kopf wieder wie gewohnt. */
+export const KOPF_ZEIGEN_EREIGNIS = 'qb:kopf-zeigen';
 const STILL_FRAMES = 3; // so viele Frames ohne Bewegung = Animation fertig
 const MAX_WARTE_MS = 2500; // Notbremse, KEIN Taktgeber
 const TOLERANZ_PX = 3;
 const KORREKTUREN = 3; // erster Sprung + höchstens zwei Nachzüge
 
 /** Soll-Position mit LIVE gemessener Kopfhöhe. */
-function sollPosition(ziel) {
+function sollPosition(ziel, luft = SCROLL_LUFT_PX) {
   const zielOben = ziel.getBoundingClientRect().top + window.scrollY;
-  return Math.max(0, zielOben - messeKopfHoehe() - SCROLL_LUFT_PX);
+  return Math.max(0, zielOben - messeKopfHoehe() - luft);
 }
 
 /** Scrollt das Ziel unter den Kopf — mit gemessenem, NICHT geerbtem Offset.
@@ -195,12 +223,27 @@ export function scrolleZuRezensionen(ziel) {
     });
   }
 
+  // Landepunkt: Titelzeile der Bewertungsleiste, sonst das Ziel (landepunkt oben).
+  const lp = landepunkt(ziel);
+  let fertigGemeldet = false;
+  const fertig = () => {
+    if (fertigGemeldet) return;
+    fertigGemeldet = true;
+    window.dispatchEvent(new Event(KOPF_ZEIGEN_EREIGNIS));
+  };
+
   function fahre(rest) {
-    const soll = sollPosition(ziel);
-    if (Math.abs(soll - y()) <= TOLERANZ_PX) return; // sitzt
+    const soll = sollPosition(lp.el, lp.luft);
+    if (Math.abs(soll - y()) <= TOLERANZ_PX) {
+      fertig(); // sitzt
+      return;
+    }
     if (sanft) window.scrollTo({top: soll, behavior: 'smooth'});
     else window.scrollTo(0, soll);
-    if (rest <= 1) return;
+    if (rest <= 1) {
+      beiStillstand(fertig);
+      return;
+    }
     beiStillstand(() => fahre(rest - 1));
   }
 
@@ -226,16 +269,16 @@ export function scrolleZuRezensionen(ziel) {
    * die Konvergenzschleife zieht sie nach. Das ist ein kleiner Nachzug NACH
    * UNTEN — er lässt den Kopf eingefahren, statt ihn erneut auszufahren.
    */
-  const zielOben = ziel.getBoundingClientRect().top + window.scrollY;
+  const zielOben = lp.el.getBoundingClientRect().top + window.scrollY;
   const ersterKopf = messeKopfHoehe();
 
   if (sanft) {
     window.scrollTo({
-      top: Math.max(0, zielOben - ersterKopf - SCROLL_LUFT_PX),
+      top: Math.max(0, zielOben - ersterKopf - lp.luft),
       behavior: 'smooth',
     });
   } else {
-    window.scrollTo(0, Math.max(0, zielOben - ersterKopf - SCROLL_LUFT_PX));
+    window.scrollTo(0, Math.max(0, zielOben - ersterKopf - lp.luft));
   }
   beiStillstand(() => fahre(KORREKTUREN - 1));
 }
