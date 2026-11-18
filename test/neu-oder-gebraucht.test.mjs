@@ -940,7 +940,11 @@ function quelleVon(a) {
 // RUNDE 7: der Zitat-Anker. Normiert wird nur die Schreibweise (Auszeichnung,
 // Groß/klein, Zahlwort oder Ziffer, Leerraum), nie der Wortlaut: schreibt die
 // Quelle „zwanzig" statt „20", bleibt das Zitat gültig.
-const zitatNorm = (t) => ohneMarker(normiere(t)).replace(/\s+/g, '');
+// Ein Satzzeichen am Zitatende zählt nicht: das Zitat darf mitten im Satz enden.
+const zitatNorm = (t) =>
+  ohneMarker(normiere(t))
+    .replace(/\s+/g, '')
+    .replace(/[.,;:!?]+$/, '');
 
 /**
  * Das Zitat einer Angabe als Prüfquelle, oder Befunde. AGB: jedes Zitat steht
