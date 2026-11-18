@@ -459,9 +459,28 @@ test('der Messcontainer heißt so, dass die Pruefliste ihn findet', () => {
 //    zuschrieb; die „s."-Regel (nur in ohneVerweise, nur AGB) trifft „Tageskurs."
 //    nicht, sie verlangt ein Nicht-Buchstaben-Zeichen vor dem „s"
 //    (nachgemessen im Runde-6-Job, ex-s-regel.out).
+// RUNDE 7, DIE FRAGE GEWECHSELT (Folgeauftrag 20261118-nog-belegtreue-runde7-
+// zitatanker): sechs Runden Wortlisten, Kernbegriffe und Satzglieder, und jeder
+// frische Gegenprüfer fand wieder 20 bis 27 grüne Falschaussagen. Die größte
+// Klasse war der ZAHLENVORRAT: „/pages/faq" zitierte die ganze FAQ, jede Zahl
+// aus jeder Antwort trug (die 4 Stunden der Studienantwort, die 20 Tage aus
+// „du trägst es 20 Tage"). Seither trägt jede Angabe mit Zahl in
+// app/data/kauf-tatsachen.js ein nicht gerendertes Feld `belegZitat`: den
+// wörtlichen Satz(teil) der Quelle, der sie trägt.
+//  (a) das Zitat steht wörtlich (normiert) im zitierten Abschnitt; bei der FAQ
+//      in der Antwort der zitierten FRAGE ({frage, satz}), nicht in der ganzen FAQ;
+//  (b) jede Zahl mit Einheit der Angabe steht im Zitat;
+//  (c) Kernbegriffe und Versand-Marken gelten nur noch innerhalb des Zitats.
+// Eine Angabe mit Zahl und ohne Zitat ist ein Befund. Wer eine Zahl ändert,
+// muss das Zitat mitändern: im Diff steht dann Satz neben Satz, und ein Mensch
+// sieht die Zuordnung.
 // GRENZE (benannt, nicht regelbar ohne Sprachverständnis): Verneinung („nicht
 // in bis zu 24"), richtig zitierte Zahl in falschem Zusammenhang („bis zu
-// zwei Jahre länger"), Kernbegriff jenseits eines Kommas.
+// zwei Jahre länger"), Kernbegriff jenseits eines Kommas. Innerhalb des
+// Zitats bleiben Fristbeginn („ab Bestellung" statt „ab Erhalt"),
+// Richtungswörter (höchstens, kürzer) und Synonyme ungelesen: der Wächter
+// fängt falsche Zahlen und falsche Zuordnung je Land, Produkt und Frist-Art,
+// Bedeutung fängt er nicht.
 const ZAHLWORT = [
   ['vierzehn', '14'],
   ['dreißig', '30'],
@@ -879,7 +898,7 @@ function angaben() {
     const behauptung = [e.titel, e.text, e.q, e.a].filter(Boolean).join('. ');
     let {beleg, belegPfad} = e;
     if (mutante && erbe[`${wo}:${e.id}`]) ({beleg, belegPfad} = fristBeleg(erbe[`${wo}:${e.id}`]));
-    liste.push({wo, id: e.id, behauptung, frage: e.q || '', beleg, belegPfad});
+    liste.push({wo, id: e.id, behauptung, frage: e.q || '', beleg, belegPfad, belegZitat: e.belegZitat});
   };
   for (const f of FRISTEN) nimm('FRISTEN', f);
   for (const v of VORTEILE) nimm('VORTEILE', v);
@@ -916,6 +935,150 @@ function quelleVon(a) {
     return {art: 'eu', abschnitte: ['Gewährleistungshinweis'], text: EU_HINWEIS};
   }
   return null;
+}
+
+// RUNDE 7: der Zitat-Anker. Normiert wird nur die Schreibweise (Auszeichnung,
+// Groß/klein, Zahlwort oder Ziffer, Leerraum), nie der Wortlaut: schreibt die
+// Quelle „zwanzig" statt „20", bleibt das Zitat gültig.
+const zitatNorm = (t) => ohneMarker(normiere(t)).replace(/\s+/g, '');
+
+/**
+ * Das Zitat einer Angabe als Prüfquelle, oder Befunde. AGB: jedes Zitat steht
+ * in einem der zitierten Abschnitte (Verweise und Unternehmer-Absätze fallen
+ * wie bisher). FAQ: {frage, satz}, die Frage gibt es, der Satz steht in IHRER
+ * Antwort; nennt die Quellzeile „FAQ: <Frage>", ist es diese Frage.
+ */
+function zitatVon(a, q) {
+  const befunde = [];
+  const zz = Array.isArray(a.belegZitat) ? a.belegZitat : [];
+  if (!zz.length) return {befunde: [`${a.wo}:${a.id} nennt eine Zahl, trägt aber kein belegZitat`], quelle: null};
+  if (q.art === 'faq') {
+    const genannt = (a.beleg.match(/^FAQ:\s*(.+)$/) || [])[1];
+    const teile = [];
+    for (const z of zz) {
+      const f = z && FAQ_ALLE.find((x) => x.q === z.frage);
+      if (!f) befunde.push(`${a.wo}:${a.id}: Zitat-Frage „${z?.frage}" gibt es in der FAQ nicht`);
+      else if (genannt && genannt !== z.frage) befunde.push(`${a.wo}:${a.id}: Zitat-Frage „${z.frage}" ist nicht die zitierte „${genannt}"`);
+      else if (!zitatNorm(f.a).includes(zitatNorm(z.satz))) befunde.push(`${a.wo}:${a.id}: Zitat „${z.satz}" steht nicht wörtlich in der Antwort auf „${z.frage}"`);
+      else teile.push({frage: z.frage, text: z.satz});
+    }
+    return {befunde, quelle: teile};
+  }
+  const texte = [];
+  for (const z of zz) {
+    if (typeof z !== 'string') {
+      befunde.push(`${a.wo}:${a.id}: Zitat ohne Wortlaut`);
+      continue;
+    }
+    if (q.art === 'eu') {
+      if (!zitatNorm(EU_HINWEIS).includes(zitatNorm(z))) befunde.push(`${a.wo}:${a.id}: Zitat „${z}" steht nicht wörtlich im Gewährleistungshinweis`);
+      else texte.push(z);
+      continue;
+    }
+    const abschnitt = zitierteAbschnitte(a.beleg, AGB).find((x) => zitatNorm(x.text).includes(zitatNorm(z)));
+    if (!abschnitt) befunde.push(`${a.wo}:${a.id}: Zitat „${z}" steht in keinem der zitierten AGB-Abschnitte (${q.abschnitte.join(' + ')})`);
+    else texte.push(ohneVerweise(z, abschnitt.paragraf));
+  }
+  // Je Zitat ein eigenes Stück: Zahlen zweier Zitate bilden nie ein Glied.
+  return {befunde, quelle: texte};
+}
+
+/**
+ * BEZUGSWÖRTER (Runde 7): Fristbeginn und Richtung einer Zahl. Gegen die ganze
+ * FAQ waren sie wertlos (dort steht jedes Wort irgendwo), gegen den EINEN
+ * zitierten Satz tragen sie: nennt das Zahl-Glied der Angabe einen Fristbeginn
+ * („ab Bestellung"), muss das Zitatstück, das die Zahl trägt, denselben nennen;
+ * nennt es eine Richtung („höchstens", „erst", „kürzer"), muss das Stück
+ * dieselbe nennen oder gar keine (aus „zwei Jahre" folgt „mindestens zwei Jahre").
+ */
+const FRISTBEGINN = [
+  ['erhalt', /(^|[^a-zäöüß])(erhalt|empfang)(s|es)?($|[^a-zäöüß])|in\s+besitz|zugestellt/],
+  ['lieferung', /liefer(ung|datum)|geliefert/],
+  ['bestellung', /bestell(ung|datum|t|eingang)/],
+  ['kauf', /(^|[^a-zäöüß])(kauf(datum|tag)?|gekauft)($|[^a-zäöüß])/],
+  ['absendung', /versanddatum|versendung|absendung|abgeschickt/],
+  ['zahlung', /(^|[^a-zäöüß])(zahlung(seingang)?|bezahlt)($|[^a-zäöüß])/],
+  ['ablauf', /(^|[^a-zäöüß])(ende|ablauf)($|[^a-zäöüß])|testzeitraum|testphase|testende/],
+];
+const RICHTUNG = [
+  ['mindestens', /mindestens|wenigstens|nicht\s+(weniger\s+als|unter)/],
+  ['höchstens', /höchstens|maximal|längstens|(^|[^a-zäöüß])(bis\s+zu|innerhalb|binnen)($|[^a-zäöüß])|nicht\s+mehr\s+als/],
+  ['spätestens', /spätestens/],
+  ['frühestens', /frühestens|(^|[^a-zäöüß])erst($|[^a-zäöüß])/],
+  ['kürzer', /kürzer|(?<!nicht\s)(weniger\s+als|(^|[^a-zäöüß])unter($|[^a-zäöüß]))/],
+  ['länger', /länger|mehr\s+als/],
+];
+// Länder: alle Regionen, die Intl auf Deutsch kennt (keine eigene Liste). Ein
+// Land, das das Angabe-Glied nennt, steht auch im Zitatstück; sonst erbte
+// „Nach Italien kostet der Versand 21 €" still die Schweiz (Gegenprüfer 8).
+const REGIONEN = (() => {
+  const d = new Intl.DisplayNames(['de'], {type: 'region'});
+  const out = new Set();
+  for (let a = 65; a < 91; a++)
+    for (let b = 65; b < 91; b++) {
+      const c = String.fromCharCode(a, b);
+      let n;
+      try {
+        n = d.of(c);
+      } catch {
+        continue;
+      }
+      if (n && n !== c && !/\s|union|zone/i.test(n)) out.add(n.toLowerCase());
+    }
+  return [...out].map((n) => [`land ${n}`, GANZES_WORT(n)]);
+})();
+const klassen = (liste, t) => liste.filter(([, re]) => re.test(t)).map(([k]) => k);
+
+/** Trägt dieses Zitatstück Fristbeginn und Richtung des Angabe-Glieds? */
+function bezugSteht(glied, stueck) {
+  const st = normiere(typeof stueck === 'string' ? stueck : stueck.text);
+  const g = glied.replace(MARKE, ' ');
+  const fest = [...FRISTBEGINN, ...REGIONEN];
+  if (!klassen(fest, g).every((k) => klassen(fest, st).includes(k))) return false;
+  const r = klassen(RICHTUNG, st);
+  return klassen(RICHTUNG, g).every((k) => r.includes(k) || !r.length);
+}
+
+const ZEITWORT = /(^|[^a-zäöüß])(tag|tage|tagen|werktage?n?|kalendertage?n?|wochen?|monate?n?|monat|jahre?n?|jahr)($|[^a-zäöüß])/;
+
+/** Alle BELEGTREUE-Befunde einer Liste von Angaben (Runde 7: gegen das Zitat). */
+function belegtreueBefunde(liste) {
+  const befunde = [];
+  for (const a of liste) {
+    // Eine Zeitangabe ohne lesbare Zahl („zwo Jahre", „ein paar Tage") wäre ungeprüft.
+    for (const g of satzglieder(a.behauptung)) {
+      if (!zahlen(g, true).length && ZEITWORT.test(g)) befunde.push(`${a.wo}:${a.id}: Zeitangabe ohne lesbare Zahl („${g}")`);
+    }
+    const zz = zahlen(a.behauptung);
+    if (!zz.length) continue;
+    const q = quelleVon(a);
+    if (!q) {
+      if (EXTERN[`${a.wo}:${a.id}`]?.pfad !== a.belegPfad) {
+        befunde.push(
+          `${a.wo}:${a.id} nennt ${zz.join(', ')}, Quelle „${a.beleg}" (${a.belegPfad}) ist im Repo nicht prüfbar und nicht in EXTERN`,
+        );
+      }
+      continue;
+    }
+    const {befunde: zb, quelle} = zitatVon(a, q);
+    befunde.push(...zb);
+    if (quelle === null) continue;
+    for (const g of zahlgruppen(a.behauptung, a.frage)) {
+      const stuecke = quelle.filter((st) => gruppeSteht(g, Array.isArray(st) ? st : q.art === 'faq' ? [st] : st));
+      if (!stuecke.length) {
+        const was = [...g.zahlen, ...g.kerne, ...(g.marke ? [g.marke] : [])].join(' + ');
+        befunde.push(
+          `${a.wo}:${a.id} nennt „${was}" („${g.glied}"), das Zitat aus „${a.beleg}" (${q.abschnitte.join(' + ')}) nennt es nicht zusammen`,
+        );
+      } else if (!stuecke.some((st) => bezugSteht(g.glied, st))) {
+        const bez = [...klassen(FRISTBEGINN, g.glied), ...klassen(REGIONEN, g.glied), ...klassen(RICHTUNG, g.glied)].join(' + ');
+        befunde.push(
+          `${a.wo}:${a.id} nennt „${g.zahlen.join(' + ')}" mit Bezug „${bez}" („${g.glied}"), das Zitatstück nennt diesen Fristbeginn bzw. diese Richtung nicht`,
+        );
+      }
+    }
+  }
+  return befunde;
 }
 
 test('die Leser finden ihre Quellen (Positivkontrolle der Zerlegung)', () => {
@@ -1039,28 +1202,53 @@ test('jede genannte Zahl steht in der zitierten Quelle', () => {
       if (zz.length) befunde.push(`${wo}:${e.id} nennt ${zz.join(', ')} ohne Beleg`);
     }
   }
-  for (const a of angaben()) {
-    const zz = zahlen(a.behauptung);
-    if (!zz.length) continue;
-    const q = quelleVon(a);
-    if (!q) {
-      if (EXTERN[`${a.wo}:${a.id}`]?.pfad !== a.belegPfad) {
-        befunde.push(
-          `${a.wo}:${a.id} nennt ${zz.join(', ')}, Quelle „${a.beleg}" (${a.belegPfad}) ist im Repo nicht prüfbar und nicht in EXTERN`,
-        );
-      }
-      continue;
-    }
-    for (const g of zahlgruppen(a.behauptung, a.frage)) {
-      if (!gruppeSteht(g, q.text)) {
-        const was = [...g.zahlen, ...g.kerne, ...(g.marke ? [g.marke] : [])].join(' + ');
-        befunde.push(
-          `${a.wo}:${a.id} nennt „${was}" („${g.glied}"), die Quelle „${a.beleg}" (${q.abschnitte.join(' + ')}) nennt es nicht zusammen`,
-        );
-      }
-    }
-  }
+  befunde.push(...belegtreueBefunde(angaben()));
   assert.deepEqual(befunde, []);
+});
+
+test('ZITAT-ANKER: jedes Zitat hat Gegenstand, falsche Anker sind rot (Rot vor Grün, im Test selbst)', () => {
+  const alle = angaben();
+  // Jede Angabe mit Zahl trägt ein Zitat, und es ist nicht leer.
+  const mitZahl = alle.filter((a) => zahlen(a.behauptung).length);
+  assert.ok(mitZahl.length >= 10, `Angaben mit Zahl: ${mitZahl.length}`);
+  for (const a of mitZahl) assert.ok(a.belegZitat?.length, `${a.wo}:${a.id} ohne belegZitat`);
+  const ab = (wo, id) => alle.find((a) => a.wo === wo && a.id === id);
+  const mit = (a, aenderung) => belegtreueBefunde([{...a, ...aenderung}]);
+  const ruecknahme = ab('FRISTEN', 'ruecknahme');
+  const versand = ab('IM_PREIS', 'versand');
+  const folge = ab('IM_PREIS', 'folgekosten');
+  assert.deepEqual(mit(ruecknahme, {}), [], 'unverändert grün');
+  // (a) das Zitat steht wörtlich in der Quelle:
+  assert.ok(mit(ruecknahme, {belegZitat: ['innerhalb von 21 Tagen ab Erhalt des Pakets']}).length, 'erfundenes Zitat');
+  assert.ok(
+    mit(versand, {belegZitat: [{frage: 'Kann ich in Raten zahlen?', satz: 'ab 500 € in 12'}]}).length,
+    'Zitat aus einer anderen als der zitierten FAQ-Frage',
+  );
+  // (b) die Zahl steht im Zitat, nicht bloß irgendwo in der FAQ:
+  assert.ok(mit(folge, {behauptung: 'Das Abo ist die ersten 20 Tage gratis.'}).length, 'Zahl ohne Zitat');
+  assert.ok(
+    mit(folge, {
+      behauptung: 'Einmal Laden hält 4 Stunden.',
+      belegZitat: [{frage: 'Was kostet der Versand und wie lange dauert er?', satz: 'Ab 99 € Warenwert ist er frei'}],
+    }).length,
+    'die 4 Stunden der Studienantwort tragen nicht mehr',
+  );
+  assert.ok(mit(ruecknahme, {behauptung: 'Du kannst dein Stück 14 Tage ab Erhalt zurückgeben.'}).length, '14 steht nicht im Zitat');
+  // (c) Kern und Marke nur im Zitat: die 20 Tage im Zitat sind keine Erstattungsfrist.
+  assert.ok(mit(ruecknahme, {behauptung: 'Den Kaufpreis erstatten wir binnen 20 Tagen.'}).length, 'Erstattung');
+  assert.ok(mit(versand, {behauptung: 'In die Schweiz kostet der Versand 9 €.'}).length, 'Necklace-Preis für Geräte');
+  // Bezugswörter im Zitatstück: Fristbeginn und Richtung.
+  assert.ok(mit(ruecknahme, {behauptung: 'Du kannst dein Stück 20 Tage ab Bestellung zurückgeben.'}).length, 'ab Bestellung');
+  assert.ok(mit(ruecknahme, {behauptung: 'Erst 20 Tage nach Erhalt darfst du zurückgeben.'}).length, 'erst');
+  assert.deepEqual(mit(ruecknahme, {behauptung: 'Innerhalb von 20 Tagen ab Erhalt kannst du zurückgeben.'}), [], 'innerhalb, ab Erhalt');
+  const gew = ab('FRAGEN', 'f-gewaehrleistung');
+  assert.ok(mit(gew, {behauptung: 'Höchstens zwei Jahre ab Lieferung.'}).length, 'höchstens statt mindestens');
+  assert.ok(mit(gew, {behauptung: 'Mindestens zwei Jahre ab Bestellung.'}).length, 'ab Bestellung statt Lieferung');
+  assert.ok(mit(ab('IM_PREIS', 'raten'), {behauptung: 'Ab 1.000 Euro sind mindestens 24 Raten möglich.'}).length, 'mindestens statt bis zu');
+  assert.ok(mit(versand, {behauptung: 'Nach Italien kostet der Versand ebenfalls 21 €.'}).length, 'ein Land, das das Zitat nicht nennt');
+  assert.deepEqual(mit(versand, {behauptung: 'Nach Österreich kostet der Versand für das Necklace 6,90 €.'}), [], 'Österreich, Necklace');
+  assert.ok(mit(ruecknahme, {behauptung: 'Die Rücknahme gilt sogar zwo Jahre.'}).length, 'Zeitangabe ohne lesbare Zahl');
+  assert.ok(mit(ab('IM_PREIS', 'raten'), {behauptung: 'Unter 500 Euro sind 12 Raten möglich.'}).length, 'unter statt ab');
 });
 
 // WORTTREUE: jedes Zusagewort einer Angabe steht auch an der Stelle, die ihre

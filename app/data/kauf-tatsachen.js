@@ -46,6 +46,13 @@ export const FRISTEN = [
     // Eintrag, dass die genannte Zahl im zitierten Abschnitt steht.
     beleg: 'AGB: 20-Tage-Zufriedenheitsgarantie',
     belegPfad: '/pages/agb',
+    // ZITAT-ANKER (nicht gerendert, Runde 7): der wörtliche Satzteil der
+    // Quelle, der jede Zahl dieser Angabe trägt. Wer eine Zahl ändert, ändert
+    // hier das Zitat mit; BELEGTREUE prüft die Zahlen nur noch gegen das Zitat.
+    belegZitat: [
+      'können Sie die Ware innerhalb von 20 Tagen ab Erhalt des Pakets an uns ' +
+        'zurücksenden und erhalten den vollen Kaufpreis zurück (volle Geld-zurück-Garantie)',
+    ],
   },
   {
     id: 'widerruf',
@@ -61,6 +68,11 @@ export const FRISTEN = [
     // Quelle nur „AGB, § 7 Widerrufsrecht", und dort stehen die 20 nicht.
     beleg: 'AGB: § 7 Widerrufsbelehrung und 20-Tage-Zufriedenheitsgarantie',
     belegPfad: '/pages/agb',
+    belegZitat: [
+      'Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem Sie oder ein von ' +
+        'Ihnen benannter Dritter, der nicht der Beförderer ist, die Waren in Besitz genommen haben',
+      'können Sie die Ware innerhalb von 20 Tagen ab Erhalt des Pakets an uns zurücksenden',
+    ],
   },
   {
     id: 'gewaehrleistung',
@@ -73,6 +85,17 @@ export const FRISTEN = [
       'Maßgeblich ist, ob der Mangel schon bei der Lieferung vorlag.',
     beleg: 'Richtlinie (EU) 2025/1960, Wortlaut aus unserem Gewährleistungshinweis',
     belegPfad: null,
+    // Ein zusammenhängendes Stück: die Lieferung steht im Hinweis als der
+    // maßgebliche Zeitpunkt; „ab Ablieferung" als Fristbeginn steht in AGB § 9.
+    belegZitat: [
+      'In Europa gilt für jede Ware, die du kaufst, eine gesetzliche Gewährleistung ' +
+        'von mindestens zwei Jahren. Dieses Recht hast du kraft Gesetzes, bei jedem ' +
+        'Händler in der EU. Wir stehen dahinter. Wenn dein Stück nicht das ist, was ' +
+        'zugesagt war, oder nicht so funktioniert, wie es soll, wende dich an uns. Du ' +
+        'bekommst kostenlos Nachbesserung oder Ersatz, und wenn das nicht trägt, eine ' +
+        'Preisminderung oder die volle Erstattung des Kaufpreises. Maßgeblich ist, ob ' +
+        'der Mangel schon bei der Lieferung vorlag.',
+    ],
   },
 ];
 
@@ -91,6 +114,20 @@ export const IM_PREIS = [
     // nennt weder Franken noch Tageskurs, und für Österreich nennt sie 6,90 €.
     beleg: 'FAQ: Was kostet der Versand und wie lange dauert er?',
     belegPfad: '/pages/faq',
+    // Bei der FAQ zitiert der Anker EINE Frage, nicht die ganze FAQ.
+    belegZitat: [
+      {
+        frage: 'Was kostet der Versand und wie lange dauert er?',
+        satz:
+          'Für das Necklace und Crystal Cacao® kostet der Versand nach Deutschland 5,90 €. ' +
+          'Ab 99 € Warenwert ist er frei, und mit zwei Packungen Crystal Cacao® bist du ' +
+          'schon darüber. Nach Österreich kostet er 6,90 € und ist ab 250 € Warenwert ' +
+          'frei. In die Schweiz kostet der Versand 9 € für ein einzelnes Necklace oder ' +
+          'eine Packung Crystal Cacao® und 21 € für alles andere. Die Kasse rechnet das ' +
+          'zum Tageskurs in Franken um, auf ganze Franken gerundet. Zoll und ' +
+          'Einfuhrabgaben sind dort schon im Preis enthalten.',
+      },
+    ],
   },
   {
     id: 'folgekosten',
@@ -107,6 +144,12 @@ export const IM_PREIS = [
       'derzeit für Kundinnen und Kunden mit Wohnsitz in Deutschland.',
     beleg: 'FAQ, Fußnote 2 im Fuß jeder Seite',
     belegPfad: '/pages/faq',
+    belegZitat: [
+      {
+        frage: 'Kann ich in Raten zahlen?',
+        satz: 'Ab 25 € Warenwert geht das in 6 Monatsraten, ab 500 € in 12 und ab 1.000 € in bis zu 24.',
+      },
+    ],
   },
 ];
 
@@ -142,18 +185,21 @@ export const VORTEILE = [
     text: frist('widerruf').text,
     beleg: frist('widerruf').beleg,
     belegPfad: frist('widerruf').belegPfad,
+    belegZitat: frist('widerruf').belegZitat,
   },
   {
     id: 'garantie',
     titel: '100 % Geld-zurück-Garantie',
     beleg: frist('ruecknahme').beleg,
     belegPfad: frist('ruecknahme').belegPfad,
+    belegZitat: frist('ruecknahme').belegZitat,
   },
   {
     id: 'gewaehrleistung',
     titel: frist('gewaehrleistung').titel,
     beleg: frist('gewaehrleistung').beleg,
     belegPfad: frist('gewaehrleistung').belegPfad,
+    belegZitat: frist('gewaehrleistung').belegZitat,
   },
   {
     id: 'kaufnachweis',
@@ -228,6 +274,10 @@ export const FRAGE_GEBRAUCHT = {
     'AGB: 20-Tage-Zufriedenheitsgarantie und Gewährleistung; Seriennummer: ' +
     'Produktfoto des QiBracelet®',
   belegPfad: '/pages/agb',
+  belegZitat: [
+    ...frist('ruecknahme').belegZitat,
+    'beträgt die Verjährungsfrist für Gewährleistungsansprüche zwei Jahre ab Ablieferung der Ware',
+  ],
 };
 
 /**
@@ -252,6 +302,7 @@ export const FRAGEN = [
     // Widerrufs (bis 2026-11-17 „AGB, § 7 Widerrufsrecht" = 14 Tage).
     beleg: frist('ruecknahme').beleg,
     belegPfad: frist('ruecknahme').belegPfad,
+    belegZitat: frist('ruecknahme').belegZitat,
     a:
       '20 Tage nach Erhalt risikofrei testen, mit 100 % ' +
       'Geld-zurück-Garantie.',
@@ -268,6 +319,7 @@ export const FRAGEN = [
     q: 'Wie lange habe ich Gewährleistung?',
     beleg: frist('gewaehrleistung').beleg,
     belegPfad: frist('gewaehrleistung').belegPfad,
+    belegZitat: frist('gewaehrleistung').belegZitat,
     a: 'Mindestens zwei Jahre ab Lieferung, in manchen EU-Ländern länger.',
   },
   {
@@ -281,6 +333,7 @@ export const FRAGEN = [
     a: imPreis('versand'),
     beleg: preis('versand').beleg,
     belegPfad: preis('versand').belegPfad,
+    belegZitat: preis('versand').belegZitat,
   },
   {
     id: 'f-raten',
@@ -288,5 +341,6 @@ export const FRAGEN = [
     a: imPreis('raten'),
     beleg: preis('raten').beleg,
     belegPfad: preis('raten').belegPfad,
+    belegZitat: preis('raten').belegZitat,
   },
 ];
