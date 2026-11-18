@@ -1067,6 +1067,9 @@ function bezugSteht(glied, teil) {
   return klassen(RICHTUNG, g).every((k) => r.includes(k) || (!r.length && zumFestwert.includes(k)));
 }
 
+/** Die Satzglieder eines Zitatstücks (Text oder FAQ-Eintrag). */
+const zahlenIn = (st) => (typeof st === 'string' ? satzglieder(st, true) : satzglieder(st.text, true, st.frage));
+
 /** Alle BELEGTREUE-Befunde einer Liste von Angaben (Runde 7: gegen das Zitat). */
 function belegtreueBefunde(liste) {
   const befunde = [];
@@ -1092,7 +1095,15 @@ function belegtreueBefunde(liste) {
         befunde.push(
           `${a.wo}:${a.id} nennt „${was}" („${g.glied}"), das Zitat aus „${a.beleg}" (${q.abschnitte.join(' + ')}) nennt es nicht zusammen`,
         );
-      } else if (!teilzitate.some((st) => bezugSteht(g.glied, st))) {
+      } else if (
+        // Fristbeginn und Richtung: in einem Zitatstück, das dieselben Zahlen
+        // trägt, auch ohne den Kern (Gegenprüfer 9: „In manchen EU-Ländern ist die
+        // Frist länger als zwei Jahre" nennt die Gewährleistung nicht noch einmal).
+        !quelle.some(
+          (st) =>
+            g.zahlen.every((z) => zahlenIn(st).some((gl) => passt(z, gl, g.kerne))) && bezugSteht(g.glied, st),
+        )
+      ) {
         const bez = [...klassen(FRISTBEGINN, g.glied), ...klassen(REGIONEN, g.glied), ...klassen(RICHTUNG, g.glied)].join(' + ');
         befunde.push(
           `${a.wo}:${a.id} nennt „${g.zahlen.join(' + ')}" mit Bezug „${bez}" („${g.glied}"), das Zitatstück nennt diesen Fristbeginn bzw. diese Richtung nicht`,
