@@ -507,7 +507,7 @@
    Farbwelt neben dem Gold: Design-Rubrik harmonisch_farbe 75, Seite 95 statt 100
    (26 Seiten des Deutsch-Shops, gemessen 18.11.2026, Grossjob
    20261118-de-shop-apple-rest-z3-z20 s01). Gezogen auf die Gold-Tinte, wie es die
-   Produktseiten schon tun (produkt-apple.css). Kontrast auf der Karte #f3f6f9: 4,7:1.
+   Produktseiten schon tun (produkt-apple.css). Kontrast auf der Karte #f3f6f9: 4,83:1 (gemessen).
    Text, Sterne und Bewertungen bleiben unverändert. Rückweg: diesen Block löschen. */
 .as-seite .qb-gbl [class*='text-[#1565c0]'] {
   color: var(--as-gold-tinte);
