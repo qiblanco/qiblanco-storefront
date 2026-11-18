@@ -614,7 +614,7 @@ const KERN = [
 // belegt kein „Abo für 21 €".
 const LAENDER = ['deutschland', 'österreich', 'schweiz'];
 const VERSAND = /versand|porto|zoll|einfuhr/;
-const GERAET = /qione|qibracelet|qihome|qi\s+alpha|alles\s+andere|(^|[^a-zäöüß])geräte?($|[^a-zäöüß])/;
+const HAUPTPRODUKT = /qione|qibracelet|qihome|qi\s+alpha|alles\s+andere|(^|[^a-zäöüß])geräte?($|[^a-zäöüß])/;
 const NEBENPRODUKT = /necklace|crystal\s+cacao/;
 const MARKE = /⟪[^⟫]*⟫/;
 const marke = (g) => (g.match(MARKE) || [null])[0];
@@ -684,7 +684,7 @@ function satzglieder(t, quelle = false, kontext = '') {
     }
     const versand = ausFrage || VERSAND.test(saetze[g.satz] || '');
     const eigenL = LAENDER.filter((l) => g.text.includes(l));
-    const eigenP = [...(GERAET.test(g.text) ? ['gerät'] : []), ...(NEBENPRODUKT.test(g.text) ? ['neben'] : [])];
+    const eigenP = [...(HAUPTPRODUKT.test(g.text) ? ['gerät'] : []), ...(NEBENPRODUKT.test(g.text) ? ['neben'] : [])];
     const zg = zahlen(g.text, true);
     if (!zg.length) {
       sammelL.push(...eigenL);
