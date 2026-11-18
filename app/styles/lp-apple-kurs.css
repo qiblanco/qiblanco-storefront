@@ -38,6 +38,13 @@
 .as-kurs .course-lesson__video .YoutubeTimestamp {
   border-radius: var(--as-radius);
 }
+/* Grund der Video-Fassade (s07-r20): hell statt #000. Das Vorschaubild deckt
+   die Fläche ganz, sichtbar ist der Grund nur, bis es geladen ist. Schwarz
+   zählte sonst als häufigste Hintergrundfarbe der Lektion (Lektionsvideo und
+   Video im Text), und die Design-Rubrik maß den Fließtext dagegen (2,3:1). */
+.as-kurs .YoutubeTimestamp {
+  background: var(--as-flaeche);
+}
 .as-kurs .course-lesson__video iframe {
   display: block;
   width: 100%;
@@ -96,6 +103,15 @@
 .as-kurs .course-lesson-body img[data-bild-deckel] {
   display: block;
   margin-inline: auto;
+}
+/* Porträt mit kaputtem Stil-Attribut aus dem Lektionstext (left="" float:=""
+   margin-right:="", z. B. Christian in vitamine-mineralien): der Browser liest
+   kein float, der erste Satz klebte an der Bildunterkante. Hier steht das Bild
+   als eigener Block über dem Absatz, 24 px darunter, auf allen Breiten gleich
+   (s07-r20, Entscheid Option A zu s07-r18-portraet-vitamine-mineralien). */
+.as-kurs .course-lesson-body img[float\:] {
+  display: block;
+  margin: 0 0 var(--as-s-3);
 }
 .as-kurs .course-lesson-body :where(hr) {
   margin: var(--as-s-6) 0;
