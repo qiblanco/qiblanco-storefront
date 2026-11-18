@@ -424,22 +424,15 @@
  * gemessen 17 px statt H2-Größe auf /products/qihome-air (zweiter H2-Stil,
  * Design-Gate stimmig 79). Hier dieselben Tokens wie jede andere H2 der Seite.
  */
-.av-seite .qb-gbl .qb-gbl__titel,
-.av-seite .qb-gbl .qb-gbl__nutzer {
+.av-seite .qb-gbl .qb-gbl__titel {
   font-size: var(--tas-fs-h2-handy);
 }
 @media (min-width: 750px) {
-  .av-seite .qb-gbl .qb-gbl__titel,
-  .av-seite .qb-gbl .qb-gbl__nutzer {
+  .av-seite .qb-gbl .qb-gbl__titel {
     font-size: var(--tas-fs-5);
   }
 }
-/* Freigabe-Umbau 2 (17.11.2026): die Nutzerzeile in der Schrift der 4,8 (siehe app.css .qb-gbl__nutzer). */
-.av-seite .qb-gbl .qb-gbl__nutzer {
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--qb-gbl-tinte);
-}
+/* Die Nutzerzeile steht seit 17.11.2026 abends IN dieser Überschrift und erbt ihre Schrift (app.css .qb-gbl__nutzer). */
 
 /* ERSTE KARTE UNTER DEM KOPF MIT NR.-1-BANNER (Produktseiten-Freigabe Christian 17.11.2026, Umbau 5a: "der
    schwarze Nr.1-Banner beisst sich mit dem qi-blanco-Logo"). Gemessen 390x844 in der Vorschau: der feste Kopf
