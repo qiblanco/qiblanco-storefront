@@ -34,7 +34,7 @@ import {igVideoDescriptor} from '~/crystal-spiegel/lib/ig-video-schema';
 import amazonstilStyles from '~/crystal-spiegel/styles/amazonstil.css?url';
 import amazonstilLadenStyles from '~/crystal-spiegel/styles/amazonstil-laden.css?url';
 import {Kundenfragen, Sortenvergleich} from '~/crystal-spiegel/components/reusables/AmazonStil';
-import {ladeSortenPreise, sortenStilAn, teileFragen} from '~/components/reusables/amazonstil-daten';
+import {ladeSortenPreise, sortenStilAn, teileFragen} from '~/crystal-spiegel/components/reusables/amazonstil-daten';
 import {FAQ_CACAO} from '~/crystal-spiegel/data/product-faqs';
 
 /**
