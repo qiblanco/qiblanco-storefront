@@ -23,6 +23,7 @@ import {
   useSterneSprungDelegation,
   useKopfHoeheVariable,
   GOOGLE_REZENSIONEN_ANKER_ID,
+  KOPF_ZEIGEN_EREIGNIS,
 } from '~/components/reusables/GoogleRezensionenBereich';
 import {MarkeR} from '~/components/reusables/MarkeR';
 import {GoogleZitat} from '~/components/reusables/GoogleZitat';
@@ -350,9 +351,26 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
       window.requestAnimationFrame(auswerten);
     };
 
+    /* Nach dem Banner-/Sterne-Sprung zeigt sich der Kopf (Job 20261118-prio2-
+       banner-klick-scrollziel-sauber-auf-bewertungsblock-de-us, Zielbild Christian
+       18.11.2026: Leiste und Kopfzeile oben, darunter die 4,8-Zeile). Der Sprung
+       hält die Ruhelage des Kopfes frei; die Totzone zählt ab hier neu, die nächste
+       echte Scrollbewegung steuert den Kopf wie gewohnt. */
+    const zeigen = () => {
+      letzteY = window.scrollY;
+      ankerY = window.scrollY;
+      letzteRichtung = KOPF_RICHTUNG_AUF;
+      setRichtung(KOPF_RICHTUNG_AUF);
+      setHidden(false);
+    };
+
     auswerten();
     window.addEventListener('scroll', anfordern, {passive: true});
-    return () => window.removeEventListener('scroll', anfordern);
+    window.addEventListener(KOPF_ZEIGEN_EREIGNIS, zeigen);
+    return () => {
+      window.removeEventListener('scroll', anfordern);
+      window.removeEventListener(KOPF_ZEIGEN_EREIGNIS, zeigen);
+    };
   }, []);
 
   const {pathname} = useLocation();
