@@ -1147,10 +1147,17 @@ aside h3 {
   align-items: center;
   transition: transform 0.8s ease, color 0.3s ease;
 }
-/* Weggefahren steht die Unterkante von .header genau auf 0, die Kante ragte
-   sonst als 1-px-Linie ins Bild. Der Inline-Style in Header.jsx erbt den Wert. */
+/* Weggefahren liegt der Kopf ganz ausserhalb des Bilds, 2 px ueber der
+   Oberkante. Die Kante ragte sonst als 1-px-Linie ins Bild; der Inline-Style in
+   Header.jsx erbt den Wert none. Die 2 px Reserve tragen gegen einen
+   Subpixel-Saum: die Hoehe des Kopfs ist gebrochen (z. B. 185,53 px bei
+   1440 px), der Kompositor rastet die verschobene Ebene auf ganze Pixel ein,
+   und bei genau -100 % hing die unterste Zeile der weissen Flaeche halb in
+   Zeile 0. Ueber dunklen Abschnitten war das eine hellgraue Linie (F-034,
+   gemessen 18.11.2026). messeKopfHoehe rechnet das eigene translateY heraus,
+   die Ruhelage bleibt gleich. */
 .header-wrapper.header--hidden {
-  transform: translateY(-100%);
+  transform: translateY(calc(-100% - 2px));
   --kopf-gescrollt-kante: none;
 }
 .header {
