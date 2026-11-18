@@ -438,6 +438,27 @@ test('der Messcontainer heißt so, dass die Pruefliste ihn findet', () => {
 // ihren Kern auf der Quellseite nur an Glieder ohne eigenen Kern; jeder Absatz,
 // der Unternehmer nennt, fällt; „§ 7 Abs. 1" und „Ziffer 7" sind AGB-Verweise;
 // „vgl."/„s." beenden keinen Satz; „1.000,00".
+// RUNDE 6 (sechster Gegenprüfer, 7 grüne Falschaussagen in Gliedern ohne Kern):
+//  - VERSAND JE LAND ALS PAAR: ein Glied, dessen Satz vom Versand spricht (oder
+//    das ein Land und einen Euro-Betrag nennt), trägt sein Land (das zuletzt im
+//    Satz genannte, sonst „ohne") als Kern ⟪land …⟫; das Quell-Glied muss dasselbe
+//    Land tragen. In der FAQ gibt die Versandfrage den Versand-Zusammenhang an
+//    ihre ganze Antwort weiter („Nach Österreich kostet er 6,90 €").
+//  - Ein Quell-Glied, das ein ANDERES Produkt nennt (Necklace, Crystal Cacao),
+//    belegt nur eine Angabe, die es ebenfalls nennt: „9 € für ein einzelnes
+//    Necklace" trägt nicht „Versand in die Schweiz 9 €".
+//  - Neue Kerne ZOLL, ERSTATTUNG/RÜCKZAHLUNG, MELDEN/ANZEIGEN.
+//  - „100 %" gilt als „vollen Kaufpreis" nur im Glied mit Kern Garantie.
+//  - Kommabeträge („6,90 €") sind EINE Zahl; vorher zerfielen sie in „6" und
+//    „90 euro". „QiOne® 2 Pro" ist ein Name, die 2 keine Zahl.
+//  - Eine Euro-Schwelle hängt sich nur noch an das nächste Glied, wenn dieses
+//    eine Zahl ohne Euro trägt („ab 500 Euro … bis zu 24"). Vorher lief die
+//    Kette über Satzenden weiter, solange nur Euro-Beträge kamen: der ganze
+//    Versandabsatz („… 21 € … zum Tageskurs. Nach Österreich … 99 € …") war EIN
+//    Glied. Das war die Verschmelzung, die der Gegenprüfer der „s."-Regel
+//    zuschrieb; die „s."-Regel (nur in ohneVerweise, nur AGB) trifft „Tageskurs."
+//    nicht, sie verlangt ein Nicht-Buchstaben-Zeichen vor dem „s"
+//    (nachgemessen im Runde-6-Job, ex-s-regel.out).
 // GRENZE (benannt, nicht regelbar ohne Sprachverständnis): Verneinung („nicht
 // in bis zu 24"), richtig zitierte Zahl in falschem Zusammenhang („bis zu
 // zwei Jahre länger"), Kernbegriff jenseits eines Kommas.
@@ -469,7 +490,10 @@ function normiere(t) {
     .replace(/\{' '\}/g, ' ')
     .replace(/€/g, ' euro')
     .replace(/&nbsp;| /g, ' ')
-    .toLowerCase();
+    .toLowerCase()
+    // Runde 6: „anderthalb/eineinhalb Jahre" = 18 Monate, „EUR" = Euro.
+    .replace(/(^|[^a-zäöüß])(anderthalb|eineinhalb)\s+(?=jahr)/g, '$1 18 monat ')
+    .replace(/(\d)\s*eur(?![a-zäöüß])/g, '$1 euro');
   // Runde 4: zusammengesetzte Zahlwörter zuerst („vierundzwanzig", „fünfzehn",
   // „sechzig"), sonst blieb „vierundzwanzig" eine 4 und „fünfzehn" gar keine Zahl.
   const EINER = {ein: 1, zwei: 2, drei: 3, vier: 4, fünf: 5, sechs: 6, sieben: 7, acht: 8, neun: 9};
@@ -505,7 +529,12 @@ function normiere(t) {
     .replace(/(?<![\d/])(\d+)\s*\/\s*(\d+)\s+jahr/g, (m, n, d) =>
       (12 * n) % d === 0 ? ` ${(12 * n) / d} monat` : m,
     );
-  return s.replace(/(\d)\.(\d{3})\b/g, '$1$2').replace(/(\d),00\b/g, '$1'); // „1.000,00 Euro"
+  return s
+    .replace(/(\d)\.(\d{3})\b/g, '$1$2')
+    .replace(/(\d),00\b/g, '$1') // „1.000,00 Euro"
+    .replace(/(\d),(\d{1,2})\b/g, '$1.$2') // „6,90 €" ist EINE Zahl (Runde 6)
+    .replace(/(\d+)\.\s+(?=(werktag|kalendertag|tag|woche|monat|jahr))/g, '$1 ') // „bis zum 20. Tag"
+    .replace(/(\d)\s*monatsrate/g, '$1 rate'); // „6 Monatsraten" = sechs Raten, keine Dauer
 }
 
 const EINHEIT = [
@@ -527,6 +556,7 @@ function ohneMarker(s) {
     .replace(/§§?\s*\d+[a-z]?/g, ' ')
     .replace(/(^|[^a-zäöüß])(abs|nr|art)\.\s*\d+/g, '$1 ')
     .replace(/\(\d+\)/g, ' ')
+    .replace(/(qione®?)\s*\d+\s*pro/g, '$1 pro') // Produktname, keine Zahl (Runde 6)
     .replace(new RegExp(`\\d+\\.\\s*(${MONATE})`, 'g'), ' ');
 }
 
@@ -534,7 +564,7 @@ function ohneMarker(s) {
 function zahlen(t, schonNormiert = false) {
   const s = schonNormiert ? t : ohneMarker(normiere(t));
   const out = new Set();
-  for (const m of s.matchAll(/(?<![\d/])(\d+)(?![\d/])\s*-?\s*(%|[a-zäöüß]+)?/g)) {
+  for (const m of s.matchAll(/(?<![\d/.])(\d+(?:\.\d+)?)(?![\d/]|\.\d)\s*-?\s*(%|[a-zäöüß]+)?/g)) {
     if (m[2] === '%' || /^prozent/.test(m[2] || '')) {
       out.add(`${m[1]} %`);
       continue;
@@ -558,28 +588,132 @@ const KERN = [
     /rücknahme|rückgabe|zurück(zu)?(geb|send|schick|nehm)|rücksend|retour|nehm\S*\s.*zurück|(^|[^a-zäöüß])testen/,
     /rücknahme|rückgabe|zurück(zu)?(geb|send|schick|nehm)|rücksend|retour|nehm\S*\s.*zurück|(^|[^a-zäöüß])testen|kaufpreis\s+zurück/,
   ],
+  // Runde 6: „Kaufpreis erstatten wir binnen 20 Tagen" ist eine Erstattungsfrist,
+  // „melden binnen zwei Jahren" eine Meldefrist, „Zoll kostet 21 €" ein Zollbetrag.
+  [
+    'erstattung',
+    /erstatt|zurück(ge|zu)?zahl|rückzahl|kaufpreis\s+(\S+\s+){0,4}zurück/,
+    /erstatt|zurück(ge|zu)?zahl|rückzahl|kaufpreis\s+zurück|geld-zurück/,
+  ],
+  [
+    'melden',
+    /(^|[^a-zäöüß])(ge)?melde|anzuzeigen|anzeige(n|st|t)?($|[^a-zäöüß])|(^|[^a-zäöüß])rüge|reklamier/,
+    /(^|[^a-zäöüß])(ge)?melde|anzuzeigen|anzeige(n|st|t)?($|[^a-zäöüß])|(^|[^a-zäöüß])rüge|reklamier/,
+  ],
+  ['zoll', /zoll|einfuhr/, /zoll|einfuhr/],
 ];
 
-/** Satzglieder (Komma, Semikolon, Doppelpunkt, Satzende, „und"), normiert. */
-function satzglieder(t, quelle = false) {
+// Runde 6: Versand je Land und Produkt. Ein Glied mit Euro-Betrag trägt, wenn
+// sein Satz vom Versand spricht (in der FAQ auch: wenn die Frage es tut) oder
+// es ein Land nennt, eine Marke ⟪Länder|Produkte⟫. Länder und Produkte sind
+// die des Glieds plus die der zahllosen Glieder davor im selben Satz („Nach
+// Österreich und in die Schweiz … 21 €" = beide); nennt es keine, gelten die
+// zuletzt genannten (im Versand-Zusammenhang auch aus dem Satz davor: „Nach
+// Österreich kostet er 6,90 €" nach dem Necklace-Satz). Quell- und
+// Angabe-Glied müssen dieselbe Marke tragen, auch keine: ein Versandbetrag
+// belegt kein „Abo für 21 €".
+const LAENDER = ['deutschland', 'österreich', 'schweiz'];
+const VERSAND = /versand|porto|zoll|einfuhr/;
+const HAUPTPRODUKT = /qione|qibracelet|qihome|qi\s+alpha|alles\s+andere|(^|[^a-zäöüß])geräte?($|[^a-zäöüß])/;
+const NEBENPRODUKT = /necklace|crystal\s+cacao/;
+const MARKE = /⟪[^⟫]*⟫/;
+const marke = (g) => (g.match(MARKE) || [null])[0];
+const istEuro = (z) => z.endsWith(' euro');
+
+/**
+ * Satzglieder (Komma, Semikolon, Doppelpunkt, Satzende, „und"), normiert.
+ * `kontext` (FAQ-Frage der Quelle): spricht sie vom Versand, gilt das für die
+ * ganze Antwort. Versand-Glieder mit Euro tragen ⟪Länder|Produkte⟫ (Runde 6).
+ */
+function satzglieder(t, quelle = false, kontext = '') {
   const n = ohneMarker(normiere(t));
   // „20-tage-zufriedenheitsgarantie" ist in der QUELLE ein Name, keine Frist.
   // In der Angabe zählt „30-Tage-Rückgabe" dagegen als Zahl (Runde 4).
-  return (quelle ? n.replace(/\d+\s*-\s*[a-zäöüß]+-[a-zäöüß-]+/g, ' ') : n)
-    .split(/[,;:!?]|\.(?!\d)|\s(?:und|sowie|oder)\s/)
-    .map((g) => g.trim())
-    .filter(Boolean)
-    .reduce((acc, g) => {
-      // Ein Glied, dessen Zahlen nur Euro-Schwellen sind, gehört zum nächsten.
-      const vorher = acc[acc.length - 1];
-      if (vorher && vorher.offen) {
-        acc[acc.length - 1] = {text: `${vorher.text} ${g}`, offen: false};
-      } else acc.push({text: g, offen: false});
-      const z = zahlen(acc[acc.length - 1].text, true);
-      acc[acc.length - 1].offen = z.length > 0 && z.every((x) => x.endsWith(' euro'));
-      return acc;
-    }, [])
-    .map((g) => g.text);
+  const text = quelle ? n.replace(/\d+\s*-\s*[a-zäöüß]+-[a-zäöüß-]+/g, ' ') : n;
+  const ausFrage = VERSAND.test(normiere(kontext));
+  const saetze = text.split(/[!?]|\.(?!\d)/);
+  const flach = [];
+  saetze.forEach((satz, si) => {
+    for (const g of satz.split(/[,;:]|\s(?:und|sowie|oder)\s/).map((x) => x.trim()).filter(Boolean)) {
+      flach.push({text: g, satz: si});
+    }
+  });
+  // Zusammenziehen (Runde 3/6):
+  //  - eine Euro-Schwelle nimmt die zahllosen Glieder ihres Satzes mit („ab 500
+  //    Euro, die du ausgibst, …") und hängt sich an das nächste Glied, wenn es
+  //    eine Zahl ohne Euro trägt („… bis zu 24"), auch über das Satzende. Eine
+  //    Kette über weitere Euro-Glieder gibt es nicht mehr: sie zog vorher den
+  //    ganzen Versandabsatz zu EINEM Glied zusammen.
+  //  - in der ANGABE gibt ein zahlloses Glied mit Kern („Widerrufsrecht:") ihn
+  //    an das folgende Zahl-Glied ohne eigenen Kern desselben Satzes weiter.
+  const out = [];
+  let offen = false;
+  for (const g of flach) {
+    const v = out[out.length - 1];
+    const zg = zahlen(g.text, true);
+    if (v && offen && v.satz === g.satz && !zg.length) {
+      v.text += ` ${g.text}`;
+      continue;
+    }
+    if (v && offen && zg.some((x) => !istEuro(x))) {
+      v.text += ` ${g.text}`;
+      v.satz = g.satz;
+      offen = false;
+      continue;
+    }
+    if (!quelle && v && v.kopf && v.satz === g.satz && zg.length && !KERN.some(([, re]) => re.test(g.text))) {
+      v.text += ` ${g.text}`;
+      v.kopf = false;
+      offen = zg.every(istEuro);
+      continue;
+    }
+    out.push({text: g.text, satz: g.satz, kopf: !zg.length && KERN.some(([, re]) => re.test(g.text))});
+    offen = zg.length > 0 && zg.every(istEuro);
+  }
+  // Marken: Länder und Produkte je Euro-Glied.
+  let landZuletzt = [];
+  let prodZuletzt = [];
+  let satz = -1;
+  let sammelL = [];
+  let sammelP = [];
+  return out.map((g) => {
+    if (g.satz !== satz) {
+      satz = g.satz;
+      sammelL = [];
+      sammelP = [];
+    }
+    const versand = ausFrage || VERSAND.test(saetze[g.satz] || '');
+    const eigenL = LAENDER.filter((l) => g.text.includes(l));
+    const eigenP = [...(HAUPTPRODUKT.test(g.text) ? ['gerät'] : []), ...(NEBENPRODUKT.test(g.text) ? ['neben'] : [])];
+    const zg = zahlen(g.text, true);
+    if (!zg.length) {
+      sammelL.push(...eigenL);
+      sammelP.push(...eigenP);
+      if (eigenL.length) landZuletzt = eigenL;
+      if (eigenP.length) prodZuletzt = eigenP;
+      return g.text;
+    }
+    let L = [...new Set([...sammelL, ...eigenL])];
+    let P = [...new Set([...sammelP, ...eigenP])];
+    sammelL = [];
+    sammelP = [];
+    if (!L.length && versand) L = landZuletzt;
+    if (!P.length && versand) P = prodZuletzt;
+    if (L.length) landZuletzt = L;
+    if (P.length) prodZuletzt = P;
+    if (!zg.some(istEuro) || !(versand || L.length)) return g.text;
+    return `${g.text} ⟪${[...L].sort().join('+') || 'ohne land'}|${[...P].sort().join('+') || 'alle'}⟫`;
+  });
+}
+
+/** Kerne eines Glieds (die Marke zählt getrennt). */
+function kerneImGlied(g) {
+  return KERN.filter(([, re]) => re.test(g.replace(MARKE, ' '))).map(([k]) => k);
+}
+
+/** Trägt ein Quell-Glied diesen Kern? */
+function kernSteht(k, glied) {
+  return KERN.find(([n]) => n === k)[2].test(glied.replace(MARKE, ' '));
 }
 
 const kerneIn = (t) => KERN.filter(([, re]) => re.test(normiere(t))).map(([k]) => k);
@@ -595,7 +729,8 @@ function zahlgruppen(t, frage = '') {
     .map((g) => ({
       glied: g,
       zahlen: zahlen(g, true),
-      kerne: [...new Set([...kerneIn(g), ...ausFrage])],
+      kerne: [...new Set([...kerneImGlied(g), ...ausFrage])],
+      marke: marke(g),
     }))
     .filter((g) => g.zahlen.length);
 }
@@ -609,11 +744,13 @@ function kanon(z) {
 }
 
 /** Passt eine Zahl der Angabe zu den Zahlen eines Satzglieds der Quelle? */
-function passt(zahl, glied) {
+function passt(zahl, glied, kerne = []) {
   // „vollen Kaufpreis" trägt 100 % nur, wenn im Glied kein anderer Anteil
-  // steht („50 % vom vollen Kaufpreis", Runde 4).
+  // steht („50 % vom vollen Kaufpreis", Runde 4), und nur für ein Glied mit
+  // Kern Garantie („100 % Rabatt beim Folgekauf" ist keine, Runde 6).
   if (
     zahl === '100 %' &&
+    kerne.includes('garantie') &&
     /(^|[^a-zäöüß])vollen\s+kaufpreis/.test(glied) &&
     !zahlen(glied, true).some((x) => x.endsWith(' %') && x !== '100 %')
   )
@@ -635,23 +772,25 @@ function passt(zahl, glied) {
 function gruppeSteht(gruppe, quelle) {
   const teile = Array.isArray(quelle) ? quelle : [{frage: '', text: quelle}];
   return teile.some(({frage, text}) =>
-    satzglieder(text, true).some(
+    satzglieder(text, true, frage).some(
       (glied) =>
-        gruppe.zahlen.every((z) => passt(z, glied)) &&
+        gruppe.zahlen.every((z) => passt(z, glied, gruppe.kerne)) &&
+        // Gleiche Versand-Marke (Länder|Produkte), auch keine (Runde 6).
+        marke(glied) === (gruppe.marke ?? null) &&
         gruppe.kerne.every(
           (k) =>
-            KERN.find(([n]) => n === k)[2].test(glied) ||
+            kernSteht(k, glied) ||
             // Die Frage gibt ihren Kern nur an Glieder OHNE eigenen Kern weiter
             // („… zum gesetzlichen Widerrufsrecht von 14 Tagen" bleibt Widerruf, Runde 5).
-            (kerneIn(frage).includes(k) && !KERN.some(([, , re]) => re.test(glied))),
+            (kerneIn(frage).includes(k) && !KERN.some(([, , re]) => re.test(glied.replace(MARKE, ' ')))),
         ),
     ),
   );
 }
 
 /** Steht die Zahl (allein) in der Quelle? Für die Positivkontrolle. */
-function stehtIn(zahl, quelle) {
-  return satzglieder(quelle, true).some((g) => passt(zahl, g));
+function stehtIn(zahl, quelle, kerne = []) {
+  return satzglieder(quelle, true).some((g) => passt(zahl, g, kerne));
 }
 
 /**
@@ -790,12 +929,12 @@ test('die Leser finden ihre Quellen (Positivkontrolle der Zerlegung)', () => {
   const gar = AGB.find((a) => /Zufriedenheitsgarantie/.test(a.titel));
   assert.ok(stehtIn('14 tag', p7.text), '§ 7 nennt vierzehn Tage');
   assert.ok(!stehtIn('20 tag', p7.text), '§ 7 nennt die 20 Tage NICHT');
-  assert.ok(stehtIn('20 tag', gar.text) && stehtIn('100 %', gar.text));
+  assert.ok(stehtIn('20 tag', gar.text) && stehtIn('100 %', gar.text, ['garantie']));
   // Die Fehlgriffe des Gegenprüfers (s03) sind keine Belege mehr:
   const p9 = AGB.find((a) => a.paragraf === '9');
   assert.ok(!stehtIn('14 tag', p9.text), '„§ 14 BGB" belegt keine 14 Tage');
-  assert.ok(!stehtIn('100 %', AGB.find((a) => a.paragraf === '1').text), '„vollendet" ist keine Garantie');
-  assert.ok(!stehtIn('100 %', AGB.find((a) => a.paragraf === '4').text), '„vollständig" ist keine Garantie');
+  assert.ok(!stehtIn('100 %', AGB.find((a) => a.paragraf === '1').text, ['garantie']), '„vollendet" ist keine Garantie');
+  assert.ok(!stehtIn('100 %', AGB.find((a) => a.paragraf === '4').text, ['garantie']), '„vollständig" ist keine Garantie');
   assert.ok(!stehtIn('2 jahr', gar.text), 'Absatz „(2)" belegt keine zwei Jahre');
   assert.deepEqual(zahlen('ab 1.000 Euro bis zu 24, Richtlinie (EU) 2025/1960'), ['1000 euro', '24']);
   assert.deepEqual(zahlen('100 % Geld-zurück-Garantie, 20 Tage, 20-tägige'), ['100 %', '20 tag']);
@@ -806,7 +945,7 @@ test('die Leser finden ihre Quellen (Positivkontrolle der Zerlegung)', () => {
   assert.deepEqual(zahlen('20 Werktage, drei Wochen, fünf Tage, achten'), ['20 werktag', '3 woche', '5 tag']);
   const garOhne = ohneVerweise(gar.text, gar.paragraf);
   assert.ok(!stehtIn('14 tag', garOhne), 'der Verweis „vierzehntägiges Widerrufsrecht nach § 7" belegt keine 14 Tage');
-  assert.ok(stehtIn('20 tag', garOhne) && stehtIn('100 %', garOhne), 'die Garantie selbst bleibt belegt');
+  assert.ok(stehtIn('20 tag', garOhne) && stehtIn('100 %', garOhne, ['garantie']), 'die Garantie selbst bleibt belegt');
   assert.ok(
     !gruppeSteht({zahlen: ['7 tag'], kerne: ['gewährleistung']}, ohneVerweise(p9.text, '9')),
     'die Rügefrist „7 Tagen … anzuzeigen" ist keine Gewährleistungsfrist',
@@ -828,14 +967,14 @@ test('die Leser finden ihre Quellen (Positivkontrolle der Zerlegung)', () => {
   assert.ok(!gruppeSteht({zahlen: ['2 jahr'], kerne: ['rücknahme']}, p9ohne), 'Gewährleistung ist keine Rücknahme');
   assert.deepEqual(satzglieder('ab 500 Euro und mehr sogar bis zu 24'), ['ab 500 euro mehr sogar bis zu 24']);
   assert.ok(!gruppeSteht({zahlen: ['500 euro', '24'], kerne: []}, FAQ_EINTRAEGE));
-  assert.ok(!stehtIn('100 %', 'den halben Kaufpreis zurück (volle Geld-zurück-Garantie)'));
+  assert.ok(!stehtIn('100 %', 'den halben Kaufpreis zurück (volle Geld-zurück-Garantie)', ['garantie']));
   assert.ok(stehtIn('2 woche', ohneVerweise(p7.text, '7')) && stehtIn('24 monat', EU_HINWEIS), 'gleiche Dauer, andere Einheit');
   // Runde 4 (vierter Gegenprüfer):
   assert.deepEqual(zahlen('vierundzwanzig, fünfzehn Tage, sechzig Tage, einundzwanzig Tage'), ['24', '15 tag', '60 tag', '21 tag']);
   assert.deepEqual(zahlen('20 Stunden, 20 Kalenderwochen, 3 Prozent'), ['20 stunde', '20 woche', '3 %']);
   assert.ok(!stehtIn('20 stunde', gar.text) && !stehtIn('20', gar.text), 'nackte oder fremde Einheit passt nicht zu 20 Tagen');
   assert.deepEqual(zahlen(satzglieder('Mit der 30-Tage-Rückgabe testen')[0], true), ['30 tag']);
-  assert.ok(!stehtIn('100 %', 'erhalten 50 % vom vollen Kaufpreis zurück'));
+  assert.ok(!stehtIn('100 %', 'erhalten 50 % vom vollen Kaufpreis zurück', ['garantie']));
   assert.deepEqual(zahlen('Mindestens 1/2 Jahr, ein halbes Jahr'), ['6 monat']);
   // Runde 5 (fünfter Gegenprüfer):
   assert.deepEqual(zahlen('Hundert Tage, ab achthundert Euro, ab fünftausend Euro, ab 1.000,00 Euro'), ['100 tag', '800 euro', '5000 euro', '1000 euro']);
@@ -844,6 +983,38 @@ test('die Leser finden ihre Quellen (Positivkontrolle der Zerlegung)', () => {
   assert.ok(!stehtIn('14 tag', ohneVerweise('(1) Zusätzlich (vgl. § 7 Abs. 1) gilt: 14 Tage Widerruf. (2) Sind Sie Unternehmer, gilt ein Jahr.', null)));
   assert.ok(!stehtIn('1 jahr', ohneVerweise('(1) Gut. (2) Gegenüber Unternehmern beträgt die Frist ein Jahr.', '9')));
   assert.ok(!/qr_mindestkante|25\.4/.test(EU_HINWEIS) && /mindestens zwei Jahren/.test(EU_HINWEIS));
+  // Runde 6 (sechster und siebter Gegenprüfer): Versand je Land und Produkt,
+  // Zoll, Erstattung, Melden, 100 % nur mit Garantie.
+  assert.deepEqual(zahlen('6,90 €, QiOne® 2 Pro, ab 1.000,00 €, 21 EUR'), ['6.90 euro', '1000 euro', '21 euro']);
+  assert.deepEqual(zahlen('6 Monatsraten, bis zum 20. Tag, anderthalb Jahre'), ['6', '20 tag', '18 monat']);
+  assert.deepEqual(
+    satzglieder('Die Schweiz kostet 21 €, an der Kasse zum Tageskurs. Nach Österreich ab 99 € frei.'),
+    ['die schweiz kostet 21  euro an der kasse zum tageskurs ⟪schweiz|alle⟫', 'nach österreich ab 99  euro frei ⟪österreich|alle⟫'],
+    'eine Euro-Schwelle zieht keine Sätze mehr zusammen',
+  );
+  assert.deepEqual(satzglieder('Ab 500 Euro, die du ausgibst, sind 24 Raten möglich'), ['ab 500 euro die du ausgibst sind 24 raten möglich']);
+  assert.deepEqual(zahlgruppen('Widerrufsrecht: 20 Tage').map((g) => g.kerne), [['widerruf']]);
+  const versandIn = (text) => zahlgruppen(text).map((g) => gruppeSteht(g, FAQ_EINTRAEGE));
+  const VOR = 'Nach Deutschland und Österreich schicken wir QiOne® 2 Pro versandkostenfrei. ';
+  assert.deepEqual(versandIn(`${VOR}In die Schweiz kostet der Versand 21 €.`), [true], 'Schweiz 21 € (Geräte) steht in der FAQ');
+  for (const falsch of [
+    `${VOR}In die Schweiz kostet der Versand 6,90 €.`, // Österreich-Preis
+    `${VOR}In die Schweiz kostet der Versand 9 €.`, // Necklace-Preis
+    `${VOR}Nach Österreich und in die Schweiz kostet der Versand 21 €.`,
+    'In die Schweiz kostet der Versand für ein einzelnes Necklace 21 €.',
+    'Nach Österreich kostet der Versand für Qi Alpha® 6,90 €.',
+    'Für Qi Alpha® und Crystal Cacao® kostet der Versand nach Deutschland 5,90 €.',
+    'Zoll und Einfuhrabgaben kosten dort 21 €.',
+    'Nur das Abo kostet 21 € im Jahr.',
+  ]) {
+    assert.ok(!versandIn(falsch).every(Boolean), `trägt die FAQ nicht: ${falsch}`);
+  }
+  assert.deepEqual(versandIn('Nach Österreich kostet der Versand für das Necklace 6,90 €.'), [true], '„Nach Österreich kostet er 6,90 €" erbt das Necklace');
+  assert.ok(gruppeSteht({zahlen: ['14 tag'], kerne: ['erstattung']}, ohneVerweise(p7.text, '7')), '§ 7: binnen vierzehn Tagen zurückzuzahlen');
+  assert.ok(!gruppeSteht({zahlen: ['20 tag'], kerne: ['erstattung']}, garOhne), 'die 20 Tage sind Rücksende-, keine Erstattungsfrist');
+  assert.deepEqual(zahlgruppen('Du bekommst den Kaufpreis nach 20 Tagen zurück.').map((g) => g.kerne), [['erstattung']]);
+  assert.ok(!gruppeSteht({zahlen: ['2 jahr'], kerne: ['melden']}, EU_HINWEIS), 'die zwei Jahre sind keine Meldefrist');
+  assert.ok(!stehtIn('100 %', garOhne) && stehtIn('100 %', garOhne, ['garantie']), '„vollen Kaufpreis" ist 100 % nur für die Garantie');
   // Die Prüfung hat Gegenstand: mindestens die drei AGB-Angaben der Fristen.
   assert.ok(angaben().filter((a) => a.belegPfad === '/pages/agb').length >= 4);
 });
@@ -860,6 +1031,14 @@ test('jede AGB-Quellzeile nennt einen echten Abschnitt', () => {
 
 test('jede genannte Zahl steht in der zitierten Quelle', () => {
   const befunde = [];
+  // Runde 6: ein Eintrag OHNE Beleg darf keine Zahl nennen, sonst wäre sie
+  // ungeprüft (f-retour/RUECKWEG: „Melde dich binnen 3 Tagen" war grün).
+  for (const [wo, liste] of Object.entries({FRISTEN, VORTEILE, FRAGEN, FRAGE_GEBRAUCHT: [FRAGE_GEBRAUCHT], IM_PREIS})) {
+    for (const e of liste.filter((x) => !x.beleg)) {
+      const zz = zahlen([e.titel, e.text, e.a].filter(Boolean).join('. '));
+      if (zz.length) befunde.push(`${wo}:${e.id} nennt ${zz.join(', ')} ohne Beleg`);
+    }
+  }
   for (const a of angaben()) {
     const zz = zahlen(a.behauptung);
     if (!zz.length) continue;
@@ -874,7 +1053,7 @@ test('jede genannte Zahl steht in der zitierten Quelle', () => {
     }
     for (const g of zahlgruppen(a.behauptung, a.frage)) {
       if (!gruppeSteht(g, q.text)) {
-        const was = [...g.zahlen, ...g.kerne].join(' + ');
+        const was = [...g.zahlen, ...g.kerne, ...(g.marke ? [g.marke] : [])].join(' + ');
         befunde.push(
           `${a.wo}:${a.id} nennt „${was}" („${g.glied}"), die Quelle „${a.beleg}" (${q.abschnitte.join(' + ')}) nennt es nicht zusammen`,
         );
