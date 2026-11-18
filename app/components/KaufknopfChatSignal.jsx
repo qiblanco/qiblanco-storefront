@@ -26,6 +26,33 @@ import {
 import {SALESBOT_RUECKFALL_ID} from '~/lib/salesbot-widget';
 
 /**
+ * DER KONTAKTKNOPF IM RÜCKFALL WEICHT AUF JEDER BREITE AUS (Job 20261118-fc-
+ * folge-rueckfallknopf-verdeckt-kaufleiste-und-formularknopf).
+ *
+ * Gemessen 18.11.2026 live mit unerreichbarer Anna: auf
+ * /products/crystal-cacao-awake (402x714, Seitenende) lag
+ * A.qb-kontakt-rueckfall [166,650 220x48] auf der Mitte des Leisten-Knopfs
+ * „In den Warenkorb legen“ [16,636 370x70], auf /pages/sprechstunde (390x844)
+ * auf dem Absendeknopf des Formulars. Ursache: ausweichStrecke lässt unter
+ * FEST_UNTER_BREITE_PX den geschlossenen Rahmen stehen (Christian 15.11.: das
+ * Gesicht bleibt unten) und nimmt den Preis in Kauf, dass die 74-px-Kugel kurz
+ * den rechten Rand eines Knopfs deckt. Der Rückfallknopf ist nicht das
+ * Gesicht und dreimal so breit: er deckt die Knopfmitte. Für ihn gilt deshalb
+ * `fest: false`, also das Ausweichen wie auf dem Desktop, und ist keine
+ * Strecke frei, blendet dieselbe Regel ihn aus. Annas Rahmen bleibt unberührt.
+ *
+ * FORMULAR-ABSENDEKNÖPFE zählen wie Kaufknöpfe (Leitsatz overlay_ordnung: kein
+ * Bedienelement darf sichtbar und zugleich nicht treffbar sein). Nur im
+ * Fenster; für Annas Kugel wirkt das nur dort, wo sie ausweicht (Desktop).
+ *
+ * RÜCKWEG: RUECKFALL_WEICHT_IMMER = false (Stand vor diesem Bau) bzw.
+ * FORMULAR_KNOPF_SELEKTOR = '' (keine Formularknöpfe).
+ */
+const RUECKFALL_WEICHT_IMMER = true;
+const FORMULAR_KNOPF_SELEKTOR =
+  'form button[type="submit"], form input[type="submit"]';
+
+/**
  * CHAT-WIDGET ÜBER DEM KAUFKNOPF — DERSELBE LEITSATZ, VIERTER FALL.
  * Job 20260926-chat-widget-verdeckt-kaufknopf-desktop.
  *
@@ -192,6 +219,15 @@ export function KaufknopfChatSignal() {
         if (r.bottom < 0 || r.top > window.innerHeight) return;
         if (knopfOptik(a, r)) liste.push(r);
       });
+      // Absendeknöpfe von Formularen (FORMULAR_KNOPF_SELEKTOR oben), nur im Fenster.
+      if (FORMULAR_KNOPF_SELEKTOR) {
+        document.querySelectorAll(FORMULAR_KNOPF_SELEKTOR).forEach((b) => {
+          const r = b.getBoundingClientRect();
+          if (!(r.width > 0 && r.height > 0)) return;
+          if (r.bottom < 0 || r.top > window.innerHeight) return;
+          liste.push(r);
+        });
+      }
       return liste;
     };
 
@@ -290,6 +326,11 @@ export function KaufknopfChatSignal() {
         fensterHoehe,
         fensterBreite: window.innerWidth,
         angedockt,
+        // Der Rückfallknopf steht nie fest (Kopf dieser Datei); Annas Rahmen
+        // folgt weiter KNOPF_FEST_AN aus der lib.
+        ...(RUECKFALL_WEICHT_IMMER && rahmen?.id === SALESBOT_RUECKFALL_ID
+          ? {fest: false}
+          : {}),
       });
       const unterdruecken = !frei && !chatBeruehrt;
       // Strecke vor dem Attribut: im selben synchronen Schritt, ohne Bild
