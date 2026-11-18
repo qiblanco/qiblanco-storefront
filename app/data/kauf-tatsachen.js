@@ -34,6 +34,15 @@ export const FRISTEN = [
       'Kaufpreis erstattet. Einen Grund brauchst du nicht. Tragen und ' +
       'benutzen darfst du es in dieser Zeit, dafür ist die Frist da. Die ' +
       'Rücksendung ist für dich kostenlos.',
+    // ZITAT-ANKER (nicht gerendert, Runde 7): der wörtliche Satzteil der
+    // Quelle, der jede Zahl dieser Angabe trägt. Wer eine Zahl ändert, ändert
+    // hier das Zitat mit; BELEGTREUE prüft die Zahlen nur noch gegen das Zitat.
+    // Es steht direkt hinter dem Text und endet mit Satzzeichen: das Stil-Tor
+    // liest jedes Literal dieser Datei, auch nicht gerenderte.
+    belegZitat: [
+      'können Sie die Ware innerhalb von 20 Tagen ab Erhalt des Pakets an uns ' +
+        'zurücksenden und erhalten den vollen Kaufpreis zurück (volle Geld-zurück-Garantie).',
+    ],
     // QUELLE = der AGB-Abschnitt, in dem die 20 Tage, der volle Kaufpreis
     // und die kostenlose Rücksendung wörtlich stehen (s03 des Grossjobs
     // seo-2026-w43-l26-neu-oder-gebraucht-26c6, 2026-11-17). Bis dahin stand
@@ -55,6 +64,11 @@ export const FRISTEN = [
     text:
       '14 Tage Widerruf verlangt das Gesetz für jeden Onlinekauf, bei Qi ' +
       'Blanco sind es 20 Tage.',
+    belegZitat: [
+      'Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem Sie oder ein von ' +
+        'Ihnen benannter Dritter, der nicht der Beförderer ist, die Waren in Besitz genommen haben.',
+      'können Sie die Ware innerhalb von 20 Tagen ab Erhalt des Pakets an uns zurücksenden.',
+    ],
     // ZWEI ZAHLEN, ZWEI ABSCHNITTE: die 14 Tage stehen in § 7
     // Widerrufsbelehrung („vierzehn Tage"), die 20 Tage im Abschnitt
     // „Freiwillige 20-Tage-Zufriedenheitsgarantie". Bis 2026-11-17 nannte die
@@ -71,6 +85,18 @@ export const FRISTEN = [
       'bekommst du kostenlos Nachbesserung oder Ersatz, und wenn das nicht ' +
       'trägt, eine Preisminderung oder den vollen Kaufpreis zurück. ' +
       'Maßgeblich ist, ob der Mangel schon bei der Lieferung vorlag.',
+    // Ein zusammenhängendes Stück: die Lieferung steht im Hinweis als der
+    // maßgebliche Zeitpunkt; „ab Ablieferung" als Fristbeginn steht in AGB § 9.
+    belegZitat: [
+      'In Europa gilt für jede Ware, die du kaufst, eine gesetzliche Gewährleistung ' +
+        'von mindestens zwei Jahren. Dieses Recht hast du kraft Gesetzes, bei jedem ' +
+        'Händler in der EU. Wir stehen dahinter. Wenn dein Stück nicht das ist, was ' +
+        'zugesagt war, oder nicht so funktioniert, wie es soll, wende dich an uns. Du ' +
+        'bekommst kostenlos Nachbesserung oder Ersatz, und wenn das nicht trägt, eine ' +
+        'Preisminderung oder die volle Erstattung des Kaufpreises. Maßgeblich ist, ob ' +
+        'der Mangel schon bei der Lieferung vorlag.',
+      'In manchen EU-Ländern ist die Frist länger als zwei Jahre.',
+    ],
     beleg: 'Richtlinie (EU) 2025/1960, Wortlaut aus unserem Gewährleistungshinweis',
     belegPfad: null,
   },
@@ -85,6 +111,20 @@ export const IM_PREIS = [
       'QiBracelet®, QiHome® Air und Qi Alpha® versandkostenfrei. In die ' +
       'Schweiz kostet der Versand 21 €, an der Kasse in Franken zum ' +
       'Tageskurs. Zoll und Einfuhrabgaben sind dort im Preis enthalten.',
+    // Bei der FAQ zitiert der Anker EINE Frage, nicht die ganze FAQ.
+    belegZitat: [
+      {
+        frage: 'Was kostet der Versand und wie lange dauert er?',
+        satz:
+          'Für das Necklace und Crystal Cacao® kostet der Versand nach Deutschland 5,90 €. ' +
+          'Ab 99 € Warenwert ist er frei, und mit zwei Packungen Crystal Cacao® bist du ' +
+          'schon darüber. Nach Österreich kostet er 6,90 € und ist ab 250 € Warenwert ' +
+          'frei. In die Schweiz kostet der Versand 9 € für ein einzelnes Necklace oder ' +
+          'eine Packung Crystal Cacao® und 21 € für alles andere. Die Kasse rechnet das ' +
+          'zum Tageskurs in Franken um, auf ganze Franken gerundet. Zoll und ' +
+          'Einfuhrabgaben sind dort schon im Preis enthalten.',
+      },
+    ],
     // Quelle = die FAQ-Antwort „Was kostet der Versand …" (app/data/faq-seite.js),
     // seit 2026-11-17: sie trägt jedes Wort dieser Zeile. Die Shopify-
     // Versandrichtlinie (/policies/shipping-policy, bis dahin hier zitiert)
@@ -105,6 +145,12 @@ export const IM_PREIS = [
       'Warenwert sind 6 Monatsraten möglich, ab 500 Euro 12 und ab 1.000 ' +
       'Euro bis zu 24. Klarna prüft die Ratenzahlung selbst. Sie gilt ' +
       'derzeit für Kundinnen und Kunden mit Wohnsitz in Deutschland.',
+    belegZitat: [
+      {
+        frage: 'Kann ich in Raten zahlen?',
+        satz: 'Ab 25 € Warenwert geht das in 6 Monatsraten, ab 500 € in 12 und ab 1.000 € in bis zu 24.',
+      },
+    ],
     beleg: 'FAQ, Fußnote 2 im Fuß jeder Seite',
     belegPfad: '/pages/faq',
   },
@@ -142,18 +188,21 @@ export const VORTEILE = [
     text: frist('widerruf').text,
     beleg: frist('widerruf').beleg,
     belegPfad: frist('widerruf').belegPfad,
+    belegZitat: frist('widerruf').belegZitat,
   },
   {
     id: 'garantie',
     titel: '100 % Geld-zurück-Garantie',
     beleg: frist('ruecknahme').beleg,
     belegPfad: frist('ruecknahme').belegPfad,
+    belegZitat: frist('ruecknahme').belegZitat,
   },
   {
     id: 'gewaehrleistung',
     titel: frist('gewaehrleistung').titel,
     beleg: frist('gewaehrleistung').beleg,
     belegPfad: frist('gewaehrleistung').belegPfad,
+    belegZitat: frist('gewaehrleistung').belegZitat,
   },
   {
     id: 'kaufnachweis',
@@ -217,6 +266,10 @@ export const FRAGE_GEBRAUCHT = {
     'Bei Qi Blanco bekommst du dein Elektrosmog-Armband QiBracelet® neu ' +
     'und im Original mit eigener Seriennummer: 20 Tage zu Hause testen, ' +
     '100 % Geld-zurück-Garantie und mindestens zwei Jahre Gewährleistung.',
+  belegZitat: [
+    ...frist('ruecknahme').belegZitat,
+    'beträgt die Verjährungsfrist für Gewährleistungsansprüche zwei Jahre ab Ablieferung der Ware.',
+  ],
   // Beleg = AGB (seit 2026-11-10, Gegenprüfung K3): dort stehen die
   // freiwillige 20-Tage-Zufriedenheitsgarantie mit vollem Kaufpreis zurück und
   // die Gewährleistung (§ 9). Die Produktseite /products/qibracelet nennt die
@@ -252,6 +305,7 @@ export const FRAGEN = [
     // Widerrufs (bis 2026-11-17 „AGB, § 7 Widerrufsrecht" = 14 Tage).
     beleg: frist('ruecknahme').beleg,
     belegPfad: frist('ruecknahme').belegPfad,
+    belegZitat: frist('ruecknahme').belegZitat,
     a:
       '20 Tage nach Erhalt risikofrei testen, mit 100 % ' +
       'Geld-zurück-Garantie.',
@@ -268,6 +322,7 @@ export const FRAGEN = [
     q: 'Wie lange habe ich Gewährleistung?',
     beleg: frist('gewaehrleistung').beleg,
     belegPfad: frist('gewaehrleistung').belegPfad,
+    belegZitat: frist('gewaehrleistung').belegZitat,
     a: 'Mindestens zwei Jahre ab Lieferung, in manchen EU-Ländern länger.',
   },
   {
@@ -281,6 +336,7 @@ export const FRAGEN = [
     a: imPreis('versand'),
     beleg: preis('versand').beleg,
     belegPfad: preis('versand').belegPfad,
+    belegZitat: preis('versand').belegZitat,
   },
   {
     id: 'f-raten',
@@ -288,5 +344,6 @@ export const FRAGEN = [
     a: imPreis('raten'),
     beleg: preis('raten').beleg,
     belegPfad: preis('raten').belegPfad,
+    belegZitat: preis('raten').belegZitat,
   },
 ];
