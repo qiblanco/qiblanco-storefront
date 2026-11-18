@@ -7,6 +7,8 @@
  * Alt-Texte beschreiben nur, was zu sehen ist (kein Wirkversprechen).
  * r2 17.11.2026 (Christian 16.11. 17:30/17:40): immer die ganze Person, Style wie QiOne, verschiedene Models;
  * QiHome Air erst EIN Solo-Foto mit Steckdose, dann Personen, keine Terrasse. Auswahl: galerie/auswahl.json im jobdaten-Ordner des r2-Jobs.
+ * 18.11.2026 (Christian): drei verschiedene Szenen, kein Kamera-Lächeln; Bild 2 = Arbeitstisch (Drive: QiHome-Shooting-Adrian-2023-ALU,
+ *   12-L1011254). US zeigt statt der EU-Steckdose das Wohnzimmer (10-L1011245): dokumentierte 1:1-Ausnahme, us-drift-schleife ausnahmen_1zu1.
  * 17.11.2026 (Christian, Freigabe-Umbau 1): KEINE Fotos von Christian und Anna als QiHome-Produktshots. Ersatz: Arbeits-Szene
  * am Schreibtisch mit dem QiHome Air auf dem Tisch (Drive: Shooting QiOne 2 Pro QiBracelet 2025, canggu-1054936/1054907).
  */
@@ -43,7 +45,7 @@ const BEREICHE = {
     bahnLabel: 'Fotos: wo der QiHome Air steht',
     fotos: [
       {url: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--r2-qihome-air-n1--b103a3eec555.jpg?v=1794875837", alt: "QiHome Air in einer weißen Steckdose an einer Betonwand", zeile: "Einfach in die Steckdose."},
-      {url: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--qihome-air-cafe-n2--2dffff4350cd_48e55a03-ba99-4734-b8e2-3c073effc7fe.jpg?v=1794896935", alt: "Mann am Holzschreibtisch mit Tablet, daneben steht der QiHome Air", zeile: "Auch am Schreibtisch dabei."},
+      {url: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--qihome-air-g3-tisch--2c60cfbc3ea5.jpg?v=1794965023", alt: "QiHome Air auf einem langen Holztisch neben Laptop und Tablet", zeile: "Auch am großen Tisch dabei."},
       {url: "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-produkt-trage-bereich--qihome-air-cafe-n3--e08aa28c86af_11dd8c52-14fc-4bc7-89c4-2026482c4ef1.jpg?v=1794896942", alt: "Mann arbeitet am Schreibtisch, vorn steht der QiHome Air", zeile: "Steht einfach neben dir."},
     ],
   },
