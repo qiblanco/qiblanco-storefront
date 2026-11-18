@@ -1,12 +1,12 @@
 // ERZEUGT von crystal-cacao-node/bin/spiegel-nachzug aus crystal-cacao-node/repo/app/components/product-pages/SortenSeite.jsx
 // NICHT VON HAND AENDERN: die Quelle ist crystal-cacao.com, Herkunft in SPIEGEL.json.
 import {Belege} from '../reusables/Belege';
-import {KakaoTiefe} from '~/components/reusables/KakaoTiefe';
-import {KAKAO_TIEFE_AN} from '~/components/reusables/kakao-tiefe-daten';
+import {KakaoTiefe} from '../reusables/KakaoTiefe';
+import {KAKAO_TIEFE_AN} from '../reusables/kakao-tiefe-daten';
 import {AbsichtHinweis} from '../reusables/AbsichtHinweis';
 import {ZubereitungHinweis} from '../reusables/ZubereitungHinweis';
 import {bildQuelle} from '~/components/reusables/shopifyBildQuellen';
-import {ProductFAQ} from '~/components/ProductFAQ';
+import {ProductFAQ} from '../ProductFAQ';
 import {FAQ_CACAO} from '~/crystal-spiegel/data/product-faqs';
 import {sortenProfil, bildEintrag, LEITER_HALBSPALTE} from '~/crystal-spiegel/lib/sorten-profil';
 

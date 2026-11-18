@@ -1,0 +1,124 @@
+// ERZEUGT von crystal-cacao-node/bin/spiegel-nachzug aus crystal-cacao-node/repo/app/lib/faq-schema.js
+// NICHT VON HAND AENDERN: die Quelle ist crystal-cacao.com, Herkunft in SPIEGEL.json.
+/**
+ * FAQPage / JSON-LD Datenfabrik für die Produkt-FAQ der DACH-Storefront.
+ *
+ * Herkunft: Folgejob FJ2 aus dem GEO/AEO-Deep-Dive
+ * (20260723-ki-sichtbarkeit-geo-aeo-empfehlbarkeit-nicht-eso, Maßnahme A2).
+ * Befund dort: ProductFAQ.jsx rendert die Antworten client-seitig (nicht im
+ * initialen HTML) UND ohne FAQPage-Schema -> für Crawler/KI doppelt unsichtbar.
+ *
+ * LEITPLANKE (verbindlich, identisch zu structured-data.js / FJ1):
+ * NUR faktisch saubere Q&A werden ins Schema geschrieben. KEINE unfalsifizierbare
+ * Aussage, KEIN Eso-Buzzword, KEINE unbelegte Wirkmechanismus-Behauptung, KEINE
+ * Schuldumkehr und KEIN faktenwiderspruechlicher Claim (270/170 nm) landen im
+ * FAQPage-Schema — sie warten auf Christians freigegebene Umformulierung
+ * (Content = Christian-Gate). Der SICHTBARE FAQ-Text bleibt unangetastet; hier
+ * wird nur entschieden, was maschinenlesbar ausgezeichnet (= verstaerkt) wird.
+ *
+ * Reine Datenfabrik: KEIN React-/Remix-Import, damit das Modul ohne Build-
+ * Toolchain lesbar und in Node-Unit-Tests direkt aufrufbar ist.
+ */
+
+/**
+ * Zwei-stufiger Ausschluss (Belt-and-Suspenders):
+ *  (1) PRIMAER: ein explizites `flag`-Feld am Q&A-Item (gesetzt in
+ *      product-faqs.js, dokumentiert im FLAG-FAQ-CHRISTIAN.md-Report).
+ *  (2) FAKTEN-NETZ: nur noch der bekannte Faktenwiderspruch (270/170 nm).
+ *      Das Wort-Netz gegen Eso-/Wirk-Vokabular ist seit dem Verbotsputz
+ *      17.11.2026 entfernt.
+ * Kein sauberes Bestands-Item enthält eines dieser Tokens (verifiziert im
+ * Selftest), d.h. das Netz erzeugt keine False-Positives auf dem Ist-Content.
+ */
+// Verbotsputz 17.11.2026 (Christian: keine Verbote, keine Rechtspruefung am Content) - Job
+// 20261117-prio1-wurzel-alle-eigenen-verbots-vorsichts-wortlisten-serverweit-loeschen-verursacher s02:
+// das Wort-Netz gegen Eso-/Wirk-/Detox-Vokabular ist entfernt. Es bleibt nur der Faktenwiderspruch
+// (Wellenlaenge 270/170 nm gegen Warnke 2019). Die `flag`-Felder in product-faqs.js (Christians
+// Umformulierung ausstehend) wirken unveraendert.
+export const FORBIDDEN_PATTERNS = [
+  /\b\d{3}\s?nm\b/i, // "270nm"/"170nm" — Faktenwiderspruch (Warnke 2019)
+];
+
+/**
+ * Entfernt etwaige HTML-Tags und normalisiert Whitespace. Die Bestands-Antworten
+ * sind reiner Text; die Bereinigung ist rein defensiv (falls kuenftig HTML dazu
+ * kommt), damit kein Markup in `acceptedAnswer.text` gelangt.
+ * @param {string} s
+ * @returns {string}
+ */
+export function normalizeText(s) {
+  return String(s == null ? '' : s)
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Ist ein Q&A-Item faktisch sauber genug für das publizierte FAQPage-Schema?
+ * @param {{q?: string, a?: string, flag?: string}} item
+ * @returns {boolean}
+ */
+export function isSchemaSafe(item) {
+  if (!item || typeof item.a !== 'string' || typeof item.q !== 'string') {
+    return false;
+  }
+  if (item.flag) return false; // (1) explizite Flagge
+  const hay = `${item.q}\n${item.a}`;
+  return !FORBIDDEN_PATTERNS.some((re) => re.test(hay)); // (2) Deny-Netz
+}
+
+/**
+ * Baut ein valides schema.org-FAQPage-JSON-LD-Objekt — ausschließlich aus den
+ * sauberen Items. Gibt `null` zurück, wenn kein sauberes Item uebrig bleibt
+ * (dann emittiert die Komponente bewusst KEIN leeres Schema).
+ *
+ * ZUSATZFELDER (optional, seit 2026-09-11 für /pages/kritik): `author`,
+ * `datePublished` und `dateModified` werden NUR gesetzt, wenn der Aufrufer sie
+ * uebergibt. Bestandsaufrufer (ProductFAQ, pages.faq) uebergeben sie nicht und
+ * erhalten damit byte-identisch dasselbe Schema wie vorher — die Erweiterung
+ * ist additiv, nicht verhaltensaendernd. Hintergrund: eine Antwortseite mit
+ * benanntem Autor und Datum ist die Quellenklasse, die von KI-Antworten
+ * zitiert wird; ohne sie bleibt die Seite maschinell anonym.
+ *
+ * @param {Array<{q?: string, a?: string, flag?: string}>} items
+ * @param {{inLanguage?: string, author?: string, datePublished?: string,
+ *   dateModified?: string}} [opts]
+ * @returns {object|null} JSON-LD FAQPage oder null
+ */
+export function buildFaqPageJsonLd(items, opts = {}) {
+  const safe = (Array.isArray(items) ? items : []).filter(isSchemaSafe);
+  if (safe.length === 0) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    inLanguage: opts.inLanguage || 'de-DE',
+    ...(opts.author
+      ? {author: {'@type': 'Organization', name: opts.author}}
+      : {}),
+    ...(opts.datePublished ? {datePublished: opts.datePublished} : {}),
+    ...(opts.dateModified ? {dateModified: opts.dateModified} : {}),
+    mainEntity: safe.map((it) => ({
+      '@type': 'Question',
+      name: normalizeText(it.q),
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: normalizeText(it.a),
+      },
+    })),
+  };
+}
+
+/**
+ * Serialisiert das FAQPage-Schema XSS-sicher für die Einbettung in ein
+ * <script type="application/ld+json">-Tag: `<` wird zu `<` maskiert, damit
+ * ein etwaiges "</script>" im Text den Tag nicht vorzeitig schließt.
+ *
+ * @param {Array<{q?: string, a?: string, flag?: string}>} items
+ * @param {{inLanguage?: string}} [opts]
+ * @returns {string|null} JSON-String oder null (kein sauberes Item)
+ */
+export function faqPageJsonLdString(items, opts = {}) {
+  const obj = buildFaqPageJsonLd(items, opts);
+  if (!obj) return null;
+  return JSON.stringify(obj).replace(/</g, '\\u003c');
+}
