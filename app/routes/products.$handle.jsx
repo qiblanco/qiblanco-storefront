@@ -203,7 +203,12 @@ export async function loader(args) {
   // ist und die Route sonst 404 liefert. /products/qione-1 stand hier bis
   // 05.11.2026 (Rückweg H-b61a593538) und antwortet wieder selbst; die Liste
   // trägt heute kein Produkt.
-  const alterPfad = `/products/${args.params.handle}`;
+  // Pfad in der Form des Routenmusters (`/products/${params.handle}`): so liest
+  // der Schalterzeilen-Leser von hb-deploy (format_reichweite._pfad_schluessel)
+  // die Apple-Zeile unten als Anfragepfad dieser Route, und eine umgelegte
+  // Schalterzeile gilt als lokal statt global (Grossjob 20261118-de-shop-apple-rest-z3-z20 s04).
+  const {params} = args;
+  const alterPfad = `/products/${params.handle}`;
   if (zusammenlegungFuer(alterPfad)) leiteUm(args.request, alterPfad);
 
   // BF-DEAL-SEITEN DE (Elina EL-20261111-aff06215, bis 30.11.2026 23:59 Berlin):
