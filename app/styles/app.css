@@ -119,7 +119,8 @@ main {
    --qb-kopf-hoehe setzt die Kopfzeile zur Laufzeit (useKopfHoeheVariable,
    Ruhelage, gerundet). Bis dahin gilt --qb-kopf-erstbild: dieselbe Ruhelage,
    je Breitenstufe gemessen (18.11.2026 live, 17 Breiten 320-1440; die Stufen
-   folgen dem Umbruch der Google-Leiste). Der fruehere feste Rueckfall 135 px
+   folgen dem Umbruch der Google-Leiste), mit eigener Tabelle fuer den Kopf mit
+   Qi-Alpha-Leiste (Startseite: 207 px bei 390). Der fruehere feste Rueckfall 135 px
    lag seit #1651 bis 39 px daneben: jede Seite mit diesem Ausgleich sprang
    beim Hydrieren um diesen Betrag nach unten (gemessen 18.11.: Kaufseite
    qione-2-pro und forschung je 38 px bei 390 px). Weicht der Kopf spaeter von
@@ -151,6 +152,16 @@ main {
 @media (min-width: 750px) { :root { --qb-kopf-erstbild: 176px; } }
 @media (min-width: 1000px) { :root { --qb-kopf-erstbild: 153px; } }
 @media (min-width: 1280px) { :root { --qb-kopf-erstbild: 131px; } }
+/* Mit Qi-Alpha-Leiste ueber der Nr.-1-Leiste (Startseite, start-b; serverseitig
+   gerendert) ist der Kopf 32-45 px hoeher, gemessen an denselben Stufen. */
+:root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 188px; }
+@media (min-width: 360px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 191px; } }
+@media (min-width: 375px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 205px; } }
+@media (min-width: 380px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 207px; } }
+@media (min-width: 480px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 190px; } }
+@media (min-width: 750px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 220px; } }
+@media (min-width: 1000px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 198px; } }
+@media (min-width: 1280px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 176px; } }
 body > main:not([data-film-seite], [data-qa-funnel])::before {
   content: '';
   display: block;
