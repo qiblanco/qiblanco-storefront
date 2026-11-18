@@ -62,6 +62,10 @@ export const INTERN_NETZE = [
   // jeder Browser des Gehirns dort. SSoT-Commit ada8beeaf2.
   '65.108.14.141/32',
   '2a01:4f9:6a:4a6b::/64',
+  // ax41b (Rechenknoten seit 2026-11-12, Datenherr seit 2026-11-15): Pool-
+  // Zellen und Proben rechnen auch dort. SSoT-Commit e22d865532.
+  '65.108.64.179/32',
+  '2a01:4f9:6b:545e::/64',
 ];
 
 /**
