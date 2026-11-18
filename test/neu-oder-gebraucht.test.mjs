@@ -471,16 +471,26 @@ test('der Messcontainer heißt so, dass die Pruefliste ihn findet', () => {
 //      in der Antwort der zitierten FRAGE ({frage, satz}), nicht in der ganzen FAQ;
 //  (b) jede Zahl mit Einheit der Angabe steht im Zitat;
 //  (c) Kernbegriffe und Versand-Marken gelten nur noch innerhalb des Zitats.
+//      Dazu BEZUGSWÖRTER, die erst gegen EINEN Satz etwas aussagen (gegen die
+//      ganze FAQ stand jedes Wort irgendwo): nennt das Zahl-Glied einen
+//      Fristbeginn oder ein Land, nennt das Zitatstück denselben; nennt es eine
+//      Richtung, nennt das Stück dieselbe, oder es nennt einen festen Wert und
+//      die Richtung ist „mindestens"/„höchstens".
 // Eine Angabe mit Zahl und ohne Zitat ist ein Befund. Wer eine Zahl ändert,
 // muss das Zitat mitändern: im Diff steht dann Satz neben Satz, und ein Mensch
-// sieht die Zuordnung.
-// GRENZE (benannt, nicht regelbar ohne Sprachverständnis): Verneinung („nicht
-// in bis zu 24"), richtig zitierte Zahl in falschem Zusammenhang („bis zu
-// zwei Jahre länger"), Kernbegriff jenseits eines Kommas. Innerhalb des
-// Zitats bleiben Fristbeginn („ab Bestellung" statt „ab Erhalt"),
-// Richtungswörter (höchstens, kürzer) und Synonyme ungelesen: der Wächter
-// fängt falsche Zahlen und falsche Zuordnung je Land, Produkt und Frist-Art,
-// Bedeutung fängt er nicht.
+// sieht die Zuordnung. Ändert sich die Quelle, steht das Zitat nicht mehr da:
+// auch das ist gewollt rot.
+// GEMESSEN (Matrizen der Gegenprüfer 3 bis 8, 181 Falschaussagen): grün blieben
+// vorher 46, jetzt 19; neu rote wahre Sätze nur, wo eine neue Tatsache ohne
+// Zitat dazukam oder die Quelle umformuliert wurde.
+// GRENZE (benannt, gemessen vom neunten Gegenprüfer; keine weitere Runde):
+// geprüft werden ZAHLEN und ihre Zuordnung je Land, Produkt, Frist-Art,
+// Fristbeginn und Richtung. Nicht geprüft und mit Wortlisten nicht regelbar:
+// Sätze ohne Zahl („Rücksendung zahlst du selbst"), was hinter einem Komma
+// steht, Verneinung, richtige Zahl in falscher Bedeutung („nur für
+// Ladenkäufe"), Synonyme außerhalb der Listen (bezahlen, Vertragsschluss,
+// USA, weltweit, genau, Quartalsraten). Ein Zitat prüft der Test auf Wortlaut,
+// nicht darauf, ob es die Angabe trägt: das sieht der Mensch im Diff.
 const ZAHLWORT = [
   ['vierzehn', '14'],
   ['dreißig', '30'],
@@ -529,8 +539,13 @@ function normiere(t) {
       `${a} ${10 + {drei: 3, vier: 4, fünf: 5, sech: 6, sieb: 7, acht: 8, neun: 9}[x]} `)
     .replace(new RegExp(`(^|[^a-zäöüß])(${z})`, 'g'), (_, a, y) => `${a} ${ZEHNER[y]} `);
   for (const [wort, ziffer] of ZAHLWORT) {
-    // Als Wortanfang: „vierzehntägiges", „zweijährige", „zwei Jahre".
-    s = s.replace(new RegExp(`(^|[^a-zäöüß])${wort}`, 'g'), `$1 ${ziffer} `);
+    // Als ganzes Wort oder vor -tägig/-jährig: „vierzehntägiges", „zweijährige",
+    // „zwei Jahre". Runde 7 (Gegenprüfer 9): nicht mehr als bloßer Wortanfang,
+    // sonst wurde „zweifellos" zu „2 fellos" und „zweiter" zu „2 ter".
+    s = s.replace(
+      new RegExp(`(^|[^a-zäöüß])${wort}(?=$|[^a-zäöüß]|tägig|jährig|wöchig|monatig)`, 'g'),
+      `$1 ${ziffer} `,
+    );
   }
   for (const [wort, ziffer] of ZAHLWORT_GANZ) {
     s = s.replace(
@@ -979,9 +994,13 @@ function zitatVon(a, q) {
       else texte.push(z);
       continue;
     }
-    const abschnitt = zitierteAbschnitte(a.beleg, AGB).find((x) => zitatNorm(x.text).includes(zitatNorm(z)));
-    if (!abschnitt) befunde.push(`${a.wo}:${a.id}: Zitat „${z}" steht in keinem der zitierten AGB-Abschnitte (${q.abschnitte.join(' + ')})`);
-    else texte.push(ohneVerweise(z, abschnitt.paragraf));
+    // Gesucht wird im Abschnitt OHNE Verweissätze und Unternehmer-Absätze
+    // (Gegenprüfer 9: sonst trug ein Zitat aus § 9 (4) „ein Jahr Gewährleistung").
+    const abschnitt = zitierteAbschnitte(a.beleg, AGB).find((x) =>
+      zitatNorm(ohneVerweise(x.text, x.paragraf)).includes(zitatNorm(z)),
+    );
+    if (!abschnitt) befunde.push(`${a.wo}:${a.id}: Zitat „${z}" steht in keinem der zitierten AGB-Abschnitte (${q.abschnitte.join(' + ')}), Verweise und Unternehmer-Absätze ausgenommen`);
+    else texte.push(z);
   }
   // Je Zitat ein eigenes Stück: Zahlen zweier Zitate bilden nie ein Glied.
   return {befunde, quelle: texte};
@@ -996,8 +1015,9 @@ function zitatVon(a, q) {
  * dieselbe nennen oder gar keine (aus „zwei Jahre" folgt „mindestens zwei Jahre").
  */
 const FRISTBEGINN = [
-  ['erhalt', /(^|[^a-zäöüß])(erhalt|empfang)(s|es)?($|[^a-zäöüß])|in\s+besitz|zugestellt/],
-  ['lieferung', /liefer(ung|datum)|geliefert/],
+  // Erhalt und Lieferung sind derselbe Zeitpunkt (Gegenprüfer 9: „20 Tage ab
+  // Lieferung" ist wahr, die AGB sagen „ab Erhalt des Pakets").
+  ['erhalt', /(^|[^a-zäöüß])(erhalt|empfang)(s|es)?($|[^a-zäöüß])|in\s+besitz|zugestellt|zustellung|liefer(ung|datum)|geliefert/],
   ['bestellung', /bestell(ung|datum|t|eingang)/],
   ['kauf', /(^|[^a-zäöüß])(kauf(datum|tag)?|gekauft)($|[^a-zäöüß])/],
   ['absendung', /versanddatum|versendung|absendung|abgeschickt/],
@@ -1006,8 +1026,8 @@ const FRISTBEGINN = [
 ];
 const RICHTUNG = [
   ['mindestens', /mindestens|wenigstens|nicht\s+(weniger\s+als|unter)/],
-  ['höchstens', /höchstens|maximal|längstens|(^|[^a-zäöüß])(bis\s+zu|innerhalb|binnen)($|[^a-zäöüß])|nicht\s+mehr\s+als/],
-  ['spätestens', /spätestens/],
+  // „spätestens 20 Tage nach Erhalt" = „innerhalb von 20 Tagen" (Gegenprüfer 9).
+  ['höchstens', /höchstens|maximal|längstens|spätestens|(^|[^a-zäöüß])(bis\s+zu|innerhalb|binnen)($|[^a-zäöüß])|nicht\s+mehr\s+als/],
   ['frühestens', /frühestens|(^|[^a-zäöüß])erst($|[^a-zäöüß])/],
   ['kürzer', /kürzer|(?<!nicht\s)(weniger\s+als|(^|[^a-zäöüß])unter($|[^a-zäöüß]))/],
   ['länger', /länger|mehr\s+als/],
@@ -1027,7 +1047,7 @@ const REGIONEN = (() => {
       } catch {
         continue;
       }
-      if (n && n !== c && !/\s|union|zone/i.test(n)) out.add(n.toLowerCase());
+      if (n && n !== c && !/union|zone|unbekannt|nationen|ozeanien/i.test(n)) out.add(n.toLowerCase());
     }
   return [...out].map((n) => [`land ${n}`, GANZES_WORT(n)]);
 })();
@@ -1039,20 +1059,18 @@ function bezugSteht(glied, teil) {
   const g = glied.replace(MARKE, ' ');
   const fest = [...FRISTBEGINN, ...REGIONEN];
   if (!klassen(fest, g).every((k) => klassen(fest, st).includes(k))) return false;
+  // Nennt das Stück keine Richtung (ein fester Wert), passen „mindestens" und
+  // „höchstens" dazu, „kürzer", „länger" und „erst" widersprechen ihm (Gegenprüfer 9:
+  // „weniger als 14 Tage Widerruf" gegen „beträgt vierzehn Tage").
   const r = klassen(RICHTUNG, st);
-  return klassen(RICHTUNG, g).every((k) => r.includes(k) || !r.length);
+  const zumFestwert = ['mindestens', 'höchstens'];
+  return klassen(RICHTUNG, g).every((k) => r.includes(k) || (!r.length && zumFestwert.includes(k)));
 }
-
-const ZEITWORT = /(^|[^a-zäöüß])(tag|tage|tagen|werktage?n?|kalendertage?n?|wochen?|monate?n?|monat|jahre?n?|jahr)($|[^a-zäöüß])/;
 
 /** Alle BELEGTREUE-Befunde einer Liste von Angaben (Runde 7: gegen das Zitat). */
 function belegtreueBefunde(liste) {
   const befunde = [];
   for (const a of liste) {
-    // Eine Zeitangabe ohne lesbare Zahl („zwo Jahre", „ein paar Tage") wäre ungeprüft.
-    for (const g of satzglieder(a.behauptung)) {
-      if (!zahlen(g, true).length && ZEITWORT.test(g)) befunde.push(`${a.wo}:${a.id}: Zeitangabe ohne lesbare Zahl („${g}")`);
-    }
     const zz = zahlen(a.behauptung);
     if (!zz.length) continue;
     const q = quelleVon(a);
@@ -1251,8 +1269,20 @@ test('ZITAT-ANKER: jedes Zitat hat Gegenstand, falsche Anker sind rot (Rot vor G
   assert.ok(mit(ab('IM_PREIS', 'raten'), {behauptung: 'Ab 1.000 Euro sind mindestens 24 Raten möglich.'}).length, 'mindestens statt bis zu');
   assert.ok(mit(versand, {behauptung: 'Nach Italien kostet der Versand ebenfalls 21 €.'}).length, 'ein Land, das das Zitat nicht nennt');
   assert.deepEqual(mit(versand, {behauptung: 'Nach Österreich kostet der Versand für das Necklace 6,90 €.'}), [], 'Österreich, Necklace');
-  assert.ok(mit(ruecknahme, {behauptung: 'Die Rücknahme gilt sogar zwo Jahre.'}).length, 'Zeitangabe ohne lesbare Zahl');
   assert.ok(mit(ab('IM_PREIS', 'raten'), {behauptung: 'Unter 500 Euro sind 12 Raten möglich.'}).length, 'unter statt ab');
+  // Nachzug Gegenprüfer 9: Fehlalarme weg, Festwert-Richtung und Zitat-Umgehung rot.
+  assert.deepEqual(mit(ruecknahme, {behauptung: 'Du kannst dein Stück spätestens 20 Tage nach Lieferung zurückgeben.'}), [], 'spätestens, Lieferung');
+  assert.deepEqual(mit(ruecknahme, {behauptung: 'Zweifellos kannst du es 20 Tage ab Erhalt zurückgeben.'}), [], '„zweifellos" ist keine Zahl');
+  const widerruf = ab('FRISTEN', 'widerruf');
+  assert.ok(mit(widerruf, {behauptung: 'Weniger als 14 Tage Widerruf verlangt das Gesetz.'}).length, 'weniger als gegen Festwert');
+  const gebraucht = ab('FRAGE_GEBRAUCHT', 'f-gebraucht');
+  assert.ok(
+    mit(gebraucht, {
+      behauptung: 'Ein Jahr Gewährleistung.',
+      belegZitat: ['Die Gewährleistungsfrist beträgt ein Jahr ab Ablieferung der Ware.'],
+    }).length,
+    'ein Zitat aus dem Unternehmer-Absatz trägt nicht',
+  );
 });
 
 // WORTTREUE: jedes Zusagewort einer Angabe steht auch an der Stelle, die ihre

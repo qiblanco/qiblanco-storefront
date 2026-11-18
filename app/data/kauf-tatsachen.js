@@ -95,6 +95,7 @@ export const FRISTEN = [
         'bekommst kostenlos Nachbesserung oder Ersatz, und wenn das nicht trägt, eine ' +
         'Preisminderung oder die volle Erstattung des Kaufpreises. Maßgeblich ist, ob ' +
         'der Mangel schon bei der Lieferung vorlag.',
+      'In manchen EU-Ländern ist die Frist länger als zwei Jahre.',
     ],
     beleg: 'Richtlinie (EU) 2025/1960, Wortlaut aus unserem Gewährleistungshinweis',
     belegPfad: null,
