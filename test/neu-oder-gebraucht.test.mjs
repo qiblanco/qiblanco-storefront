@@ -1030,8 +1030,8 @@ const REGIONEN = (() => {
 const klassen = (liste, t) => liste.filter(([, re]) => re.test(t)).map(([k]) => k);
 
 /** Trägt dieses Zitatstück Fristbeginn und Richtung des Angabe-Glieds? */
-function bezugSteht(glied, stueck) {
-  const st = normiere(typeof stueck === 'string' ? stueck : stueck.text);
+function bezugSteht(glied, teil) {
+  const st = normiere(typeof teil === 'string' ? teil : teil.text);
   const g = glied.replace(MARKE, ' ');
   const fest = [...FRISTBEGINN, ...REGIONEN];
   if (!klassen(fest, g).every((k) => klassen(fest, st).includes(k))) return false;
@@ -1064,13 +1064,13 @@ function belegtreueBefunde(liste) {
     befunde.push(...zb);
     if (quelle === null) continue;
     for (const g of zahlgruppen(a.behauptung, a.frage)) {
-      const stuecke = quelle.filter((st) => gruppeSteht(g, Array.isArray(st) ? st : q.art === 'faq' ? [st] : st));
-      if (!stuecke.length) {
+      const teilzitate = quelle.filter((st) => gruppeSteht(g, Array.isArray(st) ? st : q.art === 'faq' ? [st] : st));
+      if (!teilzitate.length) {
         const was = [...g.zahlen, ...g.kerne, ...(g.marke ? [g.marke] : [])].join(' + ');
         befunde.push(
           `${a.wo}:${a.id} nennt „${was}" („${g.glied}"), das Zitat aus „${a.beleg}" (${q.abschnitte.join(' + ')}) nennt es nicht zusammen`,
         );
-      } else if (!stuecke.some((st) => bezugSteht(g.glied, st))) {
+      } else if (!teilzitate.some((st) => bezugSteht(g.glied, st))) {
         const bez = [...klassen(FRISTBEGINN, g.glied), ...klassen(REGIONEN, g.glied), ...klassen(RICHTUNG, g.glied)].join(' + ');
         befunde.push(
           `${a.wo}:${a.id} nennt „${g.zahlen.join(' + ')}" mit Bezug „${bez}" („${g.glied}"), das Zitatstück nennt diesen Fristbeginn bzw. diese Richtung nicht`,
