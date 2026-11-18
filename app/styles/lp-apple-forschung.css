@@ -36,22 +36,6 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* ÜBERZEILE FREI UNTER DEM KOPF (Job 20261118-fc-folge-forschung-ueberzeile-
-   unter-kopf). Gemessen live 18.11.2026, Rect gegen Rect: der feste Kopf endet
-   bei 158 px (360) bzw. 173 px (390/414), <main> hält nur 64 + 40 = 104 px frei.
-   Den Rest gleicht app.css (F-441) mit main::before aus, nimmt aber
-   main:has(> .as-seite) aus, weil Apple-Fassungen eigenen Abstand halten.
-   Diese Fassung hielt nur --fo-s4 (32 px): die Überzeile stand bei 136 px,
-   22-37 px unter dem Kopf. Jetzt: dieselbe Formel wie F-441, plus die 32 px,
-   die die C-Fassung (was-ist-hexagonales-wasser) unter dem Kopf zeigt.
-   RÜCKWEG: diesen Block löschen. */
-.as-seite .fo {
-  padding-top: calc(
-    var(--fo-s4) +
-      max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px))
-  );
-}
-
 .as-seite .fo :is(h1, h2, h3, h4) {
   font-family: inherit;
   font-weight: 600;

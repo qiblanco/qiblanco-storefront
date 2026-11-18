@@ -102,51 +102,66 @@
 main {
   padding-top: calc(var(--header-height) + 40px);
 }
-/* ERSTER BLOCK NIE UNTER DEM KOPF (Sicht-Tor F-441, 2026-10-17).
+/* ERSTER BLOCK NIE UNTER DEM KOPF (Sicht-Tor F-441, 2026-10-17; Stand 18.11.2026).
    `main` haelt nur die Nennhoehe frei: 64 + 40 = 104 px. Der fixierte Kopf ist
-   hoeher, weil die Bewertungszeile darueber sitzt: gemessen 137-140 px bei
-   390 px Breite. Ein Block ohne eigenen oberen Rand beginnt damit 33 px unter
-   dem transparenten Kopf. Auf Weiss sieht das niemand; auf einer Farbflaeche
-   verschwinden Logo-Unterzeile und Kreisraender (live auf ~50 Seiten, dunkel:
-   qibracelet, qihome-air, uebersicht, ueber-uns, warum-qi-blanco).
+   hoeher, weil Bewertungszeile und Google-Leiste (seit PR #1651 zweite Zeile)
+   darin sitzen: gemessen 18.11.2026 live 159 px (360), 174 px (390/414),
+   131 px (1440). Ein Block ohne eigenen oberen Rand beginnt damit bis 70 px
+   unter dem transparenten Kopf.
 
    WARUM EIN LEERER BLOCK MIT UNTEREM RAND: sein Rand verschmilzt mit dem
    oberen Rand des ersten Blocks, es gilt der groessere. Ein Block, der schon
    mit eigenem Abstand unter dem Kopf beginnt (qione-2-pro: 85 px), bleibt
-   stehen; ein buendiger rueckt genau an die Kopfunterkante. Dieselbe Rechnung
-   stand bisher nur an der Kassen-Rueckkehr-Leiste.
+   stehen; ein buendiger rueckt genau an die Kopfunterkante. Ein erster Block
+   mit eigenem INNENabstand (Apple-Fassung .as-seite) behaelt ihn unter der
+   Kopfunterkante. Dieselbe Rechnung stand bisher nur an der Kassen-Rueckkehr-Leiste.
 
-   --qb-kopf-hoehe setzt die Kopfzeile zur Laufzeit (useKopfHoeheVariable);
-   135 px ist die gemessene Kopfhoehe bei 390 px (wie qb-360-rand.css). Der
-   Rueckfall gilt im ersten Paint: ein hoeherer Wert laesst die Seite beim
-   Hydrieren hochspringen (mit 150 px gemessen 15-20 px, 04.11.2026).
+   --qb-kopf-hoehe setzt die Kopfzeile zur Laufzeit (useKopfHoeheVariable,
+   Ruhelage, gerundet). Bis dahin gilt --qb-kopf-erstbild: dieselbe Ruhelage,
+   je Breitenstufe gemessen (18.11.2026 live, 17 Breiten 320-1440; die Stufen
+   folgen dem Umbruch der Google-Leiste). Der fruehere feste Rueckfall 135 px
+   lag seit #1651 bis 39 px daneben: jede Seite mit diesem Ausgleich sprang
+   beim Hydrieren um diesen Betrag nach unten (gemessen 18.11.: Kaufseite
+   qione-2-pro und forschung je 38 px bei 390 px). Weicht der Kopf spaeter von
+   der Tabelle ab, stimmt die Endlage trotzdem (die Laufzeit-Variable gewinnt);
+   nur das Erstbild springt um die Abweichung. Kopf geaendert -> Tabelle neu
+   messen (claude-jobs/20261118-fc-folge-apple-seiten-kopfabstand/kopfbreiten.py).
 
    Ausgenommen sind drei Faelle:
    1. Ein erster Block, der sich mit negativem Rand bewusst unter den Kopf
       zieht (Bild-Heros, mt-[-75px] auf superhuman und den Detailseiten).
       Mit dem Leerblock verschmolzen wuerde er um die Luecke absinken.
-   2. Die Apple-Fassung (.as-seite) und die Apple-Kaufseiten (.tas-seite, auf
-      /pages/ eine Ebene tiefer): sie halten mit eigenem Innenabstand zum Kopf
-      Abstand, die Luecke zeigt dort nur Weiss auf Weiss (gemessen 02.11.2026,
-      390 px). Ohne Eintrag sprang das erste Video der Kaufseiten beim
-      Hydrieren um 14-58 px (04.11.2026). Alle laufenden A/B-Arme rendern die
-      Apple-Fassung, auch die letzte Runde ab 06.11. (Auftrag F-441:
-      Experimente nicht anfassen).
+   2. Die Apple-Kaufseiten (.tas-seite, auf /pages/ eine Ebene tiefer): sie
+      gleichen den Kopf selbst aus (alpha-vorlage.css, erste Karte unter dem
+      Kopf, 17.11.2026); ein zweiter Ausgleich verschoebe das erste Video.
+      Die Apple-Fassung (.as-seite) ist seit 18.11.2026 NICHT mehr
+      ausgenommen: ihre Ausnahme stuetzte sich auf Kopf 137-140 px (02.11.);
+      bei 174 px lag der erste Text auf 11 von 12 gemessenen Seiten bis
+      26 px unter dem Kopf (Job 20261118-fc-folge-apple-seiten-kopfabstand).
    3. Seiten ohne Hauskopf: die Film-Seite (main[data-film-seite], Qi-Alpha-LP)
       und die Kaufseite (main[data-qa-funnel]). Dort setzt niemand
-      --qb-kopf-hoehe, und der Rueckfallwert schoebe sie um 31 px. */
+      --qb-kopf-hoehe, und der Rueckfallwert schoebe sie. */
+:root {
+  --qb-kopf-erstbild: 156px;
+}
+@media (min-width: 360px) { :root { --qb-kopf-erstbild: 159px; } }
+@media (min-width: 375px) { :root { --qb-kopf-erstbild: 172px; } }
+@media (min-width: 380px) { :root { --qb-kopf-erstbild: 174px; } }
+@media (min-width: 480px) { :root { --qb-kopf-erstbild: 157px; } }
+@media (min-width: 750px) { :root { --qb-kopf-erstbild: 176px; } }
+@media (min-width: 1000px) { :root { --qb-kopf-erstbild: 153px; } }
+@media (min-width: 1280px) { :root { --qb-kopf-erstbild: 131px; } }
 body > main:not([data-film-seite], [data-qa-funnel])::before {
   content: '';
   display: block;
   margin-bottom: max(
     0px,
-    calc(var(--qb-kopf-hoehe, 135px) - var(--header-height) - 40px)
+    calc(var(--qb-kopf-hoehe, var(--qb-kopf-erstbild)) - var(--header-height) - 40px)
   );
 }
 body > main:has(
     > :first-child[class*='mt-[-'],
     > :first-child > :first-child[class*='mt-[-'],
-    > .as-seite,
     > .tas-seite,
     > div > .tas-seite
   )::before {
