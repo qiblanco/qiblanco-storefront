@@ -9,7 +9,9 @@ import {ANNA, BILD, STUDIEN, ZIEL} from './lp-gemeinsam.js';
  * Auswahl, Reihenfolge und Gestaltung. Die erste Fassung (s07-r4) hatte 21 von
  * 38 Sätzen umformuliert und fiel durch die KI-Klang-Prüfung; deshalb hier kein
  * eigener Satz. Wer einen Satz ändert, prüft ihn mit
- * menschlichkeit/bin/pruefen --ki-klang --richter.
+ * menschlichkeit/bin/pruefen --ki-klang --richter. Auswahl nach Richter-Urteil 18.11.:
+ * die FAQ-Saetze, die er bei C als gedrechselt verwarf (Eso-Frage, Spueren-Frage,
+ * „nicht abschliessend geklaert“), sind durch C-Saetze aus Garantie und Zahlung ersetzt.
  * Aussortiert gegenüber C: Trust-Leiste, Zell-Schema, Scroll-Videos,
  * Video-Stimmen, Drei-Produkte-Preistabelle, Zahlungs-Logos. Die Stimmen kommen
  * aus der Google-Bewertungsleiste des Baukastens.
@@ -29,7 +31,7 @@ export const ESMOGSCHUTZ_SEKTIONEN = Object.freeze([
     kacheln: [
       {zahl: '1', titel: 'Das Handy', satz: 'Stunden am Tag direkt am Kopf, dazu ständig in der Hosentasche.'},
       {zahl: '2', titel: 'Der WLAN-Router', satz: 'Funkt rund um die Uhr, oft die ganze Nacht, und zwar genau dort, wo dein Körper eigentlich regenerieren soll.'},
-      {zahl: '3', titel: 'Das Homeoffice', satz: 'Laptop, Bildschirme, Docking-Station, Bluetooth-Kopfhörer. Acht Stunden im Feld, ohne es zu merken.'},
+      {zahl: '3', titel: 'Das Homeoffice', satz: 'Laptop, Bildschirme, Docking-Station, Bluetooth-Kopfhörer.'},
     ],
   },
   {
@@ -57,18 +59,18 @@ export const ESMOGSCHUTZ_SEKTIONEN = Object.freeze([
   {art: 'stimmen'},
   {
     art: 'faq',
-    titel: 'Kein Wunder, keine Panik. Physik und ein Labor, das misst.',
+    titel: 'Für Skeptiker',
     fragen: [
-      {f: 'Ich dachte, E-Smog-Schutz ist Eso.', a: 'Ging uns ähnlich. Deshalb reden wir über Grenzflächen-Wasser und Membranpotential, also über messbare Physik. Und wir zeigen die Labormessung unter EM-Last, statt sie zu behaupten.'},
-      {f: 'Ist E-Smog überhaupt ein echtes Problem?', a: 'Wir machen keine Panik: Wie stark alltägliche Felder wirken, ist wissenschaftlich nicht abschließend geklärt. Im Labor hielt die Zell-Barriere unter EM-Last mit kohärentem Wasser messbar besser stand.'},
-      {f: 'Warum spüre ich nichts?', a: 'Ein Puffer auf Zellebene ist kein Effekt, den man wie eine Kopfschmerztablette spürt. Ob eine Veränderung eintritt, hängt nicht davon ab, ob du sie wahrnimmst. Deshalb bindest du dein Urteil an den Zeitraum.'},
+      {f: 'Ist E-Smog überhaupt ein echtes Problem?', a: 'Im Labor hielt die Zell-Barriere unter EM-Last mit kohärentem Wasser messbar besser stand.'},
       {f: 'Und wenn es doch nichts bringt?', a: '20 Nächte risikofrei. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück, ohne Wenn und Aber.'},
+      {f: 'In Raten, wenn du willst', a: 'Über Klarna oder PayPal geht das in bequemen Monatsraten mit 0 % Finanzierung. Du entscheidest, wie du zahlst.'},
+      {f: 'Made in Germany', a: '100 % in Deutschland entwickelt und gefertigt, aus hochwertigsten Materialien. Inkl. Käuferschutz und kostenlosem Versand innerhalb Deutschlands.'},
     ],
   },
   {
     art: 'cta',
     titel: 'Gib deinem Körper 20 Nächte. Den Rest entscheidest du.',
-    text: 'Trage den QiOne® 2 Pro 20 Nächte lang durch deinen ganz normalen Alltag. Bist du danach nicht überzeugt, erstatten wir dir den vollen Kaufpreis. Ohne Wenn und Aber.',
+    text: 'Trage den QiOne® 2 Pro 20 Nächte lang durch deinen ganz normalen Alltag. Bist du danach nicht überzeugt, erstatten wir dir den vollen Kaufpreis.',
     cta: ZIEL.qione,
   },
   ANNA,
