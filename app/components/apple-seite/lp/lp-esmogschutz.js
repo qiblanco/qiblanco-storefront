@@ -13,6 +13,9 @@ import {ANNA, BILD, STUDIEN, ZIEL} from './lp-gemeinsam.js';
  * Richter-Urteil vom 18.11.: die Fragen, die er bei C als gedrechselt verwarf
  * (Eso, Spüren, „nicht abschließend geklärt“), sind durch C-Sätze aus Garantie
  * und Zahlung ersetzt.
+ * Die Einordnungen aus C (keine Panik, Grenzforschung, keine Heilaussage) bleiben
+ * wortgleich drin, auch wenn der Richter sie als gedrechselt einstuft: sie
+ * grenzen die Laboraussage ab (K3-Gegenprüfung 18.11.).
  * Aussortiert gegenüber C: Trust-Leiste, Zell-Schema, Scroll-Videos,
  * Video-Stimmen, Drei-Produkte-Preistabelle, Zahlungs-Logos. Die Stimmen kommen
  * aus der Google-Bewertungsleiste des Baukastens.
@@ -43,6 +46,7 @@ export const ESMOGSCHUTZ_SEKTIONEN = Object.freeze([
       'Fast jede Zellreaktion läuft an wasserumhüllten Grenzflächen ab. Die QiOne®-Technologie bringt genau dieses Wasser in eine kohärente, geordnete Struktur.',
       'Geordnetes Grenzflächen-Wasser stützt die Lipid-Doppelschicht der Membran. In vitro hielt die Barrierefunktion unter elektromagnetischer Belastung bis zu 10× besser stand (TEER-Messung).',
       'Eine stabile Membran hält ihr Membranpotential, die „Zellspannung“, leichter aufrecht. Das ist die messbare Grundlage.',
+      'Kohärentes Wasser ist Grenzforschung, keine etablierte Medizin. Die genannten Zellstudien sind in vitro (an Zellkulturen) durchgeführt. Sie erklären den Mechanismus, sie sind keine Heilaussage und kein Schutzversprechen gegen Strahlung.',
     ],
     quellen: [`${STUDIEN[1].titel}. ${STUDIEN[1].quelle}.`],
     bild: BILD.gitter,
@@ -62,7 +66,7 @@ export const ESMOGSCHUTZ_SEKTIONEN = Object.freeze([
     art: 'faq',
     titel: 'Für Skeptiker',
     fragen: [
-      {f: 'Ist E-Smog überhaupt ein echtes Problem?', a: 'Im Labor hielt die Zell-Barriere unter EM-Last mit kohärentem Wasser messbar besser stand.'},
+      {f: 'Ist E-Smog überhaupt ein echtes Problem?', a: 'Wir machen keine Panik: Wie stark alltägliche Felder wirken, ist wissenschaftlich nicht abschließend geklärt. Im Labor hielt die Zell-Barriere unter EM-Last mit kohärentem Wasser messbar besser stand.'},
       {f: 'Und wenn es doch nichts bringt?', a: '20 Nächte risikofrei. Bist du nicht überzeugt, bekommst du den vollen Kaufpreis zurück, ohne Wenn und Aber.'},
       {f: 'In Raten, wenn du willst', a: 'Über Klarna oder PayPal geht das in bequemen Monatsraten mit 0 % Finanzierung. Du entscheidest, wie du zahlst.'},
       {f: 'Made in Germany', a: '100 % in Deutschland entwickelt und gefertigt, aus hochwertigsten Materialien. Inkl. Käuferschutz und kostenlosem Versand innerhalb Deutschlands.'},
