@@ -163,3 +163,27 @@ test('menschen-alltag: jeder Satz steht ganz so im Textmodul von C, kein Satz do
   assert.deepEqual(satzListe('Eins. Im Labor von Prof. Dr. Peter C. Dartsch getestet. Vier!'), ['Eins.', 'Im Labor von Prof. Dr. Peter C. Dartsch getestet.', 'Vier!']);
   assert.equal(saetze('Eins. Zwei. Drei.', 2), 'Eins. Zwei.');
 });
+
+/* Porträt vitamine-mineralien (s07-r20, Option A): das Bild mit dem kaputten
+   Stil-Attribut steht in Fassung A als Block, 24 px darunter. Die Regel steht
+   nur im Kurs-Stil, und den lädt nur KursApple: Fassung C bleibt gleich. */
+test('Kurs: Porträt mit kaputtem float-Attribut steht als eigener Block (nur Fassung A)', async () => {
+  const {readFileSync} = await import('node:fs');
+  const css = readFileSync(new URL('../../../styles/lp-apple-kurs.css', import.meta.url), 'utf8');
+  const m = css.match(/\.as-kurs \.course-lesson-body img\[float\\:\]\s*\{([^}]*)\}/);
+  assert.ok(m, 'Regel für img[float\\:] fehlt in lp-apple-kurs.css');
+  assert.match(m[1], /display:\s*block;/);
+  assert.match(m[1], /margin:\s*0 0 var\(--as-s-3\);/);
+  assert.doesNotMatch(m[1], /float|@media/);
+  assert.doesNotMatch(css, /@media[^{]*\{[^@]*img\[float/, 'keine zweite Regel je Breite');
+  const kurs = readFileSync(new URL('./KursApple.jsx', import.meta.url), 'utf8');
+  assert.match(kurs, /lp-apple-kurs\.css\?url/);
+  const lektion = readFileSync(new URL('../../kurse/CourseLesson.jsx', import.meta.url), 'utf8');
+  assert.doesNotMatch(lektion, /lp-apple-kurs/, 'Fassung C darf den Kurs-Stil nicht laden');
+  // Video-Fassade im Kurs: heller Grund statt #000 (Kontrast-Proxy der Rubrik)
+  assert.match(css, /\.as-kurs \.YoutubeTimestamp\s*\{\s*background:\s*var\(--as-flaeche\);\s*\}/);
+  // Das Porträt behält in A seine Attribute, sonst greift die Regel nicht
+  const {scharfeLektionsbilder} = await import('./kurs-bilder.js');
+  const cdn = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
+  assert.match(scharfeLektionsbilder(`<img src="${cdn}Christian-Bauer-290x300_1_240x240.webp?v=1667505773" left="" float:="" margin-right:="">`), / float:=""/);
+});
