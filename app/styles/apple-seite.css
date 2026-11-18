@@ -500,6 +500,19 @@
   line-height: 1.3;
 }
 
+/* ---- Bewertungsleiste im einen Akzent -------------------------------------- */
+/* Die Karten der GoogleBewertungsleiste (.qb-gbl, seit #1507 vom 11.11.2026 an jeder
+   Bewertungsposition) bringen aus dem ReputonWidget den Knopf „weiterlesen“ in
+   Google-Blau #1565c0 mit. Auf jeder Apple-Seite war das die zweite gesättigte
+   Farbwelt neben dem Gold: Design-Rubrik harmonisch_farbe 75, Seite 95 statt 100
+   (26 Seiten des Deutsch-Shops, gemessen 18.11.2026, Grossjob
+   20261118-de-shop-apple-rest-z3-z20 s01). Gezogen auf die Gold-Tinte, wie es die
+   Produktseiten schon tun (produkt-apple.css). Kontrast auf der Karte #f3f6f9: 4,7:1.
+   Text, Sterne und Bewertungen bleiben unverändert. Rückweg: diesen Block löschen. */
+.as-seite .qb-gbl [class*='text-[#1565c0]'] {
+  color: var(--as-gold-tinte);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .as-faq-zeichen::before,
   .as-faq-zeichen::after {
