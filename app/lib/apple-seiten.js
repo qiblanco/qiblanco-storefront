@@ -83,7 +83,7 @@ export const APPLE_SEITEN = Object.freeze({
   'pages-podcasts-seite-5': {pfad: '/pages/podcasts/seite-5', schalter: 'APPLE_SEITE_PAGES_PODCASTS_SEITE_5', standard: 'on'},
   'quellen': {pfad: '/pages/quellen', schalter: 'APPLE_SEITE_QUELLEN', standard: 'on'},
   'so-funktioniert-der-qione': {pfad: '/pages/so-funktioniert-der-qione', schalter: 'APPLE_SEITE_SO_FUNKTIONIERT_DER_QIONE', standard: 'on'},
-  'so-wirkt-kohaerentes-wasser': {pfad: '/pages/so-wirkt-kohaerentes-wasser', schalter: 'APPLE_SEITE_SO_WIRKT_KOHAERENTES_WASSER', standard: 'off'},
+  'so-wirkt-kohaerentes-wasser': {pfad: '/pages/so-wirkt-kohaerentes-wasser', schalter: 'APPLE_SEITE_SO_WIRKT_KOHAERENTES_WASSER', standard: 'on'},
   'superhuman': {pfad: '/pages/superhuman', schalter: 'APPLE_SEITE_SUPERHUMAN', standard: 'on'},
   'tiefer-schlaf': {pfad: '/pages/tiefer-schlaf', schalter: 'APPLE_SEITE_TIEFER_SCHLAF', standard: 'on'},
   'vitamine-mineralien': {pfad: '/pages/vitamine-mineralien', schalter: 'APPLE_SEITE_VITAMINE_MINERALIEN', standard: 'on'},
