@@ -796,9 +796,9 @@ export async function legeKakaoSetZeile({
  */
 async function bfDealSetMenge({storefront, cart, wunsch, eigene, messung}) {
   // Der heutige Warenkorb (CartLineItem) schickt bei BF-Zeilen keine
-  // Packungen und markiert seine Packungs-Eingabe mit zaehlt: 'packungen'.
+  // Packungen und markiert seine Packungs-Eingabe mit einheit: 'packungen'.
   // Nur eine Eingabe ohne Marke (Browser mit altem Bündel) kostet die Abfrage.
-  if (wunsch?.zaehlt === 'packungen') return null;
+  if (wunsch?.einheit === 'packungen') return null;
   const art = kakaoSetArt(wunsch?.handle);
   const cartId = cart?.getCartId?.();
   if (!art || !cartId || !storefront?.query) return null;

@@ -178,7 +178,7 @@ function CartLineQuantity({line}) {
     set
       ? {
           lines: [{id: lineId, quantity}],
-          kakaoPackungen: {lineId, handle, packungen: neu, zaehlt: 'packungen'},
+          kakaoPackungen: {lineId, handle, packungen: neu, einheit: 'packungen'},
         }
       : {lines: [{id: lineId, quantity: neu}]};
   return (
