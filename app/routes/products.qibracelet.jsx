@@ -171,13 +171,19 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
               eigenerPreis={product?.selectedOrFirstAvailableVariant?.price}
             />
           ),
-          wissen: (
+          // Reihenfolge (Christian 16.11.2026, 09:50/09:52): erst „So sieht es an dir aus“,
+          // dann die Zellvideos, dann die Google-Bewertungen (hochgezogen), dann der Rest.
+          // Die drei ersten tragen seit Z20 (19.11.2026) den eigenen Messanker konfig-tragen,
+          // konfig-wissen umfasst wieder Nutzen und Wissen wie vor dem 17.11.
+          tragen: (
             <>
-              {/* Reihenfolge (Christian 16.11.2026, 09:50/09:52): erst „So sieht es an dir aus“,
-                  dann die Zellvideos, dann die Google-Bewertungen (hochgezogen), dann der Rest. */}
               <TrageBereich handle="qibracelet" />
               <ZellvideoBereich handle="qibracelet" />
               <BewertungenHoch />
+            </>
+          ),
+          wissen: (
+            <>
               <AlphaWissen
                 kapitel={ALPHA_DATEN.WISSEN.kapitel}
                 studien={ALPHA_DATEN.WISSEN.studien}
