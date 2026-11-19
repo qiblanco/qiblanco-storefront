@@ -23,6 +23,22 @@
   letter-spacing: -0.015em;
   line-height: 1.1;
 }
+
+/* LUFT UNTER DEM KOPF (Job 20261119-warenkorb-h1-luft-unter-kopf, Folge aus F-441).
+ * Der obere Abstand der Seite sitzt als INNENabstand an der Spalte, nicht als
+ * Rand an der H1. Grund: der 2rem-Rand der H1 (reset.css) fiel durch Spalte,
+ * .cart und .as-seite bis zum Leerblock `body > main::before` (app.css, F-441)
+ * durch und verschmolz mit dessen Rand; es galt nur der groessere. Seit F-441
+ * auch fuer .as-seite gilt, endet der Leerblock an der Kopfunterkante, und die
+ * Buchstaben standen 1,5-6,7 px darunter (Vorschau 19.11.2026). Ein Innenabstand
+ * verschmilzt nicht: die Spalte beginnt an der Kopfunterkante, die H1 32 px
+ * darunter. Ohne F-441 (Leerblock 0) steht die H1 pixelgleich wie vorher. */
+[data-apple-seite='cart'] .cart-page-inner {
+  padding-top: var(--as-s-4);
+}
+[data-apple-seite='cart'] .cart-page-inner > h1:first-child {
+  margin-top: 0;
+}
 @media (min-width: 750px) {
   [data-apple-seite='cart'] .cart h1 {
     font-size: var(--as-fs-7);
