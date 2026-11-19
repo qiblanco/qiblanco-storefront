@@ -465,6 +465,13 @@ body:has([data-apple-seite='live']) {
   overflow-wrap: break-word;
   hyphens: auto;
 }
+/* Silbentrennung nur im Fließtext; Datum, Titel und Knopf brechen an Wortgrenzen
+   (am Handy sonst „NO-VEMBER“, „Zusammenfas-sung“). */
+[data-apple-seite='live'] .lv .lva-kachel .lv-woche-wann,
+[data-apple-seite='live'] .lv .lva-kachel .lv-h3,
+[data-apple-seite='live'] .lv .lva-kachel .lv-aufklapp-knopf {
+  hyphens: manual;
+}
 [data-apple-seite='live'] .lv .lva-kachel .lv-h3 {
   font-size: var(--as-fs-3);
   line-height: 1.3;
