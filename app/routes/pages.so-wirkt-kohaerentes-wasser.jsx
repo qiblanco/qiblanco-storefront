@@ -5,6 +5,7 @@ import {mmLadeProdukte} from '~/components/campaign/mmProducts';
 import {appleSeiteFuerPfad, appleSeiteLaden} from '~/lib/apple-seiten';
 import {LpApple} from '~/components/apple-seite/lp/LpApple';
 import {MECHANISMUS_SEKTIONEN} from '~/components/apple-seite/lp/lp-mechanismus';
+import soWirktAppleStyles from '~/styles/so-wirkt-kohaerentes-wasser-apple.css?url';
 
 /**
  * Trust-Ketten-Hub „Mechanismus / Wie funktioniert es" — verlinkt von den
@@ -55,7 +56,15 @@ export async function loader({context}) {
 
 export default function SoWirktWasserRoute() {
   const {products, appleSeite} = useLoaderData();
-  if (appleSeite?.an) return <LpApple seite={appleSeite.seite} sektionen={MECHANISMUS_SEKTIONEN} />;
+  if (appleSeite?.an) {
+    // Eigenes CSS nur mit der Apple-Fassung (wie LpApple): C behält seinen Kopf unverändert.
+    return (
+      <>
+        <link rel="stylesheet" href={soWirktAppleStyles} />
+        <LpApple seite={appleSeite.seite} sektionen={MECHANISMUS_SEKTIONEN} />
+      </>
+    );
+  }
   return <MmSoWirktWasser products={products} />;
 }
 
