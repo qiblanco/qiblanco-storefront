@@ -71,7 +71,7 @@ export const APPLE_SEITEN = Object.freeze({
   // forschung bleibt versteckt: diese Zeile rendert keinen Link, test/forschung-seite.test.mjs
   // führt die Datei deshalb bei den eigenen Dateien.
   'forschung': {pfad: '/pages/forschung', schalter: 'APPLE_SEITE_FORSCHUNG', standard: 'on'},
-  'haelt-das-mein-leben-aus': {pfad: '/pages/haelt-das-mein-leben-aus', schalter: 'APPLE_SEITE_HAELT_DAS_MEIN_LEBEN_AUS', standard: 'on'},
+  'haelt-das-mein-leben-aus': {pfad: '/pages/haelt-das-mein-leben-aus', schalter: 'APPLE_SEITE_HAELT_DAS_MEIN_LEBEN_AUS', standard: 'off'},
   'kette-oder-armband': {pfad: '/pages/kette-oder-armband', schalter: 'APPLE_SEITE_KETTE_ODER_ARMBAND', standard: 'on'},
   'kohaerentes-wasser': {pfad: '/pages/kohaerentes-wasser', schalter: 'APPLE_SEITE_KOHAERENTES_WASSER', standard: 'on'},
   'menschen-alltag': {pfad: '/pages/menschen-alltag', schalter: 'APPLE_SEITE_MENSCHEN_ALLTAG', standard: 'on'},
@@ -83,7 +83,7 @@ export const APPLE_SEITEN = Object.freeze({
   'pages-podcasts-seite-5': {pfad: '/pages/podcasts/seite-5', schalter: 'APPLE_SEITE_PAGES_PODCASTS_SEITE_5', standard: 'on'},
   'quellen': {pfad: '/pages/quellen', schalter: 'APPLE_SEITE_QUELLEN', standard: 'on'},
   'so-funktioniert-der-qione': {pfad: '/pages/so-funktioniert-der-qione', schalter: 'APPLE_SEITE_SO_FUNKTIONIERT_DER_QIONE', standard: 'on'},
-  'so-wirkt-kohaerentes-wasser': {pfad: '/pages/so-wirkt-kohaerentes-wasser', schalter: 'APPLE_SEITE_SO_WIRKT_KOHAERENTES_WASSER', standard: 'on'},
+  'so-wirkt-kohaerentes-wasser': {pfad: '/pages/so-wirkt-kohaerentes-wasser', schalter: 'APPLE_SEITE_SO_WIRKT_KOHAERENTES_WASSER', standard: 'off'},
   'superhuman': {pfad: '/pages/superhuman', schalter: 'APPLE_SEITE_SUPERHUMAN', standard: 'on'},
   'tiefer-schlaf': {pfad: '/pages/tiefer-schlaf', schalter: 'APPLE_SEITE_TIEFER_SCHLAF', standard: 'on'},
   'vitamine-mineralien': {pfad: '/pages/vitamine-mineralien', schalter: 'APPLE_SEITE_VITAMINE_MINERALIEN', standard: 'on'},
