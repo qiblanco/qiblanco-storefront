@@ -43,16 +43,3 @@
   display: block;
   margin-inline: auto;
 }
-
-/*
- * GITTERCHIP® 1680 (Master seit #1132, eine größere Quelle gibt es nicht).
- * Nur auf Schirmen mit doppelter Dichte begrenzt: dort trägt die Quelle höchstens
- * 840 px (gemessen 19.11.2026 auf desktop-1024 2x: 960 px Fläche = unscharf).
- * Bei einfacher Dichte ist das Bild bis 1200 px scharf und bleibt, wie es ist.
- */
-@media (min-resolution: 1.5dppx), (-webkit-min-device-pixel-ratio: 1.5) {
-  .as-seite img.as-bild[width='1680'] {
-    max-width: 840px;
-    margin-inline: auto;
-  }
-}
