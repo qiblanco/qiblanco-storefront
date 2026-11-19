@@ -166,7 +166,11 @@ function CartLineQuantity({line}) {
       </div>
     );
   }
-  const set = kakaoSetArt(handle);
+  // BF-Deal-Set (Merkmal _bf_deal): der Stepper zählt SETS, damit jedes
+  // weitere Set den Pre-Sale-Preis behält (Notbahn 20261119, ab 2 Bundles
+  // fiel der BF-Code weg). Die Normalform lässt diese Zeilen unberührt.
+  const bfDeal = (line.attributes || []).some((a) => a?.key === '_bf_deal' && a?.value);
+  const set = bfDeal ? null : kakaoSetArt(handle);
   const menge = set ? set.packungen * quantity : quantity;
   const prevQuantity = Number(Math.max(0, menge - 1).toFixed(0));
   const nextQuantity = Number((menge + 1).toFixed(0));
@@ -174,7 +178,7 @@ function CartLineQuantity({line}) {
     set
       ? {
           lines: [{id: lineId, quantity}],
-          kakaoPackungen: {lineId, handle, packungen: neu},
+          kakaoPackungen: {lineId, handle, packungen: neu, zaehlt: 'packungen'},
         }
       : {lines: [{id: lineId, quantity: neu}]};
   return (

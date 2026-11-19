@@ -353,7 +353,7 @@ function stepper(shop, handle, packungen) {
   assert.ok(z, `keine Zeile ${handle}`);
   return {
     lines: [{id: z.id, quantity: z.quantity}],
-    kakaoPackungen: {lineId: z.id, handle, packungen},
+    kakaoPackungen: {lineId: z.id, handle, packungen, zaehlt: 'packungen'},
   };
 }
 
