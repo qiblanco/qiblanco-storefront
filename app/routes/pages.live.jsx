@@ -34,6 +34,8 @@ import {
 } from '~/lib/coming-home-live.server';
 import liveStyles from '~/styles/live.css?url';
 import serviceAppleStyles from '~/styles/service-apple.css?url';
+import elinaBewegungStyles from '~/styles/elina-bewegung.css?url';
+import {useElinaBewegung} from '~/components/reusables/useElinaBewegung';
 import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {AppleSeite} from '~/components/apple-seite/AppleSeite';
 import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
@@ -330,7 +332,10 @@ const EINWILLIGUNG_TEXT =
 const KOPF_PRIVAT = {'Cache-Control': 'private, no-store'};
 
 export function links() {
-  return [{rel: 'stylesheet', href: liveStyles}];
+  return [
+    {rel: 'stylesheet', href: liveStyles},
+    {rel: 'stylesheet', href: elinaBewegungStyles},
+  ];
 }
 
 export const meta = ({data: d}) => {
@@ -606,6 +611,7 @@ function LiveApple({d}) {
             gesamt={d.rueckblickeGesamt}
             ladeFehler={d.ladeFehler}
             messfixtur={d.messfixtur}
+            kacheln
           />
         </div>
         <AppleAnna />
@@ -860,11 +866,32 @@ function BildOben() {
  * (ALLE_EINGEKLAPPT_AN): Datum, Titel, Teaser, der volle Text in <details>.
  * Er steht trotzdem im HTML (für Leser ohne Klick, Suchmaschinen und
  * KI-Abruf). Mit false steht die neueste wie bis #959 offen da.
+ *
+ * KACHELN (Elina, EL-20261119-977e88f9, GO in EL-20261119-8be4930f): in der
+ * Apple-Fassung (kacheln=true) stehen die Wochen als Kacheln im Look der
+ * Eckdaten-Kacheln (hellgrauer Grund, ein Radius), Handy 2 Spalten, ab 750 px
+ * 3 Spalten, gleich hohe Kacheln je Reihe; jede Kachel blendet beim Scrollen
+ * weich ein (Elinas Baukasten data-eb). Texte unverändert. Stil:
+ * styles/service-apple.css Block "Worüber wir gesprochen haben als Kacheln".
+ * Rückweg: das Attribut kacheln in LiveApple entfernen.
  */
-function Zusammenfassungen({rueckblicke, gesamt, ladeFehler, messfixtur}) {
+const KEIN_REF = {current: null};
+function Zusammenfassungen({
+  rueckblicke,
+  gesamt,
+  ladeFehler,
+  messfixtur,
+  kacheln = false,
+}) {
+  const wurzel = useRef(null);
+  useElinaBewegung(kacheln ? wurzel : KEIN_REF, [
+    kacheln,
+    rueckblicke.length,
+  ]);
   return (
     <section
-      className="lv-abschnitt"
+      ref={wurzel}
+      className={kacheln ? 'lv-abschnitt lva-rueckblick' : 'lv-abschnitt'}
       data-ch-live="rueckblick"
       data-messfixtur={messfixtur || undefined}
       data-ch-live-anzahl={rueckblicke.length}
@@ -878,12 +905,17 @@ function Zusammenfassungen({rueckblicke, gesamt, ladeFehler, messfixtur}) {
             {ladeFehler ? WOCHEN_LADEFEHLER : WOCHEN_LEER}
           </p>
         ) : (
-          <ol className="lv-woche-liste">
+          <ol
+            className={
+              kacheln ? 'lv-woche-liste lva-kacheln' : 'lv-woche-liste'
+            }
+          >
             {rueckblicke.map((r, i) => (
               <li
-                className="lv-woche"
+                className={kacheln ? 'lv-woche lva-kachel' : 'lv-woche'}
                 key={r.handle || r.datum}
                 data-ch-live-eintrag={r.datum}
+                data-eb={kacheln ? '' : undefined}
               >
                 <p className="lv-woche-wann">
                   <time dateTime={r.startUtc}>{r.datumLang}</time>
