@@ -465,10 +465,10 @@ body:has([data-apple-seite='live']) {
   overflow-wrap: break-word;
   hyphens: auto;
 }
-/* Silbentrennung nur im Fließtext; Datum, Titel und Knopf brechen an Wortgrenzen
-   (am Handy sonst „NO-VEMBER“, „Zusammenfas-sung“). */
+/* Datum und Knopf brechen an Wortgrenzen (am Handy sonst „NO-VEMBER“,
+   „Zusammenfas-sung“). Titel und Fließtext trennen mit Strich; ohne Trennung
+   brach der Titel am Handy mitten im Wort ohne Strich („Schmerzfelde r“). */
 [data-apple-seite='live'] .lv .lva-kachel .lv-woche-wann,
-[data-apple-seite='live'] .lv .lva-kachel .lv-h3,
 [data-apple-seite='live'] .lv .lva-kachel .lv-aufklapp-knopf {
   hyphens: manual;
 }
