@@ -792,7 +792,7 @@ function TerminKachel({naechster}) {
           <li className="lva-pille">kostenlos</li>
         </ul>
         <a
-          className="lva-kachel-knopf"
+          className="knopf-gold lva-kachel-knopf"
           href="#anmelden"
           data-as-cta="primary"
           onClick={zurAnmeldung}
