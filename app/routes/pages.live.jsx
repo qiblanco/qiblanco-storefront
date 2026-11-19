@@ -717,9 +717,29 @@ function zurAnmeldung(e) {
   }
 }
 
+/**
+ * Elina 19.11.2026: der Text unter dem Thema ist Inhalt, nie Wiederholung von
+ * Datum, Zoom oder Titel. Ein Teaser, der Titel oder Datum wiederholt (alte
+ * Vorschau-Fassung „Am Sonntag, …, treffen wir uns wieder auf Zoom. Unser
+ * Thema: …“), bleibt in der Kachel weg.
+ */
+function teaserOhneWiederholung(naechster) {
+  const t = (naechster.teaser || '').trim();
+  if (!t) return '';
+  const klein = t.toLowerCase();
+  const titel = (naechster.titel || '').trim().toLowerCase();
+  if (titel && titel !== 'thema folgt' && klein.includes(titel)) return '';
+  if (naechster.datumKurz && klein.includes(naechster.datumKurz.toLowerCase())) {
+    return '';
+  }
+  if (/treffen wir uns wieder auf zoom/.test(klein)) return '';
+  return t;
+}
+
 /** Nächster Termin als goldene Kachel (Elina 19.11.2026). */
 function TerminKachel({naechster}) {
   const blatt = kalenderBlatt(naechster.datum);
+  const teaser = teaserOhneWiederholung(naechster);
   return (
     <article
       className="lva-kachel"
@@ -763,8 +783,8 @@ function TerminKachel({naechster}) {
             datum={naechster.datum}
             klasse="lva-kachel-text"
           />
-        ) : naechster.teaser ? (
-          <p className="lva-kachel-text">{naechster.teaser}</p>
+        ) : teaser ? (
+          <p className="lva-kachel-text">{teaser}</p>
         ) : null}
         <ul className="lva-pillen" aria-label="Eckdaten">
           <li className="lva-pille">90 Minuten</li>
