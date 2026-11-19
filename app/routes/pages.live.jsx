@@ -39,8 +39,6 @@ import {useElinaBewegung} from '~/components/reusables/useElinaBewegung';
 import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {AppleSeite} from '~/components/apple-seite/AppleSeite';
 import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
-import {useElinaBewegung} from '~/components/reusables/useElinaBewegung';
-import elinaBewegungStyles from '~/styles/elina-bewegung.css?url';
 import terminKachelStyles from '~/styles/live-termin-kachel.css?url';
 
 /**
@@ -819,7 +817,6 @@ function TerminApple({naechster, weitere, messfixtur}) {
     >
       {kachel ? (
         <div className="lv-innen lva-kachel-rahmen">
-          <link rel="stylesheet" href={elinaBewegungStyles} />
           <link rel="stylesheet" href={terminKachelStyles} />
           <TerminKachel naechster={naechster} />
         </div>
