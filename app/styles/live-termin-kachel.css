@@ -8,7 +8,7 @@
 .lva-kachel-rahmen + .lv-innen-schmal:empty {
   display: none;
 }
-.lva-kachel {
+.lva-terminkachel {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   overflow: hidden;
@@ -28,7 +28,7 @@
   background: linear-gradient(135deg, #f6cc86 0%, #f2bf72 50%, #e7ad5c 100%);
   color: #1d1d1f;
 }
-.lva-kachel .lva-kachel-h2 {
+.lva-terminkachel .lva-kachel-h2 {
   margin: 0;
   font-size: var(--as-fs-5);
   font-weight: 600;
@@ -37,7 +37,7 @@
   color: #1d1d1f;
   text-wrap: balance;
 }
-.lva-kachel .lva-kachel-unter {
+.lva-terminkachel .lva-kachel-unter {
   margin: 0;
   font-size: var(--as-fs-3);
   line-height: 1.4;
@@ -50,7 +50,7 @@
   padding: 28px 24px 32px;
   min-width: 0;
 }
-.lva-kachel .lva-kachel-live {
+.lva-terminkachel .lva-kachel-live {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -105,7 +105,7 @@
   line-height: 1.1;
   color: #1d1d1f;
 }
-.lva-kachel .lva-kachel-zeit {
+.lva-terminkachel .lva-kachel-zeit {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -123,7 +123,7 @@
   line-height: 1.4;
   color: #6e6e73;
 }
-.lva-kachel .lva-kachel-thema {
+.lva-terminkachel .lva-kachel-thema {
   margin: 24px 0 0;
   font-size: var(--as-fs-5);
   font-weight: 700;
@@ -131,7 +131,7 @@
   color: #1d1d1f;
   text-wrap: balance;
 }
-.lva-kachel .lva-kachel-text {
+.lva-terminkachel .lva-kachel-text {
   margin: 12px 0 0;
   font-size: var(--as-fs-3);
   line-height: 1.5;
@@ -153,7 +153,7 @@
   line-height: 1.4;
   color: #424245;
 }
-.lva-kachel .lva-kachel-knopf {
+.lva-terminkachel .lva-kachel-knopf {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,42 +169,42 @@
   text-decoration: none;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
-.lva-kachel .lva-kachel-knopf:hover {
+.lva-terminkachel .lva-kachel-knopf:hover {
   background: #e7ad5c;
   color: #1d1d1f;
 }
-.lva-kachel .lva-kachel-knopf:active {
+.lva-terminkachel .lva-kachel-knopf:active {
   transform: scale(0.98);
 }
-.lva-kachel .lva-kachel-knopf:focus-visible {
+.lva-terminkachel .lva-kachel-knopf:focus-visible {
   outline: 2px solid #1d1d1f;
   outline-offset: 3px;
 }
 @media (min-width: 750px) {
-  .lva-kachel {
+  .lva-terminkachel {
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
   }
   .lva-kachel-gold {
     padding: 48px 40px;
   }
-  .lva-kachel .lva-kachel-h2 {
+  .lva-terminkachel .lva-kachel-h2 {
     font-size: var(--as-fs-7);
   }
   .lva-kachel-inhalt {
     padding: 48px 48px 48px 44px;
   }
-  .lva-kachel .lva-kachel-thema {
+  .lva-terminkachel .lva-kachel-thema {
     font-size: var(--as-fs-6);
   }
-  .lva-kachel .lva-kachel-knopf {
+  .lva-terminkachel .lva-kachel-knopf {
     align-self: flex-start;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .lva-kachel .lva-kachel-knopf {
+  .lva-terminkachel .lva-kachel-knopf {
     transition: none;
   }
-  .lva-kachel .lva-kachel-knopf:active {
+  .lva-terminkachel .lva-kachel-knopf:active {
     transform: none;
   }
 }

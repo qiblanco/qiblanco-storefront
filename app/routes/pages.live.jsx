@@ -741,7 +741,7 @@ function TerminKachel({naechster}) {
   const teaser = teaserOhneWiederholung(naechster);
   return (
     <article
-      className="lva-kachel"
+      className="lva-terminkachel"
       data-eb=""
       data-ch-live-termin={naechster.datum}
       data-ch-live-quelle={naechster.quelle}
