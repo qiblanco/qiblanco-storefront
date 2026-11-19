@@ -294,21 +294,35 @@
 
 /* FEINSCHLIFF Elina EL-20261119-d6f93d00 (19.11.2026, GO "darf direkt live"), DE 1:1 wie US (qi-blanco.com).
  * Nur .bf-deal-seite, die normalen Produktseiten sehen diese Datei nie. Rueckweg: diesen Block entfernen.
- * 1 Abstaende groesser: Sections 80/112 px, Titel -> Inhalt 32/48 px, Kachel-Innenabstand 28/32 px.
- * 4 alle Section-Titel mittig (Weltrekord: Etikett + Titel als Kopf ueber Video und Text).
+ * 1 Abstaende groesser: Sections 80 px Handy / 96 px ab 960 px (vorher 64), Titel -> Inhalt 32/48 px,
+ *   Kachel-Innenabstand 28/32 px. Drei Stufen im 8er-Takt (Design-Rubrik "max. 3 Stufen").
+ * 4 alle Section-Titel mittig, auch Konfigurator-Schritte, Summe und Schluss-Banner (eine Regel je Seite);
+ *   Weltrekord: Etikett + Titel als Kopf ueber Video und Text.
  * 5 Bewertungen: Titel mittig (Namen und Texte sind hier schon hell).
- * 10 Instagram-Titel "Wertvolle Kundenerfahrungen" in Groesse und Stellung der anderen Section-Titel. */
+ * 10 Instagram-Titel "Wertvolle Kundenerfahrungen" im H2-Stil der Seite (28/600). */
 .bf-deal-seite .av-slot,
 .bf-deal-seite .tas-box,
-.bf-deal-seite .bfg {
+.bf-deal-seite .taw-abschnitt {
   margin-top: 80px;
 }
-.bf-deal-seite .taw-abschnitt {
-  margin-top: 96px;
+.bf-deal-seite .bfg {
+  margin-top: 80px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
+.bf-deal-seite .bfsb {
+  margin-top: 0;
+  margin-bottom: 80px;
+}
+.bf-deal-seite .taf {
+  padding-top: 0;
+}
+.bf-deal-seite h2,
 .bf-deal-seite .tas-box-titel,
 .bf-deal-seite .taw-kopf,
 .bf-deal-seite .taw-titel,
+.bf-deal-seite .tas-schritt-titel,
+.bf-deal-seite .tas-summe-titel,
 .bf-deal-seite .bfg__titel,
 .bf-deal-seite .qb-gbl__titel,
 .bf-deal-seite .qb-igt__kopf,
@@ -317,6 +331,13 @@
 .bf-deal-seite .bfkv__titel,
 .bf-deal-seite .bkv__titel {
   text-align: center !important;
+}
+.bf-deal-seite .bfsb__text {
+  align-items: center;
+  text-align: center;
+}
+.bf-deal-seite .bfsb__preise {
+  justify-content: center;
 }
 .bf-deal-seite .taw-kopf .taw-etikett {
   margin-left: auto;
@@ -328,13 +349,11 @@
 .bf-deal-seite .av-slot > .tas-box-titel,
 .bf-deal-seite .tas-box > .tas-box-titel,
 .bf-deal-seite .avq-nutzen > .tas-box-titel,
-.bf-deal-seite .taf h2 {
+.bf-deal-seite .taf h2,
+.bf-deal-seite .qb-igt__kopf {
   margin-bottom: 32px;
 }
 .bf-deal-seite .bfg__titel {
-  margin-bottom: 24px;
-}
-.bf-deal-seite .qb-igt__kopf {
   margin-bottom: 32px;
 }
 .bf-deal-seite .qb-igt__titel {
@@ -390,24 +409,20 @@
 @media (min-width: 960px) {
   .bf-deal-seite .av-slot,
   .bf-deal-seite .tas-box,
+  .bf-deal-seite .taw-abschnitt,
   .bf-deal-seite .bfg {
-    margin-top: 112px;
+    margin-top: 96px;
   }
-  .bf-deal-seite .taw-abschnitt {
-    margin-top: 112px;
+  .bf-deal-seite .bfsb {
+    margin-bottom: 96px;
   }
   .bf-deal-seite .av-slot > .tas-box-titel,
   .bf-deal-seite .tas-box > .tas-box-titel,
   .bf-deal-seite .avq-nutzen > .tas-box-titel,
   .bf-deal-seite .taf h2,
-  .bf-deal-seite .qb-igt__kopf {
-    margin-bottom: 48px;
-  }
+  .bf-deal-seite .qb-igt__kopf,
   .bf-deal-seite .bfg__titel {
-    margin-bottom: 40px;
-  }
-  .bf-deal-seite .qb-igt__titel {
-    font-size: 34px;
+    margin-bottom: 48px;
   }
   .bf-deal-seite .av-kachel,
   .bf-deal-seite .avq-spalte {
