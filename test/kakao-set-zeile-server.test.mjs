@@ -353,7 +353,7 @@ function stepper(shop, handle, packungen) {
   assert.ok(z, `keine Zeile ${handle}`);
   return {
     lines: [{id: z.id, quantity: z.quantity}],
-    kakaoPackungen: {lineId: z.id, handle, packungen, einheit: 'packungen'},
+    kakaoPackungen: {lineId: z.id, handle, packungen},
   };
 }
 
@@ -432,11 +432,13 @@ test('KLASSISCH: In den Warenkorb 3x Awake = 2 Mutationen, Nachlesen und Variant
   assert.deepEqual(shop.stand(), ['bundle-3x-awake x1 = 15960 EUR']);
 });
 
-test('KLASSISCH: Stepper 3er-Set -> 4 geht über die Einzelpackungen (2 Mutationen, 3 Abfragen)', async () => {
+// Seit Notbahn 20261119 liest der Stepper einer Set-Zeile zuerst die Zeile
+// (erstes Q:zeilen): ist sie ein BF-Deal-Set, zählt der Klick ein ganzes Set.
+test('KLASSISCH: Stepper 3er-Set -> 4 geht über die Einzelpackungen (2 Mutationen, 4 Abfragen)', async () => {
   const shop = fakeShop({land: 'DE'});
   shop.lege([['bundle-3x-awake', 1]]);
   await aktion(shop, {laden: 'qiblanco', art: 'LinesUpdate', inputs: stepper(shop, 'bundle-3x-awake', 4)});
-  assert.deepEqual(shop.log, ['Q:variante', 'M:update', 'Q:zeilen', 'Q:variante', 'M:update']);
+  assert.deepEqual(shop.log, ['Q:zeilen', 'Q:variante', 'M:update', 'Q:zeilen', 'Q:variante', 'M:update']);
   assert.deepEqual(shop.stand(), ['bundle-4x-awake x1 = 21300 EUR']);
 });
 
@@ -485,12 +487,12 @@ test('NEU: Stepper je Zusammensetzung 3 -> 4..7 und 8 (DE, CH, US): gleicher War
   }
 });
 
-test('NEU: Stepper 4 -> 3 (unter dem Festbetrag): Umweg bleibt, aber ohne Nachlesen', async () => {
+test('NEU: Stepper 4 -> 3 (unter dem Festbetrag): Umweg bleibt, nur die BF-Prüfung liest (Notbahn 20261119)', async () => {
   const l = await beide({vorher: [['bundle-4x-awake', 1]], art: 'LinesUpdate', eingabe: (s) => stepper(s, 'bundle-4x-awake', 3)});
   assert.deepEqual(l.kakao.stand, l.qiblanco.stand);
   assert.deepEqual(l.kakao.stand, ['bundle-3x-awake x1 = 15960 EUR']);
   assert.deepEqual(nur(l.kakao.log, 'M:'), ['M:update', 'M:update']);
-  assert.deepEqual(nur(l.kakao.log, 'Q:'), ['Q:varianten']);
+  assert.deepEqual(nur(l.kakao.log, 'Q:'), ['Q:varianten', 'Q:zeilen']);
 });
 
 test('NEU: In den Warenkorb 3x Awake: 2 Mutationen ohne Abfrage dazwischen', async () => {

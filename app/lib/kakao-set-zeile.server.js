@@ -795,10 +795,9 @@ export async function legeKakaoSetZeile({
  * Lesefehler heißt null (dann der bisherige Weg).
  */
 async function bfDealSetMenge({storefront, cart, wunsch, eigene, messung}) {
-  // Der heutige Warenkorb (CartLineItem) schickt bei BF-Zeilen keine
-  // Packungen und markiert seine Packungs-Eingabe mit einheit: 'packungen'.
-  // Nur eine Eingabe ohne Marke (Browser mit altem Bündel) kostet die Abfrage.
-  if (wunsch?.einheit === 'packungen') return null;
+  // Der Warenkorb (CartLineItem) zählt Packungen und kennt das BF-Merkmal
+  // nicht; darum liest der Server die Zeile. Kosten: eine Abfrage (gemessen
+  // 0,10 bis 0,15 s) je Stepper-Klick auf einer Set-Zeile, nur dort.
   const art = kakaoSetArt(wunsch?.handle);
   const cartId = cart?.getCartId?.();
   if (!art || !cartId || !storefront?.query) return null;
@@ -832,9 +831,9 @@ export async function kakaoPackungenEingabe({storefront, inputs, cart, messung})
   if (!wunsch || typeof wunsch !== 'object' || !storefront) return zeilen;
   // Zeilenmenge: das Formular schickt die Zeile mit ihrer aktuellen Menge mit.
   const eigene = zeilen.find((z) => z.id === wunsch.lineId);
-  // BF-Deal-Set: der Stepper zählt Sets, nie Packungen (Notbahn 20261119).
-  // Ein älterer Browser schickt noch Packungen; daraus wird die Set-Menge in
-  // Richtung des Klicks, die Zeile bleibt dasselbe Set mit dem BF-Code.
+  // BF-Deal-Set: ein Stepper-Klick ist ein ganzes Set (Notbahn 20261119).
+  // Der Browser schickt Packungen; daraus wird die Set-Menge in Richtung des
+  // Klicks, die Zeile bleibt dasselbe Set mit dem BF-Code.
   const bfSets = await bfDealSetMenge({storefront, cart, wunsch, eigene, messung});
   if (bfSets) {
     return [
