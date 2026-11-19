@@ -1054,7 +1054,7 @@ function Zusammenfassungen({
           >
             {rueckblicke.map((r, i) => (
               <li
-                className={kacheln ? 'lv-woche lva-kachel' : 'lv-woche'}
+                className={kacheln ? 'lv-woche lva-wochenkachel' : 'lv-woche'}
                 key={r.handle || r.datum}
                 data-ch-live-eintrag={r.datum}
                 data-eb={kacheln ? '' : undefined}
