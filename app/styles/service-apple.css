@@ -421,3 +421,104 @@ body:has([data-apple-seite='live']) {
   display: inline;
   margin-top: 0;
 }
+
+/* Abstand vor der Anmeldung (Elina, EL-20261119-977e88f9; GO EL-20261119-8be4930f).
+   Nach der Sprechstunden-Zeile klebte der dunkle Anmeldebereich direkt an
+   (gemessen 0 px). Jetzt derselbe Abstand wie im dunklen Bereich über „Melde
+   dich an, der Link kommt per Mail“: das Polster von .lv-abschnitt, am Handy
+   --as-s-8 (64 px), ab 750 px --as-s-12 (96 px). .as-seite voran, sonst gewinnt
+   .as-sektion mit Polster unten 0. */
+.as-seite .lva-worum {
+  padding-bottom: var(--as-s-8);
+}
+@media (min-width: 750px) {
+  .as-seite .lva-worum {
+    padding-bottom: var(--as-s-12);
+  }
+}
+
+/* „Worüber wir gesprochen haben“ als Kacheln (Elina, EL-20261119-977e88f9).
+   Mobile first: am Handy 2 Spalten, ab 750 px immer 3. Look der Eckdaten-
+   Kacheln (.as-kachel: --as-flaeche, --as-radius). Gleich hohe Kacheln je Reihe
+   (Grid streckt), der Knopf „Zusammenfassung lesen“ sitzt unten bündig. Eine
+   aufgeklappte Kachel nimmt die ganze Reihe ein, damit der lange Text lesbar
+   bleibt. Texte unverändert; nur Raster und Schriftgröße in der Kachel.
+   Einblenden: data-eb je Kachel (elina-bewegung.css/.js), je Reihe leicht
+   versetzt über --eb-i. Rückweg: Attribut kacheln in LiveApple entfernen. */
+[data-apple-seite='live'] .lv .lva-rueckblick .lv-innen-schmal {
+  max-width: var(--as-breite);
+}
+[data-apple-seite='live'] .lv .lva-kacheln {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--as-s-2);
+  align-items: stretch;
+}
+[data-apple-seite='live'] .lv .lva-kachel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--as-s-2);
+  border-top: 0;
+  background: var(--as-flaeche);
+  border-radius: var(--as-radius);
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+/* Silbentrennung nur im Fließtext; Datum, Titel und Knopf brechen an Wortgrenzen
+   (am Handy sonst „NO-VEMBER“, „Zusammenfas-sung“). */
+[data-apple-seite='live'] .lv .lva-kachel .lv-woche-wann,
+[data-apple-seite='live'] .lv .lva-kachel .lv-h3,
+[data-apple-seite='live'] .lv .lva-kachel .lv-aufklapp-knopf {
+  hyphens: manual;
+}
+[data-apple-seite='live'] .lv .lva-kachel .lv-h3 {
+  font-size: var(--as-fs-3);
+  line-height: 1.3;
+  margin: 0 0 var(--as-s-1);
+}
+[data-apple-seite='live'] .lv .lva-kachel .lv-woche-teaser {
+  font-size: var(--as-fs-2);
+  line-height: 1.45;
+  margin: 0 0 var(--as-s-2);
+}
+[data-apple-seite='live'] .lv .lva-kachel .lv-aufklapp {
+  margin-top: auto;
+}
+[data-apple-seite='live'] .lv .lva-kachel .lv-aufklapp-knopf {
+  font-size: var(--as-fs-2);
+  min-height: var(--as-tippziel, 44px);
+}
+[data-apple-seite='live'] .lv .lva-kachel:has(> .lv-aufklapp[open]) {
+  grid-column: 1 / -1;
+}
+[data-apple-seite='live'] .lv .lva-kachel:nth-child(2n) {
+  --eb-i: 1;
+}
+@media (min-width: 750px) {
+  [data-apple-seite='live'] .lv .lva-kacheln {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--as-s-3);
+  }
+  [data-apple-seite='live'] .lv .lva-kachel {
+    padding: var(--as-s-4) var(--as-s-3);
+  }
+  [data-apple-seite='live'] .lv .lva-kachel .lv-h3 {
+    font-size: var(--as-fs-4);
+  }
+  [data-apple-seite='live'] .lv .lva-kachel .lv-woche-teaser {
+    font-size: var(--as-fs-3);
+  }
+  [data-apple-seite='live'] .lv .lva-kachel .lv-aufklapp-knopf {
+    font-size: var(--as-fs-3);
+  }
+  [data-apple-seite='live'] .lv .lva-kachel:nth-child(n) {
+    --eb-i: 0;
+  }
+  [data-apple-seite='live'] .lv .lva-kachel:nth-child(3n + 2) {
+    --eb-i: 1;
+  }
+  [data-apple-seite='live'] .lv .lva-kachel:nth-child(3n) {
+    --eb-i: 2;
+  }
+}
