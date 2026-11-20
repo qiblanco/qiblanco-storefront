@@ -410,9 +410,11 @@ test('Festbetrag getroffen => kakaoPreisschutz sagt anker_festbetrag für JEDEN 
   assert.ok(faelle > 3000, `nur ${faelle} Fälle`);
 });
 
-test('ohne Festbetrag (AT, netto, 1 Cent daneben, unter 4) entscheidet weiter der Einzelweg', () => {
+test('ohne Festbetrag (netto, 1 Cent daneben, unter 4) entscheidet weiter der Einzelweg; AT/EUR trifft die EUR-Tabelle', () => {
   const set4 = [{packungen: 4, je: {awake: 4, create: 0}, cent: 21300}];
-  assert.equal(kakaoFestbetragGetroffen({land: 'AT', waehrung: 'EUR', brutto: true, sets: set4}), false);
+  // seit dem Nachtlauf 2026-11-20: jedes Land mit EUR-Warenkorb rechnet mit der EUR-Tabelle
+  assert.equal(kakaoFestbetragGetroffen({land: 'AT', waehrung: 'EUR', brutto: true, sets: set4}), true);
+  assert.equal(kakaoFestbetragGetroffen({land: 'AT', waehrung: 'EUR', brutto: false, sets: set4}), false);
   assert.equal(kakaoFestbetragGetroffen({land: 'DE', waehrung: 'EUR', brutto: false, sets: set4}), false);
   assert.equal(
     kakaoFestbetragGetroffen({land: 'DE', waehrung: 'EUR', brutto: true, sets: [{...set4[0], cent: 21301}]}),
@@ -525,10 +527,12 @@ test('NEU: Partnercode am Warenkorb: dieselben Beträge, Zuteilungen aus der Ant
 
 // --- NEU, wo der Preisschutz den Einzelweg braucht: alles wie bisher ---------
 
-test('NEU: AT (Euro, keine Festbetrag-Tabelle): kein Sprung, Einzelpackungen bleiben wie bisher', async () => {
+// Bis 2026-11-20 stand hier 'crystal-cacao-awake x4 = 21280 EUR' als Soll: genau
+// der Weg, auf dem der Partnercode in AT ab 4 Packungen nicht griff.
+test('NEU: AT (Euro, EUR-Tabelle wie DE): Set-Zeile zum Festbetrag, wie DE', async () => {
   const l = await beide({land: 'AT', vorher: [['bundle-3x-awake', 1]], art: 'LinesUpdate', eingabe: (s) => stepper(s, 'bundle-3x-awake', 4)});
   assert.deepEqual(l.kakao.stand, l.qiblanco.stand);
-  assert.deepEqual(l.kakao.stand, ['crystal-cacao-awake x4 = 21280 EUR']);
+  assert.deepEqual(l.kakao.stand, ['bundle-4x-awake x1 = 21300 EUR']);
 });
 
 test('NEU: Preismodus netto: kein Sprung, der Einzelweg entscheidet wie bisher', async () => {
