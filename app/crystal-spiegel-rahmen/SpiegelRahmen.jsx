@@ -92,7 +92,7 @@ export function SpiegelReiter() {
  * 150 px ist der Hausrückfall ohne JavaScript.
  */
 const KOPF_ABSTAND =
-  'max(0px, calc(var(--qb-kopf-hoehe, 150px) - var(--header-height, 64px) - 40px))';
+  'max(0px, calc(var(--qb-kopf-hoehe-oben, var(--qb-kopf-hoehe, 150px)) - var(--header-height, 64px) - 40px))';
 
 export function SpiegelRahmen({children}) {
   const {pathname} = useLocation();

@@ -134,13 +134,20 @@ main {
       Experimente nicht anfassen).
    3. Seiten ohne Hauskopf: die Film-Seite (main[data-film-seite], Qi-Alpha-LP)
       und die Kaufseite (main[data-qa-funnel]). Dort setzt niemand
-      --qb-kopf-hoehe, und der Rueckfallwert schoebe sie um 31 px. */
+      --qb-kopf-hoehe, und der Rueckfallwert schoebe sie um 31 px.
+
+   Seit 20.11.2026 an --qb-kopf-hoehe-oben (Ruhelage am Seitenanfang, ohne
+   den 10-px-Rand des gescrollten Kopfes): an --qb-kopf-hoehe wuchs der
+   Leerblock beim ersten Scroll um 10 px, und die ganze Seite sprang (Christian
+   Z4 "kein Springen"). Dasselbe gilt fuer jeden ABSTAND im Seitenfluss;
+   Sprungziele (scroll-margin-top) bleiben bei --qb-kopf-hoehe. Rueckweg:
+   wieder --qb-kopf-hoehe einsetzen. */
 body > main:not([data-film-seite], [data-qa-funnel])::before {
   content: '';
   display: block;
   margin-bottom: max(
     0px,
-    calc(var(--qb-kopf-hoehe, 135px) - var(--header-height) - 40px)
+    calc(var(--qb-kopf-hoehe-oben, var(--qb-kopf-hoehe, 135px)) - var(--header-height) - 40px)
   );
 }
 body > main:has(
