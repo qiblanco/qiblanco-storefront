@@ -13,7 +13,7 @@ import {
 import {ProductImage} from '~/components/ProductImage';
 import {CacaoProductForm} from '~/crystal-spiegel/components/CacaoProductForm';
 import {CacaoPriceDisplay} from '~/crystal-spiegel/components/CacaoPriceDisplay';
-import {ladeStaffelKasse} from '~/crystal-spiegel/lib/cacao-pricing';
+import {ladeStaffelKasse} from '~/lib/cacao-pricing';
 import {ProductImageList} from '~/components/ProductImageList';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {useState} from 'react';
