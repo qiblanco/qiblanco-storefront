@@ -567,6 +567,27 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
       'Forschungsverständnis in drei Stufen, bis zu Christians Freigabe unsichtbar und unverlinkt; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
     seit: '2026-09-24',
   },
+  // Neu 2026-11-20 (Job 20261120-de-bf-deals-aus-sitemap). `/pages/bf-deals` ist
+  // die Black-Friday-Deal-Übersicht; die eigene Route `pages.bf-deals.tsx`
+  // sticht den Katchall und setzt noindex selbst (meta + X-Robots-Tag), aber
+  // das Shopify-Seitenobjekt `bf-deals` stand in `sitemap/pages/1.xml`
+  // (probe_sitemap_noindex_naht Befund A, gemessen 2026-11-20). Elinas
+  // Dauerregel deal-seiten-regel (EL-20261111-fa47cfd9): Deal-Seiten noindex
+  // und NICHT in der Sitemap. Keine Übergangsstufe: gsc-seitenstand am
+  // 2026-11-20 „Nicht gefunden (404)“, die Seite steht nicht im Index.
+  // Klasse `landing`, weil die BF-Retargeting-Anzeigen mit utm_medium=paid
+  // hierher führen (ads-manager/kampagnen/bf26); der Landing-Bereich führt
+  // sie schon so, die Ads-Auswertung bleibt unverändert. WIRKUNG IM SHOP: nur
+  // der Sitemap-Eintrag fällt weg; Seite, Kaufweg und BF-Codes unberührt.
+  // Bei Rückbau der Route nach dem Sale diesen Eintrag mit entfernen.
+  {
+    handle: 'bf-deals',
+    ausSitemap: true,
+    klasse: 'landing',
+    grund:
+      'Black-Friday-Deal-Übersicht (Pre-Access, Mails, Anzeigen); Deal-Seite nach deal-seiten-regel: noindex, nicht in der Sitemap. noindex in der eigenen Route',
+    seit: '2026-11-20',
+  },
 ];
 
 /**
