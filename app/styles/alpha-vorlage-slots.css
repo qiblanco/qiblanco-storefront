@@ -230,6 +230,11 @@
  *   eu-gewaehrleistung    .eu-gwl__link:hover (Footer, Listenpunkt)
  *   the-alpha-produkt     .tas-summe-kasse .eu-gwl--pdp .eu-gwl__link:hover (auch Qi Alpha)
  *   ig-testimonials       .qb-igt__profil:hover .qb-igt__handle
+ * NEUER TEXTLINK AUF DER VORLAGE? Er gehoert in beide Listen unten, sonst
+ * nimmt ihm `a:hover { none }` beim Hover die Linie (so am 20.11.2026 mit
+ * .zvb-link "Zur Studie" aus zellvideo-bereich.css). Probe ueber JEDEN Link
+ * der Seite: claude-jobs/20261101-z4-apple-kaufseiten-links-hover-nur-farbe/
+ * probe_links_ruhig_ganze_seite.py.
  * Wurzel .tas-seite.av-seite: eine Klasse spezifischer als alpha-qione.css
  * (.av-seite .avq-link, .av-seite .av-vergleich-link a setzen dort none und
  * werden spaeter geladen); die Kasse-Selektoren schlagen the-alpha-produkt.
@@ -252,6 +257,8 @@
 .tas-seite.av-seite .avv-merkmal a:is(:hover, :focus-visible),
 .tas-seite.av-seite .avq-quellen a,
 .tas-seite.av-seite .avq-quellen a:is(:hover, :focus-visible),
+.tas-seite.av-seite .zvb-link,
+.tas-seite.av-seite .zvb-link:is(:hover, :focus-visible),
 .tas-seite.av-seite .eu-gwl .eu-gwl__link,
 .tas-seite.av-seite .eu-gwl .eu-gwl__link:is(:hover, :focus-visible),
 .tas-seite.av-seite .eu-gwl-dialog__fuss .eu-gwl__link,
@@ -267,7 +274,8 @@
 /* Farbwechsel: Schrift im Fließtext wird Gold-Tinte, goldene Links werden Tinte. */
 .tas-seite.av-seite .avs-titel-link:is(:hover, :focus-visible),
 .tas-seite.av-seite .avv-merkmal a:is(:hover, :focus-visible),
-.tas-seite.av-seite .avq-quellen a:is(:hover, :focus-visible) {
+.tas-seite.av-seite .avq-quellen a:is(:hover, :focus-visible),
+.tas-seite.av-seite .zvb-link:is(:hover, :focus-visible) {
   color: var(--av-gold-tinte);
 }
 .tas-seite.av-seite .avw-studien-link:is(:hover, :focus-visible),
