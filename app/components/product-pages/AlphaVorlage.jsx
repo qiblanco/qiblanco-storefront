@@ -16,6 +16,7 @@ import {Schlussleiste} from '~/components/reusables/Schlussleiste';
 import {LinkPerMail} from '~/components/reusables/LinkPerMail';
 import {WiederLieferbar, useWiederLieferbarAn} from '~/components/reusables/WiederLieferbar';
 import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
+import {useKopfHoeheOben} from '~/components/product-pages/kopfHoeheOben';
 import {PRODUCT_VARIANT_FRAGMENT} from '~/lib/qioneProductQuery';
 import {
   auswahlAngebot,
@@ -170,6 +171,8 @@ export function AlphaVorlage({
   // Optional (s13-r3): Kette liegt im Set bei, der Kunde wählt nur die Länge.
   const KETTE_IM_SET = daten.KETTE_IM_SET ?? null;
   const land = useMarktLand();
+  // Z4 „kein Springen“: Abstand der ersten Karte ohne den Scroll-Rand des Kopfes.
+  useKopfHoeheOben();
   const {open} = useAside();
   const handle = product.handle;
 
