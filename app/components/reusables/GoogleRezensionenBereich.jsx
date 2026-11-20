@@ -314,6 +314,26 @@ export function scrolleZuRezensionen(ziel) {
  * (Gate 12 meldete je Lauf ein anderes Format als pixel-regression).
  * Job 20261116-storefront-kopfhoehe-stale-leerblock-hero-flattert.
  */
+/**
+ * Rand, den der Kopf NUR im gescrollten Zustand oben traegt (Header.jsx:
+ * `.header` marginTop scrolled ? 10px : 0, mit Uebergang). Abgezogen ergibt
+ * das `--qb-kopf-hoehe-oben`: die Ruhelage des Kopfes am Seitenanfang, egal
+ * ob gerade gescrollt wird. Fuer ABSTAENDE im Seitenfluss ist nur dieser Wert
+ * richtig: haengt ein Abstand an `--qb-kopf-hoehe`, waechst er beim ersten
+ * Scroll um 10 px und die ganze Seite springt (gemessen 20.11.2026 auf
+ * /products/qihome-air: .av-seite 163 -> 173 px, Job
+ * zusagen-20261025-design-repair-qihome-air-animation-schwarz--vollzug-ovd218dcd7cc).
+ * Sprungziele (scroll-margin-top) bleiben bei `--qb-kopf-hoehe`.
+ * Waehrend des Uebergangs liefern Rand und Kastenhoehe denselben Frame, die
+ * Differenz bleibt konstant.
+ */
+function kopfScrollRand() {
+  const kopf = document.querySelector('.header-wrapper > .header');
+  if (!kopf) return 0;
+  const rand = parseFloat(window.getComputedStyle(kopf).marginTop);
+  return Number.isFinite(rand) && rand > 0 ? rand : 0;
+}
+
 export function useKopfHoeheVariable(anlass) {
   useEffect(() => {
     if (typeof document === 'undefined') return undefined;
@@ -324,6 +344,10 @@ export function useKopfHoeheVariable(anlass) {
       document.documentElement.style.setProperty(
         '--qb-kopf-hoehe',
         `${Math.round(h)}px`,
+      );
+      document.documentElement.style.setProperty(
+        '--qb-kopf-hoehe-oben',
+        `${Math.round(Math.max(0, h - kopfScrollRand()))}px`,
       );
     };
     const anfordern = () => {
