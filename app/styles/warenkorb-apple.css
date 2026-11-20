@@ -24,17 +24,46 @@
   line-height: 1.1;
 }
 
-/* LUFT UNTER DEM KOPF (Job 20261119-warenkorb-h1-luft-unter-kopf, Folge aus F-441).
- * Der obere Abstand der Seite sitzt als INNENabstand an der Spalte, nicht als
- * Rand an der H1. Grund: der 2rem-Rand der H1 (reset.css) fiel durch Spalte,
- * .cart und .as-seite bis zum Leerblock `body > main::before` (app.css, F-441)
- * durch und verschmolz mit dessen Rand; es galt nur der groessere. Seit F-441
- * auch fuer .as-seite gilt, endet der Leerblock an der Kopfunterkante, und die
- * Buchstaben standen 1,5-6,7 px darunter (Vorschau 19.11.2026). Ein Innenabstand
- * verschmilzt nicht: die Spalte beginnt an der Kopfunterkante, die H1 32 px
- * darunter. Ohne F-441 (Leerblock 0) steht die H1 pixelgleich wie vorher. */
+/* LUFT UNTER DEM KOPF (Job 20261119-warenkorb-h1-luft-unter-kopf; Sicht-Tor
+ * F-833, Job sicht-tor-repair-20261119T045433Z).
+ * Der feste Kopf ist hoeher als die Nennhoehe, die `main` freihaelt
+ * (--header-height + 40 px): gemessen 159 px (360), 174 px (390), 131 px
+ * (1440/2560). Die Apple-Fassung ist vom Leerblock `body > main::before`
+ * (app.css, F-441) ausgenommen, also lag die H1 bis 36 px UNTER dem Kopf
+ * (live 20.11.2026: -21 / -36 / +7 / +7 px).
+ *
+ * Der Warenkorb gleicht den Kopf deshalb SELBST aus, als Innenabstand der
+ * Spalte: Ueberhang des Kopfes plus 32 px Luft. Ein Innenabstand verschmilzt
+ * nicht mit Raendern. Den Leerblock setzt die Seite fuer sich auf 0 (auch
+ * wenn F-441 die Apple-Fassung spaeter einschliesst), damit der Ueberhang
+ * nicht doppelt zaehlt. So steht die H1 mit und ohne F-441 gleich.
+ *
+ * --qb-kopf-hoehe setzt der Kopf zur Laufzeit (Header.jsx). Bis zum Hydrieren
+ * gilt --qb-kopf-erstbild (app.css, sobald F-441 live ist), sonst die
+ * Rueckfall-Tabelle hier: dieselben Werte wie F-441 (gemessen 18.11.2026,
+ * Stufen folgen dem Umbruch der Google-Leiste). So springt die H1 beim
+ * Hydrieren nicht. */
+[data-apple-seite='cart'] {
+  --wk-kopf-rueckfall: 156px;
+}
+@media (min-width: 360px) { [data-apple-seite='cart'] { --wk-kopf-rueckfall: 159px; } }
+@media (min-width: 375px) { [data-apple-seite='cart'] { --wk-kopf-rueckfall: 172px; } }
+@media (min-width: 380px) { [data-apple-seite='cart'] { --wk-kopf-rueckfall: 174px; } }
+@media (min-width: 480px) { [data-apple-seite='cart'] { --wk-kopf-rueckfall: 157px; } }
+@media (min-width: 750px) { [data-apple-seite='cart'] { --wk-kopf-rueckfall: 176px; } }
+@media (min-width: 1000px) { [data-apple-seite='cart'] { --wk-kopf-rueckfall: 153px; } }
+@media (min-width: 1280px) { [data-apple-seite='cart'] { --wk-kopf-rueckfall: 131px; } }
+html body > main:has([data-apple-seite='cart'])::before {
+  margin-bottom: 0 !important;
+}
 [data-apple-seite='cart'] .cart-page-inner {
-  padding-top: var(--as-s-4);
+  padding-top: calc(
+    max(
+      0px,
+      var(--qb-kopf-hoehe, var(--qb-kopf-erstbild, var(--wk-kopf-rueckfall))) -
+        var(--header-height) - 40px
+    ) + var(--as-s-4)
+  );
 }
 [data-apple-seite='cart'] .cart-page-inner > h1:first-child {
   margin-top: 0;
