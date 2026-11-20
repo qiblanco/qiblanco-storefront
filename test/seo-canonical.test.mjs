@@ -312,6 +312,18 @@ test('jeder Definitionseintrag trägt eine gültige Klasse, kanal-anderer nennt 
   assert.equal(k['qibracelet_'].klasse, 'hygiene');
 });
 
+test('Bestätigungsseiten Kakao-Kurs und Newsletter tragen noindex (D-454, 2026-11-20)', () => {
+  // Beide stehen in seo-manager/conf/gewollt-noindex.yaml. pages.$handle.jsx
+  // setzt noindex NUR über istNichtIndexierbar(); fällt ein Eintrag weg,
+  // liefert die Seite still wieder ein eigenes canonical ohne noindex.
+  // Den Sitemap-Wert der Newsletter-Seite prüft hier bewusst kein Arm: er ist
+  // eine Übergangsstufe und wird nach Messung gekippt (siehe Kopf von seo.js).
+  for (const h of ['kakao-kurs-anmeldung-erfolgreich', 'newsletter-anmeldung-erfolgreich']) {
+    assert.equal(istNichtIndexierbar(h), true, `${h}: noindex fehlt`);
+  }
+  assert.ok(AUS_SITEMAP_ENTFERNTE_SEITEN.includes('kakao-kurs-anmeldung-erfolgreich'));
+});
+
 test('noindexHeader ist der X-Robots-Tag mit demselben Wortlaut wie die Einzelrouten', () => {
   const h = noindexHeader();
   assert.deepEqual(Object.keys(h), ['X-Robots-Tag']);

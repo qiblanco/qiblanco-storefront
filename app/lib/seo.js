@@ -150,6 +150,10 @@ export function canonicalLink(pathname) {
  * `ausSitemap: true`. Damit trägt keine Seite dieser Liste mehr die
  * Übergangsstufe.
  *
+ * NACHTRAG 2026-11-20: `newsletter-anmeldung-erfolgreich` kommt neu und
+ * „Gesendet und indexiert" auf die Liste und trägt deshalb wieder die
+ * Übergangsstufe (`ausSitemap: false`). Kippen erst nach erneuter Messung.
+ *
  * DIE GEGENRICHTUNG, damit daraus keine Räumungslizenz wird: „nicht im Index"
  * ist KEIN Grund, eine Seite noindex zu setzen. Diese Lesart entscheidet
  * ausschließlich über den SITEMAP-Eintrag eines bereits entschiedenen
@@ -287,6 +291,31 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
     klasse: 'hygiene',
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
+  },
+  // Neu 2026-11-20 (seo-manager, Präzedenz D-454; Register
+  // seo-manager/conf/gewollt-noindex.yaml): derselbe Fall wie die fünf
+  // Funnel-Bestätigungen oben, nur später gefunden. Vor dem Eintrag gemessen
+  // mit `homepage-bauer/bin/gsc-seitenstand --url` (2026-11-20):
+  // `kakao-kurs-anmeldung-erfolgreich` ist „URL ist Google nicht bekannt",
+  // also nach der Lesart oben direkt `ausSitemap: true`.
+  // `newsletter-anmeldung-erfolgreich` ist „Gesendet und indexiert", also
+  // Übergangsstufe `ausSitemap: false`, bis gsc-seitenstand „Durch
+  // noindex-Tag ausgeschlossen" (oder nicht im Index) meldet. Kippen ist
+  // als Nachmess-Folgejob des Jobs 20261120-hb-de-bestaetigungsseiten-
+  // noindex-seo-js eingereiht; wer kippt, MISST vorher erneut.
+  {
+    handle: 'kakao-kurs-anmeldung-erfolgreich',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-11-20',
+  },
+  {
+    handle: 'newsletter-anmeldung-erfolgreich',
+    ausSitemap: false,
+    klasse: 'hygiene',
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-11-20',
   },
   // Neu 2026-08-26 (s04 des Grossjobs …seo-rest-kanonisierung…). Diese fünf
   // sind derselbe Fall wie `pre-access` oben, nur später gefunden: sie waren
