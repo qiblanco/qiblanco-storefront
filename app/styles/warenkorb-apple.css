@@ -38,11 +38,16 @@
  * wenn F-441 die Apple-Fassung spaeter einschliesst), damit der Ueberhang
  * nicht doppelt zaehlt. So steht die H1 mit und ohne F-441 gleich.
  *
- * --qb-kopf-hoehe setzt der Kopf zur Laufzeit (Header.jsx). Bis zum Hydrieren
- * gilt --qb-kopf-erstbild (app.css, sobald F-441 live ist), sonst die
- * Rueckfall-Tabelle hier: dieselben Werte wie F-441 (gemessen 18.11.2026,
- * Stufen folgen dem Umbruch der Google-Leiste). So springt die H1 beim
- * Hydrieren nicht. */
+ * Gerechnet wird mit der RUHELAGE des Kopfes aus der Messtabelle, NICHT mit
+ * der Laufzeit-Variable --qb-kopf-hoehe: die schwankt beim Scrollen (390 px:
+ * 174 -> 184 px), der Warenkorb rueckte dann 10 px, und nach dem Zurueck-
+ * scrollen blieb der Kopf oben kurz ausgeblendet (nachgestellt 3 von 3,
+ * statisch 0 von 3; Job sicht-tor-repair-20261119T045433Z, PR #1680).
+ * --qb-kopf-erstbild (app.css, sobald F-441 live ist) geht vor, sonst gilt
+ * die Tabelle hier: dieselben Werte wie F-441 (gemessen 18.11.2026, Stufen
+ * folgen dem Umbruch der Google-Leiste; live 20.11. bestaetigt: 158,5 / 173,9
+ * / 175,5 / 153,2 / 130,8 px bei 360 / 390 / 768 / 1024 / 1440). Kopf
+ * geaendert -> Tabelle neu messen. */
 [data-apple-seite='cart'] {
   --wk-kopf-rueckfall: 156px;
 }
@@ -60,7 +65,7 @@ html body > main:has([data-apple-seite='cart'])::before {
   padding-top: calc(
     max(
       0px,
-      var(--qb-kopf-hoehe, var(--qb-kopf-erstbild, var(--wk-kopf-rueckfall))) -
+      var(--qb-kopf-erstbild, var(--wk-kopf-rueckfall)) -
         var(--header-height) - 40px
     ) + var(--as-s-4)
   );
