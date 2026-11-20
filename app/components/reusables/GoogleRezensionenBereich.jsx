@@ -315,16 +315,16 @@ export function scrolleZuRezensionen(ziel) {
  * Job 20261116-storefront-kopfhoehe-stale-leerblock-hero-flattert.
  */
 /**
- * Rand, den der Kopf NUR im gescrollten Zustand oben traegt (Header.jsx:
- * `.header` marginTop scrolled ? 10px : 0, mit Uebergang). Abgezogen ergibt
+ * Rand, den der Kopf NUR im gescrollten Zustand oben trägt (Header.jsx:
+ * `.header` marginTop scrolled ? 10px : 0, mit Übergang). Abgezogen ergibt
  * das `--qb-kopf-hoehe-oben`: die Ruhelage des Kopfes am Seitenanfang, egal
- * ob gerade gescrollt wird. Fuer ABSTAENDE im Seitenfluss ist nur dieser Wert
- * richtig: haengt ein Abstand an `--qb-kopf-hoehe`, waechst er beim ersten
+ * ob gerade gescrollt wird. Für ABSTÄNDE im Seitenfluss ist nur dieser Wert
+ * richtig: hängt ein Abstand an `--qb-kopf-hoehe`, wächst er beim ersten
  * Scroll um 10 px und die ganze Seite springt (gemessen 20.11.2026 auf
  * /products/qihome-air: .av-seite 163 -> 173 px, Job
  * zusagen-20261025-design-repair-qihome-air-animation-schwarz--vollzug-ovd218dcd7cc).
  * Sprungziele (scroll-margin-top) bleiben bei `--qb-kopf-hoehe`.
- * Waehrend des Uebergangs liefern Rand und Kastenhoehe denselben Frame, die
+ * Während des Übergangs liefern Rand und Kastenhöhe denselben Frame, die
  * Differenz bleibt konstant.
  */
 function kopfScrollRand() {
