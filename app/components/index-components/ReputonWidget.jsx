@@ -542,6 +542,13 @@ export function ReviewsSlider({
         role="region"
         aria-label={label}
         data-autolauf="bereit"
+        // data-slider: die Bahn meldet sich beim Slider-Pruefer (Gate 12,
+        // baustandards.yaml selektoren.slider, wie VideoGalerie). Ohne die Marke
+        // traf er nur die nicht ueberlaufenden Huellen (.ReviewsSlider,
+        // .SliderButton) und fuehrte die Bewertungsleiste als "kein Slider" —
+        // ziehen und wischen blieben auf jeder Seite mit der Leiste ungeprueft
+        // (Job 20261120-repair-esmog-slider-inventar-q2-rueckschritt).
+        data-slider="bewertungen"
       >
         <AiSummaryKarte aiSummary={aiSummary} />
         {sichtbareReviews.map((review) => (
