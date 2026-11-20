@@ -335,9 +335,18 @@ test('Festbetrag DE: scharf nur bei DE, EUR, brutto und Set auf den Cent', () =>
   // netto mit zufällig gleichem Betrag -> nicht scharf (brutto ist Pflicht)
   assert.equal(fb({land: 'DE', waehrung: 'EUR', brutto: false, sets: [{packungen: 4, cent: 21300}]}), false);
   assert.equal(fb({land: 'DE', waehrung: 'EUR', sets: [{packungen: 4, cent: 21300}]}), false);
-  // andere Länder und Währungen sind nicht Teil der Entscheidung
-  for (const land of ['AT', 'FR', 'CH', 'US', 'LI', '']) {
-    assert.equal(fb({...nach, land, sets: [{packungen: 4, cent: 21300}]}), false, land);
+  // jedes Land mit EUR-Warenkorb rechnet mit derselben EUR-Tabelle (Nachtlauf
+  // 2026-11-20: AT/BE/ES/FR/IE/IT/NL/PT blieben bei 4 Einzelpackungen, der
+  // Partnercode griff nicht). Auch dort nur auf den Cent und brutto.
+  for (const land of ['AT', 'BE', 'ES', 'FR', 'IE', 'IT', 'NL', 'PT', 'FI', '']) {
+    assert.equal(fb({...nach, land, sets: [{packungen: 4, cent: 21300}]}), true, land);
+    assert.equal(fb({...nach, land, sets: [{packungen: 4, cent: 21280}]}), false, land);
+    assert.equal(fb({...nach, land, brutto: false, sets: [{packungen: 4, cent: 21300}]}), false, land);
+  }
+  assert.equal(lib.kakaoFestbetragTabelle('AT', 'EUR'), KAKAO_FESTBETRAG_CENT.DE.EUR);
+  // andere Währungen sind nicht Teil der EUR-Entscheidung
+  for (const [land, w] of [['PL', 'PLN'], ['SE', 'SEK'], ['GB', 'GBP'], ['LI', 'CHF'], ['AT', 'USD']]) {
+    assert.equal(fb({...nach, land, waehrung: w, sets: [{packungen: 4, cent: 21300}]}), false, land);
   }
   assert.equal(fb({...nach, waehrung: 'CHF', sets: [{packungen: 4, cent: 21300}]}), false);
   // 2/3 Packungen haben keinen Festbetrag, leere Liste nie
