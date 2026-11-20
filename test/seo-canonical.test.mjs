@@ -312,6 +312,15 @@ test('jeder Definitionseintrag trägt eine gültige Klasse, kanal-anderer nennt 
   assert.equal(k['qibracelet_'].klasse, 'hygiene');
 });
 
+test('Deal-Übersicht bf-deals fliegt aus der Sitemap, bleibt Landing-Bereich (deal-seiten-regel, 2026-11-20)', () => {
+  // Elinas Dauerregel EL-20261111-fa47cfd9: Deal-Seiten nicht in der Sitemap.
+  // Das noindex setzt die eigene Route pages.bf-deals.tsx; dieser Eintrag
+  // sperrt den Sitemap-Eintrag des Shopify-Seitenobjekts.
+  assert.ok(AUS_SITEMAP_ENTFERNTE_SEITEN.includes('bf-deals'), 'bf-deals steht noch in der Sitemap');
+  const e = NICHT_INDEXIERBARE_SEITEN_DEF.find((x) => x.handle === 'bf-deals');
+  assert.equal(e.klasse, 'landing');
+});
+
 test('Bestätigungsseiten Kakao-Kurs und Newsletter tragen noindex (D-454, 2026-11-20)', () => {
   // Beide stehen in seo-manager/conf/gewollt-noindex.yaml. pages.$handle.jsx
   // setzt noindex NUR über istNichtIndexierbar(); fällt ein Eintrag weg,
