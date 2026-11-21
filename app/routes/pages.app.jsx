@@ -1,8 +1,8 @@
 // app/routes/pages.app.jsx
 // Infoseite der App „Qi Blanco Studio“ (TikTok-Entwicklerportal, App-ID 7690627219365890056) — Elina 21.11.2026,
 // EL-20261121-0e107d81. Diese Adresse (qiblanco.com/pages/app) steht als Website-URL der App im TikTok-Entwicklerportal
-// und bleibt auch nach der App-Prüfung dauerhaft online. Nicht im Menü verlinkt; bewusst KEIN noindex, die Seite soll
-// für die Prüfer und jeden Besucher frei erreichbar sein.
+// und bleibt auch nach der App-Prüfung dauerhaft online. Nicht im Menü verlinkt, noindex (nicht in der Google-Suche),
+// aber ohne Anmeldung für jeden mit dem Link frei erreichbar.
 // Look: Quiet Luxury (warme Fläche, Serifen-Titel, Gold als Akzent), Mobile First, Text zuerst Englisch, darunter
 // Deutsch. Bewegung: Baukasten elina-design-regel (useElinaBewegung); der erste Bildschirm ist sofort da.
 // Rückbau: diese Datei und app/styles/app-studio.css löschen.
@@ -31,6 +31,8 @@ export const meta = () => {
   return [
     {title: titel},
     {name: 'description', content: beschreibung},
+    // Nicht im Menü und nicht in der Google-Suche, aber für jeden mit dem Link offen (TikTok-Prüfer).
+    {name: 'robots', content: 'noindex,nofollow'},
     canonicalLink(PFAD),
     ...seitenSignale({pfad: PFAD, titel, beschreibung}),
   ];
