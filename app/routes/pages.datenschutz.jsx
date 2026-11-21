@@ -254,6 +254,38 @@ export default function DatenschutzPage() {
           Verlangen entfernen wir zusätzlich den bereits übermittelten Hashwert aus der Zielgruppe
           bei Meta. Für die Übermittlung in die USA gilt Ziffer 12 entsprechend.
         </p>
+
+        <h3>TikTok-Anbindung unseres Content-Werkzeugs „Qi Blanco Studio“</h3>
+        <p>
+          Für unser internes Content-Werkzeug „Qi Blanco Studio“ (app.qiblanco.com) nutzen wir die offiziellen Schnittstellen von TikTok. Das Werkzeug wird nur von unserem eigenen Team genutzt. Es verbindet ausschließlich unsere eigenen TikTok-Konten. Die Verbindung entsteht über den offiziellen TikTok-Login (Login Kit): Wir melden uns selbst mit unserem eigenen TikTok-Konto an und erteilen dort die Freigabe.
+        </p>
+        <p>Über diese Anbindung verarbeiten wir nur:</p>
+        <ul>
+          <li>
+            <strong>Kontoname und Profilbild</strong> unseres eigenen TikTok-Kontos (Berechtigung <code>user.info.basic</code>), damit wir sehen, mit welchem Konto das Werkzeug verbunden ist;
+          </li>
+          <li>
+            <strong>unsere eigenen Beiträge</strong>: Videos und Fotos samt Beschreibung, die wir über die TikTok Content Posting API auf unserem eigenen Konto veröffentlichen (Berechtigung <code>video.publish</code>);
+          </li>
+          <li>
+            <strong>Entwürfe</strong>: Wir können eigene Videos auch nur als Entwurf in den TikTok-Posteingang unseres eigenen Kontos hochladen und dort selbst veröffentlichen (Berechtigung <code>video.upload</code>);
+          </li>
+          <li>
+            <strong>Kennzahlen unserer eigenen Videos</strong>, z. B. Aufrufe, Likes, Anzahl der Kommentare und Teilungen (Berechtigung <code>video.list</code>);
+          </li>
+          <li>
+            <strong>Kontozahlen</strong> unseres eigenen Kontos: Anzahl der Follower, Likes und Videos (Berechtigung <code>user.info.stats</code>).
+          </li>
+        </ul>
+        <p>
+          Die Zugangsschlüssel, die TikTok bei der Anmeldung ausstellt, speichern wir verschlüsselt auf unserem eigenen Server bei der Hetzner Online GmbH in einem Rechenzentrum in der EU. Wir geben sie nicht an Dritte weiter. Daten fremder TikTok-Nutzerinnen und -Nutzer verarbeiten wir über diese Anbindung nicht, also z. B. keine Profile, keine Kommentarinhalte und keine Nachrichten. Besucher und Kunden unseres Shops kommen mit dieser Anbindung nicht in Berührung. Die Verbindung lässt sich jederzeit in den TikTok-Einstellungen aufheben. Danach sind die gespeicherten Zugangsschlüssel ungültig.
+        </p>
+        <p>
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO, denn unser berechtigtes Interesse liegt darin, die Inhalte unserer eigenen Social-Media-Präsenz zu planen, zu veröffentlichen und auszuwerten. Anbieter von TikTok im EWR ist die TikTok Technology Limited, 10 Earlsfort Terrace, Dublin, D02 T380, Irland. Datenschutzerklärung von TikTok:{' '}
+          <a href="https://www.tiktok.com/legal/privacy-policy-eea" target="_blank" rel="noopener noreferrer">
+            https://www.tiktok.com/legal/privacy-policy-eea
+          </a>
+        </p>
       </section>
 
       <section>
