@@ -1,0 +1,153 @@
+/* app-studio.css: Infoseite qiblanco.com/pages/app (App „Qi Blanco Studio“, Elina EL-20261121-0e107d81).
+ * Quiet Luxury: warme Fläche, Serifen-Titel, Gold nur als Akzent. Mobile First: Grundregeln = Handy (ab 320 px),
+ * größere Bildschirme per min-width. Bewegung kommt aus elina-bewegung.css (nur transform/opacity).
+ * Link-Stile am <a> mit !important: reset.css setzt a{color;text-decoration} ungeschichtet. */
+.qbs-seite {
+  background: var(--qb-flaeche, #f8f4ee);
+  color: var(--qb-text, #2c2a26);
+  padding: 56px 20px 72px;
+  min-height: 70vh;
+}
+
+.qbs-rahmen {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.qbs-kopf {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.qbs-marke {
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--qb-akzent-tinte, #856828);
+  margin: 0 0 14px;
+}
+
+.qbs-titel {
+  font-family: 'Cormorant Garamond', 'Cormorant', Georgia, 'Times New Roman', serif;
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  margin: 0;
+  color: var(--qb-text, #2c2a26);
+}
+
+.qbs-sprache {
+  margin: 0;
+}
+
+.qbs-etikett {
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--qb-text-gedaempft, #6b665d);
+  margin: 0 0 10px;
+}
+
+.qbs-text {
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  margin: 0;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.qbs-linie {
+  --eb-linie-farbe: var(--qb-akzent-tinte, #856828);
+  --eb-linie-grund: rgba(133, 104, 40, 0.16);
+  height: 2px;
+  width: 120px;
+  margin: 32px auto;
+}
+
+.qbs-knopf-zeile {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.qbs-seite a.qbs-knopf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  width: 100%;
+  padding: 14px 28px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: var(--qb-text, #2c2a26) !important;
+  color: #f8f4ee !important;
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none !important;
+  transition: background-color 0.2s ease;
+}
+
+.qbs-seite a.qbs-knopf:hover {
+  background: #45413a !important;
+}
+
+.qbs-seite a.qbs-knopf:focus-visible,
+.qbs-rechtliches a:focus-visible {
+  outline: 2px solid var(--qb-fokus, #856828);
+  outline-offset: 3px;
+}
+
+.qbs-rechtliches {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 32px;
+}
+
+.qbs-seite .qbs-rechtliches a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+  font-size: 14px;
+  color: var(--qb-text-gedaempft, #6b665d) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}
+
+@media (min-width: 768px) {
+  .qbs-seite {
+    padding: 96px 32px 112px;
+  }
+
+  .qbs-titel {
+    font-size: 56px;
+  }
+
+  .qbs-text {
+    font-size: 18px;
+  }
+
+  .qbs-seite a.qbs-knopf {
+    width: auto;
+    min-width: 280px;
+  }
+
+  .qbs-rechtliches {
+    flex-direction: row;
+    justify-content: center;
+    gap: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qbs-seite a.qbs-knopf {
+    transition: none;
+  }
+}
