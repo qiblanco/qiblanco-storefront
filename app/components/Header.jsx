@@ -25,6 +25,7 @@ import {
   GOOGLE_REZENSIONEN_ANKER_ID,
   KOPF_ZEIGEN_EREIGNIS,
 } from '~/components/reusables/GoogleRezensionenBereich';
+import {useKopfHoeheOben} from '~/components/product-pages/kopfHoeheOben';
 import {MarkeR} from '~/components/reusables/MarkeR';
 import {GoogleZitat} from '~/components/reusables/GoogleZitat';
 import {
@@ -454,6 +455,12 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   useSterneSprungDelegation(onRezensionenKlick);
   // Mit der Leiste ändert sich die Kopfhöhe auch beim Seitenwechsel ohne Scroll.
   useKopfHoeheVariable(`${leiste}|${nrEins ? 'nr1' : ''}`);
+  // Ruhelage ohne den Scroll-Rand (--qb-kopf-hoehe-oben) für jeden ABSTAND im Seitenfluss, auf jeder
+  // Seite (Christian Z4 „kein Springen“). Seit 20.11.2026 ruft der Kopf den Hook, nicht mehr die
+  // AlphaVorlage: deren Aufräumen nahm die Variable beim Seitenwechsel weg, und alle übrigen Seiten
+  // liefen auf --qb-kopf-hoehe (10-px-Sprung). Der Satz „nur die Vorlage“ in kopfHoeheOben.js ist
+  // damit überholt. Job 20261120-kopfhoehe-oben-alle-layout-abstaende-kein-scrollsprung.
+  useKopfHoeheOben();
 
   return (
     <header
@@ -624,6 +631,7 @@ export function istQiAlphaFunnelPfad(pathname) {
 export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
   // Kopfhöhe für Sprungziele (scroll-margin-top), wie im Hauskopf.
   useKopfHoeheVariable();
+  useKopfHoeheOben();
   const {pathname} = useLocation();
   const nachOben = useCallback(
     (e) => {
@@ -677,6 +685,7 @@ export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
  */
 export function BfFunnelKopf({isLoggedIn, cart}) {
   useKopfHoeheVariable();
+  useKopfHoeheOben();
   const nachOben = useCallback(() => {
     // „Bewegung reduzieren“: ohne Gleiten, sofort oben (Elinas Design-Dauerregel D7).
     const ruhig = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;

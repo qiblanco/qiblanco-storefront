@@ -76,7 +76,7 @@
    ========================================================================== */
 @media (max-width: 749px) {
   .qb-pdp-kopf:not([data-kauf-zuerst-mobil='an']) > .product-360-hero:first-child {
-    margin-top: max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px));
+    margin-top: max(0px, calc(var(--qb-kopf-hoehe-oben, var(--qb-kopf-hoehe, 135px)) - var(--header-height, 64px) - 40px));
   }
 }
 

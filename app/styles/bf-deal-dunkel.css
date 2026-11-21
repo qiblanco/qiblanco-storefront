@@ -196,7 +196,7 @@
  * Nennhöhe (104 px) und gemessener Kopfhöhe nach unten; auf der Standard-Fassung verschmilzt der Rand mit dem
  * Leerblock (es gilt der größere, gleiche Wert). */
 .bf-deal-seite > .bfc:first-child {
-  margin-top: max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px));
+  margin-top: max(0px, calc(var(--qb-kopf-hoehe-oben, var(--qb-kopf-hoehe, 135px)) - var(--header-height, 64px) - 40px));
 }
 .bf-deal-seite .bfc[hidden] {
   display: none;

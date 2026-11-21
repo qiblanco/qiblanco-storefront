@@ -48,7 +48,7 @@
 .as-seite .fo {
   padding-top: calc(
     var(--fo-s4) +
-      max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px))
+      max(0px, calc(var(--qb-kopf-hoehe-oben, var(--qb-kopf-hoehe, 135px)) - var(--header-height, 64px) - 40px))
   );
 }
 
