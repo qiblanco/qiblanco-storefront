@@ -141,3 +141,17 @@ test('Antwort: 302, no-store, Location', () => {
   assert.equal(a.headers.get('cache-control'), 'no-store');
   assert.equal(laenderWeiche(req('/pages/pre-access', {land: 'CH'}), {jetzt: NACH}), null);
 });
+
+test('TikTok-App-Seite und ihre Rechtstexte bleiben für jedes Land im DE-Shop (EL-20261121-0e107d81)', () => {
+  for (const p of ['/pages/app', '/pages/app/', '/pages/APP', '/policies/privacy-policy', '/policies/terms-of-service']) {
+    for (const l of ['US', 'SG', 'GB', 'TH']) {
+      const e = ent(req(p, {land: l}));
+      assert.equal(e.art, 'bleiben', `${p} ${l}`);
+      assert.equal(e.grund, 'pfad', `${p} ${l}`);
+    }
+  }
+  // Nur der genaue Pfad: Nachbarn mit gleichem Anfang gehen weiter wie bisher.
+  for (const p of ['/pages/apple-test', '/pages/app-x', '/policies/refund-policy', '/']) {
+    assert.equal(ent(req(p, {land: 'US'})).art, 'weiter', p);
+  }
+});

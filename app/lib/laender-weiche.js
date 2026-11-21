@@ -139,8 +139,25 @@ function cookieWert(cookieKopf, name) {
   return null;
 }
 
+/**
+ * Einzelne Seiten, die für jeden Besucher aus jedem Land im DE-Shop bleiben
+ * (genauer Pfad, klein geschrieben, ohne Schrägstrich am Ende).
+ * TikTok-App-Prüfung (Elina EL-20261121-0e107d81): /pages/app ist die Website
+ * der App „Qi Blanco Studio“ im TikTok-Entwicklerportal; sie und die beiden
+ * dort verlinkten Rechtstexte müssen für Prüfer aus jedem Land unter
+ * qiblanco.com erreichbar sein, sonst landen sie auf der US-Startseite bzw.
+ * den US-Fassungen. Rückweg: Einträge entfernen.
+ */
+export const NIE_PFADE = new Set([
+  '/pages/app',
+  '/policies/privacy-policy',
+  '/policies/terms-of-service',
+]);
+
 function istSeitenPfad(pfad) {
   const klein = pfad.toLowerCase();
+  const ohneSchraeg = klein.length > 1 ? klein.replace(/\/+$/, '') : klein;
+  if (NIE_PFADE.has(ohneSchraeg)) return false;
   if (NIE_PRAEFIXE.some((p) => klein === p.replace(/\/$/, '') || klein.startsWith(p))) {
     return false;
   }
