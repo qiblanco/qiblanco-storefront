@@ -115,6 +115,10 @@ const NIE_PRAEFIXE = [
   '/__',
   '/admin',
   '/apps/',
+  // Alle Shopify-Rechtstexte (/policies/*) bleiben für jedes Land im DE-Shop:
+  // TikTok-App-Prüfung, GO von Elina EL-20261122-1e6241de (zu EL-20261121-0e107d81).
+  // Rückweg: diese Zeile entfernen.
+  '/policies/',
 ];
 
 /**
@@ -146,12 +150,11 @@ function cookieWert(cookieKopf, name) {
  * der App „Qi Blanco Studio“ im TikTok-Entwicklerportal; sie und die beiden
  * dort verlinkten Rechtstexte müssen für Prüfer aus jedem Land unter
  * qiblanco.com erreichbar sein, sonst landen sie auf der US-Startseite bzw.
- * den US-Fassungen. Rückweg: Einträge entfernen.
+ * den US-Fassungen. Die Rechtstexte deckt seit dem GO (EL-20261122-1e6241de)
+ * das Präfix '/policies/' in NIE_PRAEFIXE ab. Rückweg: Eintrag entfernen.
  */
 export const NIE_PFADE = new Set([
   '/pages/app',
-  '/policies/privacy-policy',
-  '/policies/terms-of-service',
 ]);
 
 function istSeitenPfad(pfad) {

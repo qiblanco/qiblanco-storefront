@@ -15,7 +15,7 @@ import appStudioStyles from '~/styles/app-studio.css?url';
 
 const PFAD = '/pages/app';
 const STUDIO_URL = 'https://app.qiblanco.com';
-export const GEAENDERT = '2026-11-21';
+export const GEAENDERT = '2026-11-22';
 
 export function links() {
   return [
@@ -76,7 +76,7 @@ export default function AppStudioSeite() {
         </div>
 
         <nav className="qbs-rechtliches" aria-label="Legal / Rechtliches" data-eb="gruppe">
-          <a href="/policies/privacy-policy">Privacy Policy / Datenschutzerklärung</a>
+          <a href="https://qi-blanco.com/policies/privacy-policy">Privacy Policy / Datenschutzerklärung</a>
           <a href="/policies/terms-of-service">Terms of Service / AGB</a>
         </nav>
       </div>

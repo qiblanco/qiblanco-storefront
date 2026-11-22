@@ -142,16 +142,17 @@ test('Antwort: 302, no-store, Location', () => {
   assert.equal(laenderWeiche(req('/pages/pre-access', {land: 'CH'}), {jetzt: NACH}), null);
 });
 
-test('TikTok-App-Seite und ihre Rechtstexte bleiben für jedes Land im DE-Shop (EL-20261121-0e107d81)', () => {
-  for (const p of ['/pages/app', '/pages/app/', '/pages/APP', '/policies/privacy-policy', '/policies/terms-of-service']) {
+test('TikTok-App-Seite und alle Rechtstexte /policies/* bleiben für jedes Land im DE-Shop (EL-20261121-0e107d81, GO EL-20261122-1e6241de)', () => {
+  for (const p of ['/pages/app', '/pages/app/', '/pages/APP', '/policies/privacy-policy', '/policies/terms-of-service', '/policies/refund-policy', '/policies/shipping-policy', '/POLICIES/Privacy-Policy']) {
     for (const l of ['US', 'SG', 'GB', 'TH']) {
       const e = ent(req(p, {land: l}));
       assert.equal(e.art, 'bleiben', `${p} ${l}`);
       assert.equal(e.grund, 'pfad', `${p} ${l}`);
     }
   }
-  // Nur der genaue Pfad: Nachbarn mit gleichem Anfang gehen weiter wie bisher.
-  for (const p of ['/pages/apple-test', '/pages/app-x', '/policies/refund-policy', '/']) {
+  // /pages/app nur als genauer Pfad, /policies nur mit Schrägstrich: Nachbarn mit
+  // gleichem Anfang gehen weiter wie bisher.
+  for (const p of ['/pages/apple-test', '/pages/app-x', '/policies-x', '/pages/policies', '/']) {
     assert.equal(ent(req(p, {land: 'US'})).art, 'weiter', p);
   }
 });
