@@ -112,9 +112,12 @@ import einwilligungStyles from '~/styles/einwilligung.css?url';
 // überschreibt; die Datei setzt nur Licht (Schatten, Glanz), nie Farbe oder
 // Größe. Rückweg: diesen Import und den <link> unten entfernen.
 import goldKnopfBStyles from '~/styles/gold-knopf-b.css?url';
-// Kopf-Knöpfe einheitlich (Menü, Flagge, Währung, Konto, Warenkorb), nach
-// gold-knopf-b geladen (Job 20261122-prio1-shop-design-header-...).
+// Fuß-Zeile Land/Sprache · Währung (Teil 1), nach gold-knopf-b geladen
+// (Job 20261122-prio1-shop-design-header-...).
 import landWaehrungStyles from '~/styles/land-waehrung.css?url';
+// Kopf-Knöpfe einheitlich (Menü, Flagge, Währung, Konto, Warenkorb), Teil 2
+// des Jobs 20261122-prio1-shop-design-header-..., nach land-waehrung geladen.
+import kopfKnoepfeStyles from '~/styles/kopf-knoepfe.css?url';
 import {starteUmbruchSchutz} from '~/components/reusables/produktnamen-umbruch';
 // „Mehr erfahren“ = Pfeil-Link (Knopf-Strategie K5, Variante A), Christian
 // 12.11.2026, Job 20261112-prio1-mehr-erfahren-pfeil-link-variante-a-beide-shops-live.
@@ -693,6 +696,7 @@ export function Layout({children}) {
         <link rel="stylesheet" href={goldKnopfBStyles}></link>
         <link rel="stylesheet" href={mehrErfahrenAStyles}></link>
         <link rel="stylesheet" href={landWaehrungStyles}></link>
+        <link rel="stylesheet" href={kopfKnoepfeStyles}></link>
       </head>
       <body>
         {einwilligungEigen && (

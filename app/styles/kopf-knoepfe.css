@@ -1,0 +1,306 @@
+/*
+ * KOPF-KNÖPFE EINHEITLICH (Christian 22.11.2026, Job 20261122-prio1-shop-
+ * design-header-flagge-waehrung-iphone-knoepfe-umbruch-us-glanz-bf-store):
+ * „die vier Dinge nebeneinander, die schauen richtig aus, als wenn sie nicht
+ * zueinander passen. … einheitliches Design … dass man ganz klar versteht, das
+ * eine ist Dropdown, das eine ist die Flagge, das eine ist das Login und das
+ * andere ist der Warenkorb … Apple-Niveau“.
+ *
+ * Fünf Bedienelemente rechts im Kopf: Menü · Flagge · Währung · Konto ·
+ * Warenkorb. Alle gleich hoch, gleicher Rahmen, gleiche Fläche, gleiche
+ * Strichstärke. Menü, Konto und Warenkorb sind Kreise (nur Symbol), Flagge
+ * und Währung sind Pillen mit kleinem Chevron (= Auswahl). Gleiche Bauweise im
+ * Global Englisch-Shop (us-qiblanco-2024 assets/kopf-knoepfe.css, Vorgabe
+ * claude-jobs/<job>/SPEC-KOPF.md).
+ *
+ * Vorrang: jeder Selektor trägt :not(#kk) (eine ID-Stufe), damit später
+ * geladenes Routen-CSS die Form nicht still überschreibt (wie gold-knopf-b.css,
+ * FEHLER-DB F-031). Geladen in root.jsx nach gold-knopf-b.css.
+ * Die Fuß-Zeile trägt land-waehrung.css (Teil 1, eigene --lw-Größen); hier
+ * steht nur der Kopf, damit der Fuß Pixel für Pixel bleibt.
+ * Kein Glanz auf Kopf-Knöpfen: Glanz gehört nur den goldenen Kaufknöpfen.
+ * Rückweg: die eine <link>-Zeile in root.jsx entfernen.
+ */
+:root {
+  --kk-hoehe: 36px;
+  --kk-luecke: 6px;
+  --kk-rand: 1px solid rgba(29, 29, 31, 0.14);
+  --kk-rand-hover: rgba(29, 29, 31, 0.32);
+  --kk-flaeche: #ffffff;
+  --kk-tinte: #1d1d1f;
+  --kk-dunkel-flaeche: rgba(255, 255, 255, 0.08);
+  --kk-dunkel-rand: 1px solid rgba(255, 255, 255, 0.22);
+  --kk-dunkel-rand-hover: rgba(255, 255, 255, 0.45);
+  --kk-schrift: 0.8125rem; /* 13 */
+  --kk-panel-radius: 14px;
+  --kk-panel-schatten: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+@media (min-width: 48em) {
+  :root {
+    --kk-hoehe: 40px;
+    --kk-luecke: 8px;
+  }
+}
+
+/* ── Reihe ─────────────────────────────────────────────────────────────── */
+.header-ctas:not(#kk),
+.qfk-ctas:not(#kk) {
+  display: flex;
+  align-items: center;
+  gap: var(--kk-luecke);
+}
+.header-ctas:not(#kk) > *,
+.qfk-ctas:not(#kk) > * {
+  margin: 0;
+}
+
+/* ── Der eine Knopf ────────────────────────────────────────────────────── */
+.header-ctas .header-menu-mobile-toggle:not(#kk),
+.header-ctas .shop-switch__trigger:not(#kk),
+.header-ctas .waehrung-wahl__trigger:not(#kk),
+.header-ctas .header-account:not(#kk),
+.header-ctas a.openCart:not(#kk),
+.qfk .shop-switch__trigger:not(#kk),
+.qfk .waehrung-wahl__trigger:not(#kk),
+.qfk .header-account:not(#kk),
+.qfk a.openCart:not(#kk) {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-sizing: border-box;
+  width: var(--kk-hoehe);
+  min-width: var(--kk-hoehe);
+  height: var(--kk-hoehe);
+  min-height: var(--kk-hoehe);
+  margin: 0;
+  padding: 0;
+  border: var(--kk-rand);
+  border-radius: 999px;
+  background: var(--kk-flaeche);
+  color: var(--kk-tinte);
+  font: inherit;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: none;
+  animation: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Pillen: Flagge und Währung sind breiter, weil sie Inhalt + Chevron tragen. */
+.header-ctas .shop-switch__trigger:not(#kk),
+.header-ctas .waehrung-wahl__trigger:not(#kk),
+.qfk .shop-switch__trigger:not(#kk),
+.qfk .waehrung-wahl__trigger:not(#kk) {
+  width: auto;
+  padding: 0 10px 0 11px;
+}
+.header-ctas .header-menu-mobile-toggle:not(#kk):hover,
+.header-ctas .shop-switch__trigger:not(#kk):hover,
+.header-ctas .waehrung-wahl__trigger:not(#kk):hover,
+.header-ctas .header-account:not(#kk):hover,
+.header-ctas a.openCart:not(#kk):hover {
+  border-color: var(--kk-rand-hover);
+  background: var(--kk-flaeche);
+  text-decoration: none;
+}
+/* Symbole: 18 px, Strich wie gesetzt (2 bei 24er-Box = 1,5 bei 18 px). */
+.header-ctas .header-menu-mobile-toggle:not(#kk) svg,
+.header-ctas .header-account:not(#kk) svg,
+.header-ctas a.openCart:not(#kk) > svg,
+.qfk .header-account:not(#kk) svg,
+.qfk a.openCart:not(#kk) > svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+.header-ctas .header-menu-mobile-toggle:not(#kk) > * {
+  margin: 0;
+}
+.kopf-knopf__chevron {
+  flex: 0 0 auto;
+  display: block;
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+[aria-expanded='true'] > .kopf-knopf__chevron {
+  transform: rotate(180deg);
+}
+.shop-switch__trigger:not(#kk) .shop-switch__flag {
+  width: 20px;
+  height: 14px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.18);
+}
+.waehrung-wahl__code {
+  font-size: var(--kk-schrift);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+/* Warenkorb-Zahl: bleibt das Abzeichen oben rechts, auf den Kreis gesetzt. */
+.header-ctas a.openCart:not(#kk) .cart-count {
+  top: -4px;
+  right: -4px;
+  width: auto;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  font-size: 0.6875rem;
+}
+
+/* Fokusring: gleich für alle fünf. */
+.header-ctas .kopf-knopf:not(#kk):focus-visible,
+.header-ctas .header-account:not(#kk):focus-visible,
+.header-ctas a.openCart:not(#kk):focus-visible {
+  outline: 2px solid var(--kk-tinte);
+  outline-offset: 2px;
+}
+
+/* ── Auf dunklem Grund (Funnel-Kopf .qfk) ───────────── */
+.qfk .shop-switch__trigger:not(#kk),
+.qfk .waehrung-wahl__trigger:not(#kk),
+.qfk .header-account:not(#kk),
+.qfk a.openCart:not(#kk) {
+  border: var(--kk-dunkel-rand);
+  background: var(--kk-dunkel-flaeche);
+  color: #ffffff;
+}
+.qfk .shop-switch__trigger:not(#kk):hover,
+.qfk .waehrung-wahl__trigger:not(#kk):hover,
+.qfk .header-account:not(#kk):hover,
+.qfk a.openCart:not(#kk):hover {
+  border-color: var(--kk-dunkel-rand-hover);
+  background: var(--kk-dunkel-flaeche);
+  color: #ffffff;
+}
+.qfk .kopf-knopf:not(#kk):focus-visible,
+.qfk .header-account:not(#kk):focus-visible,
+.qfk a.openCart:not(#kk):focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+/* Funnel-Kopf: Marke darf schrumpfen, die Knöpfe nie. */
+.qfk .qfk-ctas:not(#kk) {
+  flex: 0 0 auto;
+}
+.qfk .qfk-marke:not(#kk) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Panels (Flagge und Währung) ───────────────────────────────────────── */
+.waehrung-wahl,
+.shop-switch {
+  position: relative;
+}
+.kopf-panel,
+.shop-switch__panel:not(#kk) {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  min-width: 176px;
+  background: #ffffff;
+  border: 1px solid rgba(29, 29, 31, 0.08);
+  border-radius: var(--kk-panel-radius);
+  box-shadow: var(--kk-panel-schatten);
+  color: var(--kk-tinte);
+  text-align: left;
+}
+.kopf-panel--offen,
+.shop-switch__panel--offen:not(#kk) {
+  display: block;
+}
+.waehrung-wahl--oben .kopf-panel,
+.shop-switch--oben .shop-switch__panel:not(#kk) {
+  top: auto;
+  bottom: calc(100% + 8px);
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.kopf-panel__option,
+.shop-switch__option:not(#kk) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  color: var(--kk-tinte);
+  font-size: 0.9375rem; /* 15 */
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.kopf-panel__option:hover,
+.shop-switch__option:not(#kk):hover {
+  background: rgba(29, 29, 31, 0.05);
+  color: var(--kk-tinte);
+  text-decoration: none;
+}
+.kopf-panel__option--aktiv,
+.shop-switch__option--aktiv:not(#kk) {
+  background: rgba(29, 29, 31, 0.05);
+  font-weight: 600;
+}
+.kopf-panel__symbol {
+  min-width: 1.4em;
+  color: rgba(29, 29, 31, 0.6);
+  font-variant-numeric: tabular-nums;
+}
+.kopf-panel__label {
+  flex: 1 1 auto;
+}
+.kopf-panel__haken {
+  flex: 0 0 auto;
+}
+
+/* Fuß-Zeile Land/Sprache · Währung: steht in land-waehrung.css (Teil 1). */
+
+@media (prefers-reduced-motion: reduce) {
+  .kopf-knopf__chevron,
+  .header-ctas :not(#kk),
+  .qfk-ctas :not(#kk) {
+    transition: none;
+  }
+}
+
+/* ── Schmal (unter 900 px): kompakte Reihe ────────────────────────────────
+   Fünf Knöpfe als Kreise ohne Chevron, 34 px, damit die Reihe nicht breiter
+   ist als vorher (Live 22.11.: 180 px Handy, 154 px Tablet). Sonst schrumpft
+   das Logo, der Kopf wird niedriger und die ganze Seite rückt hoch. Die
+   Flagge und der Währungscode bleiben sichtbar; das Panel öffnet wie oben. */
+@media (max-width: 56.24em) {
+  :root {
+    --kk-hoehe: 34px;
+    --kk-luecke: 4px;
+  }
+  .header-ctas .shop-switch__trigger:not(#kk),
+  .header-ctas .waehrung-wahl__trigger:not(#kk) {
+    width: var(--kk-hoehe);
+    padding: 0;
+  }
+  .header-ctas .kopf-knopf__chevron:not(#kk) {
+    display: none;
+  }
+  .header-ctas .waehrung-wahl__code:not(#kk) {
+    font-size: 0.6875rem; /* 11 */
+    letter-spacing: -0.01em;
+  }
+}
+@media (min-width: 48em) and (max-width: 56.24em) {
+  :root {
+    --kk-luecke: 6px;
+  }
+}
