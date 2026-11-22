@@ -4,6 +4,7 @@ import {Await, NavLink, Link} from 'react-router';
 // Hub-Seiten-Liste + Begründung: app/lib/hub-seiten.js (SEO-Stufe S5).
 import {themenLinks, wvFussLinks, WV_TITEL} from '~/lib/hub-seiten';
 import {AnmeldeWeiche} from './reusables/Anmeldeweiche';
+import {LandWaehrungZeile} from './reusables/LandWaehrung';
 
 const PRODUCT_LINKS = [
   {to: '/products/qione-2-pro', label: 'QiOne® 2 Pro'},
@@ -78,6 +79,8 @@ function FooterContent() {
       <FooterInhalt />
       <FooterNachlesen />
       <FooterMenu />
+      {/* Land/Sprache und Währung unten auf jeder Seite (Christian 22.11.2026). */}
+      <LandWaehrungZeile dunkel />
     </footer>
   );
 }

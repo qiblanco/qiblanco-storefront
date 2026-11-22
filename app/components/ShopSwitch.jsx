@@ -1,6 +1,7 @@
 import {useEffect, useId, useRef, useState} from 'react';
 import {useLocation} from 'react-router';
 import {SHOP_LABEL, switchTarget} from '~/lib/shop-switch';
+import {usGegenseite} from '~/lib/laender-weiche';
 
 /**
  * Shop-Umschalter (DACH -> USA und zurück).
@@ -108,7 +109,7 @@ function Flagge({shop}) {
 /**
  * @param {{aktiv?: 'de'|'us'}} props
  */
-export function ShopSwitch({aktiv = 'de'}) {
+export function ShopSwitch({aktiv = 'de', oben = false}) {
   const [offen, setOffen] = useState(false);
   const wurzelRef = useRef(null);
   const triggerRef = useRef(null);
@@ -153,7 +154,7 @@ export function ShopSwitch({aktiv = 'de'}) {
   }, [offen]);
 
   return (
-    <div className="shop-switch" ref={wurzelRef}>
+    <div className={oben ? 'shop-switch shop-switch--oben' : 'shop-switch'} ref={wurzelRef}>
       <button
         type="button"
         ref={triggerRef}
@@ -231,7 +232,12 @@ export function ShopSwitch({aktiv = 'de'}) {
                    nicht auf die Startseite. switchTarget wäre hier falsch:
                    seine Rückwärts-Karte erwartet einen Pfad des ANDEREN
                    Shops und fände für den eigenen nichts, also die Front. */
-                href={istAktiv ? pfad : switchTarget(pfad, shop)}
+                /* Gegenseite im US-Shop über usGegenseite (laender-weiche.js):
+                   sie kennt zusätzlich die BF-Deal-Seiten und Zusatzseiten und
+                   fällt sonst auf dieselbe Umschalter-Tabelle zurück. So landet
+                   ein Klick im BF-Store auf der US-BF-Seite statt auf der
+                   Startseite (Christian 22.11.2026). */
+                href={istAktiv ? pfad : shop === 'us' ? usGegenseite(pfad) : switchTarget(pfad, shop)}
                 onClick={() => setOffen(false)}
               >
                 <Flagge shop={shop} />

@@ -1,0 +1,214 @@
+/*
+ * LAND/SPRACHE · WÄHRUNG IM FUSS (Christian 22.11.2026, Job 20261122-prio1-
+ * shop-design-header-flagge-waehrung-iphone-knoepfe-umbruch-us-glanz-bf-store):
+ * „unten auf der Seite im Bottom immer noch die Möglichkeit … das Land, die
+ * Sprache, die Währung auszuwählen“.
+ *
+ * Teil 1 des Baus: nur die Fuß-Zeile und die Währungs-Auswahl. Der
+ * einheitliche Kopf (fünf Knöpfe) folgt als Teil 2 (kopf-knoepfe.css) über
+ * die Baseline-Freigabe, weil er jede Seite sichtbar ändert. Darum ist hier
+ * JEDER Selektor auf .land-waehrung-zeile bzw. .waehrung-wahl begrenzt: der
+ * heutige Kopf bleibt Pixel für Pixel, wie er ist.
+ *
+ * Gleiche Bauweise im Global Englisch-Shop (us-qiblanco-2024), Vorgabe
+ * claude-jobs/<job>/SPEC-KOPF.md. Vorrang über :not(#kk) wie gold-knopf-b.css
+ * (FEHLER-DB F-031). Kein Glanz: der gehört nur den goldenen Kaufknöpfen.
+ * Rückweg: die eine <link>-Zeile in root.jsx entfernen.
+ */
+:root {
+  --lw-hoehe: 36px;
+  --lw-tinte: #1d1d1f;
+  --lw-rand: 1px solid rgba(29, 29, 31, 0.14);
+  --lw-rand-hover: rgba(29, 29, 31, 0.32);
+  --lw-dunkel-flaeche: rgba(255, 255, 255, 0.08);
+  --lw-dunkel-rand: 1px solid rgba(255, 255, 255, 0.22);
+  --lw-dunkel-rand-hover: rgba(255, 255, 255, 0.45);
+  --lw-schrift: 0.8125rem; /* 13 */
+  --lw-panel-radius: 14px;
+  --lw-panel-schatten: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+@media (min-width: 48em) {
+  :root {
+    --lw-hoehe: 40px;
+  }
+}
+
+/* ── Die Zeile ─────────────────────────────────────────────────────────── */
+.land-waehrung-zeile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+  color: rgba(29, 29, 31, 0.7);
+  font-size: var(--lw-schrift);
+}
+.land-waehrung-zeile--dunkel {
+  color: rgba(255, 255, 255, 0.7);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.land-waehrung-zeile__knoepfe {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Im BF-Funnel liegt unter der Zeile eine feste Kauf-Leiste: Platz lassen. */
+main[data-qa-funnel] + .land-waehrung-zeile {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  background: #000000;
+}
+
+/* ── Die zwei Pillen (Flagge, Währung) ─────────────────────────────────── */
+.land-waehrung-zeile .shop-switch__trigger:not(#kk),
+.land-waehrung-zeile .waehrung-wahl__trigger:not(#kk) {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-sizing: border-box;
+  width: auto;
+  min-width: var(--lw-hoehe);
+  height: var(--lw-hoehe);
+  min-height: var(--lw-hoehe);
+  margin: 0;
+  padding: 0 10px 0 11px;
+  border: var(--lw-rand);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--lw-tinte);
+  font: inherit;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: none;
+  animation: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.land-waehrung-zeile:not(.land-waehrung-zeile--dunkel) .shop-switch__trigger:not(#kk):hover,
+.land-waehrung-zeile:not(.land-waehrung-zeile--dunkel) .waehrung-wahl__trigger:not(#kk):hover {
+  border-color: var(--lw-rand-hover);
+}
+.land-waehrung-zeile--dunkel .shop-switch__trigger:not(#kk),
+.land-waehrung-zeile--dunkel .waehrung-wahl__trigger:not(#kk) {
+  border: var(--lw-dunkel-rand);
+  background: var(--lw-dunkel-flaeche);
+  color: #ffffff;
+}
+.land-waehrung-zeile--dunkel .shop-switch__trigger:not(#kk):hover,
+.land-waehrung-zeile--dunkel .waehrung-wahl__trigger:not(#kk):hover {
+  border-color: var(--lw-dunkel-rand-hover);
+  background: var(--lw-dunkel-flaeche);
+  color: #ffffff;
+}
+.land-waehrung-zeile .shop-switch__trigger:not(#kk):focus-visible,
+.land-waehrung-zeile .waehrung-wahl__trigger:not(#kk):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.land-waehrung-zeile .shop-switch__flag:not(#kk) {
+  width: 20px;
+  height: 14px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.18);
+}
+.land-waehrung-zeile .shop-switch__chevron:not(#kk),
+.waehrung-wahl .kopf-knopf__chevron {
+  flex: 0 0 auto;
+  display: block;
+  width: 10px;
+  height: 10px;
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+.land-waehrung-zeile [aria-expanded='true'] > .shop-switch__chevron:not(#kk),
+.waehrung-wahl [aria-expanded='true'] > .kopf-knopf__chevron {
+  transform: rotate(180deg);
+}
+.waehrung-wahl__code {
+  font-size: var(--lw-schrift);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Panels (öffnen in der Fuß-Zeile nach oben) ────────────────────────── */
+.waehrung-wahl,
+.land-waehrung-zeile .shop-switch {
+  position: relative;
+}
+.kopf-panel,
+.land-waehrung-zeile .shop-switch__panel:not(#kk) {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  min-width: 176px;
+  background: #ffffff;
+  border: 1px solid rgba(29, 29, 31, 0.08);
+  border-radius: var(--lw-panel-radius);
+  box-shadow: var(--lw-panel-schatten);
+  color: var(--lw-tinte);
+  text-align: left;
+}
+.kopf-panel--offen,
+.land-waehrung-zeile .shop-switch__panel--offen:not(#kk) {
+  display: block;
+}
+.waehrung-wahl--oben .kopf-panel,
+.land-waehrung-zeile .shop-switch--oben .shop-switch__panel:not(#kk) {
+  top: auto;
+  bottom: calc(100% + 8px);
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.kopf-panel__option,
+.land-waehrung-zeile .shop-switch__option:not(#kk) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  color: var(--lw-tinte);
+  font-size: 0.9375rem; /* 15 */
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.kopf-panel__option:hover,
+.land-waehrung-zeile .shop-switch__option:not(#kk):hover {
+  background: rgba(29, 29, 31, 0.05);
+  color: var(--lw-tinte);
+  text-decoration: none;
+}
+.kopf-panel__option--aktiv,
+.land-waehrung-zeile .shop-switch__option--aktiv:not(#kk) {
+  background: rgba(29, 29, 31, 0.05);
+  font-weight: 600;
+}
+.kopf-panel__symbol {
+  min-width: 1.4em;
+  color: rgba(29, 29, 31, 0.6);
+  font-variant-numeric: tabular-nums;
+}
+.kopf-panel__label {
+  flex: 1 1 auto;
+}
+.kopf-panel__haken {
+  flex: 0 0 auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .land-waehrung-zeile :not(#kk),
+  .waehrung-wahl :not(#kk) {
+    transition: none;
+  }
+}
