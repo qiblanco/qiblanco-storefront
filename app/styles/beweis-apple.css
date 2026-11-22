@@ -127,3 +127,20 @@
     padding-inline: var(--as-s-2);
   }
 }
+
+/* ERSTER BLOCK FREI UNTER DEM KOPF (Sicht-Tor 22.11.2026, 390 px: die
+   Titelseiten-Leiste lag unter dem transparenten Kopf). app.css (F-441) hält
+   den Abstand mit main::before, nimmt aber main:has(> .as-seite) aus, weil
+   Apple-Fassungen eigenen Abstand halten. Hier dieselbe Formel wie F-441 an der
+   Wurzel, damit A oben genau wie C steht. Der Seitengrund hinter dem Kopf folgt
+   dem Apple-Weiß (wie uebersicht-apple.css), sonst läuft bei 104 px eine Kante
+   durchs Logo. RÜCKWEG: diesen Block löschen. */
+.as-seite[data-apple-seite='studien'] {
+  padding-top: max(
+    0px,
+    calc(var(--qb-kopf-hoehe-oben, var(--qb-kopf-hoehe, 135px)) - var(--header-height, 64px) - 40px)
+  );
+}
+body:has([data-apple-seite='studien'] .qb-st) {
+  background: white;
+}
