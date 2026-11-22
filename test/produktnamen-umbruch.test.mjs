@@ -55,7 +55,7 @@ test('zustand: hydrierter Text ist frei, Grenze ohne Hydration wartet', () => {
   const body = fiber(el('BODY', [span, marke('$'), innen, marke('/$')]), {children: []});
   assert.equal(zustand(hydriert), 'frei');
   assert.equal(zustand(offen), 'warten');
-  // nach der Hydration traegt das Elternelement den React-Schluessel
+  // nach der Hydration trägt das Elternelement den React-Schlüssel
   fiber(innen);
   assert.equal(zustand(offen), 'frei');
   assert.ok(body);
