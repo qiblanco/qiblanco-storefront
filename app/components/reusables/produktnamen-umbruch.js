@@ -6,10 +6,19 @@
  *
  * Ersetzt in Textknoten die Leerzeichen INNERHALB fester Wortgruppen durch
  * ein geschütztes Leerzeichen (U+00A0): Produktnamen mit Nummer/Zusatz und
- * Zahl + Einheit. Läuft erst nach der Hydration (root.jsx, useEffect) und
- * danach für jeden neuen Text (MutationObserver), damit React beim Hydrieren
- * denselben Text sieht wie der Server. Idempotent: ein zweiter Lauf ändert
- * nichts mehr.
+ * Zahl + Einheit. Startet nach der Hydration des Root (root.jsx, useEffect)
+ * und danach für jeden neuen Text (MutationObserver). Idempotent: ein
+ * zweiter Lauf ändert nichts mehr.
+ *
+ * NUR HYDRIERTEN TEXT ANFASSEN (Repair 20261122-prio6-repair-qiblanco-
+ * hydration-umbruchschutz): der Root-Effekt läuft, bevor nachgeladene
+ * Suspense-Grenzen (Await/Streaming) hydriert sind. Wer deren Text vorher
+ * ändert, lässt React beim Hydrieren anderen Text finden: #418/#425, dann
+ * verwirft React das Server-HTML (#422), auf jeder Seite. Deshalb prüft
+ * `zustand` je Textknoten: hat React ihn (oder sein Elternelement) schon
+ * hydriert, ist er frei; liegt er in einer noch nicht hydrierten Grenze,
+ * wartet er und wird später erneut geprüft (Zeitplan + erste Eingabe);
+ * DOM, das nie React gehört (Einwilligungs-Dialog, fremde Skripte), ist frei.
  *
  * QUELLE DER MUSTER für beide Shops: diese Datei. Der Global Englisch-Shop
  * trägt eine Kopie (us-qiblanco-2024 assets/produktnamen-umbruch.js) mit
@@ -70,29 +79,80 @@ export function nachMarke(text) {
 
 const UEBERSPRINGEN = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'CODE', 'PRE', 'NOSCRIPT', 'TEMPLATE']);
 
-function bearbeiteKnoten(knoten) {
-  if (knoten.nodeType === 3) {
-    const p = knoten.parentNode;
-    if (!p || UEBERSPRINGEN.has(p.nodeName) || p.isContentEditable) return;
-    const alt = knoten.nodeValue;
-    let neu = schuetze(alt);
-    // Das ® steht oft als eigenes <sup> (MarkeR): „QiOne“<sup>®</sup>„ 1.“.
-    // Dann beginnt der nächste Textknoten mit dem Leerzeichen vor der Nummer.
-    const vor = knoten.previousSibling;
-    if (vor && vor.nodeType === 1 && /^\s*®\s*$/.test(vor.textContent || '')) {
-      neu = nachMarke(neu);
-    }
-    if (neu !== alt) knoten.nodeValue = neu;
-    return;
+// React hängt beim Hydrieren (und beim Erzeugen im Browser) diese Schlüssel
+// an jeden Knoten, den es besitzt: __reactFiber$<zufall>, __reactProps$<zufall>.
+// Server-HTML einer noch nicht hydrierten Grenze trägt sie nicht.
+function reactSchluessel(knoten, praefix) {
+  if (!knoten || typeof knoten !== 'object') return null;
+  const schluessel = Object.keys(knoten);
+  for (let i = 0; i < schluessel.length; i++) {
+    if (schluessel[i].startsWith(praefix)) return schluessel[i];
   }
-  if (knoten.nodeType !== 1 || UEBERSPRINGEN.has(knoten.nodeName)) return;
-  const gaenger = knoten.ownerDocument.createTreeWalker(knoten, 4);
-  let t = gaenger.nextNode();
-  while (t) {
-    bearbeiteKnoten(t);
-    t = gaenger.nextNode();
-  }
+  return null;
 }
+const hatFiber = (k) => reactSchluessel(k, '__reactFiber$') !== null;
+
+// Suspense-Marken im Server-HTML (React 18): <!--$--> fertig, <!--$?--> wartet,
+// <!--$!--> Rückfall im Browser, <!--/$--> Ende. Liegt `kind` unter `eltern`
+// zwischen einer offenen und ihrer schließenden Marke, gehört es zu einer Grenze.
+function inGrenze(eltern, kind) {
+  let tiefe = 0;
+  const kinder = eltern.childNodes || [];
+  for (let i = 0; i < kinder.length; i++) {
+    const k = kinder[i];
+    if (k === kind) return tiefe > 0;
+    if (k.nodeType === 8) {
+      if (k.data === '$' || k.data === '$?' || k.data === '$!') tiefe++;
+      else if (k.data === '/$' && tiefe > 0) tiefe--;
+    }
+  }
+  return false;
+}
+
+/**
+ * Darf der Schutz diesen Textknoten jetzt ändern?
+ * 'frei'   – React hat ihn hydriert, er gehört nie React, oder es gibt hier
+ *            gar kein React (Test, Seite ohne Hydration).
+ * 'warten' – Server-Text einer noch nicht hydrierten Suspense-Grenze;
+ *            später erneut prüfen.
+ * 'nie'    – nicht anfassen (kein Elternknoten, Skript/Stil/Eingabe,
+ *            Streaming-Ablage <div hidden id="S:…">, die React gleich
+ *            an ihren Platz verschiebt; dort meldet ihn der Beobachter neu).
+ * @param {Node} text
+ * @returns {'frei'|'warten'|'nie'}
+ */
+export function zustand(text) {
+  const p = text && text.parentNode;
+  if (!p || UEBERSPRINGEN.has(p.nodeName) || p.isContentEditable) return 'nie';
+  if (hatFiber(text) || hatFiber(p)) return 'frei';
+  let kind = text;
+  let ahn = p;
+  while (ahn && !hatFiber(ahn)) {
+    if (ahn.nodeName === 'DIV' && ahn.hidden && /^S:/.test(ahn.id || '')) return 'nie';
+    kind = ahn;
+    ahn = ahn.parentNode;
+  }
+  if (!ahn) return 'frei';
+  const props = ahn[reactSchluessel(ahn, '__reactProps$')];
+  if (props && props.dangerouslySetInnerHTML) return 'frei';
+  return inGrenze(ahn, kind) ? 'warten' : 'frei';
+}
+
+function aendereText(knoten) {
+  const alt = knoten.nodeValue;
+  let neu = schuetze(alt);
+  // Das ® steht oft als eigenes <sup> (MarkeR): „QiOne“<sup>®</sup>„ 1.“.
+  // Dann beginnt der nächste Textknoten mit dem Leerzeichen vor der Nummer.
+  const vor = knoten.previousSibling;
+  if (vor && vor.nodeType === 1 && /^\s*®\s*$/.test(vor.textContent || '')) {
+    neu = nachMarke(neu);
+  }
+  if (neu !== alt) knoten.nodeValue = neu;
+}
+
+// Nachprüf-Abstände in ms für wartende Knoten (Grenzen hydrieren meist binnen
+// einer Sekunde; Eingaben lösen zusätzlich eine Prüfung aus).
+const NACHPRUEFEN_MS = [50, 150, 400, 1000, 2000, 4000, 8000, 15000, 30000];
 
 /**
  * Startet den Schutz für das ganze Dokument. Gibt eine Stopp-Funktion zurück.
@@ -102,15 +162,89 @@ function bearbeiteKnoten(knoten) {
 export function starteUmbruchSchutz(doc) {
   try {
     if (!doc?.body) return () => {};
-    bearbeiteKnoten(doc.body);
+    const win = doc.defaultView || globalThis;
+    // Wartende Knoten -> wie oft schon nacheinander 'frei' gesehen. Erst beim
+    // zweiten Mal ändern: eine Grenze, die gerade hydriert, ist dann committet.
+    const wartend = new Map();
+    let schritt = 0;
+    let uhr = null;
+    let gestoppt = false;
+
+    const behandle = (knoten) => {
+      if (knoten.nodeType === 3) {
+        const z = zustand(knoten);
+        if (z === 'frei') aendereText(knoten);
+        else if (z === 'warten' && !wartend.has(knoten)) {
+          wartend.set(knoten, 0);
+          schritt = 0;
+        }
+        return;
+      }
+      if (knoten.nodeType !== 1 || UEBERSPRINGEN.has(knoten.nodeName)) return;
+      const gaenger = doc.createTreeWalker(knoten, 4);
+      let t = gaenger.nextNode();
+      while (t) {
+        behandle(t);
+        t = gaenger.nextNode();
+      }
+    };
+
+    const nachpruefen = () => {
+      uhr = null;
+      if (gestoppt) return;
+      wartend.forEach((gesehen, knoten) => {
+        if (!knoten.isConnected) return void wartend.delete(knoten);
+        const z = zustand(knoten);
+        if (z === 'nie') return void wartend.delete(knoten);
+        if (z !== 'frei') return void wartend.set(knoten, 0);
+        if (gesehen >= 1) {
+          wartend.delete(knoten);
+          aendereText(knoten);
+        } else wartend.set(knoten, 1);
+      });
+      plane();
+    };
+
+    // Frühester Termin gewinnt: ein späterer Wunsch verschiebt nie einen
+    // früheren (Scrollen feuert dauernd und darf die Prüfung nicht aufschieben).
+    let faellig = 0;
+    const plane = (sofort) => {
+      if (gestoppt || wartend.size === 0) return;
+      let ms;
+      if (sofort) ms = 50;
+      else if (schritt < NACHPRUEFEN_MS.length) ms = NACHPRUEFEN_MS[schritt];
+      else return;
+      const jetzt = Date.now();
+      if (uhr && faellig <= jetzt + ms) return;
+      if (uhr) win.clearTimeout(uhr);
+      if (!sofort) schritt++;
+      faellig = jetzt + ms;
+      uhr = win.setTimeout(nachpruefen, ms);
+    };
+
+    // Eine Eingabe in einer noch nicht hydrierten Grenze lässt React sie
+    // sofort hydrieren: danach kurz nachprüfen, auch nach Ablauf des Zeitplans.
+    const beiEingabe = () => plane(true);
+    const EREIGNISSE = ['pointerdown', 'keydown', 'focusin', 'scroll'];
+    EREIGNISSE.forEach((e) => doc.addEventListener(e, beiEingabe, {capture: true, passive: true}));
+
+    behandle(doc.body);
     const beobachter = new MutationObserver((liste) => {
       for (const m of liste) {
-        if (m.type === 'characterData') bearbeiteKnoten(m.target);
-        else m.addedNodes.forEach(bearbeiteKnoten);
+        if (m.type === 'characterData') behandle(m.target);
+        else m.addedNodes.forEach(behandle);
       }
+      plane();
     });
     beobachter.observe(doc.body, {childList: true, subtree: true, characterData: true});
-    return () => beobachter.disconnect();
+    plane();
+    return () => {
+      gestoppt = true;
+      beobachter.disconnect();
+      if (uhr) win.clearTimeout(uhr);
+      EREIGNISSE.forEach((e) => doc.removeEventListener(e, beiEingabe, {capture: true}));
+      wartend.clear();
+    };
   } catch {
     return () => {};
   }
