@@ -157,8 +157,10 @@
  * „Welches Qi Blanco Produkt passt zu mir?“ verdeckt am Handy den Text. Gilt nur
  * hier: die Datei hängt an links() dieser Route und fällt beim Verlassen weg.
  * Rückweg: diesen Block löschen. */
+#qiblanco-salesbot-widget-huelle,
 #qiblanco-salesbot-widget-traeger,
 #qiblanco-salesbot-widget-frame,
+#qiblanco-show-buehne,
 #qiblanco-kontakt-rueckfall {
   display: none !important;
 }
