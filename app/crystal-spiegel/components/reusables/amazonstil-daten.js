@@ -26,7 +26,7 @@
  * Nur relative Importe, kein React: läuft unter `node --test` ohne Build.
  */
 import {PRODUKT_TRIO} from '~/lib/redesign3themen.js';
-import {anzeigeSatz, formatPreis, ganzEuroAnzeige} from '~/lib/markt-pricing.js';
+import {anzeigeSatz, formatPreis, ganzEuroAnzeige} from '../../lib/markt-pricing.js';
 import {isSchemaSafe} from '../../lib/faq-schema.js';
 import {monatsrate} from '~/components/reusables/raten-angebot.js';
 

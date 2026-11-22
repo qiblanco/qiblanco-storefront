@@ -10,7 +10,7 @@ import {
   PACKUNG_GRAMM,
   cacaoPricing,
   staffelBetragText,
-} from '~/lib/cacao-pricing';
+} from '~/crystal-spiegel/lib/cacao-pricing';
 
 // Die Staffel-Rechnung kommt seit 2026-10-06 aus lib/cacao-pricing.js, byte-gleich
 // zu qiblanco.com (K1, Job 20261006-preisanzeige-rest-laender-achse-staffel-
