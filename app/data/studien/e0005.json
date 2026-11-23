@@ -29,6 +29,7 @@
   "materialLabel": "Zellen / Material",
   "material": "SH-SY5Y (humane Nervenzellen) und HL-60, 4 Replikate",
   "geprueft": "QiHome® Air",
+  "geprueftPfad": "/products/qihome-air",
   "coverMasse": {
    "w": 1080,
    "h": 1080

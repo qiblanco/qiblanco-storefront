@@ -156,8 +156,20 @@ export function StudieSeite({studie}) {
                 {e.material}
               </Eckdatum>
             ) : null}
+            {/*
+              Produktlink optional ueber `geprueftPfad` (SEO L22-qihome-air-044a,
+              2026-11-23): die Studienseite steht fuer den Produktnamen vor der
+              Kaufseite, verlinkte sie aber nicht. Ohne das Feld rendert die
+              Zeile wie bisher als Text, die uebrigen Studien bleiben gleich.
+            */}
             {e.geprueft ? (
-              <Eckdatum label="Geprüftes Produkt">{e.geprueft}</Eckdatum>
+              <Eckdatum label="Geprüftes Produkt">
+                {e.geprueftPfad ? (
+                  <Link to={e.geprueftPfad}>{e.geprueft}</Link>
+                ) : (
+                  e.geprueft
+                )}
+              </Eckdatum>
             ) : null}
             {/*
               Autor und Institut stehen nicht im Text (Elina EL-20261112-0a9978b4:
