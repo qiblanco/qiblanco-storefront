@@ -24,7 +24,7 @@ export const SCHLAF_SEKTIONEN = Object.freeze([
     etikett: 'Was nachts passiert',
     titel: 'Was nachts in deinem Körper passiert.',
     absaetze: [
-      'Der Gitterchip® im QiOne® 2 Pro erzeugt ein statisches Feld und braucht dafür weder Batterie noch Magnet. Dieses Feld ordnet das Wasser an deinen Zellen. In Zellstudien puffert diese geordnete Grenzschicht E-Smog ab und senkt oxidativen Stress.',
+      'Der Gitterchip® im QiOne® 2 Pro erzeugt ein statisches Feld und braucht dafür weder Batterie noch Magnet. Dieses Feld ordnet das Wasser an deinen Zellen.',
       'Ein Körper, der weniger im Abwehrmodus ist, fährt nachts leichter herunter. In rund 20 Nächten stellt sich ein neues Gleichgewicht ein, und die meisten Träger berichten von Veränderungen in den ersten drei Wochen.',
     ],
   },

@@ -45,8 +45,8 @@ const OHNE_NAMEN = [
     'In unserer Laborstudie wurden menschliche Immunzellen vier Stunden lang Handystrahlung ausgesetzt.',
   ],
   [
-    'Prof. Dr. Peter C. Dartsch hat das QiBracelet® im Labor an fünf Typen menschlicher Zellen getestet. Er setzte sie oxidativem Stress aus.',
-    'In unserer Laborstudie wurde das QiBracelet® an fünf Typen menschlicher Zellen getestet. Die Zellen wurden dabei oxidativem Stress ausgesetzt.',
+    'Prof. Dr. Peter C. Dartsch hat das QiBracelet® im Labor an fünf Zelltypen getestet. Er setzte sie oxidativem Stress aus.',
+    'In unserer Laborstudie wurde das QiBracelet® an fünf Zelltypen getestet. Die Zellen wurden dabei oxidativem Stress ausgesetzt.',
   ],
   [
     'Prof. Dr. Peter C. Dartsch hat das QiHome® Air an menschlichen Nervenzellen getestet.',

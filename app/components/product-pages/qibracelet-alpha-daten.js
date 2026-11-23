@@ -177,7 +177,7 @@ export const WISSEN = {
       etikett: 'Zelle',
       titel: 'Das QiBracelet® schützte im Labor fünf von fünf Zelltypen.',
       absaetze: [
-        'Prof. Dr. Peter C. Dartsch hat das QiBracelet® im Labor an fünf Typen menschlicher Zellen getestet. Er setzte sie oxidativem Stress aus.',
+        'Prof. Dr. Peter C. Dartsch hat das QiBracelet® im Labor an fünf Zelltypen getestet. Er setzte sie oxidativem Stress aus.',
         'Bei Leberzellen lag der Schutz bei 47,3 %.',
       ],
       quellen: [

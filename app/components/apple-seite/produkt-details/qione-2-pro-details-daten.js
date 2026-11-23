@@ -170,7 +170,7 @@ export const TECHNIK = Object.freeze({
       etikett: 'Schritt 4 · Was die Forschung zeigt',
       titel: 'Was Zellen im Labor unter Strahlung zeigen.',
       kurz: [
-        'Prof. Dr. Peter C. Dartsch hat den QiOne® 2 Pro an menschlichen Zellen getestet, unter E-Smog, also der unsichtbaren Strahlung von Handy und WLAN. Im Labor zeigten die Zellen mit dem QiOne® 2 Pro deutlich bessere Werte.',
+        'Prof. Dr. Peter C. Dartsch hat den QiOne® 2 Pro an Zellen getestet, unter E-Smog, also der unsichtbaren Strahlung von Handy und WLAN. Im Labor zeigten die Zellen mit dem QiOne® 2 Pro deutlich bessere Werte.',
       ],
       // Werte wie die Gitterchip-Seite (app/data/gitterchip-seite.js, je mit
       // Fundstelle): e0001 laienSummary 60,5/84,7 % der unbestrahlten

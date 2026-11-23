@@ -26,8 +26,8 @@ const ERSATZ = new Map([
     'Ohne QiOne® 2 Pro behielten sie 60,5 % ihrer Abwehrleistung, mit ihm 84,7 %.',
   ],
   [
-    'Prof. Dr. Peter C. Dartsch hat das QiBracelet® im Labor an fünf Typen menschlicher Zellen getestet. Er setzte sie oxidativem Stress aus.',
-    'In unserer Laborstudie wurde das QiBracelet® an fünf Typen menschlicher Zellen getestet, die oxidativem Stress ausgesetzt waren.',
+    'Prof. Dr. Peter C. Dartsch hat das QiBracelet® im Labor an fünf Zelltypen getestet. Er setzte sie oxidativem Stress aus.',
+    'In unserer Laborstudie wurde das QiBracelet® an fünf Zelltypen getestet, die oxidativem Stress ausgesetzt waren.',
   ],
   [
     'Prof. Dr. Peter C. Dartsch hat das QiHome® Air an menschlichen Nervenzellen getestet.',
