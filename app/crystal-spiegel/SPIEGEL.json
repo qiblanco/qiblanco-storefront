@@ -41,7 +41,7 @@
     "app/crystal-spiegel/components/product-pages/SortenSeite.jsx": "995502ceab6f36625ea13aaed829e349c81d2bf0e07f8f970782de3f2c147c58",
     "app/crystal-spiegel/components/reusables/AbsichtHinweis.jsx": "c839e5234868032e61861c94d6586133eaa93222f8a1fa46baea0908043efd87",
     "app/crystal-spiegel/components/reusables/AmazonStil.jsx": "eae8e9bbc41b42fe93e2680ff5207b9bb18a5e0e1e6762a0c8bd9215a060ff75",
-    "app/crystal-spiegel/components/reusables/Belege.jsx": "9d4b413030de4a1951bc92be65880824154f3c66b91ee8274ccd5af55ce6b34d",
+    "app/crystal-spiegel/components/reusables/Belege.jsx": "300825f0f878f89dee10eff7674488c32cf49cd2958a6bd24ee663fef27c5629",
     "app/crystal-spiegel/components/reusables/IgTestimonialSlideshow.jsx": "c71c4d33be9d6bf4d0cb68631e84e12c7ef85f66a54128542436463e78e64846",
     "app/crystal-spiegel/components/reusables/KakaoTiefe.jsx": "da5b83406ed0567a84f8e9527805379b6fcd32560f90f4c4bd99893d708f1b3f",
     "app/crystal-spiegel/components/reusables/KursEintragung.jsx": "1a6dbb8b26d1e4aac6fd4698299075280db3bd33d5ef857bc77e6823af3a7530",
@@ -51,10 +51,10 @@
     "app/crystal-spiegel/components/reusables/amazonstil-daten.js": "38643b1b45d9b5a23c990a7bd7fade6cc655a97e0ac085282f91a0a7bc5eb9db",
     "app/crystal-spiegel/components/reusables/kakao-tiefe-daten.js": "cddc113663ea4f9acb5235b961ffaa7fa68c23358730ffe068ea1171c5a95d57",
     "app/crystal-spiegel/components/reusables/preis-schild-regel.js": "7b3d36be27c2a25a3b6c069f96d309430811df5cc3ccff3a7722b740d2ed816e",
-    "app/crystal-spiegel/components/startseite/Analyseprofile.jsx": "2b674d957b50cb73428cc33c0f0e9c4725e13b1e34e28ba1cbc4fea13d937e67",
-    "app/crystal-spiegel/components/startseite/KaffeeVergleich.jsx": "d35b53b6019a45043856f1b3bda45ac82d5b5fe7fe9b2ce573aca60e9448c317",
-    "app/crystal-spiegel/components/startseite/SortenSlider.jsx": "825c00eac336d7de51995cbb1ad719f29174dd354798990d16ea5602842ed98a",
-    "app/crystal-spiegel/components/startseite/Startseite.jsx": "653e619e525e1e1a27132428aeb0d76c4724b57c31fa32f8482cfb6ce242d66c",
+    "app/crystal-spiegel/components/startseite/Analyseprofile.jsx": "f2e22e9e845549ce6cf261143d1d93def5de23407ba79748fdf2bcf26b7abad1",
+    "app/crystal-spiegel/components/startseite/KaffeeVergleich.jsx": "96629fe32f9b2512ead4a7d6f65d7227e1f405624e06c2cd0caea699d0d46077",
+    "app/crystal-spiegel/components/startseite/SortenSlider.jsx": "935c3f146679826f3f765fcf2bafaf401b082f510eacf1cb76f4767e47504d4a",
+    "app/crystal-spiegel/components/startseite/Startseite.jsx": "7591af0ad981924d604a6b30346a72c6117a1afc6c87aad3347c07ea23c3b1a8",
     "app/crystal-spiegel/components/startseite/Verkaufsauftritt.jsx": "696c4354b364bda775c238ffb1d97a90c127beaacceefa4a620fda9134535e2c",
     "app/crystal-spiegel/data/ig-testimonials.js": "d1ae95c96a8fd1bb9b952140491c0060f2d03d7b7be8a0d7c46ab2e9d778b383",
     "app/crystal-spiegel/data/kakao-stimmen.js": "d23122789a2225d127859766d77880e6d204d7ee2bc516b3e77f3d0f44263956",
@@ -112,7 +112,7 @@
     "components",
     "utilities"
   ],
-  "quelle_commit": "fd3a3f4183687af9f2e8ef42751cc6eb91b738c3",
+  "quelle_commit": "b4d72a78a77cc5dbefdd91ae31937e21b79eec8f",
   "quelle_repo": "crystal-cacao-node/repo",
   "seiten": {
     "awake": {
