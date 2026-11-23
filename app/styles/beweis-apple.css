@@ -127,3 +127,14 @@
     padding-inline: var(--as-s-2);
   }
 }
+
+/* SEITENGRUND HINTER DEM KOPF (Sicht-Tor 22.11.2026, 390 px). Der Abstand des
+   ersten Blocks unter dem Kopf kommt seit F-441 (Job 20261118-fc-folge-apple-
+   seiten-kopfabstand, 23.11.2026) aus app.css main::before, das die
+   Apple-Fassung .as-seite nicht mehr ausnimmt; das eigene padding-top dieser
+   Seite (dieselbe Formel) hätte den Abstand verdoppelt und ist deshalb
+   entfallen. Der Seitengrund folgt dem Apple-Weiß (wie uebersicht-apple.css),
+   sonst läuft bei 104 px eine Kante durchs Logo. RÜCKWEG: diesen Block löschen. */
+body:has([data-apple-seite='studien'] .qb-st) {
+  background: white;
+}

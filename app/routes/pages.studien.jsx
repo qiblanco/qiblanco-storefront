@@ -1,4 +1,8 @@
+import {useLoaderData} from 'react-router';
 import {STUDIEN, zahlwort, untersuchteProdukte} from '~/data/studien';
+import {appleSeiteLaden} from '~/lib/apple-seiten';
+import {AppleSeite} from '~/components/apple-seite/AppleSeite';
+import beweisAppleStyles from '~/styles/beweis-apple.css?url';
 import {studienArten, übersichtSchema} from '~/lib/studien-schema';
 import {buildFaqPageJsonLd} from '~/lib/faq-schema';
 import {
@@ -135,8 +139,13 @@ const FAQ_SOLL = EVIDENZSTUFE_SOLL + 1;
  * pages.bewertungen.jsx: serverseitig, damit Server und Hydrierung denselben
  * Tag rendern. Titel, H1 und Meta dieser Seite bleiben davon unberührt.
  */
-export function loader() {
-  return {ausgeliefert: new Date().toISOString()};
+export function loader({context}) {
+  // APPLE-FASSUNG (Grossjob 20261118-de-shop-apple-rest-z3-z20, s02): Schalter
+  // in app/lib/apple-seiten.js; aus = C unverändert.
+  return {
+    ausgeliefert: new Date().toISOString(),
+    appleSeite: appleSeiteLaden(context, 'studien'),
+  };
 }
 
 /**
@@ -147,5 +156,26 @@ export function loader() {
  * seo-manager/gewinnerschutz/bin/gewinner-version.
  */
 export default function StudienPage() {
+  const {appleSeite} = useLoaderData() || {};
+  if (appleSeite?.an) return <StudienApple />;
   return <StudienUebersicht schutzfrage />;
+}
+
+/*
+ * APPLE-FASSUNG DIESER ROUTE (Grossjob 20261029-GROSSJOB-alle-shop-seiten-
+ * apple-niveau-ausser-seo-geo, Träger 20261118-de-shop-apple-rest-z3-z20 s02).
+ * Keine neue Studienseite und kein neuer Satz: dieselbe Übersicht in der
+ * Bauform der Apple-Seiten. Titel, H1, Kerntext und beide ld+json kommen
+ * unverändert aus StudienUebersicht (meta() oben bleibt). Die Scope-CSS
+ * styles/beweis-apple.css biegt nur die --st-* Tokens auf --as-* um.
+ */
+function StudienApple() {
+  return (
+    <>
+      <link rel="stylesheet" href={beweisAppleStyles} />
+      <AppleSeite seite="studien">
+        <StudienUebersicht schutzfrage />
+      </AppleSeite>
+    </>
+  );
 }

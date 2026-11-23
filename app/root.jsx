@@ -112,6 +112,13 @@ import einwilligungStyles from '~/styles/einwilligung.css?url';
 // überschreibt; die Datei setzt nur Licht (Schatten, Glanz), nie Farbe oder
 // Größe. Rückweg: diesen Import und den <link> unten entfernen.
 import goldKnopfBStyles from '~/styles/gold-knopf-b.css?url';
+// Fuß-Zeile Land/Sprache · Währung (Teil 1), nach gold-knopf-b geladen
+// (Job 20261122-prio1-shop-design-header-...).
+import landWaehrungStyles from '~/styles/land-waehrung.css?url';
+// Kopf-Knöpfe einheitlich (Menü, Flagge, Währung, Konto, Warenkorb), Teil 2
+// des Jobs 20261122-prio1-shop-design-header-..., nach land-waehrung geladen.
+import kopfKnoepfeStyles from '~/styles/kopf-knoepfe.css?url';
+import {starteUmbruchSchutz} from '~/components/reusables/produktnamen-umbruch';
 // „Mehr erfahren“ = Pfeil-Link (Knopf-Strategie K5, Variante A), Christian
 // 12.11.2026, Job 20261112-prio1-mehr-erfahren-pfeil-link-variante-a-beide-shops-live.
 // Steht als letzte Datei HINTER <Links />, damit Seiten-CSS den Kasten nicht
@@ -242,12 +249,19 @@ export async function loader(args) {
   // eigenen Rundweg zur Storefront-API (DE 82 ms, TH 261 ms). Fehlerverhalten
   // wie zuvor: die Kopfzeile darf werfen, die Bewertung fällt auf den
   // Schnappschuss zurück, die Leiste wirft nie.
-  const [criticalData, googleRating, leistenWahl] = await Promise.all([
+  const [criticalData, googleRating, leistenWahl, lokalisierung] = await Promise.all([
     loadCriticalData(args),
     ladeGoogleRating(args.context).catch(() => ({
       ...GOOGLE_RATING_FALLBACK_VOLL,
     })),
     ladeLeistenWahl(args.context.storefront),
+    // Währungs-Auswahl im Kopf/Fuß: welche Währungen Shopify Markets diesem
+    // Shop anbietet und welche gerade gilt (CacheLong, wirft nie; ohne
+    // Antwort zeigt die Auswahl die vier Kernwährungen, land-waehrung.js).
+    args.context.storefront
+      .query(LOKALISIERUNG_QUERY, {cache: args.context.storefront.CacheLong()})
+      .then((d) => d?.localization ?? null)
+      .catch(() => null),
   ]);
 
   const {storefront, env} = args.context;
@@ -277,6 +291,7 @@ export async function loader(args) {
       : {};
 
   const antwort = {
+    lokalisierung,
     ...einwilligung,
     ...deferredData,
     ...criticalData,
@@ -550,6 +565,11 @@ export function Layout({children}) {
     document.dispatchEvent(new Event('qb:hydriert'));
   }, []);
 
+  // Produktnamen und Zahl + Einheit nie trennen (geschützte Leerzeichen),
+  // erst nach der Hydration, damit Server- und Client-Text gleich sind
+  // (components/reusables/produktnamen-umbruch.js). Unbedingt, feste Stelle.
+  useEffect(() => starteUmbruchSchutz(document), []);
+
   // UNBEDINGT und an fester Stelle — die Hooks von Meta() laufen im Slot
   // dieser Komponente, ihre Reihenfolge darf zwischen zwei Renderdurchlaeufen
   // nicht wandern. Begründung vollstaendig über `metaAufteilen`.
@@ -597,7 +617,15 @@ export function Layout({children}) {
     >
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {/* viewport-fit=cover: erst damit liefert iOS env(safe-area-inset-*)
+            einen Wert. Ohne den Zusatz rechnet jede feste Kauf-Leiste mit 0,
+            und im WhatsApp-/Instagram-Browser und bei eingeklappter
+            Safari-Leiste lag der Knopf unter dem Home-Balken (Christian
+            22.11.2026: „Unten die Knöpfe sind abgeschnitten“). */}
+        <meta
+          name="viewport"
+          content="width=device-width,initial-scale=1,viewport-fit=cover"
+        />
         {/*
           Nutzungsvorbehalt / TDM reservation (W3C TDMRep), Job 20260729-anti-
           scraping-s04. Dritter Träger neben /.well-known/tdmrep.json und
@@ -667,6 +695,8 @@ export function Layout({children}) {
         ))}
         <link rel="stylesheet" href={goldKnopfBStyles}></link>
         <link rel="stylesheet" href={mehrErfahrenAStyles}></link>
+        <link rel="stylesheet" href={landWaehrungStyles}></link>
+        <link rel="stylesheet" href={kopfKnoepfeStyles}></link>
       </head>
       <body>
         {einwilligungEigen && (
@@ -1136,3 +1166,29 @@ export function ErrorBoundary() {
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @typedef {import('react-router').ShouldRevalidateFunction} ShouldRevalidateFunction */
 /** @typedef {import('react-router').SerializeFrom<typeof loader>} LoaderReturnData */
+
+/**
+ * Währungen des Shops für die Auswahl im Kopf/Fuß (Job 20261122-prio1-shop-
+ * design-header-...). @inContext: die aktive Währung folgt dem Markt-Land.
+ */
+const LOKALISIERUNG_QUERY = `#graphql
+  query KopfLokalisierung($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    localization {
+      country {
+        isoCode
+        currency {
+          isoCode
+          symbol
+        }
+      }
+      availableCountries {
+        isoCode
+        currency {
+          isoCode
+          symbol
+        }
+      }
+    }
+  }
+`;

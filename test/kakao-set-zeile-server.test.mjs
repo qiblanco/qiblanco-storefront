@@ -410,9 +410,11 @@ test('Festbetrag getroffen => kakaoPreisschutz sagt anker_festbetrag für JEDEN 
   assert.ok(faelle > 3000, `nur ${faelle} Fälle`);
 });
 
-test('ohne Festbetrag (AT, netto, 1 Cent daneben, unter 4) entscheidet weiter der Einzelweg', () => {
+test('ohne Festbetrag (netto, 1 Cent daneben, unter 4) entscheidet weiter der Einzelweg; AT/EUR trifft die EUR-Tabelle', () => {
   const set4 = [{packungen: 4, je: {awake: 4, create: 0}, cent: 21300}];
-  assert.equal(kakaoFestbetragGetroffen({land: 'AT', waehrung: 'EUR', brutto: true, sets: set4}), false);
+  // seit dem Nachtlauf 2026-11-20: jedes Land mit EUR-Warenkorb rechnet mit der EUR-Tabelle
+  assert.equal(kakaoFestbetragGetroffen({land: 'AT', waehrung: 'EUR', brutto: true, sets: set4}), true);
+  assert.equal(kakaoFestbetragGetroffen({land: 'AT', waehrung: 'EUR', brutto: false, sets: set4}), false);
   assert.equal(kakaoFestbetragGetroffen({land: 'DE', waehrung: 'EUR', brutto: false, sets: set4}), false);
   assert.equal(
     kakaoFestbetragGetroffen({land: 'DE', waehrung: 'EUR', brutto: true, sets: [{...set4[0], cent: 21301}]}),
@@ -432,11 +434,13 @@ test('KLASSISCH: In den Warenkorb 3x Awake = 2 Mutationen, Nachlesen und Variant
   assert.deepEqual(shop.stand(), ['bundle-3x-awake x1 = 15960 EUR']);
 });
 
-test('KLASSISCH: Stepper 3er-Set -> 4 geht über die Einzelpackungen (2 Mutationen, 3 Abfragen)', async () => {
+// Seit Notbahn 20261119 liest der Stepper einer Set-Zeile zuerst die Zeile
+// (erstes Q:zeilen): ist sie ein BF-Deal-Set, zählt der Klick ein ganzes Set.
+test('KLASSISCH: Stepper 3er-Set -> 4 geht über die Einzelpackungen (2 Mutationen, 4 Abfragen)', async () => {
   const shop = fakeShop({land: 'DE'});
   shop.lege([['bundle-3x-awake', 1]]);
   await aktion(shop, {laden: 'qiblanco', art: 'LinesUpdate', inputs: stepper(shop, 'bundle-3x-awake', 4)});
-  assert.deepEqual(shop.log, ['Q:variante', 'M:update', 'Q:zeilen', 'Q:variante', 'M:update']);
+  assert.deepEqual(shop.log, ['Q:zeilen', 'Q:variante', 'M:update', 'Q:zeilen', 'Q:variante', 'M:update']);
   assert.deepEqual(shop.stand(), ['bundle-4x-awake x1 = 21300 EUR']);
 });
 
@@ -485,12 +489,12 @@ test('NEU: Stepper je Zusammensetzung 3 -> 4..7 und 8 (DE, CH, US): gleicher War
   }
 });
 
-test('NEU: Stepper 4 -> 3 (unter dem Festbetrag): Umweg bleibt, aber ohne Nachlesen', async () => {
+test('NEU: Stepper 4 -> 3 (unter dem Festbetrag): Umweg bleibt, nur die BF-Prüfung liest (Notbahn 20261119)', async () => {
   const l = await beide({vorher: [['bundle-4x-awake', 1]], art: 'LinesUpdate', eingabe: (s) => stepper(s, 'bundle-4x-awake', 3)});
   assert.deepEqual(l.kakao.stand, l.qiblanco.stand);
   assert.deepEqual(l.kakao.stand, ['bundle-3x-awake x1 = 15960 EUR']);
   assert.deepEqual(nur(l.kakao.log, 'M:'), ['M:update', 'M:update']);
-  assert.deepEqual(nur(l.kakao.log, 'Q:'), ['Q:varianten']);
+  assert.deepEqual(nur(l.kakao.log, 'Q:'), ['Q:varianten', 'Q:zeilen']);
 });
 
 test('NEU: In den Warenkorb 3x Awake: 2 Mutationen ohne Abfrage dazwischen', async () => {
@@ -523,10 +527,12 @@ test('NEU: Partnercode am Warenkorb: dieselben Beträge, Zuteilungen aus der Ant
 
 // --- NEU, wo der Preisschutz den Einzelweg braucht: alles wie bisher ---------
 
-test('NEU: AT (Euro, keine Festbetrag-Tabelle): kein Sprung, Einzelpackungen bleiben wie bisher', async () => {
+// Bis 2026-11-20 stand hier 'crystal-cacao-awake x4 = 21280 EUR' als Soll: genau
+// der Weg, auf dem der Partnercode in AT ab 4 Packungen nicht griff.
+test('NEU: AT (Euro, EUR-Tabelle wie DE): Set-Zeile zum Festbetrag, wie DE', async () => {
   const l = await beide({land: 'AT', vorher: [['bundle-3x-awake', 1]], art: 'LinesUpdate', eingabe: (s) => stepper(s, 'bundle-3x-awake', 4)});
   assert.deepEqual(l.kakao.stand, l.qiblanco.stand);
-  assert.deepEqual(l.kakao.stand, ['crystal-cacao-awake x4 = 21280 EUR']);
+  assert.deepEqual(l.kakao.stand, ['bundle-4x-awake x1 = 21300 EUR']);
 });
 
 test('NEU: Preismodus netto: kein Sprung, der Einzelweg entscheidet wie bisher', async () => {
@@ -822,4 +828,117 @@ test('Ohne Einzelweg-Code: jeder Warenkorb gleich wie die Fassung davor', {skip:
   }
   assert.ok(faelle > 2000, String(faelle));
   console.log(`Vergleichsfaelle: ${faelle}`);
+});
+
+// ===========================================================================
+// BF-DEAL-ZEILEN (Merkmal _bf_deal) bleiben in der Kakao-Normalform unberuehrt.
+// Anlass: Notbahn 20261119 (Christian, DM Nina Froitzheim, Patient in NL): im
+// Pre-Sale sprang der Warenkorb "ab 2 Bundles" auf den Normalpreis. Gemessen
+// live 19.11.: zweiter Deal-Klick bundle-2x-awake -> bundle-4x-awake (213 EUR,
+// BF26-KAKAO-NKSKX applicable=false), NL -> 4x crystal-cacao-awake mit 30 %
+// (212,80 EUR) statt 2 x 76 = 152 EUR. Rot-vor-Gruen: mit KAKAO_SERVER_MODUL=
+// <Fassung origin/main 81a22370> werden die Arme A, A2 und B rot.
+// ===========================================================================
+
+const bfVid = (h) => `gid://shopify/ProductVariant/${h}`;
+const BF_MERKMAL = [{key: '_bf_deal', value: 'kakao'}];
+
+function bfFake(zeilen) {
+  const log = [];
+  let n = 0;
+  const korb = {
+    id: 'gid://shopify/Cart/k1',
+    zeilen: zeilen.map(([handle, quantity, bf]) => ({
+      id: `gid://shopify/CartLine/L${++n}`, handle, quantity, attributes: bf ? BF_MERKMAL : [],
+    })),
+  };
+  const knoten = () =>
+    korb.zeilen.map((z) => ({
+      id: z.id,
+      quantity: z.quantity,
+      attributes: z.attributes,
+      merchandise: {id: bfVid(z.handle), product: {handle: z.handle}},
+      cost: {totalAmount: {amount: (76 * z.quantity).toFixed(2), currencyCode: 'EUR'}},
+      discountAllocations: [],
+    }));
+  const storefront = {
+    i18n: {country: 'DE', language: 'DE'},
+    CacheShort: () => ({}),
+    CacheNone: () => ({}),
+    async query(q, opt = {}) {
+      if (q.includes('KakaoSetZeilen(')) {
+        log.push('Q:zeilen');
+        return {cart: {discountCodes: [{code: 'BF26-KAKAO-NKSKX', applicable: true}], lines: {nodes: knoten()}}};
+      }
+      if (q.includes('KakaoSetVariante(')) {
+        log.push('Q:variante');
+        const h = opt.variables.handle;
+        return {product: {selectedOrFirstAvailableVariant: {id: bfVid(h), availableForSale: true, price: {amount: '122.00', currencyCode: 'EUR'}}}};
+      }
+      if (q.includes('KakaoSetVarianten(')) return {};
+      throw new Error('unbekannte Abfrage');
+    },
+  };
+  const antwort = () => ({cart: {id: korb.id, totalQuantity: 1}, userErrors: []});
+  const cart = {
+    getCartId: () => korb.id,
+    async updateLines(lines) {
+      log.push('M:update');
+      for (const l of lines) {
+        const z = korb.zeilen.find((x) => x.id === l.id);
+        if (l.merchandiseId) z.handle = l.merchandiseId.split('/').pop();
+        z.quantity = l.quantity;
+      }
+      return antwort();
+    },
+    async addLines(lines) {
+      log.push('M:add');
+      for (const l of lines) korb.zeilen.push({id: `gid://shopify/CartLine/L${++n}`, handle: l.merchandiseId.split('/').pop(), quantity: l.quantity, attributes: l.attributes || []});
+      return antwort();
+    },
+    async removeLines() { log.push('M:remove'); return antwort(); },
+  };
+  return {cart, storefront, log, korb, antwort};
+}
+
+const bfStand = (k) => k.korb.zeilen.map((z) => `${z.handle} x${z.quantity}`).sort();
+
+test('BF-Deal A: zwei BF-Sets 2x Awake bleiben zwei BF-Sets (kein Umlegen auf 4x)', async () => {
+  const k = bfFake([['bundle-2x-awake', 2, true]]);
+  await legeKakaoSetZeile({cart: k.cart, storefront: k.storefront, action: 'LinesAdd', result: k.antwort()});
+  assert.deepEqual(bfStand(k), ['bundle-2x-awake x2']);
+  assert.equal(k.log.filter((x) => x.startsWith('M:')).length, 0);
+});
+
+test('BF-Deal A2: BF-Set 1x Awake + 1x Create und BF-Set 2x Create bleiben getrennt', async () => {
+  const k = bfFake([['bundle-1x-awake-1x-create', 1, true], ['mengenrabatt-2x', 1, true]]);
+  await legeKakaoSetZeile({cart: k.cart, storefront: k.storefront, action: 'LinesAdd', result: k.antwort()});
+  assert.deepEqual(bfStand(k), ['bundle-1x-awake-1x-create x1', 'mengenrabatt-2x x1']);
+});
+
+test('BF-Deal B: Stepper + auf BF-Set (alter Browser, Packungen) erhoeht die Set-Menge', async () => {
+  const k = bfFake([['bundle-2x-awake', 1, true]]);
+  const id = k.korb.zeilen[0].id;
+  const lines = await kakaoPackungenEingabe({storefront: k.storefront, cart: k.cart,
+    inputs: {lines: [{id, quantity: 1}], kakaoPackungen: {lineId: id, handle: 'bundle-2x-awake', packungen: 3}}});
+  assert.deepEqual(lines, [{id, quantity: 2}]);
+  const runter = await kakaoPackungenEingabe({storefront: k.storefront, cart: k.cart,
+    inputs: {lines: [{id, quantity: 3}], kakaoPackungen: {lineId: id, handle: 'bundle-2x-awake', packungen: 5}}});
+  assert.deepEqual(runter, [{id, quantity: 2}]);
+});
+
+test('BF-Deal C: ohne BF-Merkmal bleibt die Normalform wie bisher (zwei 2x-Sets -> umgelegt)', async () => {
+  const k = bfFake([['bundle-2x-awake', 2, false]]);
+  await legeKakaoSetZeile({cart: k.cart, storefront: k.storefront, action: 'LinesAdd', result: k.antwort()});
+  assert.notDeepEqual(bfStand(k), ['bundle-2x-awake x2']);
+});
+
+test('BF-Deal D: Stepper ohne BF-Merkmal nimmt den Packungsweg wie bisher', async () => {
+  const k = bfFake([['bundle-2x-awake', 1, false]]);
+  const id = k.korb.zeilen[0].id;
+  const lines = await kakaoPackungenEingabe({storefront: k.storefront, cart: k.cart,
+    inputs: {lines: [{id, quantity: 1}], kakaoPackungen: {lineId: id, handle: 'bundle-2x-awake', packungen: 3}}});
+  assert.equal(lines.length, 1);
+  assert.equal(lines[0].quantity, 3);
+  assert.ok(lines[0].merchandiseId.endsWith('crystal-cacao-awake'));
 });

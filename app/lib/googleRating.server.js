@@ -32,6 +32,45 @@ import {
 } from '~/lib/googleReviewsFallback.server';
 import {wendeAusschlussAn} from '~/lib/googleReviewsAusschluss.server';
 
+/**
+ * PRODUKTWELT (Christian 21.11.2026, Job 20261121-prio1-bewertungs-widget-
+ * kakao-bewertungen-nicht-auf-qione-seiten-de-und-us): „Wenn Leute den Kakao
+ * bewerten, sollte das nicht bei unserer 5-Sterne-Anzeige auf den Seiten
+ * angezeigt werden." Ordnet eine Bewertung 'kakao' (Crystal Cacao) oder 'qi'
+ * (QiOne, QiHome Air, QiBracelet, Qi Alpha, Qi Blanco) zu.
+ * Der Business-API-Export (rezensionen/src/produktwelt.py) trägt je Bewertung
+ * das Feld `produktwelt` und je Welt einen Block: business[0] = 'qi',
+ * business[1] = 'kakao'. Das Feld gewinnt. Ohne Feld (Reputon-Rückfall,
+ * Schnappschuss) entscheiden dieselben Wörter wie im Export: Kakao-Wort =
+ * 'kakao'; trinken ohne Schmuck-/Gerätewort = 'kakao'; sonst 'qi'.
+ * Spiegel derselben Ausdrücke: rezensionen/src/produktwelt.py und
+ * assets/qb-reviews.js im Global Englisch-Shop. Steht hier (nicht in einem
+ * eigenen Modul), weil nur der root-Loader sie braucht.
+ */
+export const KAKAO_RE =
+  /(ka[ck]ao|cacao|cocoa|crystal[\s-]*cacao|hot[\s-]+chocolate|hei(ss|ß)e[nr]?\s+schokolade|trinkschokolade)/i;
+export const TRINKEN_RE =
+  /\b(trinke\w*|trinkt|getrunken|drink(s|ing)?|drank|becher|tasse|mug|sip\w*)\b/i;
+export const SCHMUCK_RE =
+  /(qi\s*-?\s*one|qione|qihome|qi\s*home|qibracelet|bracelet|armband|kette|necklace|anh[aä]nger|pendant|qi\s*alpha|schmuck|jewel|tr[aä]g(e|t|en|st)\b|wear\w*|chip|ger[aä]t|device|strahlung|radiation|elektrosmog|emf)/i;
+
+/** Welt einer Bewertung (Feed-Eintrag oder normalisierte Karte mit `text`). */
+export function weltVon(r) {
+  if (r && (r.produktwelt === 'qi' || r.produktwelt === 'kakao')) {
+    return r.produktwelt;
+  }
+  const t = String((r && r.text) || '');
+  if (KAKAO_RE.test(t)) return 'kakao';
+  if (TRINKEN_RE.test(t) && !SCHMUCK_RE.test(t)) return 'kakao';
+  return 'qi';
+}
+
+/** Der Block der Welt aus einem Feed im Reputon-Format; sonst business[0]. */
+export function blockFuerWelt(data, welt) {
+  const bs = Array.isArray(data?.business) ? data.business : [];
+  return bs.find((b) => b && b.produktwelt === welt) || bs[0];
+}
+
 // Reputon-Storefront-Feed: öffentlicher, unauthentifizierter JSON-Endpunkt,
 // den das bisherige Widget-Script client-seitig nutzte — jetzt serverseitig
 // gecacht abgerufen (Anbindung erhalten, nur der Ort des Abrufs wandert).
@@ -69,7 +108,11 @@ const EXPORT_ZEITGRENZE_MS = 2500;
  * weniger, nie eine zu viel.
  */
 export function schnappschussMitAusschluss(liste) {
-  return wendeAusschlussAn(liste, {perName: true}).reviews;
+  // Produktwelt (Christian 21.11.2026): auch der Notfall-Schnappschuss zeigt
+  // an den Qi-Positionen keine Kakao-Bewertung.
+  return wendeAusschlussAn(liste, {perName: true}).reviews.filter(
+    (r) => weltVon(r) === 'qi',
+  );
 }
 
 export const GOOGLE_REVIEWS_FALLBACK_GEFILTERT = schnappschussMitAusschluss(
@@ -88,7 +131,9 @@ export const GOOGLE_RATING_FALLBACK_VOLL = {
 // v4 (2026-11-12): Quelle ist zuerst der Business-API-Export (bis zu 50 Karten
 // statt der ~40 des Reputon-Feeds). Der Key-Wechsel verwirft die v3-Einträge,
 // damit nach dem Deploy nicht bis zu 6 h die alte, kürzere Liste steht.
-const CACHE_KEY = 'https://qpx.internal/google-rating-v4/' + GOOGLE_PLACE_ID;
+// v5 (2026-11-21): Produktwelt — Kakao-Bewertungen nicht an Qi-Positionen.
+// Der Key-Wechsel verwirft die v4-Einträge, die noch Kakao-Karten tragen.
+const CACHE_KEY = 'https://qpx.internal/google-rating-v5/' + GOOGLE_PLACE_ID;
 const CACHE_TTL_S = 21600; // 6 h — „periodischer Refresh", nie je Seitenaufruf
 const MAX_REVIEWS = 50; // Deckel: die NEUESTEN 50 Fünf-Sterne-Reviews
 // (Christian 2026-08-01). Hinweis: der Reputon-Storefront-Feed liefert
@@ -156,9 +201,15 @@ export function normalisiereGoogleAntwort(data) {
  * Rohantwort des Reputon-Feeds → normalisiertes
  * {rating,total,source,reviews[]} oder null. Reviews: nur 5 Sterne, nicht
  * versteckt, mit Text; sortiert neueste zuerst; auf MAX_REVIEWS gedeckelt.
+ *
+ * PRODUKTWELT (Christian 21.11.2026: „Wenn Leute den Kakao bewerten, sollte
+ * das nicht bei unserer 5-Sterne-Anzeige auf den Seiten angezeigt werden."):
+ * gelesen wird der Block der Welt (`welt`, Vorgabe 'qi'), und jede Bewertung
+ * einer anderen Welt fällt weg (app/lib/produktwelt.js). Note und Anzahl
+ * bleiben die des ganzen Google-Profils.
  */
-export function normalisiereReputonAntwort(data) {
-  const b = data?.business?.[0];
+export function normalisiereReputonAntwort(data, welt = 'qi') {
+  const b = blockFuerWelt(data, welt);
   const r = b?.rating;
   if (typeof r !== 'number' || r < 1 || r > 5) return null;
   const sortiert = (Array.isArray(b.reviews) ? b.reviews : [])
@@ -167,6 +218,7 @@ export function normalisiereReputonAntwort(data) {
         rv &&
         rv.rating === 5 &&
         !rv.hide &&
+        weltVon(rv) === welt &&
         typeof rv.text === 'string' &&
         rv.text.trim().length > 0,
     )

@@ -99,6 +99,14 @@
 .av-seite .avq-link::after {
   content: ' \203A';
 }
+/* Sterne des Google-Zitats im Nutzen-Link im Kauf-Gold der Seite (Z20, 19.11.2026).
+   Der globale Sternton #F4B400 stand hier als zweiter Goldton neben dem Kauf-Knopf
+   (Design-Rubrik −15). Seitenlokal wie qihome.css Regel 6b; der Global
+   Englisch-Shop zeigt an derselben Stelle schon dieses Gold (qb-google-zitat).
+   Die Kopfleiste (Christian 14.11.) und alle anderen Sterne bleiben. */
+.av-seite .avq-gzitat .qb-gzitat__sterne {
+  color: var(--av-gold);
+}
 
 /* ---- Weltrekord --------------------------------------------------------------- */
 

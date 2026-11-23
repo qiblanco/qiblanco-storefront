@@ -142,8 +142,12 @@ function QiOneNutzen({daten}) {
           const link = s.link
             ? {
                 // Google-Zitat einheitlich „4,8 ★★★★★ G“ (Christian 17.11.2026, GoogleZitat.jsx).
+                // klasse="avq-gzitat": Sterne im Seiten-Gold (alpha-qione.css, Z20 19.11.2026).
+                // Zwilling von QiOneNutzen in routes/products.qione-2-pro.jsx — Änderungen dort
+                // auch hier (ohne die Klasse stand #F4B400 als zweiter Goldton auf
+                // /pages/qione-2-pro, Design-Rubrik 94, Job 20261120-repair-lp-qione-2-pro).
                 text: istGoogleZitatText(s.link.text)
-                  ? <GoogleZitat komma={google.komma} />
+                  ? <GoogleZitat komma={google.komma} klasse="avq-gzitat" />
                   : s.link.text.replace('{sterne}', google.komma),
                 href: s.link.href === 'google' ? google.url : s.link.href,
                 fremd: s.link.href === 'google',

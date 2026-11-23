@@ -442,6 +442,9 @@
    Ausgleich wie qb-360-rand.css / SpiegelRahmen: gemessene Kopf-Ruhelage minus dem Platz, den <main> schon frei
    haelt, zusaetzlich zum bisherigen Abstand. Erstbild-Wert bis zur Hydrierung: --qb-kopf-erstbild (app.css F-441,
    18.11.2026; vorher fester Rueckfall 135 px = 38 px Sprung bei 390 px). Rueckweg: diesen Block loeschen. */
+/* Seit 20.11.2026 an --qb-kopf-hoehe-oben (Ruhelage am Seitenanfang, ohne den 10-px-Rand des gescrollten Kopfes):
+   an --qb-kopf-hoehe sprang die ganze Seite beim ersten Scroll um 10 px (Christian Z4 "kein Springen", Kanon
+   preisanker-und-videokante.md Regel 4). Rueckweg: wieder --qb-kopf-hoehe einsetzen. */
 .av-seite > .av-licht:first-child {
-  margin-top: calc(var(--tas-s-4) + max(0px, calc(var(--qb-kopf-hoehe, var(--qb-kopf-erstbild, 135px)) - var(--header-height, 64px) - 40px)));
+  margin-top: calc(var(--tas-s-4) + max(0px, calc(var(--qb-kopf-hoehe-oben, var(--qb-kopf-hoehe, var(--qb-kopf-erstbild, 135px))) - var(--header-height, 64px) - 40px)));
 }

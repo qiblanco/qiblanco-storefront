@@ -2,6 +2,7 @@ import {Await, Link, useLocation, useMatches} from 'react-router';
 import {Suspense, useId} from 'react';
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
+import {LandWaehrungZeile} from '~/components/reusables/LandWaehrung';
 import {WissenVertrauenWeiter} from '~/components/reusables/WissenVertrauenWeiter';
 import {
   BfFunnelKopf,
@@ -102,6 +103,11 @@ function QiAlphaFunnelLayout({cart, children = null, isLoggedIn, bf = false}) {
         <QiAlphaFunnelKopf cart={cart} isLoggedIn={isLoggedIn} />
       )}
       <main data-qa-funnel="">{children}</main>
+      {/* BF-Funnel: kein Fuß, aber Land/Sprache und Währung unten wie auf
+          jeder Seite (Christian 22.11.2026: „unten auf der Seite im Bottom
+          immer noch die Möglichkeit“). Nur diese Zeile. Qi Alpha bleibt die
+          enge Funnel-Seite ohne Ausweg (Christian 28.10.2026 Z13/Z17). */}
+      {bf ? <LandWaehrungZeile dunkel /> : null}
     </Aside.Provider>
   );
 }

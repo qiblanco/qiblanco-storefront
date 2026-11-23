@@ -363,3 +363,65 @@ test('Leiste zeigt 50, der Server rendert davon die ersten 20 (Nachladen)', () =
   assert.match(slider, /sichtbareReviews\.map\(/, 'Kartenreihe rendert nicht die nachgeladene Liste');
   assert.match(slider, /loading="lazy"/, 'Profilbilder nicht lazy');
 });
+
+/**
+ * PRODUKTWELT (Christian 21.11.2026, Job 20261121-prio1-bewertungs-widget-
+ * kakao-bewertungen-nicht-auf-qione-seiten-de-und-us): „Wenn Leute den Kakao
+ * bewerten, sollte das nicht bei unserer 5-Sterne-Anzeige auf den Seiten
+ * angezeigt werden." Rot am Stand vor dem Bau: dort nahm der Loader
+ * business[0] ungefiltert, und die Kakao-Karten aus dem Reputon-Rückfall
+ * standen auf jeder Seite (live 21.11.: 5 Kakao-Texte im HTML der Startseite).
+ */
+function karte(id, text, produktwelt) {
+  return {
+    id, hashId: id, authorName: `Name ${id}`, profilePhotoUrl: '', rating: 5,
+    text, time: 1795000000, relativeTimeDescription: 'vor 2 Tagen', images: [],
+    hide: false, ...(produktwelt ? {produktwelt} : {}),
+  };
+}
+const KAKAO_TEXTE = [
+  'Ich liebe diesen Kakao, meine kleines Ritual am Tag',
+  'Ich habe wegen einer Rückgabe (Kakao) ziemlichen Stress beim Support veranstaltet',
+  'Ich war nie der große Kakao-Fan, aber seit ich die beide Kristall-Kakaos habe',
+  'Ich trinke seit 10 Tagen morgen meinen Qui Blanco und meditiere dazu.',
+  'Ich werde für immer diesen Zeremonie Cacao bestellen!',
+];
+
+test('Produktwelt: Reputon-Rückfall ohne Feld -> keine Kakao-Karte an Qi-Positionen', () => {
+  const reviews = [
+    ...KAKAO_TEXTE.map((t, i) => karte(`k${i}`, t)),
+    karte('q1', 'Seit ich die Kette trage bin ich viel entspannter.'),
+    karte('q2', 'Mein Herzklopfen beim Kaffee trinken, ich teste den Qione 14 Tage.'),
+  ];
+  const wert = normalisiereReputonAntwort(feedMit(reviews));
+  assert.deepEqual(wert.reviews.map((r) => r.quellId).sort(), ['q1', 'q2']);
+  assert.equal(wert.rating, 4.8);
+  assert.equal(wert.total, 440, 'Anzahl ist die des ganzen Profils');
+});
+
+test('Produktwelt: Export mit Block je Welt -> Qi-Block, Feld gewinnt vor den Wörtern', () => {
+  const daten = {
+    business: [
+      {produktwelt: 'qi', rating: 4.8, reviewsNumber: 449,
+        reviews: [karte('q1', 'Tolle Kette', 'qi'), karte('x1', 'Kakao-Wort, aber von Hand qi', 'qi')]},
+      {produktwelt: 'kakao', rating: 4.8, reviewsNumber: 449,
+        reviews: [karte('k1', 'Ich liebe diesen Kakao', 'kakao')]},
+    ],
+  };
+  const qi = normalisiereReputonAntwort(daten);
+  assert.deepEqual(qi.reviews.map((r) => r.quellId), ['q1', 'x1']);
+  assert.equal(qi.total, 449);
+  const kakao = normalisiereReputonAntwort(daten, 'kakao');
+  assert.deepEqual(kakao.reviews.map((r) => r.quellId), ['k1']);
+});
+
+test('Produktwelt: Notfall-Schnappschuss trägt keine Kakao-Karte', () => {
+  const aus = schnappschussMitAusschluss([
+    {id: 'a', quellId: 'a', name: 'A', text: 'Ein wundervoller Kakao'},
+    {id: 'b', quellId: 'b', name: 'B', text: 'Die Kette ist wunderschön'},
+  ]);
+  assert.deepEqual(aus.map((r) => r.id), ['b']);
+  for (const r of GOOGLE_REVIEWS_FALLBACK_GEFILTERT) {
+    assert.doesNotMatch(r.text, /ka[ck]ao|cacao|cocoa/i);
+  }
+});

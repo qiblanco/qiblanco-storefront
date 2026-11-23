@@ -203,13 +203,19 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
               />
             </div>
           ),
-          wissen: (
+          // Reihenfolge (Christian 16.11.2026, 09:50/09:52): erst „So sieht es an dir aus“,
+          // dann die Zellvideos, dann die Google-Bewertungen (hochgezogen), dann der Rest.
+          // Die drei ersten tragen seit Z20 (19.11.2026) den eigenen Messanker konfig-tragen,
+          // konfig-wissen umfasst wieder Nutzen und Wissen wie vor dem 17.11.
+          tragen: (
             <>
-              {/* Reihenfolge (Christian 16.11.2026, 09:50/09:52): erst „So sieht es an dir aus“,
-                  dann die Zellvideos, dann die Google-Bewertungen (hochgezogen), dann der Rest. */}
               <TrageBereich handle="qione-2-pro" />
               <ZellvideoBereich handle="qione-2-pro" />
               <BewertungenHoch />
+            </>
+          ),
+          wissen: (
+            <>
               <QiOneNutzen daten={ALPHA_DATEN.NUTZEN} />
               <AlphaWissen
                 kapitel={ALPHA_DATEN.WISSEN.kapitel}
@@ -260,7 +266,7 @@ function QiOneNutzen({daten}) {
             ? {
                 // Google-Zitat einheitlich „4,8 ★★★★★ G“ (Christian 17.11.2026, GoogleZitat.jsx).
                 text: istGoogleZitatText(s.link.text)
-                  ? <GoogleZitat komma={google.komma} />
+                  ? <GoogleZitat komma={google.komma} klasse="avq-gzitat" />
                   : s.link.text.replace('{sterne}', google.komma),
                 href: s.link.href === 'google' ? google.url : s.link.href,
                 fremd: s.link.href === 'google',

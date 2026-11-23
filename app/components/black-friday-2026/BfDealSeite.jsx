@@ -64,9 +64,10 @@ const PRODUKT_DATEN = {
   'qihome-air': datenStudienNeutral(DATEN_QIHOME),
 };
 const IG_PRODUKT = {qibracelet: 'QiBracelet'};
-// Überschrift der Instagram-Reihe nur auf den Deal-Seiten (Elina EL-20261113-f005fbd5); die normalen
+// Überschrift der Instagram-Reihe nur auf den Deal-Seiten (Elina EL-20261113-f005fbd5, ausgetauscht durch
+// EL-20261119-d6f93d00: „Wertvolle Kundenerfahrungen“, US „Valuable customer experiences“); die normalen
 // Produktseiten behalten „Auf Instagram.“ aus ihren Daten.
-const BF_IG_UEBERSCHRIFT = 'Echte Kundenstimmen auf Instagram';
+const BF_IG_UEBERSCHRIFT = 'Wertvolle Kundenerfahrungen';
 
 export function BfDealAlpha({seite, product, ketten}) {
   const wurzel = useRef(null);

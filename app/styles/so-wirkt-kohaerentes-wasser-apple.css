@@ -1,0 +1,17 @@
+/*
+ * /pages/so-wirkt-kohaerentes-wasser, Apple-Fassung (Grossjob 20261118-de-shop-
+ * apple-rest-z3-z20, s08). Lädt nur mit der Apple-Fassung dieser Seite
+ * (routes/pages.so-wirkt-kohaerentes-wasser.jsx), wie lp-apple.css.
+ *
+ * KOPFBILD GITTERCHIP® 1680 (Master seit #1132, eine größere Quelle gibt es
+ * nicht). Auf Schirmen mit doppelter Dichte trägt die Quelle höchstens 840 px
+ * (gemessen 19.11.2026 auf desktop-1024 2x: 945 px Fläche = unscharf). Bei
+ * einfacher Dichte ist das Bild bis 1200 px scharf und bleibt, wie es ist.
+ * Hausmuster: lp-apple.css „Produktbilder nie größer als die halbe Quelle“.
+ */
+@media (min-resolution: 1.5dppx), (-webkit-min-device-pixel-ratio: 1.5) {
+  .as-seite[data-apple-seite='so-wirkt-kohaerentes-wasser'] img.as-bild[width='1680'] {
+    max-width: 840px;
+    margin-inline: auto;
+  }
+}

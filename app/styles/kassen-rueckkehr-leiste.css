@@ -21,7 +21,7 @@
      Kopfzeile unter dem fixierten Kopf. --qb-kopf-hoehe: useKopfHoeheVariable. */
   margin: max(
       0px,
-      calc(var(--qb-kopf-hoehe, 0px) - var(--header-height, 64px) - 40px + var(--kl-raster))
+      calc(var(--qb-kopf-hoehe-oben, var(--qb-kopf-hoehe, 0px)) - var(--header-height, 64px) - 40px + var(--kl-raster))
     )
     auto calc(var(--kl-raster) * 3);
   padding: calc(var(--kl-raster) * 2) calc(var(--kl-raster) * 6)

@@ -148,7 +148,8 @@ export async function ladeAlphaKetten(storefront, daten) {
  *   product: object,
  *   daten: object,
  *   ketten?: object|null,
- *   slots?: {vergleich?: import('react').ReactNode, wissen?: import('react').ReactNode,
+ *   slots?: {vergleich?: import('react').ReactNode, tragen?: import('react').ReactNode,
+ *            wissen?: import('react').ReactNode,
  *            stimmen?: import('react').ReactNode, faq?: import('react').ReactNode},
  *   vertrauen?: import('react').ReactNode,
  *   videoKachel?: import('react').ReactNode,
@@ -870,7 +871,7 @@ function Schritt({name, erster = false, auszeichnung, titel = null, children}) {
 
 /*
  * Slots unter der Box, feste Reihenfolge (KONZEPT §3.8): Faktenkacheln,
- * 20-Tage-Element, Vergleich, Wissen, Stimmen, FAQ. Datengetrieben, wo die
+ * 20-Tage-Element, Vergleich, Tragen (optional), Wissen, Stimmen, FAQ. Datengetrieben, wo die
  * Daten den Block tragen (FAKTEN, RISIKOFREI, STIMMEN, FAQ); Vergleich und
  * Wissen sind Bausteine, die die Route hereingibt (z. B. AmazonStil). Ein
  * leerer Slot rendert nichts.
@@ -936,6 +937,15 @@ function Slots({daten, slots}) {
         </SlotHuelle>
       ) : null}
       {slots.vergleich ? <SlotHuelle name="vergleich">{slots.vergleich}</SlotHuelle> : null}
+      {/* Tragen (Z20, 19.11.2026): eigener Messanker konfig-tragen vor dem Wissen. Seit
+          Christians Reihenfolge vom 16.11. („So sieht es an dir aus“, Zellvideos,
+          Google-Bewertungen) standen diese drei im Wissen-Slot; konfig-wissen wurde so
+          ein Block von über 3.000 px (Design-Rubrik: Sektions-Ausreißer). Getrennt trägt
+          konfig-wissen wieder seinen Inhalt von vor dem 17.11. (Nutzen und Wissen), und
+          die drei Bausteine stehen an derselben Stelle. Der Abstand bleibt gleich: die
+          96 px unter den Bewertungen und die 64 px des nächsten Slots fallen zusammen.
+          Ohne `tragen` rendert die Vorlage wie bisher. */}
+      {slots.tragen ? <SlotHuelle name="tragen">{slots.tragen}</SlotHuelle> : null}
       {slots.wissen ? <SlotHuelle name="wissen">{slots.wissen}</SlotHuelle> : null}
       {slots.stimmen ? (
         <SlotHuelle name="stimmen">{slots.stimmen}</SlotHuelle>

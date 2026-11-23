@@ -141,23 +141,37 @@ main {
       26 px unter dem Kopf (Job 20261118-fc-folge-apple-seiten-kopfabstand).
    3. Seiten ohne Hauskopf: die Film-Seite (main[data-film-seite], Qi-Alpha-LP)
       und die Kaufseite (main[data-qa-funnel]). Dort setzt niemand
-      --qb-kopf-hoehe, und der Rueckfallwert schoebe sie. */
+      --qb-kopf-hoehe, und der Rueckfallwert schoebe sie um 31 px.
+
+   Seit 20.11.2026 an --qb-kopf-hoehe-oben (Ruhelage am Seitenanfang, ohne
+   den 10-px-Rand des gescrollten Kopfes): an --qb-kopf-hoehe wuchs der
+   Leerblock beim ersten Scroll um 10 px, und die ganze Seite sprang (Christian
+   Z4 "kein Springen"). Dasselbe gilt fuer jeden ABSTAND im Seitenfluss;
+   Sprungziele (scroll-margin-top) bleiben bei --qb-kopf-hoehe. Rueckweg:
+   wieder --qb-kopf-hoehe einsetzen. Kette: Ruhelage (-oben), dann
+   Laufzeitwert, dann die Erstbild-Tabelle (Tabelle neu gemessen 23.11.2026
+   live nach dem einheitlichen Kopf #1702).
+*/
 :root {
-  --qb-kopf-erstbild: 156px;
+  --qb-kopf-erstbild: 150px;
 }
+@media (min-width: 340px) { :root { --qb-kopf-erstbild: 153px; } }
 @media (min-width: 360px) { :root { --qb-kopf-erstbild: 159px; } }
-@media (min-width: 375px) { :root { --qb-kopf-erstbild: 172px; } }
-@media (min-width: 380px) { :root { --qb-kopf-erstbild: 174px; } }
+@media (min-width: 375px) { :root { --qb-kopf-erstbild: 170px; } }
+@media (min-width: 380px) { :root { --qb-kopf-erstbild: 171px; } }
+@media (min-width: 390px) { :root { --qb-kopf-erstbild: 174px; } }
 @media (min-width: 480px) { :root { --qb-kopf-erstbild: 157px; } }
 @media (min-width: 750px) { :root { --qb-kopf-erstbild: 176px; } }
 @media (min-width: 1000px) { :root { --qb-kopf-erstbild: 153px; } }
 @media (min-width: 1280px) { :root { --qb-kopf-erstbild: 131px; } }
 /* Mit Qi-Alpha-Leiste ueber der Nr.-1-Leiste (Startseite, start-b; serverseitig
    gerendert) ist der Kopf 32-45 px hoeher, gemessen an denselben Stufen. */
-:root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 188px; }
+:root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 182px; }
+@media (min-width: 340px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 185px; } }
 @media (min-width: 360px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 191px; } }
-@media (min-width: 375px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 205px; } }
-@media (min-width: 380px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 207px; } }
+@media (min-width: 375px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 203px; } }
+@media (min-width: 380px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 205px; } }
+@media (min-width: 390px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 207px; } }
 @media (min-width: 480px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 190px; } }
 @media (min-width: 750px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 220px; } }
 @media (min-width: 1000px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 198px; } }
@@ -167,7 +181,7 @@ body > main:not([data-film-seite], [data-qa-funnel])::before {
   display: block;
   margin-bottom: max(
     0px,
-    calc(var(--qb-kopf-hoehe, var(--qb-kopf-erstbild)) - var(--header-height) - 40px)
+    calc(var(--qb-kopf-hoehe-oben, var(--qb-kopf-hoehe, var(--qb-kopf-erstbild, 135px))) - var(--header-height) - 40px)
   );
 }
 body > main:has(

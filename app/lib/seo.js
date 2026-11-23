@@ -150,6 +150,10 @@ export function canonicalLink(pathname) {
  * `ausSitemap: true`. Damit trägt keine Seite dieser Liste mehr die
  * Übergangsstufe.
  *
+ * NACHTRAG 2026-11-20: `newsletter-anmeldung-erfolgreich` kommt neu und
+ * „Gesendet und indexiert" auf die Liste und trägt deshalb wieder die
+ * Übergangsstufe (`ausSitemap: false`). Kippen erst nach erneuter Messung.
+ *
  * DIE GEGENRICHTUNG, damit daraus keine Räumungslizenz wird: „nicht im Index"
  * ist KEIN Grund, eine Seite noindex zu setzen. Diese Lesart entscheidet
  * ausschließlich über den SITEMAP-Eintrag eines bereits entschiedenen
@@ -287,6 +291,31 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
     klasse: 'hygiene',
     grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
     seit: '2026-08-24',
+  },
+  // Neu 2026-11-20 (seo-manager, Präzedenz D-454; Register
+  // seo-manager/conf/gewollt-noindex.yaml): derselbe Fall wie die fünf
+  // Funnel-Bestätigungen oben, nur später gefunden. Vor dem Eintrag gemessen
+  // mit `homepage-bauer/bin/gsc-seitenstand --url` (2026-11-20):
+  // `kakao-kurs-anmeldung-erfolgreich` ist „URL ist Google nicht bekannt",
+  // also nach der Lesart oben direkt `ausSitemap: true`.
+  // `newsletter-anmeldung-erfolgreich` ist „Gesendet und indexiert", also
+  // Übergangsstufe `ausSitemap: false`, bis gsc-seitenstand „Durch
+  // noindex-Tag ausgeschlossen" (oder nicht im Index) meldet. Kippen ist
+  // als Nachmess-Folgejob des Jobs 20261120-hb-de-bestaetigungsseiten-
+  // noindex-seo-js eingereiht; wer kippt, MISST vorher erneut.
+  {
+    handle: 'kakao-kurs-anmeldung-erfolgreich',
+    ausSitemap: true,
+    klasse: 'hygiene',
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-11-20',
+  },
+  {
+    handle: 'newsletter-anmeldung-erfolgreich',
+    ausSitemap: false,
+    klasse: 'hygiene',
+    grund: 'Funnel-Bestätigung: Klickziel, kein Suchziel',
+    seit: '2026-11-20',
   },
   // Neu 2026-08-26 (s04 des Grossjobs …seo-rest-kanonisierung…). Diese fünf
   // sind derselbe Fall wie `pre-access` oben, nur später gefunden: sie waren
@@ -537,6 +566,27 @@ export const NICHT_INDEXIERBARE_SEITEN_DEF = [
     grund:
       'Forschungsverständnis in drei Stufen, bis zu Christians Freigabe unsichtbar und unverlinkt; ohne interne Verlinkung wäre die Sitemap ihr einziger Discovery-Pfad. noindex in der eigenen Route',
     seit: '2026-09-24',
+  },
+  // Neu 2026-11-20 (Job 20261120-de-bf-deals-aus-sitemap). `/pages/bf-deals` ist
+  // die Black-Friday-Deal-Übersicht; die eigene Route `pages.bf-deals.tsx`
+  // sticht den Katchall und setzt noindex selbst (meta + X-Robots-Tag), aber
+  // das Shopify-Seitenobjekt `bf-deals` stand in `sitemap/pages/1.xml`
+  // (probe_sitemap_noindex_naht Befund A, gemessen 2026-11-20). Elinas
+  // Dauerregel deal-seiten-regel (EL-20261111-fa47cfd9): Deal-Seiten noindex
+  // und NICHT in der Sitemap. Keine Übergangsstufe: gsc-seitenstand am
+  // 2026-11-20 „Nicht gefunden (404)“, die Seite steht nicht im Index.
+  // Klasse `landing`, weil die BF-Retargeting-Anzeigen mit utm_medium=paid
+  // hierher führen (ads-manager/kampagnen/bf26); der Landing-Bereich führt
+  // sie schon so, die Ads-Auswertung bleibt unverändert. WIRKUNG IM SHOP: nur
+  // der Sitemap-Eintrag fällt weg; Seite, Kaufweg und BF-Codes unberührt.
+  // Bei Rückbau der Route nach dem Sale diesen Eintrag mit entfernen.
+  {
+    handle: 'bf-deals',
+    ausSitemap: true,
+    klasse: 'landing',
+    grund:
+      'Black-Friday-Deal-Übersicht (Pre-Access, Mails, Anzeigen); Deal-Seite nach deal-seiten-regel: noindex, nicht in der Sitemap. noindex in der eigenen Route',
+    seit: '2026-11-20',
   },
 ];
 

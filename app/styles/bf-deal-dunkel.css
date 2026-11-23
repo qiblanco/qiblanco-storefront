@@ -196,7 +196,7 @@
  * Nennhöhe (104 px) und gemessener Kopfhöhe nach unten; auf der Standard-Fassung verschmilzt der Rand mit dem
  * Leerblock (es gilt der größere, gleiche Wert). */
 .bf-deal-seite > .bfc:first-child {
-  margin-top: max(0px, calc(var(--qb-kopf-hoehe, 135px) - var(--header-height, 64px) - 40px));
+  margin-top: max(0px, calc(var(--qb-kopf-hoehe-oben, var(--qb-kopf-hoehe, 135px)) - var(--header-height, 64px) - 40px));
 }
 .bf-deal-seite .bfc[hidden] {
   display: none;
@@ -290,4 +290,142 @@
 }
 .bf-deal-seite .btn--text:hover {
   color: var(--bfd-gold);
+}
+
+/* FEINSCHLIFF Elina EL-20261119-d6f93d00 (19.11.2026, GO "darf direkt live"), DE 1:1 wie US (qi-blanco.com).
+ * Nur .bf-deal-seite, die normalen Produktseiten sehen diese Datei nie. Rueckweg: diesen Block entfernen.
+ * 1 Abstaende groesser: Sections 80 px Handy / 96 px ab 960 px (vorher 64), Titel -> Inhalt 32/48 px,
+ *   Kachel-Innenabstand 28/32 px. Drei Stufen im 8er-Takt (Design-Rubrik "max. 3 Stufen").
+ * 4 alle Section-Titel mittig, auch Konfigurator-Schritte, Summe und Schluss-Banner (eine Regel je Seite);
+ *   Weltrekord: Etikett + Titel als Kopf ueber Video und Text.
+ * 5 Bewertungen: Titel mittig (Namen und Texte sind hier schon hell).
+ * 10 Instagram-Titel "Wertvolle Kundenerfahrungen" im H2-Stil der Seite (28/600). */
+.bf-deal-seite .av-slot,
+.bf-deal-seite .tas-box,
+.bf-deal-seite .taw-abschnitt {
+  margin-top: 80px;
+}
+.bf-deal-seite .bfg {
+  margin-top: 80px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.bf-deal-seite .bfsb {
+  margin-top: 0;
+  margin-bottom: 80px;
+}
+.bf-deal-seite .taf {
+  padding-top: 0;
+}
+.bf-deal-seite h2,
+.bf-deal-seite .tas-box-titel,
+.bf-deal-seite .taw-kopf,
+.bf-deal-seite .taw-titel,
+.bf-deal-seite .tas-schritt-titel,
+.bf-deal-seite .tas-summe-titel,
+.bf-deal-seite .bfg__titel,
+.bf-deal-seite .qb-gbl__titel,
+.bf-deal-seite .qb-igt__kopf,
+.bf-deal-seite .qb-igt__titel,
+.bf-deal-seite .taf h2,
+.bf-deal-seite .bfkv__titel,
+.bf-deal-seite .bkv__titel {
+  text-align: center !important;
+}
+.bf-deal-seite .bfsb__text {
+  align-items: center;
+  text-align: center;
+}
+.bf-deal-seite .bfsb__preise {
+  justify-content: center;
+}
+.bf-deal-seite .taw-kopf .taw-etikett {
+  margin-left: auto;
+  margin-right: auto;
+}
+.bf-deal-seite .qb-gbl__titel-link {
+  justify-content: center;
+}
+.bf-deal-seite .av-slot > .tas-box-titel,
+.bf-deal-seite .tas-box > .tas-box-titel,
+.bf-deal-seite .avq-nutzen > .tas-box-titel,
+.bf-deal-seite .taf h2,
+.bf-deal-seite .qb-igt__kopf {
+  margin-bottom: 32px;
+}
+.bf-deal-seite .bfg__titel {
+  margin-bottom: 32px;
+}
+.bf-deal-seite .qb-igt__titel {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #f5efe6;
+}
+.bf-deal-seite .av-kachel,
+.bf-deal-seite .avq-spalte {
+  padding: 28px;
+}
+.bf-deal-seite .avq-link {
+  margin-top: 8px;
+}
+/* Weltrekord: Etikett und Titel als mittiger Kopf ueber Video und Text */
+.bf-deal-seite .avq-weltrekord-text {
+  display: contents;
+}
+.bf-deal-seite .avq-weltrekord-text > .taw-etikett {
+  grid-column: 1 / -1;
+  justify-self: center;
+  order: -2;
+  margin: 0;
+}
+.bf-deal-seite .av-seite .avq-weltrekord-text > .tas-box-titel {
+  grid-column: 1 / -1;
+  order: -1;
+  margin: 0 0 8px;
+  text-align: center;
+}
+@media (min-width: 750px) {
+  .bf-deal-seite .avq-weltrekord {
+    row-gap: 16px;
+  }
+  .bf-deal-seite .avq-weltrekord-video {
+    grid-column: 1;
+    grid-row: 3 / span 2;
+  }
+  .bf-deal-seite .avq-weltrekord-text > p:not(.taw-etikett),
+  .bf-deal-seite .avq-weltrekord-text > ul {
+    grid-column: 2;
+  }
+  .bf-deal-seite .av-seite .avq-weltrekord-text > p:not(.taw-etikett) {
+    align-self: end;
+    margin: 0;
+  }
+  .bf-deal-seite .avq-weltrekord-text > ul {
+    align-self: start;
+  }
+}
+@media (min-width: 960px) {
+  .bf-deal-seite .av-slot,
+  .bf-deal-seite .tas-box,
+  .bf-deal-seite .taw-abschnitt,
+  .bf-deal-seite .bfg {
+    margin-top: 96px;
+  }
+  .bf-deal-seite .bfsb {
+    margin-bottom: 96px;
+  }
+  .bf-deal-seite .av-slot > .tas-box-titel,
+  .bf-deal-seite .tas-box > .tas-box-titel,
+  .bf-deal-seite .avq-nutzen > .tas-box-titel,
+  .bf-deal-seite .taf h2,
+  .bf-deal-seite .qb-igt__kopf,
+  .bf-deal-seite .bfg__titel {
+    margin-bottom: 48px;
+  }
+  .bf-deal-seite .av-kachel,
+  .bf-deal-seite .avq-spalte {
+    padding: 32px;
+  }
 }

@@ -34,9 +34,12 @@ import {
 } from '~/lib/coming-home-live.server';
 import liveStyles from '~/styles/live.css?url';
 import serviceAppleStyles from '~/styles/service-apple.css?url';
+import elinaBewegungStyles from '~/styles/elina-bewegung.css?url';
+import {useElinaBewegung} from '~/components/reusables/useElinaBewegung';
 import {appleSeiteLaden} from '~/lib/apple-seiten';
 import {AppleSeite} from '~/components/apple-seite/AppleSeite';
 import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
+import terminKachelStyles from '~/styles/live-termin-kachel.css?url';
 
 /**
  * /pages/live — COMING HOME LIVE: nächster Termin, Anmeldung, Rückblick.
@@ -330,7 +333,10 @@ const EINWILLIGUNG_TEXT =
 const KOPF_PRIVAT = {'Cache-Control': 'private, no-store'};
 
 export function links() {
-  return [{rel: 'stylesheet', href: liveStyles}];
+  return [
+    {rel: 'stylesheet', href: liveStyles},
+    {rel: 'stylesheet', href: elinaBewegungStyles},
+  ];
 }
 
 export const meta = ({data: d}) => {
@@ -606,6 +612,7 @@ function LiveApple({d}) {
             gesamt={d.rueckblickeGesamt}
             ladeFehler={d.ladeFehler}
             messfixtur={d.messfixtur}
+            kacheln
           />
         </div>
         <AppleAnna />
@@ -665,17 +672,158 @@ function KopfApple() {
   );
 }
 
+/**
+ * TERMIN-KACHEL 19.11.2026 (Elina, EL-20261119-ad8983fc, Entwurf
+ * live-termin-kachel.html freigegeben): „Der nächste Termin“ als EINE große
+ * Kachel am bestehenden Platz. Links Gold mit Überschrift und Unterzeile,
+ * rechts „Live auf Zoom“, Kalenderblatt mit Datum und Uhrzeit, Thema,
+ * Inhalt, drei Pillen und der goldene Knopf, der weich zur bestehenden
+ * Anmeldung (#anmelden) gleitet. Kalenderblatt, Datum, Thema und Text kommen
+ * aus dem jeweils nächsten Termin (Vorschau-Artikel bzw. Beschreibung je
+ * Termin), nie fest im Code. Mobil untereinander, Knopf volle Breite; die
+ * Kachel blendet beim Scrollen weich ein und gleitet leicht hoch (Elinas
+ * Design-Dauerregel, Baukasten useElinaBewegung). Messmarker
+ * data-ch-live=termin und data-ch-live-termin bleiben.
+ * Rückweg: TERMIN_KACHEL_AN = false (Karte wie vorher).
+ */
+const TERMIN_KACHEL_AN = true;
+
+const MONAT_KURZ = [
+  'JAN', 'FEB', 'MÄR', 'APR', 'MAI', 'JUN',
+  'JUL', 'AUG', 'SEP', 'OKT', 'NOV', 'DEZ',
+];
+
+/** "2026-11-22" -> {monat: 'NOV', tag: 22}; ohne gültiges Datum null. */
+function kalenderBlatt(datum) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(datum || '');
+  if (!m) return null;
+  const monat = MONAT_KURZ[Number(m[2]) - 1];
+  return monat ? {monat, tag: Number(m[3])} : null;
+}
+
+/** Weich zur Anmeldung gleiten; bei „Bewegung reduzieren“ springen. */
+function zurAnmeldung(e) {
+  if (typeof document === 'undefined') return;
+  const ziel = document.getElementById('anmelden');
+  if (!ziel || typeof ziel.scrollIntoView !== 'function') return;
+  e.preventDefault();
+  const ruhig =
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  ziel.scrollIntoView({behavior: ruhig ? 'auto' : 'smooth', block: 'start'});
+  if (window.history?.replaceState) {
+    window.history.replaceState(window.history.state, '', '#anmelden');
+  }
+}
+
+/**
+ * Elina 19.11.2026: der Text unter dem Thema ist Inhalt, nie Wiederholung von
+ * Datum, Zoom oder Titel. Ein Teaser, der Titel oder Datum wiederholt (alte
+ * Vorschau-Fassung „Am Sonntag, …, treffen wir uns wieder auf Zoom. Unser
+ * Thema: …“), bleibt in der Kachel weg.
+ */
+function teaserOhneWiederholung(naechster) {
+  const t = (naechster.teaser || '').trim();
+  if (!t) return '';
+  const klein = t.toLowerCase();
+  const titel = (naechster.titel || '').trim().toLowerCase();
+  if (titel && titel !== 'thema folgt' && klein.includes(titel)) return '';
+  if (naechster.datumKurz && klein.includes(naechster.datumKurz.toLowerCase())) {
+    return '';
+  }
+  if (/treffen wir uns wieder auf zoom/.test(klein)) return '';
+  return t;
+}
+
+/** Nächster Termin als goldene Kachel (Elina 19.11.2026). */
+function TerminKachel({naechster}) {
+  const blatt = kalenderBlatt(naechster.datum);
+  const teaser = teaserOhneWiederholung(naechster);
+  return (
+    <article
+      className="lva-terminkachel"
+      data-eb=""
+      data-ch-live-termin={naechster.datum}
+      data-ch-live-quelle={naechster.quelle}
+      data-ch-live-kachel=""
+    >
+      <div className="lva-kachel-gold">
+        <h2 className="lva-kachel-h2">Der nächste Termin</h2>
+        <p className="lva-kachel-unter">
+          Jeden Sonntag live mit Anna und Christian.
+        </p>
+      </div>
+      <div className="lva-kachel-inhalt">
+        <p className="lva-kachel-live">
+          <span className="lva-kachel-punkt" aria-hidden="true" />
+          Live auf Zoom
+        </p>
+        <div className="lva-kachel-wann">
+          {blatt ? (
+            <span className="lva-kalender" aria-hidden="true">
+              <span className="lva-kalender-monat">{blatt.monat}</span>
+              <span className="lva-kalender-tag">{blatt.tag}</span>
+            </span>
+          ) : null}
+          <p className="lva-kachel-zeit">
+            <time className="lva-kachel-datum" dateTime={naechster.startUtc}>
+              {naechster.datumLang}
+            </time>
+            <span className="lva-kachel-uhr">
+              {naechster.uhrzeit
+                ? `${naechster.uhrzeit} (Berlin)`
+                : 'Uhrzeit folgt'}
+            </span>
+          </p>
+        </div>
+        <h3 className="lva-kachel-thema">{naechster.titel || 'Thema folgt'}</h3>
+        {naechster.beschreibung && BESCHREIBUNG_JE_TERMIN[naechster.datum] ? (
+          <BeschreibungTermin
+            datum={naechster.datum}
+            klasse="lva-kachel-text"
+          />
+        ) : teaser ? (
+          <p className="lva-kachel-text">{teaser}</p>
+        ) : null}
+        <ul className="lva-pillen" aria-label="Eckdaten">
+          <li className="lva-pille">90 Minuten</li>
+          <li className="lva-pille">per Zoom</li>
+          <li className="lva-pille">kostenlos</li>
+        </ul>
+        <a
+          className="knopf-gold lva-kachel-knopf"
+          href="#anmelden"
+          data-as-cta="primary"
+          onClick={zurAnmeldung}
+        >
+          Kostenlos anmelden
+        </a>
+      </div>
+    </article>
+  );
+}
+
 /** Nächster Termin groß, darunter die nächsten Sonntage (Apple-Fassung). */
 function TerminApple({naechster, weitere, messfixtur}) {
+  const wurzel = useRef(null);
+  useElinaBewegung(wurzel);
+  const kachel = Boolean(TERMIN_KACHEL_AN && naechster && !naechster.extern);
   return (
     <section
-      className="lv-abschnitt lva-termin"
+      ref={wurzel}
+      className={`lv-abschnitt lva-termin${kachel ? ' lva-termin-kachel' : ''}`}
       data-ch-live="termin"
       data-messfixtur={messfixtur || undefined}
     >
+      {kachel ? (
+        <div className="lv-innen lva-kachel-rahmen">
+          <link rel="stylesheet" href={terminKachelStyles} />
+          <TerminKachel naechster={naechster} />
+        </div>
+      ) : null}
       <div className="lv-innen lv-innen-schmal">
-        <h2 className="lv-h2">Der nächste Termin</h2>
-        {naechster?.extern ? (
+        {kachel ? null : <h2 className="lv-h2">Der nächste Termin</h2>}
+        {kachel ? null : naechster?.extern ? (
           <TerminExtern naechster={naechster} />
         ) : naechster ? (
           <article
@@ -860,11 +1008,32 @@ function BildOben() {
  * (ALLE_EINGEKLAPPT_AN): Datum, Titel, Teaser, der volle Text in <details>.
  * Er steht trotzdem im HTML (für Leser ohne Klick, Suchmaschinen und
  * KI-Abruf). Mit false steht die neueste wie bis #959 offen da.
+ *
+ * KACHELN (Elina, EL-20261119-977e88f9, GO in EL-20261119-8be4930f): in der
+ * Apple-Fassung (kacheln=true) stehen die Wochen als Kacheln im Look der
+ * Eckdaten-Kacheln (hellgrauer Grund, ein Radius), Handy 2 Spalten, ab 750 px
+ * 3 Spalten, gleich hohe Kacheln je Reihe; jede Kachel blendet beim Scrollen
+ * weich ein (Elinas Baukasten data-eb). Texte unverändert. Stil:
+ * styles/service-apple.css Block "Worüber wir gesprochen haben als Kacheln".
+ * Rückweg: das Attribut kacheln in LiveApple entfernen.
  */
-function Zusammenfassungen({rueckblicke, gesamt, ladeFehler, messfixtur}) {
+const KEIN_REF = {current: null};
+function Zusammenfassungen({
+  rueckblicke,
+  gesamt,
+  ladeFehler,
+  messfixtur,
+  kacheln = false,
+}) {
+  const wurzel = useRef(null);
+  useElinaBewegung(kacheln ? wurzel : KEIN_REF, [
+    kacheln,
+    rueckblicke.length,
+  ]);
   return (
     <section
-      className="lv-abschnitt"
+      ref={wurzel}
+      className={kacheln ? 'lv-abschnitt lva-rueckblick' : 'lv-abschnitt'}
       data-ch-live="rueckblick"
       data-messfixtur={messfixtur || undefined}
       data-ch-live-anzahl={rueckblicke.length}
@@ -878,12 +1047,17 @@ function Zusammenfassungen({rueckblicke, gesamt, ladeFehler, messfixtur}) {
             {ladeFehler ? WOCHEN_LADEFEHLER : WOCHEN_LEER}
           </p>
         ) : (
-          <ol className="lv-woche-liste">
+          <ol
+            className={
+              kacheln ? 'lv-woche-liste lva-kacheln' : 'lv-woche-liste'
+            }
+          >
             {rueckblicke.map((r, i) => (
               <li
-                className="lv-woche"
+                className={kacheln ? 'lv-woche lva-kachel' : 'lv-woche'}
                 key={r.handle || r.datum}
                 data-ch-live-eintrag={r.datum}
+                data-eb={kacheln ? '' : undefined}
               >
                 <p className="lv-woche-wann">
                   <time dateTime={r.startUtc}>{r.datumLang}</time>

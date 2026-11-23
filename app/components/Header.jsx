@@ -7,6 +7,7 @@ import {Await, NavLink, useAsyncValue, Link, useLocation, useRouteLoaderData} fr
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
+import {WaehrungsWahl} from '~/components/reusables/LandWaehrung';
 import {useGoogleRating} from '~/lib/googleRating';
 import {kakaoSetArt} from '~/lib/kakao-set-zeile';
 import {menueZiel} from '~/crystal-spiegel-rahmen/pfade';
@@ -25,6 +26,7 @@ import {
   GOOGLE_REZENSIONEN_ANKER_ID,
   KOPF_ZEIGEN_EREIGNIS,
 } from '~/components/reusables/GoogleRezensionenBereich';
+import {useKopfHoeheOben} from '~/components/product-pages/kopfHoeheOben';
 import {MarkeR} from '~/components/reusables/MarkeR';
 import {GoogleZitat} from '~/components/reusables/GoogleZitat';
 import {
@@ -454,6 +456,12 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   useSterneSprungDelegation(onRezensionenKlick);
   // Mit der Leiste ändert sich die Kopfhöhe auch beim Seitenwechsel ohne Scroll.
   useKopfHoeheVariable(`${leiste}|${nrEins ? 'nr1' : ''}`);
+  // Ruhelage ohne den Scroll-Rand (--qb-kopf-hoehe-oben) für jeden ABSTAND im Seitenfluss, auf jeder
+  // Seite (Christian Z4 „kein Springen“). Seit 20.11.2026 ruft der Kopf den Hook, nicht mehr die
+  // AlphaVorlage: deren Aufräumen nahm die Variable beim Seitenwechsel weg, und alle übrigen Seiten
+  // liefen auf --qb-kopf-hoehe (10-px-Sprung). Der Satz „nur die Vorlage“ in kopfHoeheOben.js ist
+  // damit überholt. Job 20261120-kopfhoehe-oben-alle-layout-abstaende-kein-scrollsprung.
+  useKopfHoeheOben();
 
   return (
     <header
@@ -624,6 +632,7 @@ export function istQiAlphaFunnelPfad(pathname) {
 export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
   // Kopfhöhe für Sprungziele (scroll-margin-top), wie im Hauskopf.
   useKopfHoeheVariable();
+  useKopfHoeheOben();
   const {pathname} = useLocation();
   const nachOben = useCallback(
     (e) => {
@@ -646,6 +655,10 @@ export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
         >
           <MarkeR text="Qi Alpha®" />
         </Link>
+        {/* Bewusst ohne Flagge und Währung: Christians enge Funnel-Seite
+            (28.10.2026 Z13 „von dieser Produktseite kommt man nirgendwo anders
+            dahin. Außer in den Warenkorb“). Die Kopf-Knöpfe haben dieselbe Form
+            wie überall (kopf-knoepfe.css). */}
         <nav className="qfk-ctas" aria-label="Konto und Warenkorb">
           <AccountToggle isLoggedIn={isLoggedIn} />
           <CartToggle cart={cart} />
@@ -677,6 +690,7 @@ export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
  */
 export function BfFunnelKopf({isLoggedIn, cart}) {
   useKopfHoeheVariable();
+  useKopfHoeheOben();
   const nachOben = useCallback(() => {
     // „Bewegung reduzieren“: ohne Gleiten, sofort oben (Elinas Design-Dauerregel D7).
     const ruhig = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
@@ -693,7 +707,11 @@ export function BfFunnelKopf({isLoggedIn, cart}) {
         >
           Qi Blanco
         </button>
-        <nav className="qfk-ctas" aria-label="Konto und Warenkorb">
+        {/* Flagge und Währung auch im BF-Store (Christian 22.11.2026: „wenn
+            jemand aus der USA ist, das oben nicht umstellen kann“). */}
+        <nav className="qfk-ctas" aria-label="Land, Währung, Konto und Warenkorb">
+          <ShopSwitch aktiv="de" />
+          <WaehrungsWahl />
           <AccountToggle isLoggedIn={isLoggedIn} />
           <CartToggle cart={cart} />
         </nav>
@@ -1378,6 +1396,7 @@ const HeaderCtas = memo(function HeaderCtas({isLoggedIn, cart}) {
     <nav className="header-ctas" role="navigation">
       <HeaderMenuMobileToggle />
       <ShopSwitch aktiv="de" />
+      <WaehrungsWahl />
       <AccountToggle isLoggedIn={isLoggedIn} />
       <CartToggle cart={cart} />
     </nav>
@@ -1446,10 +1465,27 @@ function HeaderMenuMobileToggle() {
   const {open} = useAside();
   return (
     <button
-      className="header-menu-mobile-toggle reset"
+      type="button"
+      className="header-menu-mobile-toggle kopf-knopf reset"
       onClick={() => open('mobile')}
+      aria-label="Menü öffnen"
     >
-      <h3>☰</h3>
+      {/* Gleiche Strichstärke und Größe wie Konto und Warenkorb (Kopf-Knöpfe
+          einheitlich, Christian 22.11.2026) statt des Textzeichens ☰. */}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
     </button>
   );
 }
