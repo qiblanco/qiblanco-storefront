@@ -232,7 +232,7 @@ export function KritikSeite() {
           in BEFUNDE. Das Versuchsbild steht jetzt bei den Studien. */}
       <section data-section="krit-studien">
         <div className="krit__inhalt">
-          <h2>Was in den Studien wirklich steht</h2>
+          <h2>Was in den Studien steht</h2>
           <p className="krit__einleitung">
             Zu jeder der fünf Arbeiten findest du hier, was gemessen wurde und
             welchen Rahmen die Arbeit selbst angibt. Jede kannst du im Original
