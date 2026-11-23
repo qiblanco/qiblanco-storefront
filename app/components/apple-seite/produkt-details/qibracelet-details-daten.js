@@ -99,7 +99,8 @@ export const QIBRACELET_DETAILS = Object.freeze([
   // „menschliche Zellen“ gestrichen (e0002 IPEC-J2 Schwein; e0003 Hund, Mensch, Schwein, Mensch, Maus),
   // Satz „In Zellstudien puffert diese geordnete Schicht …“ gestrichen (die Studien messen
   // Zellreaktionen, nicht die Ordnung des Wassers), „Dichte“ -> „Dichtigkeit“ (TEER),
-  // 10-%-Angabe hier nicht wiederholt (ohne Fundstelle im Bestand; Band oben unverändert).
+  // 10-%-Angabe hier nicht wiederholt (ohne Fundstelle im Bestand; Band oben unverändert),
+  // „Das Ergebnis ist deutlich.“ gestrichen (Schutzeffekt e0003 reicht von 3,9 % bis 47,3 %).
   {
     art: 'frage',
     anker: 'armband-schutz-elektrosmog',
@@ -110,7 +111,7 @@ export const QIBRACELET_DETAILS = Object.freeze([
       'Viele Produkte gegen Elektrosmog wollen das Signal abschirmen. Eine Abschirmung, die stark genug dafür ist, nimmt aber auch dein Handy vom Netz. Mit dem QiBracelet® gehen wir deshalb einen anderen Weg.',
       'Im Reif sitzt der Gitterchip® aus 750er Gold. Er erzeugt ein statisches Feld, das an deinem Handgelenk ständig wirkt.',
       'Dieses Feld ordnet das Wasser an deinen Zellen, Fachleute nennen das den kohärenten Zustand.',
-      'Was das bewirkt, haben wir im Labor an Zellen messen lassen. Das Ergebnis ist deutlich.',
+      'Was das bewirkt, haben wir im Labor an Zellen messen lassen.',
     ],
     teile: [
       {
