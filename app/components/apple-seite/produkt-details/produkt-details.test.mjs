@@ -17,7 +17,7 @@ const DETAILS = {
   'qibracelet-details': [QIBRACELET_DETAILS, '/products/qibracelet'],
 };
 
-const nurBaukasten = (liste) => liste.filter((s) => !['video', 'mikroskop', 'technik'].includes(s.art));
+const nurBaukasten = (liste) => liste.filter((s) => !['video', 'mikroskop', 'technik', 'frage'].includes(s.art));
 
 test('Detailseiten: Baukasten-Regeln ohne Mangel (Hero zuerst, Anna, kein Preisanker, kein Konjunktiv)', () => {
   for (const [seite, [daten]] of Object.entries(DETAILS)) {
@@ -109,4 +109,25 @@ test('QiOne-Detailseite: So wirkt er in Christians Reihenfolge, jeder Schritt mi
   for (const z of TECHNIK.schritte.find((s) => s.id === 'forschung').zahlen) {
     assert.match(z.quelle.href, /^\/pages\/studie-/, `${z.titel}: Fundstelle`);
   }
+});
+
+// KI-Lernschleife 2026-11-23 (Job 20261123-ki-lernschleife-bau-dach-bd394f):
+// die Kundenfrage steht wörtlich als H2 mit festem Anker, die Antwort direkt
+// darunter, jede Quelle ist eine eigene Seite, kein Konjunktiv.
+test('QiBracelet-Detailseite: Kundenfrage als Abschnitt mit Antwort und Quellen', () => {
+  const f = QIBRACELET_DETAILS.filter((s) => s.art === 'frage');
+  assert.equal(f.length, 1, 'genau ein Frage-Abschnitt');
+  const [s] = f;
+  assert.equal(s.titel, 'Wie schützt dich ein Armband gegen Elektrosmog?');
+  assert.match(s.anker, /^[a-z0-9-]+$/, 'Anker ohne Umlaut-Ersatz');
+  assert.ok(!/ae|oe|ue|ss/.test(s.anker.replace(/[^a-z]/g, ' ').split(' ').filter((w) => /schuetz|heiss|groess/.test(w)).join('')), 'kein ASCII-Digraph');
+  assert.ok(s.antwort && s.antwort.length > 40, 'Antwort direkt unter der Frage');
+  assert.deepEqual(s.teile.map((t) => t.titel), ['Was gemessen ist', 'Gut zu wissen']);
+  for (const q of s.quellen) assert.match(q.href, /^\/pages\//, q.text);
+  for (const t of texteVon(s)) {
+    assert.ok(!KONJUNKTIV.test(t), `Konjunktiv: ${t}`);
+    assert.ok(!/™/.test(t), `Gitterchip mit ®: ${t}`);
+  }
+  const quelle = readFileSync(new URL('./ProduktDetailsApple.jsx', import.meta.url), 'utf8');
+  assert.ok(quelle.includes("s.art === 'frage'"), 'der Rahmen rendert art frage');
 });

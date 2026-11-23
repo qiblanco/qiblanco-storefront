@@ -83,6 +83,52 @@ export const QIBRACELET_DETAILS = Object.freeze([
     ],
     bild: BILD.gravur,
   },
+  // KUNDENFRAGE (KI-Lernschleife, Job 20261123-ki-lernschleife-bau-dach-bd394f):
+  // DE-Gegenstück zu „How does an EMF protection bracelet actually protect you?“
+  // auf qi-blanco.com/pages/page-qibracelet (Regel R3: DE zuerst, US spiegelt).
+  // Zahlen je mit Fundstelle: e0001 /pages/studie-immunzellen 60,5/84,7 %,
+  // e0002 /pages/studie-darmbarriere 6,0/72,6 % (beide QiOne® 2 Pro, wie
+  // qione-2-pro-details-daten.js), e0003 /pages/studie-oxidativer-stress
+  // (QiBracelet®, Wasserstoffperoxid, kein Handy: e0003 misst keinen
+  // Elektrosmog-Schutz, deshalb steht das Armband nur mit seiner eigenen
+  // Studie und dem Gitterchip® im Satz). Gitterchip 10 % stärker: Band oben.
+  {
+    art: 'frage',
+    anker: 'armband-schutz-elektrosmog',
+    titel: 'Wie schützt dich ein Armband gegen Elektrosmog?',
+    antwort:
+      'Es arbeitet mit dem Wasser in deinem Körper, nicht gegen das Signal um dich herum. Es blockiert nichts, und dein Handy funktioniert weiter.',
+    absaetze: [
+      'Viele Produkte gegen Elektrosmog wollen das Signal abschirmen. Eine Abschirmung, die stark genug dafür ist, nimmt auch dein Handy vom Netz. Das QiBracelet® geht den anderen Weg: Es lässt das Feld um dich, wie es ist, und arbeitet mit dem Wasser in dir.',
+      'Im Reif sitzt der Gitterchip® aus 750er Gold. Er erzeugt ein statisches Feld und braucht dafür weder Batterie noch App.',
+      'Dieses Feld ordnet das Wasser an deinen Zellen. Fachleute nennen das den kohärenten Zustand. Dein Körper besteht zum größten Teil aus Wasser, so reicht diese Ordnung bis in jede Zelle.',
+      'Das ist das Modell. Was es an Zellen bewirkt, ist gemessen, und jede Zahl kannst du selbst nachlesen.',
+    ],
+    teile: [
+      {
+        titel: 'Was gemessen ist',
+        absaetze: [
+          'Immunzellen: Menschliche Immunzellen standen vier Stunden lang unter Handystrahlung. Ohne Schutz behielten sie 60,5 % ihrer Abwehrleistung, mit einem QiOne® 2 Pro daneben 84,7 %.',
+          'Darmbarriere: Unter E-Smog hielt eine Schicht aus Darmzellen nur 6,0 % ihrer Dichte. Mit dem QiOne® 2 Pro waren es 72,6 %.',
+          'Das QiBracelet® selbst: In einer Studie von 2024 standen fünf Typen menschlicher Zellen unter oxidativem Stress. Alle fünf waren mit dem QiBracelet® besser geschützt. Der Stressfaktor war dort Wasserstoffperoxid, kein Handy.',
+          'Im QiBracelet® sitzt der Gitterchip® des QiOne® 2 Pro, rund 10 % stärker gebaut, weil dein Handgelenk weiter von deiner Körpermitte entfernt ist.',
+        ],
+      },
+      {
+        titel: 'Gut zu wissen',
+        absaetze: [
+          'Alle Werte stammen aus Laborstudien an Zellkulturen, veröffentlicht in Fachzeitschriften. Prof. Dr. Peter C. Dartsch hat sie in unserem Auftrag durchgeführt, jede Originalarbeit steht vollständig bei uns.',
+          'Wie es sich im Alltag anfühlt, erzählen dir die Menschen am besten, die es tragen.',
+        ],
+      },
+    ],
+    quellen: [
+      {text: 'Studie Immunzellen: Abwehrzellen unter Handystrahlung (2021)', href: '/pages/studie-immunzellen'},
+      {text: 'Studie Darmbarriere: Darmzellen unter Handystrahlung (2021)', href: '/pages/studie-darmbarriere'},
+      {text: 'Studie oxidativer Stress: fünf Zelltypen mit dem QiBracelet® (2024)', href: '/pages/studie-oxidativer-stress'},
+      {text: 'Bewertungen: was Kunden erzählen', href: '/pages/bewertungen'},
+    ],
+  },
   {
     art: 'band',
     etikett: 'Alltag',

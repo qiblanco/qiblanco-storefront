@@ -128,3 +128,30 @@
     padding-bottom: calc(var(--qb-ref-raster, 8px) * 9 + env(safe-area-inset-bottom));
   }
 }
+
+/* ---- Kundenfrage als Abschnitt (art 'frage', KI-Lernschleife 2026-11-23) ----
+   Antwort direkt unter der Frage in Tinte und eine Stufe größer, danach die
+   Teile mit H3. Nur --as-*-Tokens, kein neuer Wert. */
+.pd-frage-antwort {
+  font-size: var(--as-fs-4);
+  line-height: 1.4;
+  color: var(--as-tinte);
+}
+.pd-frage-teil {
+  margin-top: var(--as-s-4);
+}
+.pd-frage-h3 {
+  margin: 0;
+  font-size: var(--as-fs-4);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--as-tinte);
+}
+.pd-frage-quellen {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pd-frage-quellen li + li {
+  margin-top: var(--as-s-1);
+}
