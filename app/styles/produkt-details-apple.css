@@ -132,7 +132,7 @@
 /* ---- Kundenfrage als Abschnitt (art 'frage', KI-Lernschleife 2026-11-23) ----
    Antwort direkt unter der Frage in Tinte und eine Stufe größer, danach die
    Teile mit H3. Nur --as-*-Tokens, kein neuer Wert. */
-.pd-frage-antwort {
+.pd-frage .pd-frage-antwort {
   font-size: var(--as-fs-4);
   line-height: 1.4;
   color: var(--as-tinte);
@@ -154,4 +154,7 @@
 }
 .pd-frage-quellen li + li {
   margin-top: var(--as-s-1);
+}
+.pd-frage-quellen .as-link {
+  margin-top: 0;
 }
