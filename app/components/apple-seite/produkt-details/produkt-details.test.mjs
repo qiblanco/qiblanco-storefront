@@ -122,7 +122,7 @@ test('QiBracelet-Detailseite: Kundenfrage als Abschnitt mit Antwort und Quellen'
   assert.match(s.anker, /^[a-z0-9-]+$/, 'Anker ohne Umlaut-Ersatz');
   assert.ok(!/ae|oe|ue|ss/.test(s.anker.replace(/[^a-z]/g, ' ').split(' ').filter((w) => /schuetz|heiss|groess/.test(w)).join('')), 'kein ASCII-Digraph');
   assert.ok(s.antwort && s.antwort.length > 40, 'Antwort direkt unter der Frage');
-  assert.deepEqual(s.teile.map((t) => t.titel), ['Was gemessen ist', 'Gut zu wissen']);
+  assert.deepEqual(s.teile.map((t) => t.titel), ['Was gemessen ist']);
   for (const q of s.quellen) assert.match(q.href, /^\/pages\//, q.text);
   for (const t of texteVon(s)) {
     assert.ok(!KONJUNKTIV.test(t), `Konjunktiv: ${t}`);
