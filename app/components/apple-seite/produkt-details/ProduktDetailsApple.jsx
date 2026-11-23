@@ -32,6 +32,59 @@ function VideoSektion({video}) {
   );
 }
 
+/**
+ * Kundenfrage als eigener Abschnitt (KI-Lernschleife, Gewinnermuster D1:
+ * Frage als H2 mit festem Anker, die Antwort direkt darunter, dann
+ * „Was gemessen ist“, „Gut zu wissen“, „Woher das kommt“). Gebaut 2026-11-23,
+ * Job 20261123-ki-lernschleife-bau-dach-bd394f; DE-Gegenstück des US-Abschnitts
+ * auf qi-blanco.com/pages/page-qibracelet (Regel R3: DE zuerst).
+ * Daten: {art: 'frage', anker, titel, antwort, absaetze, teile: [{titel, absaetze}], quellen: [{text, href}]}.
+ */
+function FrageSektion({anker, titel, antwort, absaetze = [], teile = [], quellen = []}) {
+  const titelId = `${anker}-titel`;
+  return (
+    <section id={anker} className="as-sektion as-kapitel pd-frage" aria-labelledby={titelId} data-section="as-frage">
+      <div className="as-kapitel-kopf">
+        <h2 id={titelId} className="as-h2">
+          {mitMarkeR(titel)}
+        </h2>
+        <p className="as-absatz pd-frage-antwort" data-geo="antwort">
+          {mitMarkeR(antwort)}
+        </p>
+        {absaetze.map((p) => (
+          <p key={p} className="as-absatz">
+            {mitMarkeR(p)}
+          </p>
+        ))}
+        {teile.map((t) => (
+          <div key={t.titel} className="pd-frage-teil">
+            <h3 className="pd-frage-h3">{mitMarkeR(t.titel)}</h3>
+            {t.absaetze.map((p) => (
+              <p key={p} className="as-absatz">
+                {mitMarkeR(p)}
+              </p>
+            ))}
+          </div>
+        ))}
+        {quellen.length ? (
+          <div className="pd-frage-teil">
+            <h3 className="pd-frage-h3">Woher das kommt</h3>
+            <ul className="pd-frage-quellen">
+              {quellen.map((q) => (
+                <li key={q.href}>
+                  <a className="as-link" href={q.href}>
+                    {mitMarkeR(q.text)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
 function MikroskopSektion() {
   return (
     <section className="pd-mikroskop" data-section="as-mikroskop">
@@ -59,6 +112,7 @@ export function ProduktDetailsApple({seite, sektionen, video = null, technik = n
           if (s.art === 'video') return video ? <VideoSektion key="video" video={video} /> : null;
           if (s.art === 'mikroskop') return <MikroskopSektion key="mikroskop" />;
           if (s.art === 'technik') return technik ? <TechnikKette key="technik" {...technik} /> : null;
+          if (s.art === 'frage') return <FrageSektion key={`frage-${s.anker}`} {...s} />;
           const preis = s.cta?.href ? preise[s.cta.href] : null;
           return <Sektion key={`${s.art}-${i}`} index={i} {...s} {...(preis ? {preis} : {})} />;
         })}
