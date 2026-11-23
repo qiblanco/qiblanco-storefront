@@ -60,8 +60,12 @@ export const meta = () => [
   {
     name: 'description',
     content:
+      // Bis 23.11.2026 stand hier zusätzlich „Live-Vorstellung mit Christian
+      // am 8. November.“; der Termin ist vorbei (Job 20261123-qi-alpha-lp-c-
+      // meta-ohne-live-termin, Launch-Register qi-master, Baustein lp).
+      // „20 Tage ab Erhalt testen“ wörtlich wie die Schwesterseite /pages/Qi-Alpha-B.
       'Qi Alpha® mit Diamant, Limited 1st. Edition: 111 Stück mit eigener Nummer, 10.639 €, ' +
-      'Versand im Januar 2027. Live-Vorstellung mit Christian am 8. November.',
+      '20 Tage ab Erhalt testen, Versand im Januar 2027.',
   },
   {name: 'robots', content: 'noindex,nofollow'},
   {property: 'og:title', content: 'Qi Alpha®, Limited 1st. Edition 111/111'},
