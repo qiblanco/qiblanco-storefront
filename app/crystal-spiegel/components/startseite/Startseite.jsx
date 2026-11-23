@@ -118,7 +118,7 @@ export function Startseite({produkte, stimmen, sorten, podcast}) {
         onZurueck={() => setVergleich(null)}
       />
       <Mehrwert />
-      <section className="cc-akt cc-akt--flaeche cc-start-podcast">
+      <section className="cc-akt cc-akt--flaeche cc-start-podcast" data-section="cc-start-podcast">
         <div className="cc-akt__innen">{podcast}</div>
       </section>
       <KaffeeVergleich
@@ -129,7 +129,7 @@ export function Startseite({produkte, stimmen, sorten, podcast}) {
           energy: bild(B_LOGO_ENERGY),
         }}
       />
-      <section className="cc-akt cc-akt--flaeche cc-start-stimmen">
+      <section className="cc-akt cc-akt--flaeche cc-start-stimmen" data-section="cc-start-stimmen">
         <div className="cc-akt__innen">
           {stimmen}
           <AbsichtHinweis id="cc-absicht-start" />
@@ -138,7 +138,7 @@ export function Startseite({produkte, stimmen, sorten, podcast}) {
       <BelegeAkt />
       <Herkunft />
       <Ritual />
-      <section className="cc-akt cc-akt--flaeche cc-start-kauf">
+      <section className="cc-akt cc-akt--flaeche cc-start-kauf" data-section="cc-start-kauf">
         <div className="cc-akt__innen">
           {sorten}
           <div className="cc-kauf__infos">
@@ -184,7 +184,11 @@ const VORTEILE = [
 function Mehrwert() {
   const flow = bild(B_BANNER_FLOW);
   return (
-    <section className="cc-akt cc-akt--grund cc-mehrwert" aria-labelledby="cc-mehrwert-titel">
+    <section
+      className="cc-akt cc-akt--grund cc-mehrwert"
+      aria-labelledby="cc-mehrwert-titel"
+      data-section="cc-start-mehrwert"
+    >
       <div className="cc-akt__innen">
         <header className="cc-akt__kopf">
           <p className="cc-eyebrow">Was du spürst</p>
@@ -218,7 +222,11 @@ function Mehrwert() {
 function BelegeAkt() {
   const muster = bild(B_MUSTER);
   return (
-    <section className="cc-akt cc-akt--grund cc-start-belege" aria-labelledby="cc-belege-akt-titel">
+    <section
+      className="cc-akt cc-akt--grund cc-start-belege"
+      aria-labelledby="cc-belege-akt-titel"
+      data-section="cc-start-belege"
+    >
       <div className="cc-akt__innen">
         <header className="cc-akt__kopf">
           <p className="cc-eyebrow">Studien und Belege</p>
@@ -267,7 +275,11 @@ function Herkunft() {
   const frucht = bild(B_BAUER_FRUCHT);
   const tonne = bild(B_BAUER_TONNE);
   return (
-    <section className="cc-akt cc-akt--flaeche cc-herkunft" aria-labelledby="cc-herkunft-titel">
+    <section
+      className="cc-akt cc-akt--flaeche cc-herkunft"
+      aria-labelledby="cc-herkunft-titel"
+      data-section="cc-start-herkunft"
+    >
       <div className="cc-akt__innen">
         {/* Bild mit Ueberschrift darauf: `div > img + h2`. Die Kontrast-Probe
             des Ladens (pruefungen/probe_startseite_kontrast_telefon.py) misst
@@ -334,7 +346,11 @@ function Herkunft() {
 function Ritual() {
   const ritual = bild(B_RITUAL_QUADRAT);
   return (
-    <section className="cc-akt cc-akt--grund cc-ritual" aria-labelledby="cc-ritual-titel">
+    <section
+      className="cc-akt cc-akt--grund cc-ritual"
+      aria-labelledby="cc-ritual-titel"
+      data-section="cc-start-ritual"
+    >
       <div className="cc-akt__innen">
         {/* Zwei Spalten, jede mit ihrer eigenen H2: links die Zubereitung
             (Baustein mit H2 „Zubereitung“, Wortlaut der Packung), rechts die
@@ -441,7 +457,11 @@ function Garantie() {
 function OnlineKurs() {
   const mockup = bild(B_KURS_MOCKUP);
   return (
-    <section className="cc-akt cc-akt--grund cc-kurs" aria-labelledby="cc-kurs-titel">
+    <section
+      className="cc-akt cc-akt--grund cc-kurs"
+      aria-labelledby="cc-kurs-titel"
+      data-section="cc-start-kurs"
+    >
       <div className="cc-akt__innen">
         <header className="cc-akt__kopf">
           <p className="cc-eyebrow">Gratis Online Kurs</p>
