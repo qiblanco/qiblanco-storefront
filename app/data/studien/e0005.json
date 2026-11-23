@@ -297,6 +297,22 @@
   {
    "frage": "Wie wurden die Kontrollzellen vom Gerät ferngehalten?",
    "antwort": "Die Kontrollzellen standen in einem anderen Haus, rund 1,5 km Luftlinie entfernt. Beide Zellkulturen standen in baugleichen Mini-Inkubatoren bei 37 °C im selben Kulturmedium, damit die Bedingungen identisch waren. Den Abstand hat der Autor so groß gewählt, dass sich die beiden Kulturen nicht gegenseitig beeinflussen konnten. Die Regenerationsversuche liefen 10 Stunden, die Versuche zum oxidativen Stress 24 Stunden."
+  },
+  {
+   "frage": "Was ist der QiHome® Air?",
+   "antwort": "Der QiHome® Air ist das Raumgerät von Qi Blanco für das ganze Zuhause. Laut Publikation ist er kein Luftreiniger, der Partikel filtert. Er zielt darauf ab, elektromagnetische Felder im Raum zu harmonisieren und das Wasser in der Raumluft zu strukturieren. Im Gerät arbeitet dieselbe Gitterchip-Technologie wie im QiOne® 2 Pro und im QiBracelet®, hier in der Version QTA-U-5000 mit einem länglichen Bergkristall als Verstärker."
+  },
+  {
+   "frage": "Wie weit stand der QiHome® Air von den Zellen entfernt?",
+   "antwort": "Etwa 2 Meter. In allen Versuchsreihen stand der QiHome® Air rund 2 Meter neben dem Mini-Inkubator, in dem die Zellen wuchsen. Die Kontrollzellen ohne Gerät standen in einem anderen Haus."
+  },
+  {
+   "frage": "Was hat die Studie mit Strahlung und Elektrosmog im Zuhause zu tun?",
+   "antwort": "Die Arbeit nennt elektromagnetische Felder von Mobiltelefonen und Funkwellen als eine von mehreren Umweltbelastungen, die im Körper oxidativen Stress auslösen können. Diesen Zellstress hat sie im Labor mit Wasserstoffperoxid nachgestellt. Zellkulturen neben dem QiHome® Air überstanden ihn besser als Kulturen ohne Gerät. Feldstärken oder Strahlungswerte im Raum hat die Studie nicht gemessen."
+  },
+  {
+   "frage": "Gibt es die QiHome® Air Zellstudie im englischen Original?",
+   "antwort": "Ja. Die Originalarbeit ist auf Englisch erschienen: „Beneficial Effect of the QiHome® Air on Cultured Neuronal and Inflammation-Mediating Cells“ von Prof. Dr. Peter C. Dartsch, in Neurodegenerative Diseases: Current Research 6(1): 1-8 (2026). Sie ist frei zugänglich (Open Access, CC BY 4.0), das vollständige PDF lässt sich kostenlos herunterladen."
   }
  ],
  "verwandt": [
