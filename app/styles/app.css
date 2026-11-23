@@ -150,12 +150,14 @@ main {
    Sprungziele (scroll-margin-top) bleiben bei --qb-kopf-hoehe. Rueckweg:
    wieder --qb-kopf-hoehe einsetzen. Kette: Ruhelage (-oben), dann
    Laufzeitwert, dann die Erstbild-Tabelle (Tabelle neu gemessen 23.11.2026
-   live nach dem einheitlichen Kopf #1702).
+   live nach dem einheitlichen Kopf #1702). Unter 360 px gilt EIN Wert (der
+   von 340 px; bei 320 px liegt der Kopf 3 px hoeher, das Erstbild rueckt dort
+   hoechstens 3 px nach oben): eine eigene Stufe bei 340 px laege unter der
+   kleinsten Gate-12-Formatbreite 360 und waere ungeprueft (breakpoint-deckung).
 */
 :root {
-  --qb-kopf-erstbild: 150px;
+  --qb-kopf-erstbild: 153px;
 }
-@media (min-width: 340px) { :root { --qb-kopf-erstbild: 153px; } }
 @media (min-width: 360px) { :root { --qb-kopf-erstbild: 159px; } }
 @media (min-width: 375px) { :root { --qb-kopf-erstbild: 170px; } }
 @media (min-width: 380px) { :root { --qb-kopf-erstbild: 171px; } }
@@ -166,8 +168,7 @@ main {
 @media (min-width: 1280px) { :root { --qb-kopf-erstbild: 131px; } }
 /* Mit Qi-Alpha-Leiste ueber der Nr.-1-Leiste (Startseite, start-b; serverseitig
    gerendert) ist der Kopf 32-45 px hoeher, gemessen an denselben Stufen. */
-:root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 182px; }
-@media (min-width: 340px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 185px; } }
+:root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 185px; }
 @media (min-width: 360px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 191px; } }
 @media (min-width: 375px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 203px; } }
 @media (min-width: 380px) { :root:has(.Header-AnnouncementBanner--qi-alpha) { --qb-kopf-erstbild: 205px; } }
