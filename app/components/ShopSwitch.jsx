@@ -158,7 +158,7 @@ export function ShopSwitch({aktiv = 'de', oben = false}) {
       <button
         type="button"
         ref={triggerRef}
-        className="shop-switch__trigger reset"
+        className="shop-switch__trigger kopf-knopf kopf-knopf--pille reset"
         /* aria-expanded ist hier NICHT nur Semantik, sondern Optik-Träger:
            app/styles/app.css dreht den Chevron über
            .shop-switch__trigger[aria-expanded='true']. Es bleibt unverändert.
@@ -172,13 +172,13 @@ export function ShopSwitch({aktiv = 'de', oben = false}) {
       >
         <Flagge shop={aktiv} />
         <svg
-          className="shop-switch__chevron"
+          className="shop-switch__chevron kopf-knopf__chevron"
           viewBox="0 0 24 24"
-          width="14"
-          height="14"
+          width="10"
+          height="10"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"

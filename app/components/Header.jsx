@@ -7,6 +7,7 @@ import {Await, NavLink, useAsyncValue, Link, useLocation, useRouteLoaderData} fr
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
+import {WaehrungsWahl} from '~/components/reusables/LandWaehrung';
 import {useGoogleRating} from '~/lib/googleRating';
 import {kakaoSetArt} from '~/lib/kakao-set-zeile';
 import {menueZiel} from '~/crystal-spiegel-rahmen/pfade';
@@ -654,6 +655,10 @@ export function QiAlphaFunnelKopf({isLoggedIn, cart}) {
         >
           <MarkeR text="Qi Alpha®" />
         </Link>
+        {/* Bewusst ohne Flagge und Währung: Christians enge Funnel-Seite
+            (28.10.2026 Z13 „von dieser Produktseite kommt man nirgendwo anders
+            dahin. Außer in den Warenkorb“). Die Kopf-Knöpfe haben dieselbe Form
+            wie überall (kopf-knoepfe.css). */}
         <nav className="qfk-ctas" aria-label="Konto und Warenkorb">
           <AccountToggle isLoggedIn={isLoggedIn} />
           <CartToggle cart={cart} />
@@ -702,7 +707,11 @@ export function BfFunnelKopf({isLoggedIn, cart}) {
         >
           Qi Blanco
         </button>
-        <nav className="qfk-ctas" aria-label="Konto und Warenkorb">
+        {/* Flagge und Währung auch im BF-Store (Christian 22.11.2026: „wenn
+            jemand aus der USA ist, das oben nicht umstellen kann“). */}
+        <nav className="qfk-ctas" aria-label="Land, Währung, Konto und Warenkorb">
+          <ShopSwitch aktiv="de" />
+          <WaehrungsWahl />
           <AccountToggle isLoggedIn={isLoggedIn} />
           <CartToggle cart={cart} />
         </nav>
@@ -1387,6 +1396,7 @@ const HeaderCtas = memo(function HeaderCtas({isLoggedIn, cart}) {
     <nav className="header-ctas" role="navigation">
       <HeaderMenuMobileToggle />
       <ShopSwitch aktiv="de" />
+      <WaehrungsWahl />
       <AccountToggle isLoggedIn={isLoggedIn} />
       <CartToggle cart={cart} />
     </nav>
@@ -1455,10 +1465,27 @@ function HeaderMenuMobileToggle() {
   const {open} = useAside();
   return (
     <button
-      className="header-menu-mobile-toggle reset"
+      type="button"
+      className="header-menu-mobile-toggle kopf-knopf reset"
       onClick={() => open('mobile')}
+      aria-label="Menü öffnen"
     >
-      <h3>☰</h3>
+      {/* Gleiche Strichstärke und Größe wie Konto und Warenkorb (Kopf-Knöpfe
+          einheitlich, Christian 22.11.2026) statt des Textzeichens ☰. */}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
     </button>
   );
 }
