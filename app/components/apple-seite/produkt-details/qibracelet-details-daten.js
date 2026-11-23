@@ -92,6 +92,8 @@ export const QIBRACELET_DETAILS = Object.freeze([
   // (QiBracelet®, Wasserstoffperoxid, kein Handy: e0003 misst keinen
   // Elektrosmog-Schutz, deshalb steht das Armband nur mit seiner eigenen
   // Studie und dem Gitterchip® im Satz). Gitterchip 10 % stärker: Band oben.
+  // Ohne Forschernamen im Fließtext, damit der US-Spiegel dieselbe Aussage trägt
+  // (Elina EL-20261112-0a9978b4: Global Englisch-Shop nennt keine Forscher).
   {
     art: 'frage',
     anker: 'armband-schutz-elektrosmog',
@@ -117,7 +119,7 @@ export const QIBRACELET_DETAILS = Object.freeze([
       {
         titel: 'Gut zu wissen',
         absaetze: [
-          'Alle Werte stammen aus Laborstudien an Zellkulturen, veröffentlicht in Fachzeitschriften. Prof. Dr. Peter C. Dartsch hat sie in unserem Auftrag durchgeführt, jede Originalarbeit steht vollständig bei uns.',
+          'Alle Werte stammen aus Laborstudien an Zellkulturen, veröffentlicht in Fachzeitschriften. Ein Labor für zellbiologische Testsysteme hat sie in unserem Auftrag durchgeführt, jede Originalarbeit steht vollständig bei uns.',
           'Wie es sich im Alltag anfühlt, erzählen dir die Menschen am besten, die es tragen.',
         ],
       },
