@@ -196,12 +196,18 @@ export const ABSICHT = {
   },
 
   /** GEDANKE 4 — die Einordnung. AUSDRÜCKLICH seine Sicht, in der Ich-Form. */
+  // SATZ GESTRICHEN AM 2026-11-23 (Job aiceo-seitenton-20261123-70e8c4ae49, Seitenton-Takt seo-manager):
+  // am Ende des dritten Absatzes stand „Deshalb legen wir unsere Annahmen offen, und neben jeder von ihnen
+  // steht auch, was gegen sie spricht." Der Haltungs-Richter (K4) verurteilt ihn als Meta-Kommentar über
+  // die eigene Offenlegung, in DE und im US-Zwilling. Die prüfbare Angabe bleibt: Gedanke 3 sagt dasselbe
+  // genauer („zu jeder Annahme ... das Gegenargument, mit Quelle, Jahr und Fundstelle"). Ein Transkript
+  // mit diesem Wortlaut von Christian gibt es nicht. US spiegelt 1:1 (us-qiblanco-2024, DE-Spiegel-Zeile).
   einordnung: {
     titel: 'Aus meiner Sicht ist das der nächste Schritt',
     absaetze: [
       'Ich halte ein tieferes Verständnis der Metaphysik und ihren praktischen Nutzen im Alltag für den nächsten Schritt für die Menschheit. Das ist meine Sicht. Sie ist nicht bewiesen, und ich stelle sie auch nicht als bewiesen dar.',
       'Anführen kann ich dafür ein Muster: Immer wieder war etwas zuerst eine Erfahrung, die man nicht erklären konnte, dann ein Streit darüber, ob es das überhaupt gibt, und erst danach ein Messverfahren und eine nüchterne Beschreibung. Ich vermute, dass wir an diesem Gebiet gerade irgendwo zwischen dem zweiten und dem dritten Schritt stehen. Beweisen kann ich das nicht. Es ist der Grund, warum ich weitermache.',
-      'Deshalb gibt es Qi Blanco: Ich arbeite an dieser Frage, und aus dieser Arbeit ist etwas entstanden, das man in die Hand nehmen kann. Was dabei herauskommt, muss sich derselben Prüfung stellen wie alles andere. Deshalb legen wir unsere Annahmen offen, und neben jeder von ihnen steht auch, was gegen sie spricht.',
+      'Deshalb gibt es Qi Blanco: Ich arbeite an dieser Frage, und aus dieser Arbeit ist etwas entstanden, das man in die Hand nehmen kann. Was dabei herauskommt, muss sich derselben Prüfung stellen wie alles andere.',
     ],
   },
 
