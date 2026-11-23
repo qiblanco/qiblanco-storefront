@@ -234,7 +234,7 @@ export const FRAGEN = [
  */
 
 /**
- * Was in den Studien wirklich steht. Zahlen ausschließlich aus den
+ * Was in den Studien steht. Zahlen ausschließlich aus den
  * faktengegateten Registry-Einträgen; die auf älteren Seiten kursierenden
  * Werte, die in KEINER Primärquelle stehen (Feld `factGate`), fehlen hier
  * absichtlich und dürfen nicht ergänzt werden.
@@ -325,7 +325,7 @@ export const BEFUNDE = [
  */
 export const PLUSPUNKTE = [
   {
-    titel: 'Zu jeder Arbeit steht, was sie nicht zeigt.',
+    titel: 'Jede Studie mit ihren Grenzen gleich daneben.',
     // „wortgleich" 2026-09-28 gestrichen: die Einräumungen sind seitdem
     // sprachlich geglättet (Dateikopf), und die Studienseiten tragen ihre
     // Grenzen aus der Registry, nicht diesen Wortlaut. Der Satz in
