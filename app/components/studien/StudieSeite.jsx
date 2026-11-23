@@ -157,10 +157,10 @@ export function StudieSeite({studie}) {
               </Eckdatum>
             ) : null}
             {/*
-              Produktlink optional ueber `geprueftPfad` (SEO L22-qihome-air-044a,
-              2026-11-23): die Studienseite steht fuer den Produktnamen vor der
+              Produktlink optional über `geprueftPfad` (SEO L22-qihome-air-044a,
+              2026-11-23): die Studienseite steht für den Produktnamen vor der
               Kaufseite, verlinkte sie aber nicht. Ohne das Feld rendert die
-              Zeile wie bisher als Text, die uebrigen Studien bleiben gleich.
+              Zeile wie bisher als Text, die übrigen Studien bleiben gleich.
             */}
             {e.geprueft ? (
               <Eckdatum label="Geprüftes Produkt">
