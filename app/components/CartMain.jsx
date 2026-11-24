@@ -1,11 +1,18 @@
+import {useEffect, useRef, useState} from 'react';
 import {useOptimisticCart} from '@shopify/hydrogen';
-import {Link} from 'react-router';
+import {Link, useFetchers} from 'react-router';
 import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
 import {formatPreis} from '~/lib/markt-pricing';
 import {taxRateForHandle} from '~/lib/cart-display-pricing';
 import {istBrutto} from '~/lib/preismodus';
+import {
+  KLICK_FRIST_MS,
+  fensterZustand,
+  istHinzufuegenKlick,
+  istLaufendesHinzufuegen,
+} from '~/components/reusables/warenkorb-ladezustand';
 import {sortiereWarenkorb} from '~/lib/qi-master-addons';
 
 /**
@@ -18,16 +25,24 @@ export function CartMain({layout, cart: originalCart}) {
   // so the user immediately sees feedback when they modify the cart.
   const cart = useOptimisticCart(originalCart);
 
-  const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
   const withDiscount =
     cart &&
     Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
   const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
   const cartHasItems = cart?.totalQuantity ? cart.totalQuantity > 0 : false;
+  // Ladezustand statt „leer“, solange ein Hinzufügen läuft (Begründung und
+  // Messung: components/reusables/warenkorb-ladezustand.js).
+  const {fetcherLaeuft, klickLaeuft} = useHinzufuegenLaeuft(layout === 'aside');
+  const zustand = fensterZustand({
+    zeilen: cart?.lines?.nodes?.length || 0,
+    fetcherLaeuft,
+    klickLaeuft,
+  });
 
   return (
     <div className={className}>
-      <CartEmpty hidden={linesCount} layout={layout} />
+      <CartEmpty hidden={zustand !== 'leer'} layout={layout} />
+      {zustand === 'ladezustand' && <CartLadezustand />}
       {cartHasItems && <FreeShipping cart={cart} />}
       <div className="cart-details">
         <div aria-labelledby="cart-lines">
@@ -42,6 +57,82 @@ export function CartMain({layout, cart: originalCart}) {
         </div>
       </div>
       {cartHasItems && <CartSummary cart={cart} layout={layout} />}
+    </div>
+  );
+}
+
+/**
+ * Läuft gerade ein Hinzufügen? Zwei Quellen (components/reusables/warenkorb-ladezustand.js): der
+ * Klick auf einen Hinzufügen-Knopf (vor dem Fetcher, mit Frist) und ein
+ * LinesAdd-Fetcher, der nicht idle ist. Endet der Fetcher, endet auch der
+ * Klick-Zustand.
+ * @param {boolean} klickHoeren nur im Fenster (aside) auf Klicks hören
+ */
+function useHinzufuegenLaeuft(klickHoeren) {
+  const fetchers = useFetchers();
+  const fetcherLaeuft = fetchers.some(istLaufendesHinzufuegen);
+  const [klickSeit, setKlickSeit] = useState(0);
+
+  useEffect(() => {
+    if (!klickHoeren) return undefined;
+    // Erfassungsphase: läuft vor dem onClick des Knopfs, der das Fenster
+    // öffnet — Ladezustand und Öffnen landen damit im selben Bild.
+    const beiKlick = (event) => {
+      if (istHinzufuegenKlick(event.target)) setKlickSeit(Date.now());
+    };
+    document.addEventListener('click', beiKlick, true);
+    return () => document.removeEventListener('click', beiKlick, true);
+  }, [klickHoeren]);
+
+  useEffect(() => {
+    if (!klickSeit) return undefined;
+    const frist = setTimeout(() => setKlickSeit(0), KLICK_FRIST_MS);
+    return () => clearTimeout(frist);
+  }, [klickSeit]);
+
+  const warLaufend = useRef(false);
+  useEffect(() => {
+    if (warLaufend.current && !fetcherLaeuft) setKlickSeit(0);
+    warLaufend.current = fetcherLaeuft;
+  }, [fetcherLaeuft]);
+
+  return {fetcherLaeuft, klickLaeuft: klickSeit > 0};
+}
+
+/** Ruhiger Ladezustand: Platzhalterzeile in Form einer Warenkorbzeile mit dem
+ * Schimmer der optimistischen Zeile (.shimmer-overlay, app.css); bei „Bewegung
+ * reduzieren“ steht sie still. Stile inline, damit app.css unberührt bleibt. */
+function CartLadezustand() {
+  const [still, setStill] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (!mq) return undefined;
+    const setzen = () => setStill(mq.matches);
+    setzen();
+    mq.addEventListener?.('change', setzen);
+    return () => mq.removeEventListener?.('change', setzen);
+  }, []);
+  const flaeche = {background: 'rgba(0, 0, 0, 0.08)', borderRadius: 4, display: 'block'};
+  return (
+    <div
+      className="warenkorb-ladezustand"
+      data-warenkorb-ladezustand=""
+      role="status"
+      aria-live="polite"
+      style={{padding: '1rem 0'}}
+    >
+      <div
+        aria-hidden="true"
+        style={{position: 'relative', display: 'flex', gap: '1rem', alignItems: 'center'}}
+      >
+        <span style={{...flaeche, width: 100, height: 100, flex: '0 0 100px'}} />
+        <span style={{flex: '1 1 auto', minWidth: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
+          <span style={{...flaeche, height: '0.9rem', width: '80%'}} />
+          <span style={{...flaeche, height: '0.9rem', width: '45%'}} />
+        </span>
+        {!still && <div className="shimmer-overlay" />}
+      </div>
+      <p style={{margin: '1rem 0 0'}}>Wird in den Warenkorb gelegt …</p>
     </div>
   );
 }
