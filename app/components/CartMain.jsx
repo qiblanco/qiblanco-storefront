@@ -99,23 +99,40 @@ function useHinzufuegenLaeuft(klickHoeren) {
   return {fetcherLaeuft, klickLaeuft: klickSeit > 0};
 }
 
-/** Ruhiger Ladezustand; bei „Bewegung reduzieren“ ohne Animation (app.css). */
+/** Ruhiger Ladezustand: Platzhalterzeile in Form einer Warenkorbzeile mit dem
+ * Schimmer der optimistischen Zeile (.shimmer-overlay, app.css); bei „Bewegung
+ * reduzieren“ steht sie still. Stile inline, damit app.css unberührt bleibt. */
 function CartLadezustand() {
+  const [still, setStill] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (!mq) return undefined;
+    const setzen = () => setStill(mq.matches);
+    setzen();
+    mq.addEventListener?.('change', setzen);
+    return () => mq.removeEventListener?.('change', setzen);
+  }, []);
+  const flaeche = {background: 'rgba(0, 0, 0, 0.08)', borderRadius: 4, display: 'block'};
   return (
     <div
       className="warenkorb-ladezustand"
       data-warenkorb-ladezustand=""
       role="status"
       aria-live="polite"
+      style={{padding: '1rem 0'}}
     >
-      <div className="warenkorb-ladezustand__zeile" aria-hidden="true">
-        <span className="warenkorb-ladezustand__bild" />
-        <span className="warenkorb-ladezustand__text">
-          <span />
-          <span />
+      <div
+        aria-hidden="true"
+        style={{position: 'relative', display: 'flex', gap: '1rem', alignItems: 'center'}}
+      >
+        <span style={{...flaeche, width: 100, height: 100, flex: '0 0 100px'}} />
+        <span style={{flex: '1 1 auto', minWidth: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
+          <span style={{...flaeche, height: '0.9rem', width: '80%'}} />
+          <span style={{...flaeche, height: '0.9rem', width: '45%'}} />
         </span>
+        {!still && <div className="shimmer-overlay" />}
       </div>
-      <p>Wird in den Warenkorb gelegt …</p>
+      <p style={{margin: '1rem 0 0'}}>Wird in den Warenkorb gelegt …</p>
     </div>
   );
 }
