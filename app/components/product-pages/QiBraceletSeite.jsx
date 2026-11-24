@@ -28,6 +28,10 @@ import amazonstilStyles from '~/styles/amazonstil.css?url';
 import {Geraetevergleich, Kundenfragen} from '~/components/reusables/AmazonStil';
 import {OhneRisikoKaufen, SaunaWeg} from '~/components/reusables/OhneRisikoKaufen';
 import ohneRisikoStyles from '~/styles/qb-ohne-risiko.css?url';
+// Dieselbe Datei, die root.jsx über @fontsource-variable/open-sans einbindet
+// (latin, variable Strichstärke). Vite gibt beiden Verweisen denselben
+// Asset-Namen, die Vorladung trifft also genau den Abruf der @font-face-Regel.
+import openSansLatinWoff2 from '@fontsource-variable/open-sans/files/open-sans-latin-wght-normal.woff2?url';
 import {amazonstilAn, teileFragen} from '~/components/reusables/amazonstil-daten';
 import {BLOCK_PUBLIC} from '~/components/reusables/blockLinks';
 import {FAQ_QIBRACELET} from '~/data/product-faqs';
@@ -86,6 +90,21 @@ import {FAQ_QIBRACELET} from '~/data/product-faqs';
  */
 export function qiBraceletSeiteLinks() {
   return [
+    // SCHRIFT VORLADEN (Job 20261124-qibracelet-hero-titel-sprung-1440):
+    // ohne diese Zeile fordert der Browser Open Sans erst beim ersten Layout
+    // an, also nach allen Stylesheets. Kam sie danach, stand der Hero-Titel
+    // „Zellschutz für unterwegs“ bei 1440 px in der breiteren Ersatzschrift
+    // auf drei Zeilen (185 px) und sprang beim Schrifttausch auf zwei
+    // (123 px): der senkrecht zentrierte Text rutschte 31 px nach unten
+    // (live 2 von 4 Läufen). Vorgeladen ist die Schrift beim ersten Bild da.
+    // Rückweg: diese Zeile und den Import oben entfernen.
+    {
+      rel: 'preload',
+      as: 'font',
+      type: 'font/woff2',
+      href: openSansLatinWoff2,
+      crossOrigin: 'anonymous',
+    },
     {rel: 'stylesheet', href: igStyles},
     {rel: 'stylesheet', href: pdpQiStyles},
     {rel: 'stylesheet', href: kaufZuerstStyles},
