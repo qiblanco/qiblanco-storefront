@@ -32,6 +32,7 @@ import ohneRisikoStyles from '~/styles/qb-ohne-risiko.css?url';
 // (latin, variable Strichstärke). Vite gibt beiden Verweisen denselben
 // Asset-Namen, die Vorladung trifft also genau den Abruf der @font-face-Regel.
 import openSansLatinWoff2 from '@fontsource-variable/open-sans/files/open-sans-latin-wght-normal.woff2?url';
+import schriftErsatzStyles from '~/styles/qb-schrift-ersatz.css?url';
 import {amazonstilAn, teileFragen} from '~/components/reusables/amazonstil-daten';
 import {BLOCK_PUBLIC} from '~/components/reusables/blockLinks';
 import {FAQ_QIBRACELET} from '~/data/product-faqs';
@@ -105,6 +106,11 @@ export function qiBraceletSeiteLinks() {
       href: openSansLatinWoff2,
       crossOrigin: 'anonymous',
     },
+    // Zweites Bein zur Vorladung: kommt die Schrift trotzdem zu spät (kalter
+    // CDN-Pfad direkt nach einem Deploy, live 1 von 32 Läufen), bricht der
+    // Titel auch in der Ersatzschrift auf zwei Zeilen um. Begründung und
+    // Messwerte in der Datei. Rückweg: diese Zeile und den Import entfernen.
+    {rel: 'stylesheet', href: schriftErsatzStyles},
     {rel: 'stylesheet', href: igStyles},
     {rel: 'stylesheet', href: pdpQiStyles},
     {rel: 'stylesheet', href: kaufZuerstStyles},
