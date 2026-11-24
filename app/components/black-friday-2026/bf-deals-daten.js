@@ -134,13 +134,24 @@ export const BF_DEALS = [
  * (serverseitig, Bild und Link stimmen schon im HTML). Ohne Parameter oder bei
  * unbekanntem Wert: das erste Set. Preise wörtlich: je Set 76 € statt 152 €
  * (kauf 2, zahl 1), Links aus Elinas gemessener Liste (Kasse = 76 €).
+ *
+ * SEIT 24.11.2026 OHNE CODE (Christian: „USA-Shop ist jetzt ideal gelöst. Auch
+ * ohne, dass irgendein Spezialrabatt angezeigt wird“): der Knopf legt je Set
+ * ein eigenes natives Bundle zu 76 € (Vergleichspreis 152 €) in den Warenkorb,
+ * Handles awcr37shyj / aw783hfn / 37cr378n (kryptisch, versteckt, ohne
+ * Kollektion; Komponenten Awake 6668 / Create 6666 wie die übrigen Bundles).
+ * Vorher: Set-Produkt zu 122 € plus Code BF26-KAKAO-NKSKX (−46 €). Die Zeile ist
+ * keine Set-Zeile der Kakao-Normalform (Handle nicht in KAKAO_ZEILEN): Menge 1
+ * je Bundle, Plus und Minus ein ganzes Bundle. Nach BF (30.11.) gehen die drei
+ * Bundles zurück in den Entwurf (Rückweg im Job
+ * 20261124-prio1-de-shop-bundles-wie-us-zaehler-1-ohne-rabattcode-warenkorb-flackern).
  */
 export const BF_KAKAO_SEITE = 'j7hcyb802kn';
 export const BF_KAKAO_SETS = [
   {
     id: 'create-awake',
-    // Set-Variante im Qi-Blanco-Warenkorb (Elina EL-20261112-5c71f6ff): EIN Set-Produkt, 122 € -> 76 € mit dem Kakao-Code.
-    variante: '65979750809868',
+    // Eigenes BF-Bundle (natives Shopify-Bundle, 76 € statt 152 €, ohne Code; Christian 24.11.2026 „wie US“).
+    variante: '54552762614028',
     pille: '1x Awake + 1x Create',
     name: 'Crystal Cacao 1x Awake + 1x Create',
     basis: 'bundle-1x-awake-1x-create',
@@ -150,8 +161,8 @@ export const BF_KAKAO_SETS = [
   },
   {
     id: '2x-awake',
-    // Set-Variante im Qi-Blanco-Warenkorb (Elina EL-20261112-5c71f6ff): EIN Set-Produkt, 122 € -> 76 € mit dem Kakao-Code.
-    variante: '54596980277516',
+    // Eigenes BF-Bundle (natives Shopify-Bundle, 76 € statt 152 €, ohne Code; Christian 24.11.2026 „wie US“).
+    variante: '54552759697676',
     pille: '2x Awake',
     name: 'Crystal Cacao 2x Awake',
     basis: 'bundle-2x-awake',
@@ -161,8 +172,8 @@ export const BF_KAKAO_SETS = [
   },
   {
     id: '2x-create',
-    // Set-Variante im Qi-Blanco-Warenkorb (Elina EL-20261112-5c71f6ff): EIN Set-Produkt, 122 € -> 76 € mit dem Kakao-Code.
-    variante: '54590829986060',
+    // Eigenes BF-Bundle (natives Shopify-Bundle, 76 € statt 152 €, ohne Code; Christian 24.11.2026 „wie US“).
+    variante: '54552759140620',
     pille: '2x Create',
     name: 'Crystal Cacao 2x Create',
     basis: 'mengenrabatt-2x',

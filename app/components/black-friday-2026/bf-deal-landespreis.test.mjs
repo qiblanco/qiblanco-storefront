@@ -54,13 +54,16 @@ const EINZEL_CH = {
   ],
 };
 
-/** Antwort wie gemessen 13.11.2026, CH, Kakao-Set-Variante + BF26-KAKAO-NKSKX (80,54 CHF). */
+/**
+ * Antwort CH, Kakao seit 24.11.2026 als eigenes BF-Bundle ohne Code (Christian „wie US“).
+ * Betrag wie gemessen 13.11.2026 mit Set-Variante + BF26-KAKAO-NKSKX (80,54 CHF).
+ */
 function kakaoChAntwort() {
   return {
     cartCreate: {
       cart: {
         totalQuantity: 1,
-        discountCodes: [{code: 'BF26-KAKAO-NKSKX', applicable: true}],
+        discountCodes: [],
         lines: {
           nodes: [
             {
@@ -218,15 +221,15 @@ test('Galerie: mehrere Deals parallel, DE leer', async () => {
   assert.deepEqual(await bfDealLandesPreise(sf, ['2x-qione-2-pro'], 'DE', {jetzt: JETZT}), {});
 });
 
-test('Kakao CH: Set-Zeile mit _bf_deal + Kakao-Code, Streichpreis = Einzelpackungen (78 + 77)', async () => {
+test('Kakao CH: BF-Bundle-Zeile mit _bf_deal ohne Code, Streichpreis = Einzelpackungen (78 + 77)', async () => {
   _ablageLeeren();
   const sf = mockStorefront([kakaoChAntwort()]);
   const lp = await bfDealLandesPreis(sf, {deal: 'kakao', set: 'create-awake'}, 'CH', {jetzt: JETZT});
   assert.deepEqual(lp, {preis: 80.54, uvp: 155, waehrung: 'CHF'});
-  assert.deepEqual(sf.aufrufe[0].variables.codes, ['BF26-KAKAO-NKSKX']);
+  assert.deepEqual(sf.aufrufe[0].variables.codes, []);
   assert.deepEqual(sf.aufrufe[0].variables.lines, [
     {
-      merchandiseId: 'gid://shopify/ProductVariant/65979750809868',
+      merchandiseId: 'gid://shopify/ProductVariant/54552762614028',
       quantity: 1,
       attributes: [{key: '_bf_deal', value: 'kakao'}],
     },
