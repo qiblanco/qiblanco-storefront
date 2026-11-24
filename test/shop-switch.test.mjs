@@ -49,15 +49,49 @@ test('GLEICHWERTIG: eine Seite mit Entsprechung führt auf genau diese', () => {
   );
 });
 
-test('UNBEKANNT: ohne Entsprechung die Startseite, nie eine falsche Seite', () => {
+test('UNBEKANNT: ohne Paar und ohne passende Familie die Startseite', () => {
   assert.equal(
     switchTarget('/pages/gibt-es-drueben-nicht', 'us'),
     'https://qi-blanco.com/',
   );
+});
+
+// Christian 24.11.2026: "dass man direkt auf die gegenüberliegende richtige
+// Seite landet. Und das wirklich auf jede Seite nochmal ausprobieren."
+test('NÄCHSTPASSEND: Produktfamilie, Kollektion, Blog statt Startseite', () => {
   assert.equal(
     switchTarget('/collections/irgendwas/products/xy', 'us'),
-    'https://qi-blanco.com/',
+    'https://qi-blanco.com/collections/all',
   );
+  assert.equal(switchTarget('/products/qione-1', 'us'), 'https://qi-blanco.com/products/qione');
+  assert.equal(switchTarget('/blogs/wissen/neu', 'us'), 'https://qi-blanco.com/blogs/knowledge');
+  assert.equal(switchTarget('/blogs/knowledge/new', 'de'), 'https://qiblanco.com/blogs/wissen');
+  assert.equal(switchTarget('/products/irgendein-necklace', 'de'), 'https://qiblanco.com/products/qione-kette');
+});
+
+test('BF-DEAL: Deal-Seite führt auf die Deal-Seite desselben Deals, beide Richtungen', () => {
+  const vorEnde = {jetzt: Date.parse('2026-11-24T12:00:00Z')};
+  assert.equal(switchTarget('/products/j7hcyb802kn', 'us', vorEnde), 'https://qi-blanco.com/pages/izw9jai5k5x');
+  assert.equal(switchTarget('/pages/izw9jai5k5x', 'de', vorEnde), 'https://qiblanco.com/products/j7hcyb802kn');
+  assert.equal(switchTarget('/pages/rk3xmgho0m0', 'de', vorEnde), 'https://qiblanco.com/products/8kendiw34hd');
+  assert.equal(switchTarget('/products/u09mvn6eftj', 'de', vorEnde), 'https://qiblanco.com/products/j7hcyb802kn');
+  const nachEnde = {jetzt: Date.parse('2026-12-01T00:00:00Z')};
+  assert.equal(switchTarget('/pages/izw9jai5k5x', 'de', nachEnde), 'https://qiblanco.com/');
+});
+
+test('ARTIKEL: das hreflang-Gegenstück des Artikels gewinnt vor dem Blog', () => {
+  assert.equal(
+    switchTarget('/blogs/wissen/a', 'us', {artikel: '/blogs/knowledge/b'}),
+    'https://qi-blanco.com/blogs/knowledge/b',
+  );
+});
+
+test('ABFRAGE: mit search wandert die Abfrage mit (utm, el)', () => {
+  assert.equal(
+    switchTarget('/pages/impressum', 'us', {search: '?utm_source=meta&el=x'}),
+    'https://qi-blanco.com/pages/imprint?utm_source=meta&el=x',
+  );
+  assert.equal(switchTarget('/pages/impressum', 'us', {search: '?'}), 'https://qi-blanco.com/pages/imprint');
 });
 
 test('FRONT -> FRONT: die Startseite bleibt die Startseite', () => {

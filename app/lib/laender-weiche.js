@@ -174,9 +174,10 @@ function istSeitenPfad(pfad) {
  * US-Gegenseite eines DE-Pfads (ohne Abfrage-Parameter).
  * @param {string} pathname
  * @param {number} [jetzt]
+ * @param {{artikel?: string|null}} [extra] Artikel-Gegenstück (hreflang-Metafeld)
  * @returns {string} absolute URL auf qi-blanco.com
  */
-export function usGegenseite(pathname, jetzt = Date.now()) {
+export function usGegenseite(pathname, jetzt = Date.now(), extra = {}) {
   let pfad = String(pathname || '/');
   try {
     pfad = decodeURIComponent(pfad);
@@ -188,8 +189,9 @@ export function usGegenseite(pathname, jetzt = Date.now()) {
     return US_ORIGIN + BF_DEAL_GEGENSEITEN[norm];
   }
   if (ZUSATZ_GEGENSEITEN[norm]) return US_ORIGIN + ZUSATZ_GEGENSEITEN[norm];
-  // Umschalter-Tabelle (SSoT shop-mapping.yaml); ohne Treffer US-Startseite.
-  return switchTarget(norm, 'us');
+  // Umschalter-Tabelle (SSoT shop-mapping.yaml): Paar, BF-Zeitpaar, Artikel,
+  // nächstpassende Seite; erst ohne jeden Treffer die US-Startseite.
+  return switchTarget(norm, 'us', {jetzt, artikel: extra.artikel});
 }
 
 /**

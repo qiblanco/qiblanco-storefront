@@ -1,5 +1,5 @@
 import {useEffect, useId, useRef, useState} from 'react';
-import {useLocation} from 'react-router';
+import {useLocation, useMatches, useRouteLoaderData} from 'react-router';
 import {SHOP_LABEL, switchTarget} from '~/lib/shop-switch';
 import {usGegenseite} from '~/lib/laender-weiche';
 
@@ -123,6 +123,29 @@ export function ShopSwitch({aktiv = 'de', oben = false}) {
   const panelId = useId();
   const location = useLocation();
   const pfad = location?.pathname || '/';
+  // Abfrage-Parameter (utm_*, el=...) wandern mit ins Gegenstück
+  // (Christian 24.11.2026, Job 20261124-prio1-shop-sprach-laenderwahl-...).
+  const abfrage = location?.search && location.search.length > 1 ? location.search : '';
+  // Artikel: das englische Gegenstück steht im Metafeld custom.hreflang_en,
+  // das die Artikel-Route ohnehin lädt (dieselbe Quelle wie das hreflang-Tag).
+  const matches = useMatches();
+  const artikelEn =
+    matches.map((m) => m?.data?.article?.hreflangEn?.value).find(Boolean) || null;
+  // Warenkorb-Hinweis: zwei Shops, zwei Warenkörbe. Nur mit Artikeln im Korb,
+  // erst nach dem Laden (der Warenkorb kommt als Promise aus dem Root-Loader).
+  const root = useRouteLoaderData('root');
+  const [korbMenge, setKorbMenge] = useState(0);
+  useEffect(() => {
+    let aktivFlag = true;
+    Promise.resolve(root?.cart)
+      .then((c) => {
+        if (aktivFlag) setKorbMenge(Number(c?.totalQuantity) || 0);
+      })
+      .catch(() => {});
+    return () => {
+      aktivFlag = false;
+    };
+  }, [root?.cart]);
 
   // Schließen per Esc und Klick nach außen. Beides nur solange offen —
   // ein dauerhaft hängender document-Listener im Header ist unnötige Last.
@@ -237,7 +260,13 @@ export function ShopSwitch({aktiv = 'de', oben = false}) {
                    fällt sonst auf dieselbe Umschalter-Tabelle zurück. So landet
                    ein Klick im BF-Store auf der US-BF-Seite statt auf der
                    Startseite (Christian 22.11.2026). */
-                href={istAktiv ? pfad : shop === 'us' ? usGegenseite(pfad) : switchTarget(pfad, shop)}
+                href={
+                  istAktiv
+                    ? pfad
+                    : shop === 'us'
+                      ? usGegenseite(pfad, Date.now(), {artikel: artikelEn}) + abfrage
+                      : switchTarget(pfad, shop, {search: abfrage})
+                }
                 onClick={() => setOffen(false)}
               >
                 <Flagge shop={shop} />
@@ -246,6 +275,24 @@ export function ShopSwitch({aktiv = 'de', oben = false}) {
             </li>
           );
         })}
+        {korbMenge > 0 ? (
+          <li
+            className="shop-switch__hinweis"
+            role="note"
+            style={{
+              margin: 0,
+              padding: '6px var(--shop-switch-pad-x) 4px',
+              maxWidth: '200px',
+              fontSize: '0.8rem',
+              lineHeight: 1.35,
+              whiteSpace: 'normal',
+              color: 'var(--shop-switch-ink)',
+              opacity: 0.75,
+            }}
+          >
+            Dein Warenkorb bleibt in diesem Shop.
+          </li>
+        ) : null}
       </ul>
     </div>
   );
