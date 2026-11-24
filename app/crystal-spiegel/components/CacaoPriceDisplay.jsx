@@ -2,7 +2,7 @@
 // NICHT VON HAND AENDERN: die Quelle ist crystal-cacao.com, Herkunft in SPIEGEL.json.
 import {cacaoPricing} from './CacaoProductForm';
 import {useMarktLand} from '~/lib/markt-land';
-import {PreisSchilder} from '~/crystal-spiegel/components/reusables/PreisSchild';
+import {PreisSchilder} from '~/components/reusables/PreisSchild';
 
 /**
  * Preis-Anzeige der Kakao-Mengenstaffel — DYNAMISCH aus dem API-Preis der
