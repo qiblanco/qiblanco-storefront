@@ -64,9 +64,11 @@ test('Gegenseiten: Produkt, bf-deals, Pre-Access, Startseite, Deals', () => {
   assert.equal(z('/products/56huz67dds'), 'https://qi-blanco.com/pages/c4173cw1v79');
   assert.equal(z('/products/j7hcyb802kn'), 'https://qi-blanco.com/pages/izw9jai5k5x');
   assert.equal(z('/pages/impressum'), 'https://qi-blanco.com/pages/imprint');
-  assert.equal(z('/blogs/journal/irgendwas'), 'https://qi-blanco.com/');
-  // nach Ende der BF-Codes fällt die Deal-Zuordnung weg
-  assert.equal(usGegenseite('/products/8kendiw34hd', Date.parse('2026-12-01T00:00:00Z')), 'https://qi-blanco.com/');
+  // ohne eigenes Paar: nächstpassende Seite statt Startseite (Christian 24.11.2026)
+  assert.equal(z('/blogs/journal/irgendwas'), 'https://qi-blanco.com/blogs/knowledge');
+  assert.equal(z('/pages/gibt-es-nicht'), 'https://qi-blanco.com/');
+  // nach Ende der BF-Codes fällt die Deal-Zuordnung weg, es bleibt die Produktübersicht
+  assert.equal(usGegenseite('/products/8kendiw34hd', Date.parse('2026-12-01T00:00:00Z')), 'https://qi-blanco.com/collections/all');
 });
 
 test('Abfrage-Parameter reisen mit', () => {
