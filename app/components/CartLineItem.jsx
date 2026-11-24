@@ -152,9 +152,14 @@ export function CartLineItem({layout, line}) {
 function CartLineQuantity({line}) {
   if (!line || typeof line?.quantity === 'undefined') return null;
   const {id: lineId, quantity, isOptimistic} = line;
-  // Eine Kakao-Set-Zeile (Menge 1) trägt 2 oder 3 Packungen. Der Stepper
-  // zeigt und zählt dort PACKUNGEN; der Server legt die Zeile danach selbst
-  // wieder auf Set oder Einzelpackung (lib/kakao-set-zeile.server.js).
+  // Eine Kakao-Set-Zeile (Menge 1) trägt 2 oder mehr Packungen. Der Zähler
+  // zeigt BUNDLES, nicht Packungen (Christian 24.11.2026: „Du zählst 2 Tüten
+  // Kakao, aber oben schreibst du zweimal Awake rein. Das ist verwirrend für
+  // den Kunden. Also es ist ja nur ein Bundle dann.“). Plus und Minus bewegen
+  // ein ganzes Bundle. An den Server geht weiter die Packungszahl
+  // (kakaoPackungen, Bundles x Set-Größe); er legt die Zeile danach selbst
+  // auf Set oder Einzelpackung (lib/kakao-set-zeile.server.js), BF-Zeilen
+  // bleiben dasselbe Set (bfDealSetMenge). Preise unverändert.
   const handle = line.merchandise?.product?.handle;
   // Wunschnummer und Kette (Gold oder inklusive Stahl) gehören zum Qi Alpha,
   // je Gerät eine (Christian 01.11.2026). Keine Mengen-Knöpfe, nur Entfernen;
@@ -167,9 +172,13 @@ function CartLineQuantity({line}) {
     );
   }
   const set = kakaoSetArt(handle);
-  const menge = set ? set.packungen * quantity : quantity;
-  const prevQuantity = Number(Math.max(0, menge - 1).toFixed(0));
-  const nextQuantity = Number((menge + 1).toFixed(0));
+  const menge = quantity;
+  const prevQuantity = set
+    ? Math.max(0, quantity - 1) * set.packungen
+    : Number(Math.max(0, quantity - 1).toFixed(0));
+  const nextQuantity = set
+    ? (quantity + 1) * set.packungen
+    : Number((quantity + 1).toFixed(0));
   const eingabe = (neu) =>
     set
       ? {
