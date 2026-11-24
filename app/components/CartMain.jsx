@@ -1,11 +1,18 @@
+import {useEffect, useRef, useState} from 'react';
 import {useOptimisticCart} from '@shopify/hydrogen';
-import {Link} from 'react-router';
+import {Link, useFetchers} from 'react-router';
 import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
 import {formatPreis} from '~/lib/markt-pricing';
 import {taxRateForHandle} from '~/lib/cart-display-pricing';
 import {istBrutto} from '~/lib/preismodus';
+import {
+  KLICK_FRIST_MS,
+  fensterZustand,
+  istHinzufuegenKlick,
+  istLaufendesHinzufuegen,
+} from '~/lib/warenkorb-laedt';
 import {sortiereWarenkorb} from '~/lib/qi-master-addons';
 
 /**
@@ -18,16 +25,24 @@ export function CartMain({layout, cart: originalCart}) {
   // so the user immediately sees feedback when they modify the cart.
   const cart = useOptimisticCart(originalCart);
 
-  const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
   const withDiscount =
     cart &&
     Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
   const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
   const cartHasItems = cart?.totalQuantity ? cart.totalQuantity > 0 : false;
+  // Ladezustand statt „leer“, solange ein Hinzufügen läuft (Begründung und
+  // Messung: lib/warenkorb-laedt.js).
+  const {fetcherLaeuft, klickLaeuft} = useHinzufuegenLaeuft(layout === 'aside');
+  const zustand = fensterZustand({
+    zeilen: cart?.lines?.nodes?.length || 0,
+    fetcherLaeuft,
+    klickLaeuft,
+  });
 
   return (
     <div className={className}>
-      <CartEmpty hidden={linesCount} layout={layout} />
+      <CartEmpty hidden={zustand !== 'leer'} layout={layout} />
+      {zustand === 'laedt' && <CartLaedt />}
       {cartHasItems && <FreeShipping cart={cart} />}
       <div className="cart-details">
         <div aria-labelledby="cart-lines">
@@ -42,6 +57,65 @@ export function CartMain({layout, cart: originalCart}) {
         </div>
       </div>
       {cartHasItems && <CartSummary cart={cart} layout={layout} />}
+    </div>
+  );
+}
+
+/**
+ * Läuft gerade ein Hinzufügen? Zwei Quellen (lib/warenkorb-laedt.js): der
+ * Klick auf einen Hinzufügen-Knopf (vor dem Fetcher, mit Frist) und ein
+ * LinesAdd-Fetcher, der nicht idle ist. Endet der Fetcher, endet auch der
+ * Klick-Zustand.
+ * @param {boolean} klickHoeren nur im Fenster (aside) auf Klicks hören
+ */
+function useHinzufuegenLaeuft(klickHoeren) {
+  const fetchers = useFetchers();
+  const fetcherLaeuft = fetchers.some(istLaufendesHinzufuegen);
+  const [klickSeit, setKlickSeit] = useState(0);
+
+  useEffect(() => {
+    if (!klickHoeren) return undefined;
+    // Erfassungsphase: läuft vor dem onClick des Knopfs, der das Fenster
+    // öffnet — Ladezustand und Öffnen landen damit im selben Bild.
+    const beiKlick = (event) => {
+      if (istHinzufuegenKlick(event.target)) setKlickSeit(Date.now());
+    };
+    document.addEventListener('click', beiKlick, true);
+    return () => document.removeEventListener('click', beiKlick, true);
+  }, [klickHoeren]);
+
+  useEffect(() => {
+    if (!klickSeit) return undefined;
+    const frist = setTimeout(() => setKlickSeit(0), KLICK_FRIST_MS);
+    return () => clearTimeout(frist);
+  }, [klickSeit]);
+
+  const warLaufend = useRef(false);
+  useEffect(() => {
+    if (warLaufend.current && !fetcherLaeuft) setKlickSeit(0);
+    warLaufend.current = fetcherLaeuft;
+  }, [fetcherLaeuft]);
+
+  return {fetcherLaeuft, klickLaeuft: klickSeit > 0};
+}
+
+/** Ruhiger Ladezustand; bei „Bewegung reduzieren“ ohne Animation (app.css). */
+function CartLaedt() {
+  return (
+    <div
+      className="warenkorb-laedt"
+      data-warenkorb-laedt=""
+      role="status"
+      aria-live="polite"
+    >
+      <div className="warenkorb-laedt__zeile" aria-hidden="true">
+        <span className="warenkorb-laedt__bild" />
+        <span className="warenkorb-laedt__text">
+          <span />
+          <span />
+        </span>
+      </div>
+      <p>Wird in den Warenkorb gelegt …</p>
     </div>
   );
 }
