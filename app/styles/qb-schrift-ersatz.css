@@ -1,0 +1,31 @@
+/*
+ * Ersatzschrift für den Hero-Titel der QiBracelet-Seiten (Job 20261124-qibracelet-hero-titel-sprung-1440).
+ *
+ * Kommt Open Sans erst nach dem ersten Bild an, setzt der Browser „Zellschutz für unterwegs“ (.tas-band-titel)
+ * zuerst in der Ersatzschrift. Gemessen bei 56 px, Gewicht 600, Box 419 px: „Zellschutz für“ ist in Open Sans
+ * 367 px breit, mit Arial/Helvetica-Metrik 355–365, in Roboto 345 – alle bleiben auf zwei Zeilen. Nur DejaVu Sans
+ * (Linux) ist 434 px breit, bricht auf drei Zeilen um (185 statt 123 px) und schiebt den senkrecht zentrierten
+ * Hero-Text beim Schrifttausch 31 px nach unten.
+ *
+ * Diese Familie gibt es nur, wo DejaVu Sans lokal installiert ist; sie verkleinert es auf die Breite von Open Sans
+ * (Bold 82 %, Regular 89 % → je ~0,97 der Open-Sans-Breite). Fehlt DejaVu, entfällt die Familie und es gilt
+ * sans-serif wie bisher. Ist Open Sans geladen, wird sie nie benutzt: das Endbild bleibt gleich.
+ * Rückweg: diese Datei und ihren Eintrag in qiBraceletSeiteLinks() entfernen.
+ */
+@font-face {
+  font-family: 'QB Ersatz DejaVu';
+  src: local('DejaVu Sans Bold'), local('DejaVuSans-Bold');
+  font-weight: 600 800;
+  size-adjust: 82%;
+}
+
+@font-face {
+  font-family: 'QB Ersatz DejaVu';
+  src: local('DejaVu Sans'), local('DejaVuSans');
+  font-weight: 300 550;
+  size-adjust: 89%;
+}
+
+.tas-seite .tas-band-titel {
+  font-family: 'Open Sans Variable', 'QB Ersatz DejaVu', sans-serif;
+}
