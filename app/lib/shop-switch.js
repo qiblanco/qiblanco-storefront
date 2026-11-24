@@ -238,8 +238,11 @@ const ZEIT_DE_US = {
   "/products/8kendiw34hd": "/pages/rk3xmgho0m0",
   "/products/aw783hfn": "/pages/izw9jai5k5x",
   "/products/awcr37shyj": "/pages/izw9jai5k5x",
+  "/products/bundle-1x-awake-1x-create": "/pages/izw9jai5k5x",
+  "/products/bundle-2x-awake": "/pages/izw9jai5k5x",
   "/products/j7hcyb802kn": "/pages/izw9jai5k5x",
   "/products/jhsdhze783": "/pages/rk3xmgho0m0",
+  "/products/mengenrabatt-2x": "/pages/izw9jai5k5x",
   "/products/pjdz538hgs0": "/pages/b9rkk99ssbm"
 };
 const ZEIT_US_DE = {
@@ -305,6 +308,16 @@ const REGELN_DE_US = [
   [
     "/products/",
     "create",
+    "/pages/crystal-cacao"
+  ],
+  [
+    "/products/mengenrabatt-2x",
+    "",
+    "/pages/crystal-cacao"
+  ],
+  [
+    "/products/mengenrabatt-3x-create",
+    "",
     "/pages/crystal-cacao"
   ],
   [
