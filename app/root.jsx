@@ -127,6 +127,10 @@ import mehrErfahrenAStyles from '~/styles/mehr-erfahren-a.css?url';
 import {hreflangLinks} from '~/lib/hreflang';
 import {PageLayout} from './components/PageLayout';
 import '@fontsource-variable/open-sans';
+// Dieselbe Datei, die die Zeile darüber per @font-face einbindet (latin,
+// variable Strichstärke). Vite gibt beiden Verweisen denselben Asset-Namen,
+// die Vorladung in links() trifft also genau den Abruf der @font-face-Regel.
+import openSansLatinWoff2 from '@fontsource-variable/open-sans/files/open-sans-latin-wght-normal.woff2?url';
 import LoadingBar from './components/LoadingBar';
 import {MetaPixel} from './components/MetaPixel';
 import {MetaAbschnittPixel} from './components/MetaAbschnittPixel';
@@ -213,6 +217,21 @@ export const shouldRevalidate = ({formMethod, currentUrl, nextUrl}) => {
  */
 export function links() {
   return [
+    // SCHRIFT VORLADEN, ALLE SEITEN (Job 20261124-schrift-vorladen-global-
+    // deutsch-shop, devlog homepage-bauer F-3002): ohne diese Zeile fordert der
+    // Browser Open Sans erst beim ersten Layout an, also nach allen
+    // Stylesheets. Kam die Schrift danach, stand der Text zuerst in der
+    // breiteren Ersatzschrift und brach beim Tausch neu um (gemessen 24.11.:
+    // QiBracelet-Hero 31 px bei 1440, Sprechstunde-Absatz 77 -> 51 px bei
+    // 414). Vorher stand die Zeile nur in qiBraceletSeiteLinks().
+    // Rückweg: diesen Eintrag und den Import oben entfernen.
+    {
+      rel: 'preload',
+      as: 'font',
+      type: 'font/woff2',
+      href: openSansLatinWoff2,
+      crossOrigin: 'anonymous',
+    },
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
