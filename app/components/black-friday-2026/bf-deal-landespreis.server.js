@@ -29,7 +29,9 @@
  * in den Qi-Blanco-Warenkorb (nicht mehr crystal-cacao.com), den Code setzt der
  * Server. Gemessen 13.11.2026 (Set + BF26-KAKAO-NKSKX): DE 76 €, CH 80,54 CHF,
  * PL 342,10 PLN, US/NO 107,14 USD. Darum gilt derselbe Weg; Zeilen aus
- * bfKakaoZeilen, je Set eine Ablage (seite.set).
+ * bfKakaoZeilen, je Set eine Ablage (seite.set). Seit 24.11.2026 legt der
+ * Knopf je Set ein eigenes BF-Bundle zu 76 € ohne Code (bf-deal-codes kakao: []);
+ * der Weg bleibt derselbe, nur ohne Code.
  *
  * FAIL-CLOSED AUF DEN STAND DAVOR: Fehler, Frist, Code nicht anwendbar,
  * fehlende Zeile -> null. Die Seite nennt dann wie bisher den Euro-Preis.

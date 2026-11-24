@@ -21,7 +21,11 @@ const BF_DEAL_CODES = {
   'qione-2-pro-necklace': ['BF26-PRO-13GLX'],
   qibracelet: ['BF26-BRACELET-GM5JJ'],
   'qihome-air': ['BF26-QIHOME-2DP8H'],
-  kakao: ['BF26-KAKAO-NKSKX'],
+  // Kakao ohne Code seit 24.11.2026 (Christian, „wie US“): die BF-Bundles kosten
+  // selbst 76 € (bf-deals-daten.js BF_KAKAO_SETS). BF26-KAKAO-NKSKX bleibt bis
+  // 30.11. in Shopify aktiv, damit ältere Warenkörbe (Set zu 122 € + Code) ihren
+  // Preis behalten; er greift nur auf die 122-€-Sets, nie auf die BF-Bundles.
+  kakao: [],
 };
 
 /** Codes eines Deals, nur im Zeitfenster; sonst leer. */
