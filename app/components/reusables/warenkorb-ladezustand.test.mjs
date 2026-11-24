@@ -1,4 +1,4 @@
-// Ladezustand des Warenkorb-Fensters (lib/warenkorb-laedt.js). Lauf: node --test.
+// Ladezustand des Warenkorb-Fensters (components/reusables/warenkorb-ladezustand.js). Lauf: node --test.
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -7,7 +7,7 @@ import {
   fensterZustand,
   istHinzufuegenKlick,
   istLaufendesHinzufuegen,
-} from './warenkorb-laedt.js';
+} from './warenkorb-ladezustand.js';
 
 const fd = (aktion) => {
   const m = new Map([[CART_FORM_FELD, JSON.stringify({action: aktion, inputs: {}})]]);
@@ -16,8 +16,8 @@ const fd = (aktion) => {
 
 test('Fenster: Zeilen schlagen alles, Laden schlägt leer', () => {
   assert.equal(fensterZustand({zeilen: 1, fetcherLaeuft: true, klickLaeuft: true}), 'zeilen');
-  assert.equal(fensterZustand({zeilen: 0, fetcherLaeuft: true, klickLaeuft: false}), 'laedt');
-  assert.equal(fensterZustand({zeilen: 0, fetcherLaeuft: false, klickLaeuft: true}), 'laedt');
+  assert.equal(fensterZustand({zeilen: 0, fetcherLaeuft: true, klickLaeuft: false}), 'ladezustand');
+  assert.equal(fensterZustand({zeilen: 0, fetcherLaeuft: false, klickLaeuft: true}), 'ladezustand');
   assert.equal(fensterZustand({zeilen: 0, fetcherLaeuft: false, klickLaeuft: false}), 'leer');
 });
 

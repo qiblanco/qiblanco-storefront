@@ -1,5 +1,5 @@
-// LADEZUSTAND DES WARENKORB-FENSTERS (Job 20261124-prio1-folge-de-warenkorb-
-// oeffnet-leer-ladezustand). Christian 24.11.2026: „Also das Warenkorbfenster
+// LADEZUSTAND DES WARENKORB-FENSTERS (Prio-1-Auftrag vom 24.11.2026).
+// Christian 24.11.2026: „Also das Warenkorbfenster
 // springt auf, dann ist es leer und dann wird es angezeigt erst.“
 //
 // URSACHE, gemessen am 24.11. auf qiblanco.com (Handy 390 px, leerer Korb):
@@ -62,9 +62,9 @@ export function istHinzufuegenKlick(ziel) {
   return aktionAusFeldwert(feld?.value) === 'LinesAdd';
 }
 
-/** Was zeigt das Fenster? 'zeilen' | 'laedt' | 'leer'. */
+/** Was zeigt das Fenster? 'zeilen' | 'ladezustand' | 'leer'. */
 export function fensterZustand({zeilen, fetcherLaeuft, klickLaeuft}) {
   if (zeilen > 0) return 'zeilen';
-  if (fetcherLaeuft || klickLaeuft) return 'laedt';
+  if (fetcherLaeuft || klickLaeuft) return 'ladezustand';
   return 'leer';
 }

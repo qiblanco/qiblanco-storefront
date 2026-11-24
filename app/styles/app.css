@@ -4014,48 +4014,48 @@ footer.footer :focus-visible {
   transition: all 0.3s ease;
 }
 
-/* Ladezustand des Warenkorb-Fensters (components/CartMain.jsx, lib/warenkorb-laedt.js):
+/* Ladezustand des Warenkorb-Fensters (components/CartMain.jsx, components/reusables/warenkorb-ladezustand.js):
  * steht statt „Dein Warenkorb ist zurzeit leer!“, solange ein Hinzufügen läuft.
  * Eine Platzhalterzeile in Form einer Warenkorbzeile, die ruhig pulsiert;
  * bei „Bewegung reduzieren“ steht sie still. */
-.warenkorb-laedt {
+.warenkorb-ladezustand {
   padding: 1rem 0;
 }
-.warenkorb-laedt__zeile {
+.warenkorb-ladezustand__zeile {
   display: flex;
   gap: 1rem;
   align-items: center;
 }
-.warenkorb-laedt__bild,
-.warenkorb-laedt__text > span {
+.warenkorb-ladezustand__bild,
+.warenkorb-ladezustand__text > span {
   display: block;
   background: rgba(0, 0, 0, 0.08);
   border-radius: 4px;
-  animation: warenkorb-laedt-puls 1.6s ease-in-out infinite;
+  animation: warenkorb-ladezustand-puls 1.6s ease-in-out infinite;
 }
-.warenkorb-laedt__bild {
+.warenkorb-ladezustand__bild {
   width: 100px;
   height: 100px;
   flex: 0 0 100px;
 }
-.warenkorb-laedt__text {
+.warenkorb-ladezustand__text {
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
 }
-.warenkorb-laedt__text > span {
+.warenkorb-ladezustand__text > span {
   height: 0.9rem;
   width: 80%;
 }
-.warenkorb-laedt__text > span + span {
+.warenkorb-ladezustand__text > span + span {
   width: 45%;
 }
-.warenkorb-laedt p {
+.warenkorb-ladezustand p {
   margin: 1rem 0 0;
 }
-@keyframes warenkorb-laedt-puls {
+@keyframes warenkorb-ladezustand-puls {
   0%,
   100% {
     opacity: 1;
@@ -4065,8 +4065,8 @@ footer.footer :focus-visible {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .warenkorb-laedt__bild,
-  .warenkorb-laedt__text > span {
+  .warenkorb-ladezustand__bild,
+  .warenkorb-ladezustand__text > span {
     animation: none;
   }
 }

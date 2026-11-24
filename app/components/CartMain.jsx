@@ -12,7 +12,7 @@ import {
   fensterZustand,
   istHinzufuegenKlick,
   istLaufendesHinzufuegen,
-} from '~/lib/warenkorb-laedt';
+} from '~/components/reusables/warenkorb-ladezustand';
 import {sortiereWarenkorb} from '~/lib/qi-master-addons';
 
 /**
@@ -31,7 +31,7 @@ export function CartMain({layout, cart: originalCart}) {
   const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
   const cartHasItems = cart?.totalQuantity ? cart.totalQuantity > 0 : false;
   // Ladezustand statt „leer“, solange ein Hinzufügen läuft (Begründung und
-  // Messung: lib/warenkorb-laedt.js).
+  // Messung: components/reusables/warenkorb-ladezustand.js).
   const {fetcherLaeuft, klickLaeuft} = useHinzufuegenLaeuft(layout === 'aside');
   const zustand = fensterZustand({
     zeilen: cart?.lines?.nodes?.length || 0,
@@ -42,7 +42,7 @@ export function CartMain({layout, cart: originalCart}) {
   return (
     <div className={className}>
       <CartEmpty hidden={zustand !== 'leer'} layout={layout} />
-      {zustand === 'laedt' && <CartLaedt />}
+      {zustand === 'ladezustand' && <CartLadezustand />}
       {cartHasItems && <FreeShipping cart={cart} />}
       <div className="cart-details">
         <div aria-labelledby="cart-lines">
@@ -62,7 +62,7 @@ export function CartMain({layout, cart: originalCart}) {
 }
 
 /**
- * Läuft gerade ein Hinzufügen? Zwei Quellen (lib/warenkorb-laedt.js): der
+ * Läuft gerade ein Hinzufügen? Zwei Quellen (components/reusables/warenkorb-ladezustand.js): der
  * Klick auf einen Hinzufügen-Knopf (vor dem Fetcher, mit Frist) und ein
  * LinesAdd-Fetcher, der nicht idle ist. Endet der Fetcher, endet auch der
  * Klick-Zustand.
@@ -100,17 +100,17 @@ function useHinzufuegenLaeuft(klickHoeren) {
 }
 
 /** Ruhiger Ladezustand; bei „Bewegung reduzieren“ ohne Animation (app.css). */
-function CartLaedt() {
+function CartLadezustand() {
   return (
     <div
-      className="warenkorb-laedt"
-      data-warenkorb-laedt=""
+      className="warenkorb-ladezustand"
+      data-warenkorb-ladezustand=""
       role="status"
       aria-live="polite"
     >
-      <div className="warenkorb-laedt__zeile" aria-hidden="true">
-        <span className="warenkorb-laedt__bild" />
-        <span className="warenkorb-laedt__text">
+      <div className="warenkorb-ladezustand__zeile" aria-hidden="true">
+        <span className="warenkorb-ladezustand__bild" />
+        <span className="warenkorb-ladezustand__text">
           <span />
           <span />
         </span>
