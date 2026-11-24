@@ -79,6 +79,21 @@ test('BF-DEAL: Deal-Seite führt auf die Deal-Seite desselben Deals, beide Richt
   assert.equal(switchTarget('/pages/izw9jai5k5x', 'de', nachEnde), 'https://qiblanco.com/');
 });
 
+// Christian 24.11.2026 (Job 20261124-prio2-folge-laenderwahl-kakao-bundles-de-ausrollen): die US-Bundle-Produkte
+// sind 404 (custom.hidden), darum führen die DE-Kakao-Bundles im BF auf die US-BF-Kakao-Seite mit der Set-Wahl,
+// danach auf die US-Kakao-Seite. Nur Hinweg.
+test('KAKAO-BUNDLES: DE-Bundle führt im BF auf die US-BF-Kakao-Seite, danach auf /pages/crystal-cacao', () => {
+  const vorEnde = {jetzt: Date.parse('2026-11-24T12:00:00Z')};
+  const nachEnde = {jetzt: Date.parse('2026-12-01T00:00:00Z')};
+  for (const p of ['/products/bundle-1x-awake-1x-create', '/products/bundle-2x-awake', '/products/mengenrabatt-2x']) {
+    assert.equal(switchTarget(p, 'us', vorEnde), 'https://qi-blanco.com/pages/izw9jai5k5x', p);
+    assert.equal(switchTarget(p, 'us', nachEnde), 'https://qi-blanco.com/pages/crystal-cacao', p);
+  }
+  assert.equal(switchTarget('/products/mengenrabatt-3x-create', 'us', vorEnde), 'https://qi-blanco.com/pages/crystal-cacao');
+  // Rückweg bleibt die Kakao-Deal-Seite, nie ein Bundle
+  assert.equal(switchTarget('/pages/izw9jai5k5x', 'de', vorEnde), 'https://qiblanco.com/products/j7hcyb802kn');
+});
+
 test('ARTIKEL: das hreflang-Gegenstück des Artikels gewinnt vor dem Blog', () => {
   assert.equal(
     switchTarget('/blogs/wissen/a', 'us', {artikel: '/blogs/knowledge/b'}),
