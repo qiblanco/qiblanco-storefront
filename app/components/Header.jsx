@@ -9,7 +9,6 @@ import {useAside} from '~/components/Aside';
 import {ShopSwitch} from '~/components/ShopSwitch';
 import {WaehrungsWahl} from '~/components/reusables/LandWaehrung';
 import {useGoogleRating} from '~/lib/googleRating';
-import {kakaoSetArt} from '~/lib/kakao-set-zeile';
 import {menueZiel} from '~/crystal-spiegel-rahmen/pfade';
 import {MenueSymbol, alphabetisch, hatSymbolSpalte, istMehr} from '~/components/reusables/menue-symbole';
 import {
@@ -1708,7 +1707,7 @@ function CartBanner() {
 }
 
 /**
- * Packungen statt Zeilenmenge. Eine Kakao-Set-Zeile hat Menge 1 und trägt 2
+ * Bundles, nicht Packungen (seit 24.11.2026; vorher bis 24.11.: Packungen statt Zeilenmenge). Eine Kakao-Set-Zeile hat Menge 1 und trägt 2
  * bis 7 Packungen; der Stepper im Warenkorb zählt Packungen
  * (CartLineItem.jsx). Mit `totalQuantity` stand im Kopf "1", während die
  * Zeile darunter "3" sagte (gemessen 2026-11-09 auf qiblanco.com, Probe
@@ -1722,9 +1721,10 @@ function packungenImKorb(cart) {
   const zeilen = cart?.lines?.nodes;
   if (!Array.isArray(zeilen)) return cart?.totalQuantity ?? 0;
   return zeilen.reduce((summe, zeile) => {
-    const set = kakaoSetArt(zeile?.merchandise?.product?.handle);
-    const menge = Number(zeile?.quantity) || 0;
-    return summe + (set ? set.packungen * menge : menge);
+    // Seit 24.11.2026 zählt auch der Warenkorb Bundles, nicht Packungen
+    // (Christian: „Also es ist ja nur ein Bundle dann.“, CartLineItem.jsx).
+    // Kopf und Zeile sagen darum dieselbe Zahl: die Zeilenmenge.
+    return summe + (Number(zeile?.quantity) || 0);
   }, 0);
 }
 
