@@ -297,6 +297,22 @@
   {
    "frage": "Wie wurden die Kontrollzellen vom Gerät ferngehalten?",
    "antwort": "Die Kontrollzellen standen in einem anderen Haus, rund 1,5 km Luftlinie entfernt. Beide Zellkulturen standen in baugleichen Mini-Inkubatoren bei 37 °C im selben Kulturmedium, damit die Bedingungen identisch waren. Den Abstand hat der Autor so groß gewählt, dass sich die beiden Kulturen nicht gegenseitig beeinflussen konnten. Die Regenerationsversuche liefen 10 Stunden, die Versuche zum oxidativen Stress 24 Stunden."
+  },
+  {
+   "frage": "Was ist der QiHome® Air?",
+   "antwort": "Der QiHome® Air ist das Raumgerät von Qi Blanco für das ganze Zuhause. Er harmonisiert elektromagnetische Felder im Raum und strukturiert das Wasser in der Raumluft. In ihm arbeitet dieselbe Gitterchip-Technologie wie im QiOne® 2 Pro und im QiBracelet®, hier in der Version QTA-U-5000 mit einem länglichen Bergkristall als Verstärker."
+  },
+  {
+   "frage": "Wie weit stand der QiHome® Air von den Zellen entfernt?",
+   "antwort": "Rund 2 Meter. In allen Versuchsreihen stand der QiHome® Air neben dem Mini-Inkubator, in dem die Zellen wuchsen."
+  },
+  {
+   "frage": "Warum geht es in einer Zellstudie um Elektrosmog?",
+   "antwort": "Elektrosmog kann im Körper oxidativen Stress auslösen, etwa durch die Strahlung von Mobiltelefonen und Funkwellen. In unserer Studie wurde dieser Stress im Labor mit Wasserstoffperoxid nachgestellt. Neben dem QiHome® Air haben die Nervenzellen ihn besser überstanden: Bei 1 mM Wasserstoffperoxid überlebten 34 % mehr Zellen als ohne Gerät."
+  },
+  {
+   "frage": "Gibt es die QiHome® Air Zellstudie auch im englischen Original?",
+   "antwort": "Ja. Die Originalarbeit ist auf Englisch erschienen: „Beneficial Effect of the QiHome® Air on Cultured Neuronal and Inflammation-Mediating Cells“, in Neurodegenerative Diseases: Current Research 6(1): 1-8 (2026). Sie ist frei zugänglich (Open Access, CC BY 4.0). Das vollständige PDF können Sie kostenlos herunterladen und selbst nachlesen, wie der Versuch aufgebaut war."
   }
  ],
  "verwandt": [
