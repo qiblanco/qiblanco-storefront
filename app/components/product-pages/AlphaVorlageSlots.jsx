@@ -260,7 +260,7 @@ export function AlphaStimmen({daten, igProdukt = null}) {
  * @param {{daten: {ueberschrift: string, fragen: Array<{f: string, a: string}>},
  *   angebot?: object|null}} props
  */
-export function AlphaFaq({daten, angebot = null}) {
+export function AlphaFaq({daten, angebot = null, nachsatz = null}) {
   const fragen = faqSichtbar(daten?.fragen, angebot);
   const [offen, setOffen] = useState(0);
   const basis = useId();
@@ -305,6 +305,7 @@ export function AlphaFaq({daten, angebot = null}) {
             );
           })}
         </ul>
+        {nachsatz}
       </div>
     </section>
   );
@@ -313,12 +314,12 @@ export function AlphaFaq({daten, angebot = null}) {
 /**
  * FAQ mit live berechneter Rate aus dem Preis der Kaufseite (Markt, Währung,
  * Bruttoanzeige wie der Konfigurator).
- * @param {{daten: object, product: object}} props
+ * @param {{daten: object, product: object, nachsatz?: import('react').ReactNode}} props
  */
-export function AlphaFaqMitRate({daten, product}) {
+export function AlphaFaqMitRate({daten, product, nachsatz = null}) {
   const land = useMarktLand();
   const money = product?.selectedOrFirstAvailableVariant?.price;
   const brutto = money ? bruttoAnzeige(money.amount, product.handle, money.currencyCode, land) : 0;
   const angebot = ratenAngebot({brutto, waehrung: money?.currencyCode || 'EUR', land});
-  return <AlphaFaq daten={daten} angebot={angebot} />;
+  return <AlphaFaq daten={daten} angebot={angebot} nachsatz={nachsatz} />;
 }
