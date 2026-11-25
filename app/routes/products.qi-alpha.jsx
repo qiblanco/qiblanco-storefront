@@ -179,6 +179,12 @@ export async function loader(args) {
 async function ladeQiAlpha(storefront, request) {
   for (const handle of QM_HANDLES) {
     const {product} = await storefront.query(PRODUCT_QUERY, {
+      // PREIS FRISCH, nicht streichen: ohne `cache` nimmt Hydrogen CacheDefault
+      // (SWR 24 h), dann zeigt die Seite nach einer Preis- oder Kursaenderung bis
+      // zu 24 h den alten Betrag (PL 13.10.: Seite 4.861 zl, Kasse 4.847 zl).
+      // Grossjob 20261004-GROSSJOB-preisanzeige-netto-brutto-rundung-alle-shops-waehrungen s09;
+      // Probe homepage-bauer/pruefungen/probe_preisabfrage_cache_kurz.py.
+      cache: storefront.CacheShort(),
       variables: {
         handle,
         selectedOptions: getSelectedProductOptions(request),
@@ -201,10 +207,20 @@ async function loadCriticalData({context, request}) {
     // und Goldkette sind eigene Shopify-Produkte (lib/qi-master-addons.js).
     // FAIL-SOFT: fehlt eines (noch nicht veröffentlicht) oder scheitert die
     // Abfrage, entfällt nur der Bereich — die Kaufseite selbst bleibt heil.
-    storefront.query(QM_ADDONS_QUERY).catch(() => null),
+    // PREIS FRISCH, nicht streichen: ohne `cache` nimmt Hydrogen CacheDefault
+    // (SWR 24 h), dann zeigt die Seite nach einer Preis- oder Kursaenderung bis
+    // zu 24 h den alten Betrag (PL 13.10.: Seite 4.861 zl, Kasse 4.847 zl).
+    // Grossjob 20261004-GROSSJOB-preisanzeige-netto-brutto-rundung-alle-shops-waehrungen s09;
+    // Probe homepage-bauer/pruefungen/probe_preisabfrage_cache_kurz.py.
+    storefront.query(QM_ADDONS_QUERY, {cache: storefront.CacheShort()}).catch(() => null),
     // Inklusive Stahlkette als eigene 0-€-Zeile (EL-20261030-ae569366),
     // fail-soft wie die Add-ons: fehlt sie, bleibt die alte 60-cm-Karte.
-    storefront.query(STAHLKETTE_QUERY).catch(() => null),
+    // PREIS FRISCH, nicht streichen: ohne `cache` nimmt Hydrogen CacheDefault
+    // (SWR 24 h), dann zeigt die Seite nach einer Preis- oder Kursaenderung bis
+    // zu 24 h den alten Betrag (PL 13.10.: Seite 4.861 zl, Kasse 4.847 zl).
+    // Grossjob 20261004-GROSSJOB-preisanzeige-netto-brutto-rundung-alle-shops-waehrungen s09;
+    // Probe homepage-bauer/pruefungen/probe_preisabfrage_cache_kurz.py.
+    storefront.query(STAHLKETTE_QUERY, {cache: storefront.CacheShort()}).catch(() => null),
   ]);
 
   if (!product?.id) {
