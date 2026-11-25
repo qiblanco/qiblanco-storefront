@@ -76,7 +76,7 @@ export const BLEIBT_IM_DE_SHOP = new Set([
  * adresse), nur bis zum Ende der BF-Codes. Alle US-Ziele live gemessen
  * 13.11.2026: HTTP 200.
  */
-export const BF_DEAL_ENDE_MS = Date.parse('2026-11-30T22:59:59Z');
+export const BF_DEAL_ENDE_MS = Date.parse('2026-12-03T22:59:59Z'); // Verlängerung EL-20261125-af020142
 const BF_DEAL_GEGENSEITEN = {
   '/products/8kendiw34hd': '/pages/rk3xmgho0m0', // 2x QiOne 2 Pro
   '/products/jhsdhze783': '/pages/rk3xmgho0m0',

@@ -8,6 +8,7 @@ import {bfPhase, bfRestSekunden} from '~/components/black-friday-2026/bf-deals-d
  *   vor 13.11. 18:00 Berlin -> „Pre-Sale startet in TT:HH:MM:SS“ (Korrektur Elina EL-20261112-6b5fe5df)
  *   bis 26.11. 23:59 Berlin -> „Pre-Sale endet in TT:HH:MM:SS“
  *   bis 30.11. 23:59 Berlin -> „Black Friday endet in TT:HH:MM:SS“
+ *   bis 03.12. 23:59 Berlin -> „Verlängert, endet in TT:HH:MM:SS“ (Elina EL-20261125-af020142)
  *   danach                  -> keine Leiste
  * Server-HTML: der Satz mit Datum, ohne Uhr; die Uhr rechnet erst im Browser.
  * Testzeit wie auf bf-deals: ?pab_jetzt=<ISO>. Kein Scroll-Zuhörer, nur ein 1-s-Takt. Stil in bf-deal-dunkel.css.
@@ -50,7 +51,7 @@ export function useBfUhr() {
       Math.floor((r % 3600) / 60),
     )}:${zwei(r % 60)}`;
   }
-  return {vorbei: false, sale: phase.id === 'sale', tickt: jetzt !== null, text, zeit, phase: phase.id};
+  return {vorbei: false, sale: phase.id === 'sale' || phase.id === 'verlaengert', tickt: jetzt !== null, text, zeit, phase: phase.id};
 }
 
 export function BfCountdownLeiste() {

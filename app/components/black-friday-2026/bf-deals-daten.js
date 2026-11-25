@@ -14,7 +14,7 @@
  * (Elina EL-20261111-9065b985). Darum rendert die Deal-Adresse die Seite des
  * BASISPRODUKTS (`basis`) mit den Preisen von hier.
  *
- * Zeitfenster: bis Ende der Codes, 30.11.2026 23:59 Berlin. Danach liefern die
+ * Zeitfenster: bis Ende der Codes, 03.12.2026 23:59 Berlin (Verlängerung, vorher 30.11.). Danach liefern die
  * Deal-Handles wieder 404 (Shopify-Weiterleitung wie vorher), und
  * 8kendiw34hd / pjdz538hgs0 zeigen wieder ihre normale Seite.
  *
@@ -23,7 +23,8 @@
  * Die Originalproduktseiten behalten ihre Shopify-Bilder.
  */
 
-export const BF_DEAL_ENDE = '2026-11-30T22:59:59Z';
+// Verlängerung (Elina EL-20261125-af020142): Black Friday 27.–30.11., danach 3 Tage verlängert bis Do 03.12.2026 23:59 Berlin.
+export const BF_DEAL_ENDE = '2026-12-03T22:59:59Z';
 
 const CDN = 'https://cdn.shopify.com/s/files/1/0279/3095/1750/files/';
 
@@ -260,7 +261,7 @@ export const BF_DEAL_SEITEN = {
   },
 };
 
-/** true, solange die BF-Codes gelten (Ende 30.11.2026 23:59 Berlin). */
+/** true, solange die BF-Codes gelten (Ende 03.12.2026 23:59 Berlin, Verlängerung EL-20261125-af020142). */
 export function bfDealZeitAktiv(jetzt = Date.now()) {
   return jetzt <= Date.parse(BF_DEAL_ENDE);
 }
@@ -486,13 +487,16 @@ export function andereDeals(seite) {
  *   vor 13.11.2026 18:00 Berlin            „Pre-Sale startet in …“  (Ziel 13.11. 18:00, passend zur ersten Mail;
  *                                           Korrektur Elina EL-20261112-6b5fe5df, vorher 00:00)
  *   ab 13.11. 18:00 bis 26.11. 23:59 Berlin „Pre-Sale endet in …“    (Ziel 27.11. 00:00 = Ende 26.11. 23:59)
- *   ab 27.11.2026 00:00 Berlin              „Black Friday endet in …“ (Ziel Sale-Ende 30.11. 23:59)
+ *   ab 27.11.2026 00:00 Berlin              „Black Friday endet in …“ (Ziel 01.12. 00:00 = Ende 30.11. 23:59)
+ *   ab 01.12.2026 00:00 Berlin              „Verlängert, endet in …“  (Ziel 04.12. 00:00 = Ende 03.12. 23:59;
+ *                                           Elina EL-20261125-af020142, Verlängerung analog Vorjahr)
  *   danach                                  kein Countdown
  * Testzeit auf allen Seiten: ?pab_jetzt=<ISO>.
  */
 export const BF_PRESALE_START = '2026-11-13T17:00:00Z';
 export const BF_PRESALE_ENDE = '2026-11-26T23:00:00Z';
-export const BF_SALE_ENDE = '2026-11-30T22:59:00Z';
+export const BF_SALE_ENDE = '2026-11-30T23:00:00Z';
+export const BF_VERL_ENDE = '2026-12-03T23:00:00Z';
 
 export const BF_PHASEN = [
   {
@@ -515,6 +519,13 @@ export const BF_PHASEN = [
     titel: 'Black Friday endet in',
     datum: 'Montag, 30. November 2026 · 23:59 Uhr',
     satz: 'Black Friday endet am 30.11.2026 um 23:59 Uhr',
+  },
+  {
+    id: 'verlaengert',
+    bis: BF_VERL_ENDE,
+    titel: 'Verlängert, endet in',
+    datum: 'Donnerstag, 3. Dezember 2026 · 23:59 Uhr',
+    satz: 'Verlängert bis 03.12.2026 um 23:59 Uhr',
   },
 ];
 
