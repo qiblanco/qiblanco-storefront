@@ -1,4 +1,4 @@
-// node --test test/bf-pre-access-weiterleitung.test.mjs
+// node --test app/components/black-friday-2026/bf-pre-access-weiterleitung.test.mjs
 // Pre-Access schaltet sich zum Black-Friday-Start ab (Elina EL-20261125-b4b99e96 A): feste Uhr vor und nach 26.11. 23:00Z.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -8,8 +8,8 @@ import {
   preAccessUmleitung,
   preAccessVorbei,
   preAccessZiel,
-} from '../app/components/black-friday-2026/bf-pre-access-weiterleitung.js';
-import {BF_PRESALE_ENDE} from '../app/components/black-friday-2026/bf-deals-daten.js';
+} from './bf-pre-access-weiterleitung.js';
+import {BF_PRESALE_ENDE} from './bf-deals-daten.js';
 
 const ENDE = Date.parse('2026-11-26T23:00:00Z');
 const URL_DE = 'https://qiblanco.com/pages/pre-access';
