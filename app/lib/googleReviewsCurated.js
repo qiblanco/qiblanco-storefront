@@ -27,10 +27,13 @@ export const GOOGLE_REVIEWS_CURATED = [
     // kein gelöschtes Foto (Klasse im Kopf von ReviewKarte, ReputonWidget.jsx).
     // Der Live-Feed führt dasselbe Foto unter neuer Id; gemessen 200 image/jpeg.
     // Damit ist die Reihenfolge wieder stimmig: Foto-Einträge zuerst (Kopf).
+    // NACHGEZOGEN 2026-11-25 (Job 20261125-folge-h9a3e7e-rezensionsfotos-
+    // nachziehen-r2): beide grass-cs-Adressen (Mirko Naber, Therin Moreland)
+    // wieder rotiert (403), neue Ids aus dem Reputon-Feed, je 200 image/jpeg.
     "bilder": [
       {
-        "url": "https://lh3.googleusercontent.com/grass-cs/AABkmLfAc2DxFjcCBW4jtb_ISbU6fqo48bgH7J7DVD8QbuCtPInkH-XbmCTdfa4BJZcIhrFidKvKjhkaxFyNERx8cEbgUszGkJs_T0vXDp39Jws6Tvs7t5gFKbEn621f9BkfKUMIXZyNoqULdYI3=k-no",
-        "thumb": "https://lh3.googleusercontent.com/grass-cs/AABkmLfAc2DxFjcCBW4jtb_ISbU6fqo48bgH7J7DVD8QbuCtPInkH-XbmCTdfa4BJZcIhrFidKvKjhkaxFyNERx8cEbgUszGkJs_T0vXDp39Jws6Tvs7t5gFKbEn621f9BkfKUMIXZyNoqULdYI3=k-no"
+        "url": "https://lh3.googleusercontent.com/grass-cs/AABkmLermpXWacb-wDhV0Cx-bJrsS5mmt-1qtwZqHPMPTAx1MKvItg7oBjg5XeVOfILi3I2FefXWUTXrTfpSO_UhjYV032QFWguSzgqChByBKI1K12J4ZWoZnJsmVO0UYZ3A-wUXH3LH6bT4qhOT=k-no",
+        "thumb": "https://lh3.googleusercontent.com/grass-cs/AABkmLermpXWacb-wDhV0Cx-bJrsS5mmt-1qtwZqHPMPTAx1MKvItg7oBjg5XeVOfILi3I2FefXWUTXrTfpSO_UhjYV032QFWguSzgqChByBKI1K12J4ZWoZnJsmVO0UYZ3A-wUXH3LH6bT4qhOT=k-no"
       }
     ],
     "rating": 5,
@@ -43,8 +46,8 @@ export const GOOGLE_REVIEWS_CURATED = [
     "foto": "https://lh3.googleusercontent.com/a/ACg8ocJUi0d8M-kNnbG-gdlXEFRpq3x_1Qvds2SUD2LnPv7MtDrmfA=s120-c-rp-mo-br100",
     "bilder": [
       {
-        "url": "https://lh3.googleusercontent.com/grass-cs/AABkmLeR6-Od2hrOXdCLkfesXZFPs6C_F8M6mO5zAuFhE2HjjzSA7nLIQw2e7YpXEVNlRLVYAvg7uSqpo3SLiiosV47zs0z2mCd7OELGWhDVxq7bKvJrz5uae4KqDOTf7Yja44JauGYAI393DpTa=k-no",
-        "thumb": "https://lh3.googleusercontent.com/grass-cs/AABkmLeR6-Od2hrOXdCLkfesXZFPs6C_F8M6mO5zAuFhE2HjjzSA7nLIQw2e7YpXEVNlRLVYAvg7uSqpo3SLiiosV47zs0z2mCd7OELGWhDVxq7bKvJrz5uae4KqDOTf7Yja44JauGYAI393DpTa=k-no"
+        "url": "https://lh3.googleusercontent.com/grass-cs/AABkmLf2ApC_7tWXLykNHlmbFNOcoOpjwWeaAiaJjVBlZFaJ9dwiTEPX4oyfDoOn-L0Eo78yk8DNz7jxNa716zFLtz45UOyyiMgib0x7-Ez2GpzFy17sM77-UtOE5d9OHJPRbK2HdMtfEIvvl9gn=k-no",
+        "thumb": "https://lh3.googleusercontent.com/grass-cs/AABkmLf2ApC_7tWXLykNHlmbFNOcoOpjwWeaAiaJjVBlZFaJ9dwiTEPX4oyfDoOn-L0Eo78yk8DNz7jxNa716zFLtz45UOyyiMgib0x7-Ez2GpzFy17sM77-UtOE5d9OHJPRbK2HdMtfEIvvl9gn=k-no"
       }
     ],
     "rating": 5,
