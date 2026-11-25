@@ -15,7 +15,7 @@ import {
 } from './bf-deal-landespreis.server.js';
 
 const JETZT = Date.parse('2026-11-20T12:00:00Z');
-const NACH_ENDE = Date.parse('2026-12-02T12:00:00Z');
+const NACH_ENDE = Date.parse('2026-12-05T12:00:00Z'); // nach der Verlängerung bis 03.12. (EL-20261125-af020142)
 const ZWEI_PRO = {handle: '8kendiw34hd', deal: '2x-qione-2-pro', basis: '8kendiw34hd', art: 'alpha-angebot'};
 const PRO_KETTE = {handle: 'pjdz538hgs0', deal: 'qione-2-pro-necklace', basis: 'pjdz538hgs0', art: 'alpha-angebot'};
 
