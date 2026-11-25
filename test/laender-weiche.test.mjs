@@ -68,7 +68,7 @@ test('Gegenseiten: Produkt, bf-deals, Pre-Access, Startseite, Deals', () => {
   assert.equal(z('/blogs/journal/irgendwas'), 'https://qi-blanco.com/blogs/knowledge');
   assert.equal(z('/pages/gibt-es-nicht'), 'https://qi-blanco.com/');
   // nach Ende der BF-Codes fällt die Deal-Zuordnung weg, es bleibt die Produktübersicht
-  assert.equal(usGegenseite('/products/8kendiw34hd', Date.parse('2026-12-01T00:00:00Z')), 'https://qi-blanco.com/collections/all');
+  assert.equal(usGegenseite('/products/8kendiw34hd', Date.parse('2026-12-05T00:00:00Z')), 'https://qi-blanco.com/collections/all');
 });
 
 test('Abfrage-Parameter reisen mit', () => {
