@@ -19,6 +19,7 @@ import {useLoaderData} from 'react-router';
 import {
   BF_GOLD_BILDER,
   BF_KAKAO_SEITE,
+  BF_PRESALE_ENDE,
   bfDealSeite,
   bfKakaoPfad,
   bfPhase,
@@ -596,6 +597,10 @@ export default function BfDealsB() {
   const wurzel = useRef<HTMLDivElement>(null);
   useElinaBewegung(wurzel);
   const jetzt = useJetzt();
+  // Umschaltung Pre-Sale -> Black Friday (Elina EL-20261125-90c8b42d, GO zu EL-20261125-490a83e2): Kopfzeile und
+  // Titel-Oberzeile wechseln im selben Moment wie der Countdown (BF_PRESALE_ENDE = 27.11.2026 00:00 Berlin). Server
+  // und Browser rechnen aus derselben Uhr wie <Countdown>, ?pab_jetzt= zeigt den Stand vorab. Rückweg: git revert.
+  const istBf = (jetzt ?? Date.now()) >= Date.parse(BF_PRESALE_ENDE);
   const d = useLoaderData<typeof loader>();
   // Größen mit Bestand 0 nicht zeigen (Elina EL-20261112-5f5fab2e); Server und Browser rechnen aus denselben Daten.
   const lps = (d?.landesPreise ?? null) as LandesPreise;
@@ -611,21 +616,34 @@ export default function BfDealsB() {
           <div className="bfd__kopftext">
             <p className="bfd__dach">
               <span>
-                <svg
-                  viewBox="0 0 16 16"
-                  aria-hidden="true"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                >
-                  <rect x="3" y="7" width="10" height="7.5" rx="1.6" />
-                  <path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" />
-                </svg>
-                Black Friday 2026 · Pre-Access
+                {istBf ? (
+                  <svg
+                    viewBox="0 0 16 16"
+                    aria-hidden="true"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                  >
+                    <circle cx="8" cy="8" r="6" />
+                    <path d="M8 4.8V8l2.2 1.4" />
+                  </svg>
+                ) : (
+                  <svg
+                    viewBox="0 0 16 16"
+                    aria-hidden="true"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                  >
+                    <rect x="3" y="7" width="10" height="7.5" rx="1.6" />
+                    <path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" />
+                  </svg>
+                )}
+                {istBf ? 'Black Friday 2026 · nur bis 30.11.' : 'Black Friday 2026 · Pre-Access'}
               </span>
             </p>
             <h1 className="bfd__titel">
-              <span className="bfd__titel-oben">Deine exklusiven</span>{' '}
+              <span className="bfd__titel-oben">{istBf ? 'Jetzt für alle' : 'Deine exklusiven'}</span>{' '}
               <span className="bfd__titel-unten">Black Friday Deals</span>
             </h1>
             <p className="bfd__spar">
