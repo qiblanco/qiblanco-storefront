@@ -126,7 +126,9 @@ function armPfad(url) {
  * 20261007-anna-kommentar-stichwort-call-donnerstag, s03). Dritter Wert
  * webinar: Link nach einem Live (Job
  * 20261023-produktberatung-buchungsquelle-webinar-messung-0111), gelesen von
- * webinar-manager nachlese. Ein neuer Wert
+ * webinar-manager nachlese. Vierter Wert kaufseite: Hinweis unter den Fragen
+ * der Kaufseite QiHome Air (Hypothese GS-426, Job
+ * 20261125-produktberatung-einstieg-kaufseiten-bau). Ein neuer Wert
  * gehört immer an beide Stellen, sonst bucht er still als 'seite'.
  *
  * TESTUMGEBUNG: die Env-Variable PRODUKTBERATUNG_API lenkt Loader und Action
@@ -159,7 +161,7 @@ export function basis(context) {
 }
 
 /** Quellen, die ein Link über ?von= setzen darf; alles andere bucht als 'seite'. */
-const QUELLEN_AUS_LINK = ['warenkorb-mail', 'ig-stichwort-call', 'webinar'];
+const QUELLEN_AUS_LINK = ['warenkorb-mail', 'ig-stichwort-call', 'webinar', 'kaufseite'];
 
 function quelleAusLink(wert) {
   const v = String(wert || '').trim();

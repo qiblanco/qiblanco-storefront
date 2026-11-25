@@ -218,3 +218,29 @@
     transition: none;
   }
 }
+
+/* Hinweis auf die Produktberatung unter den Fragen (GS-426, 25.11.2026;
+   components/product-pages/BeratungHinweis.jsx). Ruhig wie der Anna-Hinweis:
+   mittig, gedämpfte Tinte, nur der Link in voller Tinte. Tippziel >= 44 px. */
+.taf .taf-beratung {
+  margin-top: var(--taf-s-6);
+  text-align: center;
+}
+
+.taf .taf-beratung-satz {
+  max-width: 44ch;
+  margin: 0 auto;
+  font-size: var(--taf-fs-antwort);
+  line-height: 1.5;
+  color: var(--taf-gedaempft);
+}
+
+.taf .taf-beratung-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--taf-tinte);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}

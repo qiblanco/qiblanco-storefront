@@ -28,6 +28,7 @@ import {
   AlphaWissen,
 } from '~/components/product-pages/AlphaVorlageSlots';
 import {mitMarkeR} from '~/components/reusables/MarkeR';
+import {BeratungHinweis} from '~/components/product-pages/BeratungHinweis';
 /*
  * Die Stylesheets der Seite (samt Begründung und tragender Reihenfolge) stehen
  * seit dem 28.09.2026 in QiHomeAirSeite.jsx, weil /pages/qihome-air dieselbe Seite
@@ -195,7 +196,14 @@ function Konfigurator({product, ketten, vergleichsPreise}) {
           ),
           // Google-Bewertungen stehen hochgezogen im Slot „wissen“ (BewertungenHoch);
           // ohne Instagram-Reihe bleibt der Slot „stimmen“ hier leer.
-          faq: <AlphaFaqMitRate daten={ALPHA_DATEN.FAQ} product={product} />,
+          // Hinweis auf die Produktberatung unter den Fragen (GS-426, 25.11.2026).
+          faq: (
+            <AlphaFaqMitRate
+              daten={ALPHA_DATEN.FAQ}
+              product={product}
+              nachsatz={<BeratungHinweis handle="qihome-air" />}
+            />
+          ),
         }}
       />
     </>
