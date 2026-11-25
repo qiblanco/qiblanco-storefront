@@ -65,7 +65,7 @@ export const QIBRACELET_DETAILS = Object.freeze([
     etikett: 'Zelle',
     titel: 'Das QiBracelet® schützte im Labor fünf von fünf Zelltypen.',
     absaetze: [
-      'Prof. Dr. Peter C. Dartsch hat das QiBracelet® im Labor an fünf Zelltypen getestet. Er setzte sie oxidativem Stress aus.',
+      'Prof. Dr. Peter C. Dartsch hat fünf Zelltypen im Labor unter oxidativen Stress gesetzt, einmal mit und einmal ohne QiBracelet®. Mit dem Armband überlebten alle fünf besser.',
       'Bei Leberzellen lag der Schutz bei 47,3 %.',
     ],
     quellen: [
@@ -110,7 +110,7 @@ export const QIBRACELET_DETAILS = Object.freeze([
     absaetze: [
       'Viele Produkte gegen Elektrosmog wollen das Signal abschirmen. Eine Abschirmung, die stark genug dafür ist, nimmt aber auch dein Handy vom Netz. Mit dem QiBracelet® gehen wir deshalb einen anderen Weg.',
       'Im Reif sitzt der Gitterchip® aus 750er Gold. Er erzeugt ein statisches Feld, das an deinem Handgelenk ständig wirkt.',
-      'Dieses Feld ordnet das Wasser an deinen Zellen, Fachleute nennen das den kohärenten Zustand.',
+      'Das Feld bringt die Wassermoleküle an deinen Zellen in den kohärenten Zustand, den Superzustand des Wassers.',
       'Was das bewirkt, haben wir im Labor an Zellen messen lassen.',
     ],
     teile: [
@@ -119,7 +119,7 @@ export const QIBRACELET_DETAILS = Object.freeze([
         absaetze: [
           'Immunzellen: Menschliche Immunzellen standen vier Stunden lang unter Handystrahlung. Ohne Schutz behielten sie 60,5 % ihrer Abwehrleistung, mit einem QiOne® 2 Pro daneben waren es 84,7 %.',
           'Darmbarriere: Unter E-Smog hielt eine Schicht aus Darmzellen nur 6,0 % ihrer Dichtigkeit. Mit dem QiOne® 2 Pro waren es 72,6 %.',
-          'Das QiBracelet® selbst: In einer Studie von 2024 kamen fünf Zelltypen mit Wasserstoffperoxid unter oxidativen Stress. Mit dem QiBracelet® hielten alle fünf besser stand.',
+          'Oxidativer Stress: Das QiBracelet® schützte im Labor alle fünf Zelltypen vor oxidativem Stress durch Wasserstoffperoxid. Mit dem Armband überlebten mehr Zellen.',
           'Im QiBracelet® sitzt der Gitterchip® des QiOne® 2 Pro.',
         ],
       },
