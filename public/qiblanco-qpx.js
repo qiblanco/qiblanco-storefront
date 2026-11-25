@@ -887,13 +887,13 @@
     function medSichtPruef(k, now, lief) {
       if (!MED_ZUSATZ || k.svMarke || k.art === "bild") return;
       var an = k.vis && tabSichtbar();
-      if (an && k.sv && medVerdeckt(k.sichtEl || k.el)) { k.sv = 0; return; }
+      if (an && k.sv && medVerdeckt(k.sichtEl || k.el)) { k.sv = 0; k.vdN++; return; }
       if (k.sv && now - k.sv >= MED_MRC_MS) {
         k.svMarke = 1; k.svT = Math.max(0, k.sv + MED_MRC_MS - MED_T0); k.svLief = lief ? 1 : 0;
         return;
       }
       if (!an) { k.sv = 0; return; }
-      if (!k.sv && !medVerdeckt(k.sichtEl || k.el)) k.sv = now;
+      if (!k.sv) { if (!medVerdeckt(k.sichtEl || k.el)) k.sv = now; else k.vdN++; }
     }
     function medZusatz(k, el, ct, lief, now) {
       medSichtPruef(k, now, lief);
@@ -1055,7 +1055,7 @@
               ldZ: 0, ldPlay: 0, ldAus: 0, ldRvfc: 0, stkT0: 0, stkSeit: 0, stkMs: 0, stkN: 0, stkZu: 0, stkAus: 0,
               stkBereit: (medCt(el) === 0 && !medGespielt(el)) ? 1 : 0,
               dwell: 0, dwellSeit: 0,
-              sv: 0, svMarke: 0, svT: 0, svLief: 0,
+              sv: 0, svMarke: 0, svT: 0, svLief: 0, vdN: 0,
               ctMax: 0, ctSichtMax: 0, ctPause: 0, pauseN: 0, runden: 0,
               sprungN: 0, zEval: 0, pauseBild: 0, ctStart: 0,
               bw: {}, tonStumm: medStumm(el) };
@@ -1414,6 +1414,7 @@
             var ctJ = medCt(el);
             mm.ct_max_s = medS1(Math.max(k.ctMax, ctJ)); mm.ct_sicht_max_s = medS1(k.ctSichtMax);
             mm.ct_ende_s = medS1(ctJ); mm.dauer_s = Math.round(medDauer(el));
+            mm.verdeckt_n = k.vdN;
             if (k.pauseN) { mm.ct_pause_s = medS1(k.ctPause); mm.pause_n = k.pauseN; }
             if (k.runden) mm.runden = k.runden;
             if (k.pauseN) mm.pause_bild = k.pauseBild;
@@ -1716,7 +1717,7 @@
         k.scrubMax = 0; k.scrubUmkehr = 0; k.scrubN = 0;
         k.seit = k.spielt ? now : 0; k.letztP = 0;
         k.ldAus = 1; k.stkAus = 1; k.stkSeit = 0;
-        k.sv = (k.vis && tabSichtbar()) ? now : 0; k.svMarke = 0; k.svT = 0; k.svLief = 0;
+        k.sv = (k.vis && tabSichtbar()) ? now : 0; k.svMarke = 0; k.svT = 0; k.svLief = 0; k.vdN = 0;
         k.ctMax = 0; k.ctSichtMax = 0; k.ctPause = 0; k.pauseN = 0; k.runden = 0; k.bw = {};
         k.sprungN = 0; k.zEval = 0; k.pauseBild = 0; k.ctStart = k.el ? medCt(k.el) : 0;
       }
