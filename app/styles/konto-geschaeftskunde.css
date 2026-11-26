@@ -107,3 +107,12 @@
     padding: var(--k-s4);
   }
 }
+
+/* Kopf: `.konto p { margin: 0 }` überstimmt die Abstände von Eyebrow und Lede
+   (Spezifität). Hier, nur auf den Geschäftskonto-Seiten, die Stufen trennen. */
+.konto .konto-kopf .konto-eyebrow {
+  margin-bottom: var(--k-s2);
+}
+.konto .konto-kopf .konto-lede {
+  margin-top: var(--k-s2);
+}
