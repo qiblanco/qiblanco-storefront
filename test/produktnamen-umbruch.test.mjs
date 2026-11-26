@@ -41,8 +41,10 @@ function el(name, kinder = [], extra = {}) {
 }
 const txt = (v, extra = {}) => ({nodeType: 3, nodeValue: v, parentNode: null, ...extra});
 const marke = (data) => ({nodeType: 8, data, parentNode: null});
-const fiber = (o, props) => {
-  o['__reactFiber$abc'] = {};
+// Übernommener (committeter) Fiber: Weg zur Wurzel (tag 3) ohne Placement/Hydrating.
+const WURZEL = {tag: 3, flags: 0, return: null, alternate: null};
+const fiber = (o, props, f = {tag: 5, flags: 0, return: WURZEL, alternate: null}) => {
+  o['__reactFiber$abc'] = f;
   if (props) o['__reactProps$abc'] = props;
   return o;
 };
@@ -88,4 +90,45 @@ test('zustand: verschachtelte Grenzen, geschlossene Grenze davor, ohne React fre
   const skript = txt('var a = 2 Tage');
   fiber(el('BODY', [el('SCRIPT', [skript])]));
   assert.equal(zustand(skript), 'nie');
+});
+
+// Rückfall 24./25.11.2026 (Job 20261126-aiceo-k2-hydration-425-rueckfall): React setzt
+// __reactFiber$ schon WÄHREND der Hydration einer Grenze. Wird sie unterbrochen und neu
+// begonnen, vergleicht React den Text noch einmal; der Schutz hatte ihn da schon geändert
+// (Fußzeile „QiOne® 2 Pro“, DOM mit U+00A0, Client mit Leerzeichen -> #425, dann #418).
+import {montiert} from '../app/components/reusables/produktnamen-umbruch.js';
+
+test('zustand: Schlüssel aus einer laufenden Hydration reicht nicht, erst die Übernahme', () => {
+  // <li><a>QiOne® 2 Pro</a></li> in einer Grenze: Text ist einziges Kind -> kein eigener Schlüssel
+  const fragment = {tag: 7, flags: 4096, return: {tag: 13, flags: 0, return: WURZEL, alternate: null}, alternate: null};
+  const liF = {tag: 5, flags: 0, return: fragment, alternate: null};
+  const name = txt('QiOne® 2 Pro');
+  const a = fiber(el('A', [name]), {children: 'QiOne® 2 Pro'}, {tag: 5, flags: 0, return: liF, alternate: null});
+  fiber(el('LI', [a]), {children: []}, liF);
+  assert.equal(montiert(a), false);
+  assert.equal(zustand(name), 'warten');
+  // Übernahme: React löscht Hydrating am Fragment
+  fragment.flags = 0;
+  assert.equal(montiert(a), true);
+  assert.equal(zustand(name), 'frei');
+});
+
+test('zustand: eigener Textknoten und eingefügte Knoten folgen derselben Regel', () => {
+  const t = txt('20 Tage testen');
+  const neuF = {tag: 5, flags: 2, return: WURZEL, alternate: null}; // Placement, noch nicht eingefügt
+  const pEl = fiber(el('P', [t]), {children: []}, neuF);
+  fiber(t, null, {tag: 6, flags: 0, return: neuF, alternate: null});
+  assert.equal(zustand(t), 'warten');
+  neuF.flags = 0;
+  assert.equal(zustand(t), 'frei');
+  // ohne Weg zur Wurzel (losgelöster Arbeitsstand) nie frei
+  const los = txt('QiHome Air');
+  fiber(el('SPAN', [los]), {children: []}, {tag: 5, flags: 0, return: null, alternate: null});
+  assert.equal(zustand(los), 'warten');
+  // aktualisierter Knoten (alternate gesetzt) zählt wie in React ohne Flag-Prüfung
+  const upd = txt('QiOne 2');
+  const altF = {tag: 5, flags: 0, return: WURZEL};
+  fiber(el('SPAN', [upd]), {children: []}, {tag: 5, flags: 4, return: WURZEL, alternate: altF});
+  assert.equal(zustand(upd), 'frei');
+  assert.ok(pEl);
 });
