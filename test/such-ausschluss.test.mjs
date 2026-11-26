@@ -51,7 +51,7 @@ test('AUSSCHLUSS über die Tag-Konvention, Schreibweise egal', () => {
 
 // Nach dem BF-Fenster (Weg 4 leitet dann nicht mehr weiter). Im Fenster fällt
 // crystal-cacao-angebot unter Weg 4, siehe die Deal-Tests unten.
-const NACH_BF = Date.parse('2026-12-01T06:00:00Z');
+const NACH_BF = Date.parse('2026-12-05T06:00:00Z'); // nach der Verlängerung bis 03.12. (EL-20261125-af020142)
 const IM_BF = Date.parse('2026-11-12T06:00:00Z');
 
 test('GEGENBEIN: die echten Kakao-Kaufseiten bleiben drin', () => {
