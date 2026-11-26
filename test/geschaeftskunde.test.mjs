@@ -9,7 +9,7 @@
 //   - Geschäftlich merkt die Firmendaten in der Sitzung und schickt zur Anmeldung
 //     mit Rücksprung ins Geschäftskonto,
 //   - die NAHT zur Tür: der Shop schickt genau die Felder, die b2b-ust/src/geschaeftskunde.py
-//     liest (firma, uid, adresse.anschrift|strasse, plz, ort, land), das Kundentoken im
+//     liest (firma, uid, adresse.anschrift (Altname wird am Server weiter gelesen), plz, ort, land), das Kundentoken im
 //     Kopf Authorization, und liest bestaetigt (true|false|null).
 // ROT VOR GRÜN: auf origin/main 10cae498 fehlen app/lib/geschaeftskunde*.js (Import scheitert).
 // Ausführen: node --test test/geschaeftskunde.test.mjs
