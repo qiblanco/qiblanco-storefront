@@ -42,6 +42,7 @@ const NAV_PUNKTE = [
   {zu: '/account/profile', text: 'Profil'},
   {zu: '/account/addresses', text: 'Adressen'},
   {zu: '/account/partner', text: 'Partner'},
+  {zu: '/account/geschaeftskunde', text: 'Geschäftskunde'},
 ];
 
 /**
