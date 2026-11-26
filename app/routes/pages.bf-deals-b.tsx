@@ -598,7 +598,8 @@ export default function BfDealsB() {
   useElinaBewegung(wurzel);
   const jetzt = useJetzt();
   // Umschaltung Pre-Sale -> Black Friday (Elina EL-20261125-90c8b42d, GO zu EL-20261125-490a83e2): Kopfzeile und
-  // Titel-Oberzeile wechseln im selben Moment wie der Countdown (BF_PRESALE_ENDE = 27.11.2026 00:00 Berlin). Server
+  // Titel-Oberzeile wechseln im selben Moment wie der Countdown (BF_PRESALE_ENDE = 27.11.2026 00:00 Berlin). Kopfzeile
+  // ab dann nur „Black Friday 2026“, ohne Datum (Elina EL-20261126-d72dc02a; BF bis 03.12. verlängert). Server
   // und Browser rechnen aus derselben Uhr wie <Countdown>, ?pab_jetzt= zeigt den Stand vorab. Rückweg: git revert.
   const istBf = (jetzt ?? Date.now()) >= Date.parse(BF_PRESALE_ENDE);
   const d = useLoaderData<typeof loader>();
@@ -639,7 +640,7 @@ export default function BfDealsB() {
                     <path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2" />
                   </svg>
                 )}
-                {istBf ? 'Black Friday 2026 · nur bis 30.11.' : 'Black Friday 2026 · Pre-Access'}
+                {istBf ? 'Black Friday 2026' : 'Black Friday 2026 · Pre-Access'}
               </span>
             </p>
             <h1 className="bfd__titel">
