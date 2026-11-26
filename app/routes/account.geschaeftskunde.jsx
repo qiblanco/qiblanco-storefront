@@ -1,4 +1,5 @@
-import {data as remixData, useActionData, useLoaderData} from 'react-router';
+import {data as remixData, useLoaderData} from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {KontoAbschnitt, KontoErfolg, KontoFehler} from '~/components/konto/KontoUI';
 import {FirmenFormular, GkStatus} from '~/components/konto/GeschaeftskundeUI';
 import {TEXT, datenAusFormular, spracheAus} from '~/lib/geschaeftskunde';
@@ -53,7 +54,7 @@ export async function action({request, context}) {
 
 export default function Geschaeftskundenbereich() {
   const {sp, gk, neu} = useLoaderData();
-  const antwort = useActionData();
+  const antwort = useAktionsergebnisUeberRevalidierung();
   const t = TEXT[sp];
   if (!gk?.ok) {
     return <KontoFehler>{t.stoerung}</KontoFehler>;

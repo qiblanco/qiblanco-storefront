@@ -1,4 +1,5 @@
-import {Link, useActionData, useLoaderData} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
+import {useAktionsergebnisUeberRevalidierung} from '~/lib/aktionsergebnis';
 import {KontoRahmen} from '~/components/konto/KontoUI';
 import {ArtSchalter, FirmenFormular} from '~/components/konto/GeschaeftskundeUI';
 import {TEXT} from '~/lib/geschaeftskunde';
@@ -7,7 +8,7 @@ import {TEXT} from '~/lib/geschaeftskunde';
 export function AnmeldenSeite({direkt}) {
   /** @type {{sp: 'de'|'en', art: string, returnTo: string}} */
   const {sp, art, returnTo} = useLoaderData();
-  const antwort = useActionData();
+  const antwort = useAktionsergebnisUeberRevalidierung();
   const t = TEXT[sp];
   const andere = new URLSearchParams();
   andere.set('art', art);
