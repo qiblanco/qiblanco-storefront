@@ -4,7 +4,7 @@ import {SESSION_SCHLUESSEL} from '~/lib/geschaeftskunde';
  * Serverseite des Geschäftskontos. Vertrag der Tür: b2b-ust/README.md,
  * Abschnitt „Geschäftskonto über den Login-Schalter“.
  *
- *   POST /api/gk/pruefe    {uid, adresse:{land}}            -> {status, name}
+ *   POST /api/gk/vies      {uid, adresse:{land}}            -> {bestaetigt, name}
  *   POST /api/gk/anmelden  Authorization: <Kundentoken>, Firmendaten
  *   POST /api/gk/status    Authorization: <Kundentoken>
  *
@@ -49,8 +49,8 @@ async function tuer(context, weg, body, token) {
 }
 
 /** @param {any} context @param {{uid: string, land: string}} d */
-export function pruefen(context, d) {
-  return tuer(context, 'pruefe', {uid: d.uid, adresse: {land: d.land}});
+export function viesAbfrage(context, d) {
+  return tuer(context, 'vies', {uid: d.uid, adresse: {land: d.land}});
 }
 
 /** @param {any} context */

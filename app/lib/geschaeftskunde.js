@@ -20,7 +20,7 @@
 export const GESCHAEFTSKUNDE_AN = true;
 
 export const SESSION_SCHLUESSEL = 'qb_gk_anmeldung';
-export const PRUEF_ROUTE = '/geschaeftskunde/pruefen';
+export const PRUEF_ROUTE = '/geschaeftskunde/vies';
 export const KONTO_ROUTE = '/account/geschaeftskunde';
 
 /** EU-Länder (Deutschland zuerst). Griechenland: Land GR, Nummer EL. */
@@ -70,7 +70,7 @@ export const TEXT = {
       'Danach melden Sie sich mit Ihrer E-Mail-Adresse an. Das Konto ist sofort Ihr Geschäftskonto.',
     firma: 'Firmenname',
     uid: 'USt-IdNr.',
-    strasse: 'Straße und Hausnummer',
+    anschrift: 'Straße und Hausnummer',
     plz: 'Postleitzahl',
     ort: 'Ort',
     land: 'Land',
@@ -119,7 +119,7 @@ export const TEXT = {
     gkSatz2: 'Then sign in with your email address. Your account is your business account right away.',
     firma: 'Company name',
     uid: 'VAT number',
-    strasse: 'Street and number',
+    anschrift: 'Street and number',
     plz: 'Postal code',
     ort: 'City',
     land: 'Country',
@@ -195,14 +195,14 @@ export function datenAusFormular(form, sp) {
     uid: uidNorm(feld('uid', 30)),
     sprache: sp,
     adresse: {
-      strasse: feld('strasse', 120),
+      anschrift: feld('anschrift', 120),
       plz: feld('plz', 20),
       ort: feld('ort', 60),
       land: feld('land', 2).toUpperCase(),
     },
   };
   const a = daten.adresse;
-  if (!daten.firma || !daten.uid || !a.strasse || !a.plz || !a.ort || !LAND_CODES.has(a.land)) {
+  if (!daten.firma || !daten.uid || !a.anschrift || !a.plz || !a.ort || !LAND_CODES.has(a.land)) {
     return {fehler: t.fehlt, daten};
   }
   if (!uidFormOk(daten.uid)) return {fehler: t.uidForm, daten};

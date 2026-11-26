@@ -44,14 +44,14 @@ export function ArtSchalter({art, sp, returnTo}) {
 export function PruefMarke({zustand, name, sp}) {
   const t = TEXT[sp];
   if (!zustand) return null;
-  if (zustand === 'prueft') {
+  if (zustand === 'warte') {
     return (
       <p className="gk-marke" role="status">
         {t.prueft}
       </p>
     );
   }
-  if (zustand === 'gueltig') {
+  if (zustand === 'ja') {
     return (
       <p className="gk-marke gk-marke--gruen" role="status">
         <span aria-hidden="true">✓</span> {t.gruen}
@@ -61,7 +61,7 @@ export function PruefMarke({zustand, name, sp}) {
   }
   return (
     <p className="gk-marke gk-marke--rot" role="status">
-      <span aria-hidden="true">!</span> {zustand === 'nicht_pruefbar' ? t.weg : t.rot}
+      <span aria-hidden="true">!</span> {zustand === 'offen' ? t.weg : t.rot}
     </p>
   );
 }
@@ -84,19 +84,20 @@ export function FirmenFormular({sp, action, knopf, vorbelegung, fehler, art}) {
   function pruefe(naechsteUid, naechstesLand) {
     const u = uidNorm(naechsteUid);
     if (!u || !uidFormOk(u)) {
-      setZustand(u ? 'ungueltig' : '');
+      setZustand(u ? 'nein' : '');
       return;
     }
     const schluessel = `${u}|${naechstesLand}`;
     if (letzte.current === schluessel) return;
     letzte.current = schluessel;
-    setZustand('prueft');
+    setZustand('warte');
     pruef.submit({uid: u, land: naechstesLand}, {method: 'POST', action: PRUEF_ROUTE});
   }
 
   useEffect(() => {
     if (pruef.state !== 'idle' || !pruef.data) return;
-    setZustand(pruef.data.ok ? pruef.data.status || 'nicht_pruefbar' : 'nicht_pruefbar');
+    const b = pruef.data.ok ? pruef.data.bestaetigt : null;
+    setZustand(b === true ? 'ja' : b === false ? 'nein' : 'offen');
   }, [pruef.state, pruef.data]);
 
   const sendet = nav.state === 'submitting';
@@ -150,9 +151,9 @@ export function FirmenFormular({sp, action, knopf, vorbelegung, fehler, art}) {
       <div id="gk-uid-marke" aria-live="polite">
         <PruefMarke zustand={zustand} name={pruef.data?.name} sp={sp} />
       </div>
-      <label htmlFor="gk-strasse">
-        <span>{t.strasse}</span>
-        <input id="gk-strasse" name="strasse" type="text" autoComplete="address-line1" required defaultValue={a.strasse || ''} />
+      <label htmlFor="gk-anschrift">
+        <span>{t.anschrift}</span>
+        <input id="gk-anschrift" name="anschrift" type="text" autoComplete="address-line1" required defaultValue={a.anschrift || ''} />
       </label>
       <div className="konto-form__paar">
         <label htmlFor="gk-plz">
@@ -181,7 +182,7 @@ export function FirmenFormular({sp, action, knopf, vorbelegung, fehler, art}) {
 /** Status-Karte im Konto: Firma, Nummer, Prüfung mit Datum und Kennung, Bestellweg. */
 export function GkStatus({gk, sp}) {
   const t = TEXT[sp];
-  const gruen = gk.status === 'gueltig';
+  const gruen = gk.bestaetigt === true;
   const datum = gk.geprueft_am
     ? new Date(gk.geprueft_am).toLocaleString(sp === 'en' ? 'en-GB' : 'de-DE', {
         dateStyle: 'medium',
@@ -195,7 +196,7 @@ export function GkStatus({gk, sp}) {
       <div className="konto-karte__kopf">
         <h3 className="konto-karte__titel">{gk.firma}</h3>
         <span className={gruen ? 'konto-merker konto-merker--gold' : 'konto-merker'}>
-          {gruen ? t.statusGruen : gk.status === 'nicht_pruefbar' ? t.statusWeg : t.statusRot}
+          {gruen ? t.statusGruen : gk.bestaetigt === null ? t.statusWeg : t.statusRot}
         </span>
       </div>
       <dl className="gk-daten">
@@ -204,9 +205,9 @@ export function GkStatus({gk, sp}) {
           <dd>{gk.uid}</dd>
         </div>
         <div>
-          <dt>{t.strasse}</dt>
+          <dt>{t.anschrift}</dt>
           <dd>
-            {gk.adresse?.strasse}, {gk.adresse?.plz} {gk.adresse?.ort}, {gk.adresse?.land}
+            {gk.adresse?.anschrift}, {gk.adresse?.plz} {gk.adresse?.ort}, {gk.adresse?.land}
           </dd>
         </div>
         {datum ? (

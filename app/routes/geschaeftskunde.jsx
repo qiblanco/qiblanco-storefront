@@ -22,6 +22,7 @@ export const meta = ({data}) => {
   return [
     {title: `${TEXT[sp].direktTitel} | Qi Blanco`},
     {name: 'description', content: TEXT[sp].direktLede},
+    {name: 'robots', content: 'noindex,nofollow'},
   ];
 };
 
