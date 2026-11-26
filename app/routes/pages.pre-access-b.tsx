@@ -22,6 +22,11 @@ import preAccessBStyles from '../styles/pre-access-b.css?url';
 import elinaBewegungStyles from '../styles/elina-bewegung.css?url';
 import vertrauensblockStyles from '../styles/bf-vertrauensblock.css?url';
 import {bfPhase} from '../components/black-friday-2026/bf-deals-daten';
+import {
+  preAccessTabWache,
+  preAccessUmleitung,
+} from '../components/black-friday-2026/bf-pre-access-weiterleitung';
+import {redirect} from 'react-router';
 
 const ENDPUNKT = 'https://anmelden.dienst.qiblanco.com';
 // Hero-Banner mit allen Deal-Produkten auf dem Podest statt Bild "Frau mit Kette" (Elina EL-20261111-67f3d4b4, Rechner;
@@ -57,6 +62,10 @@ const MESSFIXTUR_JETZT = '2026-11-10T23:30:00Z';
 export function loader({request}: {request: Request}) {
   if (istMessfixtur(request))
     return {messfixtur: MESSFIXTUR_NAME, jetzt: MESSFIXTUR_JETZT};
+  // Ab Black-Friday-Start (27.11.2026 00:00 Berlin) dauerhaft auf bf-deals, Parameter bleiben
+  // (Elina EL-20261125-b4b99e96 A, EL-20261125-490a83e2; bf-pre-access-weiterleitung.js). Gilt auch für /pages/pre-access.
+  const um = preAccessUmleitung(request.url);
+  if (um) throw redirect(um.pfad, {status: um.status, headers: um.headers});
   return {messfixtur: null, jetzt: null};
 }
 
@@ -186,6 +195,11 @@ export default function PreAccessB() {
   const fest = d?.jetzt ? Date.parse(d.jetzt) : null;
   const jetzt = useJetzt(Number.isFinite(fest) ? fest : null);
   const messfixtur = d?.messfixtur ?? null;
+  // Offener Tab um Mitternacht springt selbst auf bf-deals (nicht an der Messbank).
+  useEffect(() => {
+    if (messfixtur) return;
+    return preAccessTabWache();
+  }, [messfixtur]);
   return (
     <div className="pab" id="pab" ref={wurzel}>
       <div className="pab__innen" data-section="pre-access-b">

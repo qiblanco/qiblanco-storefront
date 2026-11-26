@@ -10,7 +10,8 @@ import {loader as bLoader} from './pages.pre-access-b';
 
 export {default, links} from './pages.pre-access-b';
 
-// Loader der B-Seite (Messfixtur Gate 12, feste Uhr nur an der lokalen Bank) gilt hier mit.
+// Loader der B-Seite (Messfixtur Gate 12, feste Uhr nur an der lokalen Bank) gilt hier mit, ebenso die Weiterleitung
+// auf /pages/bf-deals ab Black-Friday-Start 27.11.2026 00:00 Berlin (Elina EL-20261125-b4b99e96 A, bf-pre-access-weiterleitung.js).
 export function loader(args: {request: Request}) {
   return bLoader(args);
 }
