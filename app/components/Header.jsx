@@ -1410,8 +1410,10 @@ const HeaderCtas = memo(function HeaderCtas({isLoggedIn, cart}) {
  *
  * isLoggedIn ist ein Promise: bis es auflöst, zeigt der Fallback den
  * Login-Weg. Das ist der sichere Ausgang — ein nicht eingeloggter Besucher
- * gehört ohnehin dorthin, ein eingeloggter wird von /account/login zum
- * Konto weitergeleitet.
+ * gehört ohnehin dorthin, ein eingeloggter wird von /account/anmelden zum
+ * Konto weitergeleitet. Seit 26.11.2026 führt der Knopf auf das Login-Fenster
+ * mit dem Schalter Privat / Geschäftlich (/account/anmelden); /account/login
+ * bleibt die direkte Weiterleitung zur Shopify-Anmeldung.
  *
  * @param {{isLoggedIn: Promise<boolean> | boolean}}
  */
@@ -1436,7 +1438,7 @@ function AccountLink({eingeloggt}) {
     <NavLink
       className="header-account"
       prefetch="intent"
-      to={eingeloggt ? '/account' : '/account/login'}
+      to={eingeloggt ? '/account' : '/account/anmelden'}
       aria-label={eingeloggt ? 'Mein Konto' : 'Anmelden'}
       title={eingeloggt ? 'Mein Konto' : 'Anmelden'}
     >

@@ -1,0 +1,109 @@
+/* konto-geschaeftskunde.css — Login-Schalter Privat / Geschäftlich und Geschäftskonto.
+   Job 20261126-prio1-b2b-link-portugal-...-r2-login-schalter-geschaeftlich.
+   Nur Tokens aus konto.css (Scope .konto): ein Gold, Radien 8/16/Pill, 8pt-Abstände.
+   Mobile First: Grundregeln = Handy, ab 640px nur mehr Luft. Keine Bewegung. */
+
+.konto .gk-schalter {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  margin: 0 0 var(--k-s3);
+  background: var(--k-flaeche);
+  border: 1px solid var(--k-linie);
+  border-radius: var(--k-r-pill);
+}
+
+.konto .gk-schalter__knopf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 var(--k-s2);
+  border-radius: var(--k-r-pill);
+  color: var(--k-text);
+  font-size: var(--k-fs-base);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.konto .gk-schalter__knopf--aktiv {
+  background: var(--k-dunkel);
+  color: var(--k-grund);
+}
+
+.konto .gk-schalter__knopf:focus-visible {
+  outline: 2px solid var(--k-gold-tinte);
+  outline-offset: 2px;
+}
+
+.konto .gk-feld {
+  background: var(--k-grund);
+  border: 1px solid var(--k-linie);
+  border-radius: var(--k-r2);
+  padding: var(--k-s3) var(--k-s2);
+}
+
+.konto .gk-feld > p {
+  margin: 0 0 var(--k-s2);
+  max-width: var(--k-mass);
+}
+
+.konto .gk-marke {
+  margin: var(--k-s1) 0 0;
+  padding: var(--k-s1) var(--k-s2);
+  border-radius: var(--k-r1);
+  background: var(--k-flaeche);
+  color: var(--k-text);
+  font-size: var(--k-fs-xs);
+  line-height: 1.5;
+}
+
+.konto .gk-marke--gruen {
+  background: rgba(46, 125, 50, 0.1);
+  color: #1e5b22;
+}
+
+.konto .gk-marke--rot {
+  background: var(--k-fehler-flaeche);
+  color: var(--k-fehler);
+}
+
+.konto .gk-daten {
+  display: grid;
+  gap: var(--k-s1);
+  margin: var(--k-s2) 0;
+}
+
+.konto .gk-daten div {
+  display: grid;
+  gap: 0;
+}
+
+.konto .gk-daten dt {
+  font-size: var(--k-fs-xs);
+  color: var(--k-text);
+  opacity: 0.72;
+}
+
+.konto .gk-daten dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.konto .gk-kennung {
+  font-variant-numeric: tabular-nums;
+}
+
+.konto .gk-sprache {
+  display: inline-block;
+  margin: 0 0 var(--k-s2);
+  color: var(--k-text);
+  font-size: var(--k-fs-xs);
+}
+
+@media (min-width: 640px) {
+  .konto .gk-feld {
+    padding: var(--k-s4);
+  }
+}
