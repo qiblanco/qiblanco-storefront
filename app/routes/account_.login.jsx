@@ -1,4 +1,6 @@
+import {redirect} from 'react-router';
 import {KontoStoerung} from '~/components/konto/KontoUI';
+import {GESCHAEFTSKUNDE_AN, WAHL_PARAM} from '~/lib/geschaeftskunde';
 import kontoStyles from '~/styles/konto.css?url';
 
 /**
@@ -22,7 +24,17 @@ export function links() {
 /**
  * @param {LoaderFunctionArgs}
  */
-export async function loader({context}) {
+export async function loader({request, context}) {
+  // Seit 26.11.2026: der Kopf-Knopf ruft /account/login?wahl=1 und landet im
+  // Login-Fenster mit dem Schalter Privat / Geschäftlich. Ohne `wahl` bleibt
+  // alles wie bisher (direkt zur Shopify-Anmeldung, auch für return_to).
+  const url = new URL(request.url);
+  if (GESCHAEFTSKUNDE_AN && url.searchParams.has(WAHL_PARAM)) {
+    const q = new URLSearchParams();
+    if (url.searchParams.get('lang') === 'en') q.set('lang', 'en');
+    const rest = q.toString();
+    return redirect(`/account/anmelden${rest ? `?${rest}` : ''}`);
+  }
   return context.customerAccount.login();
 }
 

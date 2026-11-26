@@ -22,6 +22,8 @@ export const GESCHAEFTSKUNDE_AN = true;
 export const SESSION_SCHLUESSEL = 'qb_gk_anmeldung';
 export const PRUEF_ROUTE = '/geschaeftskunde/vies';
 export const KONTO_ROUTE = '/account/geschaeftskunde';
+/** Kopf-Knopf: /account/login?wahl=1 öffnet das Login-Fenster mit Schalter (account_.login.jsx). */
+export const WAHL_PARAM = 'wahl';
 
 /** EU-Länder (Deutschland zuerst). Griechenland: Land GR, Nummer EL. */
 export const LAENDER = [
