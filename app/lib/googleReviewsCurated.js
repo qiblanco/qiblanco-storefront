@@ -15,25 +15,42 @@
  * (Job 20260807-…-kundenfotos-konzept), damit die wenigen vorhandenen Fotos
  * zuverlässig gesehen werden statt zufällig. Wer hier umsortiert, verliert
  * genau diese Wirkung. Die übrigen Einträge tragen `bilder: []`.
+ *
+ * EIGENE ABLAGE seit 2026-11-27 (Job 20261127-rezensionsfotos-eigene-ablage-
+ * statt-google-rotation): `foto`, `bilder[].url` und `bilder[].thumb` zeigen
+ * auf das Shopify-CDN (cdn.shopify.com, Shopify Files des Deutsch-Shops,
+ * Namensraum qb-rezensionen--…, Manifest medien-hosting/data/manifest.db),
+ * NICHT mehr auf lh3.googleusercontent.com. Grund: Google rotiert die
+ * Google-Fotoadressen der Kundenfotos alle paar Wochen (dann 403 text/html,
+ * das Foto verschwindet per onError still aus der Karte); dreimal von Hand
+ * nachgezogen (PR #319, #902, #1724). Die Bilder sind einmal von Google
+ * übernommen, inhaltlich unverändert. `thumb` ist eine eigene 112-px-Datei
+ * (Googles =s112-c, 56 px bei DPR 2), weil bildThumbUrl() nur Google-URLs
+ * verkleinert. Neue Rezension mit Foto: Bild per medien-hosting/bin/
+ * cdn-publish --bereich rezensionen hochladen, nie die Google-Adresse
+ * eintragen. Wache: homepage-bauer/pruefungen/probe_rezensionsbilder_
+ * erreichbar.py misst diese Adressen.
  */
 export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "253716832",
     "name": "Mirko Naber",
-    "foto": "https://lh3.googleusercontent.com/a-/ALV-UjVI7w98Hi-syQKYTer5tXBdFtVf_QbPM031WB80KZy5CT6X3gk=s120-c-rp-mo-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-mirko-naber--328aae8761fe.png?v=1795755969",
     // FOTO ZURÜCK 2026-10-12 (Job 20261011-eilbefund-storefront-rezensionsbild-
     // und-umschalter-prio22). Am 2026-09-10 war es entfernt worden, weil seine
-    // grass-cs-Adresse mit 403 antwortete — eine von Google ROTIERTE Adresse,
+    // Google-Fotoadresse mit 403 antwortete — eine von Google ROTIERTE Adresse,
     // kein gelöschtes Foto (Klasse im Kopf von ReviewKarte, ReputonWidget.jsx).
     // Der Live-Feed führt dasselbe Foto unter neuer Id; gemessen 200 image/jpeg.
     // Damit ist die Reihenfolge wieder stimmig: Foto-Einträge zuerst (Kopf).
     // NACHGEZOGEN 2026-11-25 (Job 20261125-folge-h9a3e7e-rezensionsfotos-
-    // nachziehen-r2): beide grass-cs-Adressen (Mirko Naber, Therin Moreland)
+    // nachziehen-r2): beide Google-Fotoadressen (Mirko Naber, Therin Moreland)
     // wieder rotiert (403), neue Ids aus dem Reputon-Feed, je 200 image/jpeg.
+    // EIGENE ABLAGE 2026-11-27: Foto auf das Shopify-CDN übernommen (Dateikopf),
+    // damit ist dieser Nachzug nicht mehr nötig.
     "bilder": [
       {
-        "url": "https://lh3.googleusercontent.com/grass-cs/AABkmLermpXWacb-wDhV0Cx-bJrsS5mmt-1qtwZqHPMPTAx1MKvItg7oBjg5XeVOfILi3I2FefXWUTXrTfpSO_UhjYV032QFWguSzgqChByBKI1K12J4ZWoZnJsmVO0UYZ3A-wUXH3LH6bT4qhOT=k-no",
-        "thumb": "https://lh3.googleusercontent.com/grass-cs/AABkmLermpXWacb-wDhV0Cx-bJrsS5mmt-1qtwZqHPMPTAx1MKvItg7oBjg5XeVOfILi3I2FefXWUTXrTfpSO_UhjYV032QFWguSzgqChByBKI1K12J4ZWoZnJsmVO0UYZ3A-wUXH3LH6bT4qhOT=k-no"
+        "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--foto-mirko-naber--4916f626c519.jpg?v=1795756076",
+        "thumb": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--foto-mirko-naber-thumb--651aba56efc1.jpg?v=1795756082"
       }
     ],
     "rating": 5,
@@ -43,11 +60,11 @@ export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "253206200",
     "name": "Therin Moreland",
-    "foto": "https://lh3.googleusercontent.com/a/ACg8ocJUi0d8M-kNnbG-gdlXEFRpq3x_1Qvds2SUD2LnPv7MtDrmfA=s120-c-rp-mo-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-therin-moreland--2c628c87a0cf.png?v=1795755975",
     "bilder": [
       {
-        "url": "https://lh3.googleusercontent.com/grass-cs/AABkmLf2ApC_7tWXLykNHlmbFNOcoOpjwWeaAiaJjVBlZFaJ9dwiTEPX4oyfDoOn-L0Eo78yk8DNz7jxNa716zFLtz45UOyyiMgib0x7-Ez2GpzFy17sM77-UtOE5d9OHJPRbK2HdMtfEIvvl9gn=k-no",
-        "thumb": "https://lh3.googleusercontent.com/grass-cs/AABkmLf2ApC_7tWXLykNHlmbFNOcoOpjwWeaAiaJjVBlZFaJ9dwiTEPX4oyfDoOn-L0Eo78yk8DNz7jxNa716zFLtz45UOyyiMgib0x7-Ez2GpzFy17sM77-UtOE5d9OHJPRbK2HdMtfEIvvl9gn=k-no"
+        "url": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--foto-therin-moreland--260395364b75_ca5a4f06-70f4-401c-9e90-817d95dfeefc.jpg?v=1795756123",
+        "thumb": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--foto-therin-moreland-thumb--3a291f4af22d.jpg?v=1795756131"
       }
     ],
     "rating": 5,
@@ -57,7 +74,7 @@ export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "-1034576208",
     "name": "Vonni Wr",
-    "foto": "https://lh3.googleusercontent.com/a/ACg8ocKLZxudVYWRoCzVZfpyaCeHRvtes50YuEwXPuHWWJg0xBcJ1A=s120-c-rp-mo-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-vonni-wr--8da73af961e4.png?v=1795755981",
     "bilder": [],
     "rating": 5,
     "text": "Seit über zwei Jahren trage ich meinen QiOne 2 Pro und ich möchte ihn nicht mehr missen. 💚\nIch bin ein sehr analytischer Mensch und manchmal eher skeptisch. Bevor ich mich für etwas entscheide, informiere ich mich ausführlich und hinterfrage vieles. Genau deshalb war ich selbst überrascht, wie deutlich ich die Veränderung für mich wahrgenommen habe.\nPersönlich fühle ich mich mit dem QiOne ausgeglichener, innerlich ruhiger, leistungsfähiger und ich schlafe deutlich entspannter. Um sicherzugehen, habe ich ihn sogar eine Zeit lang abgelegt und genau dieser Vergleich hat mich überzeugt.\nAus dieser Überzeugung heraus habe ich mir inzwischen auch das QiBracelet gekauft. Wunderschön verarbeitet, hochwertig und mit viel Liebe zum Detail gestaltet.\n\nWas mich aber genauso begeistert wie die Produkte selbst, sind die Menschen dahinter. So viel Herzlichkeit, echte Kundenfreundlichkeit und persönliches Interesse erlebt man heute nur noch selten.\n\nDanke für diese tollen Produkte und den wunderbaren Service mit Herz. 🙏✨🩷",
@@ -66,7 +83,7 @@ export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "699506123",
     "name": "Regina Schiele",
-    "foto": "https://lh3.googleusercontent.com/a/ACg8ocJliNG-oeokQyN_vwJmm1cRx2w3xlN718-jJYs26XPkx20twQ=s120-c-rp-mo-ba12-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-regina-schiele--c504c30d19f7.png?v=1795755987",
     "bilder": [],
     "rating": 5,
     "text": "Viele meiner Bekannten tragen bereits die Qi Bianco Kette und sind vollkommen begeistert von ihrer Wirkung. Für mich persönlich war das Bracelet die bessere Wahl, da es für mich persönlich praktischer ist und perfekt zu meinem Alltag passt. Schon nach kurzer Zeit konnte ich selbst spüren, wie sich etwas in mir verändert hat: Ich fühlte mich innerlich ruhiger, gleichzeitig voller Energie und mit einer neuen Leichtigkeit im Alltag.\n\nDie ersten beiden Nächte waren etwas unruhig, und ich habe kurz überlegt, ob ich eine Pause einlegen sollte. Doch genau diese Phase hat mir gezeigt, dass mein Körper intensiv arbeitet und sich auf etwas Neues einstellt. Ab der dritten Nacht kam die Wende: Mein Schlaf wurde tiefer und erholsamer als je zuvor. Seither wache ich mit einem klaren Kopf auf und fühle mich fokussierter, strukturierter und einfach ausgeglichener. Meine teilweise innere Unruhe ist wie weggeblasen.\n\nBesonders berührt hat mich, wie schnell ich mich nach einer Operation erholt habe. Ich bin überzeugt, dass das Bracelet auch hier einen entscheidenden Beitrag geleistet hat – mein Körper fühlte sich gestärkt, mein Geist positiv und voller Zuversicht.\n\nFür mich ist das Qi Bianco Bracelet deshalb weit mehr als nur ein Schmuckstück. Es ist ein treuer Begleiter, der mir Tag für Tag innere Ruhe, neue Energie und Lebensfreude schenkt – und dabei auch noch wunderschön aussieht. Ich trage es mit Stolz und Dankbarkeit und kann es von Herzen weiterempfehlen.",
@@ -75,7 +92,7 @@ export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "288627209",
     "name": "Helena Bernardt",
-    "foto": "https://lh3.googleusercontent.com/a-/ALV-UjUHNEAmIrxNQK7LazH4X83z4E7x5nUW9wfGs3SFEmGonqGDeOslVQ=s120-c-rp-mo-ba12-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-helena-bernardt--1303746cc514.png?v=1795755998",
     "bilder": [],
     "rating": 5,
     "text": "Ich trage den Qi Blanco Anhänger seit einigen Monaten fast durchgängig und er fühlt sich für mich wie eine liebevolle, ruhige Begleitung in meinem Feld an. Während meines Wasserfastens hatte ich ein Erlebnis, das mir noch einmal sehr deutlich gezeigt hat, wie unterstützend er wirkt.\n\nAn einem Fastentag war ich voller Energie, war bei einer Massage und habe den Anhänger dafür abgelegt – und danach vergessen, ihn wieder anzulegen. Am Abend wurde mir plötzlich extrem schlecht, ich hatte das Gefühl ich muss mich übergeben, mein ganzes System fühlte sich überlastet an, nichts hat wirklich geholfen.\n\nAls ich mich gefragt habe, was heute anders ist, wurde mir klar: Ich trage meinen Qi Blanco nicht. Also habe ich ihn wieder umgelegt – noch mit einem kleinen Schmunzeln, ob er mir jetzt wohl bei meinen Detoxsymptomen helfen wird. Und tatsächlich: Nach wenigen Minuten war die Übelkeit komplett verschwunden und ich war wieder ganz in meiner Energie.\nFür mich war das ein so schönes, klares Zeichen. Seitdem trage ich den Anhänger noch bewusster und spüre, wie er mich in meiner Energie stabil und liebevoll hält.",
@@ -84,7 +101,7 @@ export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "-956054649",
     "name": "Simone Wüst",
-    "foto": "https://lh3.googleusercontent.com/a-/ALV-UjX5ZvbHUnS8mAFLFN8AlpYNZgITS0nkIT4zm25DdFz2mztsehNOUQ=s120-c-rp-mo-ba12-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-simone-wust--4aae96c7be92.png?v=1795756008",
     "bilder": [],
     "rating": 5,
     "text": "Einfach nur wow! DAS hätte ich wirklich nicht erwartet. Seit ich die Kette trage brennt wie ein kleines Feuer in mir. Ich fühle so viel Energie, wie ein angenehmes Kribbeln im ganzen Körper. Und so eine angenehme Klarheit. Zum Schlafen kann ich sie (noch) nicht tragen, sonst bin ich einfach zu wach. Ich gebe sie nicht mehr her 😊😉",
@@ -93,7 +110,7 @@ export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "-729236865",
     "name": "Shari Wenzel",
-    "foto": "https://lh3.googleusercontent.com/a/ACg8ocJ2bf-dpNzE6rxTKMGXboKQ3uphz8nDa2v26wkfIrpzm-Vq=s120-c-rp-mo-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-shari-wenzel--7a1cc2965def.png?v=1795756018",
     "bilder": [],
     "rating": 5,
     "text": "Super Produkte und wirklich guter Service:\nIch habe den QiOne Pro2 und das Bracelet und merke einen enormen Unterschied in meinem Alltag.\nIch bin viel ruhiger und selbst in stressigen Situationen viel gelassener.\nDer Anhänger war schon gold wert, aber in Verbindung mit dem Bracelet (jetzt als Ergänzung nach zwei Jahren) ist es einfach noch mal ein ganz anderes Level.\nAuch in meinem Bekanntenkreis gibt es 4 Leute, die total begeistert sind.",
@@ -102,7 +119,7 @@ export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "-1321031249",
     "name": "Pamela Hüster",
-    "foto": "https://lh3.googleusercontent.com/a-/ALV-UjVqCl17CmAxP0ja-5hzj3Y1havhz4auta2WgAvoAtR7l0jsnwE=s120-c-rp-mo-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-pamela-huster--bf927f962c04.png?v=1795756030",
     "bilder": [],
     "rating": 5,
     "text": "Ich habe mein Qi Blanco erst wenige Tage und mein Schlaf hat sich deutlich verbessert. Die letzten Wochen hatte ich schon gar keine Tiefschlafphasen mehr und nun wieder 2-3 Stück pro Nacht nachweislich über meinen Fitnesstracker. Auch wache ich dadurch wesentlich erholter auf. Ich bin froh mich für den Qi Blanco entschieden zu haben! Vielleicht kommen mit der Zeit weitere messbare Veränderungen hinzu, ich bin sehr gespannt 🤗",
@@ -111,7 +128,7 @@ export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "-181533564",
     "name": "Birgit Desire",
-    "foto": "https://lh3.googleusercontent.com/a/ACg8ocJ8wJnoB2PG5wly4_XUu0bG9iOgUzXSWxqYJRo6wnsZn7jeeA=s120-c-rp-mo-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-birgit-desire--c0aab55214c9.png?v=1795756039",
     "bilder": [],
     "rating": 5,
     "text": "Beim ersten Tragen habe ich eine Veränderung gespürt, war aber zunächst skeptisch, da ich Urlaub hatte und mich nicht in meinem gewohnten Arbeitsumfeld aufgehalten habe. Als ich das erste Mal wieder im Großraumbüro war, habe ich den Unterschied deutlich gespürt. Bisher war ich spätestens nach zwei Stunden nicht mehr in der Lage konzentriert zu arbeiten. Mit der Qui Blanco Kette konnte ich ohne Probleme den Tag überstehen.\nFazit: Eine Investition, die kein Urlaub ersetzen kann.\nBirgit Desire",
@@ -120,7 +137,7 @@ export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "850007411",
     "name": "Stefania Stock",
-    "foto": "https://lh3.googleusercontent.com/a/ACg8ocJ6iblD6KwlfXJ4p9LPQ6-BZJcwV2RGyMyAXITvAGqY-pZJMx4=s120-c-rp-mo-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-stefania-stock--28a84a941089.png?v=1795756052",
     "bilder": [],
     "rating": 5,
     "text": "Nach kürzester Zeit hat der QiOne 2 Pro mir bei einer emotionalen Herausforderung geholfen, mich wieder innerlich zu zentrieren und auch auszubalancieren.\nIch kann wieder durchschlafen und selbst bei wenigen Stunden Schlaf, bin ich am nächsten Tag erholt\nIch kann den QiOne 2 Pro jedem empfehlen, den es ruft 💖",
@@ -129,7 +146,7 @@ export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "-906010528",
     "name": "Marla Wilhelmina von Spätzle",
-    "foto": "https://lh3.googleusercontent.com/a-/ALV-UjUWS1YuSVWa-3NxaNNU3JKp3QzCoALVnHPDyQnH5upzl0jzs0Np=s120-c-rp-mo-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-marla-wilhelmina-von-spatzle--e1b8fd585d4d.png?v=1795756062",
     "bilder": [],
     "rating": 5,
     "text": "Eine der wenigen Ketten, die man im Leben wirklich braucht. Elektrosmog: auf Nimmerwiedersehen. Bringt schon nach wenigen Tagen eine gesteigerte Ausgeglichenheit, erholsamen Schlaf und mehr Energie. Wenn man die Kette ablegt, spürt man, dass etwas fehlt. In meiner Familie trägt jeder eine.",
@@ -138,7 +155,7 @@ export const GOOGLE_REVIEWS_CURATED = [
   {
     "id": "-1868946154",
     "name": "Sabine Kohlweiss",
-    "foto": "https://lh3.googleusercontent.com/a/ACg8ocKbla2lI2sV7xmRGue9jR1MLimF8z7mbkj-1r89ywGTuZc4iw=s120-c-rp-mo-br100",
+    "foto": "https://cdn.shopify.com/s/files/1/0279/3095/1750/files/qb-rezensionen--profil-sabine-kohlweiss--f374014c1ff3.png?v=1795756068",
     "bilder": [],
     "rating": 5,
     "text": "Seit ich den QiOne®2Pro trage, habe ich mehr Klarheit bei Entscheidungen und fühle mich selbstsicherer. Ich möchte ihn nicht mehr missen.",
