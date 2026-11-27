@@ -2,11 +2,7 @@ import {redirect} from 'react-router';
 import {rabattlinkZiel} from '~/lib/discount-ziel';
 import {istKakaoEinzelwegCode, legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
 import {bindeReservierungsCode} from '~/lib/qi-master-addons.server';
-import {
-  rabattCookie,
-  rueckfallAn,
-  RUECKFALL_KOPF,
-} from '~/lib/kassen-rueckfall.server';
+import {rabattCookie, rueckfallAn, RUECKFALL_KOPF} from '~/lib/kassen-rueckfall.server';
 
 /**
  * Automatically applies a discount found on the url

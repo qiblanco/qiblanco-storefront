@@ -161,7 +161,7 @@ test('A4-ROT: ad_weiche=aus schaltet auch den Rabattweg ab', async () => {
 
 const ROUTE_SRC = readFileSync(new URL('../app/routes/discount.$code.jsx', import.meta.url), 'utf8');
 
-function routenWeiterleitung(zielUrlString) {
+function routenWeiterleitung(zielUrlString, korbErgebnis = {cart: {id: 'gid://shopify/Cart/X'}}) {
   // Der Loader-Rumpf der echten Route, ausgefuehrt mit gestubbtem redirect/cart.
   const rumpf = ROUTE_SRC
     .replace(/^import[^\n]*\n/gm, '')
@@ -172,12 +172,15 @@ function routenWeiterleitung(zielUrlString) {
     'bindeReservierungsCode',
     'istKakaoEinzelwegCode',
     'legeKakaoSetZeile',
+    'rabattCookie',
+    'rueckfallAn',
+    'RUECKFALL_KOPF',
     `${rumpf}; return loader;`,
   );
   // Die Bindung des Reservierungscodes (lib/qi-master-addons.server.js) gibt
   // hier das Ergebnis der Route zurück: der Stub-Korb hat keine Zeilen.
   // Der Code dieses Tests hat keinen Einzelweg (lib/kakao-set-zeile.server.js).
-  const loader = bauen((url, init) => ({url, init}), rabattlinkZiel, async ({result}) => result, () => false, async ({result}) => result);
+  const loader = bauen((url, init) => ({url, init}), rabattlinkZiel, async ({result}) => result, () => false, async ({result}) => result, (c) => `qb_rabatt_offen=${c}`, () => true, 'x-qb-kassen-rueckfall');
   const request = new Request(`${BASIS}${zielUrlString}`);
   const code = decodeURIComponent(zielUrlString.split('/discount/')[1].split('?')[0]);
   return loader({
@@ -185,7 +188,7 @@ function routenWeiterleitung(zielUrlString) {
     params: {code},
     context: {
       cart: {
-        updateDiscountCodes: async () => ({cart: {id: 'gid://shopify/Cart/X'}}),
+        updateDiscountCodes: async () => korbErgebnis,
         setCartId: () => new Headers(),
       },
     },
@@ -205,6 +208,15 @@ test('A5-NAHT: der Original-Query kommt vollstaendig auf LP A an, redirect faell
     assert.equal(an.get(k), v, `Schluessel ${k} muss die Grenze ueberleben`);
   }
   assert.equal([...an.keys()].length, [...soll.keys()].length, 'kein Schluessel zu viel');
+});
+
+test('A5-RUECKFALL: ohne angelegten Korb (Oxygen-Neuanlage gestoert) 303 auf LP A statt 500', async () => {
+  // Kassen-Rueckfall (Notfall 27.11.2026, lib/kassen-rueckfall.server.js).
+  const ziel = rabattZiel(`${LP_A_PFAD}?${META_QUERY}&lp_m=w`, AD, KARTE);
+  const {url, init} = await routenWeiterleitung(ziel, {cart: null, errors: [{message: 'x'}]});
+  assert.equal(init.status, 303);
+  assert.equal(url.split('?')[0], LP_A_PFAD);
+  assert.match(init.headers.get('set-cookie') || '', /^qb_rabatt_offen=/);
 });
 
 test('A5-NAHT-ROT: ohne den redirect-Parameter landet der Klick auf /, nicht auf LP A', async () => {
