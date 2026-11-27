@@ -27,9 +27,7 @@ import studienStyles from '~/styles/studien.css?url';
  *
  * GEO R4/R7 (2026-11-27, Job 20261127-geo-folge-a-hb-seiten-de): Beschreibung
  * 161 -> 140 Zeichen: „, ohne Kontrollgruppe“ fällt weg (Elinas Dauerregel
- * de-abschwaech-regel EL-20261126-0c6dc7be, G12). Das Kundenwort für R7 steht im
- * ersten Absatz des Hauptinhalts (laienSummary.antwort in e0004.json); der
- * Einstieg oben liegt im <header> und zählt dort nicht.
+ * de-abschwaech-regel EL-20261126-0c6dc7be, G12).
  *
  * „Dauer" fehlt im ersten Absatz mit Absicht: die Arbeit nennt keine
  * Nutzungsdauer. Der Absatz sagt das offen, statt eine zu erfinden.
