@@ -18,7 +18,11 @@ import {bfDeal, bfDealZeitAktiv} from './bf-deals-daten.js';
  */
 const BF_DEAL_CODES = {
   '2x-qione-2-pro': ['BF26-PRO-13GLX'],
-  'qione-2-pro-necklace': ['BF26-PRO-13GLX'],
+  // Pro + Necklace ohne Code seit 27.11.2026 (Elina EL-20261126-5537ae30, GO
+  // Umbau A): der Knopf legt das Bündel 734husd8hh zu 1.082 € in den Warenkorb
+  // (bf-deals-daten.js linkJeLaenge). BF26-PRO-13GLX gilt nur noch für 2x QiOne
+  // 2 Pro; der Code selbst bleibt unverändert (E1, Elina 13.11.).
+  'qione-2-pro-necklace': [],
   qibracelet: ['BF26-BRACELET-GM5JJ'],
   'qihome-air': ['BF26-QIHOME-2DP8H'],
   // Kakao ohne Code seit 24.11.2026 (Christian, „wie US“): die BF-Bundles kosten

@@ -12,7 +12,9 @@
  *
  * Die Bundle-Produkte hinter den Deal-Adressen bleiben Entwurf bzw. archiviert
  * (Elina EL-20261111-9065b985). Darum rendert die Deal-Adresse die Seite des
- * BASISPRODUKTS (`basis`) mit den Preisen von hier.
+ * BASISPRODUKTS (`basis`) mit den Preisen von hier. Ausnahmen: die Kakao-Bundles
+ * (24.11.) und 734husd8hh (QiOne 2 Pro + Necklace, 27.11.) sind aktiv, weil der
+ * Kaufknopf sie in den Warenkorb legt; ihre Adressen rendern weiter die Deal-Seite.
  *
  * Zeitfenster: bis Ende der Codes, 03.12.2026 23:59 Berlin (Verlängerung, vorher 30.11.). Danach liefern die
  * Deal-Handles wieder 404 (Shopify-Weiterleitung wie vorher), und
@@ -71,18 +73,23 @@ export const BF_DEALS = [
     bild: BF_GOLD_BILDER['qione-2-pro-necklace'],
     bildAlt: 'QiOne® 2 Pro Anhänger mit Kette',
     seite: 'pjdz538hgs0',
-    // Je Kettenlänge (cm) der Link mit der Kette dieser Größe, ALLE fünf Längen
-    // (Elina EL-20261112-5f5fab2e): welche Länge die Seite zeigt, entscheidet
-    // allein der Bestand der Kettenvariante (availableForSale, Kette mit
-    // inventoryPolicy DENY = Bestand > 0). Ausverkaufte Längen blendet die Seite
-    // aus; kommt Nachschub (z. B. M 50, XL 75), sind sie mit diesem Link wieder
-    // kaufbar. Der Code BF26-PROKETTE-PMB52 gilt für das ganze Produkt qione-kette.
+    // Je Kettenlänge (cm) EINE Bündel-Variante, ALLE fünf Längen (Elina
+    // EL-20261112-5f5fab2e): welche Länge die Seite zeigt, entscheidet allein der
+    // Bestand der Kettenvariante (availableForSale, Kette mit inventoryPolicy
+    // DENY = Bestand > 0). Ausverkaufte Längen blendet die Seite aus.
+    // SEIT 27.11.2026 BÜNDEL STATT ZWEI ZEILEN + CODE (Elina EL-20261126-5537ae30,
+    // GO zu Umbau A aus EL-20261126-50ef3ad9; Beleg #13643: Pro ohne Kette): der
+    // Knopf legt das native Shopify-Bündel 734husd8hh („Sale: QiOne® 2 Pro +
+    // Necklace“, 1.082 €, ohne Code) in der gewählten Länge in den Warenkorb.
+    // Komponenten je Variante: QiOne 2 Pro 2222 + Kette 5555–5559 (qione-kette);
+    // Lager und Monta bekommen die Einzelteile, Shopify zieht beide Bestände ab.
+    // Vorher: '/cart/39680087326790:1,<Kette>:1' + BF26-PRO-13GLX (Rückweg: git revert).
     linkJeLaenge: {
-      40: '/cart/39680087326790:1,39285852176454:1',
-      45: '/cart/39680087326790:1,31887553396806:1',
-      50: '/cart/39680087326790:1,39285855223878:1',
-      60: '/cart/39680087326790:1,31887553429574:1',
-      75: '/cart/39680087326790:1,39285858140230:1',
+      40: '/cart/53739513512204:1',
+      45: '/cart/53739513544972:1',
+      50: '/cart/53739513577740:1',
+      60: '/cart/53739513610508:1',
+      75: '/cart/53739513643276:1',
     },
   },
   {
