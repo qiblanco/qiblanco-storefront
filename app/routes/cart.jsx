@@ -24,6 +24,7 @@ import {AppleSeite} from '~/components/apple-seite/AppleSeite';
 import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
 import warenkorbAppleStyles from '~/styles/warenkorb-apple.css?url';
 import {bfDealCodesNachHinzufuegen} from '~/components/black-friday-2026/bf-deal-codes.server';
+import {fehlerAlsDaten} from '~/lib/cart-fehlertext.server';
 
 /**
  * Route-gebundenes Stylesheet (Muster mm-lp.css): die vier Regeln von
@@ -230,10 +231,14 @@ export async function action({request, context}) {
     headers.set('Location', redirectTo);
   }
 
+  // Fehler als schlichte Objekte: Error-Instanzen ersetzt React Router in der
+  // Produktions-Antwort durch "Unexpected Server Error", und der Wortlaut der
+  // Storefront-API war bei den Ausfällen am 18.11. und 27.11. verloren
+  // (F-3008, lib/cart-fehlertext.server.js). Gleiche Länge, gleiche Semantik.
   return data(
     {
       cart: cartResult,
-      errors,
+      errors: fehlerAlsDaten(errors),
       warnings,
       analytics: {
         cartId,

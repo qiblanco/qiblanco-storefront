@@ -6,6 +6,7 @@ import {
   hasAttributionConsent,
 } from '~/lib/cart-attribution.server';
 import {istFremderRahmen} from '~/lib/einbettungs-weiche.server';
+import {FEHLER_KOPF, fehlerKopfwert} from '~/lib/cart-fehlertext.server';
 import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
 import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
@@ -192,8 +193,13 @@ export async function loader({request, context, params}) {
   const cartResult = result.cart;
 
   if (result.errors?.length || !cartResult) {
+    // Wortlaut der Storefront-API als Kopfzeile x-qb-cart-fehler (F-3008):
+    // Rumpf und Status bleiben, wie sie waren. Die Fehlergrenze sitzt in
+    // app/root.jsx; dessen headers() reicht genau diese Kopfzeile durch.
+    const fehler = fehlerKopfwert(result);
     throw new Response('Link may be expired. Try checking the URL.', {
       status: 410,
+      ...(fehler ? {headers: {[FEHLER_KOPF]: fehler}} : {}),
     });
   }
 

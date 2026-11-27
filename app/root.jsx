@@ -206,6 +206,27 @@ export const shouldRevalidate = ({formMethod, currentUrl, nextUrl}) => {
 };
 
 /**
+ * WARENKORB-FEHLERTEXT AM PERMALINK (F-3008, Vorgang EL-20261127-8fe7809a):
+ * cart.$lines.jsx wirft sein 410 mit der Kopfzeile x-qb-cart-fehler. Die
+ * Fehlergrenze dieser Route ist die ErrorBoundary HIER, und React Router nimmt
+ * von der Antwort einer Fehlergrenze ohne headers()-Export nur die
+ * Set-Cookie-Zeilen mit (lokal gemessen: 410 ohne Kopfzeile). Diese Funktion
+ * gibt genau das weiter, was ohne sie galt (`new Headers(parentHeaders)`;
+ * die Cookies hängt React Router danach selbst an), plus diese EINE
+ * Kopfzeile, wenn die Fehlerantwort sie trägt. Alle übrigen Antworten
+ * bleiben Byte für Byte gleich. Name wie FEHLER_KOPF in
+ * lib/cart-fehlertext.server.js (hier als Literal: root.jsx läuft auch im
+ * Browser). RÜCKWEG: diese Funktion löschen.
+ * @type {HeadersFunction}
+ */
+export const headers = ({parentHeaders, errorHeaders}) => {
+  const kopf = new Headers(parentHeaders);
+  const fehler = errorHeaders?.get?.('x-qb-cart-fehler');
+  if (fehler) kopf.set('x-qb-cart-fehler', fehler);
+  return kopf;
+};
+
+/**
  * The main and reset stylesheets are added in the Layout component
  * to prevent a bug in development HMR updates.
  *
@@ -1184,6 +1205,7 @@ export function ErrorBoundary() {
 
 /** @typedef {import('react-router').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @typedef {import('react-router').ShouldRevalidateFunction} ShouldRevalidateFunction */
+/** @typedef {import('react-router').HeadersFunction} HeadersFunction */
 /** @typedef {import('react-router').SerializeFrom<typeof loader>} LoaderReturnData */
 
 /**
