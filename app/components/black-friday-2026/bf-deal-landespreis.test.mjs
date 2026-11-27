@@ -416,3 +416,42 @@ test('BF-Stand NO (USD): 2x QiOne nach Neubepreisung -> BF-Verhältnis (20 %), n
   const lp = await bfDealLandesPreis(sf, ZWEI_PRO, 'NO', {jetzt: JETZT});
   assert.equal(lp.uvp, Math.round((2580.46 * 2476) / 1976));
 });
+
+// Drossel (Job chm-20261127-0d520bcb-nb1, BF 27.11.2026: cartCreate über die
+// qiblanco-Storefront antwortet „Throttled“): keine weitere Zeilenvariante, und
+// der Fehlschlag gilt 5 min, damit nicht jeder Seitenaufruf erneut anlegt.
+function gedrosselt() {
+  return Object.assign(new Error('Throttled'), {
+    errors: [{message: 'Throttled', path: ['cartCreate'], extensions: {code: 'THROTTLED'}}],
+  });
+}
+
+test('Drossel (geworfen): ein cartCreate, keine weitere Zeilenvariante, null', async () => {
+  _ablageLeeren();
+  const sf = mockStorefront([gedrosselt(), gedrosselt(), gedrosselt()]);
+  assert.equal(await bfDealLandesPreis(sf, PRO_KETTE, 'CH', {jetzt: JETZT}), null);
+  assert.equal(sf.aufrufe.length, 1);
+});
+
+test('Drossel (als errors in der Antwort): ein cartCreate, null', async () => {
+  _ablageLeeren();
+  const antwort = {
+    errors: [{message: 'Throttled', extensions: {code: 'THROTTLED'}}],
+    cartCreate: {cart: null, userErrors: [], warnings: []},
+  };
+  const sf = mockStorefront([antwort, antwort, antwort]);
+  assert.equal(await bfDealLandesPreis(sf, PRO_KETTE, 'CH', {jetzt: JETZT}), null);
+  assert.equal(sf.aufrufe.length, 1);
+});
+
+test('Fehlschlag gilt 5 min: kein neues cartCreate davor, danach wieder', async () => {
+  _ablageLeeren();
+  const sf = mockStorefront([gedrosselt(), chAntwort()]);
+  assert.equal(await bfDealLandesPreis(sf, ZWEI_PRO, 'CH', {jetzt: JETZT}), null);
+  assert.equal(await bfDealLandesPreis(sf, ZWEI_PRO, 'CH', {jetzt: JETZT + 60 * 1000}), null);
+  assert.equal(await bfDealLandesPreis(sf, ZWEI_PRO, 'CH', {jetzt: JETZT + 299 * 1000}), null);
+  assert.equal(sf.aufrufe.length, 1);
+  const lp = await bfDealLandesPreis(sf, ZWEI_PRO, 'CH', {jetzt: JETZT + 301 * 1000});
+  assert.deepEqual(lp, {preis: 2079.08, uvp: 2580, waehrung: 'CHF'});
+  assert.equal(sf.aufrufe.length, 2);
+});

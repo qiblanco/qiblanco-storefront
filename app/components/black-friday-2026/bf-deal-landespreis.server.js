@@ -54,6 +54,16 @@ import {bfDealCodes} from './bf-deal-codes.server.js';
  * alten Betrag (Abnahme rot); mit 10 s ist das Fenster unter 1 %.
  */
 const ABLAGE_MS = 10 * 1000;
+/**
+ * Wie lange ein FEHLSCHLAG gilt (Job chm-20261127-0d520bcb-nb1, BF 27.11.2026).
+ * Gemessen 27.11. 06:18Z: cartCreate über die qiblanco-Storefront antwortet
+ * „Throttled“ (THROTTLED), während Kunden keinen Warenkorb anlegen können.
+ * Ohne abgelegten Fehlschlag versuchte JEDER Seitenaufruf außerhalb DE es
+ * erneut, je Deal bis VERSUCHE_MAX Mal: bis 15 cartCreate je Aufruf genau in
+ * der Drossel. Ein Fehlschlag gilt deshalb 5 min (Seite nennt so lange den
+ * Euro-Preis wie bisher bei Fehlern); ein Erfolg bleibt bei ABLAGE_MS.
+ */
+const FEHLER_ABLAGE_MS = 5 * 60 * 1000;
 /** Längste Wartezeit des Seitenaufbaus auf den Warenkorb. */
 const FRIST_MS = 1500;
 /** Obergrenze der Ablage (5 Deals x wenige Länder). */
@@ -129,6 +139,16 @@ const KAKAO_EINZEL_QUERY = `
     }
   }
 `;
+
+/** Gedrosselt? (Fehler oder GraphQL-errors der Antwort mit THROTTLED/Throttled) */
+export function istGedrosselt(x) {
+  if (!x) return false;
+  const teile = [x.message, x.code, x.extensions?.code];
+  for (const e of [].concat(x.errors ?? [], x.graphQLErrors ?? [], x.cause ?? [])) {
+    teile.push(e?.message, e?.code, e?.extensions?.code);
+  }
+  return teile.some((t) => /throttl/i.test(String(t ?? '')));
+}
 
 function mitFrist(versprechen, ms) {
   let uhr;
@@ -300,7 +320,9 @@ export async function bfDealLandesPreis(storefront, seite, land, optionen = {}) 
   const jetzt = optionen.jetzt ?? Date.now();
   const schluessel = `${land}|${deal.id}${seite.set ? `|${seite.set}` : ''}`;
   const alt = ablage.get(schluessel);
-  if (alt && jetzt - alt.zeit < ABLAGE_MS) return alt.wert;
+  if (alt && jetzt - alt.zeit < (alt.fehler ? FEHLER_ABLAGE_MS : ABLAGE_MS)) {
+    return alt.wert;
+  }
   const codes = bfDealCodes(deal.id, jetzt);
   try {
     let wert = null;
@@ -313,6 +335,7 @@ export async function bfDealLandesPreis(storefront, seite, land, optionen = {}) 
           }),
           optionen.fristMs ?? FRIST_MS,
         );
+        if (istGedrosselt(antwort)) throw new Error('bf-landespreis: Throttled');
         let gelesen = bfStandStreichpreis(deal, auswerten(antwort, zeilen, codes));
         if (deal.id === 'kakao') {
           // Streichpreis = Einzelpackungen im Land (Kauf 2, zahl 1), nicht der Set-Preis.
@@ -335,7 +358,9 @@ export async function bfDealLandesPreis(storefront, seite, land, optionen = {}) 
         break;
       } catch (e) {
         letzterFehler = e;
-        if (String(e?.message).includes('Frist')) break;
+        // Frist oder Drossel: keine weitere Zeilenvariante (jede wäre ein
+        // weiteres cartCreate in dieselbe Drossel).
+        if (String(e?.message).includes('Frist') || istGedrosselt(e)) break;
       }
     }
     if (!wert) throw letzterFehler ?? new Error('bf-landespreis: keine Deal-Zeilen');
@@ -343,6 +368,8 @@ export async function bfDealLandesPreis(storefront, seite, land, optionen = {}) 
     ablage.set(schluessel, {zeit: jetzt, wert});
     return wert;
   } catch (e) {
+    if (ablage.size >= ABLAGE_MAX) ablage.clear();
+    ablage.set(schluessel, {zeit: jetzt, wert: null, fehler: true});
     // eslint-disable-next-line no-console
     console.warn(`bf-landespreis ${schluessel}: ${e?.message ?? e} -> Euro-Preis (Stand davor)`);
     return null;
