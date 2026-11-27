@@ -448,7 +448,7 @@ function Wegweiser({blogHandle, weg}) {
       </h2>
       <p className="blog-strang-kurz">
         Wenn Sie zum ersten Mal hier sind, ist das der kürzeste Weg durch das
-        Material:
+        Material zu Wasser, Schlaf, Zellen und Strahlung:
       </p>
       <ol className="blog-wegweiser-liste">
         {weg.map((schritt) => (

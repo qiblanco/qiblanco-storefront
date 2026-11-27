@@ -92,8 +92,14 @@ export const BESCHREIBUNGEN = {
   // strukturfelder-de-us): Kundenwort vorn, dann die Angaben der Seite
   // (160 m Radius, „keinerlei elektronische Bauteile“, 14.000+ Nutzer).
   // Vorher: „QiHome® Air im Detail: wie das Gerät dein Zuhause abdeckt, …“.
+  //
+  // GEO R4 (2026-11-27, Job 20261127-geo-folge-a-hb-seiten-de): die Apple-
+  // Fassung der Seite zeigt keine Nutzerzahl (Kopf qihome-details-daten.js),
+  // „14.000“ stand damit nur noch in der Meta. Ersetzt durch die sichtbare
+  // Laborzahl. Vorher: „… ohne Elektronik auskommt und was über 14.000
+  // Nutzer daran schätzen.“
   '/pages/qihome-details':
-    'Schutz vor E-Smog und 5G für dein Zuhause: wie das QiHome® Air bis zu 160 m Radius abdeckt, ohne Elektronik auskommt und was über 14.000 Nutzer daran schätzen.',
+    'Schutz vor E-Smog und 5G für dein Zuhause: das QiHome® Air deckt bis zu 160 m Radius ab, ohne Strom. Im Labor regenerieren Nervenzellen damit 53,3 % stärker.',
 
   // Quelle: app/components/index-components/detailseiten/QiBracelet.jsx
   // („Molekularer E-Smog Schutz“, „Gitterchip™ aus eigens entwickelter

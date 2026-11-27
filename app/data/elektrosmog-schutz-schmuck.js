@@ -39,11 +39,13 @@ import {isoMitZone} from '~/lib/datum';
 
 export const PFAD = '/pages/elektrosmog-schutz-schmuck';
 const VEROEFFENTLICHT = '2026-11-14';
-const GEAENDERT = '2026-11-14';
+const GEAENDERT = '2026-11-27';
 
 export const SEITE = {
   pfad: PFAD,
-  titel: 'Elektrosmog-Schutz als Schmuck: Armband, Anhänger, Kette | Qi Blanco',
+  // GEO R3 (2026-11-27, Job 20261127-geo-folge-a-hb-seiten-de): auf 60 Zeichen
+  // gekürzt. Vorher „Elektrosmog-Schutz als Schmuck: Armband, Anhänger, Kette | Qi Blanco“ (68).
+  titel: 'Elektrosmog-Schutz-Schmuck: Armband und Anhänger | Qi Blanco',
   vorspann: 'Ratgeber und Überblick',
   h1: 'Elektrosmog-Schutz zum Tragen: Armband, Anhänger oder Kette?',
   beschreibung:
