@@ -72,7 +72,7 @@ const BESCHREIBUNG = "Ja, pr√ºf es selbst: eingetragenes Unternehmen, 20 Tage R√
  * `lastmod`-Wert in NUR_ROUTE_SEITEN im selben Commit.
  */
 const VEROEFFENTLICHT = '2026-09-16';
-const GEAENDERT = '2026-11-15';
+const GEAENDERT = '2026-11-27';
 
 export function links() {
   // Nach fragen.css: die Seitendatei bringt den Trustpilot-Kopf in die
