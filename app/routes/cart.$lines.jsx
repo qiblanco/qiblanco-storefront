@@ -6,6 +6,13 @@ import {
   hasAttributionConsent,
 } from '~/lib/cart-attribution.server';
 import {istFremderRahmen} from '~/lib/einbettungs-weiche.server';
+import {
+  neuanlageGescheitert,
+  permalinkTeil,
+  rueckfallAn,
+  rueckfallUrl,
+  RUECKFALL_KOPF,
+} from '~/lib/kassen-rueckfall.server';
 import {bindeQiMasterAddons} from '~/lib/qi-master-addons.server';
 import {begrenzeAngebot} from '~/lib/angebot-limit.server';
 import {legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
@@ -192,6 +199,19 @@ export async function loader({request, context, params}) {
   const cartResult = result.cart;
 
   if (result.errors?.length || !cartResult) {
+    // KASSEN-RÜCKFALL (Notfall 27.11.2026, lib/kassen-rueckfall.server.js):
+    // scheitert die Neuanlage über Oxygen, legt der native Kassenweg von
+    // Shopify denselben Korb an, mit denselben Codes. Nie mit Ratenanteil.
+    const rueckfallZeilen =
+      rueckfallAn(env) && !mitTeilzahlung && neuanlageGescheitert(result)
+        ? permalinkTeil(linesMap)
+        : null;
+    if (rueckfallZeilen) {
+      return redirect(
+        rueckfallUrl({zeilen: rueckfallZeilen, codes: discountArray, request, env}),
+        {headers: {[RUECKFALL_KOPF]: 'permalink'}},
+      );
+    }
     throw new Response('Link may be expired. Try checking the URL.', {
       status: 410,
     });
