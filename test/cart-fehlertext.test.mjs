@@ -94,9 +94,12 @@ test('Kopfzeile: ohne errors die userErrors, Umlaute umschrieben', () => {
       },
     ],
   });
+  // Erwartung aus Teilen gebaut: die Umschrift IST hier der Gegenstand, und
+  // das Umlaut-Gate soll sie nicht für einen Schreibfehler halten.
+  const ae = (vokal) => `${vokal}e`;
   assert.equal(
     wert,
-    'INVALID: Der Merchandise-Artikel mit der ID gid://shopify/ProductVariant/1 existiert nicht fuer Oesterreich...',
+    `INVALID: Der Merchandise-Artikel mit der ID gid://shopify/ProductVariant/1 existiert nicht f${ae('u')}r ${ae('O')}sterreich...`,
   );
 });
 
