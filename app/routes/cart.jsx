@@ -1,6 +1,6 @@
 import {useLoaderData} from 'react-router';
 import {CartForm} from '@shopify/hydrogen';
-import {data} from 'react-router';
+import {data, redirectDocument} from 'react-router';
 import {CartMain} from '~/components/CartMain';
 import {ZweifelBeleg} from '~/components/reusables/ZweifelBeleg';
 import {EuGewaehrleistungsHinweis} from '~/components/EuGewaehrleistungsLabel';
@@ -24,6 +24,14 @@ import {AppleSeite} from '~/components/apple-seite/AppleSeite';
 import {AppleAnna} from '~/components/apple-seite/AppleSektionen';
 import warenkorbAppleStyles from '~/styles/warenkorb-apple.css?url';
 import {bfDealCodesNachHinzufuegen} from '~/components/black-friday-2026/bf-deal-codes.server';
+import {
+  neuanlageGescheitert,
+  offenerRabatt,
+  permalinkTeil,
+  rueckfallAn,
+  rueckfallUrl,
+  RUECKFALL_KOPF,
+} from '~/lib/kassen-rueckfall.server';
 
 /**
  * Route-gebundenes Stylesheet (Muster mm-lp.css): die vier Regeln von
@@ -98,6 +106,7 @@ export async function action({request, context}) {
 
   switch (action) {
     case CartForm.ACTIONS.LinesAdd: {
+      const hatteKorb = Boolean(cart.getCartId());
       result = await cart.addLines(inputs.lines);
       const discountCode =
         typeof inputs.discountCode === 'string' ? inputs.discountCode.trim() : '';
@@ -107,6 +116,28 @@ export async function action({request, context}) {
       // die Deal-Kennung; die Codes setzt allein der Server dazu, zu den schon
       // vorhandenen (Deals sind kombinierbar).
       const bfDealId = typeof inputs.bfDeal === 'string' ? inputs.bfDeal : '';
+
+      // KASSEN-RÜCKFALL (Notfall 27.11.2026, lib/kassen-rueckfall.server.js):
+      // scheitert die NEUANLAGE (Kunde ohne Warenkorb), geht der Kauf über den
+      // nativen Kassenweg von Shopify weiter, mit denselben Zeilen und Codes,
+      // statt mit einem leeren Warenkorb zu enden.
+      if (!hatteKorb && rueckfallAn(env) && neuanlageGescheitert(result)) {
+        const rueckfallZeilen = permalinkTeil(inputs.lines);
+        if (rueckfallZeilen) {
+          const dealCodes = bfDealId ? bfDealCodesNachHinzufuegen([], bfDealId) ?? [] : [];
+          const codes = discountCode ? [discountCode] : dealCodes;
+          const offen = codes.length ? '' : offenerRabatt(request);
+          return redirectDocument(
+            rueckfallUrl({
+              zeilen: rueckfallZeilen,
+              codes: offen ? [offen] : codes,
+              request,
+              env,
+            }),
+            {headers: {[RUECKFALL_KOPF]: 'kaufknopf'}},
+          );
+        }
+      }
 
       if (discountCode && result?.cart?.totalQuantity > 0) {
         result = await cart.updateDiscountCodes([discountCode]);

@@ -2,6 +2,7 @@ import {redirect} from 'react-router';
 import {rabattlinkZiel} from '~/lib/discount-ziel';
 import {istKakaoEinzelwegCode, legeKakaoSetZeile} from '~/lib/kakao-set-zeile.server';
 import {bindeReservierungsCode} from '~/lib/qi-master-addons.server';
+import {rabattCookie, rueckfallAn, RUECKFALL_KOPF} from '~/lib/kassen-rueckfall.server';
 
 /**
  * Automatically applies a discount found on the url
@@ -44,6 +45,16 @@ export async function loader({request, context, params}) {
         codeWirkt: true,
       })
     : gesetzt;
+  // KASSEN-RÜCKFALL (Notfall 27.11.2026, lib/kassen-rueckfall.server.js):
+  // ohne angelegten Korb (Neuanlage über Oxygen gestört) statt 500 weiter zur
+  // Zielseite; der Code wartet im Cookie, bis der Kaufknopf über den nativen
+  // Kassenweg geht.
+  if (!result?.cart?.id && rueckfallAn(env)) {
+    const rueckfallKopf = new Headers({[RUECKFALL_KOPF]: 'rabattlink'});
+    const keks = rabattCookie(code);
+    if (keks) rueckfallKopf.append('Set-Cookie', keks);
+    return redirect(redirectUrl, {status: 303, headers: rueckfallKopf});
+  }
   const headers = cart.setCartId(result.cart.id);
 
   // Using set-cookie on a 303 redirect will not work if the domain origin have port number (:3000)
