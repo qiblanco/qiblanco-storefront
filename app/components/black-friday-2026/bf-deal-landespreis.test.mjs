@@ -179,12 +179,12 @@ test('Pro + Necklace: ausverkaufte erste Länge -> nächste Länge', async () =>
   const ok = {
     cartCreate: {
       cart: {
-        totalQuantity: 2,
-        discountCodes: [{code: 'BF26-PRO-13GLX', applicable: true}],
+        // Seit 27.11.2026 EINE Bündelzeile (734husd8hh) ohne Code (Elina EL-20261126-5537ae30).
+        totalQuantity: 1,
+        discountCodes: [],
         lines: {
           nodes: [
-            {quantity: 1, cost: {totalAmount: geld('86.0', 'CHF'), amountPerQuantity: geld('86.0', 'CHF'), compareAtAmountPerQuantity: null}},
-            {quantity: 1, cost: {totalAmount: geld('1039.54', 'CHF'), amountPerQuantity: geld('1133.0', 'CHF'), compareAtAmountPerQuantity: geld('1290.0', 'CHF')}},
+            {quantity: 1, cost: {totalAmount: geld('1125.54', 'CHF'), amountPerQuantity: geld('1125.54', 'CHF'), compareAtAmountPerQuantity: geld('1376.0', 'CHF')}},
           ],
         },
       },
@@ -197,6 +197,10 @@ test('Pro + Necklace: ausverkaufte erste Länge -> nächste Länge', async () =>
   assert.equal(sf.aufrufe.length, 2);
   assert.notDeepEqual(sf.aufrufe[0].variables.lines, sf.aufrufe[1].variables.lines);
   assert.equal(dealWahlen(PRO_KETTE).length, 5);
+  // Bündel statt Pro + Kette + Code: je Länge genau eine Zeile, kein Code.
+  assert.deepEqual(sf.aufrufe[1].variables.codes, []);
+  assert.equal(sf.aufrufe[1].variables.lines.length, 1);
+  assert.match(sf.aufrufe[1].variables.lines[0].merchandiseId, /ProductVariant\/(53739513512204|53739513544972|53739513577740|53739513610508|53739513643276)$/);
 });
 
 test('Preise setzen: jede EUR-Variante bekommt Landespreis und -Streichpreis', () => {
@@ -327,7 +331,7 @@ test('BF-Stand AT: 2x QiOne nach Neubepreisung -> Streichpreis 2.476 € (nicht 
 test('BF-Stand FR: Pro + Necklace nach Neubepreisung -> Streichpreis 1.332 € (nicht 1.443), Endpreis 1.082 €', async () => {
   _ablageLeeren();
   const sf = mockStorefront([
-    korb('EUR', [['94.0', '94.0', null, 1], ['988.0', '1214.0', '1349.0', 1]], 'BF26-PROKETTE-PMB52'),
+    korb('EUR', [['1082.0', '1082.0', '1332.0', 1]], 'kein-code'),
   ]);
   const lp = await bfDealLandesPreis(sf, PRO_KETTE, 'FR', {jetzt: JETZT});
   assert.deepEqual(lp, {preis: 1082, uvp: 1332, waehrung: 'EUR'});
