@@ -1386,7 +1386,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/elektrosmog-schutz-schmuck',
-    lastmod: '2026-11-14T17:00:00Z',
+    lastmod: '2026-11-27T00:00:00Z',
     grund:
       'Ratgeber und Produktübersicht „Elektrosmog-Schutz zum Tragen: ' +
       'Armband, Anhänger oder Kette?" für die Kaufbegriffe der Kategorie ' +
