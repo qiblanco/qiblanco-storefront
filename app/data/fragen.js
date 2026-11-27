@@ -551,7 +551,7 @@ export const FRAGEN = [
       "Viele unserer Kundinnen und Kunden erzählen uns, was sie mit ihrem QiOne® oder ihrem QiHome® Air erleben. Einige berichten darüber unter eigenem Namen auf ihren eigenen Konten, und diese Berichte haben wir bei den Erfahrungen gesammelt. In Deutschland sind inzwischen über 450 QiHome® Air im Einsatz.",
       "Jedes Stück kannst du 20 Tage ab Erhalt tragen und ohne Angabe von Gründen zurückgeben, du bekommst dann den Kaufpreis erstattet. Das ist mehr als das gesetzliche Widerrufsrecht von 14 Tagen, und beide Fristen gelten nebeneinander.",
       "Unsere Bewertungen kommen aus unserem Google-Unternehmensprofil. Jede stammt von einem Google-Konto und ist dort öffentlich nachlesbar, und für eine Bewertung gibt es bei uns weder Gutschein noch Rabatt.",
-      "An fünf Merkmalen, die du bei jedem Anbieter für Elektrosmog-Schutz selbst prüfen kannst, bevor du kaufst.",
+      "An fünf Merkmalen, die du bei jedem Anbieter selbst prüfen kannst, bevor du kaufst.",
       "Impressum und Firmensitz: Ein seriöser Anbieter nennt Firma, Anschrift und Handelsregister. Bei uns sind das die Qi Blanco UG (haftungsbeschränkt) in Maßbach und HRB 7306 beim Amtsgericht Schweinfurt.",
       "Rückgabe: Ein seriöser Anbieter lässt dich in Ruhe testen und nimmt die Ware ohne Angabe von Gründen zurück. Bei uns sind das 20 Tage ab Erhalt.",
       "Untersuchungen mit Quelle: Ein seriöser Anbieter zeigt dir, was untersucht wurde, und du kannst es im Original nachlesen. Unsere fünf Arbeiten sind in Fachzeitschriften erschienen, jede mit Jahr und Seitenzahl.",

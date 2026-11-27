@@ -1153,7 +1153,7 @@ export const NUR_ROUTE_SEITEN = [
   },
   {
     pfad: '/pages/ist-qi-blanco-serioes',
-    lastmod: '2026-11-27T00:00:00Z',
+    lastmod: '2026-11-15T00:00:00Z',
     grund:
       'Frageseite „Ist Qi Blanco seriös?“ (Grossjob ' +
       '20260915-GEO-lexikon-frageseiten-und-ob-die-ki-uns-zitiert, ' +
