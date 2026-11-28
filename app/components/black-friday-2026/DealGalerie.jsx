@@ -6,7 +6,7 @@ import dealDunkelStyles from '~/styles/bf-deal-dunkel.css?url';
 import dealAnhangStyles from '~/styles/bf-deal-anhang.css?url';
 import {BfCountdownLeiste} from '~/components/black-friday-2026/BfCountdownLeiste';
 import {BfVertrauensblock} from '~/components/black-friday-2026/BfVertrauensblock';
-import {andereDeals} from '~/components/black-friday-2026/bf-deals-daten';
+import {andereDeals, bfKachelPfad} from '~/components/black-friday-2026/bf-deals-daten';
 import {betragText} from '~/lib/betrag-text';
 
 /*
@@ -112,7 +112,7 @@ export function DealGalerie({seite: seiteProp = null, titel = 'Sieh dir unsere a
       <ul className="bfg__bahn" data-eb="gruppe">
         {deals.map((d) => (
           <li key={d.id} className="bfg__kachel" data-bf-deal-kachel={d.id}>
-            <a className="bfg__bildlink" href={`/products/${d.seite}`} tabIndex={-1} aria-hidden="true">
+            <a className="bfg__bildlink" href={bfKachelPfad(d)} tabIndex={-1} aria-hidden="true">
               <figure className="bfg__bild">
                 <img
                   src={`${d.bild}?width=600`}
@@ -129,7 +129,7 @@ export function DealGalerie({seite: seiteProp = null, titel = 'Sieh dir unsere a
             </a>
             <div className="bfg__text">
               <h3 className="bfg__name">
-                <a href={`/products/${d.seite}`}>{d.name}</a>
+                <a href={bfKachelPfad(d)}>{d.name}</a>
               </h3>
               <p className="bfg__preise">
                 <s className="bfg__alt">{kachelPreis(seite, d).uvp}</s>{' '}
@@ -137,7 +137,7 @@ export function DealGalerie({seite: seiteProp = null, titel = 'Sieh dir unsere a
               </p>
               <a
                 className="bfg__knopf"
-                href={`/products/${d.seite}`}
+                href={bfKachelPfad(d)}
                 aria-label={`Jetzt ansehen: ${d.name}`}
               >
                 Jetzt ansehen

@@ -624,6 +624,18 @@ export function andereDeals(seite) {
 }
 
 /*
+ * KACHEL-LINK DER GALERIE „Sieh dir unsere anderen Deals an“ (Elina EL-20261128-f9205aa3):
+ * jede Kachel verlinkt genau wie der Newsletter (mail-manager bf-serie-inhalte.json, Feld
+ * „seite“): Deal-Seite + Deal-Parameter el=BF2025, beim Kakao mit Set-Vorwahl create-awake
+ * (wie die Deal-Übersicht bf-deals). Bild, Titel und Knopf nehmen dieselbe Adresse.
+ */
+export const BF_DEAL_EL = 'BF2025';
+export function bfKachelPfad(d) {
+  if (d.seite === BF_KAKAO_SEITE) return bfKakaoPfad('create-awake', BF_DEAL_EL);
+  return `/products/${d.seite}?el=${BF_DEAL_EL}`;
+}
+
+/*
  * COUNTDOWN-LOGIK DER BF-SEITEN DE (Elina EL-20261112-5c71f6ff, GO 12.11.2026), EINE Stelle für
  * rote Leiste der Deal-Seiten, großen Countdown auf bf-deals und Pre-Access (hier in bf-deals-daten.js):
  *   vor 13.11.2026 18:00 Berlin            „Pre-Sale startet in …“  (Ziel 13.11. 18:00, passend zur ersten Mail;
