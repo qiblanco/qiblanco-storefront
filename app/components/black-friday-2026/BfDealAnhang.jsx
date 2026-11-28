@@ -2,7 +2,7 @@ import {useEffect, useRef} from 'react';
 import {useElinaBewegung} from '~/components/reusables/useElinaBewegung';
 import {useBfDealSeite} from '~/components/black-friday-2026/DealGalerie';
 import {useBfUhr} from '~/components/black-friday-2026/BfCountdownLeiste';
-import {BF_DEAL_SEITEN, bfDeal, bfDealBild} from '~/components/black-friday-2026/bf-deals-daten';
+import {BF_DEAL_SEITEN, bfDeal, bfDealBild, bfFestBild} from '~/components/black-friday-2026/bf-deals-daten';
 import {betragText} from '~/lib/betrag-text';
 import {FAQ_CACAO} from '~/crystal-spiegel/data/product-faqs';
 
@@ -183,7 +183,8 @@ export function BfSchlussBanner() {
   const uhr = useBfUhr();
   const deal = seite ? bfDeal(seite.deal) : null;
   if (!deal) return null;
-  const bild = bfDealBild(seite);
+  // Eigenes Foto statt des Gold-Bilds von oben (EL-20261128-e9f6b23e: kein Bild doppelt).
+  const bild = bfFestBild(seite, 'schluss') ?? bfDealBild(seite);
   const name = seite.name ?? deal.name;
   const sprung = String(seite.art ?? '').startsWith('kakao') ? '#bkd-titel' : '#av-summe-titel';
   // Außerhalb von DE der Warenkorb-Betrag des Landes (bf-deal-landespreis.server.js),

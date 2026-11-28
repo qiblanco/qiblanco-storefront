@@ -118,6 +118,56 @@ export const BF_SECTION_BILDER = {
   },
 };
 
+/*
+ * BOX- UND SCHLUSS-BANNER-BILD DER DEAL-SEITEN (EL-20261128-e9f6b23e, Regel 3 „kein Bild
+ * doppelt“): „What's in the Box“ zeigte das Gold-Bild aus der Galerie, das Schluss-Banner
+ * dasselbe noch einmal. Jetzt fest je Seite: Box = Produktfoto mit Siegel, Schluss-Banner =
+ * echtes Foto mit dem Produkt DIESER Seite, das sonst nirgends auf der Seite steht.
+ */
+const BILD_QIONE_SIEGEL = {
+  url: CDN + 'QiOne1.webp',
+  altText: 'QiOne® 2 Pro Anhänger aus Chirurgenstahl mit Dartsch-Siegel',
+};
+export const BF_FEST_BILDER = {
+  '8kendiw34hd': {
+    box: BILD_QIONE_SIEGEL,
+    schluss: {
+      url: CDN + 'qb-produkt-trage-bereich--trage-qione-2-pro-3--c6eca9d7102d.jpg',
+      altText: 'Lachender Mann mit dem QiOne® 2 Pro an der Kette',
+    },
+  },
+  pjdz538hgs0: {
+    box: BILD_QIONE_SIEGEL,
+    schluss: {
+      url: CDN + 'qb-produkt-trage-bereich--r2-qione-2-pro-n1--4bb68ac74b99.jpg',
+      altText: 'Mann im offenen Leinenhemd mit dem QiOne® 2 Pro an der Kette',
+    },
+  },
+  qibracelet: {
+    box: {url: CDN + 'QiBracelet2.webp', altText: 'QiBracelet® in Draufsicht mit Seriennummer und Dartsch-Siegel'},
+    schluss: {
+      url: CDN + 'qb-produkt-trage-bereich--r2-qibracelet-n1--84705b657bd4.jpg',
+      altText: 'Lachende Frau im weißen Hemd mit dem QiBracelet® am Handgelenk',
+    },
+  },
+  'qihome-air': {
+    box: {url: CDN + 'QiHome1.webp', altText: 'QiHome® Air von vorn mit Dartsch-Siegel'},
+    schluss: {
+      url: CDN + 'qb-produkt-trage-bereich--qihome-air-cafe-n3--e08aa28c86af_11dd8c52-14fc-4bc7-89c4-2026482c4ef1.jpg',
+      altText: 'Mann arbeitet am Schreibtisch, vorn steht der QiHome® Air',
+    },
+  },
+  // Kakao-Seite: oben das Set-Bild, unten ein echtes Foto einer Tasse Crystal Cacao.
+  'bundle-1x-awake-1x-create': {
+    schluss: {url: CDN + 'kakao-snippet.jpg', altText: 'Hand hält eine Tasse Crystal Cacao® mit Milchschaum'},
+  },
+};
+
+/** Festes Bild „box“ oder „schluss“ einer Deal-Seite (null = keins festgelegt). */
+export function bfFestBild(seite, art) {
+  return BF_FEST_BILDER[seite?.basis]?.[art] ?? null;
+}
+
 /** Kapitel einer Deal-Seite mit festen Section-Bildern (ohne Eintrag: kein Bild). */
 export function bfSectionBilderSetzen(kapitel, basis) {
   const karte = BF_SECTION_BILDER[basis] ?? {};
@@ -128,7 +178,8 @@ const dateiName = (u) => String(u ?? '').split('?')[0].split('/').pop();
 
 /** Dateinamen der Section-Bilder einer Deal-Seite (für die Galerie: nie doppelt). */
 export function bfSectionBildNamen(basis) {
-  return new Set(Object.values(BF_SECTION_BILDER[basis] ?? {}).map((b) => dateiName(b.url)));
+  const fest = Object.values(BF_FEST_BILDER[basis] ?? {});
+  return new Set([...Object.values(BF_SECTION_BILDER[basis] ?? {}), ...fest].map((b) => dateiName(b.url)));
 }
 
 /** Kachel-Gruppen der Galerie, in der Reihenfolge von bf-deals. */
