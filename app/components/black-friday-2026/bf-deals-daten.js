@@ -51,6 +51,86 @@ export const BF_GOLD_BILDER = {
 };
 export const BF_GOLD_KANTE = 1200;
 
+/*
+ * SECTION-BILDER DER DEAL-SEITEN (Elina EL-20261128-e9f6b23e, Dauerregel für alle
+ * neuen Deal-Seiten): jede Wissen-Section einer Deal-Seite bekommt ihr Bild hier
+ * FEST per Adresse, nie per Nummer. Grund: die Nummern (`bild: N` in den
+ * *-alpha-daten.js) zeigen in die Bildliste des Produkts, und die ist auf der
+ * Deal-Seite verschoben (BF-Gold-Bild vorn, unscharfe und alte Bilder fallen weg),
+ * beim 2x-QiOne-Paket kommen außerdem die Sections der QiOne-2-Pro-Seite dazu,
+ * deren Nummern in eine ganz andere Liste zeigen. Ergebnis war das Lifestyle-Foto
+ * neben der Immunzell-Studie und doppelte Bilder.
+ * Regeln: 1) Bild passt zur Section (Studie = Studien-/Mikroskopbild, Erdstrahlung =
+ * Schlaf-/Bett-Szene, Tragebilder nur in der Trage-Section), 2) Produkt DIESER
+ * Deal-Seite, 3) kein Bild doppelt auf der Seite (bfDealBildSetzen nimmt die hier
+ * genannten Bilder aus der Galerie), 4) nur echte Fotos aus dem Bestand.
+ * Eine Section, die hier NICHT steht, zeigt auf der Deal-Seite KEIN Bild (lieber
+ * ohne als falsch). Schlüssel = `basis` der Deal-Seite, darin der Section-Titel.
+ */
+const BILD_ZELLSTUDIE_QIONE = {
+  url: CDN + 'qb-produktseite-stimmen--zellvideo-poster-230413-cellstudy-comparison-1x1-de--a112f9ac7cd0.jpg',
+  altText: 'Immunzellen unter dem Mikroskop: ohne Schutz und mit GitterChip im Vergleich',
+};
+const BILD_SCHLAF_QIONE = {
+  url: CDN + 'qb-infoslider--infoslider-erholsame-naechte-bali-06825--2f21555b63e2.webp',
+  altText: 'Ein Mann schläft auf weißer Bettwäsche, um den Hals trägt er seinen QiOne® Anhänger',
+};
+export const BF_SECTION_BILDER = {
+  '8kendiw34hd': {
+    '84,7 statt 60,5 Prozent.': BILD_ZELLSTUDIE_QIONE,
+    'Ruhig schlafen, egal was unter dir liegt.': BILD_SCHLAF_QIONE,
+  },
+  pjdz538hgs0: {
+    '84,7 statt 60,5 Prozent.': BILD_ZELLSTUDIE_QIONE,
+    'Den ganzen Tag bei dir.': {
+      url: CDN + 'qb-produkt-trage-bereich--r2-qione-2-pro-n2--8035de6e389f.jpg',
+      altText: 'Frau im weißen Hemd mit dem QiOne® 2 Pro an der Kette',
+    },
+    'Ruhig schlafen, egal was unter dir liegt.': BILD_SCHLAF_QIONE,
+  },
+  qibracelet: {
+    'Das QiBracelet® schützte im Labor fünf von fünf Zelltypen.': {
+      url: CDN + 'qb-produktseite-stimmen--zellvideo-poster-bracelet-study-1x1-de--f625cf3d49ae.jpg',
+      altText: 'Zellen unter dem Mikroskop aus der QiBracelet® Laborstudie: ohne Schutz und mit GitterChip',
+    },
+    'Am Handgelenk so stark wie der QiOne® 2 Pro am Hals.': {
+      url: CDN + 'QiBracelet1.webp',
+      altText: 'QiBracelet®: offener Armreif aus Chirurgenstahl',
+    },
+    'Ruhig schlafen, egal wo du bist.': {
+      url: CDN + '2023-03-01-qiblanco-milva-martin-1020791_1_0f03ee06-6ad1-4997-9182-3685335eb04c.webp',
+      altText: 'Paar liegt entspannt im Bett',
+    },
+  },
+  'qihome-air': {
+    'Einmal hinstellen, und es wirkt im ganzen Raum.': {
+      url: CDN + 'qb-produkt-trage-bereich--qihome-air-g3-tisch--2c60cfbc3ea5.jpg',
+      altText: 'QiHome® Air auf einem langen Holztisch im Wohnraum',
+    },
+    'Im Labor regenerieren Nervenzellen mit dem QiHome® Air um 53,3 % stärker.': {
+      url: CDN + 'qb-studien--e0005-deckblatt--56291027b5c1.png',
+      altText: 'Titelseite der Publikation im Journal of Neurodegenerative Diseases',
+    },
+    'Ruhig schlafen, egal was unter dem Haus liegt.': {
+      url: CDN + '16-L1011283_fa25da2a-e5f4-433b-be0c-bc8f109beed4.png',
+      altText: 'QiHome® Air auf dem Nachttisch neben dem Bett',
+    },
+  },
+};
+
+/** Kapitel einer Deal-Seite mit festen Section-Bildern (ohne Eintrag: kein Bild). */
+export function bfSectionBilderSetzen(kapitel, basis) {
+  const karte = BF_SECTION_BILDER[basis] ?? {};
+  return (kapitel ?? []).map((k) => ({...k, bild: karte[k?.titel] ?? null}));
+}
+
+const dateiName = (u) => String(u ?? '').split('?')[0].split('/').pop();
+
+/** Dateinamen der Section-Bilder einer Deal-Seite (für die Galerie: nie doppelt). */
+export function bfSectionBildNamen(basis) {
+  return new Set(Object.values(BF_SECTION_BILDER[basis] ?? {}).map((b) => dateiName(b.url)));
+}
+
 /** Kachel-Gruppen der Galerie, in der Reihenfolge von bf-deals. */
 export const BF_DEALS = [
   {
@@ -461,8 +541,12 @@ export function bfDealBildSetzen(product, seite, filter = null) {
     height: BF_GOLD_KANTE,
   };
   const alt = bfDeal(seite.deal)?.altBild;
+  const sectionBilder = bfSectionBildNamen(seite.basis);
   const rest = (filter ? nodes.filter(filter) : nodes).filter(
-    (n) => n?.url !== b.url && !(alt && String(n?.url ?? '').split('?')[0].endsWith('/' + alt)),
+    (n) =>
+      n?.url !== b.url &&
+      !(alt && String(n?.url ?? '').split('?')[0].endsWith('/' + alt)) &&
+      !sectionBilder.has(dateiName(n?.url)),
   );
   const variante = (v) => (v && typeof v === 'object' ? {...v, image: vorn} : v);
   // Das frühere Deal-Bild auch in Varianten-Bildern (Größenwahl, Nachbarvarianten) durch das Gold-Bild ersetzen,

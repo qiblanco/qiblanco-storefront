@@ -29,6 +29,7 @@ import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import igStyles from '~/styles/ig-testimonials.css?url';
 import {BfDealRahmen} from '~/components/black-friday-2026/DealGalerie';
 import {datenStudienNeutral} from '~/components/black-friday-2026/bf-kachel-neutral';
+import {bfSectionBilderSetzen} from '~/components/black-friday-2026/bf-deals-daten';
 import {
   BfSchlussBanner,
   ohneDartsch,
@@ -76,7 +77,7 @@ export function BfDealAlpha({seite, product, ketten}) {
     <BfDealRahmen seite={seite}>
       <div ref={wurzel} className="bf-deal-inhalt">
         {ANGEBOT[seite.basis] ? (
-          <BfDealAngebot product={product} ketten={ketten} daten={ANGEBOT[seite.basis]} />
+          <BfDealAngebot product={product} ketten={ketten} daten={ANGEBOT[seite.basis]} basis={seite.basis} />
         ) : (
           <BfDealProdukt
             product={product}
@@ -143,7 +144,7 @@ function DealStile({qione = false}) {
 }
 
 /** 2x QiOne 2 Pro / QiOne 2 Pro + Necklace: oben die Deal-Fassung, darunter die QiOne-2-Pro-Sections. */
-function BfDealAngebot({product, ketten, daten}) {
+function BfDealAngebot({product, ketten, daten, basis}) {
   const land = useMarktLand();
   const money = product?.selectedOrFirstAvailableVariant?.price;
   const preisText = money
@@ -151,9 +152,11 @@ function BfDealAngebot({product, ketten, daten}) {
     : null;
   const deal = useMemo(() => ohneDartsch(daten), [daten]);
   const original = useMemo(() => ohneDartsch(DATEN_QIONE), []);
-  const kapitel = einmal(
-    [...(deal.WISSEN?.kapitel ?? []), ...(original.WISSEN?.kapitel ?? [])],
-    (k) => k.titel,
+  // Section-Bilder fest je Deal-Seite (EL-20261128-e9f6b23e): die Nummern der
+  // QiOne-2-Pro-Sections zeigten in eine fremde Bildliste.
+  const kapitel = bfSectionBilderSetzen(
+    einmal([...(deal.WISSEN?.kapitel ?? []), ...(original.WISSEN?.kapitel ?? [])], (k) => k.titel),
+    basis,
   );
   const stimmen = {
     ...original.STIMMEN_GOOGLE,
@@ -222,7 +225,7 @@ function BfDealProdukt({product, ketten, basis, daten: roh}) {
           vergleich: daten.EINSATZ ? <Einsatz daten={daten.EINSATZ} /> : null,
           wissen: (
             <AlphaWissen
-              kapitel={daten.WISSEN.kapitel}
+              kapitel={bfSectionBilderSetzen(daten.WISSEN.kapitel, basis)}
               studien={daten.WISSEN.studien}
               bilder={product?.images?.nodes ?? []}
             />
