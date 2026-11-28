@@ -8,7 +8,8 @@ import {ReputonWidget as LpReputonWidget} from '~/components/index-components/Re
 import {ScrollMikroskopVideo as LpScrollMikroskopVideo} from '~/components/index-components/ScrollMikroskopVideo';
 import {InfoSlider as LpInfoSlider} from '~/components/index-components/InfoSlider';
 import {YoutubeIframe as LpYoutubeIframe} from '~/components/reusables/YoutubeIframe';
-import {Produkt360Video} from '~/components/reusables/Produkt360Video';
+import {ImgixVideo} from '~/components/reusables/ImgixVideo';
+import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
 import {GitterchipMoleculesScrub} from '~/components/reusables/GitterchipMoleculesScrub';
 import {StudienSlider} from '~/components/reusables/StudienSlider';
 import {YoutubeTimestamp as LpYoutubeTimestamp} from '~/components/reusables/YoutubeTimestamp';
@@ -21,7 +22,7 @@ import {YoutubeTimestamp as LpYoutubeTimestamp} from '~/components/reusables/You
 
 /* ───────── 1. Geldhelden-Hero (ersetzt Hero) ───────── */
 function HeroStackedVisuals() {
-  // 360°-Animationen (direkte Shopify-mp4, Produkt360Video) statt statischer Bilder. Steht eine
+  // 360°-Animationen (Imgix/HLS) statt statischer Bilder. Steht eine
   // Drehung, steht ein Bild aus dem Video (ERSATZBILD_360, seit 01.10.2026;
   // die alten Vorschaubilder JjGdCuv.webp = Kante, 3d-animation-qi-home-
   // preview.webp = 459 px bleiben auf dem CDN).
@@ -29,24 +30,24 @@ function HeroStackedVisuals() {
     {
       label: "QiBracelet®",
       tag: "Gitterchip® — am Handgelenk",
-      drehung: "qibracelet",
+      video: "new-360-QiBracelet-1x1.mov",
+      ersatz: ERSATZBILD_360.qibracelet,
     },
     {
       label: "QiHome® Air",
       tag: "Schützt dein Zuhause",
-      drehung: "qihome",
+      video: "360-QiHome-1x1.mov",
+      ersatz: ERSATZBILD_360.qihome,
     },
   ];
   return (
     <div className="ghx-hero__visual">
       {slides.map((s) => (
         <figure key={s.label} className="ghx-hero__tile">
-          {/* Direkte Shopify-mp4 wie beim QiOne (Elina EL-20261128-92e8f92c).
-              Hülle behält .ImgixVideo-wrap und die Kachel-Klasse für ihr CSS. */}
-          <Produkt360Video
-            drehung={s.drehung}
-            sofort={false}
-            huelleKlasse="ImgixVideo-wrap ghx-hero__tile-video"
+          <ImgixVideo
+            videoPath={s.video}
+            ersatz={s.ersatz}
+            className="ghx-hero__tile-video"
           />
         </figure>
       ))}
