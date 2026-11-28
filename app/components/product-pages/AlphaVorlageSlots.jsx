@@ -174,7 +174,13 @@ export function AlphaWissen({kapitel, bilder = [], studien = null}) {
   return (
     <div className="taw avw" data-the-alpha-wissen="" data-av-wissen="">
       {kapitel.map((a, i) => {
-        const bild = Number.isInteger(a.bild) ? bilder[a.bild] : null;
+        // bild: Nummer in die Produktbilder ODER fest {url, altText} (Deal-Seiten, EL-20261128-e9f6b23e).
+        const bild =
+          a.bild && typeof a.bild === 'object' && a.bild.url
+            ? a.bild
+            : Number.isInteger(a.bild)
+              ? bilder[a.bild]
+              : null;
         const id = `avw-${i}`;
         return (
           <section

@@ -260,6 +260,8 @@ export function AlphaVorlage({
     kette?.art === 'gold' && KETTE_GOLD?.bilder ? KETTE_GOLD.bilder : KETTE?.bilder ?? [];
   const setBilder = KETTE_IM_SET?.bilder ?? [];
   const boxBilder = boxKacheln(BOX?.kacheln);
+  // Festes Box-Bild (BF-Deal-Seiten, EL-20261128-e9f6b23e) vor der Bildnummer.
+  const boxBild = BOX?.bildFest ?? bilder[BOX?.bild ?? 0] ?? null;
   const erster = STUFEN
     ? STUFEN[0].name
     : optionen.length
@@ -754,11 +756,11 @@ export function AlphaVorlage({
             {BOX.titel}
           </h2>
           <div className="tas-box-flaeche">
-            {bilder[BOX.bild ?? 0] ? (
+            {boxBild ? (
               <figure className="tas-box-teil">
                 <img
-                  src={mitBreite(bilder[BOX.bild ?? 0].url, 600)}
-                  alt={bilder[BOX.bild ?? 0].altText || product.title}
+                  src={mitBreite(boxBild.url, 600)}
+                  alt={boxBild.altText || product.title}
                   width="300"
                   height="300"
                   loading="lazy"

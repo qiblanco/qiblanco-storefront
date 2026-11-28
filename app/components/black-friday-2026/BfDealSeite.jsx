@@ -29,11 +29,18 @@ import kaufleisteStyles from '~/styles/qb-kaufleiste.css?url';
 import igStyles from '~/styles/ig-testimonials.css?url';
 import {BfDealRahmen} from '~/components/black-friday-2026/DealGalerie';
 import {datenStudienNeutral} from '~/components/black-friday-2026/bf-kachel-neutral';
+import {bfFestBild, bfSectionBilderSetzen} from '~/components/black-friday-2026/bf-deals-daten';
 import {
   BfSchlussBanner,
   ohneDartsch,
   useBfFunnelLinks,
 } from '~/components/black-friday-2026/BfDealAnhang';
+
+/** „What's in the Box“ mit festem Produktfoto statt des Gold-Bilds der Galerie (EL-20261128-e9f6b23e). */
+function mitBoxBild(daten, basis) {
+  const bild = bfFestBild({basis}, 'box');
+  return daten?.BOX && bild ? {...daten, BOX: {...daten.BOX, bildFest: bild}} : daten;
+}
 
 /*
  * BF-DEAL-SEITE in der Alpha-Fassung (Elina EL-20261111-aff06215): dieselbe
@@ -76,7 +83,7 @@ export function BfDealAlpha({seite, product, ketten}) {
     <BfDealRahmen seite={seite}>
       <div ref={wurzel} className="bf-deal-inhalt">
         {ANGEBOT[seite.basis] ? (
-          <BfDealAngebot product={product} ketten={ketten} daten={ANGEBOT[seite.basis]} />
+          <BfDealAngebot product={product} ketten={ketten} daten={ANGEBOT[seite.basis]} basis={seite.basis} />
         ) : (
           <BfDealProdukt
             product={product}
@@ -143,17 +150,19 @@ function DealStile({qione = false}) {
 }
 
 /** 2x QiOne 2 Pro / QiOne 2 Pro + Necklace: oben die Deal-Fassung, darunter die QiOne-2-Pro-Sections. */
-function BfDealAngebot({product, ketten, daten}) {
+function BfDealAngebot({product, ketten, daten, basis}) {
   const land = useMarktLand();
   const money = product?.selectedOrFirstAvailableVariant?.price;
   const preisText = money
     ? betragText(bruttoAnzeige(money.amount, product.handle, money.currencyCode, land), money.currencyCode)
     : null;
-  const deal = useMemo(() => ohneDartsch(daten), [daten]);
+  const deal = useMemo(() => mitBoxBild(ohneDartsch(daten), basis), [daten, basis]);
   const original = useMemo(() => ohneDartsch(DATEN_QIONE), []);
-  const kapitel = einmal(
-    [...(deal.WISSEN?.kapitel ?? []), ...(original.WISSEN?.kapitel ?? [])],
-    (k) => k.titel,
+  // Section-Bilder fest je Deal-Seite (EL-20261128-e9f6b23e): die Nummern der
+  // QiOne-2-Pro-Sections zeigten in eine fremde Bildliste.
+  const kapitel = bfSectionBilderSetzen(
+    einmal([...(deal.WISSEN?.kapitel ?? []), ...(original.WISSEN?.kapitel ?? [])], (k) => k.titel),
+    basis,
   );
   const stimmen = {
     ...original.STIMMEN_GOOGLE,
@@ -176,9 +185,12 @@ function BfDealAngebot({product, ketten, daten}) {
         ketten={ketten}
         vertrauen={<EuGewaehrleistungsHinweis />}
         slots={{
+          // Nutzen als eigener Abschnitt direkt vor dem Wissen (Muster Z20 der Vorlage): mit den festen
+          // Section-Bildern (EL-20261128-e9f6b23e) wurde konfig-wissen sonst ein Block über dem
+          // Fünffachen des Medians (Design-Rubrik: Sektions-Ausreißer). Reihenfolge und Inhalt bleiben gleich.
+          tragen: <QiOneNutzen daten={original.NUTZEN} />,
           wissen: (
             <>
-              <QiOneNutzen daten={original.NUTZEN} />
               <AlphaWissen
                 kapitel={kapitel}
                 studien={deal.WISSEN?.studien ?? original.WISSEN?.studien}
@@ -206,7 +218,7 @@ function BfDealAngebot({product, ketten, daten}) {
 
 /** QiBracelet® / QiHome® Air wie ihre Kaufseite, ohne Gerätevergleich (normale Preise). */
 function BfDealProdukt({product, ketten, basis, daten: roh}) {
-  const daten = useMemo(() => (roh ? ohneDartsch(roh) : null), [roh]);
+  const daten = useMemo(() => (roh ? mitBoxBild(ohneDartsch(roh), basis) : null), [roh, basis]);
   if (!daten) return null;
   return (
     <>
@@ -222,7 +234,7 @@ function BfDealProdukt({product, ketten, basis, daten: roh}) {
           vergleich: daten.EINSATZ ? <Einsatz daten={daten.EINSATZ} /> : null,
           wissen: (
             <AlphaWissen
-              kapitel={daten.WISSEN.kapitel}
+              kapitel={bfSectionBilderSetzen(daten.WISSEN.kapitel, basis)}
               studien={daten.WISSEN.studien}
               bilder={product?.images?.nodes ?? []}
             />
