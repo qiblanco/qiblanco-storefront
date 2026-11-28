@@ -1011,12 +1011,25 @@ function bandQuelle(BAND) {
  * eigene Loop setzt das Poster, die 360-Drehungen bringen ihr Ersatzbild mit
  * (video360-ersatzbild.jsx), bis das Video wirklich läuft.
  */
+/*
+ * DIREKTE MP4 FÜR ALLE DREI DREHUNGEN (Elina EL-20261128-92e8f92c, BF 28.11.2026):
+ * „alle Videos auf allen BF-Deal-Seiten … wie beim QiOne auf eine direkte
+ * Shopify-Videodatei (mp4/H.264, stumm, autoplay, loop, playsinline)
+ * umstellen“. QiHome und QiBracelet liefen bis dahin über <ImgixVideo>
+ * (hls.js, Quelle erst nach der Hydration in Sichtweite, unter „Bewegung
+ * reduzieren“ GAR KEINE Quelle: kein src, networkState 0, readyState 0 —
+ * gemessen 28.11. in Chromium mit reduced_motion). <Produkt360Video> trägt
+ * die mp4 schon im Server-HTML, genau wie die QiOne-Bühne.
+ */
+const DIREKTE_DREHUNGEN = new Set(['qione', 'qihome', 'qibracelet']);
+
 function BandVideo({band}) {
   const dealSeite = useBfDealSeite();
   let medium;
   if (band.art === 'loop') medium = <BandLoop loop={band} />;
-  else if (band.art === 'qione') medium = <Produkt360Video className="av-band-video" />;
-  else medium = <ImgixVideo videoPath={band.videoPath} ersatz={band.ersatz} className="av-band-video" />;
+  else if (DIREKTE_DREHUNGEN.has(band.art)) {
+    medium = <Produkt360Video className="av-band-video" drehung={band.art} />;
+  } else medium = <ImgixVideo videoPath={band.videoPath} ersatz={band.ersatz} className="av-band-video" />;
   return dealSeite ? <BfDealTippStartet>{medium}</BfDealTippStartet> : medium;
 }
 

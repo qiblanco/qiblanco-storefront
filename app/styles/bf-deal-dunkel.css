@@ -40,6 +40,10 @@
   box-shadow: 0 0 0 100vmax #0c0a08;
   clip-path: inset(0 -100vmax);
   color-scheme: dark;
+  /* Außenabstände der ersten/letzten Section bleiben IM dunklen Rahmen (Elina EL-20261128-8b373cd3): ohne
+   * eigenen Formatierungskontext rutschte der margin-bottom der Kakao-FAQ (.bfkv, 40 px) durch .bfka und
+   * .bf-deal-seite nach außen, wo kein Grund liegt -> weißer Balken über dem Footer. */
+  display: flow-root;
 }
 
 /* 2) Texte, die auf der hellen Seite mit --tas-weiss als SCHRIFT gesetzt waren (dunkles Band, rote Etiketten):
