@@ -12,8 +12,7 @@ import {ProductImageList} from '~/components/ProductImageList';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 import {QiHome} from '~/components/product-pages/QiHome';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
-import {ImgixVideo} from '~/components/reusables/ImgixVideo';
-import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
+import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {Preisanker} from '~/components/reusables/Preisanker';
 import {EuGewaehrleistungsListenpunkt} from '~/components/EuGewaehrleistungsLabel';
 import {KaufZusagePunkte} from '~/components/reusables/KaufZusage';
@@ -172,7 +171,9 @@ export function QiHomeAirSeite({
       <div className="product-360-hero__video">
         {/* Ersatzbild statt des 459-px-Vorschaubilds (3d-animation-qi-home-preview.webp,
             bleibt auf dem CDN): steht die Drehung, steht die Frontansicht aus dem Video. */}
-        <ImgixVideo videoPath="360-QiHome-1x1.mov" ersatz={ERSATZBILD_360.qihome} />
+        {/* Direkte Shopify-mp4 wie beim QiOne (Elina EL-20261128-92e8f92c); Hülle behält
+            .ImgixVideo-wrap für Rand-Maske und Platzhalter (qb-360-rand.css, app.css). */}
+        <Produkt360Video drehung="qihome" sofort={false} huelleKlasse="ImgixVideo-wrap" />
       </div>
     </div>
     {/* id="product" = Anker-Ziel der "#product"-CTAs im QiHome-Content
