@@ -12,8 +12,7 @@ import {ProductImageList} from '~/components/ProductImageList';
 import {Kaufleiste} from '~/components/reusables/Kaufleiste';
 import {QiBracelet} from '~/components/product-pages/QiBracelet';
 import {GoogleRezensionenBereich} from '~/components/reusables/GoogleRezensionenBereich';
-import {ImgixVideo} from '~/components/reusables/ImgixVideo';
-import {ERSATZBILD_360} from '~/components/reusables/video360-ersatzbild';
+import {Produkt360Video} from '~/components/reusables/Produkt360Video';
 import {ProductPrice} from '~/components/ProductPrice';
 import {useMarktLand} from '~/lib/markt-land';
 import {IgTestimonialSlideshow} from '~/components/reusables/IgTestimonialSlideshow';
@@ -187,7 +186,9 @@ export function QiBraceletSeite({
       <div className="product-360-hero__video">
         {/* Ersatzbild statt JjGdCuv.webp (zeigte die Kante des Reifs, bleibt auf dem CDN):
             steht die Drehung, steht der Reif schräg von vorn aus dem Video. */}
-        <ImgixVideo videoPath="new-360-QiBracelet-1x1.mov" ersatz={ERSATZBILD_360.qibracelet} />
+        {/* Direkte Shopify-mp4 wie beim QiOne (Elina EL-20261128-92e8f92c); Hülle behält
+            .ImgixVideo-wrap für Rand-Maske und Platzhalter (qb-360-rand.css, app.css). */}
+        <Produkt360Video drehung="qibracelet" sofort={false} huelleKlasse="ImgixVideo-wrap" />
       </div>
     </div>
     {/* id="product" = Anker-Ziel der "#product"-CTAs im QiBracelet-Content
