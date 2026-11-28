@@ -197,3 +197,24 @@
 .bf-deal-seite button.bkd__kaufen:focus-visible { outline: 2px solid var(--bkd-hell); outline-offset: 3px; }
 .bf-deal-seite button.bkd__kaufen:disabled { opacity: 0.6; cursor: default; }
 .bf-deal-seite .qb-kaufleiste button.bkd__kaufen--leiste { width: auto; min-height: 48px; padding: var(--bkd-a1) var(--bkd-a3); }
+
+/* BEWERTUNGS-SECTION DER DEAL-SEITEN: LUFT UND GLEICH HOHE KACHELN (Elina EL-20261128-2be23c71, 28.11.2026,
+ * Ergänzung zu EL-20261128-e9f6b23e; nur Deal-Seiten, diese Datei lädt nur der Rahmen .bf-deal-seite).
+ * (1) „deutlich mehr Abstand zwischen der Sterne-Zeile und der Zeile + 14.000 aktive Nutzer“: 8 px -> 24 px.
+ * (2) „deutlich mehr Abstand zwischen + 14.000 aktive Nutzer und den Review-Kacheln“: 24 px -> 48 px.
+ * (3) „alle Review-Kacheln gleich hoch und bündig, unabhängig von der Textlänge … weiterlesen-Link immer unten
+ *     an derselben Stelle“: die Bahn streckt jede Kachel auf die Höhe der höchsten (vorher items-start =
+ *     jede Kachel so hoch wie ihr Text); „weiterlesen“ trägt schon mt-auto und steht damit immer am Kachelboden.
+ * Gilt Handy und Desktop. Rückweg: diesen Block löschen. */
+.bf-deal-seite .qb-gbl .qb-gbl__nutzer {
+  margin-top: 24px;
+}
+.bf-deal-seite .qb-gbl .qb-gbl__titel {
+  margin-bottom: 48px;
+}
+.bf-deal-seite .qb-gbl .qb-wischbahn {
+  align-items: stretch;
+}
+.bf-deal-seite .qb-gbl .qb-wischbahn > * {
+  align-self: stretch;
+}
