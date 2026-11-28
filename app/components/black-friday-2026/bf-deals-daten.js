@@ -69,7 +69,7 @@ export const BF_GOLD_KANTE = 1200;
  */
 const BILD_ZELLSTUDIE_QIONE = {
   url: CDN + 'qb-produktseite-stimmen--zellvideo-poster-230413-cellstudy-comparison-1x1-de--a112f9ac7cd0.jpg',
-  altText: 'Immunzellen unter dem Mikroskop: ohne Schutz und mit GitterChip im Vergleich',
+  altText: 'Immunzellen unter dem Mikroskop: ohne Schutz und mit GitterChip® im Vergleich',
 };
 const BILD_SCHLAF_QIONE = {
   url: CDN + 'qb-infoslider--infoslider-erholsame-naechte-bali-06825--2f21555b63e2.webp',
@@ -91,7 +91,7 @@ export const BF_SECTION_BILDER = {
   qibracelet: {
     'Das QiBracelet® schützte im Labor fünf von fünf Zelltypen.': {
       url: CDN + 'qb-produktseite-stimmen--zellvideo-poster-bracelet-study-1x1-de--f625cf3d49ae.jpg',
-      altText: 'Zellen unter dem Mikroskop aus der QiBracelet® Laborstudie: ohne Schutz und mit GitterChip',
+      altText: 'Zellen unter dem Mikroskop aus der QiBracelet® Laborstudie: ohne Schutz und mit GitterChip®',
     },
     'Am Handgelenk so stark wie der QiOne® 2 Pro am Hals.': {
       url: CDN + 'QiBracelet1.webp',
